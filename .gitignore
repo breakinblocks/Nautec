@@ -13,6 +13,8 @@ out
 *.iml
 .idea
 
+src/generated/resources/.cache/*
+
 # gradle
 build
 .gradle
