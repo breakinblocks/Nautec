@@ -1,0 +1,138 @@
+package com.breakinblocks.nautec.content.blocks.multiblock.controller;
+
+import com.mojang.serialization.MapCodec;
+import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.blocks.blockentities.ContainerBlock;
+import com.breakinblocks.nautec.api.multiblocks.Multiblock;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
+import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
+import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
+import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTMultiblocks;
+import com.breakinblocks.nautec.utils.ItemUtils;
+import com.breakinblocks.nautec.utils.MultiblockHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import org.jetbrains.annotations.NotNull;
+
+public class DrainBlock extends ContainerBlock {
+    public DrainBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState()
+                .setValue(DrainMultiblock.FORMED, false)
+                .setValue(DrainPartBlock.OPEN, false)
+                .setValue(DrainPartBlock.HAS_POWER, false)
+        );
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder.add(DrainMultiblock.DRAIN_PART, Multiblock.FORMED, DrainPartBlock.OPEN, DrainPartBlock.HAS_POWER));
+    }
+
+    @Override
+    public boolean tickingEnabled() {
+        return true;
+    }
+
+    @Override
+    public BlockEntityType<? extends ContainerBlockEntity> getBlockEntityType() {
+        return NTBlockEntityTypes.DRAIN.get();
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return simpleCodec(DrainBlock::new);
+    }
+
+    @Override
+    protected @NotNull InteractionResult useWithoutItem(BlockState p_60503_, Level level, BlockPos pos, Player player, BlockHitResult p_60508_) {
+        if (level.getBlockEntity(pos) instanceof DrainBlockEntity drainBlockEntity) {
+            if (player.isShiftKeyDown() && !drainBlockEntity.isMoving()) {
+                if (p_60503_.getValue(DrainPartBlock.OPEN)) {
+                    drainBlockEntity.close();
+                } else {
+                    drainBlockEntity.open();
+                }
+                return InteractionResult.SUCCESS;
+            }
+
+            if (p_60503_.getValue(Multiblock.FORMED)) {
+                ItemStack stack = player.getMainHandItem();
+                var itemFluidCap = stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
+                if (itemFluidCap != null) {
+                    extractFluid(player, level, InteractionHand.MAIN_HAND, drainBlockEntity.getFluidTank(), IFluidHandler.of(itemFluidCap));
+                    return InteractionResult.SUCCESS;
+                }
+            }
+
+        }
+
+        return super.useWithoutItem(p_60503_, level, pos, player, p_60508_);
+    }
+
+    @Override
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrimaryCollision) {
+        if (state.getValue(DrainPartBlock.OPEN) && state.getValue(DrainPartBlock.HAS_POWER)) {
+            entity.hurt(level.damageSources().drown(), 4.0F);
+        }
+    }
+
+    @Override
+    public BubbleColumnDirection getBubbleColumnDirection(BlockState state) {
+        if (state.getValue(DrainPartBlock.OPEN) && state.getValue(DrainPartBlock.HAS_POWER)) {
+            return BubbleColumnDirection.DOWNWARD;
+        }
+        return super.getBubbleColumnDirection(state);
+    }
+
+    private static void extractFluid(Player player, Level level, InteractionHand interactionHand, FluidTank fluidHandler, IFluidHandler fluidHandlerItem) {
+        FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
+        if (player.getItemInHand(interactionHand).is(Items.BUCKET)) {
+            player.getItemInHand(interactionHand).shrink(1);
+            ItemUtils.giveItemToPlayerNoSound(player, fluidInTank.getFluid().getBucket().getDefaultInstance());
+            if (fluidInTank.is(Fluids.WATER)) {
+                level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 0.8F, 1.0F);
+            } else if (fluidInTank.is(Fluids.LAVA)) {
+                level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS, 0.8F, 1.0F);
+            }
+            fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+        } else {
+            FluidStack fluidStack = fluidHandler.drain(fluidHandler.getFluidInTank(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            int remainderAmount = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+            FluidStack newFluidStack = fluidStack.copy();
+            newFluidStack.setAmount(remainderAmount);
+            fluidHandler.setFluid(newFluidStack);
+        }
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        level.removeBlock(pos.above(), false);
+    }
+
+}

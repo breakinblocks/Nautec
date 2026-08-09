@@ -1,0 +1,41 @@
+package com.breakinblocks.nautec.api.bacteria;
+
+import com.mojang.serialization.Codec;
+import com.breakinblocks.nautec.NTRegistries;
+import com.breakinblocks.nautec.utils.ranges.FloatRange;
+import com.breakinblocks.nautec.utils.ranges.IntRange;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+
+import java.util.List;
+
+public interface CollapsedBacteriaStats {
+    Codec<CollapsedBacteriaStats> CODEC =
+            NTRegistries.BACTERIA_STATS_SERIALIZER.byNameCodec().dispatch(CollapsedBacteriaStats::getSerializer, BacteriaStatsSerializer::collapsedMapCodec);
+    StreamCodec<RegistryFriendlyByteBuf, CollapsedBacteriaStats> STREAM_CODEC =
+            ByteBufCodecs.registry(NTRegistries.BACTERIA_STATS_SERIALIZER_KEY).dispatch(CollapsedBacteriaStats::getSerializer, BacteriaStatsSerializer::collapsedStreamCodec);
+
+    BacteriaStats<?> baseStats();
+
+    float growthRate();
+
+    float mutationResistance();
+
+    float productionRate();
+
+    int lifespan();
+
+    int color();
+
+    CollapsedBacteriaStats rollStats();
+
+    List<Component> statsTooltip();
+
+    List<Component> statsTooltipWithMutatorValues();
+
+    BacteriaStatsSerializer<?, ?> getSerializer();
+
+    CollapsedBacteriaStats copy();
+}

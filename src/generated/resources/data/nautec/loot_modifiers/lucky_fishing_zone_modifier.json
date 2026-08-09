@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:gameplay/fishing"
+    },
+    {
+      "condition": "nautec:in_lucky_fishing_zone"
+    }
+  ],
+  "priority": 0,
+  "table": "nautec:gameplay/lucky_fishing_zone"
+}

@@ -1,0 +1,45 @@
+package com.breakinblocks.nautec.content.commands;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.augments.Augment;
+import com.breakinblocks.nautec.api.augments.AugmentSlot;
+import com.breakinblocks.nautec.content.commands.arguments.AugmentSlotArgumentType;
+import com.breakinblocks.nautec.utils.AugmentHelper;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+
+// /nautec augments cooldown set <slot> <cooldown>
+
+public class SetAugmentCooldownCommand {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralArgumentBuilder<CommandSourceStack> nautecCommand = Commands.literal(Nautec.MODID)
+                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()));
+
+        dispatcher.register(nautecCommand
+                .then(Commands.literal("augments")
+                        .then(Commands.literal("cooldown")
+                                .then(Commands.literal("set")
+                                        .then(Commands.argument("slot", AugmentSlotArgumentType.getInstance())
+                                                .then(Commands.argument("cooldown", IntegerArgumentType.integer())
+                                                        .executes(SetAugmentCooldownCommand::execute)))))));
+    }
+
+    private static int execute(CommandContext<CommandSourceStack> ctx) {
+        Player player = ctx.getSource().getPlayer();
+        AugmentSlot slot = ctx.getArgument("slot", AugmentSlot.class);
+        int cooldown = ctx.getArgument("cooldown", int.class);
+        Augment augmentBySlot = AugmentHelper.getAugmentBySlot(player, slot);
+        if (augmentBySlot != null) {
+            augmentBySlot.setCooldown(cooldown);
+            player.sendSystemMessage(Component.literal("Set augment cooldown in slot '" + slot.getName() + "' to: " + cooldown));
+        }
+        return 1;
+    }
+
+}

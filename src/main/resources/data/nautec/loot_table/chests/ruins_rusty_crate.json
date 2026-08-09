@@ -51,7 +51,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "nautec:laser_relay",
+          "name": "nautec:prismarine_laser_relay",
           "weight": 2,
           "functions": [
             {

@@ -1,0 +1,158 @@
+package com.breakinblocks.nautec.content.items.tools;
+
+import com.breakinblocks.nautec.api.items.IPowerItem;
+import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.items.tiers.NTToolMaterials;
+import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.data.NTDataComponentsUtils;
+import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.utils.ItemUtils;
+import com.breakinblocks.nautec.utils.Tooltips;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.Consumer;
+
+public class AquarineAxeItem extends AxeItem implements IPowerItem {
+    private static final int POWER_PER_BLOCK = 2;
+
+    public AquarineAxeItem(Properties properties) {
+        super(NTToolMaterials.AQUARINE, 3.0f, -3.0f, properties
+                .stacksTo(1)
+                .component(NTDataComponents.IS_INFUSED,false)
+                .component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(1200))
+                .component(NTDataComponents.ABILITY_ENABLED,false)
+        );
+    }
+
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        ItemStack stack = context.getItemInHand();
+        IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
+        if (powerStorage.getPowerStored() <= 0) {
+            return InteractionResult.FAIL;
+        }
+        return super.useOn(context);
+    }
+
+    @Override
+    public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
+        IPowerStorage powerStorage = miningEntity.getItemInHand(InteractionHand.MAIN_HAND).getCapability(NTCapabilities.PowerStorage.ITEM);
+        powerStorage.tryDrainPower(1, false);
+
+        if (NTDataComponentsUtils.isAbilityEnabled(stack)) {
+            chopTree(level, pos, miningEntity, stack);
+            return true;
+        }
+
+        return super.mineBlock(stack, level, state, pos, miningEntity);
+    }
+
+    @Override
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        IPowerStorage powerStorage = attacker.getItemInHand(InteractionHand.MAIN_HAND).getCapability(NTCapabilities.PowerStorage.ITEM);
+        powerStorage.tryDrainPower(1, false);
+        super.hurtEnemy(stack, target, attacker);
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return NTDataComponentsUtils.isAbilityEnabled(stack) || stack.isEnchanted();
+    }
+
+    @Override
+    public boolean isDamageable(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isDamaged(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return ItemUtils.POWER_BAR_COLOR;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return ItemUtils.powerForDurabilityBar(stack);
+    }
+
+    @Override
+    public int getMaxInput() {
+        return ItemUtils.ITEM_POWER_INPUT;
+    }
+
+    @Override
+    public int getMaxOutput() {
+        return 100;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
+        Tooltips.trans(tooltipComponents, "nautec.tool.axe.ability", ChatFormatting.DARK_PURPLE);
+        if(!NTDataComponentsUtils.isInfused(stack)){
+            Tooltips.trans(tooltipComponents, "nautec.tool.infuse-me", ChatFormatting.DARK_GREEN);
+        }else{
+            Tooltips.transtrans(tooltipComponents, "nautec.tool.status", NTDataComponentsUtils.isAbilityEnabled(stack) ? "nautec.tool.enabled" : "nautec.tool.disabled", NTDataComponentsUtils.isAbilityEnabled(stack) ? ChatFormatting.GREEN : ChatFormatting.RED);
+        }
+        IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
+        Tooltips.transInsert(tooltipComponents, "nautec.tool.power", powerStorage.getPowerStored() + "/" + powerStorage.getPowerCapacity(), ChatFormatting.DARK_AQUA);
+    }
+
+    private void chopTree(Level level, BlockPos pos, LivingEntity player, ItemStack stack) {
+        IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
+
+        if (isLog(level,pos,level.getBlockState(pos)) && powerStorage.getPowerStored() > 0) {
+            int blocksToBreak = powerStorage.getPowerStored() / POWER_PER_BLOCK;
+            breakTree(level, pos, stack, player, powerStorage, blocksToBreak);
+        }
+    }
+
+    private boolean isLog(Level level, BlockPos pos, BlockState state) {
+        return state.is(BlockTags.LOGS) && level.getBlockEntity(pos) == null;
+    }
+
+    private int breakTree(Level level, BlockPos pos, ItemStack stack, LivingEntity player, IPowerStorage powerStorage, int blocksToBreak) {
+        BlockState state = level.getBlockState(pos);
+
+        if (!isLog(level,pos,state) || blocksToBreak <= 0 || powerStorage.getPowerStored() < POWER_PER_BLOCK) {
+            return blocksToBreak;
+        }
+
+        level.destroyBlock(pos, true);
+
+        powerStorage.tryDrainPower(POWER_PER_BLOCK, false);
+        blocksToBreak--;
+
+        for (BlockPos adjacentPos : BlockPos.betweenClosed(pos.offset(-1, -1, -1), pos.offset(1, 1, 1))) {
+            if (!adjacentPos.equals(pos) && blocksToBreak > 0) {
+                blocksToBreak = breakTree(level, adjacentPos, stack, player, powerStorage, blocksToBreak);
+            }
+        }
+
+        return blocksToBreak;
+    }
+}

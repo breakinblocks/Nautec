@@ -1,0 +1,68 @@
+package com.breakinblocks.nautec.content.blocks;
+
+import com.mojang.serialization.MapCodec;
+import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
+import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+
+public class PrismarineLaserRelayBlock extends LaserBlock {
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
+
+    private static final VoxelShape SHAPE_NS = Block.box(4, 4, 0, 12, 12, 16);
+    private static final VoxelShape SHAPE_EW = Block.box(0, 4, 4, 16, 12, 12);
+    private static final VoxelShape SHAPE_UD = Block.box(4, 0, 4, 12, 16, 12);
+
+    public PrismarineLaserRelayBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    public boolean waterloggable() {
+        return true;
+    }
+
+    @Override
+    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case EAST, WEST -> SHAPE_EW;
+            case DOWN, UP -> SHAPE_UD;
+            case NORTH, SOUTH -> SHAPE_NS;
+        };
+    }
+
+    @Override
+    public BlockEntityType<? extends ContainerBlockEntity> getBlockEntityType() {
+        return NTBlockEntityTypes.PRISMARINE_LASER_RELAY.get();
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return simpleCodec(PrismarineLaserRelayBlock::new);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder.add(FACING));
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = super.getStateForPlacement(context);
+        return state != null ? state.setValue(FACING, context.getClickedFace().getOpposite()) : null;
+    }
+}
