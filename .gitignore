@@ -31,3 +31,5 @@ run-data
 
 repo
 *.log
+
+.vscode/
