@@ -1,0 +1,190 @@
+package com.breakinblocks.nautec;
+
+import com.mojang.logging.LogUtils;
+import com.breakinblocks.nautec.api.augments.AugmentSlot;
+import com.breakinblocks.nautec.api.augments.AugmentType;
+import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
+import com.breakinblocks.nautec.api.items.IBacteriaItem;
+import com.breakinblocks.nautec.api.items.ICurioItem;
+import com.breakinblocks.nautec.api.items.IFluidItem;
+import com.breakinblocks.nautec.api.items.IPowerItem;
+import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.bacteria.ItemBacteriaWrapper;
+import com.breakinblocks.nautec.capabilities.power.ItemPowerWrapper;
+import com.breakinblocks.nautec.capabilities.power.LaserPowerView;
+import com.breakinblocks.nautec.compat.duradisplay.DuraDisplayCompat;
+import com.breakinblocks.nautec.content.commands.arguments.AugmentSlotArgumentType;
+import com.breakinblocks.nautec.content.commands.arguments.AugmentTypeArgumentType;
+import com.breakinblocks.nautec.data.NTDataAttachments;
+import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.data.NTDataMaps;
+import com.breakinblocks.nautec.registries.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
+import org.slf4j.Logger;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+@Mod(Nautec.MODID)
+public final class Nautec {
+    public static final String MODID = "nautec";
+    public static final String MODNAME = "NauTec";
+    public static final Logger LOGGER = LogUtils.getLogger();
+
+    public Nautec(IEventBus modEventBus, ModContainer modContainer) {
+        modEventBus.addListener(NewRegistryEvent.class, event -> {
+            event.register(NTRegistries.MULTIBLOCK);
+            event.register(NTRegistries.AUGMENT_SLOT);
+            event.register(NTRegistries.AUGMENT_TYPE);
+            event.register(NTRegistries.BACTERIA_SERIALIZER);
+            event.register(NTRegistries.BACTERIA_STATS_SERIALIZER);
+        });
+
+        modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> {
+            event.dataPackRegistry(NTRegistries.BACTERIA_KEY, Bacteria.CODEC, Bacteria.CODEC);
+        });
+
+        NTEntities.ENTITIES.register(modEventBus);
+        NTItems.ITEMS.register(modEventBus);
+        NTBlocks.BLOCKS.register(modEventBus);
+        NTParticles.PARTICLE_TYPES.register(modEventBus);
+        NTRecipes.SERIALIZERS.register(modEventBus);
+        NTDataAttachments.ATTACHMENTS.register(modEventBus);
+        NTArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
+        NTBlockEntityTypes.BLOCK_ENTITIES.register(modEventBus);
+        NTCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        NTDataComponents.DATA_COMPONENT_TYPES.register(modEventBus);
+        NTAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
+        NTMultiblocks.MULTIBLOCKS.register(modEventBus);
+        NTAugments.AUGMENTS.register(modEventBus);
+        NTAugmentSlots.AUGMENT_SLOTS.register(modEventBus);
+        NTMenuTypes.MENUS.register(modEventBus);
+        NTStructures.STRUCTURES.register(modEventBus);
+        NTLootModifier.LOOT_MODIFIERS.register(modEventBus);
+        NTLootConditions.LOOT_CONDITIONS.register(modEventBus);
+        NTLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
+        NTBacteriaSerializers.SERIALIZERS.register(modEventBus);
+        NTBacteriaStatsSerializers.SERIALIZERS.register(modEventBus);
+
+        NTFluids.HELPER.register(modEventBus);
+
+        modEventBus.addListener(this::registerDataMaps);
+        modEventBus.addListener(this::onRegisterAugments);
+        modEventBus.addListener(this::registerCapabilities);
+
+        modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.SPEC);
+
+
+        if (ModList.get().isLoaded("duradisplay")) {
+            DuraDisplayCompat.register();
+        }
+    }
+
+    private void registerDataMaps(RegisterDataMapTypesEvent event) {
+        event.register(NTDataMaps.BACTERIA_OBTAINING);
+    }
+
+    private void onRegisterAugments(RegisterEvent event) {
+        Registry<AugmentSlot> slotRegistry = event.getRegistry(NTRegistries.AUGMENT_SLOT.key());
+        if (slotRegistry != null) {
+            AugmentSlotArgumentType.suggestions = slotRegistry.keySet().stream().map(Objects::toString).collect(Collectors.toSet());
+        }
+
+        Registry<AugmentType<?>> augmentRegistry = event.getRegistry(NTRegistries.AUGMENT_TYPE.key());
+        if (augmentRegistry != null) {
+            AugmentTypeArgumentType.suggestions = augmentRegistry.keySet().stream().map(Objects::toString).collect(Collectors.toSet());
+        }
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        registerItemCaps(event);
+        registerBECaps(event);
+    }
+
+    private static void registerItemCaps(RegisterCapabilitiesEvent event) {
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof IPowerItem powerItem) {
+                event.registerItem(NTCapabilities.PowerStorage.ITEM, (stack, ctx) -> new ItemPowerWrapper(stack, powerItem), item);
+            }
+
+            if (item instanceof IFluidItem fluidItem) {
+                event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new ItemAccessFluidHandler(access, NTDataComponents.FLUID.get(), fluidItem.getFluidCapacity()), item);
+            }
+
+            if (item instanceof IBacteriaItem) {
+                event.registerItem(NTCapabilities.BacteriaStorage.ITEM, (stack, ctx) -> new ItemBacteriaWrapper(NTDataComponents.BACTERIA, stack), item);
+            }
+
+            if (item instanceof ICurioItem curioItem) {
+                event.registerItem(CuriosCapability.ITEM,
+                        (stack, context) -> new ICurio() {
+                            @Override
+                            public ItemStack getStack() {
+                                return stack;
+                            }
+
+                            @Override
+                            public void curioTick(SlotContext slotContext) {
+                                curioItem.curioTick(stack, slotContext);
+                            }
+                        }, item);
+            }
+        }
+    }
+
+    private static void registerBECaps(RegisterCapabilitiesEvent event) {
+        for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : NTBlockEntityTypes.BLOCK_ENTITIES.getEntries()) {
+            Block validBlock = be.get().getValidBlocks().stream().iterator().next();
+            BlockEntity testBE = be.get().create(BlockPos.ZERO, validBlock.defaultBlockState());
+            if (testBE instanceof ContainerBlockEntity containerBE) {
+                if (containerBE instanceof LaserBlockEntity) {
+                    event.registerBlockEntity(NTCapabilities.PowerStorage.BLOCK, be.get(), (blockEntity, dir) -> new LaserPowerView((LaserBlockEntity) blockEntity));
+                } else if (containerBE.getPowerStorage() != null) {
+                    event.registerBlockEntity(NTCapabilities.PowerStorage.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getPowerStorage());
+                }
+
+                if (containerBE.getItemHandler() != null) {
+                    event.registerBlockEntity(Capabilities.Item.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getItemHandlerOnSide(dir));
+                }
+
+                if (containerBE.getFluidHandler() != null) {
+                    event.registerBlockEntity(Capabilities.Fluid.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getFluidHandlerOnSide(dir));
+                }
+
+                if (containerBE.getBacteriaStorage() != null){
+                    event.registerBlockEntity(NTCapabilities.BacteriaStorage.BLOCK, be.get(), (blockEntity, ctx) -> ((ContainerBlockEntity) blockEntity).getBacteriaStorage());
+                }
+            }
+        }
+    }
+
+    public static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
+    }
+}

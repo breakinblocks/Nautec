@@ -13,8 +13,7 @@
                 "minecraft:custom_name",
                 "minecraft:container",
                 "minecraft:lock",
-                "minecraft:container_loot",
-                "nautec:open"
+                "minecraft:container_loot"
               ],
               "source": "block_entity"
             }

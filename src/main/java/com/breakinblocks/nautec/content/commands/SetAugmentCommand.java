@@ -1,0 +1,50 @@
+package com.breakinblocks.nautec.content.commands;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.augments.Augment;
+import com.breakinblocks.nautec.api.augments.AugmentSlot;
+import com.breakinblocks.nautec.api.augments.AugmentType;
+import com.breakinblocks.nautec.content.commands.arguments.AugmentSlotArgumentType;
+import com.breakinblocks.nautec.content.commands.arguments.AugmentTypeArgumentType;
+import com.breakinblocks.nautec.network.SyncAugmentPayload;
+import com.breakinblocks.nautec.utils.AugmentHelper;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+// /nautec augments set <slot> <augment>
+
+// TODO: Only set ingredients for slots that support them
+public class SetAugmentCommand {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralArgumentBuilder<CommandSourceStack> nautecCommand = Commands.literal(Nautec.MODID)
+                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()));
+
+        dispatcher.register(nautecCommand
+                .then(Commands.literal("augments")
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("slot", AugmentSlotArgumentType.getInstance())
+                                        .then(Commands.argument("augment", AugmentTypeArgumentType.getInstance())
+                                                .executes(SetAugmentCommand::execute))))));
+    }
+
+    private static int execute(CommandContext<CommandSourceStack> ctx) {
+        ServerPlayer player = ctx.getSource().getPlayer();
+        AugmentSlot slot = ctx.getArgument("slot", AugmentSlot.class);
+        Augment currentAug = AugmentHelper.getAugmentBySlot(player, slot);
+        if (currentAug != null) {
+            currentAug.onRemoved(player);
+        }
+        Augment augment = AugmentHelper.createAugment(ctx.getArgument("augment", AugmentType.class), player, slot);
+        PacketDistributor.sendToPlayer(player, new SyncAugmentPayload(augment, new CompoundTag()));
+        player.sendSystemMessage(Component.literal("Set augment in slot '" + slot.getName() + "' to: " + augment.getAugmentType()));
+        return 1;
+    }
+
+}

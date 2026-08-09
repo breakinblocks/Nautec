@@ -41,8 +41,35 @@
     knockback resistance, and halves how long you burn.
 - Two new guide entries: "Crafted Augments" for the twelve buildable parts and
   "Deep Fauna Augments" for the three organ augments.
+- Lucky fishing zones: patches of open water that appear near you while you
+  are out on an ocean or a river, marked by drifting glow particles. Fish one
+  and you get an extra roll on the zone's loot on top of your normal catch.
+  A zone only forms where every block within its radius is open water, so they
+  keep to real open water rather than hugging a shoreline. Configurable
+  interval, spacing, per-chunk cap, lifetime and radius.
+- The Prismatic Fishing Rod. When something bites you get one of three catch
+  minigames, picked at random:
+  - **Something is biting** - strike once as the marker crosses the green.
+  - **It is fighting you** - strike on all three marks, in order.
+  - **It is running with the line** - hold through the green, then let go.
+  Winning always adds a treasure roll to your catch, and if the catch was
+  already a treasure one you get two treasure rolls and a normal roll on top.
+  Missing, or ignoring the bar entirely, just gives you the ordinary catch.
+  It is never a punishment.
+- Lucky fishing zones can hook live creatures, not just items. Reeling one in
+  releases the animal at your bobber. Which creatures, and where, is set in the
+  loot table with the new `nautec:catch_as_entity` function, so packs can make
+  anything catchable.
+- Lucky fishing zone loot tables, split into a common catch pool and a rarer
+  treasure pool. Both vary by biome: rivers, oceans in general, and each of the
+  four Nautec biomes have their own entries on top of the shared ones. Packs
+  can override `nautec:gameplay/lucky_fishing_zone` and its two sub-tables.
 
 ### Fixed
+- Breaking a Crate now drops the Crate again. Its loot table referenced a data
+  component that no longer exists, which stopped the whole table loading.
+- Rusty Crates in ocean ruins now generate their loot. Their loot table still
+  used the old `laser_relay` id from an old rename.
 - Augments that change your attributes or abilities no longer stop working
   after you die. Bonus Hearts, Step Up, Walking Speed and Creative Flight kept
   showing as installed after a respawn but had no effect until you reapplied

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:prismarine_crystal_shard",
+    "L": "minecraft:string"
+  },
+  "pattern": [
+    "  A",
+    " AL",
+    "A C"
+  ],
+  "result": {
+    "id": "nautec:nautec_fishing_rod"
+  }
+}

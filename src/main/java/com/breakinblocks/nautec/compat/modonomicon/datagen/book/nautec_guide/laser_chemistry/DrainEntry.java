@@ -1,0 +1,47 @@
+package com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry;
+
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.BaseNautecEntry;
+import com.klikli_dev.modonomicon.api.datagen.CategoryProviderBase;
+import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
+import com.breakinblocks.nautec.registries.NTBlocks;
+
+public class DrainEntry extends BaseNautecEntry {
+    public DrainEntry(CategoryProviderBase parent) {
+        super(parent, "drain", "Deep Sea Drain", "Sucks in everything", BookIconModel.create(NTBlocks.DRAIN));
+    }
+
+    @Override
+    protected void generatePages() {
+        this.page("drain", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Deep Sea Drain");
+        this.pageText("""
+                The Deep Sea Drain is a mutliblock dedicated
+                to draining huge amounts of salt water.
+                \\
+                In order to do so, it must be constructed in an
+                ocean biome. After forming the multiblock, shift-right-click
+                on the center valve block to open it.
+                Also make sure to right-click one of the middle wall blocks
+                with a wrench to open a laser port and supply it with power.
+                \\
+                To extract the salt water, one can either hook up a pipe
+                to the bottom side of the center block or interact with a bucket.
+                """);
+
+        this.page("drain_multi", () -> BookMultiblockPageModel.create()
+                .withMultiblockId(modLoc("drain"))
+                .withVisualizeButton(true)
+                .withText(this.context().pageText()));
+        this.pageText("""
+                To form the deep sea drain, you
+                needs to right-click the center block with
+                an Aquarine Steel Wrench.
+                \\
+                Be Careful: The drain will suck in any entity! Even items
+                """);
+    }
+}
