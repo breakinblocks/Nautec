@@ -20,6 +20,7 @@ import net.minecraft.util.Mth;
 public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, EntityRenderState> {
     private static final DataTicket<Float> YAW = DataTicket.create("nautec:submarine_yaw", Float.class);
     private static final DataTicket<Float> PITCH = DataTicket.create("nautec:submarine_pitch", Float.class);
+    private static final DataTicket<Float> ROLL = DataTicket.create("nautec:submarine_roll", Float.class);
 
     private static final Identifier EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
 
@@ -39,6 +40,7 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
         state.addGeckolibData(SubmarineEntity.DEPLOYED, submarine.isDeployed());
         state.addGeckolibData(YAW, Mth.rotLerp(partialTick, submarine.yRotO, submarine.getYRot()));
         state.addGeckolibData(PITCH, Mth.rotLerp(partialTick, submarine.xRotO, submarine.getXRot()));
+        state.addGeckolibData(ROLL, submarine.getRoll(partialTick));
     }
 
     /**
@@ -55,6 +57,7 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
         poseStack.translate(0F, PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(pass.getOrDefaultGeckolibData(YAW, 0F)));
         poseStack.mulPose(Axis.XP.rotationDegrees(-pass.getOrDefaultGeckolibData(PITCH, 0F)));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(pass.getOrDefaultGeckolibData(ROLL, 0F)));
         poseStack.translate(0F, -PITCH_PIVOT, 0F);
     }
 

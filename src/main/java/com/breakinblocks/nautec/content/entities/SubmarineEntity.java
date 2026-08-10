@@ -76,6 +76,14 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     private static final float PASSENGER_HEAD_YAW = 85F;
     /** Degrees per tick the nose eases back to level once the pilot is no longer diving. */
     private static final float PITCH_LEVEL_RATE = 6F;
+    /** Degrees per tick the hull swings toward the pilot's aim while the use key is held. */
+    private static final float STEER_RATE = 5F;
+    /** Degrees per tick the rudder (A/D) swings the hull. */
+    private static final float YAW_RATE = 2.5F;
+    private static final float MAX_ROLL = 25F;
+    private static final float ROLL_RATE = 2F;
+    /** Degrees of bank per degree per tick of turn. Presentation only. */
+    private static final float BANK_PER_TURN = 6F;
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
     private final InterpolationHandler interpolation = new InterpolationHandler(this, 3);
@@ -84,6 +92,11 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             NTConfig.submarinePowerCapacity, 200, 0);
 
     private Input input = Input.EMPTY;
+    /** True while the pilot holds the use key. Only then does the mouse steer. */
+    private boolean steering;
+    private float roll;
+    private float rollO;
+    private float lastYaw;
     private boolean underWay;
 
     public SubmarineEntity(EntityType<? extends SubmarineEntity> type, Level level) {
@@ -121,6 +134,18 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
 
     public void setInput(Input input) {
         this.input = input;
+    }
+
+    public void setSteering(boolean steering) {
+        this.steering = steering;
+    }
+
+    public boolean isSteering() {
+        return this.steering;
+    }
+
+    public float getRoll(float partialTick) {
+        return Mth.lerp(partialTick, this.rollO, this.roll);
     }
 
     /**
@@ -179,10 +204,24 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         Vec3 motion = getDeltaMovement();
 
         if (driver != null) {
-            steerTowards(driver, submerged);
+            if (this.steering) {
+                aimSteer(driver, submerged);
+            }
+            rudder();
+            if (!submerged) {
+                levelOut();
+            }
+            // Collapse the previous rotation onto the current one, as AbstractHorse.tickRidden does,
+            // so the hull is never rendered a tick behind the seat the pilot is sitting in.
+            this.yRotO = getYRot();
+            this.xRotO = getXRot();
+            setYHeadRot(getYRot());
+            setYBodyRot(getYRot());
         } else {
             levelOut();
         }
+
+        tickRoll();
 
         if (driver != null && getPowerStored() > 0) {
             Input controls = this.input;
@@ -237,23 +276,46 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
      * keeping a heading of its own for them to look away from. Pitch follows their view under water so
      * they can dive by looking down, and eases back to level at the surface.
      */
-    private void steerTowards(LivingEntity driver, boolean submerged) {
-        setYRot(driver.getYRot());
-        if (submerged) {
-            setXRot(Mth.clamp(driver.getXRot(), -MAX_PITCH, MAX_PITCH));
-        } else {
-            levelOut();
-        }
+    /**
+     * Swings the hull toward wherever the pilot is aiming, rate limited so engaging the mouse does not
+     * snap the submarine to the current view. Only runs while the use key is held.
+     */
+    private void aimSteer(LivingEntity driver, boolean submerged) {
+        float yawDelta = Mth.wrapDegrees(driver.getYRot() - getYRot());
+        setYRot(getYRot() + Mth.clamp(yawDelta, -STEER_RATE, STEER_RATE));
 
-        // Collapse the previous rotation onto the current one, exactly as AbstractHorse.tickRidden
-        // does. Without it the hull renders interpolated between last tick and this one while the
-        // pilot is seated at the raw yaw, so they visibly swing around the cabin as the camera moves.
-        this.yRotO = getYRot();
-        this.xRotO = getXRot();
-        setYHeadRot(getYRot());
-        setYBodyRot(getYRot());
+        if (submerged) {
+            float pitchDelta = Mth.wrapDegrees(Mth.clamp(driver.getXRot(), -MAX_PITCH, MAX_PITCH) - getXRot());
+            setXRot(getXRot() + Mth.clamp(pitchDelta, -STEER_RATE, STEER_RATE));
+        }
     }
 
+    /** Rudder on A/D. Works with or without the mouse held, and does not need power. */
+    private void rudder() {
+        float yaw = 0F;
+        if (this.input.left()) {
+            yaw -= YAW_RATE;
+        }
+        if (this.input.right()) {
+            yaw += YAW_RATE;
+        }
+        if (yaw != 0F) {
+            setYRot(getYRot() + yaw);
+        }
+    }
+
+    /**
+     * Banks the hull into its own turns. Presentation only: it does not change which way thrust points
+     * or which way is up. Flip the sign on {@code target} to bank the other way.
+     */
+    private void tickRoll() {
+        this.rollO = this.roll;
+        float turn = Mth.wrapDegrees(getYRot() - this.lastYaw);
+        this.lastYaw = getYRot();
+
+        float target = Mth.clamp(-turn * BANK_PER_TURN, -MAX_ROLL, MAX_ROLL);
+        this.roll += Mth.clamp(target - this.roll, -ROLL_RATE, ROLL_RATE);
+    }
 
     private void seatRotation(Entity passenger) {
         passenger.setYBodyRot(getYRot());
