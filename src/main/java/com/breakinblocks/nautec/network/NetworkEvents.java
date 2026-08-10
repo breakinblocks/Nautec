@@ -24,16 +24,19 @@ public class NetworkEvents {
         registrar.playBidirectional(
                 SyncAugmentPayload.TYPE,
                 SyncAugmentPayload.STREAM_CODEC,
+                SyncAugmentPayload::setAugmentDataAction,
                 SyncAugmentPayload::setAugmentDataAction
         );
         registrar.playBidirectional(
                 SetCooldownPayload.TYPE,
                 SetCooldownPayload.STREAM_CODEC,
+                SetCooldownPayload::setCooldownAction,
                 SetCooldownPayload::setCooldownAction
         );
         registrar.playBidirectional(
                 StartAugmentationPayload.TYPE,
                 StartAugmentationPayload.STREAM_CODEC,
+                StartAugmentationPayload::startAugmentation,
                 StartAugmentationPayload::startAugmentation
         );
         registrar.playToClient(
@@ -49,6 +52,7 @@ public class NetworkEvents {
         registrar.playBidirectional(
                 ClearAugmentPayload.TYPE,
                 ClearAugmentPayload.STREAM_CODEC,
+                ClearAugmentPayload::clearAugmentAction,
                 ClearAugmentPayload::clearAugmentAction
         );
     }

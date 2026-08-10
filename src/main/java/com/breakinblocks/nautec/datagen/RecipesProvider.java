@@ -439,6 +439,18 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.CAST_IRON_ROD))
                 .save(pRecipeOutput, key("crowbar"));
 
+        shaped(RecipeCategory.MISC, NTItems.SUBMARINE.get(), 1)
+                .pattern("ACA")
+                .pattern("GBG")
+                .pattern("ATA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .define('G', Items.GLASS)
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .define('T', NTItems.BUOYANCY_TANK.get())
+                .unlockedBy("has_item", has(NTItems.PRISMATIC_BATTERY))
+                .save(pRecipeOutput, key("submarine"));
+
         shaped(RecipeCategory.MISC, NTItems.GRAFTING_TOOL.get(), 1)
                 .pattern(" R")
                 .pattern("I ")

@@ -184,6 +184,10 @@ public final class NTItems {
     public static final DeferredItem<AquarinePickaxeItem> AQUARINE_PICKAXE = registerItem("aquarine_steel_pickaxe", AquarinePickaxeItem::new, new Item.Properties());
     public static final DeferredItem<AquarineShovelItem> AQUARINE_SHOVEL = registerItem("aquarine_steel_shovel", AquarineShovelItem::new, new Item.Properties());
 
+    // VEHICLES
+    public static final DeferredItem<SubmarineItem> SUBMARINE = registerItem("submarine",
+            SubmarineItem::new, Item.Properties::new);
+
     // TOOLS
     public static final DeferredItem<AquarineWrenchItem> AQUARINE_WRENCH = registerItem("aquarine_steel_wrench",
             AquarineWrenchItem::new, new Item.Properties());

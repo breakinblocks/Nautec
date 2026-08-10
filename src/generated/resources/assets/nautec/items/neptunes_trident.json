@@ -1,0 +1,23 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "nautec:item/neptunes_trident_gui"
+        },
+        "when": [
+          "gui",
+          "fixed",
+          "ground"
+        ]
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "nautec:item/neptunes_trident_handheld"
+    },
+    "property": "minecraft:display_context"
+  }
+}

@@ -125,6 +125,12 @@ public final class Nautec {
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         registerItemCaps(event);
         registerBECaps(event);
+        registerEntityCaps(event);
+    }
+
+    private static void registerEntityCaps(RegisterCapabilitiesEvent event) {
+        event.registerEntity(NTCapabilities.PowerStorage.ENTITY, NTEntities.SUBMARINE.get(),
+                (submarine, dir) -> submarine.getPowerStorage());
     }
 
     private static void registerItemCaps(RegisterCapabilitiesEvent event) {

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "G": "minecraft:glass",
+    "T": "nautec:buoyancy_tank"
+  },
+  "pattern": [
+    "ACA",
+    "GBG",
+    "ATA"
+  ],
+  "result": {
+    "id": "nautec:submarine"
+  }
+}

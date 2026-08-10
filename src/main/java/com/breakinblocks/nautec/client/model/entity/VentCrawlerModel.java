@@ -9,10 +9,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VentCrawlerModel extends EntityModel<LivingEntityRenderState> {
     private static final int LEG_COUNT = 6;
     private static final int[][] LEG_UV = {{0, 16}, {12, 16}, {24, 16}, {36, 16}, {0, 20}, {12, 20}};

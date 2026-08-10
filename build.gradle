@@ -56,6 +56,12 @@ tasks.named('test') { enabled = false }
 neoForge {
     version = project.neoforge_full_version
 
+    interfaceInjectionData.from(provider {
+        zipTree(configurations.geckolibArtifact.singleFile).matching {
+            include 'META-INF/interface_injections.json'
+        }
+    })
+
     runs {
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
@@ -65,6 +71,9 @@ neoForge {
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            if (project.hasProperty('quickPlayWorld')) {
+                programArguments.addAll('--quickPlaySingleplayer', project.property('quickPlayWorld').toString())
+            }
         }
 
         server {
@@ -96,7 +105,14 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+configurations {
+    geckolibArtifact { transitive = false }
+}
+
 dependencies {
+    implementation "maven.modrinth:geckolib:${geckolib_modrinth_id}"
+    geckolibArtifact "maven.modrinth:geckolib:${geckolib_modrinth_id}"
+
     implementation "maven.modrinth:curios:dRnRThvD"
     implementation "curse.maven:jade-324717:7938398"
     implementation "maven.modrinth:modonomicon:fMVuqVVc"

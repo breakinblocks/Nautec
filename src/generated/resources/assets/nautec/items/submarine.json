@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "nautec:item/submarine_base",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
+  }
+}

@@ -101,7 +101,15 @@ Aquarine Steel tools and armour that gain their real stats once powered, a Divin
 Trident, a Wrench, Batteries, a Grafting Tool, and the Prism Monocle for reading beam purity and
 block state in the world.
 
+## Vehicles
+
+The Abyssal Submersible is a two seat crewed vehicle: place it on water, right-click to board, and it
+steers wherever the pilot looks. It runs on stored power, charges in a Charger, and keeps its crew
+breathing while it is sealed and powered.
+
 ## Compatibility
+
+GeckoLib is a required dependency; it animates the submersible.
 
 JEI for recipes, Jade for in-world block info, Curios for equipment slots, and Durability Display.
 The in-game guide book is built on Modonomicon and is the intended starting point: craft it and work
@@ -109,7 +117,7 @@ forward from "An Introduction to Laser Power".
 
 ## Configuration
 
-Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, and the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius).
+Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust and top speed).
 
 ## For pack developers
 
