@@ -124,6 +124,26 @@ public final class NTConfig {
             .comment("The radius in which the Photophore Skin augment reveals nearby creatures")
             .defineInRange("photophoreSkinRadius", 12.0, 1.0, 64.0);
 
+    // Submarine
+    private static final ModConfigSpec.IntValue SUBMARINE_POWER_CAPACITY = BUILDER
+            .comment("The power capacity of the submarine")
+            .defineInRange("submarinePowerCapacity", 40_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_IDLE_POWER_USAGE = BUILDER
+            .comment("The amount of power the submarine uses each tick while occupied")
+            .defineInRange("submarineIdlePowerUsage", 1, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_MOVE_POWER_USAGE = BUILDER
+            .comment("The extra amount of power the submarine uses each tick while under way")
+            .defineInRange("submarineMovePowerUsage", 6, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_OXYGEN_POWER_USAGE = BUILDER
+            .comment("The extra amount of power the submarine uses each tick while keeping its occupants breathing")
+            .defineInRange("submarineOxygenPowerUsage", 2, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_SPEED = BUILDER
+            .comment("Thrust applied to the submarine each tick while the throttle is open")
+            .defineInRange("submarineSpeed", 0.045, 0.001, 1.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_MAX_SPEED = BUILDER
+            .comment("Maximum speed of the submarine in blocks per tick. Values above 1.5 risk tripping server movement checks")
+            .defineInRange("submarineMaxSpeed", 0.65, 0.05, 1.5);
+
     // Lucky fishing zones
     private static final ModConfigSpec.BooleanValue LUCKY_ZONES_ENABLED = BUILDER
             .comment("Whether lucky fishing zones appear on the water around players")
@@ -216,6 +236,13 @@ public final class NTConfig {
     public static int abyssalEyesDepth;
     public static double photophoreSkinRadius;
 
+    public static int submarinePowerCapacity = 40_000;
+    public static int submarineIdlePowerUsage = 1;
+    public static int submarineMovePowerUsage = 6;
+    public static int submarineOxygenPowerUsage = 2;
+    public static double submarineSpeed = 0.045;
+    public static double submarineMaxSpeed = 0.65;
+
     public static boolean biomeInjectionEnabled() {
         return !SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
     }
@@ -279,6 +306,13 @@ public final class NTConfig {
 
         abyssalEyesDepth = ABYSSAL_EYES_DEPTH.get();
         photophoreSkinRadius = PHOTOPHORE_SKIN_RADIUS.getAsDouble();
+
+        submarinePowerCapacity = SUBMARINE_POWER_CAPACITY.getAsInt();
+        submarineIdlePowerUsage = SUBMARINE_IDLE_POWER_USAGE.getAsInt();
+        submarineMovePowerUsage = SUBMARINE_MOVE_POWER_USAGE.getAsInt();
+        submarineOxygenPowerUsage = SUBMARINE_OXYGEN_POWER_USAGE.getAsInt();
+        submarineSpeed = SUBMARINE_SPEED.getAsDouble();
+        submarineMaxSpeed = SUBMARINE_MAX_SPEED.getAsDouble();
     }
 
 }

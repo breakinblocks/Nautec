@@ -8,10 +8,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class DriftingMoteParticle extends SingleQuadParticle {
     private final float wobble;
 
@@ -51,7 +48,6 @@ public class DriftingMoteParticle extends SingleQuadParticle {
         this.alpha = Math.min(1.0F, this.lifetime / 12.0F);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public record Provider(SpriteSet sprites, float red, float green, float blue,
                            float rise, float size, int minLifetime, int maxLifetime) implements ParticleProvider<SimpleParticleType> {
         @Override

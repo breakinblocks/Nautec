@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.client.item.HasBacteriaProperty;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.geckolib.renderer.internal.GeckolibItemSpecialRenderer;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -17,6 +18,7 @@ import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
@@ -24,6 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -31,6 +34,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.model.item.DynamicFluidContainerModel;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -129,6 +133,27 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.DIVING_LEGGINGS.get());
         basicItem(NTItems.DIVING_BOOTS.get());
 
+        itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
+                Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+
+        // These ship a hand-written model under models/item/, but still need an item model
+        // definition pointing at it or they render as the missing model.
+        handAuthoredItem(NTItems.VALVE.get());
+        handAuthoredItem(NTItems.ANCIENT_VALVE.get());
+        handAuthoredItem(NTBlocks.BACTERIAL_ANALYZER.asItem());
+        if (NTItems.NAUTEC_GUIDE != null) {
+            handAuthoredItem(NTItems.NAUTEC_GUIDE.get());
+        }
+
+        // Flat sprite in the inventory, 3D model in hand. This used to be the
+        // neoforge:separate_transforms model loader, which no longer exists.
+        itemModels.itemModelOutput.accept(NTItems.NEPTUNES_TRIDENT.get(), ItemModelUtils.select(
+                new DisplayContext(),
+                ItemModelUtils.plainModel(Nautec.rl("item/neptunes_trident_handheld")),
+                ItemModelUtils.when(
+                        List.of(ItemDisplayContext.GUI, ItemDisplayContext.FIXED, ItemDisplayContext.GROUND),
+                        ItemModelUtils.plainModel(Nautec.rl("item/neptunes_trident_gui")))));
+
         handHeldItem(NTItems.NAUTEC_FISHING_ROD.get());
         handHeldItem(NTItems.AQUARINE_WRENCH.get());
         handHeldItem(NTItems.CROWBAR.get());
@@ -225,5 +250,11 @@ public class ItemModelProvider extends ModelProvider {
 
     public void basicItem(Item item) {
         itemModels.generateFlatItem(item, ModelTemplates.FLAT_ITEM);
+    }
+
+    private void handAuthoredItem(Item item) {
+        Identifier name = key(item);
+        itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(
+                Identifier.fromNamespaceAndPath(name.getNamespace(), "item/" + name.getPath())));
     }
 }

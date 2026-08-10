@@ -15,11 +15,8 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(Dist.CLIENT)
 public final class NTMobRenderers {
     public static final ModelLayerLocation SILT_SKIPPER_LAYER = layer("silt_skipper");
     public static final ModelLayerLocation LANTERN_JELLY_LAYER = layer("lantern_jelly");

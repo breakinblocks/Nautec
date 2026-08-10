@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.registries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.entities.ThrownBouncingTrident;
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
+import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.ThrownSpreadingTrident;
 import com.breakinblocks.nautec.content.entities.mobs.AbyssalMaw;
 import com.breakinblocks.nautec.content.entities.mobs.LanternJelly;
@@ -31,6 +32,12 @@ public final class NTEntities {
             () -> EntityType.Builder.<NautecFishingHook>of(NautecFishingHook::new, MobCategory.MISC)
                     .noSave().noSummon().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(5)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("nautec_fishing_hook"))));
+
+    public static final Supplier<EntityType<SubmarineEntity>> SUBMARINE = ENTITIES.register("submarine",
+            () -> EntityType.Builder.<SubmarineEntity>of(SubmarineEntity::new, MobCategory.MISC)
+                    .sized(1.15f * SubmarineEntity.MODEL_SCALE, 1.0f * SubmarineEntity.MODEL_SCALE)
+                    .eyeHeight(0.72f * SubmarineEntity.MODEL_SCALE).clientTrackingRange(10)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("submarine"))));
 
     public static final Supplier<EntityType<SiltSkipper>> SILT_SKIPPER = mob("silt_skipper", SiltSkipper::new,
             MobCategory.WATER_AMBIENT, builder -> builder.sized(0.5f, 0.35f).eyeHeight(0.2f));

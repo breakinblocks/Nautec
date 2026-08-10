@@ -49,6 +49,11 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.fishing_minigame.prompt.rhythm", "Strike on all three marks");
         add("nautec.fishing_minigame.prompt.hold", "Hold through the green, then let go");
 
+        addItem(SUBMARINE, "Abyssal Submersible");
+        add("entity.nautec.submarine", "Abyssal Submersible");
+        add("nautec.submarine.controls", "Steer with your view, W/S for throttle, Space to surface");
+        add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
+
         add("entity.nautec.silt_skipper", "Silt Skipper");
         add("entity.nautec.lantern_jelly", "Lantern Jelly");
         add("entity.nautec.vent_crawler", "Vent Crawler");

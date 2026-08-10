@@ -16,6 +16,7 @@ import com.breakinblocks.nautec.client.model.augment.GuardianEyeModel;
 import com.breakinblocks.nautec.client.model.block.*;
 import com.breakinblocks.nautec.client.model.entity.*;
 import com.breakinblocks.nautec.client.renderer.entity.NTMobRenderers;
+import com.breakinblocks.nautec.client.renderer.entity.SubmarineRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.GuardianEyeRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.SimpleAugmentRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.*;
@@ -151,6 +152,7 @@ public final class NautecClient {
         event.registerEntityRenderer(NTEntities.THROWN_BOUNCING_TRIDENT.get(), ThrownTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.THROWN_SPREADING_TRIDENT.get(), ThrownTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.NAUTEC_FISHING_HOOK.get(), net.minecraft.client.renderer.entity.FishingHookRenderer::new);
+        event.registerEntityRenderer(NTEntities.SUBMARINE.get(), SubmarineRenderer::new);
         event.registerEntityRenderer(NTEntities.SILT_SKIPPER.get(), NTMobRenderers.SiltSkipperRenderer::new);
         event.registerEntityRenderer(NTEntities.LANTERN_JELLY.get(), NTMobRenderers.LanternJellyRenderer::new);
         event.registerEntityRenderer(NTEntities.VENT_CRAWLER.get(), NTMobRenderers.VentCrawlerRenderer::new);

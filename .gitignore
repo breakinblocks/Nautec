@@ -33,3 +33,5 @@ repo
 *.log
 
 .vscode/
+
+tools/

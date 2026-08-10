@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.gametest.NautecGameTests;
 import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestData;
@@ -41,7 +42,7 @@ public final class NTTestRegistrar {
                 Rotation.NONE
         );
         try {
-            event.registerTest(Nautec.rl(name), new NTInlineTest(info, body));
+            event.registerTest(Nautec.rl(name), new NautecGameTests.DirectGameTestInstance(name, body, info));
         } catch (Throwable t) {
             Nautec.LOGGER.error("Failed to register gametest {}", name, t);
         }
