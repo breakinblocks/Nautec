@@ -51,7 +51,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         addItem(SUBMARINE, "Abyssal Submersible");
         add("entity.nautec.submarine", "Abyssal Submersible");
-        add("nautec.submarine.controls", "Steer with your view, W/S for throttle, Space to surface");
+        add("nautec.submarine.controls", "W/S throttle, A/D rudder, Space to surface");
+        add("nautec.submarine.aim", "Hold use to steer with the mouse");
         add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
 
         add("entity.nautec.silt_skipper", "Silt Skipper");

@@ -154,6 +154,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
                     " " + powerStorage.getPowerStored() + "/" + powerStorage.getPowerCapacity(), ChatFormatting.DARK_AQUA);
         }
         Tooltips.trans(tooltipComponents, "nautec.submarine.controls", ChatFormatting.GRAY);
+        Tooltips.trans(tooltipComponents, "nautec.submarine.aim", ChatFormatting.GRAY);
         Tooltips.trans(tooltipComponents, "nautec.submarine.oxygen", ChatFormatting.GRAY);
     }
 }
