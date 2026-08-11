@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "submarine_modules",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.submarine.submarine_modules.submarine_modules.text",
+  "title": "book.nautec.nautec_guide.submarine.submarine_modules.submarine_modules.title"
+}

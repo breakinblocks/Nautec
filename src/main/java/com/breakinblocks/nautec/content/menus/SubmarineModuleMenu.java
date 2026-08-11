@@ -4,7 +4,9 @@ import com.breakinblocks.nautec.api.menu.NTEntityContainerMenu;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModuleContainer;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -71,6 +73,19 @@ public class SubmarineModuleMenu extends NTEntityContainerMenu<SubmarineEntity> 
         @Override
         public boolean mayPlace(ItemStack stack) {
             return this.container.canPlaceItem(getSlotIndex(), stack);
+        }
+
+        @Override
+        public void setByPlayer(ItemStack stack, ItemStack previous) {
+            super.setByPlayer(stack, previous);
+
+            if (previous.isEmpty() && !stack.isEmpty()
+                    && this.container instanceof SubmarineModuleContainer modules
+                    && !modules.getSubmarine().level().isClientSide()) {
+                SubmarineEntity submarine = modules.getSubmarine();
+                submarine.level().playSound(null, submarine, NTSounds.SUBMARINE_MODULE_INSTALL.get(),
+                        SoundSource.BLOCKS, 0.8F, 1.2F);
+            }
         }
 
         @Override

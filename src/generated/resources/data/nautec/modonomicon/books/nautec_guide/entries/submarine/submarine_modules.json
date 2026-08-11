@@ -1,0 +1,29 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:submarine",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.submarine.submarine_modules.description",
+  "icon": {
+    "id": "nautec:aquatic_chip"
+  },
+  "id": "nautec:submarine/submarine_modules",
+  "name": "book.nautec.nautec_guide.submarine.submarine_modules.name",
+  "parents": [
+    {
+      "entry": "nautec:submarine/submarine_power"
+    },
+    {
+      "entry": "nautec:submarine/submarine_controls"
+    }
+  ],
+  "sort_number": 4,
+  "x": 4,
+  "y": 0
+}

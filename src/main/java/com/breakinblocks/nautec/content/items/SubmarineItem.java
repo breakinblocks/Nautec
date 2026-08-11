@@ -21,10 +21,13 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.renderer.GeoItemRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -41,15 +44,19 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SubmarineItem extends Item implements IPowerItem, GeoItem {
-    private static final double PLACE_REACH = 5.0D;
+    private static final double PLACE_REACH = 6.0D;
+    private static final double MIN_LAUNCH_DISTANCE = 2.5D;
+    private static final double CLEARANCE = 1.8D;
 
     private final AnimatableInstanceCache animatableCache = new SingletonAnimatableInstanceCache(this);
 
@@ -90,46 +97,76 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
             return InteractionResult.FAIL;
         }
 
-        HitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
-        if (hitResult.getType() != HitResult.Type.BLOCK) {
-            return InteractionResult.PASS;
-        }
-
-        Vec3 viewVector = player.getViewVector(1.0F);
-        List<Entity> blocking = level.getEntities(player,
-                player.getBoundingBox().expandTowards(viewVector.scale(PLACE_REACH)).inflate(1.0D), EntitySelector.CAN_BE_PICKED);
-        Vec3 eyes = player.getEyePosition();
-        for (Entity entity : blocking) {
-            AABB box = entity.getBoundingBox().inflate(entity.getPickRadius());
-            if (box.contains(eyes)) {
-                return InteractionResult.PASS;
-            }
-        }
-
         SubmarineEntity submarine = NTEntities.SUBMARINE.get().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
         if (submarine == null) {
             return InteractionResult.FAIL;
         }
 
-        Vec3 location = hitResult.getLocation();
-        submarine.snapTo(location.x, location.y, location.z, player.getYRot(), 0F);
+        Vec3 launch = findLaunchPoint(level, player, submarine);
+        if (launch == null) {
+            player.sendOverlayMessage(Component.translatable("nautec.submarine.needs_water").withStyle(ChatFormatting.RED));
+            return InteractionResult.FAIL;
+        }
+
+        submarine.snapTo(launch.x, launch.y, launch.z, player.getYRot(), 0F);
         submarine.applyStack(stack);
         if (level instanceof ServerLevel serverLevel) {
             EntityType.<SubmarineEntity>createDefaultStackConfig(serverLevel, stack, player).accept(submarine);
         }
 
-        if (!level.noCollision(submarine, submarine.getBoundingBox())) {
-            return InteractionResult.FAIL;
-        }
-
         if (!level.isClientSide()) {
             level.addFreshEntity(submarine);
-            level.gameEvent(player, GameEvent.ENTITY_PLACE, location);
+            level.gameEvent(player, GameEvent.ENTITY_PLACE, launch);
             stack.consume(1, player);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResult.SUCCESS;
+    }
+
+    private static @Nullable Vec3 findLaunchPoint(Level level, Player player, SubmarineEntity submarine) {
+        Vec3 eyes = player.getEyePosition();
+        Vec3 view = player.getViewVector(1.0F);
+        double height = submarine.getBbHeight();
+
+        BlockHitResult solid = level.clip(new ClipContext(eyes, eyes.add(view.scale(PLACE_REACH)),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+        double blocked = solid.getType() == HitResult.Type.BLOCK
+                ? eyes.distanceTo(solid.getLocation()) - CLEARANCE
+                : PLACE_REACH;
+
+        Vec3 aim;
+        if (player.isEyeInFluid(FluidTags.WATER)) {
+            double distance = Mth.clamp(blocked, MIN_LAUNCH_DISTANCE, PLACE_REACH);
+            aim = eyes.add(view.scale(distance)).subtract(0D, height / 2D, 0D);
+        } else {
+            BlockHitResult surface = level.clip(new ClipContext(eyes, eyes.add(view.scale(PLACE_REACH)),
+                    ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, player));
+            if (surface.getType() != HitResult.Type.BLOCK) {
+                return null;
+            }
+            aim = surface.getLocation();
+        }
+
+        Vec3 back = new Vec3(view.x, 0D, view.z).normalize().scale(-1D);
+        for (Vec3 offset : List.of(Vec3.ZERO, new Vec3(0D, 0.5D, 0D), new Vec3(0D, 1D, 0D), back, back.add(0D, 0.5D, 0D))) {
+            Vec3 candidate = aim.add(offset);
+            submarine.snapTo(candidate.x, candidate.y, candidate.z, player.getYRot(), 0F);
+            if (fitsInWater(level, submarine)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private static boolean fitsInWater(Level level, SubmarineEntity submarine) {
+        AABB hull = submarine.getBoundingBox();
+        BlockPos centre = BlockPos.containing(hull.getCenter());
+        BlockPos floor = BlockPos.containing(hull.getCenter().subtract(0D, hull.getYsize() / 2D - 0.5D, 0D));
+
+        boolean wet = level.getFluidState(centre).is(FluidTags.WATER) || level.getFluidState(floor).is(FluidTags.WATER);
+        return wet && level.noCollision(submarine, hull);
     }
 
     private static void appendModules(ItemStack stack, Consumer<Component> tooltipComponents) {

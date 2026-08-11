@@ -41,7 +41,6 @@ public final class NTBiomes {
         mobs.addSpawn(MobCategory.WATER_AMBIENT, 8, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 3, 6));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
-        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.PRISMARINE_SAND_OCEAN_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.ABYSSAL_CORAL_PLACE_KEY);
 
@@ -69,7 +68,6 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.LUMINESCENT_ALGAE_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.GLOW_POLYP_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
-        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.PRISMARINE_SAND_OCEAN_PLACE_KEY);
 
         return baseOceanBiome(0.5F, 0x1C8C81)
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x0B4F4A))
@@ -112,7 +110,6 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.PRISMARINE_FROND_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.REEF_PRISMARINE_PLACE_KEY);
-        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.PRISMARINE_SAND_OCEAN_PLACE_KEY);
 
         return baseOceanBiome(0.9F, 0x25C4B4)
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x1B9A90))

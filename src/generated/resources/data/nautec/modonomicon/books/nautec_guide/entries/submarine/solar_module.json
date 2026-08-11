@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:submarine",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.submarine.solar_module.description",
+  "icon": {
+    "id": "nautec:solar_module"
+  },
+  "id": "nautec:submarine/solar_module",
+  "name": "book.nautec.nautec_guide.submarine.solar_module.name",
+  "parents": [
+    {
+      "entry": "nautec:submarine/submarine_modules"
+    }
+  ],
+  "sort_number": 5,
+  "x": 6,
+  "y": -3
+}

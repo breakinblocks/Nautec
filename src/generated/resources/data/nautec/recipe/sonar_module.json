@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "E": "minecraft:echo_shard",
+    "G": "nautec:atlantic_gold_ingot",
+    "L": "nautec:prismarine_lens"
+  },
+  "pattern": [
+    "ELE",
+    "GCG",
+    "ABA"
+  ],
+  "result": {
+    "id": "nautec:sonar_module"
+  }
+}

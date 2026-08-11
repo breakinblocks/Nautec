@@ -1,14 +1,19 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.Nautec;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -17,11 +22,88 @@ import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class ContentIntegrityTests {
+    private static JsonObject readJson(String path) {
+        try (InputStream stream = ContentIntegrityTests.class.getResourceAsStream(path)) {
+            if (stream == null) {
+                return null;
+            }
+            return JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static void register(NTTestRegistrar r) {
+        r.add("content/every_particle_has_a_definition", 5, helper -> {
+            List<String> missing = new ArrayList<>();
+            for (ParticleType<?> particle : BuiltInRegistries.PARTICLE_TYPE) {
+                Identifier id = BuiltInRegistries.PARTICLE_TYPE.getKey(particle);
+                if (id == null || !id.getNamespace().equals(Nautec.MODID)) continue;
+
+                String definition = "/assets/" + id.getNamespace() + "/particles/" + id.getPath() + ".json";
+                String texture = "/assets/" + id.getNamespace() + "/textures/particle/" + id.getPath() + ".png";
+                if (ContentIntegrityTests.class.getResource(definition) == null) {
+                    missing.add(definition);
+                }
+                if (ContentIntegrityTests.class.getResource(texture) == null) {
+                    missing.add(texture);
+                }
+            }
+            if (!missing.isEmpty()) {
+                helper.fail("Particles crash the client without these files: " + String.join(", ", missing));
+            }
+            helper.succeed();
+        });
+
+        r.add("content/every_sound_has_an_entry", 5, helper -> {
+            JsonObject sounds = readJson("/assets/" + Nautec.MODID + "/sounds.json");
+            JsonObject lang = readJson("/assets/" + Nautec.MODID + "/lang/en_us.json");
+            if (sounds == null || lang == null) {
+                helper.fail("Could not read sounds.json or en_us.json from the mod jar");
+                return;
+            }
+
+            List<String> problems = new ArrayList<>();
+            for (SoundEvent sound : BuiltInRegistries.SOUND_EVENT) {
+                Identifier id = BuiltInRegistries.SOUND_EVENT.getKey(sound);
+                if (id == null || !id.getNamespace().equals(Nautec.MODID)) continue;
+                if (!sounds.has(id.getPath())) {
+                    problems.add("sounds.json has no entry for " + id);
+                }
+            }
+
+            for (String key : sounds.keySet()) {
+                JsonObject entry = sounds.getAsJsonObject(key);
+                if (entry.has("subtitle") && !lang.has(entry.get("subtitle").getAsString())) {
+                    problems.add("missing translation " + entry.get("subtitle").getAsString());
+                }
+
+                for (JsonElement element : entry.getAsJsonArray("sounds")) {
+                    JsonObject reference = element.getAsJsonObject();
+                    if (!"event".equals(reference.has("type") ? reference.get("type").getAsString() : "file")) {
+                        continue;
+                    }
+
+                    Identifier referenced = Identifier.tryParse(reference.get("name").getAsString());
+                    if (referenced == null || !BuiltInRegistries.SOUND_EVENT.containsKey(referenced)) {
+                        problems.add(key + " points at unknown sound event " + reference.get("name").getAsString());
+                    }
+                }
+            }
+
+            if (!problems.isEmpty()) {
+                helper.fail("Sound problems: " + String.join(", ", problems));
+            }
+            helper.succeed();
+        });
+
         r.add("content/every_item_has_a_model", 5, helper -> {
             List<String> missing = new ArrayList<>();
             for (Item item : BuiltInRegistries.ITEM) {

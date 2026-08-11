@@ -134,6 +134,23 @@ public final class LaserRendererHelper {
         renderInnerBeam(poseStack, bufferSource, BEAM_LOCATION, partialTick, 1.0F, gameTime, yOffset, height, color, 0.2F, 0.25F);
     }
 
+    public static float beamScroll(long gameTime, float partialTick) {
+        float f = (float) Math.floorMod(gameTime, 40) + partialTick;
+        return Mth.frac(-f * 0.2F - (float) Mth.floor(-f * 0.1F));
+    }
+
+    public static float beamSpin(long gameTime, float partialTick) {
+        return ((float) Math.floorMod(gameTime, 40) + partialTick) * 2.25F - 45.0F;
+    }
+
+    public static void beamColumnAlongY(PoseStack.Pose pose, VertexConsumer consumer, int color,
+                                        float minY, float maxY, float radius, float minV, float maxV) {
+        renderQuad(pose, consumer, color, minY, maxY, -radius, -radius, radius, -radius, 0.0F, 1.0F, minV, maxV);
+        renderQuad(pose, consumer, color, minY, maxY, radius, radius, -radius, radius, 0.0F, 1.0F, minV, maxV);
+        renderQuad(pose, consumer, color, minY, maxY, radius, -radius, radius, radius, 0.0F, 1.0F, minV, maxV);
+        renderQuad(pose, consumer, color, minY, maxY, -radius, radius, -radius, -radius, 0.0F, 1.0F, minV, maxV);
+    }
+
     public static void renderInnerBeam(
             PoseStack poseStack,
             MultiBufferSource bufferSource,

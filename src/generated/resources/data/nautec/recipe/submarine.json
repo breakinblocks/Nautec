@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
+    "A": "nautec:atlantic_gold_ingot",
     "B": "nautec:prismatic_battery",
-    "C": "nautec:aquatic_chip",
-    "G": "minecraft:glass",
+    "C": "nautec:eldritch_heart",
+    "G": "minecraft:tinted_glass",
     "T": "nautec:buoyancy_tank"
   },
   "pattern": [

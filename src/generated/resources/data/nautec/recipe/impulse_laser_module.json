@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "K": "nautec:laser_channeling_coil",
+    "L": "nautec:prismarine_lens",
+    "Y": "nautec:guardian_eye"
+  },
+  "pattern": [
+    "LYL",
+    "KCK",
+    "ABA"
+  ],
+  "result": {
+    "id": "nautec:impulse_laser_module"
+  }
+}
