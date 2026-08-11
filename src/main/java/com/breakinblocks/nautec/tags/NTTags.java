@@ -15,6 +15,7 @@ public final class NTTags {
         public static final TagKey<Item> REPAIRS_AQUARINE_ARMOR = ntTag("repairs_aquarine_armor");
         public static final TagKey<Item> REPAIRS_DIVING_SUIT = ntTag("repairs_diving_suit");
         public static final TagKey<Item> REPAIRS_PRISMARINE_ARMOR = ntTag("repairs_prismarine_armor");
+        public static final TagKey<Item> SUBMARINE_MODULE = ntTag("submarine_module");
 
         private static TagKey<Item> ntTag(String name) {
             return TagKey.create(Registries.ITEM, Nautec.rl(name));

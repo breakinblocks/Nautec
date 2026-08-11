@@ -35,3 +35,4 @@ repo
 .vscode/
 
 tools/
+!src/generated/resources/data/*/tags/**/tools/

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.data.components.TeleportAnchor;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -32,6 +33,12 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<Boolean>> IS_INFUSED = registerDataComponentType("is_infused",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final Supplier<DataComponentType<Float>> SUBMARINE_HEALTH = registerDataComponentType("submarine_health",
+            () -> builder -> builder.persistent(Codec.FLOAT).networkSynchronized(ByteBufCodecs.FLOAT));
+
+    public static final Supplier<DataComponentType<TeleportAnchor>> TELEPORT_ANCHOR = registerDataComponentType("teleport_anchor",
+            () -> builder -> builder.persistent(TeleportAnchor.CODEC).networkSynchronized(TeleportAnchor.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<Integer>> OXYGEN = registerDataComponentType("oxygen",
             () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));

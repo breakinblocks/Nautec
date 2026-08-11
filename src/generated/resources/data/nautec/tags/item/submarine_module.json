@@ -1,0 +1,12 @@
+{
+  "values": [
+    "nautec:solar_module",
+    "nautec:booster_module",
+    "nautec:stealth_module",
+    "nautec:armor_module",
+    "nautec:sonar_module",
+    "nautec:shield_module",
+    "nautec:impulse_laser_module",
+    "nautec:teleport_module"
+  ]
+}

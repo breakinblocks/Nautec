@@ -10,10 +10,13 @@ import net.minecraft.util.Mth;
 
 public final class SubmarineHudOverlay {
     public static final int PANEL_W = 122;
-    public static final int PANEL_H = 24;
+    public static final int PANEL_H = 38;
 
     private static final int CYAN = 0xFF3EFDFF;
     private static final int CYAN_DIM = 0xFF19646B;
+    private static final int AMBER = 0xFFFFB03C;
+    private static final int RED = 0xFFFF5A3C;
+    private static final int RED_DIM = 0xFF6B231A;
     private static final int WHITE = 0xFFF0F4F5;
     private static final int PLATE = 0xD9070B10;
     private static final int CELL_EMPTY = 0x26FFFFFF;
@@ -22,6 +25,9 @@ public final class SubmarineHudOverlay {
     private static final int CELL_W = 5;
     private static final int CELL_H = 10;
     private static final int CELL_GAP = 2;
+
+    private static final int POWER_ROW = 6;
+    private static final int HULL_ROW = 20;
 
     public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -36,7 +42,8 @@ public final class SubmarineHudOverlay {
         int x = panelX(guiGraphics.guiWidth(), NTClientConfig.hudX());
         int y = panelY(guiGraphics.guiHeight(), NTClientConfig.hudY());
         long ticks = minecraft.level != null ? minecraft.level.getGameTime() : 0L;
-        drawGauge(guiGraphics, x, y, submarine.getPowerStored(), submarine.getPowerStorage().getPowerCapacity(), ticks);
+        drawGauge(guiGraphics, x, y, submarine.getPowerStored(), submarine.getPowerStorage().getPowerCapacity(),
+                submarine.getHealth(), submarine.getMaxHealth(), ticks);
     }
 
     public static int panelX(int guiWidth, double fraction) {
@@ -47,8 +54,10 @@ public final class SubmarineHudOverlay {
         return (int) Math.round(fraction * (guiHeight - PANEL_H));
     }
 
-    public static void drawGauge(GuiGraphicsExtractor guiGraphics, int x, int y, int power, int capacity, long ticks) {
-        float fraction = capacity > 0 ? Mth.clamp((float) power / capacity, 0F, 1F) : 0F;
+    public static void drawGauge(GuiGraphicsExtractor guiGraphics, int x, int y, int power, int capacity,
+                                 float health, float maxHealth, long ticks) {
+        float powerFraction = capacity > 0 ? Mth.clamp((float) power / capacity, 0F, 1F) : 0F;
+        float hullFraction = maxHealth > 0F ? Mth.clamp(health / maxHealth, 0F, 1F) : 0F;
         boolean blinkOn = ticks % 16 < 8;
 
         for (int row = 0; row < PANEL_H; row++) {
@@ -61,25 +70,39 @@ public final class SubmarineHudOverlay {
             guiGraphics.fill(x + slant, y + row, x + slant + PANEL_W - 6, y + row + 1, CYAN);
         }
 
-        guiGraphics.fill(x + 4, y + 6, x + 6, y + PANEL_H - 4, CYAN);
+        guiGraphics.fill(x + 6, y + 6, x + 8, y + PANEL_H - 4, CYAN);
 
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.text(minecraft.font, "PWR", x + 10, y + 9, WHITE, false);
+
+        boolean lowPower = powerFraction < 0.2F;
+        drawRow(guiGraphics, x, y + POWER_ROW, "PWR", powerFraction, lowPower && !blinkOn ? CYAN_DIM : CYAN);
+        String powerReadout = power <= 0 ? "CHG" : Math.round(powerFraction * 100F) + "%";
+        int powerColor = power <= 0 ? (blinkOn ? CYAN : CYAN_DIM) : WHITE;
+        drawReadout(guiGraphics, x, y + POWER_ROW, powerReadout, powerColor);
+
+        boolean lowHull = hullFraction < 0.35F;
+        int hullColor = lowHull ? (hullFraction < 0.15F && !blinkOn ? RED_DIM : RED) : CYAN;
+        drawRow(guiGraphics, x, y + HULL_ROW, "HULL", hullFraction, hullColor);
+        String hullReadout = Math.round(hullFraction * 100F) + "%";
+        drawReadout(guiGraphics, x, y + HULL_ROW, hullReadout, lowHull ? AMBER : WHITE);
+    }
+
+    private static void drawRow(GuiGraphicsExtractor guiGraphics, int x, int rowY, String label, float fraction, int color) {
+        Minecraft minecraft = Minecraft.getInstance();
+        guiGraphics.text(minecraft.font, label, x + 11, rowY + 3, WHITE, false);
 
         int filled = Mth.ceil(fraction * CELLS);
-        boolean low = fraction < 0.2F;
-        int cellX = x + 34;
-        int cellY = y + 8;
+        int cellX = x + 36;
         for (int i = 0; i < CELLS; i++) {
-            int color = i < filled ? (low && !blinkOn ? CYAN_DIM : CYAN) : CELL_EMPTY;
-            guiGraphics.fill(cellX, cellY, cellX + CELL_W, cellY + CELL_H, color);
+            guiGraphics.fill(cellX, rowY + 2, cellX + CELL_W, rowY + 2 + CELL_H, i < filled ? color : CELL_EMPTY);
             cellX += CELL_W + CELL_GAP;
         }
+    }
 
-        String readout = power <= 0 ? "CHG" : Math.round(fraction * 100F) + "%";
-        int readoutColor = power <= 0 ? (blinkOn ? CYAN : CYAN_DIM) : WHITE;
-        int readoutWidth = minecraft.font.width(readout);
-        guiGraphics.text(minecraft.font, readout, x + PANEL_W - 8 - readoutWidth, y + 9, readoutColor, false);
+    private static void drawReadout(GuiGraphicsExtractor guiGraphics, int x, int rowY, String readout, int color) {
+        Minecraft minecraft = Minecraft.getInstance();
+        int width = minecraft.font.width(readout);
+        guiGraphics.text(minecraft.font, readout, x + PANEL_W - 8 - width, rowY + 3, color, false);
     }
 
     private SubmarineHudOverlay() {

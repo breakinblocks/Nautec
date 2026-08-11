@@ -136,6 +136,10 @@ public class ItemModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
+        for (var module : NTItems.SUBMARINE_MODULES) {
+            basicItem(module.get());
+        }
+
         handAuthoredItem(NTItems.VALVE.get());
         handAuthoredItem(NTItems.ANCIENT_VALVE.get());
         handAuthoredItem(NTBlocks.BACTERIAL_ANALYZER.asItem());

@@ -23,6 +23,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<IncubatorMenu>> INCUBATOR = registerMenuType(IncubatorMenu::new, "incubator");
     public static final Supplier<MenuType<MutatorMenu>> MUTATOR = registerMenuType(MutatorMenu::new, "mutator");
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");
+    public static final Supplier<MenuType<SubmarineModuleMenu>> SUBMARINE_MODULES = registerMenuType(SubmarineModuleMenu::new, "submarine_modules");
 
 
     private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {

@@ -36,6 +36,9 @@ public final class NTKeybinds {
     public static final Lazy<KeyMapping> SUBMARINE_DESCEND_KEYBIND = keyBind(
             "Submarine Descend", GLFW.GLFW_KEY_C);
 
+    public static final Lazy<KeyMapping> SUBMARINE_ABILITY_KEYBIND = keyBind(
+            "Fire Submarine Module", GLFW.GLFW_KEY_F);
+
     public static final Lazy<KeyMapping> SUBMARINE_HUD_KEYBIND = Lazy.of(() -> new KeyMapping(
             "Reposition Submarine HUD",
             net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME,
@@ -56,6 +59,7 @@ public final class NTKeybinds {
         event.register(THROW_SPREADING_KEYBIND.get());
         event.register(ACTIVATE_LASER_KEYBIND.get());
         event.register(SUBMARINE_DESCEND_KEYBIND.get());
+        event.register(SUBMARINE_ABILITY_KEYBIND.get());
         event.register(SUBMARINE_HUD_KEYBIND.get());
     }
 }
