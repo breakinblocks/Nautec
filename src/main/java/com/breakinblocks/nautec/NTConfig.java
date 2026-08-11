@@ -124,10 +124,10 @@ public final class NTConfig {
             .comment("The radius in which the Photophore Skin augment reveals nearby creatures")
             .defineInRange("photophoreSkinRadius", 12.0, 1.0, 64.0);
 
-    // Submarine
+
     private static final ModConfigSpec.IntValue SUBMARINE_POWER_CAPACITY = BUILDER
             .comment("The power capacity of the submarine")
-            .defineInRange("submarinePowerCapacity", 40_000, 1, Integer.MAX_VALUE);
+            .defineInRange("submarinePowerCapacity", 1_000_000, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue SUBMARINE_IDLE_POWER_USAGE = BUILDER
             .comment("The amount of power the submarine uses each tick while occupied")
             .defineInRange("submarineIdlePowerUsage", 1, 0, Integer.MAX_VALUE);
@@ -143,6 +143,9 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue SUBMARINE_MAX_SPEED = BUILDER
             .comment("Maximum speed of the submarine in blocks per tick. Values above 1.5 risk tripping server movement checks")
             .defineInRange("submarineMaxSpeed", 0.65, 0.05, 1.5);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_CAMERA_DISTANCE = BUILDER
+            .comment("Third person camera distance while riding the submarine, in blocks. Vanilla default is 4")
+            .defineInRange("submarineCameraDistance", 10.0, 4.0, 32.0);
 
     // Lucky fishing zones
     private static final ModConfigSpec.BooleanValue LUCKY_ZONES_ENABLED = BUILDER
@@ -236,12 +239,13 @@ public final class NTConfig {
     public static int abyssalEyesDepth;
     public static double photophoreSkinRadius;
 
-    public static int submarinePowerCapacity = 40_000;
+    public static int submarinePowerCapacity = 1_000_000;
     public static int submarineIdlePowerUsage = 1;
     public static int submarineMovePowerUsage = 6;
     public static int submarineOxygenPowerUsage = 2;
     public static double submarineSpeed = 0.045;
     public static double submarineMaxSpeed = 0.65;
+    public static double submarineCameraDistance = 10.0;
 
     public static boolean biomeInjectionEnabled() {
         return !SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
@@ -256,6 +260,10 @@ public final class NTConfig {
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
+        if (event.getConfig().getSpec() != SPEC) {
+            return;
+        }
+
         kelpHeight = KELP_HEIGHT.get();
         spawnBookInInventory = SPAWN_BOOK_IN_INVENTORY.get();
         collectSaltWater = COLLECT_SALT_WATER.getAsBoolean();
@@ -313,6 +321,7 @@ public final class NTConfig {
         submarineOxygenPowerUsage = SUBMARINE_OXYGEN_POWER_USAGE.getAsInt();
         submarineSpeed = SUBMARINE_SPEED.getAsDouble();
         submarineMaxSpeed = SUBMARINE_MAX_SPEED.getAsDouble();
+        submarineCameraDistance = SUBMARINE_CAMERA_DISTANCE.getAsDouble();
     }
 
 }

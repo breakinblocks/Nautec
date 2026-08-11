@@ -424,7 +424,7 @@
   "nautec.jei.category.item_transformation": "Item Transformation",
   "nautec.jei.category.mixing": "Mixing",
   "nautec.submarine.aim": "Hold use to steer with the mouse",
-  "nautec.submarine.controls": "W/S throttle, A/D rudder, Space to surface",
+  "nautec.submarine.controls": "W/S throttle, A/D rudder, Space rises, C dives",
   "nautec.submarine.oxygen": "Sealed and powered, it keeps its crew breathing",
   "nautec.tool.axe.ability": "Ability: Chop Down Entire Trees",
   "nautec.tool.disabled": "Shift + Right Click to Enable",

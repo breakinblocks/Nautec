@@ -3,17 +3,16 @@
 ## [Unreleased]
 
 ### Added
-- The **Abyssal Submersible**, a two seat crewed vehicle. Place it on water,
-  right-click to board. The first person in is the pilot; a second can ride
-  along. It steers wherever the pilot looks, so you dive by looking down and
-  opening the throttle, and space bar takes you back up. It runs on stored
-  power and can be charged in a Charger before you set out.
-- While the submersible is sealed and powered it keeps its crew breathing, so
-  it doubles as a mobile air supply below the surface.
-- The hull deploys its antenna and engine pods when it is sitting empty on the
-  surface, and folds them away the moment someone climbs in or it goes under.
-- NauTec now requires **GeckoLib** (5.5.2 or newer). It is what animates the
-  submersible.
+- The **Abyssal Submersible**, a two seat powered vehicle. Right-click to
+  board; first in drives. W/S throttle, A/D rudder, Space rises, C dives,
+  hold right mouse to steer. Sneak plus right-click picks it back up with
+  its charge. Charge it in a Charger.
+- Sealed and powered, it keeps its crew breathing.
+- Driving shows a power readout, repositionable with Ctrl+H.
+- Collision follows the actual hull shape as it turns, so it does not snag
+  in tight caverns.
+- Creative pilots use no power.
+- Now requires **GeckoLib** 5.5.2 or newer.
 - Four new ocean biomes, added to the world's biome layout without replacing
   any vanilla ocean outright:
   - **Abyssal Trench** - the deepest, coldest water, near-black fog you can

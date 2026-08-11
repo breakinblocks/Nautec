@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemR
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
+import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
 import com.breakinblocks.nautec.client.hud.PrismMonocleOverlay;
 import com.breakinblocks.nautec.client.item.AbilityEnabledProperty;
 import com.breakinblocks.nautec.client.particle.DriftingMoteParticle;
@@ -63,6 +64,7 @@ public final class NautecClient {
     public static final String MODID = "nautec";
 
     public NautecClient(IEventBus modEventBus, ModContainer container) {
+        container.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, NTClientConfig.SPEC);
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
         modEventBus.addListener(this::registerBERenderers);
@@ -91,6 +93,7 @@ public final class NautecClient {
     private void registerGuiOverlays(RegisterGuiLayersEvent event) {
         event.registerAboveAll(Nautec.rl("scanner_info_overlay"), PrismMonocleOverlay.HUD);
         event.registerAboveAll(Nautec.rl("diving_suit_overlay"), DivingSuitOverlay::render);
+        event.registerAboveAll(Nautec.rl("submarine_power_overlay"), SubmarineHudOverlay::render);
     }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {
