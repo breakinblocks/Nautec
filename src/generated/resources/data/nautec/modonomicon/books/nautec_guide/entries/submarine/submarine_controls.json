@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:submarine",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.submarine.submarine_controls.description",
+  "icon": {
+    "id": "nautec:submarine"
+  },
+  "id": "nautec:submarine/submarine_controls",
+  "name": "book.nautec.nautec_guide.submarine.submarine_controls.name",
+  "parents": [
+    {
+      "entry": "nautec:submarine/submarine"
+    }
+  ],
+  "sort_number": 1,
+  "x": 2,
+  "y": -2
+}

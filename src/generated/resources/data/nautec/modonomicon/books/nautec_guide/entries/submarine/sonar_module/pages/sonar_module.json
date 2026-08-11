@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "sonar_module",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.submarine.sonar_module.sonar_module.text",
+  "title": "book.nautec.nautec_guide.submarine.sonar_module.sonar_module.title"
+}

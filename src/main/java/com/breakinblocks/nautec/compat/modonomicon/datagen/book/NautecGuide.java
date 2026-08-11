@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.Aqu
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.GettingStartedCategory;
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.LaserAugmentationCategory;
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.LaserChemistryCategory;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.SubmarineCategory;
 
 public class NautecGuide extends SingleBookSubProvider {
     public NautecGuide() {
@@ -22,6 +23,7 @@ public class NautecGuide extends SingleBookSubProvider {
         add(new LaserChemistryCategory(this).generate());
         add(new AquaticBiologyCategory(this).generate());
         add(new LaserAugmentationCategory(this).generate());
+        add(new SubmarineCategory(this).generate());
     }
 
     @Override

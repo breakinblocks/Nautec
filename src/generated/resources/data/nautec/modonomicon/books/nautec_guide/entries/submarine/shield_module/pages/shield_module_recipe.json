@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "shield_module_recipe",
+  "recipe_id_1": "nautec:shield_module",
+  "sort_number": 1,
+  "title1": "Shield Module"
+}

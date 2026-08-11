@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "H": "nautec:eldritch_heart",
+    "P": "minecraft:ender_pearl",
+    "X": "minecraft:chorus_fruit"
+  },
+  "pattern": [
+    "PXP",
+    "XHX",
+    "ACA"
+  ],
+  "result": {
+    "id": "nautec:teleport_module"
+  }
+}

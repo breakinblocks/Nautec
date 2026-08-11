@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "D": "minecraft:diamond",
+    "N": "minecraft:netherite_ingot",
+    "P": "nautec:chitin_plate"
+  },
+  "pattern": [
+    "DND",
+    "NPN",
+    "ACA"
+  ],
+  "result": {
+    "id": "nautec:armor_module"
+  }
+}

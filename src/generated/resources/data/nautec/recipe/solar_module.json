@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "D": "minecraft:daylight_detector",
+    "G": "nautec:atlantic_gold_ingot",
+    "L": "nautec:prismarine_lens"
+  },
+  "pattern": [
+    "LLL",
+    "GDG",
+    "ACA"
+  ],
+  "result": {
+    "id": "nautec:solar_module"
+  }
+}

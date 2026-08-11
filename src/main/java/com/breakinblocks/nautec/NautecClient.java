@@ -11,6 +11,9 @@ import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
 import com.breakinblocks.nautec.client.hud.PrismMonocleOverlay;
 import com.breakinblocks.nautec.client.item.AbilityEnabledProperty;
 import com.breakinblocks.nautec.client.particle.DriftingMoteParticle;
+import com.breakinblocks.nautec.client.particle.ShockwaveRingParticle;
+import com.breakinblocks.nautec.client.particle.SparkParticle;
+import com.breakinblocks.nautec.client.particle.SwirlParticle;
 import com.breakinblocks.nautec.client.item.BacteriaColorTintSource;
 import com.breakinblocks.nautec.client.item.HasBacteriaProperty;
 import com.breakinblocks.nautec.client.model.augment.DolphinFinModel;
@@ -80,6 +83,11 @@ public final class NautecClient {
         modEventBus.addListener(this::registerConditionalItemModelProperties);
         modEventBus.addListener(this::registerFluidModels);
         modEventBus.addListener(this::registerParticleProviders);
+        modEventBus.addListener(this::registerRenderPipelines);
+    }
+
+    private void registerRenderPipelines(net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(com.breakinblocks.nautec.client.render.NTRenderPipelines.SONAR_HIGHLIGHT);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -87,6 +95,19 @@ public final class NautecClient {
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.85F, 0.86F, 0.88F, 0.055F, 0.09F, 24, 44));
         event.registerSpriteSet(NTParticles.GLOW_SPORE.get(),
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.42F, 0.95F, 0.82F, 0.012F, 0.07F, 60, 110));
+        event.registerSpriteSet(NTParticles.THRUSTER_WAKE.get(),
+                sprites -> new DriftingMoteParticle.Provider(sprites, 0.72F, 0.92F, 0.98F, 0.02F, 0.12F, 14, 26));
+        event.registerSpriteSet(NTParticles.BOOST_TRAIL.get(),
+                sprites -> new DriftingMoteParticle.Provider(sprites, 0.24F, 0.99F, 1.0F, 0.01F, 0.16F, 10, 20));
+        event.registerSpriteSet(NTParticles.SONAR_MOTE.get(),
+                sprites -> new DriftingMoteParticle.Provider(sprites, 0.38F, 1.0F, 0.75F, 0.015F, 0.08F, 40, 70));
+        event.registerSpriteSet(NTParticles.SHIELD_RING.get(),
+                sprites -> new ShockwaveRingParticle.Provider(sprites, 0.43F, 0.75F, 1.0F, 0.5F, 6.0F, 12));
+        event.registerSpriteSet(NTParticles.TELEPORT_SWIRL.get(),
+                sprites -> new SwirlParticle.Provider(sprites, 0.80F, 0.48F, 1.0F, 3.0D, 0.03D, 0.35F, 0.12F, 20, 34));
+        event.registerSpriteSet(NTParticles.LASER_SPARK.get(),
+                sprites -> new SparkParticle.Provider(sprites, 1.0F, 0.45F, 0.35F, 0.12F, 0.11F, 5, 12));
+
         event.registerSpriteSet(NTParticles.ABYSSAL_MOTE.get(),
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.30F, 0.42F, 0.58F, -0.004F, 0.06F, 70, 130));
     }
@@ -96,6 +117,8 @@ public final class NautecClient {
         event.registerAboveAll(Nautec.rl("diving_suit_overlay"), DivingSuitOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_power_overlay"), SubmarineHudOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_ability_bar"), SubmarineAbilityBarOverlay::render);
+        event.registerAboveAll(Nautec.rl("submarine_teleport_fade"),
+                com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer::render);
     }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {

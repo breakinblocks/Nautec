@@ -1,0 +1,91 @@
+{
+  "submarine.engine": {
+    "subtitle": "subtitles.nautec.submarine.engine",
+    "sounds": [
+      { "name": "minecraft:entity.minecart.riding", "type": "event", "volume": 0.5, "pitch": 0.65 }
+    ]
+  },
+  "submarine.ambient": {
+    "subtitle": "subtitles.nautec.submarine.ambient",
+    "sounds": [
+      { "name": "minecraft:block.conduit.ambient", "type": "event", "volume": 0.6, "pitch": 0.9 }
+    ]
+  },
+  "submarine.deploy": {
+    "subtitle": "subtitles.nautec.submarine.deploy",
+    "sounds": [
+      { "name": "minecraft:block.respawn_anchor.charge", "type": "event", "volume": 0.7, "pitch": 1.1 }
+    ]
+  },
+  "submarine.stow": {
+    "subtitle": "subtitles.nautec.submarine.stow",
+    "sounds": [
+      { "name": "minecraft:block.respawn_anchor.deplete", "type": "event", "volume": 0.7, "pitch": 1.1 }
+    ]
+  },
+  "submarine.sonar_ping": {
+    "subtitle": "subtitles.nautec.submarine.sonar_ping",
+    "sounds": [
+      { "name": "minecraft:block.conduit.activate", "type": "event", "volume": 0.8, "pitch": 1.35 },
+      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.7, "pitch": 1.6 }
+    ]
+  },
+  "submarine.boost": {
+    "subtitle": "subtitles.nautec.submarine.boost",
+    "sounds": [
+      { "name": "minecraft:entity.firework_rocket.launch", "type": "event", "volume": 0.6, "pitch": 0.8 },
+      { "name": "minecraft:entity.wind_charge.wind_burst", "type": "event", "volume": 0.7, "pitch": 0.7 }
+    ]
+  },
+  "submarine.shield_pulse": {
+    "subtitle": "subtitles.nautec.submarine.shield_pulse",
+    "sounds": [
+      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.9, "pitch": 0.6 },
+      { "name": "minecraft:item.trident.return", "type": "event", "volume": 0.7, "pitch": 0.7 }
+    ]
+  },
+  "submarine.stealth": {
+    "subtitle": "subtitles.nautec.submarine.stealth",
+    "sounds": [
+      { "name": "minecraft:entity.illusioner.mirror_move", "type": "event", "volume": 0.8, "pitch": 0.8 }
+    ]
+  },
+  "submarine.laser_loop": {
+    "subtitle": "subtitles.nautec.submarine.laser_loop",
+    "sounds": [
+      { "name": "minecraft:entity.guardian.attack", "type": "event", "volume": 0.9, "pitch": 1.15 }
+    ]
+  },
+  "submarine.teleport_charge": {
+    "subtitle": "subtitles.nautec.submarine.teleport_charge",
+    "sounds": [
+      { "name": "minecraft:block.portal.trigger", "type": "event", "volume": 0.5, "pitch": 1.3 }
+    ]
+  },
+  "submarine.teleport_whoosh": {
+    "subtitle": "subtitles.nautec.submarine.teleport_whoosh",
+    "sounds": [
+      { "name": "minecraft:entity.enderman.teleport", "type": "event", "volume": 0.9, "pitch": 0.7 },
+      { "name": "minecraft:block.portal.travel", "type": "event", "volume": 0.4, "pitch": 1.2 }
+    ]
+  },
+  "submarine.module_install": {
+    "subtitle": "subtitles.nautec.submarine.module_install",
+    "sounds": [
+      { "name": "minecraft:block.smithing_table.use", "type": "event", "volume": 0.8, "pitch": 1.2 }
+    ]
+  },
+  "submarine.hull_damage": {
+    "subtitle": "subtitles.nautec.submarine.hull_damage",
+    "sounds": [
+      { "name": "minecraft:entity.zombie.attack_iron_door", "type": "event", "volume": 0.8, "pitch": 0.9 },
+      { "name": "minecraft:block.anvil.land", "type": "event", "volume": 0.25, "pitch": 1.4 }
+    ]
+  },
+  "submarine.low_power": {
+    "subtitle": "subtitles.nautec.submarine.low_power",
+    "sounds": [
+      { "name": "minecraft:block.bell.use", "type": "event", "volume": 0.7, "pitch": 0.55 }
+    ]
+  }
+}

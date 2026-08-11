@@ -59,6 +59,16 @@ public class NetworkEvents {
                 SubmarineCooldownPayload.STREAM_CODEC,
                 SubmarineCooldownPayload::handle
         );
+        registrar.playToClient(
+                SonarPingPayload.TYPE,
+                SonarPingPayload.STREAM_CODEC,
+                SonarPingPayload::handle
+        );
+        registrar.playToClient(
+                TeleportFxPayload.TYPE,
+                TeleportFxPayload.STREAM_CODEC,
+                TeleportFxPayload::handle
+        );
         registrar.playBidirectional(
                 ClearAugmentPayload.TYPE,
                 ClearAugmentPayload.STREAM_CODEC,

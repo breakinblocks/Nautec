@@ -443,13 +443,15 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ACA")
                 .pattern("GBG")
                 .pattern("ATA")
-                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
-                .define('C', NTItems.AQUATIC_CHIP.get())
-                .define('G', Items.GLASS)
+                .define('A', NTItems.ATLANTIC_GOLD_INGOT.get())
+                .define('C', NTItems.ELDRITCH_HEART.get())
+                .define('G', Items.TINTED_GLASS)
                 .define('B', NTItems.PRISMATIC_BATTERY.get())
                 .define('T', NTItems.BUOYANCY_TANK.get())
-                .unlockedBy("has_item", has(NTItems.PRISMATIC_BATTERY))
+                .unlockedBy("has_item", has(NTItems.ELDRITCH_HEART))
                 .save(pRecipeOutput, key("submarine"));
+
+        submarineModuleRecipes(pRecipeOutput);
 
         shaped(RecipeCategory.MISC, NTItems.GRAFTING_TOOL.get(), 1)
                 .pattern(" R")
@@ -458,6 +460,105 @@ public class RecipesProvider extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS_IRON)
                 .unlockedBy("has_item", has(NTItems.CAST_IRON_ROD))
                 .save(pRecipeOutput, key("grafting_tool"));
+    }
+
+    private void submarineModuleRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.MISC, NTItems.SOLAR_MODULE.get(), 1)
+                .pattern("LLL")
+                .pattern("GDG")
+                .pattern("ACA")
+                .define('L', NTItems.PRISMARINE_LENS.get())
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT.get())
+                .define('D', Items.DAYLIGHT_DETECTOR)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("solar_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.BOOSTER_MODULE.get(), 1)
+                .pattern("AKA")
+                .pattern("KBK")
+                .pattern("ACA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('K', NTItems.LASER_CHANNELING_COIL.get())
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("booster_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.STEALTH_MODULE.get(), 1)
+                .pattern("IMI")
+                .pattern("MCM")
+                .pattern("ABA")
+                .define('I', Items.INK_SAC)
+                .define('M', NTItems.LUMINOUS_MEMBRANE.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("stealth_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.ARMOR_MODULE.get(), 1)
+                .pattern("DND")
+                .pattern("NPN")
+                .pattern("ACA")
+                .define('D', Items.DIAMOND)
+                .define('N', Items.NETHERITE_INGOT)
+                .define('P', NTItems.CHITIN_PLATE.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("armor_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.SONAR_MODULE.get(), 1)
+                .pattern("ELE")
+                .pattern("GCG")
+                .pattern("ABA")
+                .define('E', Items.ECHO_SHARD)
+                .define('L', NTItems.PRISMARINE_LENS.get())
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("sonar_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.SHIELD_MODULE.get(), 1)
+                .pattern("SHS")
+                .pattern("HCH")
+                .pattern("ABA")
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD.get())
+                .define('H', NTItems.ELDRITCH_HEART.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .unlockedBy("has_item", has(NTItems.ELDRITCH_HEART))
+                .save(pRecipeOutput, key("shield_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.IMPULSE_LASER_MODULE.get(), 1)
+                .pattern("LYL")
+                .pattern("KCK")
+                .pattern("ABA")
+                .define('L', NTItems.PRISMARINE_LENS.get())
+                .define('Y', NTItems.GUARDIAN_EYE.get())
+                .define('K', NTItems.LASER_CHANNELING_COIL.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('B', NTItems.PRISMATIC_BATTERY.get())
+                .unlockedBy("has_item", has(NTItems.GUARDIAN_EYE))
+                .save(pRecipeOutput, key("impulse_laser_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.TELEPORT_MODULE.get(), 1)
+                .pattern("PXP")
+                .pattern("XHX")
+                .pattern("ACA")
+                .define('P', Items.ENDER_PEARL)
+                .define('X', Items.CHORUS_FRUIT)
+                .define('H', NTItems.ELDRITCH_HEART.get())
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('C', NTItems.AQUATIC_CHIP.get())
+                .unlockedBy("has_item", has(NTItems.ELDRITCH_HEART))
+                .save(pRecipeOutput, key("teleport_module"));
     }
 
     private void miscItemsRecipes(@NotNull RecipeOutput pRecipeOutput) {

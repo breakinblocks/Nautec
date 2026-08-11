@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.entities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.EntityPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
@@ -11,6 +12,7 @@ import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTParticles;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.instance.InstancedAnimatableInstanceCache;
@@ -18,9 +20,10 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.constant.dataticket.DataTicket;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -44,7 +47,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Input;
@@ -88,6 +93,19 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
     private static final EntityDataAccessor<Integer> DATA_POWER =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<Float> DATA_SPEED_MULTIPLIER =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DATA_STEALTHED =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_CHARGING =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_LASER_ACTIVE =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> DATA_LASER_LEFT =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_LASER_RIGHT =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
+
     private static final List<EntityDataAccessor<ItemStack>> DATA_MODULES = defineModuleSlots();
 
     private static List<EntityDataAccessor<ItemStack>> defineModuleSlots() {
@@ -105,6 +123,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
     private static final double AGGRO_TRANSFER_RANGE = 32D;
+    private static final double TELEPORT_DRIFT = 0.05D;
+    private static final Identifier TOUGHNESS_MODIFIER = Nautec.rl("submarine_armor_module_toughness");
+    private static final Identifier KNOCKBACK_MODIFIER = Nautec.rl("submarine_armor_module_knockback");
 
     private final AnimatableInstanceCache animatableCache = new InstancedAnimatableInstanceCache(this);
     private final SubmarineModules modules = new SubmarineModules(this);
@@ -153,9 +174,59 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
         super.defineSynchedData(entityData);
         entityData.define(DATA_POWER, 0);
+        entityData.define(DATA_SPEED_MULTIPLIER, 1F);
+        entityData.define(DATA_STEALTHED, false);
+        entityData.define(DATA_CHARGING, false);
+        entityData.define(DATA_LASER_ACTIVE, false);
+        entityData.define(DATA_LASER_LEFT, 0F);
+        entityData.define(DATA_LASER_RIGHT, 0F);
         for (EntityDataAccessor<ItemStack> accessor : DATA_MODULES) {
             entityData.define(accessor, ItemStack.EMPTY);
         }
+    }
+
+    public float getSpeedMultiplier() {
+        return this.entityData.get(DATA_SPEED_MULTIPLIER);
+    }
+
+    public void setSpeedMultiplier(float multiplier) {
+        this.entityData.set(DATA_SPEED_MULTIPLIER, multiplier);
+    }
+
+    public boolean isStealthed() {
+        return this.entityData.get(DATA_STEALTHED);
+    }
+
+    public void setStealthed(boolean stealthed) {
+        this.entityData.set(DATA_STEALTHED, stealthed);
+    }
+
+    public boolean isCharging() {
+        return this.entityData.get(DATA_CHARGING);
+    }
+
+    public void setCharging(boolean charging) {
+        this.entityData.set(DATA_CHARGING, charging);
+    }
+
+    public boolean isLaserActive() {
+        return this.entityData.get(DATA_LASER_ACTIVE);
+    }
+
+    public void setLaserActive(boolean active) {
+        this.entityData.set(DATA_LASER_ACTIVE, active);
+        if (!active) {
+            setLaserLengths(0F, 0F);
+        }
+    }
+
+    public float getLaserLength(boolean left) {
+        return this.entityData.get(left ? DATA_LASER_LEFT : DATA_LASER_RIGHT);
+    }
+
+    public void setLaserLengths(float left, float right) {
+        this.entityData.set(DATA_LASER_LEFT, left);
+        this.entityData.set(DATA_LASER_RIGHT, right);
     }
 
     @Override
@@ -163,6 +234,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
         super.addAdditionalSaveData(output);
         output.putInt("power", getPowerStored());
         output.store("modules", ItemContainerContents.CODEC, ItemContainerContents.fromItems(getModuleStacks()));
+        this.modules.save(output);
     }
 
     @Override
@@ -170,6 +242,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
         super.readAdditionalSaveData(input);
         setPowerStored(input.getIntOr("power", 0));
         setModules(input.read("modules", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
+        this.modules.load(input);
     }
 
     public ItemStack getModule(int slot) {
@@ -178,6 +251,30 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
 
     public void setModule(int slot, ItemStack stack) {
         this.entityData.set(DATA_MODULES.get(slot), stack, true);
+        refreshModuleAttributes();
+    }
+
+    public void refreshModuleAttributes() {
+        if (level().isClientSide()) {
+            return;
+        }
+
+        boolean armored = hasModule(SubmarineModuleType.ARMOR);
+        applyModuleModifier(Attributes.ARMOR_TOUGHNESS, TOUGHNESS_MODIFIER,
+                armored ? NTConfig.submarineArmorModuleToughness - NTConfig.submarineArmorToughness : 0D);
+        applyModuleModifier(Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK_MODIFIER, armored ? 1D : 0D);
+    }
+
+    private void applyModuleModifier(Holder<Attribute> attribute, Identifier id, double amount) {
+        AttributeInstance instance = getAttribute(attribute);
+        if (instance == null) {
+            return;
+        }
+
+        instance.removeModifier(id);
+        if (amount != 0D) {
+            instance.addTransientModifier(new AttributeModifier(id, amount, AttributeModifier.Operation.ADD_VALUE));
+        }
     }
 
     public List<ItemStack> getModuleStacks() {
@@ -241,6 +338,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
         return !this.getPassengers().isEmpty() || this.isInWater();
     }
 
+    public boolean isUnderWay() {
+        return this.underWay;
+    }
+
     public boolean isSealed() {
         return isDeployed() && getPowerStored() > 0;
     }
@@ -266,7 +367,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
 
         if (!level().isClientSide()) {
             tickServer();
-        } else if (this.underWay && isUnderWater() && this.random.nextInt(3) == 0) {
+        } else if (this.underWay && isInWater()) {
             spawnWake();
         }
     }
@@ -297,7 +398,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
             levelOut();
         }
 
-        if (driver != null && getPowerStored() > 0) {
+        if (isCharging()) {
+            motion = motion.add(getForward().scale(TELEPORT_DRIFT));
+        } else if (driver != null && getPowerStored() > 0) {
             Input controls = this.input;
             float throttle = 0F;
             if (controls.forward()) {
@@ -308,7 +411,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
             }
 
             if (throttle != 0F) {
-                double speed = NTConfig.submarineSpeed * (controls.sprint() ? 1.6D : 1D);
+                double speed = NTConfig.submarineSpeed * getSpeedMultiplier() * (controls.sprint() ? 1.6D : 1D);
                 if (!submerged) {
                     speed *= 0.35D;
                 }
@@ -452,7 +555,23 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
 
     private void spawnWake() {
         Vec3 stern = position().subtract(getForward().scale(4.5D)).add(0D, 0.4D, 0D);
-        level().addParticle(ParticleTypes.BUBBLE, stern.x, stern.y, stern.z, 0D, 0.02D, 0D);
+        boolean boosting = getSpeedMultiplier() > 1F;
+
+        if (this.random.nextInt(boosting ? 1 : 3) == 0) {
+            level().addParticle(NTParticles.THRUSTER_WAKE.get(), stern.x, stern.y, stern.z, 0D, 0.02D, 0D);
+        }
+
+        if (!boosting) {
+            return;
+        }
+
+        Vec3 back = getForward().scale(-1D);
+        for (int i = 0; i < 2; i++) {
+            Vec3 spread = new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian()).scale(0.25D);
+            Vec3 at = stern.add(spread);
+            level().addParticle(NTParticles.BOOST_TRAIL.get(), at.x, at.y, at.z,
+                    back.x * 0.12D, back.y * 0.12D, back.z * 0.12D);
+        }
     }
 
     @Override

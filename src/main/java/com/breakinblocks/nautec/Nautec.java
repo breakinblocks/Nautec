@@ -85,6 +85,8 @@ public final class Nautec {
         NTAugments.AUGMENTS.register(modEventBus);
         NTAugmentSlots.AUGMENT_SLOTS.register(modEventBus);
         NTMenuTypes.MENUS.register(modEventBus);
+        NTMobEffects.MOB_EFFECTS.register(modEventBus);
+        NTSounds.SOUNDS.register(modEventBus);
         NTStructures.STRUCTURES.register(modEventBus);
         NTLootModifier.LOOT_MODIFIERS.register(modEventBus);
         NTLootConditions.LOOT_CONDITIONS.register(modEventBus);

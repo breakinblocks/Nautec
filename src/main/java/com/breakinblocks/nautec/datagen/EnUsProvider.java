@@ -56,6 +56,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
         add("nautec.submarine.hull", "Hull integrity:");
         add("nautec.submarine.breached", "The hull is breached. Repair it on an anvil before launching");
+        add("nautec.submarine.needs_water", "The submersible needs open water to launch into");
         add("nautec.submarine.modules", "Submersible Modules");
         add("nautec.submarine.modules.installed", "Installed: %s");
 
@@ -70,6 +71,24 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         add("nautec.submarine.ability.cooldown", "That module is still cycling");
         add("nautec.submarine.ability.no_power", "Not enough power for that module");
+        add("nautec.submarine.ability.not_bound", "That teleport module has no anchor bound");
+        add("nautec.submarine.ability.destination_blocked", "The anchor is blocked or dry");
+        add("effect.nautec.stunned", "Stunned");
+
+        add("subtitles.nautec.submarine.engine", "Submersible thrusters churn");
+        add("subtitles.nautec.submarine.ambient", "Submersible hull hums");
+        add("subtitles.nautec.submarine.deploy", "Submersible canopy seals");
+        add("subtitles.nautec.submarine.stow", "Submersible canopy opens");
+        add("subtitles.nautec.submarine.sonar_ping", "Sonar pings");
+        add("subtitles.nautec.submarine.boost", "Thrusters surge");
+        add("subtitles.nautec.submarine.shield_pulse", "Shield discharges");
+        add("subtitles.nautec.submarine.stealth", "Hull goes quiet");
+        add("subtitles.nautec.submarine.laser_loop", "Impulse lasers burn");
+        add("subtitles.nautec.submarine.teleport_charge", "Submersible folds the water");
+        add("subtitles.nautec.submarine.teleport_whoosh", "Submersible jumps");
+        add("subtitles.nautec.submarine.module_install", "Module seats home");
+        add("subtitles.nautec.submarine.hull_damage", "Hull takes a hit");
+        add("subtitles.nautec.submarine.low_power", "Power reserve warning");
         add("key.category.nautec.main", "Nautec");
 
         add("nautec.submarine.module.passive", "Passive, works from any slot");

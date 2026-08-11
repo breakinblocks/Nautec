@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "I": "minecraft:ink_sac",
+    "M": "nautec:luminous_membrane"
+  },
+  "pattern": [
+    "IMI",
+    "MCM",
+    "ABA"
+  ],
+  "result": {
+    "id": "nautec:stealth_module"
+  }
+}

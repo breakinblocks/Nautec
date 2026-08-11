@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:submarine",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.submarine.submarine_power.description",
+  "icon": {
+    "id": "nautec:prismatic_battery"
+  },
+  "id": "nautec:submarine/submarine_power",
+  "name": "book.nautec.nautec_guide.submarine.submarine_power.name",
+  "parents": [
+    {
+      "entry": "nautec:submarine/submarine"
+    }
+  ],
+  "sort_number": 2,
+  "x": 2,
+  "y": 0
+}

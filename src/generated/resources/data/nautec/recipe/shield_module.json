@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "H": "nautec:eldritch_heart",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "SHS",
+    "HCH",
+    "ABA"
+  ],
+  "result": {
+    "id": "nautec:shield_module"
+  }
+}
