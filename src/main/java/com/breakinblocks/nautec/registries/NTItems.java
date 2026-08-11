@@ -3,6 +3,9 @@ package com.breakinblocks.nautec.registries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
 import com.breakinblocks.nautec.content.items.*;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
+import com.breakinblocks.nautec.content.items.submarine.TeleportModuleItem;
 import com.breakinblocks.nautec.content.items.tools.*;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
@@ -188,11 +191,30 @@ public final class NTItems {
     public static final DeferredItem<SubmarineItem> SUBMARINE = registerItem("submarine",
             SubmarineItem::new, Item.Properties::new);
 
+    // SUBMARINE MODULES
+    public static final DeferredItem<SubmarineModuleItem> SOLAR_MODULE = moduleItem(SubmarineModuleType.SOLAR);
+    public static final DeferredItem<SubmarineModuleItem> BOOSTER_MODULE = moduleItem(SubmarineModuleType.BOOSTER);
+    public static final DeferredItem<SubmarineModuleItem> STEALTH_MODULE = moduleItem(SubmarineModuleType.STEALTH);
+    public static final DeferredItem<SubmarineModuleItem> ARMOR_MODULE = moduleItem(SubmarineModuleType.ARMOR);
+    public static final DeferredItem<SubmarineModuleItem> SONAR_MODULE = moduleItem(SubmarineModuleType.SONAR);
+    public static final DeferredItem<SubmarineModuleItem> SHIELD_MODULE = moduleItem(SubmarineModuleType.SHIELD);
+    public static final DeferredItem<SubmarineModuleItem> IMPULSE_LASER_MODULE = moduleItem(SubmarineModuleType.IMPULSE_LASER);
+    public static final DeferredItem<TeleportModuleItem> TELEPORT_MODULE = registerItem(
+            SubmarineModuleType.TELEPORT.itemId(), TeleportModuleItem::new, new Item.Properties());
+
+    public static final List<DeferredItem<? extends SubmarineModuleItem>> SUBMARINE_MODULES = List.of(
+            SOLAR_MODULE, BOOSTER_MODULE, STEALTH_MODULE, ARMOR_MODULE,
+            SONAR_MODULE, SHIELD_MODULE, IMPULSE_LASER_MODULE, TELEPORT_MODULE);
+
     // TOOLS
     public static final DeferredItem<AquarineWrenchItem> AQUARINE_WRENCH = registerItem("aquarine_steel_wrench",
             AquarineWrenchItem::new, new Item.Properties());
     public static final DeferredItem<Item> CROWBAR = registerItem("crowbar",
             Item::new, new Item.Properties().stacksTo(1));
+
+    private static DeferredItem<SubmarineModuleItem> moduleItem(SubmarineModuleType type) {
+        return registerItem(type.itemId(), properties -> new SubmarineModuleItem(type, properties), new Item.Properties());
+    }
 
     public static <T extends Item> DeferredItem<T> bacteriaItem(DeferredItem<T> item) {
         BACTERIA_ITEMS.add(item);

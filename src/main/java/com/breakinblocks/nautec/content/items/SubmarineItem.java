@@ -6,6 +6,8 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.client.renderer.items.SubmarineItemRenderer;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTEntities;
@@ -18,7 +20,9 @@ import com.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.renderer.GeoItemRenderer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -40,6 +45,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SubmarineItem extends Item implements IPowerItem, GeoItem {
@@ -79,6 +85,11 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        if (SubmarineAnvilRepair.isBreached(stack)) {
+            player.sendOverlayMessage(Component.translatable("nautec.submarine.breached").withStyle(ChatFormatting.RED));
+            return InteractionResult.FAIL;
+        }
+
         HitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
         if (hitResult.getType() != HitResult.Type.BLOCK) {
             return InteractionResult.PASS;
@@ -121,6 +132,23 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
         return InteractionResult.SUCCESS;
     }
 
+    private static void appendModules(ItemStack stack, Consumer<Component> tooltipComponents) {
+        List<Component> installed = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+                .nonEmptyItemCopyStream()
+                .map(SubmarineModuleItem::typeOf)
+                .filter(Objects::nonNull)
+                .map(SubmarineModuleType::displayName)
+                .map(name -> (Component) name)
+                .toList();
+
+        if (installed.isEmpty()) {
+            return;
+        }
+
+        Tooltips.tt(tooltipComponents, Component.translatable("nautec.submarine.modules.installed",
+                ComponentUtils.formatList(installed, Component.literal(", "))), ChatFormatting.DARK_AQUA);
+    }
+
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return true;
@@ -153,6 +181,19 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
             Tooltips.transInsert(tooltipComponents, "nautec.armor.power",
                     " " + powerStorage.getPowerStored() + "/" + powerStorage.getPowerCapacity(), ChatFormatting.DARK_AQUA);
         }
+
+        if (SubmarineAnvilRepair.isBreached(stack)) {
+            Tooltips.trans(tooltipComponents, "nautec.submarine.breached", ChatFormatting.RED);
+        } else {
+            float max = SubmarineAnvilRepair.maxHealth();
+            float health = SubmarineAnvilRepair.healthOf(stack);
+            ChatFormatting color = health < max * 0.35F ? ChatFormatting.GOLD : ChatFormatting.DARK_AQUA;
+            Tooltips.transInsert(tooltipComponents, "nautec.submarine.hull",
+                    " " + Math.round(health / max * 100F) + "%", color);
+        }
+
+        appendModules(stack, tooltipComponents);
+
         Tooltips.trans(tooltipComponents, "nautec.submarine.controls", ChatFormatting.GRAY);
         Tooltips.trans(tooltipComponents, "nautec.submarine.aim", ChatFormatting.GRAY);
         Tooltips.trans(tooltipComponents, "nautec.submarine.oxygen", ChatFormatting.GRAY);

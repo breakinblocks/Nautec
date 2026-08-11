@@ -49,6 +49,16 @@ public class NetworkEvents {
                 FishingMinigameResultPayload.STREAM_CODEC,
                 FishingMinigameResultPayload::handle
         );
+        registrar.playToServer(
+                SubmarineAbilityPayload.TYPE,
+                SubmarineAbilityPayload.STREAM_CODEC,
+                SubmarineAbilityPayload::handle
+        );
+        registrar.playToClient(
+                SubmarineCooldownPayload.TYPE,
+                SubmarineCooldownPayload.STREAM_CODEC,
+                SubmarineCooldownPayload::handle
+        );
         registrar.playBidirectional(
                 ClearAugmentPayload.TYPE,
                 ClearAugmentPayload.STREAM_CODEC,

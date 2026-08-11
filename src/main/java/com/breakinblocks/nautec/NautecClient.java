@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemR
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
+import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
 import com.breakinblocks.nautec.client.hud.PrismMonocleOverlay;
 import com.breakinblocks.nautec.client.item.AbilityEnabledProperty;
@@ -94,6 +95,7 @@ public final class NautecClient {
         event.registerAboveAll(Nautec.rl("scanner_info_overlay"), PrismMonocleOverlay.HUD);
         event.registerAboveAll(Nautec.rl("diving_suit_overlay"), DivingSuitOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_power_overlay"), SubmarineHudOverlay::render);
+        event.registerAboveAll(Nautec.rl("submarine_ability_bar"), SubmarineAbilityBarOverlay::render);
     }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {
@@ -233,6 +235,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.BIO_REACTOR.get(), BioReactorScreen::new);
         event.register(NTMenuTypes.MIXER.get(), MixerScreen::new);
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
+        event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
     }
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {

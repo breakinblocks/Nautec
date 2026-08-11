@@ -28,16 +28,20 @@ public class SubmarineHudPositionScreen extends Screen {
 
         int power = 73;
         int capacity = 100;
+        float health = 62F;
+        float maxHealth = 80F;
         if (this.minecraft != null && this.minecraft.player != null
                 && this.minecraft.player.getControlledVehicle() instanceof SubmarineEntity submarine) {
             power = submarine.getPowerStored();
             capacity = submarine.getPowerStorage().getPowerCapacity();
+            health = submarine.getHealth();
+            maxHealth = submarine.getMaxHealth();
         }
 
         long ticks = this.minecraft != null && this.minecraft.level != null ? this.minecraft.level.getGameTime() : 0L;
-        SubmarineHudOverlay.drawGauge(guiGraphics, panelX(), panelY(), power, capacity, ticks);
+        SubmarineHudOverlay.drawGauge(guiGraphics, panelX(), panelY(), power, capacity, health, maxHealth, ticks);
 
-        guiGraphics.text(this.font, "Drag the power readout where you want it", centeredX("Drag the power readout where you want it"), 20, 0xFFF0F4F5, true);
+        guiGraphics.text(this.font, "Drag the readout where you want it", centeredX("Drag the readout where you want it"), 20, 0xFFF0F4F5, true);
         guiGraphics.text(this.font, "ESC or Ctrl+H to save", centeredX("ESC or Ctrl+H to save"), 32, 0xFF3EFDFF, true);
     }
 

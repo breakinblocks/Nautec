@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.events;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.mobs.AbyssalMaw;
 import com.breakinblocks.nautec.content.entities.mobs.LanternJelly;
 import com.breakinblocks.nautec.content.entities.mobs.SiltSkipper;
@@ -23,6 +24,7 @@ public final class NTEntityEvents {
         event.put(NTEntities.LANTERN_JELLY.get(), LanternJelly.createAttributes().build());
         event.put(NTEntities.VENT_CRAWLER.get(), VentCrawler.createAttributes().build());
         event.put(NTEntities.ABYSSAL_MAW.get(), AbyssalMaw.createAttributes().build());
+        event.put(NTEntities.SUBMARINE.get(), SubmarineEntity.createAttributes().build());
     }
 
     @SubscribeEvent

@@ -35,7 +35,7 @@ public final class NTEntities {
 
     public static final Supplier<EntityType<SubmarineEntity>> SUBMARINE = ENTITIES.register("submarine",
             () -> EntityType.Builder.<SubmarineEntity>of(SubmarineEntity::new, MobCategory.MISC)
-                    .sized(3.0f, 3.2f)
+                    .sized(3.0f, 3.2f).fireImmune()
                     .eyeHeight(0.5f * SubmarineEntity.MODEL_SCALE).clientTrackingRange(10)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("submarine"))));
 

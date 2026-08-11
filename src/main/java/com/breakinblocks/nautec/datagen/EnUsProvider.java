@@ -54,6 +54,47 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.submarine.controls", "W/S throttle, A/D rudder, Space rises, C dives");
         add("nautec.submarine.aim", "Hold use to steer with the mouse");
         add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
+        add("nautec.submarine.hull", "Hull integrity:");
+        add("nautec.submarine.breached", "The hull is breached. Repair it on an anvil before launching");
+        add("nautec.submarine.modules", "Submersible Modules");
+        add("nautec.submarine.modules.installed", "Installed: %s");
+
+        addItem(SOLAR_MODULE, "Solar Module");
+        addItem(BOOSTER_MODULE, "Booster Module");
+        addItem(STEALTH_MODULE, "Stealth Module");
+        addItem(ARMOR_MODULE, "Armour Module");
+        addItem(SONAR_MODULE, "Sonar Module");
+        addItem(SHIELD_MODULE, "Shield Module");
+        addItem(IMPULSE_LASER_MODULE, "Impulse Laser Module");
+        addItem(TELEPORT_MODULE, "Teleport Module");
+
+        add("nautec.submarine.ability.cooldown", "That module is still cycling");
+        add("nautec.submarine.ability.no_power", "Not enough power for that module");
+        add("key.category.nautec.main", "Nautec");
+
+        add("nautec.submarine.module.passive", "Passive, works from any slot");
+        add("nautec.submarine.module.cost", "Draws %s power per use");
+        add("nautec.submarine.module.cooldown", "%s second cooldown");
+        add("nautec.submarine.module.solar", "Solar Module");
+        add("nautec.submarine.module.solar.desc", "Trickles the hull's cells full again in open sunlit water");
+        add("nautec.submarine.module.booster", "Booster Module");
+        add("nautec.submarine.module.booster.desc", "Dumps the reserve into the thrusters for a short sprint");
+        add("nautec.submarine.module.stealth", "Stealth Module");
+        add("nautec.submarine.module.stealth.desc", "Masks the hull so the deep stops noticing it, at the cost of speed");
+        add("nautec.submarine.module.armor", "Armour Module");
+        add("nautec.submarine.module.armor.desc", "Plates the hull to shrug off heavier hits");
+        add("nautec.submarine.module.sonar", "Sonar Module");
+        add("nautec.submarine.module.sonar.desc", "Pings the surrounding rock and lights up ore and anything hunting you");
+        add("nautec.submarine.module.shield", "Shield Module");
+        add("nautec.submarine.module.shield.desc", "Bleeds power to soak damage, and discharges to throw off boarders");
+        add("nautec.submarine.module.impulse_laser", "Impulse Laser Module");
+        add("nautec.submarine.module.impulse_laser.desc", "Twin prismatic beams that cut whatever the nose is pointed at");
+        add("nautec.submarine.module.teleport", "Teleport Module");
+        add("nautec.submarine.module.teleport.desc", "Folds the water around the hull and drops it at a bound anchor");
+        add("nautec.submarine.module.teleport.unbound", "No anchor bound");
+        add("nautec.submarine.module.teleport.bound", "Anchor bound to %s");
+        add("nautec.submarine.module.teleport.destination", "Anchor: %s in %s");
+        add("nautec.submarine.module.teleport.needs_water", "The anchor has to be set in water");
 
         add("entity.nautec.silt_skipper", "Silt Skipper");
         add("entity.nautec.lantern_jelly", "Lantern Jelly");

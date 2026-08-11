@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -35,6 +36,13 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ItemTags.CHEST_ARMOR_ENCHANTABLE, NTItems.AQUARINE_CHESTPLATE);
         tag(ItemTags.LEG_ARMOR_ENCHANTABLE, NTItems.AQUARINE_LEGGINGS);
         tag(ItemTags.FOOT_ARMOR_ENCHANTABLE, NTItems.AQUARINE_BOOTS);
+
+        tag(Tags.Items.TOOLS_WRENCH, NTItems.AQUARINE_WRENCH);
+
+        TagAppender<Item, Item> modules = tag(NTTags.Items.SUBMARINE_MODULE);
+        for (var module : NTItems.SUBMARINE_MODULES) {
+            modules.add(module.get());
+        }
 
         tag(NTTags.Items.REPAIRS_AQUARINE_TOOLS, NTItems.AQUARINE_STEEL_INGOT);
         tag(NTTags.Items.REPAIRS_AQUARINE_ARMOR, NTItems.AQUARINE_STEEL_INGOT);

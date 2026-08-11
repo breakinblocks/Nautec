@@ -146,6 +146,110 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue SUBMARINE_CAMERA_DISTANCE = BUILDER
             .comment("Third person camera distance while riding the submarine, in blocks. Vanilla default is 4")
             .defineInRange("submarineCameraDistance", 10.0, 4.0, 32.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_MAX_HEALTH = BUILDER
+            .comment("Hull integrity of the submarine, in half hearts")
+            .defineInRange("submarineMaxHealth", 80.0, 1.0, 1024.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_ARMOR = BUILDER
+            .comment("Armor points of the submarine hull. Diamond armor is 20")
+            .defineInRange("submarineArmor", 20.0, 0.0, 30.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_ARMOR_TOUGHNESS = BUILDER
+            .comment("Armor toughness of the submarine hull. Diamond armor is 8")
+            .defineInRange("submarineArmorToughness", 8.0, 0.0, 20.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_KNOCKBACK_RESISTANCE = BUILDER
+            .comment("How strongly the submarine resists being knocked around when it is hit. 1 ignores knockback entirely")
+            .defineInRange("submarineKnockbackResistance", 0.0, 0.0, 1.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_AUTOREPAIR_INTERVAL = BUILDER
+            .comment("Ticks between hull self repair pulses. Set to 0 to disable self repair")
+            .defineInRange("submarineAutorepairIntervalTicks", 200, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_AUTOREPAIR_PERCENT = BUILDER
+            .comment("Fraction of the hull restored by each self repair pulse")
+            .defineInRange("submarineAutorepairPercent", 0.01, 0.0, 1.0);
+    private static final ModConfigSpec.ConfigValue<String> SUBMARINE_REPAIR_ITEM = BUILDER
+            .comment("The item that repairs a submarine in an anvil")
+            .define("submarineRepairItem", "minecraft:diamond");
+    private static final ModConfigSpec.DoubleValue SUBMARINE_REPAIR_PERCENT = BUILDER
+            .comment("Fraction of the hull restored by each repair item used in an anvil")
+            .defineInRange("submarineRepairPercent", 0.20, 0.01, 1.0);
+
+    // Submarine modules
+    private static final ModConfigSpec.DoubleValue SUBMARINE_SOLAR_PERCENT = BUILDER
+            .comment("Percent of the submarine's power capacity the Solar Module collects every 5 seconds in open sunlit water")
+            .defineInRange("submarineSolarPercentPer5s", 1.0, 0.0, 100.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_BOOST_POWER = BUILDER
+            .comment("Power drawn by one activation of the Booster Module")
+            .defineInRange("submarineBoostPowerCost", 20_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_BOOST_DURATION = BUILDER
+            .comment("Ticks the Booster Module stays lit")
+            .defineInRange("submarineBoostDurationTicks", 200, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_BOOST_COOLDOWN = BUILDER
+            .comment("Ticks after the boost expires before it can be used again")
+            .defineInRange("submarineBoostCooldownTicks", 60, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_BOOST_SPEED = BUILDER
+            .comment("Extra speed the Booster Module gives, as a fraction of the base speed")
+            .defineInRange("submarineBoostSpeedBonus", 0.45, 0.0, 4.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_STEALTH_POWER = BUILDER
+            .comment("Power drawn by one activation of the Stealth Module")
+            .defineInRange("submarineStealthPowerCost", 50_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_STEALTH_DURATION = BUILDER
+            .comment("Ticks the Stealth Module hides the submarine from mobs")
+            .defineInRange("submarineStealthDurationTicks", 2_400, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_STEALTH_COOLDOWN = BUILDER
+            .comment("Ticks after stealth expires before it can be used again")
+            .defineInRange("submarineStealthCooldownTicks", 200, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_STEALTH_SLOW = BUILDER
+            .comment("Speed the Stealth Module gives up while it is running, as a fraction of the base speed")
+            .defineInRange("submarineStealthSpeedPenalty", 0.15, 0.0, 0.9);
+    private static final ModConfigSpec.IntValue SUBMARINE_SONAR_POWER = BUILDER
+            .comment("Power drawn by one Sonar Module ping")
+            .defineInRange("submarineSonarPowerCost", 30_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_SONAR_COOLDOWN = BUILDER
+            .comment("Ticks between Sonar Module pings")
+            .defineInRange("submarineSonarCooldownTicks", 900, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_SONAR_RADIUS = BUILDER
+            .comment("Radius in blocks the Sonar Module marks hostile creatures in")
+            .defineInRange("submarineSonarRadius", 32.0, 1.0, 128.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_SHIELD_POWER = BUILDER
+            .comment("Power drawn by one Shield Module discharge")
+            .defineInRange("submarineShieldPowerCost", 25_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_SHIELD_COOLDOWN = BUILDER
+            .comment("Ticks between Shield Module discharges")
+            .defineInRange("submarineShieldCooldownTicks", 100, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_SHIELD_STUN = BUILDER
+            .comment("Ticks a Shield Module discharge stuns the creatures it hits")
+            .defineInRange("submarineShieldStunTicks", 60, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_SHIELD_DAMAGE = BUILDER
+            .comment("Damage a Shield Module discharge deals")
+            .defineInRange("submarineShieldDamage", 10.0, 0.0, 1024.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_SHIELD_RADIUS = BUILDER
+            .comment("Radius in blocks of a Shield Module discharge")
+            .defineInRange("submarineShieldRadius", 5.0, 1.0, 32.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_SHIELD_POWER_PER_HEART = BUILDER
+            .comment("Power an installed Shield Module burns to absorb one heart of incoming damage")
+            .defineInRange("submarineShieldPowerPerHeart", 10_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_LASER_POWER = BUILDER
+            .comment("Power drawn by each Impulse Laser damage cycle")
+            .defineInRange("submarineLaserPowerCost", 10_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_RANGE = BUILDER
+            .comment("Range in blocks of the Impulse Laser beams")
+            .defineInRange("submarineLaserRange", 64.0, 1.0, 128.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_DAMAGE = BUILDER
+            .comment("Flat damage each Impulse Laser cycle deals")
+            .defineInRange("submarineLaserDamage", 10.0, 0.0, 1024.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_HEALTH_PERCENT = BUILDER
+            .comment("Extra Impulse Laser damage per cycle, as a fraction of the target's maximum health")
+            .defineInRange("submarineLaserHealthPercent", 0.025, 0.0, 1.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_TELEPORT_POWER = BUILDER
+            .comment("Power drawn by one Teleport Module jump")
+            .defineInRange("submarineTeleportPowerCost", 200_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_TELEPORT_MIN_POWER = BUILDER
+            .comment("Fraction of the power capacity that must be stored before a jump may be started")
+            .defineInRange("submarineTeleportMinPowerPercent", 0.20, 0.0, 1.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_TELEPORT_COOLDOWN = BUILDER
+            .comment("Ticks between Teleport Module jumps")
+            .defineInRange("submarineTeleportCooldownTicks", 600, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_ARMOR_MODULE_TOUGHNESS = BUILDER
+            .comment("Armor toughness of the hull while an Armor Module is installed. Netherite armor is 12")
+            .defineInRange("submarineArmorModuleToughness", 12.0, 0.0, 20.0);
 
     // Lucky fishing zones
     private static final ModConfigSpec.BooleanValue LUCKY_ZONES_ENABLED = BUILDER
@@ -246,6 +350,41 @@ public final class NTConfig {
     public static double submarineSpeed = 0.045;
     public static double submarineMaxSpeed = 0.65;
     public static double submarineCameraDistance = 10.0;
+    public static double submarineMaxHealth = 80.0;
+    public static double submarineArmor = 20.0;
+    public static double submarineArmorToughness = 8.0;
+    public static double submarineKnockbackResistance = 0.0;
+    public static int submarineAutorepairIntervalTicks = 200;
+    public static double submarineAutorepairPercent = 0.01;
+    public static String submarineRepairItem = "minecraft:diamond";
+    public static double submarineRepairPercent = 0.20;
+
+    public static double submarineSolarPercentPer5s = 1.0;
+    public static int submarineBoostPowerCost = 20_000;
+    public static int submarineBoostDurationTicks = 200;
+    public static int submarineBoostCooldownTicks = 60;
+    public static double submarineBoostSpeedBonus = 0.45;
+    public static int submarineStealthPowerCost = 50_000;
+    public static int submarineStealthDurationTicks = 2_400;
+    public static int submarineStealthCooldownTicks = 200;
+    public static double submarineStealthSpeedPenalty = 0.15;
+    public static int submarineSonarPowerCost = 30_000;
+    public static int submarineSonarCooldownTicks = 900;
+    public static double submarineSonarRadius = 32.0;
+    public static int submarineShieldPowerCost = 25_000;
+    public static int submarineShieldCooldownTicks = 100;
+    public static int submarineShieldStunTicks = 60;
+    public static double submarineShieldDamage = 10.0;
+    public static double submarineShieldRadius = 5.0;
+    public static int submarineShieldPowerPerHeart = 10_000;
+    public static int submarineLaserPowerCost = 10_000;
+    public static double submarineLaserRange = 64.0;
+    public static double submarineLaserDamage = 10.0;
+    public static double submarineLaserHealthPercent = 0.025;
+    public static int submarineTeleportPowerCost = 200_000;
+    public static double submarineTeleportMinPowerPercent = 0.20;
+    public static int submarineTeleportCooldownTicks = 600;
+    public static double submarineArmorModuleToughness = 12.0;
 
     public static boolean biomeInjectionEnabled() {
         return !SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
@@ -322,6 +461,41 @@ public final class NTConfig {
         submarineSpeed = SUBMARINE_SPEED.getAsDouble();
         submarineMaxSpeed = SUBMARINE_MAX_SPEED.getAsDouble();
         submarineCameraDistance = SUBMARINE_CAMERA_DISTANCE.getAsDouble();
+        submarineMaxHealth = SUBMARINE_MAX_HEALTH.getAsDouble();
+        submarineArmor = SUBMARINE_ARMOR.getAsDouble();
+        submarineArmorToughness = SUBMARINE_ARMOR_TOUGHNESS.getAsDouble();
+        submarineKnockbackResistance = SUBMARINE_KNOCKBACK_RESISTANCE.getAsDouble();
+        submarineAutorepairIntervalTicks = SUBMARINE_AUTOREPAIR_INTERVAL.getAsInt();
+        submarineAutorepairPercent = SUBMARINE_AUTOREPAIR_PERCENT.getAsDouble();
+        submarineRepairItem = SUBMARINE_REPAIR_ITEM.get();
+        submarineRepairPercent = SUBMARINE_REPAIR_PERCENT.getAsDouble();
+
+        submarineSolarPercentPer5s = SUBMARINE_SOLAR_PERCENT.getAsDouble();
+        submarineBoostPowerCost = SUBMARINE_BOOST_POWER.getAsInt();
+        submarineBoostDurationTicks = SUBMARINE_BOOST_DURATION.getAsInt();
+        submarineBoostCooldownTicks = SUBMARINE_BOOST_COOLDOWN.getAsInt();
+        submarineBoostSpeedBonus = SUBMARINE_BOOST_SPEED.getAsDouble();
+        submarineStealthPowerCost = SUBMARINE_STEALTH_POWER.getAsInt();
+        submarineStealthDurationTicks = SUBMARINE_STEALTH_DURATION.getAsInt();
+        submarineStealthCooldownTicks = SUBMARINE_STEALTH_COOLDOWN.getAsInt();
+        submarineStealthSpeedPenalty = SUBMARINE_STEALTH_SLOW.getAsDouble();
+        submarineSonarPowerCost = SUBMARINE_SONAR_POWER.getAsInt();
+        submarineSonarCooldownTicks = SUBMARINE_SONAR_COOLDOWN.getAsInt();
+        submarineSonarRadius = SUBMARINE_SONAR_RADIUS.getAsDouble();
+        submarineShieldPowerCost = SUBMARINE_SHIELD_POWER.getAsInt();
+        submarineShieldCooldownTicks = SUBMARINE_SHIELD_COOLDOWN.getAsInt();
+        submarineShieldStunTicks = SUBMARINE_SHIELD_STUN.getAsInt();
+        submarineShieldDamage = SUBMARINE_SHIELD_DAMAGE.getAsDouble();
+        submarineShieldRadius = SUBMARINE_SHIELD_RADIUS.getAsDouble();
+        submarineShieldPowerPerHeart = SUBMARINE_SHIELD_POWER_PER_HEART.getAsInt();
+        submarineLaserPowerCost = SUBMARINE_LASER_POWER.getAsInt();
+        submarineLaserRange = SUBMARINE_LASER_RANGE.getAsDouble();
+        submarineLaserDamage = SUBMARINE_LASER_DAMAGE.getAsDouble();
+        submarineLaserHealthPercent = SUBMARINE_LASER_HEALTH_PERCENT.getAsDouble();
+        submarineTeleportPowerCost = SUBMARINE_TELEPORT_POWER.getAsInt();
+        submarineTeleportMinPowerPercent = SUBMARINE_TELEPORT_MIN_POWER.getAsDouble();
+        submarineTeleportCooldownTicks = SUBMARINE_TELEPORT_COOLDOWN.getAsInt();
+        submarineArmorModuleToughness = SUBMARINE_ARMOR_MODULE_TOUGHNESS.getAsDouble();
     }
 
 }

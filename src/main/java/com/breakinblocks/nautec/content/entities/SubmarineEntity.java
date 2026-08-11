@@ -4,6 +4,10 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.EntityPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
+import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -14,37 +18,56 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.constant.dataticket.DataTicket;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.InterpolationHandler;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
-import net.minecraft.world.entity.vehicle.VehicleEntity;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
-public class SubmarineEntity extends VehicleEntity implements GeoEntity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProvider {
     public static final int MAX_PASSENGERS = 2;
     public static final float MODEL_Y_OFFSET = 3F / 16F;
     public static final float MODEL_Z_OFFSET = 2.5F / 16F;
@@ -60,8 +83,20 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     private static final RawAnimation STOWED = RawAnimation.begin().thenLoop("idle");
     private static final int STOW_TRANSITION_TICKS = 20;
 
+    public static final int MODULE_SLOTS = 9;
+
     private static final EntityDataAccessor<Integer> DATA_POWER =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.INT);
+
+    private static final List<EntityDataAccessor<ItemStack>> DATA_MODULES = defineModuleSlots();
+
+    private static List<EntityDataAccessor<ItemStack>> defineModuleSlots() {
+        List<EntityDataAccessor<ItemStack>> accessors = new ArrayList<>(MODULE_SLOTS);
+        for (int i = 0; i < MODULE_SLOTS; i++) {
+            accessors.add(SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.ITEM_STACK));
+        }
+        return List.copyOf(accessors);
+    }
 
     private static final float MAX_PITCH = 75F;
     private static final float PASSENGER_HEAD_YAW = 85F;
@@ -69,8 +104,10 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     private static final float YAW_RATE = 2.5F;
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
-    private final InterpolationHandler interpolation = new InterpolationHandler(this, 3);
+    private static final double AGGRO_TRANSFER_RANGE = 32D;
+
     private final AnimatableInstanceCache animatableCache = new InstancedAnimatableInstanceCache(this);
+    private final SubmarineModules modules = new SubmarineModules(this);
     private final IPowerStorage powerStorage = new EntityPowerStorage(this::getPowerStored, this::setPowerStored,
             NTConfig.submarinePowerCapacity, 200, 0);
 
@@ -89,22 +126,91 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     public SubmarineEntity(EntityType<? extends SubmarineEntity> type, Level level) {
         super(type, level);
         this.blocksBuilding = true;
+        rebaseAttribute(Attributes.MAX_HEALTH, NTConfig.submarineMaxHealth);
+        rebaseAttribute(Attributes.ARMOR, NTConfig.submarineArmor);
+        rebaseAttribute(Attributes.ARMOR_TOUGHNESS, NTConfig.submarineArmorToughness);
+        rebaseAttribute(Attributes.KNOCKBACK_RESISTANCE, NTConfig.submarineKnockbackResistance);
+        setHealth(getMaxHealth());
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return LivingEntity.createLivingAttributes()
+                .add(Attributes.MAX_HEALTH, NTConfig.submarineMaxHealth)
+                .add(Attributes.ARMOR, NTConfig.submarineArmor)
+                .add(Attributes.ARMOR_TOUGHNESS, NTConfig.submarineArmorToughness)
+                .add(Attributes.KNOCKBACK_RESISTANCE, NTConfig.submarineKnockbackResistance)
+                .add(Attributes.MOVEMENT_SPEED, 0D);
+    }
+
+    private void rebaseAttribute(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, double value) {
+        AttributeInstance instance = getAttribute(attribute);
+        if (instance != null) {
+            instance.setBaseValue(value);
+        }
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
         super.defineSynchedData(entityData);
         entityData.define(DATA_POWER, 0);
+        for (EntityDataAccessor<ItemStack> accessor : DATA_MODULES) {
+            entityData.define(accessor, ItemStack.EMPTY);
+        }
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         output.putInt("power", getPowerStored());
+        output.store("modules", ItemContainerContents.CODEC, ItemContainerContents.fromItems(getModuleStacks()));
     }
 
     @Override
     protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         setPowerStored(input.getIntOr("power", 0));
+        setModules(input.read("modules", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
+    }
+
+    public ItemStack getModule(int slot) {
+        return this.entityData.get(DATA_MODULES.get(slot));
+    }
+
+    public void setModule(int slot, ItemStack stack) {
+        this.entityData.set(DATA_MODULES.get(slot), stack, true);
+    }
+
+    public List<ItemStack> getModuleStacks() {
+        List<ItemStack> stacks = new ArrayList<>(MODULE_SLOTS);
+        for (int slot = 0; slot < MODULE_SLOTS; slot++) {
+            stacks.add(getModule(slot));
+        }
+        return stacks;
+    }
+
+    public void setModules(ItemContainerContents contents) {
+        NonNullList<ItemStack> stacks = NonNullList.withSize(MODULE_SLOTS, ItemStack.EMPTY);
+        contents.copyInto(stacks);
+        for (int slot = 0; slot < MODULE_SLOTS; slot++) {
+            setModule(slot, stacks.get(slot));
+        }
+    }
+
+    public SubmarineModules getModules() {
+        return this.modules;
+    }
+
+    public @Nullable SubmarineModuleType getModuleType(int slot) {
+        return SubmarineModuleItem.typeOf(getModule(slot));
+    }
+
+    public boolean hasModule(SubmarineModuleType type) {
+        for (int slot = 0; slot < MODULE_SLOTS; slot++) {
+            if (getModuleType(slot) == type) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getPowerStored() {
@@ -141,27 +247,11 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
 
     @Override
     public void tick() {
-        if (getHurtTime() > 0) {
-            setHurtTime(getHurtTime() - 1);
-        }
-
-        if (getDamage() > 0F) {
-            setDamage(getDamage() - 1F);
-        }
-
         if (getControllingPassenger() instanceof ServerPlayer driver) {
             this.input = driver.getLastClientInput();
         }
 
         super.tick();
-        this.interpolation.interpolate();
-
-        if (isLocalInstanceAuthoritative()) {
-            pilot();
-            move(MoverType.SELF, SubmarineCollision.clampMotion(level(), this, position(), getDeltaMovement(), getYRot(), getXRot()));
-        } else {
-            setDeltaMovement(Vec3.ZERO);
-        }
 
         if (!this.posTracked) {
             this.lastTickX = getX();
@@ -179,6 +269,12 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         } else if (this.underWay && isUnderWater() && this.random.nextInt(3) == 0) {
             spawnWake();
         }
+    }
+
+    @Override
+    public void travel(Vec3 relative) {
+        pilot();
+        move(MoverType.SELF, SubmarineCollision.clampMotion(level(), this, position(), getDeltaMovement(), getYRot(), getXRot()));
     }
 
     private void pilot() {
@@ -312,6 +408,9 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     }
 
     private void tickServer() {
+        autorepair();
+        this.modules.tickServer();
+
         if (getPassengers().isEmpty()) {
             return;
         }
@@ -337,6 +436,20 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         }
     }
 
+    private void autorepair() {
+        int interval = NTConfig.submarineAutorepairIntervalTicks;
+        if (interval <= 0 || this.tickCount % interval != 0) {
+            return;
+        }
+
+        float health = getHealth();
+        if (health <= 0F || health >= getMaxHealth()) {
+            return;
+        }
+
+        setHealth(health + (float) (getMaxHealth() * NTConfig.submarineAutorepairPercent));
+    }
+
     private void spawnWake() {
         Vec3 stern = position().subtract(getForward().scale(4.5D)).add(0D, 0.4D, 0D);
         level().addParticle(ParticleTypes.BUBBLE, stern.x, stern.y, stern.z, 0D, 0.02D, 0D);
@@ -360,11 +473,28 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             return InteractionResult.SUCCESS;
         }
 
+        if (player.getItemInHand(hand).is(Tags.Items.TOOLS_WRENCH)) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(this, buf -> buf.writeVarInt(getId()));
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         if (level().isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
         return player.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return hasCustomName() ? super.getDisplayName() : Component.translatable("nautec.submarine.modules");
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return new SubmarineModuleMenu(containerId, inventory, this);
     }
 
     private void retrieve(Player player) {
@@ -377,18 +507,115 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     }
 
     @Override
-    public boolean hurtClient(DamageSource source) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        Entity attacker = source.getEntity();
+        if (isRemoved() || (attacker != null && hasPassenger(attacker))) {
+            return false;
+        }
+
+        if (source.isCreativePlayer()) {
+            ejectPassengers();
+            spawnAtLocation(level, toStack());
+            gameEvent(GameEvent.ENTITY_PLACE, attacker);
+            discard();
+            return true;
+        }
+
+        return super.hurtServer(level, source, damage);
+    }
+
+    @Override
+    public void die(DamageSource source) {
+        if (this.dead || isRemoved()) {
+            return;
+        }
+
+        this.dead = true;
+        ejectPassengers();
+
+        if (level() instanceof ServerLevel serverLevel && !source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+            spawnAtLocation(serverLevel, toStack());
+        }
+
+        gameEvent(GameEvent.ENTITY_DIE);
+        discard();
+    }
+
+    @Override
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return super.isInvulnerableTo(level, source)
+                || source.is(DamageTypeTags.IS_DROWNING)
+                || source.is(DamageTypeTags.IS_FREEZING)
+                || source.is(DamageTypes.IN_WALL)
+                || source.is(DamageTypes.CRAMMING);
+    }
+
+    @Override
+    public void heal(float amount) {
+    }
+
+    @Override
+    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource source) {
+        resetFallDistance();
         return false;
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean isAffectedByPotions() {
         return false;
+    }
+
+    @Override
+    public boolean canBeAffected(MobEffectInstance effect) {
+        return false;
+    }
+
+    @Override
+    public boolean canUseSlot(EquipmentSlot slot) {
+        return false;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
+    public HumanoidArm getMainArm() {
+        return HumanoidArm.RIGHT;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.IRON_GOLEM_HURT;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getDeathSound() {
+        return SoundEvents.IRON_GOLEM_DEATH;
     }
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
         return getPassengers().size() < MAX_PASSENGERS;
+    }
+
+    @Override
+    protected void addPassenger(Entity passenger) {
+        super.addPassenger(passenger);
+        if (level().isClientSide() || !(passenger instanceof LivingEntity boarded)) {
+            return;
+        }
+
+        if (passenger instanceof ServerPlayer player) {
+            this.modules.sendCooldownSnapshot(player);
+        }
+
+        List<Mob> nearby = level().getEntitiesOfClass(Mob.class, getBoundingBox().inflate(AGGRO_TRANSFER_RANGE),
+                mob -> mob.getTarget() == boarded);
+        for (Mob mob : nearby) {
+            mob.setTarget(this);
+        }
     }
 
     @Override
@@ -439,11 +666,6 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     }
 
     @Override
-    public @Nullable InterpolationHandler getInterpolation() {
-        return this.interpolation;
-    }
-
-    @Override
     protected Entity.MovementEmission getMovementEmission() {
         return Entity.MovementEmission.EVENTS;
     }
@@ -489,27 +711,16 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     }
 
     @Override
-    protected Item getDropItem() {
-        return NTItems.SUBMARINE.get();
-    }
-
-    @Override
     public ItemStack getPickResult() {
         return toStack();
-    }
-
-    @Override
-    protected void destroy(ServerLevel level, DamageSource source) {
-        kill(level);
-        if (level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.ENTITY_DROPS)) {
-            spawnAtLocation(level, toStack());
-        }
     }
 
     public ItemStack toStack() {
         ItemStack stack = new ItemStack(NTItems.SUBMARINE.get());
         stack.set(NTDataComponents.POWER, new ComponentPowerStorage(getPowerStored(), NTConfig.submarinePowerCapacity, 1F));
-        stack.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, getCustomName());
+        stack.set(NTDataComponents.SUBMARINE_HEALTH, getHealth());
+        stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(getModuleStacks()));
+        stack.set(DataComponents.CUSTOM_NAME, getCustomName());
         return stack;
     }
 
@@ -518,13 +729,11 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         if (stored != null) {
             setPowerStored(stored.getPowerStored());
         }
-    }
 
-    @Override
-    protected void checkFallDamage(double ya, boolean onGround, net.minecraft.world.level.block.state.BlockState onState, net.minecraft.core.BlockPos pos) {
-        if (onGround) {
-            resetFallDistance();
-        }
+        Float health = stack.get(NTDataComponents.SUBMARINE_HEALTH);
+        setHealth(health == null ? getMaxHealth() : Math.max(1F, health));
+
+        setModules(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
     }
 
     @Override
