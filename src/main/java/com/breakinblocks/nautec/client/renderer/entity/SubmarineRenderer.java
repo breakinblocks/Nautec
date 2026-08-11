@@ -20,11 +20,9 @@ import net.minecraft.util.Mth;
 public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, EntityRenderState> {
     private static final DataTicket<Float> YAW = DataTicket.create("nautec:submarine_yaw", Float.class);
     private static final DataTicket<Float> PITCH = DataTicket.create("nautec:submarine_pitch", Float.class);
-    private static final DataTicket<Float> ROLL = DataTicket.create("nautec:submarine_roll", Float.class);
 
     private static final Identifier EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
 
-    /** Height of the hull's visual centre above the entity origin, used as the pitch pivot. */
     private static final float PITCH_PIVOT = 4.5F / 16F;
 
     public SubmarineRenderer(EntityRendererProvider.Context context) {
@@ -40,13 +38,8 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
         state.addGeckolibData(SubmarineEntity.DEPLOYED, submarine.isDeployed());
         state.addGeckolibData(YAW, Mth.rotLerp(partialTick, submarine.yRotO, submarine.getYRot()));
         state.addGeckolibData(PITCH, Mth.rotLerp(partialTick, submarine.xRotO, submarine.getXRot()));
-        state.addGeckolibData(ROLL, submarine.getRoll(partialTick));
     }
 
-    /**
-     * The canopy and cabin glass are painted at partial alpha, which GeckoLib's default
-     * {@code entityCutout} would render fully opaque.
-     */
     @Override
     public RenderType getRenderType(EntityRenderState state, Identifier texture) {
         return RenderTypes.entityTranslucent(texture);
@@ -55,10 +48,9 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
     @Override
     protected void applyRotations(RenderPassInfo<EntityRenderState> pass, PoseStack poseStack, float scale) {
         poseStack.translate(0F, PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(pass.getOrDefaultGeckolibData(YAW, 0F)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F - pass.getOrDefaultGeckolibData(YAW, 0F)));
         poseStack.mulPose(Axis.XP.rotationDegrees(-pass.getOrDefaultGeckolibData(PITCH, 0F)));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(pass.getOrDefaultGeckolibData(ROLL, 0F)));
-        poseStack.translate(0F, -PITCH_PIVOT, 0F);
+        poseStack.translate(0F, -PITCH_PIVOT, -SubmarineEntity.MODEL_Z_OFFSET);
     }
 
     private static class SubmarineGlowLayer extends AutoGlowingGeoLayer<SubmarineEntity, Void, EntityRenderState> {
@@ -71,10 +63,6 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
             return EMISSIVE;
         }
 
-        /**
-         * Without this the glow sits at exactly the hull's depth, which fights with it now that the
-         * hull is drawn translucent. GeckoLib only offsets armour layers by default.
-         */
         @Override
         protected boolean shouldAddZOffset(EntityRenderState state) {
             return true;

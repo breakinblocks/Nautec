@@ -103,9 +103,9 @@ block state in the world.
 
 ## Vehicles
 
-The Abyssal Submersible is a two seat crewed vehicle: place it on water, right-click to board, and it
-steers wherever the pilot looks. It runs on stored power, charges in a Charger, and keeps its crew
-breathing while it is sealed and powered.
+The Abyssal Submersible is a two seat crewed vehicle: place it on water, right-click to board, hold
+right mouse to steer with the mouse, A/D for the rudder, W/S for the throttle. It runs on stored
+power, charges in a Charger, and keeps its crew breathing while it is sealed and powered.
 
 ## Compatibility
 
@@ -117,7 +117,7 @@ forward from "An Introduction to Laser Power".
 
 ## Configuration
 
-Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust and top speed).
+Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
 
 ## For pack developers
 

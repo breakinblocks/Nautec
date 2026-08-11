@@ -13,13 +13,13 @@ import com.geckolib.animatable.instance.InstancedAnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
-import com.geckolib.animation.object.PlayState;
 import com.geckolib.constant.dataticket.DataTicket;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,6 +38,7 @@ import net.minecraft.world.entity.vehicle.VehicleEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -46,27 +47,17 @@ import org.jetbrains.annotations.Nullable;
 public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     public static final int MAX_PASSENGERS = 2;
     public static final float MODEL_Y_OFFSET = 3F / 16F;
-
-    /**
-     * How much bigger than its authored size the hull is drawn. Everything else is derived from this
-     * one number: the render scale, the hitbox, the seat spacing and the ride height.
-     * <p>
-     * The cabin roof sits 5 model units above the seat, and a seated player stands about 1.35 blocks
-     * tall, so anything under 4.32 leaves the pilot's head poking through the canopy.
-     */
+    public static final float MODEL_Z_OFFSET = 2.5F / 16F;
     public static final float MODEL_SCALE = 4.5F;
 
-    private static final double DRIVER_SEAT_Z = -3D / 16D * MODEL_SCALE;
-    private static final double PASSENGER_SEAT_Z = -7D / 16D * MODEL_SCALE;
-    /** Top of the seat pan (front_seat[2] tops out at y=1), not the backrest, which reaches y=3. */
+    private static final double DRIVER_SEAT_Z = -0.5D / 16D * MODEL_SCALE;
+    private static final double PASSENGER_SEAT_Z = -4.5D / 16D * MODEL_SCALE;
     private static final double RIDE_HEIGHT = (1D / 16D + MODEL_Y_OFFSET) * MODEL_SCALE;
 
     public static final DataTicket<Boolean> DEPLOYED = DataTicket.create("nautec:submarine_deployed", Boolean.class);
 
     private static final RawAnimation DEPLOY = RawAnimation.begin().thenPlayAndHold("deploy");
     private static final RawAnimation STOWED = RawAnimation.begin().thenLoop("idle");
-
-    /** Ticks spent blending back to the stowed pose. The deploy itself is keyframed at 2 seconds. */
     private static final int STOW_TRANSITION_TICKS = 20;
 
     private static final EntityDataAccessor<Integer> DATA_POWER =
@@ -74,16 +65,8 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
 
     private static final float MAX_PITCH = 75F;
     private static final float PASSENGER_HEAD_YAW = 85F;
-    /** Degrees per tick the nose eases back to level once the pilot is no longer diving. */
     private static final float PITCH_LEVEL_RATE = 6F;
-    /** Degrees per tick the hull swings toward the pilot's aim while the use key is held. */
-    private static final float STEER_RATE = 5F;
-    /** Degrees per tick the rudder (A/D) swings the hull. */
     private static final float YAW_RATE = 2.5F;
-    private static final float MAX_ROLL = 25F;
-    private static final float ROLL_RATE = 2F;
-    /** Degrees of bank per degree per tick of turn. Presentation only. */
-    private static final float BANK_PER_TURN = 6F;
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
     private final InterpolationHandler interpolation = new InterpolationHandler(this, 3);
@@ -92,12 +75,16 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             NTConfig.submarinePowerCapacity, 200, 0);
 
     private Input input = Input.EMPTY;
-    /** True while the pilot holds the use key. Only then does the mouse steer. */
     private boolean steering;
-    private float roll;
-    private float rollO;
-    private float lastYaw;
+    private boolean steeringLast;
+    private boolean descending;
+    private float lastDriverYaw;
+    private float lastDriverPitch;
     private boolean underWay;
+    private boolean posTracked;
+    private double lastTickX;
+    private double lastTickY;
+    private double lastTickZ;
 
     public SubmarineEntity(EntityType<? extends SubmarineEntity> type, Level level) {
         super(type, level);
@@ -140,21 +127,12 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         this.steering = steering;
     }
 
-    public boolean isSteering() {
-        return this.steering;
+    public void setDescending(boolean descending) {
+        this.descending = descending;
     }
 
-    public float getRoll(float partialTick) {
-        return Mth.lerp(partialTick, this.rollO, this.roll);
-    }
-
-    /**
-     * True while the submarine is rigged for operation: canopy glass raised, antenna up, engine pods
-     * swung down. Purely a question of whether anyone is aboard, so a parked submarine stays stowed
-     * whether it is floating or submerged.
-     */
     public boolean isDeployed() {
-        return !this.getPassengers().isEmpty();
+        return !this.getPassengers().isEmpty() || this.isInWater();
     }
 
     public boolean isSealed() {
@@ -171,25 +149,30 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             setDamage(getDamage() - 1F);
         }
 
-        if (getControllingPassenger() instanceof net.minecraft.server.level.ServerPlayer driver) {
+        if (getControllingPassenger() instanceof ServerPlayer driver) {
             this.input = driver.getLastClientInput();
         }
-
-        double prevX = getX();
-        double prevY = getY();
-        double prevZ = getZ();
 
         super.tick();
         this.interpolation.interpolate();
 
         if (isLocalInstanceAuthoritative()) {
             pilot();
-            move(MoverType.SELF, getDeltaMovement());
+            move(MoverType.SELF, SubmarineCollision.clampMotion(level(), this, position(), getDeltaMovement(), getYRot(), getXRot()));
         } else {
             setDeltaMovement(Vec3.ZERO);
         }
 
-        this.underWay = distanceToSqr(prevX, prevY, prevZ) > MOVEMENT_EPSILON;
+        if (!this.posTracked) {
+            this.lastTickX = getX();
+            this.lastTickY = getY();
+            this.lastTickZ = getZ();
+            this.posTracked = true;
+        }
+        this.underWay = distanceToSqr(this.lastTickX, this.lastTickY, this.lastTickZ) > MOVEMENT_EPSILON;
+        this.lastTickX = getX();
+        this.lastTickY = getY();
+        this.lastTickZ = getZ();
 
         if (!level().isClientSide()) {
             tickServer();
@@ -207,21 +190,16 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             if (this.steering) {
                 aimSteer(driver, submerged);
             }
-            rudder();
+            this.steeringLast = this.steering;
+            rudder(driver);
             if (!submerged) {
                 levelOut();
             }
-            // Collapse the previous rotation onto the current one, as AbstractHorse.tickRidden does,
-            // so the hull is never rendered a tick behind the seat the pilot is sitting in.
-            this.yRotO = getYRot();
-            this.xRotO = getXRot();
             setYHeadRot(getYRot());
             setYBodyRot(getYRot());
         } else {
             levelOut();
         }
-
-        tickRoll();
 
         if (driver != null && getPowerStored() > 0) {
             Input controls = this.input;
@@ -243,6 +221,10 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
 
             if (controls.jump()) {
                 motion = motion.add(0D, submerged ? NTConfig.submarineSpeed : NTConfig.submarineSpeed * 0.4D, 0D);
+            }
+
+            if (this.descending) {
+                motion = motion.add(0D, submerged ? -NTConfig.submarineSpeed : -NTConfig.submarineSpeed * 0.4D, 0D);
             }
         }
 
@@ -271,27 +253,30 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         }
     }
 
-    /**
-     * Steers the way a saddled horse does: the hull takes the pilot's heading outright rather than
-     * keeping a heading of its own for them to look away from. Pitch follows their view under water so
-     * they can dive by looking down, and eases back to level at the surface.
-     */
-    /**
-     * Swings the hull toward wherever the pilot is aiming, rate limited so engaging the mouse does not
-     * snap the submarine to the current view. Only runs while the use key is held.
-     */
     private void aimSteer(LivingEntity driver, boolean submerged) {
-        float yawDelta = Mth.wrapDegrees(driver.getYRot() - getYRot());
-        setYRot(getYRot() + Mth.clamp(yawDelta, -STEER_RATE, STEER_RATE));
-
-        if (submerged) {
-            float pitchDelta = Mth.wrapDegrees(Mth.clamp(driver.getXRot(), -MAX_PITCH, MAX_PITCH) - getXRot());
-            setXRot(getXRot() + Mth.clamp(pitchDelta, -STEER_RATE, STEER_RATE));
+        if (!this.steeringLast) {
+            this.lastDriverYaw = driver.getYRot();
+            this.lastDriverPitch = driver.getXRot();
         }
+
+        float yawDelta = Mth.wrapDegrees(driver.getYRot() - this.lastDriverYaw);
+        float pitchDelta = driver.getXRot() - this.lastDriverPitch;
+
+        float targetYaw = getYRot() + yawDelta;
+        float targetPitch = submerged ? Mth.clamp(getXRot() + pitchDelta, -MAX_PITCH, MAX_PITCH) : getXRot();
+        if (!SubmarineCollision.blocked(level(), this, position(), targetYaw, targetPitch)) {
+            setYRot(targetYaw);
+            setXRot(targetPitch);
+        }
+
+        driver.setYRot(getYRot());
+        driver.setXRot(getXRot());
+
+        this.lastDriverYaw = getYRot();
+        this.lastDriverPitch = getXRot();
     }
 
-    /** Rudder on A/D. Works with or without the mouse held, and does not need power. */
-    private void rudder() {
+    private void rudder(LivingEntity driver) {
         float yaw = 0F;
         if (this.input.left()) {
             yaw -= YAW_RATE;
@@ -299,29 +284,26 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         if (this.input.right()) {
             yaw += YAW_RATE;
         }
-        if (yaw != 0F) {
+        if (yaw != 0F && !SubmarineCollision.blocked(level(), this, position(), getYRot() + yaw, getXRot())) {
             setYRot(getYRot() + yaw);
+            driver.setYRot(driver.getYRot() + yaw);
+            if (this.steering) {
+                this.lastDriverYaw = Mth.wrapDegrees(this.lastDriverYaw + yaw);
+            }
         }
-    }
-
-    /**
-     * Banks the hull into its own turns. Presentation only: it does not change which way thrust points
-     * or which way is up. Flip the sign on {@code target} to bank the other way.
-     */
-    private void tickRoll() {
-        this.rollO = this.roll;
-        float turn = Mth.wrapDegrees(getYRot() - this.lastYaw);
-        this.lastYaw = getYRot();
-
-        float target = Mth.clamp(-turn * BANK_PER_TURN, -MAX_ROLL, MAX_ROLL);
-        this.roll += Mth.clamp(target - this.roll, -ROLL_RATE, ROLL_RATE);
     }
 
     private void seatRotation(Entity passenger) {
         passenger.setYBodyRot(getYRot());
+        if (passenger instanceof LivingEntity living) {
+            living.yBodyRotO = this.yRotO;
+        }
 
         if (passenger == getControllingPassenger()) {
             passenger.setYHeadRot(getYRot());
+            if (passenger instanceof LivingEntity living) {
+                living.yHeadRotO = this.yRotO;
+            }
             return;
         }
 
@@ -333,6 +315,8 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         if (getPassengers().isEmpty()) {
             return;
         }
+
+        boolean creativePilot = getControllingPassenger() instanceof Player pilot && pilot.gameMode().isCreative();
 
         int drain = NTConfig.submarineIdlePowerUsage;
         if (this.underWay) {
@@ -348,11 +332,13 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
             }
         }
 
-        setPowerStored(getPowerStored() - drain);
+        if (!creativePilot) {
+            setPowerStored(getPowerStored() - drain);
+        }
     }
 
     private void spawnWake() {
-        Vec3 stern = position().subtract(getForward().scale(1.1D)).add(0D, 0.4D, 0D);
+        Vec3 stern = position().subtract(getForward().scale(4.5D)).add(0D, 0.4D, 0D);
         level().addParticle(ParticleTypes.BUBBLE, stern.x, stern.y, stern.z, 0D, 0.02D, 0D);
     }
 
@@ -364,7 +350,14 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         }
 
         if (player.isSecondaryUseActive()) {
-            return InteractionResult.PASS;
+            if (!getPassengers().isEmpty()) {
+                return InteractionResult.PASS;
+            }
+            if (level().isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+            retrieve(player);
+            return InteractionResult.SUCCESS;
         }
 
         if (level().isClientSide()) {
@@ -372,6 +365,25 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         }
 
         return player.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    }
+
+    private void retrieve(Player player) {
+        ItemStack stack = toStack();
+        if (!player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
+        gameEvent(GameEvent.ENTITY_PLACE, player);
+        discard();
+    }
+
+    @Override
+    public boolean hurtClient(DamageSource source) {
+        return false;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+        return false;
     }
 
     @Override
@@ -406,6 +418,8 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
         super.removePassenger(passenger);
         if (getPassengers().isEmpty()) {
             this.input = Input.EMPTY;
+            this.steering = false;
+            this.descending = false;
         }
     }
 
@@ -430,6 +444,11 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     }
 
     @Override
+    protected Entity.MovementEmission getMovementEmission() {
+        return Entity.MovementEmission.EVENTS;
+    }
+
+    @Override
     public boolean isFlyingVehicle() {
         return true;
     }
@@ -437,6 +456,11 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
     @Override
     public boolean isPickable() {
         return !isRemoved();
+    }
+
+    @Override
+    public float getPickRadius() {
+        return 3.5F;
     }
 
     @Override
@@ -505,9 +529,6 @@ public class SubmarineEntity extends VehicleEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        // The model's rest pose is the deployed one, so the very first frame has to snap straight to
-        // whichever pose is correct. Blending it would show a newly placed submarine fully deployed
-        // for the length of the transition before it folded away. Later switches do blend.
         boolean[] posed = {false};
 
         controllers.add(new AnimationController<SubmarineEntity>("canopy", 0, state -> {

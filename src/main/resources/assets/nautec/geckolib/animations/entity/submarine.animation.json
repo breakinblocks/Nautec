@@ -7,15 +7,15 @@
       "bones": {
         "back_engine_jet_outer_walls": {
           "position": {
-            "0": {
+            "0.45833": {
               "vector": [
                 0.0,
                 0.0,
-                3.0
+                2.9
               ],
               "lerp_mode": "catmullrom"
             },
-            "1": {
+            "1.25": {
               "vector": [
                 0.0,
                 0.0,
@@ -129,11 +129,11 @@
               "vector": [
                 0.0,
                 0.0,
-                5.0
+                1.0
               ],
               "lerp_mode": "catmullrom"
             },
-            "1": {
+            "1.5": {
               "vector": [
                 0.0,
                 0.0,
@@ -299,7 +299,7 @@
               "vector": [
                 0.0,
                 0.0,
-                3.0
+                2.0
               ],
               "lerp_mode": "catmullrom"
             },
@@ -307,7 +307,7 @@
               "vector": [
                 0.0,
                 0.0,
-                3.0
+                2.0
               ],
               "lerp_mode": "catmullrom"
             }
@@ -359,7 +359,7 @@
               "vector": [
                 0.0,
                 0.0,
-                5.0
+                1.0
               ],
               "lerp_mode": "catmullrom"
             },
@@ -367,7 +367,7 @@
               "vector": [
                 0.0,
                 0.0,
-                5.0
+                1.0
               ],
               "lerp_mode": "catmullrom"
             }

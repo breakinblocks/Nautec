@@ -35,8 +35,8 @@ public final class NTEntities {
 
     public static final Supplier<EntityType<SubmarineEntity>> SUBMARINE = ENTITIES.register("submarine",
             () -> EntityType.Builder.<SubmarineEntity>of(SubmarineEntity::new, MobCategory.MISC)
-                    .sized(1.15f * SubmarineEntity.MODEL_SCALE, 1.0f * SubmarineEntity.MODEL_SCALE)
-                    .eyeHeight(0.72f * SubmarineEntity.MODEL_SCALE).clientTrackingRange(10)
+                    .sized(3.0f, 3.2f)
+                    .eyeHeight(0.5f * SubmarineEntity.MODEL_SCALE).clientTrackingRange(10)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("submarine"))));
 
     public static final Supplier<EntityType<SiltSkipper>> SILT_SKIPPER = mob("silt_skipper", SiltSkipper::new,

@@ -1,12 +1,16 @@
 package com.breakinblocks.nautec.events;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.screen.SubmarineHudPositionScreen;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 
@@ -16,18 +20,23 @@ public final class SubmarineClientEvents {
     public static void onClientTick(ClientTickEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
-        if (player == null || !(player.getControlledVehicle() instanceof SubmarineEntity submarine)) {
+        if (player == null) {
             return;
         }
 
-        submarine.setInput(player.input.keyPresses);
-        submarine.setSteering(minecraft.options.keyUse.isDown());
+        while (NTKeybinds.SUBMARINE_HUD_KEYBIND.get().consumeClick()) {
+            if (minecraft.screen == null) {
+                minecraft.setScreen(new SubmarineHudPositionScreen());
+            }
+        }
+
+        if (player.getControlledVehicle() instanceof SubmarineEntity submarine) {
+            submarine.setInput(player.input.keyPresses);
+            submarine.setSteering(minecraft.options.keyUse.isDown());
+            submarine.setDescending(NTKeybinds.SUBMARINE_DESCEND_KEYBIND.get().isDown());
+        }
     }
 
-    /**
-     * The use key is the steering control while piloting, so stop it also swinging whatever is in the
-     * pilot's hand or placing blocks against the sea floor.
-     */
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
         if (!event.isUseItem()) {
@@ -38,6 +47,14 @@ public final class SubmarineClientEvents {
         if (player != null && player.getControlledVehicle() instanceof SubmarineEntity) {
             event.setSwingHand(false);
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCameraDistance(CalculateDetachedCameraDistanceEvent event) {
+        if (event.getCamera().entity() != null
+                && event.getCamera().entity().getVehicle() instanceof SubmarineEntity) {
+            event.setDistance((float) NTConfig.submarineCameraDistance);
         }
     }
 

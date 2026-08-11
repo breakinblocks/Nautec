@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.entities.SubmarineCollision;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
@@ -74,6 +75,64 @@ public final class SubmarineTests {
             helper.assertValueEqual(filled, submarine.getPowerStored(), "power stored after charging");
             helper.succeed();
         }));
+
+        r.add("submarine/deploys_in_water", 60, helper -> {
+            helper.setBlock(SUB_POS, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+            helper.runAfterDelay(5, () -> {
+                SubmarineEntity submarine = spawnSubmarine(helper);
+                helper.runAfterDelay(5, () -> {
+                    helper.assertTrue(submarine.isDeployed(), "an empty submarine floating in water should stay deployed");
+                    helper.succeed();
+                });
+            });
+        });
+
+        r.add("submarine/survives_being_punched", 40, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 1000F);
+            helper.assertFalse(submarine.isRemoved(), "punching the submarine should not destroy it");
+            helper.assertValueEqual(0F, submarine.getDamage(), "submarine damage taken");
+            helper.succeed();
+        }));
+
+        r.add("submarine/oriented_collision", com.breakinblocks.nautec.Nautec.rl("empty_19x11x19"), 80, 0, helper -> {
+            for (int x = 3; x <= 15; x++) {
+                for (int y = 1; y <= 9; y++) {
+                    helper.setBlock(new BlockPos(x, y, 15), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+                }
+            }
+
+            helper.runAfterDelay(5, () -> {
+                SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(9, 4, 9));
+                net.minecraft.world.phys.Vec3 pos = submarine.position();
+                net.minecraft.server.level.ServerLevel level = helper.getLevel();
+
+                helper.assertFalse(SubmarineCollision.blocked(level, submarine, pos, 0F, 0F),
+                        "the hull should clear the wall at rest");
+                helper.assertTrue(SubmarineCollision.blocked(level, submarine, pos.add(0, 0, 1), 0F, 0F),
+                        "the nose should hit the wall one block ahead, well before the core box does");
+                helper.assertFalse(SubmarineCollision.blocked(level, submarine, pos, 90F, 0F),
+                        "parallel to the wall the beam should clear it");
+
+                net.minecraft.world.phys.Vec3 clamped = SubmarineCollision.clampMotion(level, submarine, pos,
+                        new net.minecraft.world.phys.Vec3(0, 0, 1), 0F, 0F);
+                helper.assertTrue(clamped.z < 0.62 && clamped.z >= 0.25,
+                        "forward motion should clamp at the wall, got " + clamped.z);
+                helper.succeed();
+            });
+        });
+
+        r.add("submarine/creative_pilot_no_upkeep", 60, helper -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+            submarine.setPowerStored(5_000);
+            net.minecraft.world.entity.player.Player pilot = helper.makeMockPlayer(net.minecraft.world.level.GameType.CREATIVE);
+            pilot.startRiding(submarine);
+
+            helper.runAfterDelay(10, () -> {
+                helper.assertValueEqual(5_000, submarine.getPowerStored(), "power drained despite a creative pilot");
+                helper.succeed();
+            });
+        });
 
         r.add("submarine/oxygen_and_drain", 60, helper -> {
             SubmarineEntity submarine = spawnSubmarine(helper);

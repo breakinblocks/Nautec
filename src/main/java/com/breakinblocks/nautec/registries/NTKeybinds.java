@@ -33,6 +33,15 @@ public final class NTKeybinds {
     public static final Lazy<KeyMapping> ACTIVATE_LASER_KEYBIND = keyBind(
             "Activate Guardian Eye Augment Laser", GLFW.GLFW_KEY_L);
 
+    public static final Lazy<KeyMapping> SUBMARINE_DESCEND_KEYBIND = keyBind(
+            "Submarine Descend", GLFW.GLFW_KEY_C);
+
+    public static final Lazy<KeyMapping> SUBMARINE_HUD_KEYBIND = Lazy.of(() -> new KeyMapping(
+            "Reposition Submarine HUD",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME,
+            net.neoforged.neoforge.client.settings.KeyModifier.CONTROL,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, NAUTEC_CATEGORY));
+
 
     public static Lazy<KeyMapping> keyBind(String name, int key) {
         return Lazy.of(() -> new KeyMapping(name, InputConstants.Type.KEYSYM, key, NAUTEC_CATEGORY));
@@ -46,5 +55,7 @@ public final class NTKeybinds {
         event.register(THROW_POTION_KEYBIND.get());
         event.register(THROW_SPREADING_KEYBIND.get());
         event.register(ACTIVATE_LASER_KEYBIND.get());
+        event.register(SUBMARINE_DESCEND_KEYBIND.get());
+        event.register(SUBMARINE_HUD_KEYBIND.get());
     }
 }

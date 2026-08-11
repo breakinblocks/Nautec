@@ -136,8 +136,6 @@ public class ItemModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
-        // These ship a hand-written model under models/item/, but still need an item model
-        // definition pointing at it or they render as the missing model.
         handAuthoredItem(NTItems.VALVE.get());
         handAuthoredItem(NTItems.ANCIENT_VALVE.get());
         handAuthoredItem(NTBlocks.BACTERIAL_ANALYZER.asItem());
@@ -145,8 +143,6 @@ public class ItemModelProvider extends ModelProvider {
             handAuthoredItem(NTItems.NAUTEC_GUIDE.get());
         }
 
-        // Flat sprite in the inventory, 3D model in hand. This used to be the
-        // neoforge:separate_transforms model loader, which no longer exists.
         itemModels.itemModelOutput.accept(NTItems.NEPTUNES_TRIDENT.get(), ItemModelUtils.select(
                 new DisplayContext(),
                 ItemModelUtils.plainModel(Nautec.rl("item/neptunes_trident_handheld")),
