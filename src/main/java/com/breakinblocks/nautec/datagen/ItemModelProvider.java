@@ -71,6 +71,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.ATLANTIC_GOLD_INGOT.get());
         basicItem(NTItems.ATLANTIC_GOLD_NUGGET.get());
         basicItem(NTItems.PRISMARINE_CRYSTAL_SHARD.get());
+        basicItem(NTItems.RESONANT_SHARD.get());
         basicItem(NTItems.PRISMARINE_LENS.get());
         basicItem(NTItems.AQUARINE_STEEL_COMPOUND.get());
         basicItem(NTItems.CAST_IRON_COMPOUND.get());

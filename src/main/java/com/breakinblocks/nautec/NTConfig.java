@@ -168,6 +168,38 @@ public final class NTConfig {
             .comment("The purity a Focusing Lens adds to a beam passing straight through it")
             .defineInRange("lensPurityBonus", 0.5, 0, 10);
 
+    private static final ModConfigSpec.DoubleValue RESONANCE_BASE_CEILING = BUILDER
+            .comment("The charge a Resonance Chamber can hold at zero purity. Purity raises this ceiling")
+            .defineInRange("resonanceBaseCeiling", 2000.0, 1, Double.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue RESONANCE_POWER_USAGE = BUILDER
+            .comment("The amount of power a Resonance Chamber requires before it starts building charge")
+            .defineInRange("resonancePowerUsage", 20, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue RESONANCE_CRITICAL_LOW = BUILDER
+            .comment("The fraction of the stability ceiling at which a Resonance Chamber becomes critical and can craft")
+            .defineInRange("resonanceCriticalLow", 0.9, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue RESONANCE_CRITICAL_HIGH = BUILDER
+            .comment("The fraction of the stability ceiling above which a Resonance Chamber vents instead of crafting")
+            .defineInRange("resonanceCriticalHigh", 1.1, 1, 10);
+
+    private static final ModConfigSpec.IntValue RESONANCE_VENT_COOLDOWN = BUILDER
+            .comment("The amount of ticks a Resonance Chamber stays cracked and inert after venting")
+            .defineInRange("resonanceVentCooldown", 200, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue RESONANCE_VENT_RADIUS = BUILDER
+            .comment("The radius in blocks a Resonance Chamber vent reaches")
+            .defineInRange("resonanceVentRadius", 4.0, 0, 32);
+
+    private static final ModConfigSpec.DoubleValue RESONANCE_VENT_DAMAGE = BUILDER
+            .comment("The damage a Resonance Chamber vent deals to everything in range")
+            .defineInRange("resonanceVentDamage", 8.0, 0, 1000);
+
+    private static final ModConfigSpec.IntValue GATEWAY_COOLDOWN = BUILDER
+            .comment("The amount of ticks something is barred from using another gateway after arriving, which is what stops it bouncing straight back")
+            .defineInRange("gatewayCooldown", 100, 0, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue ABYSSAL_EYES_DEPTH = BUILDER
             .comment("The Y level at or below which the Abyssal Eyes augment grants night vision")
             .defineInRange("abyssalEyesDepth", 45, -64, 320);
@@ -398,6 +430,14 @@ public final class NTConfig {
     public static double mirrorPurityFactor = 0.9;
     public static double splitterPurityFactor = 0.8;
     public static double lensPurityBonus = 0.5;
+    public static double resonanceBaseCeiling = 2000.0;
+    public static int resonancePowerUsage = 20;
+    public static double resonanceCriticalLow = 0.9;
+    public static double resonanceCriticalHigh = 1.1;
+    public static int resonanceVentCooldown = 200;
+    public static double resonanceVentRadius = 4.0;
+    public static double resonanceVentDamage = 8.0;
+    public static int gatewayCooldown = 100;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -524,6 +564,14 @@ public final class NTConfig {
         mirrorPurityFactor = MIRROR_PURITY_FACTOR.getAsDouble();
         splitterPurityFactor = SPLITTER_PURITY_FACTOR.getAsDouble();
         lensPurityBonus = LENS_PURITY_BONUS.getAsDouble();
+        resonanceBaseCeiling = RESONANCE_BASE_CEILING.getAsDouble();
+        resonancePowerUsage = RESONANCE_POWER_USAGE.get();
+        resonanceCriticalLow = RESONANCE_CRITICAL_LOW.getAsDouble();
+        resonanceCriticalHigh = RESONANCE_CRITICAL_HIGH.getAsDouble();
+        resonanceVentCooldown = RESONANCE_VENT_COOLDOWN.get();
+        resonanceVentRadius = RESONANCE_VENT_RADIUS.getAsDouble();
+        resonanceVentDamage = RESONANCE_VENT_DAMAGE.getAsDouble();
+        gatewayCooldown = GATEWAY_COOLDOWN.get();
 
         luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
         luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();

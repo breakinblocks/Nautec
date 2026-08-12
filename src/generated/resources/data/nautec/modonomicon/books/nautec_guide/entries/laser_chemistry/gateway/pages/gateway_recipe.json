@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "gateway_recipe",
+  "recipe_id_1": "nautec:gateway",
+  "sort_number": 4,
+  "title1": "Gateway Recipe"
+}

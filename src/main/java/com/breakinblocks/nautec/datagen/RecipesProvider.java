@@ -38,6 +38,8 @@ public class RecipesProvider extends RecipeProvider {
         RecipeOutput pRecipeOutput = output;
         aquaticCatalystRecipes(pRecipeOutput);
         beamOpticsRecipes(pRecipeOutput);
+        resonanceRecipes(pRecipeOutput);
+        gatewayRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -153,6 +155,48 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(1.2f)
                 .duration(200)
                 .save(pRecipeOutput, key("prismarine_crystal_shards_to_ap"));
+    }
+
+    private void resonanceRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.RESONANCE_CHAMBER.asItem())
+                .pattern("DCD")
+                .pattern("CLC")
+                .pattern("DAD")
+                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+                .define('C', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('A', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
+                .save(pRecipeOutput, key("resonance_chamber"));
+
+        ResonanceCraftingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.RESONANT_SHARD.get(), 1))
+                .ingredient(NTItems.PRISMARINE_CRYSTAL_SHARD.get())
+                .purity(3.0f)
+                .save(pRecipeOutput, key("resonant_shard"));
+
+        ItemTransformationRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2))
+                .ingredient(Items.PRISMARINE_CRYSTALS)
+                .purity(2.0f)
+                .duration(160)
+                .save(pRecipeOutput, key("prismarine_crystal_shard_from_crystals"));
+
+        ItemTransformationRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUARINE_STEEL_INGOT.get(), 2))
+                .ingredient(NTItems.AQUARINE_STEEL_COMPOUND.get())
+                .purity(2.0f)
+                .duration(80)
+                .save(pRecipeOutput, key("aquarine_steel_ingot_dense"));
+    }
+
+    private void gatewayRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.GATEWAY.asItem())
+                .pattern("DRD")
+                .pattern("RSR")
+                .pattern("DRD")
+                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("gateway"));
     }
 
     private void beamOpticsRecipes(@NotNull RecipeOutput pRecipeOutput) {

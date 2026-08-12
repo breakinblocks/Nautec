@@ -80,6 +80,12 @@ public final class NTBlocks {
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 
+    public static final DeferredBlock<GatewayBlock> GATEWAY = registerBlockAndItem("gateway", GatewayBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(4.0f).noOcclusion());
+
+    public static final DeferredBlock<ResonanceChamberBlock> RESONANCE_CHAMBER = registerBlockAndItem("resonance_chamber", ResonanceChamberBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(3.0f).noOcclusion());
+
     // Beam optics
     public static final DeferredBlock<PrismaticMirrorBlock> PRISMATIC_MIRROR = registerBlockAndItem("prismatic_mirror", PrismaticMirrorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());

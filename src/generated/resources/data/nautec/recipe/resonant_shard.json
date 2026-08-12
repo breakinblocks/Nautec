@@ -1,0 +1,8 @@
+{
+  "type": "nautec:resonance_crafting",
+  "ingredient": "nautec:prismarine_crystal_shard",
+  "purity": 3.0,
+  "result": {
+    "id": "nautec:resonant_shard"
+  }
+}

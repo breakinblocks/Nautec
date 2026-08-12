@@ -95,6 +95,16 @@ public class BlockModelProvider extends ModelProvider {
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
 
+        simpleBlock(NTBlocks.GATEWAY.get(), cubeBottomTop(name(NTBlocks.GATEWAY.get()),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                new Material(Nautec.rl("block/prism_glass"))));
+
+        simpleBlock(NTBlocks.RESONANCE_CHAMBER.get(), cubeBottomTop(name(NTBlocks.RESONANCE_CHAMBER.get()),
+                new Material(Nautec.rl("block/prism_glass")),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end")));
+
         facingBlock(NTBlocks.PRISMATIC_MIRROR.get(), cubeBottomTop(name(NTBlocks.PRISMATIC_MIRROR.get()),
                 blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
                 blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),

@@ -51,6 +51,12 @@ public final class NTBlockEntityTypes {
             () -> new BlockEntityType<>(OilBarrelBlockEntity::new,
                     NTBlocks.OIL_BARREL.get()));
 
+    public static final Supplier<BlockEntityType<GatewayBlockEntity>> GATEWAY = BLOCK_ENTITIES.register("gateway",
+            () -> new BlockEntityType<>(GatewayBlockEntity::new,
+                    NTBlocks.GATEWAY.get()));
+    public static final Supplier<BlockEntityType<ResonanceChamberBlockEntity>> RESONANCE_CHAMBER = BLOCK_ENTITIES.register("resonance_chamber",
+            () -> new BlockEntityType<>(ResonanceChamberBlockEntity::new,
+                    NTBlocks.RESONANCE_CHAMBER.get()));
     public static final Supplier<BlockEntityType<PrismaticMirrorBlockEntity>> PRISMATIC_MIRROR = BLOCK_ENTITIES.register("prismatic_mirror",
             () -> new BlockEntityType<>(PrismaticMirrorBlockEntity::new,
                     NTBlocks.PRISMATIC_MIRROR.get()));

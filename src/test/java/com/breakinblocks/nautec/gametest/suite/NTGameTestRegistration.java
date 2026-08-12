@@ -30,5 +30,6 @@ public final class NTGameTestRegistration {
         LootTableTests.register(r);
         LuckyZoneTests.register(r);
         SubmarineTests.register(r);
+        GatewayTests.register(r);
     }
 }

@@ -34,6 +34,8 @@ public class BlockTagProvider extends BlockTagsProvider {
                 POLISHED_PRISMARINE,
                 AQUARINE_STEEL_BLOCK,
                 AQUATIC_CATALYST,
+                GATEWAY,
+                RESONANCE_CHAMBER,
                 PRISMATIC_MIRROR,
                 BEAM_SPLITTER,
                 FOCUSING_LENS,

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquatic_chip",
+    "C": "nautec:prismarine_crystal_shard",
+    "D": "nautec:dark_prismarine_pillar",
+    "L": "nautec:laser_channeling_coil"
+  },
+  "pattern": [
+    "DCD",
+    "CLC",
+    "DAD"
+  ],
+  "result": {
+    "id": "nautec:resonance_chamber"
+  }
+}

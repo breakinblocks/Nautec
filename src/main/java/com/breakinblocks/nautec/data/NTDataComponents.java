@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.data;
 
 import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.data.components.TeleportAnchor;
@@ -39,6 +40,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<TeleportAnchor>> TELEPORT_ANCHOR = registerDataComponentType("teleport_anchor",
             () -> builder -> builder.persistent(TeleportAnchor.CODEC).networkSynchronized(TeleportAnchor.STREAM_CODEC));
+
+    public static final Supplier<DataComponentType<GatewayAddress>> GATEWAY_ADDRESS = registerDataComponentType("gateway_address",
+            () -> builder -> builder.persistent(GatewayAddress.CODEC).networkSynchronized(GatewayAddress.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<Integer>> OXYGEN = registerDataComponentType("oxygen",
             () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
