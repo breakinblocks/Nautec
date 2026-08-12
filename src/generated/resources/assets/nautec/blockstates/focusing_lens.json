@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nautec:block/focusing_lens",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "nautec:block/focusing_lens",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nautec:block/focusing_lens",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "nautec:block/focusing_lens",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nautec:block/focusing_lens"
+    },
+    "facing=west": {
+      "model": "nautec:block/focusing_lens",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

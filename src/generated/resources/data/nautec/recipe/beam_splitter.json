@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:prismarine_crystals",
+    "D": "nautec:dark_prismarine_pillar",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "DCD",
+    "CSC",
+    "DCD"
+  ],
+  "result": {
+    "id": "nautec:beam_splitter"
+  }
+}

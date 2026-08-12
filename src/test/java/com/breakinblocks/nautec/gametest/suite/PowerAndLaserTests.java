@@ -1,11 +1,13 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
+import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -32,6 +34,12 @@ public final class PowerAndLaserTests {
                 continue;
             }
             helper.setBlock(pos.relative(direction, 2), Blocks.STONE.defaultBlockState());
+        }
+    }
+
+    private static void assertPurityNear(GameTestHelper helper, float expected, float actual, String what) {
+        if (Math.abs(expected - actual) > 1.0e-3f) {
+            helper.fail(what + ": expected " + expected + " but was " + actual);
         }
     }
 
@@ -209,6 +217,110 @@ public final class PowerAndLaserTests {
                 }
                 helper.assertValueEqual(0, source.getLaserDistances().getInt(Direction.EAST), "no connection into wrongly-faced relay");
                 helper.assertValueEqual(0, mixer(helper, mixerPos).getPower(), "mixer unpowered behind wrongly-faced relay");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/mirror_turns_beam_and_dims_purity", 120, helper -> {
+            BlockPos mirrorPos = new BlockPos(4, 1, 4);
+            BlockPos mixerPos = new BlockPos(4, 1, 6);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(mirrorPos, NTBlocks.PRISMATIC_MIRROR.get().defaultBlockState()
+                    .setValue(OpticsBlock.FACING, Direction.SOUTH));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            if (source == null) {
+                helper.fail("Expected CreativePowerSourceBlockEntity");
+                return;
+            }
+            source.setPurity(2.0f);
+
+            helper.runAfterDelay(80, () -> {
+                MixerBlockEntity mixer = mixer(helper, mixerPos);
+                helper.assertValueEqual(100, mixer.getPower(), "power around the corner through a mirror");
+                assertPurityNear(helper, 2.0f * (float) NTConfig.mirrorPurityFactor, mixer.getPurity(),
+                        "purity after one mirror");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/splitter_divides_power_between_branches", 120, helper -> {
+            BlockPos splitterPos = new BlockPos(4, 1, 4);
+            BlockPos northMixer = new BlockPos(4, 1, 2);
+            BlockPos southMixer = new BlockPos(4, 1, 6);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(splitterPos, NTBlocks.BEAM_SPLITTER.get().defaultBlockState()
+                    .setValue(OpticsBlock.FACING, Direction.EAST));
+            helper.setBlock(northMixer, NTBlocks.MIXER.get().defaultBlockState());
+            helper.setBlock(southMixer, NTBlocks.MIXER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            if (source == null) {
+                helper.fail("Expected CreativePowerSourceBlockEntity");
+                return;
+            }
+            source.setPurity(2.0f);
+
+            helper.runAfterDelay(80, () -> {
+                MixerBlockEntity north = mixer(helper, northMixer);
+                MixerBlockEntity south = mixer(helper, southMixer);
+                helper.assertValueEqual(50, north.getPower(), "north branch power");
+                helper.assertValueEqual(50, south.getPower(), "south branch power");
+                assertPurityNear(helper, 2.0f * (float) NTConfig.splitterPurityFactor, north.getPurity(),
+                        "purity on a split branch");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/lens_raises_purity", 120, helper -> {
+            BlockPos lensPos = new BlockPos(4, 1, 4);
+            BlockPos mixerPos = new BlockPos(6, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(lensPos, NTBlocks.FOCUSING_LENS.get().defaultBlockState()
+                    .setValue(OpticsBlock.FACING, Direction.EAST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            if (source == null) {
+                helper.fail("Expected CreativePowerSourceBlockEntity");
+                return;
+            }
+            source.setPurity(1.0f);
+
+            helper.runAfterDelay(80, () -> {
+                MixerBlockEntity mixer = mixer(helper, mixerPos);
+                helper.assertValueEqual(100, mixer.getPower(), "power straight through a lens");
+                assertPurityNear(helper, 1.0f + (float) NTConfig.lensPurityBonus, mixer.getPurity(),
+                        "purity after a focusing lens");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/purity_clears_when_source_is_removed", 160, helper -> {
+            BlockPos mixerPos = new BlockPos(6, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(new BlockPos(4, 1, 4), NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.EAST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            if (source == null) {
+                helper.fail("Expected CreativePowerSourceBlockEntity");
+                return;
+            }
+            source.setPurity(2.0f);
+
+            helper.runAfterDelay(60, () -> {
+                assertPurityNear(helper, 2.0f, mixer(helper, mixerPos).getPurity(), "purity while the source runs");
+                helper.setBlock(SOURCE_POS, Blocks.AIR.defaultBlockState());
+            });
+
+            helper.runAfterDelay(140, () -> {
+                MixerBlockEntity mixer = mixer(helper, mixerPos);
+                helper.assertValueEqual(0, mixer.getPower(), "power after the source is gone");
+                assertPurityNear(helper, 0f, mixer.getPurity(),
+                        "purity should fall to zero once the source is removed, not stick at the old value");
                 helper.succeed();
             });
         });

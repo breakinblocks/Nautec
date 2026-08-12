@@ -80,6 +80,14 @@ public final class NTBlocks {
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 
+    // Beam optics
+    public static final DeferredBlock<PrismaticMirrorBlock> PRISMATIC_MIRROR = registerBlockAndItem("prismatic_mirror", PrismaticMirrorBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());
+    public static final DeferredBlock<BeamSplitterBlock> BEAM_SPLITTER = registerBlockAndItem("beam_splitter", BeamSplitterBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());
+    public static final DeferredBlock<FocusingLensBlock> FOCUSING_LENS = registerBlockAndItem("focusing_lens", FocusingLensBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());
+
     // Biology
     public static final DeferredBlock<MutatorBlock> MUTATOR = bacteriaBlock(registerBlockAndItem("mutator", MutatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));

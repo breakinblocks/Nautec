@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "lens_recipe",
+  "recipe_id_1": "nautec:focusing_lens",
+  "sort_number": 7,
+  "title1": "Focusing Lens Recipe"
+}

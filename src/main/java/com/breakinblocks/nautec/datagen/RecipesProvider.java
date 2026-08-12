@@ -37,6 +37,7 @@ public class RecipesProvider extends RecipeProvider {
     protected void buildRecipes() {
         RecipeOutput pRecipeOutput = output;
         aquaticCatalystRecipes(pRecipeOutput);
+        beamOpticsRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -152,6 +153,38 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(1.2f)
                 .duration(200)
                 .save(pRecipeOutput, key("prismarine_crystal_shards_to_ap"));
+    }
+
+    private void beamOpticsRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.PRISMATIC_MIRROR.asItem())
+                .pattern("PCP")
+                .pattern("CSC")
+                .pattern("PCP")
+                .define('P', NTBlocks.POLISHED_PRISMARINE)
+                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("prismatic_mirror"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.BEAM_SPLITTER.asItem())
+                .pattern("DCD")
+                .pattern("CSC")
+                .pattern("DCD")
+                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("beam_splitter"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.FOCUSING_LENS.asItem())
+                .pattern("ASA")
+                .pattern("SLS")
+                .pattern("ASA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
+                .save(pRecipeOutput, key("focusing_lens"));
     }
 
     private void aquarineSteelRecipes(@NotNull RecipeOutput pRecipeOutput) {
