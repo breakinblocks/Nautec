@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -37,44 +38,78 @@ import java.util.Set;
 
 public class BioReactorBlockEntity extends LaserBlockEntity implements MenuProvider, MultiblockEntity {
     private MultiblockData multiblockData;
-    private final int[] progress;
+    private final float[] progress;
 
     public BioReactorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.BIO_REACTOR.get(), blockPos, blockState);
         addItemHandler(3);
         addBacteriaStorage(3);
         this.multiblockData = MultiblockData.EMPTY;
-        this.progress = new int[3];
+        this.progress = new float[3];
     }
 
-    // TODO: Energy usage
+    public int getActiveColonies() {
+        IBacteriaStorage storage = getBacteriaStorage();
+        int active = 0;
+        for (int i = 0; i < this.progress.length; i++) {
+            if (!storage.getBacteria(i).isEmpty()) {
+                active++;
+            }
+        }
+        return active;
+    }
+
+    public int getRequiredPower() {
+        return NTConfig.bioReactorPowerBase + NTConfig.bioReactorPowerPerColony * getActiveColonies();
+    }
+
     @Override
     public void commonTick() {
         super.commonTick();
 
-        if (getPower() > 50) {
+        if (getPower() >= getRequiredPower()) {
             IBacteriaStorage storage = getBacteriaStorage();
             for (int i = 0; i < this.progress.length; i++) {
                 BacteriaInstance bacteria = storage.getBacteria(i);
-                if (!bacteria.isEmpty()) {
-                    if (this.progress[i] > 100) {
-                        Bacteria bacteria1 = BacteriaHelper.getBacteria(level.registryAccess(), bacteria.getBacteria());
-                        Bacteria.Resource resource = bacteria1.resource();
-
-                        if (resource instanceof Bacteria.Resource.ItemResource(Item item)) {
-                            getItemStackHandler().insertItem(i, item.getDefaultInstance(), false);
-                        }
-                        this.progress[i] = 0;
-                    } else {
-                        this.progress[i]++;
-                    }
-                } else {
+                if (bacteria.isEmpty()) {
                     this.progress[i] = 0;
+                    continue;
+                }
+
+                this.progress[i] += productionPerTick(bacteria);
+                bacteria.addAge(1);
+
+                if (this.progress[i] >= 100) {
+                    this.progress[i] -= 100;
+
+                    if (!level.isClientSide()) {
+                        produce(i, bacteria, storage);
+                    }
                 }
             }
         } else {
             Arrays.fill(this.progress, 0);
         }
+    }
+
+    private void produce(int slot, BacteriaInstance bacteria, IBacteriaStorage storage) {
+        Bacteria definition = BacteriaHelper.getBacteria(level.registryAccess(), bacteria.getBacteria());
+
+        if (definition.resource() instanceof Bacteria.Resource.ItemResource(Item item)) {
+            getItemStackHandler().insertItem(slot, item.getDefaultInstance(), false);
+        }
+
+        if (bacteria.isSenescent()) {
+            long decay = Math.max(1, (long) Math.ceil(bacteria.getSize() * NTConfig.bioReactorDecayFraction));
+            storage.extractBacteria(slot, decay, false);
+        }
+    }
+
+    public static float productionPerTick(BacteriaInstance bacteria) {
+        long cap = Math.max(1, NTConfig.bacteriaColonySizeCap);
+        float sizeFactor = 0.5f + 0.5f * ((float) Math.min(bacteria.getSize(), cap) / cap);
+
+        return (float) (bacteria.getStats().productionRate() * sizeFactor * NTConfig.bioReactorBaseSpeed);
     }
 
     @Override
@@ -128,22 +163,23 @@ public class BioReactorBlockEntity extends LaserBlockEntity implements MenuProvi
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.store("multiblockData", CompoundTag.CODEC, saveMBData());
-        out.putIntArray("progress", progress);
+        for (int i = 0; i < this.progress.length; i++) {
+            out.putFloat("progress" + i, this.progress[i]);
+        }
     }
 
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.multiblockData = loadMBData(in.read("multiblockData", CompoundTag.CODEC).orElseGet(CompoundTag::new));
-        int[] progress = in.getIntArray("progress").orElse(new int[0]);
+        int[] legacyProgress = in.getIntArray("progress").orElse(new int[0]);
         for (int i = 0; i < this.progress.length; i++) {
-            if (i < progress.length) {
-                this.progress[i] = progress[i];
-            }
+            float legacy = i < legacyProgress.length ? legacyProgress[i] : 0;
+            this.progress[i] = in.getFloatOr("progress" + i, legacy);
         }
     }
 
-    public int getProgress(int i) {
+    public float getProgress(int i) {
         return progress[i];
     }
 }

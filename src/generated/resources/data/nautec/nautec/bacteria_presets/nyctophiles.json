@@ -1,0 +1,17 @@
+{
+  "name": "nyctophiles",
+  "nutrient": [
+    "#c:ores/dark_gem",
+    "#c:raw_materials/dark_gem",
+    "#c:dusts/dark_gem",
+    "#c:gems/dark_gem",
+    "#c:ingots/dark_gem",
+    "#c:storage_blocks/dark_gem"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:gems/dark_gem",
+    "#c:dusts/dark_gem",
+    "#c:ingots/dark_gem"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "signalophiles",
+  "nutrient": [
+    "#c:ores/signalum",
+    "#c:raw_materials/signalum",
+    "#c:dusts/signalum",
+    "#c:gems/signalum",
+    "#c:ingots/signalum",
+    "#c:storage_blocks/signalum"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/signalum",
+    "#c:dusts/signalum",
+    "#c:gems/signalum"
+  ]
+}

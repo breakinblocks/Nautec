@@ -1,0 +1,18 @@
+{
+  "name": "bauxitophiles",
+  "nutrient": [
+    "#c:ores/bauxite",
+    "#c:raw_materials/bauxite",
+    "#c:dusts/bauxite",
+    "#c:gems/bauxite",
+    "#c:ingots/bauxite",
+    "#c:storage_blocks/bauxite"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:ingots/bauxite",
+    "#c:raw_materials/bauxite",
+    "#c:dusts/bauxite",
+    "#c:gems/bauxite"
+  ]
+}

@@ -22,6 +22,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,9 +40,20 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+
+        checkRecipe();
+    }
+
+    @Override
     protected void onItemsChanged(int slot) {
         super.onItemsChanged(slot);
 
+        checkRecipe();
+    }
+
+    private void checkRecipe() {
         ItemStack stack = getItemStackHandler().getStackInSlot(0);
         ItemStack resultStack = getItemStackHandler().getStackInSlot(1);
         IBacteriaStorage iBacteriaStorage = stack.getCapability(NTCapabilities.BacteriaStorage.ITEM);
@@ -61,14 +74,20 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
         if (hasRecipe) {
             if (getPower() >= NTConfig.bacteriaAnalyzerPowerUsage) {
                 if (progress >= NTConfig.bacteriaAnalyzerCraftingSpeed) {
-                    ItemStack extracted = getItemStackHandler().extractItem(0, 1, false);
-
-                    ItemStack result = extracted.copy();
+                    ItemStack result = getItemStackHandler().getStackInSlot(0).copyWithCount(1);
                     IBacteriaStorage storage = result.getCapability(NTCapabilities.BacteriaStorage.ITEM);
+                    if (storage == null) {
+                        this.hasRecipe = false;
+                        this.progress = 0;
+                        return;
+                    }
+
+                    getItemStackHandler().extractItem(0, 1, false);
                     storage.getBacteria(0).setAnalyzed(true);
 
                     forceInsertItem(1, result, false);
 
+                    this.progress = 0;
                 } else {
                     progress++;
                 }
@@ -105,5 +124,17 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
     @Override
     public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
         return new BacterialAnalyzerMenu(containerId, playerInventory, this);
+    }
+
+    @Override
+    protected void loadData(ValueInput in) {
+        super.loadData(in);
+        this.progress = in.getIntOr("progress", 0);
+    }
+
+    @Override
+    protected void saveData(ValueOutput out) {
+        super.saveData(out);
+        out.putInt("progress", this.progress);
     }
 }

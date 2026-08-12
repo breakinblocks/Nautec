@@ -32,9 +32,9 @@ public class BioReactorScreen extends NTMachineScreen<BioReactorBlockEntity> {
         for (int i = 0; i < 3; i++) {
             int topPos = this.topPos - 4;
 
-            int progress = menu.blockEntity.getProgress(i);
+            float progress = menu.blockEntity.getProgress(i);
 
-            int progressPercentage = (int) (((float) progress / 100) * 24);
+            int progressPercentage = (int) ((progress / 100f) * 24);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 24, 10, 0, 0, this.leftPos + 76, topPos + 20 + i * 22, progressPercentage, 10);
         }
     }

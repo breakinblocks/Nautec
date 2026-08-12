@@ -10,7 +10,9 @@ import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
@@ -19,6 +21,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -111,6 +114,70 @@ public final class PersistenceTests {
             helper.assertValueEqual(0, loaded.getProgress(), "incubator progress");
             helper.succeed();
         }));
+
+        r.add("bacteria/mutator_progress_persists", 220, helper -> {
+            MutatorBlockEntity source = placePair(helper, NTBlocks.MUTATOR.get(), MutatorBlockEntity.class);
+            MutatorBlockEntity target = helper.getBlockEntity(TARGET_POS, MutatorBlockEntity.class);
+            if (target == null) {
+                helper.fail("Expected MutatorBlockEntity at " + TARGET_POS);
+                return;
+            }
+            BacteriaMachineTests.placeShieldedSource(helper, SOURCE_POS.above(3), Direction.DOWN);
+            BacteriaMachineTests.placeShieldedSource(helper, TARGET_POS.above(3), Direction.DOWN);
+
+            source.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, 1000,
+                    BacteriaMachineTests.stats(1f, 0f, 1f, 2000), 0));
+            source.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.BONE_MEAL, 4));
+
+            int[] saved = new int[1];
+            helper.runAfterDelay(80, () -> {
+                saved[0] = source.getProgress();
+                helper.assertTrue(saved[0] > 0, "Mutator should have accumulated progress before the reload");
+                CompoundTag tag = source.saveWithoutMetadata(helper.getLevel().registryAccess());
+                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+                helper.assertValueEqual(saved[0], target.getProgress(), "mutator progress across save and load");
+                target.onLoad();
+            });
+
+            helper.runAfterDelay(160, () -> {
+                helper.assertTrue(target.getProgress() > saved[0],
+                        "A reloaded mutator should re-derive its recipe and keep advancing, progress was " + target.getProgress());
+                helper.succeed();
+            });
+        });
+
+        r.add("bacteria/bio_reactor_progress_roundtrip", 160, helper -> {
+            BioReactorBlockEntity source = placePair(helper, NTBlocks.BIO_REACTOR.get(), BioReactorBlockEntity.class);
+            BioReactorBlockEntity target = helper.getBlockEntity(TARGET_POS, BioReactorBlockEntity.class);
+            if (target == null) {
+                helper.fail("Expected BioReactorBlockEntity at " + TARGET_POS);
+                return;
+            }
+            BacteriaMachineTests.placeShieldedSource(helper, SOURCE_POS.south(2), Direction.NORTH);
+            source.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.FERROPHILES, 400,
+                    BacteriaMachineTests.stats(1f, 0f, 0.3f, 24000), 0));
+
+            helper.runAfterDelay(60, () -> {
+                float progress = source.getProgress(0);
+                helper.assertTrue(progress > 0.0f, "Bio reactor should have accumulated progress before the reload");
+                helper.assertTrue(progress != Math.floor(progress), "Bio reactor progress should be fractional");
+
+                CompoundTag tag = source.saveWithoutMetadata(helper.getLevel().registryAccess());
+                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+                helper.assertValueEqual(progress, target.getProgress(0), "bio reactor progress across save and load");
+
+                CompoundTag legacy = source.saveWithoutMetadata(helper.getLevel().registryAccess());
+                legacy.remove("progress0");
+                legacy.remove("progress1");
+                legacy.remove("progress2");
+                legacy.putIntArray("progress", new int[]{41, 52, 63});
+                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), legacy));
+                helper.assertValueEqual(41.0f, target.getProgress(0), "legacy progress slot 0");
+                helper.assertValueEqual(52.0f, target.getProgress(1), "legacy progress slot 1");
+                helper.assertValueEqual(63.0f, target.getProgress(2), "legacy progress slot 2");
+                helper.succeed();
+            });
+        });
 
         r.add("persistence/oil_barrel_fluid_roundtrip", 40, helper -> helper.runAfterDelay(1, () -> {
             OilBarrelBlockEntity source = placePair(helper, NTBlocks.OIL_BARREL.get(), OilBarrelBlockEntity.class);

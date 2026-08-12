@@ -1,0 +1,16 @@
+{
+  "name": "electrophiles",
+  "nutrient": [
+    "#c:ores/electrum",
+    "#c:raw_materials/electrum",
+    "#c:dusts/electrum",
+    "#c:gems/electrum",
+    "#c:ingots/electrum",
+    "#c:storage_blocks/electrum"
+  ],
+  "resource": [
+    "#c:ingots/electrum",
+    "#c:dusts/electrum",
+    "#c:gems/electrum"
+  ]
+}

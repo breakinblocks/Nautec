@@ -24,17 +24,26 @@ public class BioReactorEntry extends BaseNautecEntry {
                 The Bio Reactor is a Multiblock Machine that
                 requires AP to produce resources from bacteria.
                 The Bio Reactor can handle up to 3 bacteria
-                colonies at once. The power cost scales per
-                colony. The amount of time it takes for a colony
-                to produce its resource is dependent on the size
-                and production rate of the colony. A high size and
-                high production rate will lead to faster production
-                times compared to a small size and low production rate.
+                colonies at once. It needs 25 AP on its own and
+                another 25 AP for every colony it holds, so a
+                full reactor asks for 100 AP. Below that number
+                nothing runs at all.
+                The speed a colony produces at follows its
+                production rate and its size. A big colony with a
+                high production rate is many times faster than a
+                small one with a low rate.
                 """);
         this.page("bio_reactor_1", () -> BookMultiblockPageModel.create()
                 .withMultiblockId(modLoc("bio_reactor"))
                 .withText(context.pageText()));
         this.pageText("""
+                Working colonies age. Once a colony has been
+                running longer than its Lifespan its Vitality
+                reaches zero and it starts losing part of itself
+                with every resource it makes, until the slot is
+                empty. Put the dish back in an Incubator before
+                that happens: feeding a colony resets its age and
+                sets Vitality back to full.
                 All production recipes can be viewed in JEI.
                 """);
     }

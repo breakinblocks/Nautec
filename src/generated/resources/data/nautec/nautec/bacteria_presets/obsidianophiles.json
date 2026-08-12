@@ -1,0 +1,17 @@
+{
+  "name": "obsidianophiles",
+  "nutrient": [
+    "#c:ores/refined_obsidian",
+    "#c:raw_materials/refined_obsidian",
+    "#c:dusts/refined_obsidian",
+    "#c:gems/refined_obsidian",
+    "#c:ingots/refined_obsidian",
+    "#c:storage_blocks/refined_obsidian"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/refined_obsidian",
+    "#c:dusts/refined_obsidian",
+    "#c:gems/refined_obsidian"
+  ]
+}

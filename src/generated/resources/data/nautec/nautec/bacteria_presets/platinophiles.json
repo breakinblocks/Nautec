@@ -1,0 +1,18 @@
+{
+  "name": "platinophiles",
+  "nutrient": [
+    "#c:ores/platinum",
+    "#c:raw_materials/platinum",
+    "#c:dusts/platinum",
+    "#c:gems/platinum",
+    "#c:ingots/platinum",
+    "#c:storage_blocks/platinum"
+  ],
+  "rarity": "epic",
+  "resource": [
+    "#c:ingots/platinum",
+    "#c:raw_materials/platinum",
+    "#c:dusts/platinum",
+    "#c:gems/platinum"
+  ]
+}

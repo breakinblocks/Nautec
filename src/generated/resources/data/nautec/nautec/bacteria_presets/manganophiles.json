@@ -1,0 +1,18 @@
+{
+  "name": "manganophiles",
+  "nutrient": [
+    "#c:ores/manganese",
+    "#c:raw_materials/manganese",
+    "#c:dusts/manganese",
+    "#c:gems/manganese",
+    "#c:ingots/manganese",
+    "#c:storage_blocks/manganese"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/manganese",
+    "#c:raw_materials/manganese",
+    "#c:dusts/manganese",
+    "#c:gems/manganese"
+  ]
+}

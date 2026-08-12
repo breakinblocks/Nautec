@@ -1,0 +1,17 @@
+{
+  "name": "niccolophiles",
+  "nutrient": [
+    "#c:ores/nickel",
+    "#c:raw_materials/nickel",
+    "#c:dusts/nickel",
+    "#c:gems/nickel",
+    "#c:ingots/nickel",
+    "#c:storage_blocks/nickel"
+  ],
+  "resource": [
+    "#c:ingots/nickel",
+    "#c:raw_materials/nickel",
+    "#c:dusts/nickel",
+    "#c:gems/nickel"
+  ]
+}

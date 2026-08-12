@@ -1,0 +1,17 @@
+{
+  "name": "antimonophiles",
+  "nutrient": [
+    "#c:ores/antimony",
+    "#c:raw_materials/antimony",
+    "#c:dusts/antimony",
+    "#c:gems/antimony",
+    "#c:ingots/antimony",
+    "#c:storage_blocks/antimony"
+  ],
+  "resource": [
+    "#c:ingots/antimony",
+    "#c:raw_materials/antimony",
+    "#c:dusts/antimony",
+    "#c:gems/antimony"
+  ]
+}

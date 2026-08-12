@@ -1,0 +1,17 @@
+{
+  "name": "borophiles",
+  "nutrient": [
+    "#c:ores/boron",
+    "#c:raw_materials/boron",
+    "#c:dusts/boron",
+    "#c:gems/boron",
+    "#c:ingots/boron",
+    "#c:storage_blocks/boron"
+  ],
+  "resource": [
+    "#c:ingots/boron",
+    "#c:raw_materials/boron",
+    "#c:dusts/boron",
+    "#c:gems/boron"
+  ]
+}

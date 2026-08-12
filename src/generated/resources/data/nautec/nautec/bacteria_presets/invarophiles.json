@@ -1,0 +1,16 @@
+{
+  "name": "invarophiles",
+  "nutrient": [
+    "#c:ores/invar",
+    "#c:raw_materials/invar",
+    "#c:dusts/invar",
+    "#c:gems/invar",
+    "#c:ingots/invar",
+    "#c:storage_blocks/invar"
+  ],
+  "resource": [
+    "#c:ingots/invar",
+    "#c:dusts/invar",
+    "#c:gems/invar"
+  ]
+}

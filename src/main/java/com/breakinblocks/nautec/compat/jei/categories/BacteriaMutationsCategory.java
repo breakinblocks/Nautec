@@ -65,10 +65,10 @@ public class BacteriaMutationsCategory extends BacteriaCategory<BacteriaMutation
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, BacteriaMutationRecipe recipe, IFocusGroup focuses) {
         Font font = Minecraft.getInstance().font;
-        String purityString = recipe.chance() + "%";
+        String chanceString = Math.round(recipe.chance()) + "%";
 
-        int width = font.width(purityString);
-        builder.addText(Component.literal(purityString), width, font.lineHeight)
+        int width = font.width(chanceString);
+        builder.addText(Component.literal(chanceString), width, font.lineHeight)
                 .setPosition(DRAWABLE_WIDTH - GAP - SLOT_SIZE - (width - 18) / 2, GAP + 8 - 3 - font.lineHeight)
                 .setColor(0xFF808080)
                 .setShadow(false);

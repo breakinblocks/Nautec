@@ -33,16 +33,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvider {
-    public static final int MAX_PROGRESS = 100;
-    public static final int POWER_USAGE = 20;
-
     private BacteriaIncubationRecipe recipe;
+    private boolean active;
     private int progress;
 
     public IncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.INCUBATOR.get(), blockPos, blockState);
         addItemHandler(1, 1);
         addBacteriaStorage(1);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        checkRecipe();
     }
 
     @Override
@@ -66,23 +70,25 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         this.recipe = instance.getSize() < NTConfig.bacteriaColonySizeCap
                 ? serverLevel.recipeAccess().getRecipeFor(BacteriaIncubationRecipe.TYPE, new BacteriaRecipeInput(instance, stack), level).map(RecipeHolder::value).orElse(null)
                 : null;
+
+        if (this.active != (this.recipe != null)) {
+            this.active = this.recipe != null;
+            update();
+        }
     }
 
     @Override
     public void commonTick() {
         super.commonTick();
 
-        if (this.recipe != null) {
-            if (getPower() >= POWER_USAGE) {
-                if (progress >= MAX_PROGRESS) {
-                    IntRange growth = recipe.growth();
-                    if (level.getRandom().nextFloat() < recipe.consumeChance()) {
-                        getItemStackHandler().extractItem(0, 1, false);
-                    }
+        boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
 
-                    BacteriaInstance bacteria = getBacteriaStorage().getBacteria(0);
-                    bacteria.grow(RNGUtils.uniformRandInt(growth));
-                    getBacteriaStorage().onBacteriaChanged(0);
+        if (canRun) {
+            if (getPower() >= NTConfig.incubatorPowerUsage) {
+                if (progress >= NTConfig.incubatorCraftingSpeed) {
+                    if (!level.isClientSide()) {
+                        grow();
+                    }
 
                     progress = 0;
                 } else {
@@ -92,6 +98,26 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         } else {
             progress = 0;
         }
+    }
+
+    private void grow() {
+        IntRange growth = recipe.growth();
+        if (level.getRandom().nextFloat() < recipe.consumeChance()) {
+            getItemStackHandler().extractItem(0, 1, false);
+        }
+
+        BacteriaInstance bacteria = getBacteriaStorage().getBacteria(0);
+        long rolled = Math.round(RNGUtils.uniformRandInt(growth) * (double) bacteria.getStats().growthRate());
+        long headroom = NTConfig.bacteriaColonySizeCap - bacteria.getSize();
+        long grown = Math.max(0, Math.min(rolled, headroom));
+
+        bacteria.setSize(bacteria.getSize() + grown);
+        bacteria.setAge(0);
+        getBacteriaStorage().onBacteriaChanged(0);
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public int getProgress() {
@@ -127,11 +153,13 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.progress = in.getIntOr("progress", 0);
+        this.active = in.getBooleanOr("active", false);
     }
 
     @Override
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.putInt("progress", this.progress);
+        out.putBoolean("active", this.active);
     }
 }

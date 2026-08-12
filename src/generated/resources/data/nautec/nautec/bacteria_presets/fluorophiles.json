@@ -1,0 +1,16 @@
+{
+  "name": "fluorophiles",
+  "nutrient": [
+    "#c:ores/fluorite",
+    "#c:raw_materials/fluorite",
+    "#c:dusts/fluorite",
+    "#c:gems/fluorite",
+    "#c:ingots/fluorite",
+    "#c:storage_blocks/fluorite"
+  ],
+  "resource": [
+    "#c:gems/fluorite",
+    "#c:dusts/fluorite",
+    "#c:ingots/fluorite"
+  ]
+}

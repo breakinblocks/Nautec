@@ -1,0 +1,18 @@
+{
+  "name": "molybdophiles",
+  "nutrient": [
+    "#c:ores/molybdenum",
+    "#c:raw_materials/molybdenum",
+    "#c:dusts/molybdenum",
+    "#c:gems/molybdenum",
+    "#c:ingots/molybdenum",
+    "#c:storage_blocks/molybdenum"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/molybdenum",
+    "#c:raw_materials/molybdenum",
+    "#c:dusts/molybdenum",
+    "#c:gems/molybdenum"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "vanadophiles",
+  "nutrient": [
+    "#c:ores/vanadium",
+    "#c:raw_materials/vanadium",
+    "#c:dusts/vanadium",
+    "#c:gems/vanadium",
+    "#c:ingots/vanadium",
+    "#c:storage_blocks/vanadium"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/vanadium",
+    "#c:raw_materials/vanadium",
+    "#c:dusts/vanadium",
+    "#c:gems/vanadium"
+  ]
+}

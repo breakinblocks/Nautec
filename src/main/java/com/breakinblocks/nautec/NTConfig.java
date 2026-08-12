@@ -109,12 +109,40 @@ public final class NTConfig {
             .defineInRange("bacteriaAnalyzerPowerUsage", 5, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue MUTATOR_CRAFTING_SPEED = BUILDER
-            .comment("The amount of ticks it takes for the Bacterial Analyzer to analyze a Petri Dish")
+            .comment("The amount of ticks it takes for the Mutator to attempt a mutation")
             .defineInRange("mutatorCraftingSpeed", 240, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue MUTATOR_POWER_USAGE = BUILDER
             .comment("The amount of power used by the Mutator each tick")
             .defineInRange("mutatorPowerUsage", 10, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue MUTATOR_FAILURE_SHRINK = BUILDER
+            .comment("The fraction of a colony lost when a mutation attempt fails, before mutation resistance reduces it")
+            .defineInRange("mutatorFailureShrink", 0.25, 0, 1);
+
+    private static final ModConfigSpec.IntValue INCUBATOR_CRAFTING_SPEED = BUILDER
+            .comment("The amount of ticks it takes for the Incubator to complete one growth cycle")
+            .defineInRange("incubatorCraftingSpeed", 100, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue INCUBATOR_POWER_USAGE = BUILDER
+            .comment("The amount of power used by the Incubator each tick")
+            .defineInRange("incubatorPowerUsage", 20, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue BIO_REACTOR_BASE_SPEED = BUILDER
+            .comment("The base amount of progress a Bio Reactor colony makes each tick, before production rate and colony size scale it")
+            .defineInRange("bioReactorBaseSpeed", 5.6, 0, 1000);
+
+    private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_BASE = BUILDER
+            .comment("The amount of power the Bio Reactor requires before any colonies are counted")
+            .defineInRange("bioReactorPowerBase", 25, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_PER_COLONY = BUILDER
+            .comment("The extra amount of power the Bio Reactor requires for each colony it holds")
+            .defineInRange("bioReactorPowerPerColony", 25, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue BIO_REACTOR_DECAY_FRACTION = BUILDER
+            .comment("The fraction of a colony that dies off each production cycle once it has outlived its lifespan")
+            .defineInRange("bioReactorDecayFraction", 0.10, 0, 1);
 
     private static final ModConfigSpec.IntValue ABYSSAL_EYES_DEPTH = BUILDER
             .comment("The Y level at or below which the Abyssal Eyes augment grants night vision")
@@ -329,6 +357,15 @@ public final class NTConfig {
 
     public static int mutatorCraftingSpeed;
     public static int mutatorPowerUsage;
+    public static double mutatorFailureShrink = 0.25;
+
+    public static int incubatorCraftingSpeed = 100;
+    public static int incubatorPowerUsage = 20;
+
+    public static double bioReactorBaseSpeed = 5.6;
+    public static int bioReactorPowerBase = 25;
+    public static int bioReactorPowerPerColony = 25;
+    public static double bioReactorDecayFraction = 0.10;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -440,6 +477,15 @@ public final class NTConfig {
 
         mutatorCraftingSpeed = MUTATOR_CRAFTING_SPEED.get();
         mutatorPowerUsage = MUTATOR_POWER_USAGE.get();
+        mutatorFailureShrink = MUTATOR_FAILURE_SHRINK.getAsDouble();
+
+        incubatorCraftingSpeed = INCUBATOR_CRAFTING_SPEED.get();
+        incubatorPowerUsage = INCUBATOR_POWER_USAGE.get();
+
+        bioReactorBaseSpeed = BIO_REACTOR_BASE_SPEED.getAsDouble();
+        bioReactorPowerBase = BIO_REACTOR_POWER_BASE.get();
+        bioReactorPowerPerColony = BIO_REACTOR_POWER_PER_COLONY.get();
+        bioReactorDecayFraction = BIO_REACTOR_DECAY_FRACTION.getAsDouble();
 
         luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
         luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();

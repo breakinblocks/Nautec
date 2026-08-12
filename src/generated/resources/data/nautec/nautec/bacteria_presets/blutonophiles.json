@@ -1,0 +1,18 @@
+{
+  "name": "blutonophiles",
+  "nutrient": [
+    "#c:ores/blutonium",
+    "#c:raw_materials/blutonium",
+    "#c:dusts/blutonium",
+    "#c:gems/blutonium",
+    "#c:ingots/blutonium",
+    "#c:storage_blocks/blutonium"
+  ],
+  "rarity": "epic",
+  "resource": [
+    "#c:ingots/blutonium",
+    "#c:raw_materials/blutonium",
+    "#c:dusts/blutonium",
+    "#c:gems/blutonium"
+  ]
+}

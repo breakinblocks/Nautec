@@ -1,0 +1,16 @@
+{
+  "name": "sapphirophiles",
+  "nutrient": [
+    "#c:ores/sapphire",
+    "#c:raw_materials/sapphire",
+    "#c:dusts/sapphire",
+    "#c:gems/sapphire",
+    "#c:ingots/sapphire",
+    "#c:storage_blocks/sapphire"
+  ],
+  "resource": [
+    "#c:gems/sapphire",
+    "#c:dusts/sapphire",
+    "#c:ingots/sapphire"
+  ]
+}

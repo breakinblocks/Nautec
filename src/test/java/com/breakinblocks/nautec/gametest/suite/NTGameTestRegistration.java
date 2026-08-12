@@ -22,6 +22,8 @@ public final class NTGameTestRegistration {
         MultiblockTests.register(r);
         CrateAndCapabilityTests.register(r);
         RecipeAndBacteriaTests.register(r);
+        BacteriaMachineTests.register(r);
+        GeneratedPackTests.register(r);
         PersistenceTests.register(r);
         WorldgenInjectionTests.register(r);
         ContentIntegrityTests.register(r);

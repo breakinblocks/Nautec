@@ -1,0 +1,17 @@
+{
+  "name": "lumiophiles",
+  "nutrient": [
+    "#c:ores/lumium",
+    "#c:raw_materials/lumium",
+    "#c:dusts/lumium",
+    "#c:gems/lumium",
+    "#c:ingots/lumium",
+    "#c:storage_blocks/lumium"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/lumium",
+    "#c:dusts/lumium",
+    "#c:gems/lumium"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "reginophiles",
+  "nutrient": [
+    "#c:ores/queens_slime",
+    "#c:raw_materials/queens_slime",
+    "#c:dusts/queens_slime",
+    "#c:gems/queens_slime",
+    "#c:ingots/queens_slime",
+    "#c:storage_blocks/queens_slime"
+  ],
+  "rarity": "epic",
+  "resource": [
+    "#c:ingots/queens_slime",
+    "#c:dusts/queens_slime",
+    "#c:gems/queens_slime"
+  ]
+}

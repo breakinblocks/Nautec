@@ -1,0 +1,17 @@
+{
+  "name": "silicophiles",
+  "nutrient": [
+    "#c:ores/silicon",
+    "#c:raw_materials/silicon",
+    "#c:dusts/silicon",
+    "#c:ingots/silicon",
+    "#c:gems/silicon"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/silicon",
+    "#c:gems/silicon",
+    "#c:silicon",
+    "#c:dusts/silicon"
+  ]
+}

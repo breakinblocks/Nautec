@@ -22,24 +22,29 @@ public class MutatorEntry extends BaseNautecEntry {
         pageTitle("Mutator");
         pageText("""
                 The Mutator is a machine that requires AP
-                to mutate Bacteria Colonies. Mutations allow
-                you to modify the Colony's Stats or even
-                the entire colony to obtain a different one.
+                to turn one Bacteria Colony into another.
                 Mutation works by supplying the Mutator with
                 a catalyst item and the bacteria that should
-                be modified. It will output the bacteria with
-                modified stats or even a modified colony.
+                be modified. The output slot must be empty
+                before an attempt can start.
+                Each attempt either succeeds or fails. On a
+                success the whole input colony is converted and
+                the new colony carries its parent's stats forward
+                with a small drift, so a well bred colony stays
+                good after the jump.
                 """);
         this.page("mutator_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Mutator Recipe")
                 .withRecipeId1("nautec:mutator"))
                 .withText(context.pageText());
         pageText("""
-                The success and effectiveness of the mutation
-                depends on the Mutation resistance and size of
-                the colony. Larger colonies with a high resistance
-                are harder to mutate than smaller ones with a low
-                resistance.
+                The chance shown in JEI is the starting point. A
+                colony's Mutation Resistance cuts that chance down,
+                and so does its size, so keep the colony you mean
+                to mutate small and mutate it before you grow it.
+                A failed attempt does not destroy the colony. It
+                only kills off part of it, and a resistant colony
+                loses less. The Mutator then tries again.
                 Look at JEI for all recipes.
                 """);
     }

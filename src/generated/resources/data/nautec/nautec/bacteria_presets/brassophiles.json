@@ -1,0 +1,17 @@
+{
+  "name": "brassophiles",
+  "nutrient": [
+    "#c:ores/brass",
+    "#c:raw_materials/brass",
+    "#c:dusts/brass",
+    "#c:gems/brass",
+    "#c:ingots/brass",
+    "#c:storage_blocks/brass"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:ingots/brass",
+    "#c:dusts/brass",
+    "#c:gems/brass"
+  ]
+}

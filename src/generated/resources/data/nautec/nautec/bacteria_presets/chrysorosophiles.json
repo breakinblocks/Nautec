@@ -1,0 +1,16 @@
+{
+  "name": "chrysorosophiles",
+  "nutrient": [
+    "#c:ores/rose_gold",
+    "#c:raw_materials/rose_gold",
+    "#c:dusts/rose_gold",
+    "#c:gems/rose_gold",
+    "#c:ingots/rose_gold",
+    "#c:storage_blocks/rose_gold"
+  ],
+  "resource": [
+    "#c:ingots/rose_gold",
+    "#c:dusts/rose_gold",
+    "#c:gems/rose_gold"
+  ]
+}

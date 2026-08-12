@@ -1,0 +1,17 @@
+{
+  "name": "elementophiles",
+  "nutrient": [
+    "#c:ores/elementium",
+    "#c:raw_materials/elementium",
+    "#c:dusts/elementium",
+    "#c:gems/elementium",
+    "#c:ingots/elementium",
+    "#c:storage_blocks/elementium"
+  ],
+  "rarity": "epic",
+  "resource": [
+    "#c:ingots/elementium",
+    "#c:dusts/elementium",
+    "#c:gems/elementium"
+  ]
+}

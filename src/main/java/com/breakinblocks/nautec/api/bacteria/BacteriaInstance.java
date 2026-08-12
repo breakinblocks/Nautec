@@ -26,7 +26,8 @@ public final class BacteriaInstance {
             Bacteria.BACTERIA_TYPE_CODEC.fieldOf("bacteria").forGetter(BacteriaInstance::getBacteria),
             Codec.LONG.fieldOf("amount").forGetter(BacteriaInstance::getSize),
             CollapsedBacteriaStats.CODEC.fieldOf("stats").forGetter(BacteriaInstance::getStats),
-            Codec.BOOL.fieldOf("analyzed").forGetter(BacteriaInstance::isAnalyzed)
+            Codec.BOOL.fieldOf("analyzed").forGetter(BacteriaInstance::isAnalyzed),
+            Codec.LONG.optionalFieldOf("age", 0L).forGetter(BacteriaInstance::getAge)
     ).apply(instance, BacteriaInstance::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, BacteriaInstance> STREAM_CODEC = StreamCodec.composite(
             Bacteria.BACTERIA_TYPE_STREAM_CODEC,
@@ -37,6 +38,8 @@ public final class BacteriaInstance {
             BacteriaInstance::getStats,
             ByteBufCodecs.BOOL,
             BacteriaInstance::isAnalyzed,
+            ByteBufCodecs.VAR_LONG,
+            BacteriaInstance::getAge,
             BacteriaInstance::new
     );
 
@@ -44,12 +47,18 @@ public final class BacteriaInstance {
     private long size;
     private CollapsedBacteriaStats stats;
     private boolean analyzed;
+    private long age;
 
     public BacteriaInstance(ResourceKey<Bacteria> bacteria, long size, CollapsedBacteriaStats stats, boolean analyzed) {
+        this(bacteria, size, stats, analyzed, 0L);
+    }
+
+    public BacteriaInstance(ResourceKey<Bacteria> bacteria, long size, CollapsedBacteriaStats stats, boolean analyzed, long age) {
         this.bacteria = bacteria;
         this.size = size;
         this.stats = stats;
         this.analyzed = analyzed;
+        this.age = age;
     }
 
     public static BacteriaInstance roll(ResourceKey<Bacteria> bacteria, HolderLookup.Provider lookupProvider) {
@@ -95,13 +104,33 @@ public final class BacteriaInstance {
         return analyzed;
     }
 
+    public void setAge(long age) {
+        this.age = age;
+    }
+
+    public long getAge() {
+        return age;
+    }
+
+    public void addAge(long amount) {
+        this.age += amount;
+    }
+
+    public float getVitality() {
+        return Math.max(0f, 1f - (float) this.age / Math.max(1, this.stats.lifespan()));
+    }
+
+    public boolean isSenescent() {
+        return this.age > this.stats.lifespan();
+    }
+
     public BacteriaInstance copy() {
-        return new BacteriaInstance(this.bacteria, size, this.stats.copy(), this.analyzed);
+        return new BacteriaInstance(this.bacteria, size, this.stats.copy(), this.analyzed, this.age);
     }
 
     public BacteriaInstance copyWithSize(long size) {
         if (size > 0) {
-            return new BacteriaInstance(this.bacteria, size, this.stats.copy(), this.analyzed);
+            return new BacteriaInstance(this.bacteria, size, this.stats.copy(), this.analyzed, this.age);
         }
         return BacteriaInstance.EMPTY;
     }
@@ -140,6 +169,7 @@ public final class BacteriaInstance {
         MutableComponent statsCaption = Component.literal("Stats: ").withStyle(ChatFormatting.WHITE);
         if (analyzed) {
             tooltip.add(Component.literal("Size: " + this.size));
+            tooltip.add(vitalityTooltip());
             tooltip.add(statsCaption);
             tooltip.addAll(showMutatorValues ? this.stats.statsTooltipWithMutatorValues() : this.stats.statsTooltip());
         } else {
@@ -156,6 +186,7 @@ public final class BacteriaInstance {
             MutableComponent statsCaption = Component.literal("Stats: ").withStyle(ChatFormatting.WHITE);
             if (isAnalyzed()) {
                 tooltipComponents.add(Component.literal("Size: " + this.size));
+                tooltipComponents.add(vitalityTooltip());
                 if (!hasShiftDown) {
                     statsCaption
                             .append(Component.literal("<").withStyle(ChatFormatting.WHITE))
@@ -188,6 +219,18 @@ public final class BacteriaInstance {
         return tooltipComponents;
     }
 
+    private Component vitalityTooltip() {
+        float vitality = getVitality();
+        MutableComponent caption = Component.literal("Vitality: ").withStyle(ChatFormatting.WHITE);
+        if (vitality <= 0) {
+            return caption.append(Component.literal("Senescent").withStyle(ChatFormatting.RED));
+        }
+        ChatFormatting color = vitality >= 0.5f
+                ? ChatFormatting.GREEN
+                : vitality >= 0.2f ? ChatFormatting.YELLOW : ChatFormatting.RED;
+        return caption.append(Component.literal(Math.round(vitality * 100) + "%").withStyle(color));
+    }
+
     public static boolean isSameBacteriaAndStats(BacteriaInstance a, BacteriaInstance b) {
         return a.bacteria.equals(b.bacteria) && a.stats.equals(b.stats);
     }
@@ -195,11 +238,11 @@ public final class BacteriaInstance {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof BacteriaInstance instance)) return false;
-        return size == instance.size && analyzed == instance.analyzed && Objects.equals(bacteria, instance.bacteria) && Objects.equals(stats, instance.stats);
+        return size == instance.size && analyzed == instance.analyzed && age == instance.age && Objects.equals(bacteria, instance.bacteria) && Objects.equals(stats, instance.stats);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bacteria, size, stats, analyzed);
+        return Objects.hash(bacteria, size, stats, analyzed, age);
     }
 }

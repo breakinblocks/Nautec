@@ -1,0 +1,17 @@
+{
+  "name": "bronzophiles",
+  "nutrient": [
+    "#c:ores/bronze",
+    "#c:raw_materials/bronze",
+    "#c:dusts/bronze",
+    "#c:gems/bronze",
+    "#c:ingots/bronze",
+    "#c:storage_blocks/bronze"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:ingots/bronze",
+    "#c:dusts/bronze",
+    "#c:gems/bronze"
+  ]
+}

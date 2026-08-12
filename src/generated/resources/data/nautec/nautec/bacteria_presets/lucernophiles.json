@@ -1,0 +1,17 @@
+{
+  "name": "lucernophiles",
+  "nutrient": [
+    "#c:ores/refined_glowstone",
+    "#c:raw_materials/refined_glowstone",
+    "#c:dusts/refined_glowstone",
+    "#c:gems/refined_glowstone",
+    "#c:ingots/refined_glowstone",
+    "#c:storage_blocks/refined_glowstone"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/refined_glowstone",
+    "#c:dusts/refined_glowstone",
+    "#c:gems/refined_glowstone"
+  ]
+}
