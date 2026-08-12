@@ -1,0 +1,12 @@
+{
+  "type": "nautec:item_transformation",
+  "duration": 160,
+  "ingredient": {
+    "ingredient": "minecraft:prismarine_crystals"
+  },
+  "purity": 2.0,
+  "result": {
+    "count": 2,
+    "id": "nautec:prismarine_crystal_shard"
+  }
+}

@@ -109,6 +109,40 @@
 - A "Beam Optics" guide entry covering all three and setting out the purity tiers,
   from any beam at all up to what only a Prismarine Crystal can hold.
 - Config options for how much purity each optic costs or adds.
+- The **Resonance Chamber**, which hoards a beam instead of spending it. Charge
+  builds while a beam feeds it and does not stop on its own. How much it can hold
+  before it comes apart depends on how clean that beam is, so a filthy beam gives
+  a low ceiling and a Prismarine Crystal gives a much higher one.
+- Near the top of its range the Chamber goes critical, and that is the only moment
+  it will craft. Put an item in and it pulls the charge back down and makes
+  something. Leave it empty, or leave its output full, and it keeps climbing until
+  it vents, which hurts everything nearby and leaves it cracked and useless for a
+  while. It does not break, and it will not take the room with it.
+- **Resonant Shards**, folded from Prismarine Crystal Shards in a Resonance Chamber
+  on the cleanest beam you can build. Nothing below the top purity band will do it,
+  so this is the first thing that needs a genuinely good beam rather than a strong
+  one.
+- Two recipes that want a mid-tier beam, giving the middle purity band something to
+  do: denser Aquarine Steel, and Prismarine Crystal Shards straight from crystals.
+- A "Resonance Chamber" guide entry covering the ceiling, the critical band and what
+  venting costs you.
+- **Gateways**, flat prismarine plates that move whatever stands on them to another
+  plate wearing the same address. No power, no beam and no upkeep; the whole cost is
+  paid in Resonant Shards up front.
+- Each Gateway wears four coloured fins, one per corner of its top face. Right-click a
+  fin with a dye to set that corner, or right-click with an empty hand to read the
+  address back. Eight colours across four corners is 4096 addresses.
+- You arrive at the nearest other Gateway sharing the address, so a shared address is a
+  network rather than a single link. Whatever you are riding comes with you, and so does
+  anything riding you, which means a submersible arrives still under you and still
+  sealed.
+- Arriving bars you from another Gateway for a few seconds, so a pair cannot throw you
+  back and forth. Configurable.
+- Gateways only reach others in the same world, so any you build in the Nether or the End
+  form their own separate network.
+- Breaking a Gateway keeps its address on the dropped block, so moving one does not mean
+  dyeing it again.
+- A "Gateway" guide entry covering addresses, what travels with you, and the limits.
 
 ### Fixed
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data

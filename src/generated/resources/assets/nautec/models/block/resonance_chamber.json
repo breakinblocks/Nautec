@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nautec:block/polished_prismarine",
+    "side": "nautec:block/prism_glass",
+    "top": "nautec:block/dark_prismarine_pillar_end"
+  }
+}

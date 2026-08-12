@@ -242,6 +242,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock("oil_barrel", "Oil Barrel");
         addBlock(NTBlocks.AUGMENTATION_STATION_EXTENSION, "Augmentation Station Extension");
         addBlock(NTBlocks.CHARGER, "Charger");
+        addBlock(NTBlocks.GATEWAY, "Gateway");
+        addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
+        addItem(RESONANT_SHARD, "Resonant Shard");
         addBlock(NTBlocks.PRISMATIC_MIRROR, "Prismatic Mirror");
         addBlock(NTBlocks.BEAM_SPLITTER, "Beam Splitter");
         addBlock(NTBlocks.FOCUSING_LENS, "Focusing Lens");

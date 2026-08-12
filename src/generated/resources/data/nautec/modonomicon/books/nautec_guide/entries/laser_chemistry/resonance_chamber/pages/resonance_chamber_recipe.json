@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "resonance_chamber_recipe",
+  "recipe_id_1": "nautec:resonance_chamber",
+  "sort_number": 4,
+  "title1": "Resonance Chamber Recipe"
+}

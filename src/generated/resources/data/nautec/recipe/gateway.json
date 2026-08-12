@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "nautec:dark_prismarine_pillar",
+    "R": "nautec:resonant_shard",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "DRD",
+    "RSR",
+    "DRD"
+  ],
+  "result": {
+    "id": "nautec:gateway"
+  }
+}

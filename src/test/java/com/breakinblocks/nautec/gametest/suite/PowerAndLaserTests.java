@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
 import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
@@ -321,6 +322,81 @@ public final class PowerAndLaserTests {
                 helper.assertValueEqual(0, mixer.getPower(), "power after the source is gone");
                 assertPurityNear(helper, 0f, mixer.getPurity(),
                         "purity should fall to zero once the source is removed, not stick at the old value");
+                helper.succeed();
+            });
+        });
+
+        r.add("resonance/ceiling_scales_with_purity", 20, helper -> {
+            float base = (float) NTConfig.resonanceBaseCeiling;
+            assertPurityNear(helper, base, ResonanceChamberBlockEntity.stabilityCeiling(0f), "ceiling at zero purity");
+            assertPurityNear(helper, base * 3f, ResonanceChamberBlockEntity.stabilityCeiling(2f), "ceiling at purity 2");
+            assertPurityNear(helper, base, ResonanceChamberBlockEntity.stabilityCeiling(-1f), "negative purity clamps to base");
+            helper.succeed();
+        });
+
+        r.add("resonance/crafts_in_the_critical_band", 400, helper -> {
+            BlockPos chamberPos = new BlockPos(4, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(chamberPos, NTBlocks.RESONANCE_CHAMBER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            ResonanceChamberBlockEntity chamber = helper.getBlockEntity(chamberPos, ResonanceChamberBlockEntity.class);
+            if (source == null || chamber == null) {
+                helper.fail("Expected a power source and a resonance chamber");
+                return;
+            }
+            source.setPurity(3.0f);
+            chamber.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get()));
+
+            helper.succeedWhen(() -> {
+                ItemStack result = chamber.getItemStackHandler().getStackInSlot(1);
+                helper.assertTrue(result.is(NTItems.RESONANT_SHARD.get()),
+                        "Chamber should have produced a Resonant Shard, slot held " + result);
+                helper.assertTrue(chamber.getItemStackHandler().getStackInSlot(0).isEmpty(),
+                        "The crystal shard should have been consumed");
+                helper.assertFalse(chamber.isVenting(), "A successful craft should not vent");
+            });
+        });
+
+        r.add("resonance/low_purity_will_not_craft_tier_three", 300, helper -> {
+            BlockPos chamberPos = new BlockPos(4, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(chamberPos, NTBlocks.RESONANCE_CHAMBER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            ResonanceChamberBlockEntity chamber = helper.getBlockEntity(chamberPos, ResonanceChamberBlockEntity.class);
+            if (source == null || chamber == null) {
+                helper.fail("Expected a power source and a resonance chamber");
+                return;
+            }
+            source.setPurity(1.0f);
+            chamber.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get()));
+
+            helper.runAfterDelay(280, () -> {
+                helper.assertTrue(chamber.getItemStackHandler().getStackInSlot(1).isEmpty(),
+                        "A purity 1 beam should never make a Resonant Shard");
+                helper.assertTrue(chamber.getItemStackHandler().getStackInSlot(0).is(NTItems.PRISMARINE_CRYSTAL_SHARD.get()),
+                        "The crystal shard should still be sitting there uncrafted");
+                helper.succeed();
+            });
+        });
+
+        r.add("resonance/vent_resets_charge_and_locks_out", 300, helper -> {
+            BlockPos chamberPos = new BlockPos(4, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(chamberPos, NTBlocks.RESONANCE_CHAMBER.get().defaultBlockState());
+
+            CreativePowerSourceBlockEntity source = helper.getBlockEntity(SOURCE_POS, CreativePowerSourceBlockEntity.class);
+            ResonanceChamberBlockEntity chamber = helper.getBlockEntity(chamberPos, ResonanceChamberBlockEntity.class);
+            if (source == null || chamber == null) {
+                helper.fail("Expected a power source and a resonance chamber");
+                return;
+            }
+            source.setPurity(0f);
+
+            helper.runAfterDelay(260, () -> {
+                helper.assertTrue(chamber.isVenting(), "An empty chamber left charging should vent");
+                helper.assertValueEqual(0.0f, chamber.getCharge(), "charge after venting");
                 helper.succeed();
             });
         });
