@@ -1,0 +1,25 @@
+{
+  "type": "lithostitched:replace_partially",
+  "dimension": "minecraft:overworld",
+  "parameters": {
+    "continentalness": [
+      -1.05,
+      -0.455
+    ],
+    "depth": [
+      0.0,
+      1.0
+    ],
+    "temperature": [
+      0.2,
+      1.0
+    ],
+    "weirdness": [
+      -0.45,
+      -0.05
+    ]
+  },
+  "priority": 30,
+  "replacement": "nautec:hydrothermal_vents",
+  "targets": "#minecraft:is_ocean"
+}

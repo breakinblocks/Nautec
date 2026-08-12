@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.BacterialFuelCellBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.Set;
 
@@ -273,6 +275,108 @@ public final class BacteriaMachineTests {
                     helper.assertFalse(input.isEmpty(), "A failed attempt should keep the input colony");
                     helper.assertTrue(input.getSize() < startSize, "A failed attempt should shrink the input colony");
                 }
+                helper.succeed();
+            });
+        });
+
+        r.add("bacteria/fuel_cell_output_formulas", 40, helper -> helper.runAfterDelay(1, () -> {
+            float cap = (float) NTConfig.bacteriaMutationResistanceCap;
+
+            helper.assertValueEqual(24, BacterialFuelCellBlockEntity.powerOutput(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, 0f, 1.0f, 2000), 0)), "power at production rate 1.0");
+            helper.assertValueEqual(48, BacterialFuelCellBlockEntity.powerOutput(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, 0f, 2.0f, 2000), 0)), "power at production rate 2.0");
+            helper.assertValueEqual(0, BacterialFuelCellBlockEntity.powerOutput(BacteriaInstance.EMPTY), "power with no colony");
+
+            assertNear(helper, 0f, BacterialFuelCellBlockEntity.purityOutput(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, 0f, 1f, 2000), 0)), "purity without resistance");
+            assertNear(helper, (float) NTConfig.fuelCellMaxPurity, BacterialFuelCellBlockEntity.purityOutput(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, cap, 1f, 2000), 0)), "purity at max resistance");
+            helper.assertTrue(BacterialFuelCellBlockEntity.purityOutput(
+                            colony(NTBacterias.FERROPHILES, 1000, stats(1f, cap, 1f, 2000), 0)) < 3f,
+                    "Fuel cell purity should stay under the prismarine crystal");
+
+            assertNear(helper, 0.5f, BacterialFuelCellBlockEntity.burnPerTick(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, 0f, 1.0f, 2000), 0)), "burn at production rate 1.0");
+            assertNear(helper, 1.0f, BacterialFuelCellBlockEntity.burnPerTick(
+                    colony(NTBacterias.FERROPHILES, 1000, stats(1f, 0f, 2.0f, 2000), 0)), "burn at production rate 2.0");
+            helper.succeed();
+        }));
+
+        r.add("bacteria/fuel_cell_powers_a_machine", 200, helper -> {
+            BlockPos cellPos = new BlockPos(4, 1, 4);
+            BlockPos incubatorPos = new BlockPos(4, 4, 4);
+            helper.setBlock(cellPos, NTBlocks.BACTERIAL_FUEL_CELL.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.DOWN));
+            helper.setBlock(incubatorPos, NTBlocks.INCUBATOR.get().defaultBlockState());
+
+            BacterialFuelCellBlockEntity cell = helper.getBlockEntity(cellPos, BacterialFuelCellBlockEntity.class);
+            IncubatorBlockEntity incubator = helper.getBlockEntity(incubatorPos, IncubatorBlockEntity.class);
+            if (cell == null || incubator == null) {
+                helper.fail("Expected a fuel cell and an incubator");
+                return;
+            }
+            long startSize = 20_000;
+            cell.getBacteriaStorage().setBacteria(0, colony(NTBacterias.FERROPHILES, startSize,
+                    stats(1f, (float) NTConfig.bacteriaMutationResistanceCap, 1.0f, 2000), 0));
+            incubator.getBacteriaStorage().setBacteria(0, colony(NTBacterias.LITHOPHILES, 1000, stats(1f, 0f, 1f, 2000), 0));
+            incubator.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.STONE, 8));
+
+            helper.runAfterDelay(150, () -> {
+                helper.assertValueEqual(24, incubator.getPower(), "power delivered to the incubator");
+                assertNear(helper, (float) NTConfig.fuelCellMaxPurity, incubator.getPurity(), "purity delivered to the incubator");
+
+                long remaining = cell.getBacteriaStorage().getBacteria(0).getSize();
+                long burned = startSize - remaining;
+                helper.assertTrue(burned >= 50 && burned <= 90,
+                        "Fuel cell should have burned about 70 colony over 140 ticks, burned " + burned);
+                helper.assertTrue(incubator.getBacteriaStorage().getBacteria(0).getSize() > 1000,
+                        "The incubator should have grown its colony on fuel cell power");
+                helper.succeed();
+            });
+        });
+
+        r.add("bacteria/fuel_cell_burns_out_and_stops", 220, helper -> {
+            BlockPos cellPos = new BlockPos(4, 1, 4);
+            BlockPos incubatorPos = new BlockPos(4, 4, 4);
+            helper.setBlock(cellPos, NTBlocks.BACTERIAL_FUEL_CELL.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.DOWN));
+            helper.setBlock(incubatorPos, NTBlocks.INCUBATOR.get().defaultBlockState());
+
+            BacterialFuelCellBlockEntity cell = helper.getBlockEntity(cellPos, BacterialFuelCellBlockEntity.class);
+            IncubatorBlockEntity incubator = helper.getBlockEntity(incubatorPos, IncubatorBlockEntity.class);
+            if (cell == null || incubator == null) {
+                helper.fail("Expected a fuel cell and an incubator");
+                return;
+            }
+            cell.getBacteriaStorage().setBacteria(0, colony(NTBacterias.FERROPHILES, 30, stats(1f, 0f, 1.0f, 2000), 0));
+
+            helper.runAfterDelay(30, () -> helper.assertTrue(cell.getPowerToTransfer() > 0,
+                    "Fuel cell should be emitting while it still has colony"));
+
+            helper.runAfterDelay(200, () -> {
+                helper.assertTrue(cell.getBacteriaStorage().getBacteria(0).isEmpty(), "Fuel cell should have burned its colony away");
+                helper.assertTrue(cell.getLaserOutputs().isEmpty(), "A spent fuel cell should stop emitting");
+                helper.assertValueEqual(0, incubator.getPower(), "power after the fuel cell burned out");
+                helper.succeed();
+            });
+        });
+
+        r.add("bacteria/fuel_cell_holds_fuel_without_a_target", 120, helper -> {
+            BlockPos cellPos = new BlockPos(4, 1, 4);
+            helper.setBlock(cellPos, NTBlocks.BACTERIAL_FUEL_CELL.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.DOWN));
+
+            BacterialFuelCellBlockEntity cell = helper.getBlockEntity(cellPos, BacterialFuelCellBlockEntity.class);
+            if (cell == null) {
+                helper.fail("Expected BacterialFuelCellBlockEntity");
+                return;
+            }
+            cell.getBacteriaStorage().setBacteria(0, colony(NTBacterias.FERROPHILES, 500, stats(1f, 0f, 2.0f, 2000), 0));
+
+            helper.runAfterDelay(100, () -> {
+                helper.assertValueEqual(500L, cell.getBacteriaStorage().getBacteria(0).getSize(),
+                        "colony size with nothing to power");
                 helper.succeed();
             });
         });

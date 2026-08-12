@@ -248,6 +248,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock(NTBlocks.INCUBATOR, "Incubator");
         addBlock(NTBlocks.BIO_REACTOR, "Bio Reactor");
         addBlock(NTBlocks.BACTERIAL_ANALYZER, "Bacterial Analyzer");
+        addBlock(NTBlocks.BACTERIAL_FUEL_CELL, "Bacterial Fuel Cell");
         addBlock(NTBlocks.FISHING_STATION, "Fishing Station");
         addBlock(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD, "Bacteria Containment Shield");
         addBlock(NTBlocks.CAST_IRON_BLOCK, "Cast Iron Block");

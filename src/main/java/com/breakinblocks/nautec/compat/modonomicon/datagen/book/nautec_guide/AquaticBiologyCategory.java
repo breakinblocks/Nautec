@@ -34,6 +34,8 @@ public class AquaticBiologyCategory extends CategoryProvider {
         add(incubator.withParent(bacterialAnalyzer));
         BookEntryModel bioReactor = new BioReactorEntry(this).generate(new Vec2(8, 0));
         add(bioReactor.withParent(incubator).withParent(mutator));
+        BookEntryModel fuelCell = new BacterialFuelCellEntry(this).generate(new Vec2(8, 2));
+        add(fuelCell.withParent(incubator));
     }
 
     @Override

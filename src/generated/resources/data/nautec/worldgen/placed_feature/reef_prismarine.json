@@ -9,16 +9,20 @@
       "type": "minecraft:in_square"
     },
     {
-      "type": "minecraft:height_range",
-      "height": {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "minecraft:random_offset",
+      "xz_spread": 0,
+      "y_spread": {
         "type": "minecraft:uniform",
-        "max_inclusive": {
-          "absolute": 58
-        },
-        "min_inclusive": {
-          "absolute": 20
-        }
+        "max_inclusive": 1,
+        "min_inclusive": -6
       }
+    },
+    {
+      "type": "minecraft:biome"
     }
   ]
 }

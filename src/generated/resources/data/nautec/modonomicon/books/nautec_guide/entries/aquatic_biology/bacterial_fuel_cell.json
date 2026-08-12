@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:aquatic_biology",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.aquatic_biology.bacterial_fuel_cell.description",
+  "icon": {
+    "id": "nautec:bacterial_fuel_cell"
+  },
+  "id": "nautec:aquatic_biology/bacterial_fuel_cell",
+  "name": "book.nautec.nautec_guide.aquatic_biology.bacterial_fuel_cell.name",
+  "parents": [
+    {
+      "entry": "nautec:aquatic_biology/incubator"
+    }
+  ],
+  "sort_number": 7,
+  "x": 8,
+  "y": 2
+}

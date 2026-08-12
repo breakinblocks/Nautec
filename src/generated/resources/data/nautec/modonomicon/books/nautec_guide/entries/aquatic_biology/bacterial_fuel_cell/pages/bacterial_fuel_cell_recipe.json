@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "bacterial_fuel_cell_recipe",
+  "recipe_id_1": "nautec:bacterial_fuel_cell",
+  "sort_number": 3,
+  "title1": "Bacterial Fuel Cell Recipe"
+}

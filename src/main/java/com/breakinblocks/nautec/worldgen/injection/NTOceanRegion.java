@@ -48,7 +48,11 @@ public final class NTOceanRegion {
         return SLICES.stream().map(Slice::biome).toList();
     }
 
-    private record Slice(ResourceKey<Biome> biome,
+    public static List<Slice> slices() {
+        return SLICES;
+    }
+
+    public record Slice(ResourceKey<Biome> biome,
                          Climate.Parameter temperature,
                          Climate.Parameter humidity,
                          Climate.Parameter continentalness,
@@ -56,6 +60,10 @@ public final class NTOceanRegion {
                          Climate.Parameter weirdness) {
         Climate.ParameterPoint at(Climate.Parameter depth) {
             return new Climate.ParameterPoint(temperature, humidity, continentalness, erosion, depth, weirdness, 0L);
+        }
+
+        public boolean constrains(Climate.Parameter parameter) {
+            return !parameter.equals(OceanClimates.FULL_RANGE);
         }
     }
 

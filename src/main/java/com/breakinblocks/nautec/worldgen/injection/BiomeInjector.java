@@ -9,15 +9,23 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.neoforged.fml.ModList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class BiomeInjector {
+    private static final String LITHOSTITCHED = "lithostitched";
+
     public static Climate.ParameterList<Holder<Biome>> inject(MultiNoiseBiomeSourceParameterList.Preset preset,
                                                               Climate.ParameterList<Holder<Biome>> vanilla,
                                                               HolderGetter<Biome> biomes) {
         if (!NTConfig.biomeInjectionEnabled() || !NTConfig.injectableWorldPresets().contains(preset.id().toString())) {
+            return vanilla;
+        }
+
+        if (ModList.get().isLoaded(LITHOSTITCHED)) {
+            Nautec.LOGGER.info("Lithostitched is present, leaving preset {} to the biome injectors in data/nautec/lithostitched/biome_injector", preset.id());
             return vanilla;
         }
 
