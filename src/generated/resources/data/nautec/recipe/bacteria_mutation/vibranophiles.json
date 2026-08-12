@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "allthemodium"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/vibranium",
+  "chance": 3.0,
+  "input_bacteria": "nautec:adamantophiles",
+  "result_bacteria": "nautec:vibranophiles"
+}

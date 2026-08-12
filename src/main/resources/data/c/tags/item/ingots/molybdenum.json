@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:molybdenum_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:molybdenum_ingot",
+      "required": false
+    }
+  ]
+}

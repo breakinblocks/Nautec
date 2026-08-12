@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "hephaestus"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tconstruct"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:ferrosuinophiles",
+  "consume_chance": 0.05,
+  "growth": {
+    "max": 30,
+    "min": 10
+  },
+  "nutrient": "#c:ingots/pig_iron"
+}

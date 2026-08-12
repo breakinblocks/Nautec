@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "gtceu"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "hephaestus"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tconstruct"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:cobaltophiles",
+  "consume_chance": 0.1,
+  "growth": {
+    "max": 25,
+    "min": 8
+  },
+  "nutrient": "#c:ingots/cobalt"
+}

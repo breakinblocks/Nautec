@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "gtceu"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ltxi"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "modern_industrialization"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "techreborn"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/titanium",
+  "chance": 5.0,
+  "input_bacteria": "nautec:ferrophiles",
+  "result_bacteria": "nautec:titanophiles"
+}

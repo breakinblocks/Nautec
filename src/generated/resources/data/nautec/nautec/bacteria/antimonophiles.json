@@ -1,0 +1,39 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:simple",
+  "bacteria": "#c:ingots/antimony",
+  "initial_size": {
+    "max": 500,
+    "min": 300
+  },
+  "stats": {
+    "type": "nautec:simple",
+    "color": -13133345,
+    "growth_rate": {
+      "max": 1.1,
+      "min": 0.5
+    },
+    "lifespan": {
+      "max": 2300,
+      "min": 1100
+    },
+    "mutation_resistance": {
+      "max": 0.08,
+      "min": 0.0
+    },
+    "production_rate": {
+      "max": 0.55,
+      "min": 0.2
+    }
+  }
+}

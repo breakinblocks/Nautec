@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "colossal_reactors"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:chromophiles",
+  "consume_chance": 0.1,
+  "growth": {
+    "max": 25,
+    "min": 8
+  },
+  "nutrient": "#c:ingots/chromium"
+}

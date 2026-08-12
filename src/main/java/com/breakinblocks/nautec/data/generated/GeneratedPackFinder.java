@@ -44,6 +44,10 @@ public final class GeneratedPackFinder {
         }
 
         event.addRepositorySource(consumer -> {
+            if (!Files.isDirectory(GeneratedPackPaths.root())) {
+                return;
+            }
+
             scaffold();
             quarantineInvalidBacteria();
 

@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "create"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "gtceu"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "techreborn"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "thaumaturge"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/brass",
+  "chance": 10.0,
+  "input_bacteria": "nautec:lithophiles",
+  "result_bacteria": "nautec:brassophiles"
+}

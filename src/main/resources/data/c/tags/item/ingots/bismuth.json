@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:bismuth_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:bismuth_ingot",
+      "required": false
+    }
+  ]
+}

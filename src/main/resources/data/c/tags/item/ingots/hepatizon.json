@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:hepatizon_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:hepatizon_ingot",
+      "required": false
+    }
+  ]
+}

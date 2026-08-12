@@ -1,0 +1,47 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbic"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "occultism"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:simple",
+  "bacteria": "#c:ingots/netherite",
+  "initial_size": {
+    "max": 150,
+    "min": 125
+  },
+  "stats": {
+    "type": "nautec:simple",
+    "color": -14032662,
+    "growth_rate": {
+      "max": 0.9,
+      "min": 0.4
+    },
+    "lifespan": {
+      "max": 2000,
+      "min": 1000
+    },
+    "mutation_resistance": {
+      "max": 0.15,
+      "min": 0.0
+    },
+    "production_rate": {
+      "max": 0.12,
+      "min": 0.08
+    }
+  }
+}

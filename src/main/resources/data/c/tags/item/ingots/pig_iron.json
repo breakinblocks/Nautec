@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:pig_iron_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:pig_iron_ingot",
+      "required": false
+    }
+  ]
+}

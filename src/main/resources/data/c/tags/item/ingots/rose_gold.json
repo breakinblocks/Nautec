@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:rose_gold_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:rose_gold_ingot",
+      "required": false
+    }
+  ]
+}

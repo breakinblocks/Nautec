@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:vanadium_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:vanadium_ingot",
+      "required": false
+    }
+  ]
+}

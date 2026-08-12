@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "avaritia"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "extendedcrafting"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:neutronophiles",
+  "consume_chance": 0.12,
+  "growth": {
+    "max": 15,
+    "min": 5
+  },
+  "nutrient": "#c:ingots/neutronium"
+}

@@ -5,9 +5,6 @@ import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteria;
 import com.breakinblocks.nautec.data.generated.BacteriaBalance;
 import com.breakinblocks.nautec.data.generated.BacteriaJsonWriter;
-import com.breakinblocks.nautec.data.generated.BacteriaPreset;
-import com.breakinblocks.nautec.data.generated.BacteriaPresetManager;
-import com.breakinblocks.nautec.data.generated.BacteriaPresets;
 import com.breakinblocks.nautec.data.generated.GeneratedPackFinder;
 import com.breakinblocks.nautec.data.generated.GeneratedPackPaths;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
@@ -108,17 +105,12 @@ public final class BacteriaGenerateCommand {
                 .then(Commands.argument("name", StringArgumentType.word())
                         .executes(BacteriaGenerateCommand::deleteGenerated));
 
-        LiteralArgumentBuilder<CommandSourceStack> presets = Commands.literal("presets")
-                .then(Commands.literal("list").executes(BacteriaGenerateCommand::listPresets))
-                .then(Commands.literal("apply").executes(BacteriaGenerateCommand::applyPresets));
-
         dispatcher.register(nautecCommand.then(Commands.literal("bacteria")
                 .then(generate)
                 .then(generateTag)
                 .then(obtain)
                 .then(list)
-                .then(delete)
-                .then(presets)));
+                .then(delete)));
     }
 
     private static BacteriaBalance.Rarity rarity(CommandContext<CommandSourceStack> ctx) {
@@ -289,7 +281,8 @@ public final class BacteriaGenerateCommand {
         }
 
         String rarity = BacteriaBalance.inferRarity(bacteria).map(BacteriaBalance.Rarity::lowerName).orElse("custom");
-        if (bacteria.resource() instanceof Bacteria.Resource.ItemResource(Item item) && item != Items.AIR) {
+        Item item = bacteria.resource().resolve();
+        if (item != Items.AIR) {
             line.append(Component.literal(", makes " + BuiltInRegistries.ITEM.getKey(item)));
         } else {
             line.append(Component.literal(", produces nothing (item missing)").withStyle(ChatFormatting.YELLOW));
@@ -362,58 +355,6 @@ public final class BacteriaGenerateCommand {
         source.sendSuccess(() -> Component.literal("Recipes and obtaining entries go away after /reload. The registry entry is gone the next time you join a world."), false);
         source.sendSuccess(() -> Component.literal("The generated pack is shared by every world in this instance."), false);
         return 1;
-    }
-
-    private static int listPresets(CommandContext<CommandSourceStack> ctx) {
-        CommandSourceStack source = ctx.getSource();
-        List<BacteriaPreset> presets = BacteriaPresetManager.all().stream()
-                .sorted(java.util.Comparator.comparing(BacteriaPreset::name))
-                .toList();
-
-        if (presets.isEmpty()) {
-            source.sendFailure(Component.literal("No bacteria presets are loaded"));
-            return 0;
-        }
-
-        int available = 0;
-        source.sendSuccess(() -> Component.literal(presets.size() + " bacteria presets loaded").withStyle(ChatFormatting.AQUA), false);
-        for (BacteriaPreset preset : presets) {
-            boolean generated = Files.exists(GeneratedPackPaths.bacteriaFile(preset.name()));
-            Item resource = BacteriaPresets.resolveResource(preset.resource());
-            boolean ready = BacteriaPresets.firstResolved(preset.nutrient()).isPresent() && resource != null;
-            if (ready) {
-                available++;
-            }
-            if (!preset.enabled() && !generated) {
-                continue;
-            }
-
-            String state = generated ? "generated" : ready ? "ready" : "waiting for " + preset.nutrient().getFirst().asString();
-            ChatFormatting color = generated ? ChatFormatting.GREEN : ready ? ChatFormatting.YELLOW : ChatFormatting.DARK_GRAY;
-            String makes = resource == null ? "" : ", makes " + BuiltInRegistries.ITEM.getKey(resource);
-            source.sendSuccess(() -> Component.literal(" - " + preset.name() + " (" + preset.rarity().lowerName() + ") " + state + makes)
-                    .withStyle(color), false);
-        }
-
-        int readyCount = available;
-        source.sendSuccess(() -> Component.literal(readyCount + " of them have the tags they need in this instance."), false);
-        return presets.size();
-    }
-
-    private static int applyPresets(CommandContext<CommandSourceStack> ctx) {
-        CommandSourceStack source = ctx.getSource();
-        BacteriaPresets.Result result = BacteriaPresets.applyAll(source.registryAccess());
-
-        if (result.written().isEmpty()) {
-            source.sendSuccess(() -> Component.literal("Nothing new to generate. "
-                    + result.skipped().size() + " preset(s) are still waiting for a mod to fill their tags."), false);
-            return 0;
-        }
-
-        source.sendSuccess(() -> Component.literal("Generated " + result.written().size() + " bacteria from presets: "
-                + String.join(", ", result.written())).withStyle(ChatFormatting.GREEN), true);
-        sendLifecycleNote(source);
-        return result.written().size();
     }
 
     private static void sendCopyable(CommandSourceStack source, String what, JsonElement json) {

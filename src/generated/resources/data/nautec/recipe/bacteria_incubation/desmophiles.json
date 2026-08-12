@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ad_astra"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "beyond_earth"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:desmophiles",
+  "consume_chance": 0.1,
+  "growth": {
+    "max": 25,
+    "min": 8
+  },
+  "nutrient": "#c:ingots/desh"
+}

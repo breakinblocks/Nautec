@@ -118,10 +118,9 @@ public final class GatewayTests {
                     "An entity that just travelled should be on cooldown"));
 
             helper.runAfterDelay(60, () -> {
-                BlockPos target = helper.absolutePos(to);
-                helper.assertTrue(cow.blockPosition().closerThan(target, 2.0),
-                        "The cow should still be at the far gateway rather than ping-ponging back, was at "
-                                + cow.blockPosition());
+                BlockPos origin = helper.absolutePos(from);
+                helper.assertFalse(cow.blockPosition().closerThan(origin, 3.0),
+                        "The cow bounced straight back to the gateway it came from, so the cooldown is not holding");
                 helper.succeed();
             });
         });

@@ -1,13 +1,14 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.NTRegistries;
+import com.breakinblocks.nautec.Nautec;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceKey;
 import com.breakinblocks.nautec.data.generated.BacteriaBalance;
+import com.breakinblocks.nautec.data.generated.BacteriaMaterials;
 import com.breakinblocks.nautec.data.generated.BacteriaJsonWriter;
-import com.breakinblocks.nautec.data.generated.BacteriaPreset;
-import com.breakinblocks.nautec.data.generated.BacteriaPresetManager;
-import com.breakinblocks.nautec.data.generated.BacteriaPresets;
 import com.breakinblocks.nautec.data.generated.GeneratedPackFinder;
-import com.breakinblocks.nautec.data.generated.MaterialRef;
 import com.breakinblocks.nautec.data.generated.GeneratedPackPaths;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTBacterias;
@@ -175,62 +176,26 @@ public final class GeneratedPackTests {
             helper.succeed();
         }));
 
-        r.add("generated_pack/presets_loaded", 40, helper -> helper.runAfterDelay(1, () -> {
-            List<BacteriaPreset> presets = List.copyOf(BacteriaPresetManager.all());
-            helper.assertTrue(presets.size() >= 40, "Expected the shipped preset table, got " + presets.size());
+        r.add("generated_pack/shipped_materials_are_gated", 40, helper -> helper.runAfterDelay(1, () -> {
+            helper.assertValueEqual(78, BacteriaMaterials.SHIPPED_NAMES.size(), "shipped material bacteria");
 
-            for (BacteriaPreset preset : presets) {
-                helper.assertTrue(GeneratedPackPaths.isValidName(preset.name()),
-                        "Preset name '" + preset.name() + "' cannot be a file name");
-                helper.assertFalse(preset.resource().isEmpty(), "Preset " + preset.name() + " has no resource tag");
-                helper.assertFalse(preset.nutrient().isEmpty(), "Preset " + preset.name() + " has no nutrient tag");
-                helper.assertTrue(preset.rarity() != null, "Preset " + preset.name() + " has no rarity");
+            for (String name : BacteriaMaterials.SHIPPED_NAMES) {
+                helper.assertTrue(GeneratedPackPaths.isValidName(name),
+                        "Shipped bacteria name '" + name + "' cannot be a file name");
             }
 
-            helper.assertTrue(presets.stream().anyMatch(preset -> preset.name().equals("titanophiles")),
-                    "The shipped presets should cover titanium");
-            helper.succeed();
-        }));
+            HolderLookup.RegistryLookup<Bacteria> registry =
+                    helper.getLevel().registryAccess().lookupOrThrow(NTRegistries.BACTERIA_KEY);
 
-        r.add("generated_pack/preset_apply_is_tag_gated", 40, helper -> helper.runAfterDelay(1, () -> {
-            BacteriaPresets.Result result = BacteriaPresets.applyAll(helper.getLevel().registryAccess());
-
-            helper.assertTrue(result.written().isEmpty(),
-                    "No preset should generate without its mod present, wrote " + result.written());
-            helper.assertFalse(result.skipped().isEmpty(), "Presets waiting on absent mods should be reported as skipped");
-
-            for (BacteriaPreset preset : BacteriaPresetManager.all()) {
-                if (result.skipped().contains(preset.name())) {
-                    helper.assertFalse(Files.exists(GeneratedPackPaths.bacteriaFile(preset.name())),
-                            "Skipped preset " + preset.name() + " should not have written a file");
-                }
+            for (String name : BacteriaMaterials.SHIPPED_NAMES) {
+                ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, Nautec.rl(name));
+                helper.assertTrue(registry.get(key).isEmpty(),
+                        "Material bacteria '" + name + "' should be gated off when none of its mods are installed, "
+                                + "otherwise every pack sees content it cannot use");
             }
             helper.succeed();
         }));
 
-        r.add("generated_pack/preset_resource_resolution", 40, helper -> helper.runAfterDelay(1, () -> {
-            MaterialRef ironIngots = MaterialRef.tag("c:ingots/iron");
-            MaterialRef absent = MaterialRef.tag("c:ores/titanium");
-            MaterialRef byItemId = MaterialRef.item("minecraft:gold_ingot");
-            MaterialRef missingItemId = MaterialRef.item("somemod:mystery_ingot");
-
-            helper.assertTrue(ironIngots.resolve().isPresent(), "c:ingots/iron should exist in this instance");
-            helper.assertTrue(absent.resolve().isEmpty(), "c:ores/titanium should be empty in this instance");
-            helper.assertValueEqual(Items.GOLD_INGOT, BacteriaPresets.resolveResource(List.of(byItemId)),
-                    "a preset should be able to name a concrete item instead of a tag");
-            helper.assertTrue(missingItemId.resolve().isEmpty(),
-                    "an item from an absent mod should resolve to nothing rather than to air");
-
-            helper.assertValueEqual(Items.IRON_INGOT, BacteriaPresets.resolveResource(List.of(absent, ironIngots)),
-                    "resolveResource should fall through to the first tag that has items");
-            helper.assertTrue(BacteriaPresets.resolveResource(List.of(absent)) == null,
-                    "resolveResource should give up when nothing resolves");
-            helper.assertTrue(BacteriaPresets.firstResolved(List.of(absent, ironIngots)).isPresent(),
-                    "firstFilledTag should skip past an empty tag");
-            helper.assertTrue(BacteriaPresets.firstResolved(List.of(absent)).isEmpty(),
-                    "firstFilledTag should be empty when no candidate resolves");
-            helper.succeed();
-        }));
 
         r.add("generated_pack/quarantine_invalid_json", 40, helper -> helper.runAfterDelay(1, () -> {
             Path broken = GeneratedPackPaths.bacteriaFile(BROKEN);

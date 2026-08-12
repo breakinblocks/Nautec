@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "avaritia"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "extendedcrafting"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/neutronium",
+  "chance": 3.0,
+  "input_bacteria": "nautec:adamantophiles",
+  "result_bacteria": "nautec:neutronophiles"
+}

@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:palladium_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:palladium_ingot",
+      "required": false
+    }
+  ]
+}

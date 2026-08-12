@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "gtceu"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "techreborn"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/palladium",
+  "chance": 5.0,
+  "input_bacteria": "nautec:aurrophiles",
+  "result_bacteria": "nautec:palladophiles"
+}

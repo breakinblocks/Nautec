@@ -3,29 +3,48 @@ package com.breakinblocks.nautec.data.generated;
 import com.breakinblocks.nautec.Nautec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = Nautec.MODID)
 public final class GeneratedPackEvents {
     private GeneratedPackEvents() {
     }
 
-    @SubscribeEvent
-    public static void onAddReloadListeners(AddServerReloadListenersEvent event) {
-        event.addListener(BacteriaPresetManager.LISTENER_ID, new BacteriaPresetManager());
-    }
-
+    /**
+     * Material bacteria used to be written into the generated pack at runtime. They ship as ordinary
+     * datapack files now, so anything the old preset pass left behind is a duplicate and gets cleared
+     * out once. Only files matching a name we ship are touched, so hand written content is left alone.
+     */
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        BacteriaPresets.Result result = BacteriaPresets.applyAll(event.getServer().registryAccess());
+        List<String> removed = new ArrayList<>();
 
-        if (!result.written().isEmpty()) {
-            Nautec.LOGGER.info("Wrote {} bacteria from presets: {}. They become active the next time this world loads.",
-                    result.written().size(), String.join(", ", result.written()));
+        for (String name : BacteriaMaterials.SHIPPED_NAMES) {
+            if (removeIfPresent(GeneratedPackPaths.bacteriaFile(name))
+                    | removeIfPresent(GeneratedPackPaths.incubationRecipeFile(name))
+                    | removeIfPresent(GeneratedPackPaths.mutationRecipeFile(name))) {
+                removed.add(name);
+            }
         }
-        if (!result.skipped().isEmpty()) {
-            Nautec.LOGGER.debug("{} bacteria presets are waiting for a mod to fill their tags", result.skipped().size());
+
+        if (!removed.isEmpty()) {
+            Nautec.LOGGER.info("Cleared {} superseded bacteria from the generated pack, they ship with the mod now: {}",
+                    removed.size(), String.join(", ", removed));
+        }
+    }
+
+    private static boolean removeIfPresent(Path path) {
+        try {
+            return Files.deleteIfExists(path);
+        } catch (IOException e) {
+            Nautec.LOGGER.warn("Could not remove superseded generated file {}", path, e);
+            return false;
         }
     }
 }

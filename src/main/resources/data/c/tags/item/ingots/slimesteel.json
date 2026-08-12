@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:slimesteel_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:slimesteel_ingot",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "colossal_reactors"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:graphitophiles",
+  "consume_chance": 0.05,
+  "growth": {
+    "max": 30,
+    "min": 10
+  },
+  "nutrient": "#c:ingots/graphite"
+}

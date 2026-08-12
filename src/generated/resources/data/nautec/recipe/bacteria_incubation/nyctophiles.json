@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "evilcraft"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "occultism"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:nyctophiles",
+  "consume_chance": 0.1,
+  "growth": {
+    "max": 25,
+    "min": 8
+  },
+  "nutrient": "#c:gems/dark_gem"
+}

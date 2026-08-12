@@ -78,10 +78,19 @@
   while the colony works and goes back to full whenever you feed it in an
   Incubator. Let it hit zero and the colony starts dying off.
 - Seven new places to graft bacteria, on the deep ocean plants.
-- Over eighty ready-made bacteria for materials that other mods add, covering
-  metals, alloys and gems from tin and steel up to titanium, iridium and
-  beyond. Each one appears on its own once you are playing with a mod that adds
-  that material, and stays out of the way otherwise.
+- Seventy eight ready-made bacteria for materials that other mods add, covering
+  metals, alloys and gems from tin and steel up to titanium, iridium and beyond.
+  Each one appears once you are playing with a mod that adds that material, and
+  stays out of the way otherwise. They ship as ordinary datapack files now, so a
+  pack can override or disable any of them the same way it would any other
+  content, and they work from the first time you load a world rather than the
+  second.
+- Nautec now fills in the common material tags for a number of mods that keep
+  their alloys to themselves, including the Tinkers family, Botania, Ad Astra,
+  Draconic Evolution and Big Reactors. That makes those materials usable by
+  Nautec and by anything else that reads the common tags.
+- A bacteria's output can now be a material tag rather than one specific item, so
+  a single definition covers every mod that supplies that material.
 - A new admin command for making your own bacteria for any item you like.
 - The Bacterial Fuel Cell, a second thing to do with a colony. It eats the
   colony and gives you a laser back. Right-click it with a Petri Dish to load
@@ -142,6 +151,9 @@
   form their own separate network.
 - Breaking a Gateway keeps its address on the dropped block, so moving one does not mean
   dyeing it again.
+- Gateways now generate on the ocean floor as small prismarine pads, spread thinly so the
+  nearest one is a real distance away. Every one that generates shares the same address, so
+  the ones you find are already a network before you touch any of them.
 - A "Gateway" guide entry covering addresses, what travels with you, and the limits.
 
 ### Fixed

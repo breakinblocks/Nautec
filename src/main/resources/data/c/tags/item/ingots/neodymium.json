@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:neodymium_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:neodymium_ingot",
+      "required": false
+    }
+  ]
+}

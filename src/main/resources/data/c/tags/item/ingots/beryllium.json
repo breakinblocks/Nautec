@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:beryllium_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:beryllium_ingot",
+      "required": false
+    }
+  ]
+}

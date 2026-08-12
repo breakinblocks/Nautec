@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:manyullyn_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:manyullyn_ingot",
+      "required": false
+    }
+  ]
+}

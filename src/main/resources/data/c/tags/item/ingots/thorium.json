@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:thorium_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:thorium_ingot",
+      "required": false
+    }
+  ]
+}
