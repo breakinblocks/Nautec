@@ -1,0 +1,10 @@
+{
+  "type": "nautec:pressure_forging",
+  "duration": 300,
+  "ingredient": "nautec:aquarine_steel_ingot",
+  "min_depth": -40,
+  "purity": 2.5,
+  "result": {
+    "id": "nautec:deep_steel_plating"
+  }
+}

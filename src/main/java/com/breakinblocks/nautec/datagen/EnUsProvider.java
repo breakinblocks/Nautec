@@ -49,15 +49,15 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.fishing_minigame.prompt.rhythm", "Strike on all three marks");
         add("nautec.fishing_minigame.prompt.hold", "Hold through the green, then let go");
 
-        addItem(SUBMARINE, "Abyssal Submersible");
-        add("entity.nautec.submarine", "Abyssal Submersible");
+        addItem(SUBMARINE, "Sea Scout");
+        add("entity.nautec.submarine", "Sea Scout");
         add("nautec.submarine.controls", "W/S throttle, A/D rudder, Space rises, C dives");
         add("nautec.submarine.aim", "Hold use to steer with the mouse");
         add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
         add("nautec.submarine.hull", "Hull integrity:");
         add("nautec.submarine.breached", "The hull is breached. Repair it on an anvil before launching");
-        add("nautec.submarine.needs_water", "The submersible needs open water to launch into");
-        add("nautec.submarine.modules", "Submersible Modules");
+        add("nautec.submarine.needs_water", "The Sea Scout needs open water to launch into");
+        add("nautec.submarine.modules", "Sea Scout Modules");
         add("nautec.submarine.modules.installed", "Installed: %s");
 
         addItem(SOLAR_MODULE, "Solar Module");
@@ -75,17 +75,17 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.submarine.ability.destination_blocked", "The anchor is blocked or dry");
         add("effect.nautec.stunned", "Stunned");
 
-        add("subtitles.nautec.submarine.engine", "Submersible thrusters churn");
-        add("subtitles.nautec.submarine.ambient", "Submersible hull hums");
-        add("subtitles.nautec.submarine.deploy", "Submersible canopy seals");
-        add("subtitles.nautec.submarine.stow", "Submersible canopy opens");
+        add("subtitles.nautec.submarine.engine", "Sea Scout thrusters churn");
+        add("subtitles.nautec.submarine.ambient", "Sea Scout hull hums");
+        add("subtitles.nautec.submarine.deploy", "Sea Scout canopy seals");
+        add("subtitles.nautec.submarine.stow", "Sea Scout canopy opens");
         add("subtitles.nautec.submarine.sonar_ping", "Sonar pings");
         add("subtitles.nautec.submarine.boost", "Thrusters surge");
         add("subtitles.nautec.submarine.shield_pulse", "Shield discharges");
         add("subtitles.nautec.submarine.stealth", "Hull goes quiet");
         add("subtitles.nautec.submarine.laser_loop", "Impulse lasers burn");
-        add("subtitles.nautec.submarine.teleport_charge", "Submersible folds the water");
-        add("subtitles.nautec.submarine.teleport_whoosh", "Submersible jumps");
+        add("subtitles.nautec.submarine.teleport_charge", "Sea Scout folds the water");
+        add("subtitles.nautec.submarine.teleport_whoosh", "Sea Scout jumps");
         add("subtitles.nautec.submarine.module_install", "Module seats home");
         add("subtitles.nautec.submarine.hull_damage", "Hull takes a hit");
         add("subtitles.nautec.submarine.low_power", "Power reserve warning");
@@ -242,6 +242,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock("oil_barrel", "Oil Barrel");
         addBlock(NTBlocks.AUGMENTATION_STATION_EXTENSION, "Augmentation Station Extension");
         addBlock(NTBlocks.CHARGER, "Charger");
+        addBlock(NTBlocks.PRESSURE_FORGE, "Abyssal Pressure Forge");
+        addItem(FLAWLESS_PRISMARINE_CRYSTAL, "Flawless Prismarine Crystal");
+        addItem(DEEP_STEEL_PLATING, "Deep Steel Plating");
         addBlock(NTBlocks.GATEWAY, "Gateway");
         addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
         addItem(RESONANT_SHARD, "Resonant Shard");

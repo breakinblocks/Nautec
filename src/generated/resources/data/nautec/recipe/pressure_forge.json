@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "D": "nautec:dark_prismarine_pillar",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    "DAD",
+    "RCR",
+    "DAD"
+  ],
+  "result": {
+    "id": "nautec:pressure_forge"
+  }
+}

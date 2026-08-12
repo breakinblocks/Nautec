@@ -56,6 +56,9 @@ public class LaserChemistryCategory extends CategoryProvider {
         BookEntryModel gatewayEntry = new GatewayEntry(this)
                 .generate(new Vec2(10, 0));
         add(gatewayEntry.withParent(resonanceChamberEntry));
+        BookEntryModel pressureForgeEntry = new PressureForgeEntry(this)
+                .generate(new Vec2(10, 2));
+        add(pressureForgeEntry.withParent(resonanceChamberEntry));
     }
 
     @Override

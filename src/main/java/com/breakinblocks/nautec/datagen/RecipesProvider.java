@@ -40,6 +40,7 @@ public class RecipesProvider extends RecipeProvider {
         beamOpticsRecipes(pRecipeOutput);
         resonanceRecipes(pRecipeOutput);
         gatewayRecipes(pRecipeOutput);
+        pressureForgeRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -185,6 +186,33 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(2.0f)
                 .duration(80)
                 .save(pRecipeOutput, key("aquarine_steel_ingot_dense"));
+    }
+
+    private void pressureForgeRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.PRESSURE_FORGE.asItem())
+                .pattern("DAD")
+                .pattern("RCR")
+                .pattern("DAD")
+                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("pressure_forge"));
+
+        PressureForgingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get(), 1))
+                .ingredient(NTItems.RESONANT_SHARD.get())
+                .minDepth(-20)
+                .purity(2.0f)
+                .duration(200)
+                .save(pRecipeOutput, key("flawless_prismarine_crystal"));
+
+        PressureForgingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.DEEP_STEEL_PLATING.get(), 1))
+                .ingredient(NTItems.AQUARINE_STEEL_INGOT.get())
+                .minDepth(-40)
+                .purity(2.5f)
+                .duration(300)
+                .save(pRecipeOutput, key("deep_steel_plating"));
     }
 
     private void gatewayRecipes(@NotNull RecipeOutput pRecipeOutput) {

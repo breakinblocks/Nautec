@@ -3,14 +3,17 @@
 ## [Unreleased]
 
 ### Added
-- The **Abyssal Submersible**, a two seat powered vehicle. Right-click to
+- The **Sea Scout**, a two seat powered submersible. Right-click to
   board; first in drives. W/S throttle, A/D rudder, Space rises, C dives,
   hold right mouse to steer. Sneak plus right-click picks it back up with
   its charge. Charge it in a Charger.
 - Sealed and powered, it keeps its crew breathing.
-- Driving shows a power readout, repositionable with Ctrl+H.
+- Piloting shows the controls on the HUD, so the scheme is not something you have to
+  guess at or go looking in the guide for.
+- Driving shows a compact power and hull readout, repositionable with Ctrl+H.
 - Collision follows the actual hull shape as it turns, so it does not snag
-  in tight caverns.
+  in tight caverns. It only collides with the world: fish and other creatures
+  get shoved aside rather than bringing several tonnes of hull to a dead stop.
 - Creative pilots use no power.
 - Now requires **GeckoLib** 5.5.2 or newer.
 - Four new ocean biomes, added to the world's biome layout without replacing
@@ -155,8 +158,24 @@
   nearest one is a real distance away. Every one that generates shares the same address, so
   the ones you find are already a network before you touch any of them.
 - A "Gateway" guide entry covering addresses, what travels with you, and the limits.
+- The **Abyssal Pressure Forge**, the first machine that cares where you build it. It
+  only runs deep, under an unbroken column of water. Take the water away and it stops
+  however deep it is, so a dry shaft to bedrock builds you nothing.
+- It wants four things at once: depth, water overhead, a clean beam, and Etching Acid,
+  which it drinks steadily. The deepest recipes want to be well below sea level, which
+  is the point. The Abyssal Trench is where it belongs.
+- **Flawless Prismarine Crystals**, pressed from Resonant Shards. The Forge is the only
+  way to get them.
+- **Deep Steel Plating**, pressed from Aquarine Steel further down still. This is now
+  what repairs a breached submersible hull on an anvil, so the thing that carries you
+  into the deep is mended with something only the deep can make. Packs that want the old
+  behaviour can point the repair item back at diamonds in the config.
+- An "Abyssal Pressure Forge" guide entry, and config for its depth, water column, power
+  draw, acid use and tank size.
 
 ### Fixed
+- The Sea Scout no longer floats a name tag reading "Submersible Modules" above
+  itself. The module screen's title was being used as the vehicle's name.
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data
   component that no longer exists, which stopped the whole table loading.
 - Rusty Crates in ocean ruins now generate their loot. Their loot table still

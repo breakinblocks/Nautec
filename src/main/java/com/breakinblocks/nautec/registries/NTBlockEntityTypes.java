@@ -51,6 +51,9 @@ public final class NTBlockEntityTypes {
             () -> new BlockEntityType<>(OilBarrelBlockEntity::new,
                     NTBlocks.OIL_BARREL.get()));
 
+    public static final Supplier<BlockEntityType<PressureForgeBlockEntity>> PRESSURE_FORGE = BLOCK_ENTITIES.register("pressure_forge",
+            () -> new BlockEntityType<>(PressureForgeBlockEntity::new,
+                    NTBlocks.PRESSURE_FORGE.get()));
     public static final Supplier<BlockEntityType<GatewayBlockEntity>> GATEWAY = BLOCK_ENTITIES.register("gateway",
             () -> new BlockEntityType<>(GatewayBlockEntity::new,
                     NTBlocks.GATEWAY.get()));

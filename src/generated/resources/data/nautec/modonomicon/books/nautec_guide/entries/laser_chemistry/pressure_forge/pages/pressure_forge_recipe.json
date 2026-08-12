@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "pressure_forge_recipe",
+  "recipe_id_1": "nautec:pressure_forge",
+  "sort_number": 3,
+  "title1": "Abyssal Pressure Forge Recipe"
+}

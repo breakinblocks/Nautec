@@ -8,6 +8,12 @@ import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
 import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
+import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
+import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
+import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Ingredient;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -48,6 +54,53 @@ public final class MachineTests {
     }
 
     public static void register(NTTestRegistrar r) {
+
+        r.add("machine/pressure_forge_needs_depth_and_water", 40, helper -> helper.runAfterDelay(1, () -> {
+            BlockPos dry = new BlockPos(4, 1, 4);
+            helper.setBlock(dry, NTBlocks.PRESSURE_FORGE.get().defaultBlockState());
+
+            PressureForgeBlockEntity forge = helper.getBlockEntity(dry, PressureForgeBlockEntity.class);
+            if (forge == null) {
+                helper.fail("Expected PressureForgeBlockEntity");
+                return;
+            }
+
+            helper.assertFalse(forge.isPressurised(),
+                    "A forge in open air should never be under pressure, whatever its depth");
+
+            for (int i = 1; i <= NTConfig.pressureForgeWaterColumn; i++) {
+                helper.setBlock(dry.above(i), Blocks.WATER.defaultBlockState());
+            }
+
+            boolean deepEnough = helper.absolutePos(dry).getY() <= NTConfig.pressureForgeDepth;
+            helper.assertValueEqual(deepEnough, forge.isPressurised(),
+                    "with a full water column, pressure should follow depth alone");
+
+            helper.setBlock(dry.above(NTConfig.pressureForgeWaterColumn), Blocks.AIR.defaultBlockState());
+            helper.assertFalse(forge.isPressurised(),
+                    "Breaking the water column anywhere should stop the forge, not just at the bottom");
+            helper.succeed();
+        }));
+
+        r.add("machine/pressure_forge_recipe_gates_on_depth_and_purity", 20, helper -> helper.runAfterDelay(1, () -> {
+            PressureForgingRecipe recipe = new PressureForgingRecipe(
+                    Ingredient.of(NTItems.AQUARINE_STEEL_INGOT.get()),
+                    new ItemStackTemplate(NTItems.DEEP_STEEL_PLATING.get(), 1), -40, 2.5f, 300);
+
+            ItemStack input = new ItemStack(NTItems.AQUARINE_STEEL_INGOT.get());
+            ItemStack wrong = new ItemStack(Items.IRON_INGOT);
+
+            helper.assertTrue(recipe.matches(new PressureForgingRecipeInput(input, 3.0f, -50), helper.getLevel()),
+                    "deep enough and pure enough should match");
+            helper.assertFalse(recipe.matches(new PressureForgingRecipeInput(input, 3.0f, -10), helper.getLevel()),
+                    "too shallow should not match even at high purity");
+            helper.assertFalse(recipe.matches(new PressureForgingRecipeInput(input, 1.0f, -50), helper.getLevel()),
+                    "too dirty a beam should not match even at depth");
+            helper.assertFalse(recipe.matches(new PressureForgingRecipeInput(wrong, 3.0f, -50), helper.getLevel()),
+                    "the wrong item should not match");
+            helper.succeed();
+        }));
+
         r.add("machine/charger_charges_battery", 140, helper -> {
             BlockPos sourcePos = new BlockPos(4, 4, 4);
             BlockPos chargerPos = new BlockPos(4, 1, 4);

@@ -80,6 +80,9 @@ public final class NTBlocks {
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 
+    public static final DeferredBlock<PressureForgeBlock> PRESSURE_FORGE = registerBlockAndItem("pressure_forge", PressureForgeBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(4.0f).noOcclusion());
+
     public static final DeferredBlock<GatewayBlock> GATEWAY = registerBlockAndItem("gateway", GatewayBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(4.0f).noOcclusion());
 

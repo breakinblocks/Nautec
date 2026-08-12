@@ -196,6 +196,26 @@ public final class NTConfig {
             .comment("The damage a Resonance Chamber vent deals to everything in range")
             .defineInRange("resonanceVentDamage", 8.0, 0, 1000);
 
+    private static final ModConfigSpec.IntValue PRESSURE_FORGE_DEPTH = BUILDER
+            .comment("The Y level at or below which an Abyssal Pressure Forge will run. Recipes may demand deeper still")
+            .defineInRange("pressureForgeDepth", 0, -64, 320);
+
+    private static final ModConfigSpec.IntValue PRESSURE_FORGE_WATER_COLUMN = BUILDER
+            .comment("How many blocks of water must sit directly above an Abyssal Pressure Forge for it to run")
+            .defineInRange("pressureForgeWaterColumn", 8, 0, 320);
+
+    private static final ModConfigSpec.IntValue PRESSURE_FORGE_POWER_USAGE = BUILDER
+            .comment("The amount of power an Abyssal Pressure Forge requires each tick")
+            .defineInRange("pressureForgePowerUsage", 40, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue PRESSURE_FORGE_ACID_USAGE = BUILDER
+            .comment("The amount of Etching Acid in mb an Abyssal Pressure Forge consumes per craft")
+            .defineInRange("pressureForgeAcidUsage", 250, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue PRESSURE_FORGE_CAPACITY = BUILDER
+            .comment("The Etching Acid capacity of an Abyssal Pressure Forge")
+            .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue GATEWAY_COOLDOWN = BUILDER
             .comment("The amount of ticks something is barred from using another gateway after arriving, which is what stops it bouncing straight back")
             .defineInRange("gatewayCooldown", 100, 0, Integer.MAX_VALUE);
@@ -250,7 +270,7 @@ public final class NTConfig {
             .defineInRange("submarineAutorepairPercent", 0.01, 0.0, 1.0);
     private static final ModConfigSpec.ConfigValue<String> SUBMARINE_REPAIR_ITEM = BUILDER
             .comment("The item that repairs a submarine in an anvil")
-            .define("submarineRepairItem", "minecraft:diamond");
+            .define("submarineRepairItem", "nautec:deep_steel_plating");
     private static final ModConfigSpec.DoubleValue SUBMARINE_REPAIR_PERCENT = BUILDER
             .comment("Fraction of the hull restored by each repair item used in an anvil")
             .defineInRange("submarineRepairPercent", 0.20, 0.01, 1.0);
@@ -438,6 +458,11 @@ public final class NTConfig {
     public static double resonanceVentRadius = 4.0;
     public static double resonanceVentDamage = 8.0;
     public static int gatewayCooldown = 100;
+    public static int pressureForgeDepth = 0;
+    public static int pressureForgeWaterColumn = 8;
+    public static int pressureForgePowerUsage = 40;
+    public static int pressureForgeAcidUsage = 250;
+    public static int pressureForgeCapacity = 4_000;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -572,6 +597,11 @@ public final class NTConfig {
         resonanceVentRadius = RESONANCE_VENT_RADIUS.getAsDouble();
         resonanceVentDamage = RESONANCE_VENT_DAMAGE.getAsDouble();
         gatewayCooldown = GATEWAY_COOLDOWN.get();
+        pressureForgeDepth = PRESSURE_FORGE_DEPTH.get();
+        pressureForgeWaterColumn = PRESSURE_FORGE_WATER_COLUMN.get();
+        pressureForgePowerUsage = PRESSURE_FORGE_POWER_USAGE.get();
+        pressureForgeAcidUsage = PRESSURE_FORGE_ACID_USAGE.get();
+        pressureForgeCapacity = PRESSURE_FORGE_CAPACITY.get();
 
         luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
         luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();

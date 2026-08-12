@@ -64,7 +64,7 @@ public class SubmarineCategory extends CategoryProvider {
 
     @Override
     protected String categoryName() {
-        return "The Abyssal Submersible";
+        return "The Sea Scout";
     }
 
     @Override

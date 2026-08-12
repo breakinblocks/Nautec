@@ -45,6 +45,10 @@ public final class NTItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> RESONANT_SHARD = registerItem("resonant_shard",
             Item::new, new Item.Properties());
+    public static final DeferredItem<Item> FLAWLESS_PRISMARINE_CRYSTAL = registerItem("flawless_prismarine_crystal",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> DEEP_STEEL_PLATING = registerItem("deep_steel_plating",
+            Item::new, new Item.Properties());
     public static final DeferredItem<Item> PRISMARINE_LENS = registerItem("prismarine_lens",
             Item::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<AirBottleItem> AIR_BOTTLE = registerItem("air_bottle",

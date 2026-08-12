@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.entities.SubmarineCollision;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import net.minecraft.network.chat.Component;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModuleContainer;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.breakinblocks.nautec.content.items.SubmarineAnvilRepair;
@@ -81,6 +82,19 @@ public final class SubmarineTests {
             List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
                     new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
             helper.assertTrue(launched.isEmpty(), "a submersible was launched onto dry land");
+            helper.succeed();
+        }));
+
+        r.add("submarine/wears_no_name_tag", 40, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+
+            helper.assertFalse(submarine.hasCustomName(), "A fresh submersible should have no custom name");
+
+            String shown = submarine.getDisplayName().getString();
+            String moduleTitle = Component.translatable("nautec.submarine.modules").getString();
+            helper.assertFalse(shown.equals(moduleTitle),
+                    "The submersible's display name is what the renderer puts on a name tag. It must not be the "
+                            + "module screen's title, or every submersible floats one. Was: " + shown);
             helper.succeed();
         }));
 

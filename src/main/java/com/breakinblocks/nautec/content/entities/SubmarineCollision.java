@@ -49,6 +49,10 @@ public final class SubmarineCollision {
         return new Vec3(x * S, y * S + Y_OFF, z * S + Z_OFF);
     }
 
+    /**
+     * Blocks only. Entities are shoved aside by the hull instead of stopping it, because testing
+     * entity collisions here meant a single fish in any probe box clamped the throttle to nothing.
+     */
     public static boolean blocked(Level level, Entity entity, Vec3 position, float yawDegrees, float pitchDegrees) {
         float pitchRad = pitchDegrees * Mth.DEG_TO_RAD;
         float yawRad = yawDegrees * Mth.DEG_TO_RAD;
@@ -56,7 +60,7 @@ public final class SubmarineCollision {
             Vec3 world = position.add(offset.xRot(pitchRad).yRot(-yawRad));
             AABB probe = new AABB(world.x - MARGIN, world.y - MARGIN, world.z - MARGIN,
                     world.x + MARGIN, world.y + MARGIN, world.z + MARGIN);
-            if (!level.noCollision(entity, probe)) {
+            if (level.getBlockCollisions(entity, probe).iterator().hasNext()) {
                 return true;
             }
         }

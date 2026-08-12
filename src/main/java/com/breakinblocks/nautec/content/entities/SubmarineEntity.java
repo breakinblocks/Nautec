@@ -53,12 +53,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Input;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
@@ -72,7 +71,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProvider {
+public class SubmarineEntity extends LivingEntity implements GeoEntity {
+    private static final double SHOVE_STRENGTH = 2.5;
     public static final int MAX_PASSENGERS = 2;
     public static final float MODEL_Y_OFFSET = 3F / 16F;
     public static final float MODEL_Z_OFFSET = 2.5F / 16F;
@@ -376,6 +376,38 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
     public void travel(Vec3 relative) {
         pilot();
         move(MoverType.SELF, SubmarineCollision.clampMotion(level(), this, position(), getDeltaMovement(), getYRot(), getXRot()));
+        shoveAside();
+    }
+
+    /**
+     * The hull only collides with blocks, so anything soft enough to swim into gets pushed out of the
+     * way rather than stopping several tonnes of submersible.
+     */
+    private void shoveAside() {
+        if (level().isClientSide()) {
+            return;
+        }
+
+        Vec3 motion = getDeltaMovement();
+        double speed = motion.length();
+        if (speed < 1.0E-3) {
+            return;
+        }
+
+        List<Entity> caught = level().getEntities(this, getBoundingBox().inflate(0.2),
+                entity -> !entity.isPassengerOfSameVehicle(this) && !hasPassenger(entity) && entity.isPushable());
+
+        for (Entity entity : caught) {
+            Vec3 away = entity.position().subtract(position());
+            Vec3 push = away.horizontalDistanceSqr() < 1.0E-4
+                    ? motion.normalize()
+                    : new Vec3(away.x, away.y * 0.4, away.z).normalize();
+
+            entity.push(push.x * speed * SHOVE_STRENGTH,
+                    push.y * speed * SHOVE_STRENGTH + 0.05,
+                    push.z * speed * SHOVE_STRENGTH);
+            entity.hurtMarked = true;
+        }
     }
 
     private void pilot() {
@@ -594,7 +626,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
 
         if (player.getItemInHand(hand).is(Tags.Items.TOOLS_WRENCH)) {
             if (player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.openMenu(this, buf -> buf.writeVarInt(getId()));
+                serverPlayer.openMenu(moduleMenu(), buf -> buf.writeVarInt(getId()));
             }
             return InteractionResult.SUCCESS;
         }
@@ -606,14 +638,14 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity, MenuProv
         return player.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    @Override
-    public Component getDisplayName() {
-        return hasCustomName() ? super.getDisplayName() : Component.translatable("nautec.submarine.modules");
-    }
-
-    @Override
-    public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new SubmarineModuleMenu(containerId, inventory, this);
+    /**
+     * Deliberately not a MenuProvider. Entity.getDisplayName is what the renderer puts on a name tag,
+     * so using it for the module screen's title made every submersible wear one.
+     */
+    private MenuProvider moduleMenu() {
+        return new SimpleMenuProvider(
+                (containerId, inventory, player) -> new SubmarineModuleMenu(containerId, inventory, this),
+                Component.translatable("nautec.submarine.modules"));
     }
 
     private void retrieve(Player player) {

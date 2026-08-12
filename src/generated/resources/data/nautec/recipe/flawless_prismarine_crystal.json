@@ -1,0 +1,10 @@
+{
+  "type": "nautec:pressure_forging",
+  "duration": 200,
+  "ingredient": "nautec:resonant_shard",
+  "min_depth": -20,
+  "purity": 2.0,
+  "result": {
+    "id": "nautec:flawless_prismarine_crystal"
+  }
+}
