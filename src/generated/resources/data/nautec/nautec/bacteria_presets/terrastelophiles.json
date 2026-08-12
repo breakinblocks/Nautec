@@ -1,0 +1,17 @@
+{
+  "name": "terrastelophiles",
+  "nutrient": [
+    "#c:ores/terrasteel",
+    "#c:raw_materials/terrasteel",
+    "#c:dusts/terrasteel",
+    "#c:gems/terrasteel",
+    "#c:ingots/terrasteel",
+    "#c:storage_blocks/terrasteel"
+  ],
+  "rarity": "legendary",
+  "resource": [
+    "#c:ingots/terrasteel",
+    "#c:dusts/terrasteel",
+    "#c:gems/terrasteel"
+  ]
+}

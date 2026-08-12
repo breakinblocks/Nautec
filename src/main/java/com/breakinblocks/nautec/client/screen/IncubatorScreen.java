@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
@@ -28,7 +29,7 @@ public class IncubatorScreen extends NTMachineScreen<IncubatorBlockEntity> {
 
         int progress = menu.blockEntity.getProgress();
 
-        int j1 = (int) Math.ceil(((float) progress / IncubatorBlockEntity.MAX_PROGRESS) * 29f);
+        int j1 = (int) Math.ceil(((float) progress / Math.max(1, NTConfig.incubatorCraftingSpeed)) * 29f);
 
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 46, 29, 0, 29 - j1, i + 65, j + 47 - j1, 46, j1);
     }

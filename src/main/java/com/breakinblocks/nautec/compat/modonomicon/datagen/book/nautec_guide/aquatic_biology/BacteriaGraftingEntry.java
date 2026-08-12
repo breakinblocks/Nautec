@@ -27,6 +27,13 @@ public class BacteriaGraftingEntry extends BaseNautecEntry {
                 and obtain the bacteria. Note that there is a chance
                 for getting bacteria when right clicking. Bacteria
                 that can be grafted can be viewed in JEI.
+                The deep ocean is the richest hunting ground. Deep
+                Kelp, Luminescent Algae and Glow Polyps in a
+                Bioluminescent Grove, Vent Tubeworms at the
+                Hydrothermal Vents, Abyssal Coral down in an
+                Abyssal Trench, and Prismarine Fronds or Budding
+                Prismarine on a Prismarine Reef all carry their
+                own strains.
                 """);
 
         page("bacteria_overview", () -> BookTextPageModel.create()

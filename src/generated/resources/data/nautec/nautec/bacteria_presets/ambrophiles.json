@@ -1,0 +1,16 @@
+{
+  "name": "ambrophiles",
+  "nutrient": [
+    "#c:ores/amber",
+    "#c:raw_materials/amber",
+    "#c:dusts/amber",
+    "#c:gems/amber",
+    "#c:ingots/amber",
+    "#c:storage_blocks/amber"
+  ],
+  "resource": [
+    "#c:gems/amber",
+    "#c:dusts/amber",
+    "#c:ingots/amber"
+  ]
+}

@@ -49,7 +49,11 @@ public interface IBacteriaStorage {
             long amount = Math.min(NTConfig.bacteriaColonySizeCap, rawAmount);
 
             if (!simulate) {
-                setBacteria(slot, instance.copyWithSize(amount));
+                BacteriaInstance merged = instance.copyWithSize(amount);
+                if (!merged.isEmpty()) {
+                    merged.setAge(Math.max(bacteriaInSlot.getAge(), instance.getAge()));
+                }
+                setBacteria(slot, merged);
                 onBacteriaChanged(slot);
             }
             return instance.copyWithSize(rawAmount - amount);

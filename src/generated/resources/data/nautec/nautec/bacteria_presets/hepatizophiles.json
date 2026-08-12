@@ -1,0 +1,17 @@
+{
+  "name": "hepatizophiles",
+  "nutrient": [
+    "#c:ores/hepatizon",
+    "#c:raw_materials/hepatizon",
+    "#c:dusts/hepatizon",
+    "#c:gems/hepatizon",
+    "#c:ingots/hepatizon",
+    "#c:storage_blocks/hepatizon"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/hepatizon",
+    "#c:dusts/hepatizon",
+    "#c:gems/hepatizon"
+  ]
+}

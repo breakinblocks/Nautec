@@ -1,0 +1,13 @@
+{
+  "name": "nitrophiles",
+  "nutrient": [
+    "#c:ores/niter",
+    "#c:dusts/niter",
+    "#c:gems/niter"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:dusts/niter",
+    "#c:gems/niter"
+  ]
+}

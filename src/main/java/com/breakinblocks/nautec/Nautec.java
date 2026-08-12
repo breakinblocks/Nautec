@@ -20,6 +20,7 @@ import com.breakinblocks.nautec.content.commands.arguments.AugmentTypeArgumentTy
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataMaps;
+import com.breakinblocks.nautec.data.generated.GeneratedPackFinder;
 import com.breakinblocks.nautec.registries.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -37,6 +38,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -69,6 +71,8 @@ public final class Nautec {
         modEventBus.addListener(DataPackRegistryEvent.NewRegistry.class, event -> {
             event.dataPackRegistry(NTRegistries.BACTERIA_KEY, Bacteria.CODEC, Bacteria.CODEC);
         });
+
+        modEventBus.addListener(AddPackFindersEvent.class, GeneratedPackFinder::onAddPackFinders);
 
         NTEntities.ENTITIES.register(modEventBus);
         NTItems.ITEMS.register(modEventBus);

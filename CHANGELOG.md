@@ -74,6 +74,17 @@
   treasure pool. Both vary by biome: rivers, oceans in general, and each of the
   four Nautec biomes have their own entries on top of the shared ones. Packs
   can override `nautec:gameplay/lucky_fishing_zone` and its two sub-tables.
+- Bacteria colonies now age. An analyzed Petri Dish shows Vitality, which drops
+  while the colony works and goes back to full whenever you feed it in an
+  Incubator. Let it hit zero and the colony starts dying off.
+- Seven new places to graft bacteria, on the deep ocean plants.
+- Over eighty ready-made bacteria for materials that other mods add, covering
+  metals, alloys and gems from tin and steel up to titanium, iridium and
+  beyond. Each one appears on its own once you are playing with a mod that adds
+  that material, and stays out of the way otherwise.
+- A new admin command for making your own bacteria for any item you like.
+- Config options for the speed, power draw and decay of all three biology
+  machines.
 
 ### Fixed
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data
@@ -84,10 +95,32 @@
   after you die. Bonus Hearts, Step Up, Walking Speed and Creative Flight kept
   showing as installed after a respawn but had no effect until you reapplied
   them at the Augmentation Station.
+- The Incubator and Mutator progress bars no longer sit at zero while the
+  machine is clearly running.
+- The biology machines now remember their progress when you leave and come
+  back, instead of starting over.
+- The Bacterial Analyzer no longer leaves its progress bar full after it
+  finishes.
+- The Incubator guide page showed a Mutator, and claimed incubating doubles a
+  colony, which it never did.
+- Recipe pages no longer show bacteria percentages like 7.0000005%.
 
 ### Changed
 - The Spreading Trident augment is now on 'U' by default. It shared 'Y' with
   the Bouncing Trident augment, so both fired at once when installed together.
+- Bacteria stats finally do something. Production Rate, Growth Rate, Mutation
+  Resistance and Lifespan were all being ignored; now every one of them
+  matters, so a good colony is worth breeding for.
+- Bio Reactor speed depends on the colony instead of being the same five
+  seconds per item for everything. A fresh colony is about as fast as before, a
+  big well bred one is many times faster.
+- The Bio Reactor needs more power the more colonies you put in it. A full one
+  wants a whole laser line.
+- Mutation can now fail. Big, stubborn colonies are harder to change, so mutate
+  them while they are still small. A failure only costs you part of the colony
+  and the machine tries again. Success keeps the parent's stats, so good
+  bacteria stay good after the jump.
+- The Mutator needs its output slot empty before it starts.
 
 ## [0.5.1]
 

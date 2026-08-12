@@ -1,0 +1,18 @@
+{
+  "name": "titanophiles",
+  "nutrient": [
+    "#c:ores/titanium",
+    "#c:raw_materials/titanium",
+    "#c:dusts/titanium",
+    "#c:gems/titanium",
+    "#c:ingots/titanium",
+    "#c:storage_blocks/titanium"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/titanium",
+    "#c:raw_materials/titanium",
+    "#c:dusts/titanium",
+    "#c:gems/titanium"
+  ]
+}

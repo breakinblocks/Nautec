@@ -1,0 +1,17 @@
+{
+  "name": "apatitophiles",
+  "nutrient": [
+    "#c:ores/apatite",
+    "#c:raw_materials/apatite",
+    "#c:dusts/apatite",
+    "#c:gems/apatite",
+    "#c:ingots/apatite",
+    "#c:storage_blocks/apatite"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:gems/apatite",
+    "#c:dusts/apatite",
+    "#c:ingots/apatite"
+  ]
+}

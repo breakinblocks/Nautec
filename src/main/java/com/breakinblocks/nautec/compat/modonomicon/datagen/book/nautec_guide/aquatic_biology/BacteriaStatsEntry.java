@@ -24,13 +24,20 @@ public class BacteriaStatsEntry extends BaseNautecEntry {
                 can vary between bacteria, but most of the time there
                 are the following stats:
                 \
-                - Growth Rate, The speed of growth in the incubator
+                - Growth Rate, multiplies how much size an Incubator cycle adds
                 \
-                - Mutation Resistance, The Resistance against Mutation in the Mutator
+                - Mutation Resistance, lowers the Mutator's success chance, and softens the loss on a failed attempt
                 \
-                - Production Rate, The Production Rate of Resources in the Bio Reactor
+                - Production Rate, multiplies how fast the Bio Reactor makes resources
                 \
-                - Lifespan, The Time it takes for a colony to shrink when producing resources
+                - Lifespan, the ticks a colony can work in the Bio Reactor before it starts dying off
+                \
+                Analyzed dishes also show Vitality, which is how
+                much of the Lifespan is left. It drops while the
+                colony works and returns to 100% whenever the
+                colony is fed in an Incubator. At 0% the colony
+                is Senescent and loses part of itself with every
+                resource it produces.
                 """);
     }
 }

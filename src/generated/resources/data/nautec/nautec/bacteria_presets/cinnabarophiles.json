@@ -1,0 +1,17 @@
+{
+  "name": "cinnabarophiles",
+  "nutrient": [
+    "#c:ores/cinnabar",
+    "#c:raw_materials/cinnabar",
+    "#c:dusts/cinnabar",
+    "#c:gems/cinnabar",
+    "#c:ingots/cinnabar",
+    "#c:storage_blocks/cinnabar"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:gems/cinnabar",
+    "#c:dusts/cinnabar",
+    "#c:ingots/cinnabar"
+  ]
+}

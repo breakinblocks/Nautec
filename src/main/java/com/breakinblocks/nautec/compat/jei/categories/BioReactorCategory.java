@@ -2,15 +2,20 @@ package com.breakinblocks.nautec.compat.jei.categories;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
+import com.breakinblocks.nautec.utils.MathUtils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.placement.HorizontalAlignment;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -24,12 +29,16 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
     public static final IRecipeType<BioReactorRecipe> RECIPE_TYPE =
             IRecipeType.create(UID, BioReactorRecipe.class);
 
+    private static final int DRAWABLE_WIDTH = 96;
+    private static final int DRAWABLE_HEIGHT = 34;
+    private static final int ARROW_ROW_HEIGHT = 24;
+
     public BioReactorCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
                 Component.translatable("nautec.jei.category.bio_reactor"),
                 helper.createDrawableItemStack(new ItemStack(NTBlocks.BIO_REACTOR.get())),
-                96,
-                24);
+                DRAWABLE_WIDTH,
+                DRAWABLE_HEIGHT);
     }
 
     @Override
@@ -47,7 +56,28 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
     public void draw(BioReactorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
 
-        NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, getWidth() / 2 - 12, getHeight() / 2 - 5, 24, 10);
+        NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, getWidth() / 2 - 12, ARROW_ROW_HEIGHT / 2 - 5, 24, 10);
+    }
+
+    @Override
+    public void createRecipeExtras(IRecipeExtrasBuilder builder, BioReactorRecipe recipe, IFocusGroup focuses) {
+        Font font = Minecraft.getInstance().font;
+        Bacteria bacteria = BacteriaHelper.getBacteria(Minecraft.getInstance().level.registryAccess(), recipe.bacteria());
+
+        if (!(bacteria.stats() instanceof SimpleBacteriaStats stats)) {
+            return;
+        }
+
+        String text = "Production: "
+                + MathUtils.roundToPrecision(stats.productionRate().getMin(), 2)
+                + " - "
+                + MathUtils.roundToPrecision(stats.productionRate().getMax(), 2);
+
+        builder.addText(Component.literal(text), getWidth(), font.lineHeight)
+                .setPosition(0, getHeight() - font.lineHeight)
+                .setTextAlignment(HorizontalAlignment.CENTER)
+                .setColor(0xFF808080)
+                .setShadow(false);
     }
 
     public record BioReactorRecipe(ResourceKey<Bacteria> bacteria, Bacteria.Resource resource) {

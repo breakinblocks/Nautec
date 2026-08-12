@@ -20,6 +20,7 @@ public final class NTCommands {
         RemoveAugmentCommand.register(dispatcher);
         GetAugmentCooldownCommand.register(dispatcher);
         SetAugmentCooldownCommand.register(dispatcher);
+        BacteriaGenerateCommand.register(dispatcher, event.getBuildContext());
         ConfigCommand.register(dispatcher);
     }
 }

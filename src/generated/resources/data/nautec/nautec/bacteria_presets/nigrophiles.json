@@ -1,0 +1,17 @@
+{
+  "name": "nigrophiles",
+  "nutrient": [
+    "#c:ores/netherite",
+    "#c:raw_materials/netherite",
+    "#c:dusts/netherite",
+    "#c:gems/netherite",
+    "#c:ingots/netherite",
+    "#c:storage_blocks/netherite"
+  ],
+  "rarity": "legendary",
+  "resource": [
+    "#c:ingots/netherite",
+    "#c:dusts/netherite",
+    "#c:gems/netherite"
+  ]
+}

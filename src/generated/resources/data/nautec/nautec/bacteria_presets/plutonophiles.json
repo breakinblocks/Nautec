@@ -1,0 +1,18 @@
+{
+  "name": "plutonophiles",
+  "nutrient": [
+    "#c:ores/plutonium",
+    "#c:raw_materials/plutonium",
+    "#c:dusts/plutonium",
+    "#c:gems/plutonium",
+    "#c:ingots/plutonium",
+    "#c:storage_blocks/plutonium"
+  ],
+  "rarity": "legendary",
+  "resource": [
+    "#c:ingots/plutonium",
+    "#c:raw_materials/plutonium",
+    "#c:dusts/plutonium",
+    "#c:gems/plutonium"
+  ]
+}

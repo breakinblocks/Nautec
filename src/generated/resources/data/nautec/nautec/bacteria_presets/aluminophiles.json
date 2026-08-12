@@ -1,0 +1,18 @@
+{
+  "name": "aluminophiles",
+  "nutrient": [
+    "#c:ores/aluminum",
+    "#c:raw_materials/aluminum",
+    "#c:dusts/aluminum",
+    "#c:gems/aluminum",
+    "#c:ingots/aluminum",
+    "#c:storage_blocks/aluminum"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:ingots/aluminum",
+    "#c:raw_materials/aluminum",
+    "#c:dusts/aluminum",
+    "#c:gems/aluminum"
+  ]
+}

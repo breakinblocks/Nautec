@@ -1,0 +1,16 @@
+{
+  "name": "inoxophiles",
+  "nutrient": [
+    "#c:ores/stainless_steel",
+    "#c:raw_materials/stainless_steel",
+    "#c:dusts/stainless_steel",
+    "#c:gems/stainless_steel",
+    "#c:ingots/stainless_steel",
+    "#c:storage_blocks/stainless_steel"
+  ],
+  "resource": [
+    "#c:ingots/stainless_steel",
+    "#c:dusts/stainless_steel",
+    "#c:gems/stainless_steel"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "equitophiles",
+  "nutrient": [
+    "#c:ores/knightslime",
+    "#c:raw_materials/knightslime",
+    "#c:dusts/knightslime",
+    "#c:gems/knightslime",
+    "#c:ingots/knightslime",
+    "#c:storage_blocks/knightslime"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/knightslime",
+    "#c:dusts/knightslime",
+    "#c:gems/knightslime"
+  ]
+}

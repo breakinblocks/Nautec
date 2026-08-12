@@ -61,7 +61,7 @@ public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubat
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, BacteriaIncubationRecipe recipe, IFocusGroup focuses) {
         int fontSize = Minecraft.getInstance().font.lineHeight;
-        String chanceText = recipe.consumeChance() * 100 + "%";
+        String chanceText = Math.round(recipe.consumeChance() * 100) + "%";
         String growthText = "Growth: " + recipe.growth().toString();
 
         builder.addText(Component.literal(chanceText), getWidth() / 2, fontSize)

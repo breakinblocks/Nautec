@@ -1,0 +1,17 @@
+{
+  "name": "resinophiles",
+  "nutrient": [
+    "#c:rubber",
+    "#c:resin",
+    "#c:ingots/insulating_resin",
+    "#c:plastic",
+    "#c:plastics"
+  ],
+  "resource": [
+    "#c:rubber",
+    "#c:resin",
+    "#c:ingots/insulating_resin",
+    "#c:plastic",
+    "#c:plastics"
+  ]
+}

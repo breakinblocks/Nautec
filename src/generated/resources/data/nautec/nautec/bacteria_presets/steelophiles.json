@@ -1,0 +1,17 @@
+{
+  "name": "steelophiles",
+  "nutrient": [
+    "#c:ores/steel",
+    "#c:raw_materials/steel",
+    "#c:dusts/steel",
+    "#c:gems/steel",
+    "#c:ingots/steel",
+    "#c:storage_blocks/steel"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:ingots/steel",
+    "#c:dusts/steel",
+    "#c:gems/steel"
+  ]
+}

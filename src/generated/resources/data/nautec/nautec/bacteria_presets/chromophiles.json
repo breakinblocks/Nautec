@@ -1,0 +1,18 @@
+{
+  "name": "chromophiles",
+  "nutrient": [
+    "#c:ores/chromium",
+    "#c:raw_materials/chromium",
+    "#c:dusts/chromium",
+    "#c:gems/chromium",
+    "#c:ingots/chromium",
+    "#c:storage_blocks/chromium"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/chromium",
+    "#c:raw_materials/chromium",
+    "#c:dusts/chromium",
+    "#c:gems/chromium"
+  ]
+}

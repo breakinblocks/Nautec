@@ -1,0 +1,18 @@
+{
+  "name": "tungstophiles",
+  "nutrient": [
+    "#c:ores/tungsten",
+    "#c:raw_materials/tungsten",
+    "#c:dusts/tungsten",
+    "#c:gems/tungsten",
+    "#c:ingots/tungsten",
+    "#c:storage_blocks/tungsten"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/tungsten",
+    "#c:raw_materials/tungsten",
+    "#c:dusts/tungsten",
+    "#c:gems/tungsten"
+  ]
+}

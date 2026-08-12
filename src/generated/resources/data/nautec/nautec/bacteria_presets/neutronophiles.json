@@ -1,0 +1,18 @@
+{
+  "name": "neutronophiles",
+  "nutrient": [
+    "#c:ores/neutronium",
+    "#c:raw_materials/neutronium",
+    "#c:dusts/neutronium",
+    "#c:gems/neutronium",
+    "#c:ingots/neutronium",
+    "#c:storage_blocks/neutronium"
+  ],
+  "rarity": "legendary",
+  "resource": [
+    "#c:ingots/neutronium",
+    "#c:raw_materials/neutronium",
+    "#c:dusts/neutronium",
+    "#c:gems/neutronium"
+  ]
+}

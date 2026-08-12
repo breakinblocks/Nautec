@@ -1,0 +1,13 @@
+{
+  "name": "sulfurophiles",
+  "nutrient": [
+    "#c:ores/sulfur",
+    "#c:dusts/sulfur",
+    "#c:gems/sulfur"
+  ],
+  "rarity": "common",
+  "resource": [
+    "#c:dusts/sulfur",
+    "#c:gems/sulfur"
+  ]
+}

@@ -16,7 +16,7 @@ public class IncubatorEntry extends BaseNautecEntry {
     protected void generatePages() {
         page("incubator", () -> BookSpotlightPageModel.create()
                 .withTitle(context.pageTitle())
-                .withItem(NTBlocks.MUTATOR)
+                .withItem(NTBlocks.INCUBATOR)
                 .withText(context.pageText()));
         pageTitle("Incubator");
         pageText("""
@@ -25,26 +25,23 @@ public class IncubatorEntry extends BaseNautecEntry {
                 a colony to grow and increase its size.
                 Incubation works by supplying the Incubator with
                 a nutrient item and the bacteria that should
-                be incubated. Like in real life mutation works
-                by doubling the colony's size. Doubling the size
-                has a chance to consume the nutrient.
-                The amount of time it takes till the doubling takes
-                place depends on the colony's growth rate as well
-                as the colony's size. A large colony with a low growth
-                rate takes longer to be incubated than a small one with
-                a high growth rate.
-                Look at JEI for all recipes
+                be incubated. Every cycle the colony gains a
+                rolled amount from the recipe's growth range,
+                multiplied by the colony's growth rate. Each
+                cycle also has a chance to consume the nutrient.
                 """);
         this.page("incubator_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Incubator Recipe")
                 .withRecipeId1("nautec:incubator"))
                 .withText(context.pageText());
         pageText("""
-                The amount of time it takes till the doubling takes
-                place depends on the colony's growth rate as well
-                as the colony's size. A large colony with a low growth
-                rate takes longer to be incubated than a small one with
-                a high growth rate.
+                A colony with a high growth rate gains far more
+                per cycle than one with a low growth rate. Growth
+                stops exactly at the colony size cap, so a colony
+                near the cap will never overshoot it.
+                Incubating also restores a colony's Vitality to
+                full, which is the only way to reverse the aging
+                that happens inside the Bio Reactor.
                 Look at JEI for all recipes
                 """);
     }

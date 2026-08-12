@@ -1,0 +1,18 @@
+{
+  "name": "beryllophiles",
+  "nutrient": [
+    "#c:ores/beryllium",
+    "#c:raw_materials/beryllium",
+    "#c:dusts/beryllium",
+    "#c:gems/beryllium",
+    "#c:ingots/beryllium",
+    "#c:storage_blocks/beryllium"
+  ],
+  "rarity": "rare",
+  "resource": [
+    "#c:ingots/beryllium",
+    "#c:raw_materials/beryllium",
+    "#c:dusts/beryllium",
+    "#c:gems/beryllium"
+  ]
+}

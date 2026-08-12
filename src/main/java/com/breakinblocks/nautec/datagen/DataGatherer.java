@@ -49,6 +49,7 @@ public class DataGatherer {
         DatapackRegistryProvider datapackRegistries = generator.addProvider(true, new DatapackRegistryProvider(output, lookupProvider));
         generator.addProvider(true, new BiomeTagProvider(output, datapackRegistries.getRegistryProvider()));
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
+        generator.addProvider(true, new BacteriaPresetProvider(output));
 
         if (ModList.get().isLoaded("modonomicon")) {
             ModonomiconDatagen.register(event);

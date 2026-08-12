@@ -280,6 +280,23 @@ public final class RecipeAndBacteriaTests {
             helper.succeed();
         }));
 
+        r.add("bacteria/instance_age_codec_roundtrip", 40, helper -> helper.runAfterDelay(1, () -> {
+            RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, helper.getLevel().registryAccess());
+            BacteriaInstance original = BacteriaInstance.withMaxStats(NTBacterias.CYANOBACTERIA, helper.getLevel().registryAccess());
+            original.setAge(1234L);
+            Tag encoded = BacteriaInstance.CODEC.encodeStart(ops, original).getOrThrow();
+            BacteriaInstance decoded = BacteriaInstance.CODEC.parse(ops, encoded).getOrThrow();
+            helper.assertValueEqual(1234L, decoded.getAge(), "decoded age");
+
+            helper.assertTrue(encoded instanceof CompoundTag, "encoded instance is not a compound tag");
+            CompoundTag legacy = ((CompoundTag) encoded).copy();
+            legacy.remove("age");
+            BacteriaInstance legacyDecoded = BacteriaInstance.CODEC.parse(ops, legacy).getOrThrow();
+            helper.assertValueEqual(0L, legacyDecoded.getAge(), "age of an instance saved before ages existed");
+            helper.assertValueEqual(original.getSize(), legacyDecoded.getSize(), "legacy decoded size");
+            helper.succeed();
+        }));
+
         r.add("bacteria/instance_empty_semantics", 40, helper -> helper.runAfterDelay(1, () -> {
             helper.assertTrue(BacteriaInstance.EMPTY.isEmpty(), "EMPTY instance is not empty");
             BacteriaInstance instance = BacteriaInstance.withMaxStats(NTBacterias.CYANOBACTERIA, helper.getLevel().registryAccess());
