@@ -95,6 +95,11 @@ public class BlockModelProvider extends ModelProvider {
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
 
+        simpleBlock(NTBlocks.SUBMARINE_DOCK.get(), cubeBottomTop(name(NTBlocks.SUBMARINE_DOCK.get()),
+                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+
         simpleBlock(NTBlocks.PRESSURE_FORGE.get(), cubeBottomTop(name(NTBlocks.PRESSURE_FORGE.get()),
                 blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
                 blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),

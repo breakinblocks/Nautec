@@ -9,18 +9,18 @@
   "condition": {
     "type": "modonomicon:none"
   },
-  "description": "book.nautec.nautec_guide.submarine.stealth_module.description",
+  "description": "book.nautec.nautec_guide.submarine.submarine_dock.description",
   "icon": {
-    "id": "nautec:stealth_module"
+    "id": "nautec:submarine_dock"
   },
-  "id": "nautec:submarine/stealth_module",
-  "name": "book.nautec.nautec_guide.submarine.stealth_module.name",
+  "id": "nautec:submarine/submarine_dock",
+  "name": "book.nautec.nautec_guide.submarine.submarine_dock.name",
   "parents": [
     {
-      "entry": "nautec:submarine/submarine_modules"
+      "entry": "nautec:submarine/submarine_power"
     }
   ],
-  "sort_number": 9,
-  "x": 6,
-  "y": 3
+  "sort_number": 4,
+  "x": 2,
+  "y": 4
 }

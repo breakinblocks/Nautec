@@ -14,10 +14,16 @@ import com.breakinblocks.nautec.content.items.submarine.TeleportModuleItem;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.data.components.TeleportAnchor;
+import com.breakinblocks.nautec.content.blockentities.SubmarineDockBlockEntity;
+import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMobEffects;
 import net.minecraft.core.BlockPos;
+import java.util.Set;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,6 +46,17 @@ public final class SubmarineTests {
     private static final BlockPos SUB_POS = new BlockPos(4, 2, 4);
 
     private SubmarineTests() {
+    }
+
+    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+        helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
+        Set<Direction> open = Set.of(openDirections);
+        for (Direction direction : Direction.values()) {
+            if (direction == Direction.DOWN || open.contains(direction)) {
+                continue;
+            }
+            helper.setBlock(pos.relative(direction, 2), Blocks.STONE.defaultBlockState());
+        }
     }
 
     public static void register(NTTestRegistrar r) {
@@ -84,6 +101,50 @@ public final class SubmarineTests {
             helper.assertTrue(launched.isEmpty(), "a submersible was launched onto dry land");
             helper.succeed();
         }));
+
+        r.add("submarine/dock_charges_and_holds", 120, helper -> {
+            BlockPos dockPos = new BlockPos(4, 1, 4);
+            helper.setBlock(dockPos, NTBlocks.SUBMARINE_DOCK.get().defaultBlockState());
+            placeShieldedSource(helper, new BlockPos(4, 4, 4), Direction.DOWN);
+
+            SubmarineDockBlockEntity dock = helper.getBlockEntity(dockPos, SubmarineDockBlockEntity.class);
+            if (dock == null) {
+                helper.fail("Expected SubmarineDockBlockEntity");
+                return;
+            }
+
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), dockPos.above());
+            submarine.getPowerStorage().setPowerStored(0);
+            submarine.setDeltaMovement(new Vec3(0.4, 0, 0.4));
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(dock.isDocking(), "The dock should see a hull sitting on it");
+                helper.assertTrue(submarine.getPowerStorage().getPowerStored() > 0,
+                        "A docked hull should be charging");
+                helper.assertTrue(submarine.getDeltaMovement().horizontalDistanceSqr() < 1.0E-6,
+                        "An unmanned hull on a dock should be held still rather than drifting off, was moving "
+                                + submarine.getDeltaMovement());
+                helper.succeed();
+            });
+        });
+
+        r.add("submarine/dock_ignores_hulls_out_of_range", 80, helper -> {
+            BlockPos dockPos = new BlockPos(1, 1, 4);
+            helper.setBlock(dockPos, NTBlocks.SUBMARINE_DOCK.get().defaultBlockState());
+
+            SubmarineDockBlockEntity dock = helper.getBlockEntity(dockPos, SubmarineDockBlockEntity.class);
+            if (dock == null) {
+                helper.fail("Expected SubmarineDockBlockEntity");
+                return;
+            }
+
+            helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(6, 1, 4));
+
+            helper.runAfterDelay(40, () -> {
+                helper.assertFalse(dock.isDocking(), "A hull several blocks away should not count as docked");
+                helper.succeed();
+            });
+        });
 
         r.add("submarine/wears_no_name_tag", 40, helper -> helper.runAfterDelay(1, () -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
