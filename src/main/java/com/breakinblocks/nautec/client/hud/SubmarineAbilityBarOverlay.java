@@ -28,13 +28,18 @@ public final class SubmarineAbilityBarOverlay {
     private SubmarineAbilityBarOverlay() {
     }
 
+    /**
+     * Keyed off getVehicle rather than getControlledVehicle. The controlling-passenger read was coming
+     * back false after a camera toggle and taking the whole toolbar with it until the player remounted;
+     * riding the thing at all is the condition we actually care about.
+     */
     public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui) {
             return;
         }
 
-        if (!(minecraft.player.getControlledVehicle() instanceof SubmarineEntity submarine)) {
+        if (!(minecraft.player.getVehicle() instanceof SubmarineEntity submarine)) {
             return;
         }
 

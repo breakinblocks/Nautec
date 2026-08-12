@@ -109,7 +109,7 @@ public final class SubmarineClientEvents {
     @SubscribeEvent
     public static void onRenderGuiLayer(RenderGuiLayerEvent.Pre event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !(player.getControlledVehicle() instanceof SubmarineEntity)) {
+        if (player == null || !(player.getVehicle() instanceof SubmarineEntity)) {
             return;
         }
 

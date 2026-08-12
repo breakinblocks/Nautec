@@ -19,6 +19,7 @@ public final class NTRecipes {
         SERIALIZERS.register(BacteriaMutationRecipe.NAME, () -> BacteriaMutationRecipe.Serializer.INSTANCE);
         SERIALIZERS.register(BacteriaIncubationRecipe.NAME, () -> BacteriaIncubationRecipe.Serializer.INSTANCE);
         SERIALIZERS.register(ResonanceCraftingRecipe.NAME, () -> ResonanceCraftingRecipe.Serializer.INSTANCE);
+        SERIALIZERS.register(PressureForgingRecipe.NAME, () -> PressureForgingRecipe.Serializer.INSTANCE);
     }
 
 }

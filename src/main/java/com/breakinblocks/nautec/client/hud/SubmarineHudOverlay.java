@@ -9,8 +9,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 
 public final class SubmarineHudOverlay {
-    public static final int PANEL_W = 122;
-    public static final int PANEL_H = 38;
+    public static final int PANEL_W = 92;
+    public static final int PANEL_H = 28;
 
     private static final int CYAN = 0xFF3EFDFF;
     private static final int CYAN_DIM = 0xFF19646B;
@@ -22,12 +22,12 @@ public final class SubmarineHudOverlay {
     private static final int CELL_EMPTY = 0x26FFFFFF;
 
     private static final int CELLS = 8;
-    private static final int CELL_W = 5;
-    private static final int CELL_H = 10;
-    private static final int CELL_GAP = 2;
+    private static final int CELL_W = 4;
+    private static final int CELL_H = 6;
+    private static final int CELL_GAP = 1;
 
-    private static final int POWER_ROW = 6;
-    private static final int HULL_ROW = 20;
+    private static final int POWER_ROW = 5;
+    private static final int HULL_ROW = 15;
 
     public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -35,7 +35,7 @@ public final class SubmarineHudOverlay {
             return;
         }
 
-        if (!(minecraft.player.getControlledVehicle() instanceof SubmarineEntity submarine)) {
+        if (!(minecraft.player.getVehicle() instanceof SubmarineEntity submarine)) {
             return;
         }
 
@@ -44,6 +44,28 @@ public final class SubmarineHudOverlay {
         long ticks = minecraft.level != null ? minecraft.level.getGameTime() : 0L;
         drawGauge(guiGraphics, x, y, submarine.getPowerStored(), submarine.getPowerStorage().getPowerCapacity(),
                 submarine.getHealth(), submarine.getMaxHealth(), ticks);
+        drawControls(guiGraphics, x, y + PANEL_H + 3);
+    }
+
+    /**
+     * A quiet reminder of the controls under the gauges. Piloting is not a vanilla scheme, so leaving
+     * players to guess at it was the wrong call.
+     */
+    private static void drawControls(GuiGraphicsExtractor guiGraphics, int x, int y) {
+        Minecraft minecraft = Minecraft.getInstance();
+        String[] lines = {
+                "W/S  throttle",
+                "A/D  rudder",
+                "SPACE  rise",
+                "C  dive",
+                "USE  steer"
+        };
+
+        int row = y;
+        for (String line : lines) {
+            guiGraphics.text(minecraft.font, line, x + 9, row, CYAN_DIM, false);
+            row += 9;
+        }
     }
 
     public static int panelX(int guiWidth, double fraction) {
@@ -70,7 +92,7 @@ public final class SubmarineHudOverlay {
             guiGraphics.fill(x + slant, y + row, x + slant + PANEL_W - 6, y + row + 1, CYAN);
         }
 
-        guiGraphics.fill(x + 6, y + 6, x + 8, y + PANEL_H - 4, CYAN);
+        guiGraphics.fill(x + 5, y + 5, x + 6, y + PANEL_H - 3, CYAN);
 
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -89,12 +111,12 @@ public final class SubmarineHudOverlay {
 
     private static void drawRow(GuiGraphicsExtractor guiGraphics, int x, int rowY, String label, float fraction, int color) {
         Minecraft minecraft = Minecraft.getInstance();
-        guiGraphics.text(minecraft.font, label, x + 11, rowY + 3, WHITE, false);
+        guiGraphics.text(minecraft.font, label, x + 9, rowY + 1, WHITE, false);
 
         int filled = Mth.ceil(fraction * CELLS);
-        int cellX = x + 36;
+        int cellX = x + 32;
         for (int i = 0; i < CELLS; i++) {
-            guiGraphics.fill(cellX, rowY + 2, cellX + CELL_W, rowY + 2 + CELL_H, i < filled ? color : CELL_EMPTY);
+            guiGraphics.fill(cellX, rowY + 1, cellX + CELL_W, rowY + 1 + CELL_H, i < filled ? color : CELL_EMPTY);
             cellX += CELL_W + CELL_GAP;
         }
     }
@@ -102,7 +124,7 @@ public final class SubmarineHudOverlay {
     private static void drawReadout(GuiGraphicsExtractor guiGraphics, int x, int rowY, String readout, int color) {
         Minecraft minecraft = Minecraft.getInstance();
         int width = minecraft.font.width(readout);
-        guiGraphics.text(minecraft.font, readout, x + PANEL_W - 8 - width, rowY + 3, color, false);
+        guiGraphics.text(minecraft.font, readout, x + PANEL_W - 6 - width, rowY + 1, color, false);
     }
 
     private SubmarineHudOverlay() {
