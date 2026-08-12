@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "bacterial_fuel_cell",
+  "item": {
+    "id": "nautec:bacterial_fuel_cell"
+  },
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.aquatic_biology.bacterial_fuel_cell.bacterial_fuel_cell.text",
+  "title": "book.nautec.nautec_guide.aquatic_biology.bacterial_fuel_cell.bacterial_fuel_cell.title"
+}

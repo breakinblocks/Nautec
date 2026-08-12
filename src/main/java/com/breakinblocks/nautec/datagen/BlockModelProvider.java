@@ -107,6 +107,11 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.MUTATOR.get(), existingModelFile(NTBlocks.MUTATOR.get()));
         simpleBlock(NTBlocks.INCUBATOR.get(), existingModelFile(NTBlocks.INCUBATOR.get()));
 
+        facingBlock(NTBlocks.BACTERIAL_FUEL_CELL.get(), cubeBottomTop(name(NTBlocks.BACTERIAL_FUEL_CELL.get()),
+                blockTexture(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get()),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+
         // Multiblock
         helper.drainController(NTBlocks.DRAIN.get());
         helper.drainPart(NTBlocks.DRAIN_PART.get(), IntegerRange.of(0, 8));

@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.worldgen.NTBiomes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -27,9 +28,12 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.world.level.levelgen.feature.configurations.MultifaceGrowthConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
@@ -152,50 +156,19 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                                 HeightRangePlacement.uniform(
                                         VerticalAnchor.absolute(50),
                                         VerticalAnchor.absolute(68)
-                                )
+                                ),
+                                BiomeFilter.biome()
                         )
                 ));
-                context.register(PRISMARINE_SAND_OCEAN_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(PRISMARINE_SAND_OCEAN_KEY),
-                        List.of(
-                                CountPlacement.of(10),
-                                InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(
-                                        VerticalAnchor.absolute(-15),
-                                        VerticalAnchor.absolute(40)
-                                )
-                        )
-                ));
+                context.register(PRISMARINE_SAND_OCEAN_PLACE_KEY,
+                        oceanFloorOre(configuredFeatures.getOrThrow(PRISMARINE_SAND_OCEAN_KEY), 10, -4, 0));
 
-                context.register(VENT_BASALT_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VENT_BASALT_KEY),
-                        List.of(
-                                CountPlacement.of(24),
-                                InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(
-                                        VerticalAnchor.absolute(-25),
-                                        VerticalAnchor.absolute(45)
-                                )
-                        )
-                ));
-                context.register(VENT_MAGMA_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VENT_MAGMA_KEY),
-                        List.of(
-                                CountPlacement.of(8),
-                                InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(
-                                        VerticalAnchor.absolute(-25),
-                                        VerticalAnchor.absolute(40)
-                                )
-                        )
-                ));
-                context.register(REEF_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(REEF_PRISMARINE_KEY),
-                        List.of(
-                                CountPlacement.of(16),
-                                InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(
-                                        VerticalAnchor.absolute(20),
-                                        VerticalAnchor.absolute(58)
-                                )
-                        )
-                ));
+                context.register(VENT_BASALT_PLACE_KEY,
+                        oceanFloorOre(configuredFeatures.getOrThrow(VENT_BASALT_KEY), 24, -12, 0));
+                context.register(VENT_MAGMA_PLACE_KEY,
+                        oceanFloorOre(configuredFeatures.getOrThrow(VENT_MAGMA_KEY), 8, -8, 0));
+                context.register(REEF_PRISMARINE_PLACE_KEY,
+                        oceanFloorOre(configuredFeatures.getOrThrow(REEF_PRISMARINE_KEY), 16, -6, 1));
 
                 context.register(DEEP_KELP_PLACE_KEY, seafloorPlant(configuredFeatures.getOrThrow(DEEP_KELP_KEY), 28));
                 context.register(LUMINESCENT_ALGAE_PLACE_KEY, seafloorPlant(configuredFeatures.getOrThrow(LUMINESCENT_ALGAE_KEY), 40));
@@ -215,7 +188,8 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                         List.of(
                                 RarityFilter.onAverageOnceEvery(26),
                                 InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(-45), VerticalAnchor.absolute(20)),
+                                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                                RandomOffsetPlacement.vertical(UniformInt.of(-16, -4)),
                                 BiomeFilter.biome()
                         )
                 ));
@@ -224,11 +198,21 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
             })
             .add(Registries.BIOME, NTBiomes::bootstrap);
 
-    private static ConfiguredFeature<?, ?> simpleBlockFeature(net.minecraft.world.level.block.Block block) {
+    private static ConfiguredFeature<?, ?> simpleBlockFeature(Block block) {
         return new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(block)));
     }
 
-    private static PlacedFeature seafloorPlant(net.minecraft.core.Holder<ConfiguredFeature<?, ?>> feature, int count) {
+    private static PlacedFeature oceanFloorOre(Holder<ConfiguredFeature<?, ?>> feature, int count, int minOffset, int maxOffset) {
+        return new PlacedFeature(feature, List.of(
+                CountPlacement.of(count),
+                InSquarePlacement.spread(),
+                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                RandomOffsetPlacement.vertical(UniformInt.of(minOffset, maxOffset)),
+                BiomeFilter.biome()
+        ));
+    }
+
+    private static PlacedFeature seafloorPlant(Holder<ConfiguredFeature<?, ?>> feature, int count) {
         return new PlacedFeature(feature, List.of(
                 CountPlacement.of(count),
                 InSquarePlacement.spread(),

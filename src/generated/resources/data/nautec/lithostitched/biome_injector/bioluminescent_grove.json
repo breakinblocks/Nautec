@@ -1,0 +1,25 @@
+{
+  "type": "lithostitched:replace_partially",
+  "dimension": "minecraft:overworld",
+  "parameters": {
+    "continentalness": [
+      -0.9,
+      -0.455
+    ],
+    "depth": [
+      0.0,
+      1.0
+    ],
+    "temperature": [
+      -0.15,
+      0.2
+    ],
+    "weirdness": [
+      -0.4,
+      0.4
+    ]
+  },
+  "priority": 20,
+  "replacement": "nautec:bioluminescent_grove",
+  "targets": "#minecraft:is_ocean"
+}

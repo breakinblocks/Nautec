@@ -144,6 +144,18 @@ public final class NTConfig {
             .comment("The fraction of a colony that dies off each production cycle once it has outlived its lifespan")
             .defineInRange("bioReactorDecayFraction", 0.10, 0, 1);
 
+    private static final ModConfigSpec.IntValue FUEL_CELL_POWER_BASE = BUILDER
+            .comment("The base amount of power a Bacterial Fuel Cell emits each tick, before production rate scales it")
+            .defineInRange("fuelCellPowerBase", 24, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue FUEL_CELL_BURN_RATE = BUILDER
+            .comment("The base amount of colony consumed by a Bacterial Fuel Cell each tick, before production rate scales it")
+            .defineInRange("fuelCellBurnRate", 0.5, 0, 1000);
+
+    private static final ModConfigSpec.DoubleValue FUEL_CELL_MAX_PURITY = BUILDER
+            .comment("The purity a Bacterial Fuel Cell emits at when its colony is at the mutation resistance cap")
+            .defineInRange("fuelCellMaxPurity", 2.5, 0, 10);
+
     private static final ModConfigSpec.IntValue ABYSSAL_EYES_DEPTH = BUILDER
             .comment("The Y level at or below which the Abyssal Eyes augment grants night vision")
             .defineInRange("abyssalEyesDepth", 45, -64, 320);
@@ -310,11 +322,13 @@ public final class NTConfig {
 
     // Worldgen
     private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = BUILDER
-            .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched")
+            .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
+                    "This only applies when Lithostitched is absent. With Lithostitched installed, placement comes from the biome injectors in data/nautec/lithostitched/biome_injector, which a datapack can override or empty out")
             .define("enableBiomeInjection", true);
 
     private static final ModConfigSpec.ConfigValue<List<? extends String>> INJECTABLE_WORLD_PRESETS = BUILDER
-            .comment("The multi-noise presets Nautec's ocean biomes are added to. Packs using a custom overworld preset should list it here")
+            .comment("The multi-noise presets Nautec's ocean biomes are added to. Packs using a custom overworld preset should list it here",
+                    "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
 
 
@@ -366,6 +380,9 @@ public final class NTConfig {
     public static int bioReactorPowerBase = 25;
     public static int bioReactorPowerPerColony = 25;
     public static double bioReactorDecayFraction = 0.10;
+    public static int fuelCellPowerBase = 24;
+    public static double fuelCellBurnRate = 0.5;
+    public static double fuelCellMaxPurity = 2.5;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -486,6 +503,9 @@ public final class NTConfig {
         bioReactorPowerBase = BIO_REACTOR_POWER_BASE.get();
         bioReactorPowerPerColony = BIO_REACTOR_POWER_PER_COLONY.get();
         bioReactorDecayFraction = BIO_REACTOR_DECAY_FRACTION.getAsDouble();
+        fuelCellPowerBase = FUEL_CELL_POWER_BASE.get();
+        fuelCellBurnRate = FUEL_CELL_BURN_RATE.getAsDouble();
+        fuelCellMaxPurity = FUEL_CELL_MAX_PURITY.getAsDouble();
 
         luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
         luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();

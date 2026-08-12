@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nautec:block/bacterial_fuel_cell",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "nautec:block/bacterial_fuel_cell",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nautec:block/bacterial_fuel_cell",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "nautec:block/bacterial_fuel_cell",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nautec:block/bacterial_fuel_cell"
+    },
+    "facing=west": {
+      "model": "nautec:block/bacterial_fuel_cell",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

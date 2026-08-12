@@ -50,6 +50,7 @@ public class DataGatherer {
         generator.addProvider(true, new BiomeTagProvider(output, datapackRegistries.getRegistryProvider()));
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
         generator.addProvider(true, new BacteriaPresetProvider(output));
+        generator.addProvider(true, new LithostitchedInjectorProvider(output));
 
         if (ModList.get().isLoaded("modonomicon")) {
             ModonomiconDatagen.register(event);

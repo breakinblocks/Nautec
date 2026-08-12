@@ -83,8 +83,17 @@
   beyond. Each one appears on its own once you are playing with a mod that adds
   that material, and stays out of the way otherwise.
 - A new admin command for making your own bacteria for any item you like.
+- The Bacterial Fuel Cell, a second thing to do with a colony. It eats the
+  colony and gives you a laser back. Right-click it with a Petri Dish to load
+  one, right-click with an empty dish to take back what is left. Production
+  Rate sets how strong the beam is and how fast the colony goes; Mutation
+  Resistance sets its purity, up to 2.5, which is nearly a Prismarine Crystal
+  without building one. It only burns while its beam has somewhere to go, and
+  it never ages a colony, so it is the right home for one that has grown too
+  old to be worth feeding. The Bio Reactor wants the same colonies, so you have
+  to pick: resources or power.
 - Config options for the speed, power draw and decay of all three biology
-  machines.
+  machines, and for the Fuel Cell's output, purity and burn rate.
 
 ### Fixed
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data
@@ -104,6 +113,31 @@
 - The Incubator guide page showed a Mutator, and claimed incubating doubles a
   colony, which it never did.
 - Recipe pages no longer show bacteria percentages like 7.0000005%.
+- Prismarine Sand, the basalt and magma in the Hydrothermal Vents, and the prismarine
+  outcrops in the Prismarine Reef no longer spill into neighbouring biomes. They were
+  missing the check that keeps a feature inside the biome it belongs to.
+- Worlds no longer fail to generate chunks when Nautec is installed alongside other
+  biome mods. The Bioluminescent Grove and Prismarine Reef listed some vanilla
+  decorations in an order no other biome uses, and if another mod happened to disagree
+  about that order the game could not work out how to build a chunk and crashed. All
+  four Nautec oceans now follow the same decoration order as vanilla oceans.
+
+### Compatibility
+- Nautec's oceans now work with Terralith and Tectonic out of the box. When
+  Lithostitched is installed, the four biomes place themselves through it, the same way
+  those mods do, instead of going through the vanilla overworld layout that Terralith
+  replaces. Packs that had to write their own biome injector files to get Nautec oceans
+  generating can delete them.
+- Packs can still take over placement themselves by overriding the four biome injector
+  files Nautec now ships.
+- Prismarine Sand, the vent basalt and magma, the reef prismarine outcrops and Budding
+  Prismarine now sit on the real sea floor wherever it happens to be, instead of at fixed
+  heights that assumed Nautec was the only mod shaping the ocean. With Tectonic installed
+  the reef outcrops were generating above the sea floor and so never appeared at all.
+- Nautec's Deeper Oceans has no effect when Tectonic is installed, because Tectonic
+  replaces the terrain system Nautec builds on. Tectonic decides ocean depth in that
+  case, which is the sensible outcome, and Nautec now says so in the log at startup
+  rather than looking like it worked.
 
 ### Changed
 - The Spreading Trident augment is now on 'U' by default. It shared 'Y' with

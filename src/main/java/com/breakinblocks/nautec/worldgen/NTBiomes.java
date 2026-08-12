@@ -63,9 +63,9 @@ public final class NTBiomes {
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEAGRASS_DEEP);
-        generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.DEEP_KELP_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.LUMINESCENT_ALGAE_PLACE_KEY);
+        generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.GLOW_POLYP_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
 
@@ -139,6 +139,12 @@ public final class NTBiomes {
         BiomeDefaultFeatures.addSurfaceFreezing(generation);
         BiomeDefaultFeatures.addDefaultOres(generation);
         BiomeDefaultFeatures.addDefaultSoftDisks(generation);
+        BiomeDefaultFeatures.addWaterTrees(generation);
+        BiomeDefaultFeatures.addDefaultFlowers(generation);
+        BiomeDefaultFeatures.addDefaultGrass(generation);
+        BiomeDefaultFeatures.addDefaultMushrooms(generation);
+        BiomeDefaultFeatures.addDefaultExtraVegetation(generation, false);
+        BiomeDefaultFeatures.addNearWaterVegetation(generation);
         return generation;
     }
 

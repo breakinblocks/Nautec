@@ -48,6 +48,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 BACTERIAL_ANALYZER,
                 BACTERIAL_ANALYZER_TOP,
                 BACTERIAL_CONTAINMENT_SHIELD,
+                BACTERIAL_FUEL_CELL,
                 BIO_REACTOR,
                 BIO_REACTOR_PART,
                 MUTATOR,

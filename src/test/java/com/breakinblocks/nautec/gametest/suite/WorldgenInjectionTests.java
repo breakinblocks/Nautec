@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.worldgen.OceanClimates;
@@ -7,6 +10,8 @@ import com.breakinblocks.nautec.worldgen.injection.NTOceanRegion;
 import com.breakinblocks.nautec.worldgen.injection.ParameterListMerger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -15,9 +20,11 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +33,35 @@ import java.util.stream.Collectors;
 public final class WorldgenInjectionTests {
     private static final float OCEAN_CONTINENTALNESS_MAX = -0.19F;
     private static final ResourceKey<Biome> VANILLA = ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("deep_ocean"));
+
+    private static List<String> featureNames(HolderSet<PlacedFeature> step) {
+        List<String> names = new ArrayList<>();
+        for (Holder<PlacedFeature> feature : step) {
+            feature.unwrapKey().ifPresent(key -> names.add(key.identifier().toString()));
+        }
+        return names;
+    }
+
+    private static void assertParameter(GameTestHelper helper,
+                                        JsonObject parameters, String key,
+                                        NTOceanRegion.Slice slice, Climate.Parameter parameter, String biome) {
+        if (!slice.constrains(parameter)) {
+            if (parameters.has(key)) {
+                helper.fail(biome + " injector constrains " + key + " but the slice leaves it unbounded");
+            }
+            return;
+        }
+        if (!parameters.has(key)) {
+            helper.fail(biome + " injector is missing " + key + ", which the slice constrains");
+            return;
+        }
+        JsonArray span = parameters.getAsJsonArray(key);
+        float min = Climate.unquantizeCoord(parameter.min());
+        float max = Climate.unquantizeCoord(parameter.max());
+        if (Math.abs(span.get(0).getAsFloat() - min) > 1.0e-4f || Math.abs(span.get(1).getAsFloat() - max) > 1.0e-4f) {
+            helper.fail(biome + " injector " + key + " is " + span + " but the slice is [" + min + ", " + max + "]");
+        }
+    }
 
     public static void register(NTTestRegistrar r) {
         r.add("worldgen/overworld_preset_contains_our_biomes", 20, helper -> {
@@ -53,6 +89,85 @@ public final class WorldgenInjectionTests {
 
             if (!present.contains(Biomes.DEEP_OCEAN) || !present.contains(Biomes.WARM_OCEAN)) {
                 helper.fail("Injection removed a vanilla ocean biome from the preset entirely");
+            }
+            helper.succeed();
+        });
+
+        r.add("worldgen/lithostitched_injectors_match_our_slices", 20, helper -> {
+            for (NTOceanRegion.Slice slice : NTOceanRegion.slices()) {
+                String name = slice.biome().identifier().getPath();
+                Identifier id = Identifier.fromNamespaceAndPath(Nautec.MODID,
+                        "lithostitched/biome_injector/" + name + ".json");
+
+                var resource = helper.getLevel().getServer().getResourceManager().getResource(id);
+                if (resource.isEmpty()) {
+                    helper.fail("Missing Lithostitched biome injector for " + name
+                            + ". Packs with Lithostitched rely on these instead of the parameter list mixin.");
+                    return;
+                }
+
+                JsonObject json;
+                try (var reader = resource.get().openAsReader()) {
+                    json = JsonParser.parseReader(reader).getAsJsonObject();
+                } catch (Exception e) {
+                    helper.fail("Could not read the Lithostitched injector for " + name + ": " + e);
+                    return;
+                }
+
+                helper.assertValueEqual(slice.biome().identifier().toString(),
+                        json.get("replacement").getAsString(), "injector replacement for " + name);
+                helper.assertValueEqual("minecraft:overworld",
+                        json.get("dimension").getAsString(), "injector dimension for " + name);
+
+                JsonObject parameters = json.getAsJsonObject("parameters");
+                assertParameter(helper, parameters, "temperature", slice, slice.temperature(), name);
+                assertParameter(helper, parameters, "humidity", slice, slice.humidity(), name);
+                assertParameter(helper, parameters, "continentalness", slice, slice.continentalness(), name);
+                assertParameter(helper, parameters, "erosion", slice, slice.erosion(), name);
+                assertParameter(helper, parameters, "weirdness", slice, slice.weirdness(), name);
+            }
+            helper.succeed();
+        });
+
+        r.add("worldgen/biomes_invent_no_feature_ordering", 20, helper -> {
+            HolderLookup.RegistryLookup<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+
+            Set<String> foreignAdjacencies = new HashSet<>();
+            List<Holder.Reference<Biome>> all = biomes.listElements().toList();
+            for (Holder.Reference<Biome> holder : all) {
+                if (holder.key().identifier().getNamespace().equals(Nautec.MODID)) {
+                    continue;
+                }
+                List<HolderSet<PlacedFeature>> steps =
+                        holder.value().getGenerationSettings().features();
+                for (int step = 0; step < steps.size(); step++) {
+                    List<String> names = featureNames(steps.get(step));
+                    for (int i = 0; i + 1 < names.size(); i++) {
+                        foreignAdjacencies.add(step + "|" + names.get(i) + "|" + names.get(i + 1));
+                    }
+                }
+            }
+
+            for (ResourceKey<Biome> key : NTOceanRegion.biomes()) {
+                Biome biome = biomes.getOrThrow(key).value();
+                List<HolderSet<PlacedFeature>> steps =
+                        biome.getGenerationSettings().features();
+                for (int step = 0; step < steps.size(); step++) {
+                    List<String> names = featureNames(steps.get(step));
+                    for (int i = 0; i + 1 < names.size(); i++) {
+                        String a = names.get(i);
+                        String b = names.get(i + 1);
+                        if (a.startsWith(Nautec.MODID + ":") || b.startsWith(Nautec.MODID + ":")) {
+                            continue;
+                        }
+                        if (!foreignAdjacencies.contains(step + "|" + a + "|" + b)) {
+                            helper.fail(key.identifier() + " orders " + a + " before " + b + " at generation step "
+                                    + step + ", an ordering no other biome establishes. Two non-Nautec features must "
+                                    + "only appear adjacent in an order vanilla already uses, otherwise a biome mod "
+                                    + "that disagrees produces a feature order cycle and the world fails to generate.");
+                        }
+                    }
+                }
             }
             helper.succeed();
         });
