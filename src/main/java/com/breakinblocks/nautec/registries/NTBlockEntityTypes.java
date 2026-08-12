@@ -51,6 +51,16 @@ public final class NTBlockEntityTypes {
             () -> new BlockEntityType<>(OilBarrelBlockEntity::new,
                     NTBlocks.OIL_BARREL.get()));
 
+    public static final Supplier<BlockEntityType<PrismaticMirrorBlockEntity>> PRISMATIC_MIRROR = BLOCK_ENTITIES.register("prismatic_mirror",
+            () -> new BlockEntityType<>(PrismaticMirrorBlockEntity::new,
+                    NTBlocks.PRISMATIC_MIRROR.get()));
+    public static final Supplier<BlockEntityType<BeamSplitterBlockEntity>> BEAM_SPLITTER = BLOCK_ENTITIES.register("beam_splitter",
+            () -> new BlockEntityType<>(BeamSplitterBlockEntity::new,
+                    NTBlocks.BEAM_SPLITTER.get()));
+    public static final Supplier<BlockEntityType<FocusingLensBlockEntity>> FOCUSING_LENS = BLOCK_ENTITIES.register("focusing_lens",
+            () -> new BlockEntityType<>(FocusingLensBlockEntity::new,
+                    NTBlocks.FOCUSING_LENS.get()));
+
     // Biology
     public static final Supplier<BlockEntityType<MutatorBlockEntity>> MUTATOR = BLOCK_ENTITIES.register("mutator",
             () -> new BlockEntityType<>(MutatorBlockEntity::new,

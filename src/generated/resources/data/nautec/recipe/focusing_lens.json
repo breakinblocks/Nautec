@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "L": "nautec:laser_channeling_coil",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "ASA",
+    "SLS",
+    "ASA"
+  ],
+  "result": {
+    "id": "nautec:focusing_lens"
+  }
+}

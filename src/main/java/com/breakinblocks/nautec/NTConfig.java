@@ -156,6 +156,18 @@ public final class NTConfig {
             .comment("The purity a Bacterial Fuel Cell emits at when its colony is at the mutation resistance cap")
             .defineInRange("fuelCellMaxPurity", 2.5, 0, 10);
 
+    private static final ModConfigSpec.DoubleValue MIRROR_PURITY_FACTOR = BUILDER
+            .comment("The fraction of incoming purity a Prismatic Mirror passes on when it turns a beam")
+            .defineInRange("mirrorPurityFactor", 0.9, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue SPLITTER_PURITY_FACTOR = BUILDER
+            .comment("The fraction of incoming purity each branch of a Beam Splitter carries")
+            .defineInRange("splitterPurityFactor", 0.8, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue LENS_PURITY_BONUS = BUILDER
+            .comment("The purity a Focusing Lens adds to a beam passing straight through it")
+            .defineInRange("lensPurityBonus", 0.5, 0, 10);
+
     private static final ModConfigSpec.IntValue ABYSSAL_EYES_DEPTH = BUILDER
             .comment("The Y level at or below which the Abyssal Eyes augment grants night vision")
             .defineInRange("abyssalEyesDepth", 45, -64, 320);
@@ -383,6 +395,9 @@ public final class NTConfig {
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
+    public static double mirrorPurityFactor = 0.9;
+    public static double splitterPurityFactor = 0.8;
+    public static double lensPurityBonus = 0.5;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -506,6 +521,9 @@ public final class NTConfig {
         fuelCellPowerBase = FUEL_CELL_POWER_BASE.get();
         fuelCellBurnRate = FUEL_CELL_BURN_RATE.getAsDouble();
         fuelCellMaxPurity = FUEL_CELL_MAX_PURITY.getAsDouble();
+        mirrorPurityFactor = MIRROR_PURITY_FACTOR.getAsDouble();
+        splitterPurityFactor = SPLITTER_PURITY_FACTOR.getAsDouble();
+        lensPurityBonus = LENS_PURITY_BONUS.getAsDouble();
 
         luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
         luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();

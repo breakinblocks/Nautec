@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "splitter_recipe",
+  "recipe_id_1": "nautec:beam_splitter",
+  "sort_number": 5,
+  "title1": "Beam Splitter Recipe"
+}

@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "mirror_recipe",
+  "recipe_id_1": "nautec:prismatic_mirror",
+  "sort_number": 3,
+  "title1": "Prismatic Mirror Recipe"
+}

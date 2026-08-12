@@ -94,6 +94,21 @@
   to pick: resources or power.
 - Config options for the speed, power draw and decay of all three biology
   machines, and for the Fuel Cell's output, purity and burn rate.
+- Three ways to route a laser, so beams no longer have to run in straight lines:
+  - **Prismatic Mirror** takes a beam from any side and sends it out the way it
+    faces, turning corners without a relay run each way. It keeps nine tenths of
+    the purity.
+  - **Beam Splitter** sends one beam out of every side that has somewhere to go,
+    sharing the power evenly and giving each branch four fifths of the purity.
+  - **Focusing Lens** is the only one that gives something back, adding half a
+    point of purity to a beam passing straight through. It does nothing to a dead
+    line.
+- Because recipes refuse to run below a purity, the route you build now decides
+  what you can make at the end of it. Long winding runs are cheap to lay out but
+  cannot feed the better recipes.
+- A "Beam Optics" guide entry covering all three and setting out the purity tiers,
+  from any beam at all up to what only a Prismarine Crystal can hold.
+- Config options for how much purity each optic costs or adds.
 
 ### Fixed
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data

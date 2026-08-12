@@ -94,6 +94,19 @@ public class BlockModelProvider extends ModelProvider {
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
+
+        facingBlock(NTBlocks.PRISMATIC_MIRROR.get(), cubeBottomTop(name(NTBlocks.PRISMATIC_MIRROR.get()),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
+                new Material(Nautec.rl("block/prism_glass"))));
+        facingBlock(NTBlocks.BEAM_SPLITTER.get(), cubeBottomTop(name(NTBlocks.BEAM_SPLITTER.get()),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
+                new Material(Nautec.rl("block/prism_glass"))));
+        facingBlock(NTBlocks.FOCUSING_LENS.get(), cubeBottomTop(name(NTBlocks.FOCUSING_LENS.get()),
+                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
+                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
+                new Material(Nautec.rl("block/prism_glass"))));
         longDistanceLaser(NTBlocks.LONG_DISTANCE_LASER.get());
         laserJunction(NTBlocks.LASER_JUNCTION.get());
 

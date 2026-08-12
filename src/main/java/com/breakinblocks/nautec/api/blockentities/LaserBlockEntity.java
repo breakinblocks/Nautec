@@ -100,6 +100,24 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         this.powerToTransfer = amount;
     }
 
+    protected int outgoingPower(Direction direction) {
+        return this.powerToTransfer;
+    }
+
+    protected float outgoingPurity(Direction direction) {
+        return this.purity;
+    }
+
+    protected int connectedOutputs() {
+        int connected = 0;
+        for (Direction direction : getLaserOutputs()) {
+            if (this.laserDistances.getInt(direction) > 0) {
+                connected++;
+            }
+        }
+        return connected;
+    }
+
     public void receivePower(int amount, Direction direction, BlockPos originPos) {
         int prevAmount = this.powerPerSide.getInt(direction);
         setPowerPerSide(direction, amount);
@@ -153,8 +171,8 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
                 BlockPos targetPos = worldPosition.relative(direction, distance);
                 if (level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
-                    laserBE.receivePower(powerToTransfer, direction, worldPosition);
-                    laserBE.receiveNewPurity(purity, direction, worldPosition);
+                    laserBE.receivePower(outgoingPower(direction), direction, worldPosition);
+                    laserBE.receiveNewPurity(outgoingPurity(direction), direction, worldPosition);
                 }
             }
         }
