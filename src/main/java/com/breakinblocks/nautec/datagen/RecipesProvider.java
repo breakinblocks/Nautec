@@ -41,6 +41,7 @@ public class RecipesProvider extends RecipeProvider {
         resonanceRecipes(pRecipeOutput);
         gatewayRecipes(pRecipeOutput);
         pressureForgeRecipes(pRecipeOutput);
+        dockRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -186,6 +187,18 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(2.0f)
                 .duration(80)
                 .save(pRecipeOutput, key("aquarine_steel_ingot_dense"));
+    }
+
+    private void dockRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.SUBMARINE_DOCK.asItem())
+                .pattern("AAA")
+                .pattern("PLP")
+                .pattern("APA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('P', NTBlocks.POLISHED_PRISMARINE)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
+                .save(pRecipeOutput, key("submarine_dock"));
     }
 
     private void pressureForgeRecipes(@NotNull RecipeOutput pRecipeOutput) {

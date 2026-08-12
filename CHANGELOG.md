@@ -8,6 +8,10 @@
   hold right mouse to steer. Sneak plus right-click picks it back up with
   its charge. Charge it in a Charger.
 - Sealed and powered, it keeps its crew breathing.
+- The **Sea Scout Dock**, a powered pad to park it on. It fills the hull's cells without
+  you carrying the thing to a Charger, keeps anyone sitting inside breathing on the
+  dock's power rather than the hull's, and clamps an empty hull in place so what you
+  left on the pad is still there when you get back. A pilot always overrides the clamps.
 - Piloting shows the controls on the HUD, so the scheme is not something you have to
   guess at or go looking in the guide for.
 - Driving shows a compact power and hull readout, repositionable with Ctrl+H.

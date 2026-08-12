@@ -242,6 +242,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock("oil_barrel", "Oil Barrel");
         addBlock(NTBlocks.AUGMENTATION_STATION_EXTENSION, "Augmentation Station Extension");
         addBlock(NTBlocks.CHARGER, "Charger");
+        addBlock(NTBlocks.SUBMARINE_DOCK, "Sea Scout Dock");
         addBlock(NTBlocks.PRESSURE_FORGE, "Abyssal Pressure Forge");
         addItem(FLAWLESS_PRISMARINE_CRYSTAL, "Flawless Prismarine Crystal");
         addItem(DEEP_STEEL_PLATING, "Deep Steel Plating");

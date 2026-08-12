@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "submarine_dock",
+  "item": {
+    "id": "nautec:submarine_dock"
+  },
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.submarine.submarine_dock.submarine_dock.text",
+  "title": "book.nautec.nautec_guide.submarine.submarine_dock.submarine_dock.title"
+}

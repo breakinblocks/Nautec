@@ -34,6 +34,9 @@ public class SubmarineCategory extends CategoryProvider {
         BookEntryModel hullEntry = new SubmarineHullEntry(this).generate(new Vec2(2, 2));
         add(hullEntry.withParent(submarineEntry));
 
+        BookEntryModel dockEntry = new SubmarineDockEntry(this).generate(new Vec2(2, 4));
+        add(dockEntry.withParent(powerEntry));
+
         BookEntryModel modulesEntry = new SubmarineModulesEntry(this).generate(new Vec2(4, 0));
         add(modulesEntry.withParent(powerEntry).withParent(controlsEntry));
 
