@@ -126,6 +126,10 @@ public final class BacteriaBalance {
     }
 
     public static SimpleBacteria buildBacteria(Item resource, Rarity rarity, Identifier id) {
+        return buildBacteria(new Bacteria.Resource.ItemResource(resource), rarity, id);
+    }
+
+    public static SimpleBacteria buildBacteria(Bacteria.Resource resource, Rarity rarity, Identifier id) {
         return SimpleBacteria.of()
                 .initialSize(rarity.initialSize())
                 .resource(resource)

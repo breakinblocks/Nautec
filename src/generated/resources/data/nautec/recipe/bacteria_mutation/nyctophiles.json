@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "evilcraft"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "occultism"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:gems/dark_gem",
+  "chance": 5.0,
+  "input_bacteria": "nautec:ferrophiles",
+  "result_bacteria": "nautec:nyctophiles"
+}

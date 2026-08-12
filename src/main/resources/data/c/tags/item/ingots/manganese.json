@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "gtceu:manganese_ingot",
+      "required": false
+    },
+    {
+      "id": "techreborn:manganese_ingot",
+      "required": false
+    }
+  ]
+}

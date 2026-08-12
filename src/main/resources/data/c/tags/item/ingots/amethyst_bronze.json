@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:amethyst_bronze_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:amethyst_bronze_ingot",
+      "required": false
+    }
+  ]
+}

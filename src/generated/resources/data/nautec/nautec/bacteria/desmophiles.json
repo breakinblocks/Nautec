@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ad_astra"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "beyond_earth"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:simple",
+  "bacteria": "#c:ingots/desh",
+  "initial_size": {
+    "max": 425,
+    "min": 225
+  },
+  "stats": {
+    "type": "nautec:simple",
+    "color": -13454168,
+    "growth_rate": {
+      "max": 1.0,
+      "min": 0.45
+    },
+    "lifespan": {
+      "max": 2100,
+      "min": 1000
+    },
+    "mutation_resistance": {
+      "max": 0.1,
+      "min": 0.0
+    },
+    "production_rate": {
+      "max": 0.5,
+      "min": 0.15
+    }
+  }
+}

@@ -1,17 +1,23 @@
 package com.breakinblocks.nautec.api.bacteria;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.breakinblocks.nautec.NTRegistries;
-import com.breakinblocks.nautec.utils.codec.CodecUtils;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import java.util.Comparator;
 import java.util.List;
 
 public interface Bacteria {
@@ -35,30 +41,62 @@ public interface Bacteria {
         return initialSize().getMax();
     }
 
+    /**
+     * Written as a plain item id, or as "#some:tag" to mean whichever item of that tag happens to be
+     * present. The tag form is resolved on use rather than on load, because tags are not bound yet when
+     * the bacteria registry is read.
+     */
     interface Resource {
-        Codec<? extends Resource> codec();
+        Resource EMPTY = new ItemResource(Items.AIR);
 
-        StreamCodec<ByteBuf, ? extends Resource> streamCodec();
+        Codec<Resource> CODEC = Codec.STRING.comapFlatMap(Resource::parse, Resource::asString);
+        StreamCodec<ByteBuf, Resource> STREAM_CODEC =
+                ByteBufCodecs.STRING_UTF8.map(raw -> parse(raw).result().orElse(EMPTY), Resource::asString);
 
-        boolean isEmpty();
+        Item resolve();
+
+        String asString();
+
+        default boolean isEmpty() {
+            Item item = resolve();
+            return item == null || item == Items.AIR;
+        }
+
+        static DataResult<Resource> parse(String raw) {
+            if (raw.startsWith("#")) {
+                return Identifier.read(raw.substring(1))
+                        .map(id -> new ItemTagResource(TagKey.create(Registries.ITEM, id)));
+            }
+            return Identifier.read(raw).map(id -> new ItemResource(BuiltInRegistries.ITEM.getValue(id)));
+        }
 
         record ItemResource(Item item) implements Resource {
-            public static final Codec<ItemResource> CODEC = CodecUtils.ITEM_CODEC.xmap(ItemResource::new, ItemResource::item);
-            public static final StreamCodec<ByteBuf, ItemResource> STREAM_CODEC = CodecUtils.ITEM_STREAM_CODEC.map(ItemResource::new, ItemResource::item);
-
             @Override
-            public Codec<ItemResource> codec() {
-                return CODEC;
+            public Item resolve() {
+                return item;
             }
 
             @Override
-            public StreamCodec<ByteBuf, ItemResource> streamCodec() {
-                return STREAM_CODEC;
+            public String asString() {
+                return BuiltInRegistries.ITEM.getKey(item).toString();
+            }
+        }
+
+        record ItemTagResource(TagKey<Item> tag) implements Resource {
+            @Override
+            public Item resolve() {
+                return BuiltInRegistries.ITEM.get(tag)
+                        .map(holders -> holders.stream()
+                                .map(Holder::value)
+                                .filter(item -> item != Items.AIR)
+                                .min(Comparator.comparing(item -> BuiltInRegistries.ITEM.getKey(item).toString()))
+                                .orElse(Items.AIR))
+                        .orElse(Items.AIR);
             }
 
             @Override
-            public boolean isEmpty() {
-                return item == null || item == Items.AIR;
+            public String asString() {
+                return "#" + tag.location();
             }
         }
     }

@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "arsmagicalegacy"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "irons_jewelry"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:gems/topaz",
+  "chance": 10.0,
+  "input_bacteria": "nautec:metallophiles",
+  "result_bacteria": "nautec:topazophiles"
+}

@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "tconstruct:knightslime_ingot",
+      "required": false
+    },
+    {
+      "id": "hephaestus:knightslime_ingot",
+      "required": false
+    }
+  ]
+}

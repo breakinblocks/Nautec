@@ -1,0 +1,67 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbic"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "gtceu"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "immersiveengineering"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "modern_industrialization"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "techreborn"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "xycraft_machines"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "xycraft_world"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:simple",
+  "bacteria": "#c:ingots/aluminum",
+  "initial_size": {
+    "max": 600,
+    "min": 350
+  },
+  "stats": {
+    "type": "nautec:simple",
+    "color": -12399677,
+    "growth_rate": {
+      "max": 1.2,
+      "min": 0.6
+    },
+    "lifespan": {
+      "max": 2500,
+      "min": 1300
+    },
+    "mutation_resistance": {
+      "max": 0.05,
+      "min": 0.0
+    },
+    "production_rate": {
+      "max": 0.7,
+      "min": 0.4
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "avaritia:neutronium_ingot",
+      "required": false
+    },
+    {
+      "id": "extendedcrafting:the_ultimate_ingot",
+      "required": false
+    }
+  ]
+}

@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 
 public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioReactorRecipe> {
@@ -43,7 +44,8 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, BioReactorRecipe recipe, IFocusGroup focuses) {
-        if (recipe.resource() instanceof Bacteria.Resource.ItemResource(Item item)) {
+        Item item = recipe.resource().resolve();
+        if (item != Items.AIR) {
             builder.addOutputSlot(getWidth() - 18, 3).add(item);
         }
 

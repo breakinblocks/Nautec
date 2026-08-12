@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "colossal_reactors"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:inoxophiles",
+  "consume_chance": 0.07,
+  "growth": {
+    "max": 30,
+    "min": 10
+  },
+  "nutrient": "#c:ingots/stainless_steel"
+}

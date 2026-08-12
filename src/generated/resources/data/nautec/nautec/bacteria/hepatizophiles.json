@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "hephaestus"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tconstruct"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:simple",
+  "bacteria": "#c:ingots/hepatizon",
+  "initial_size": {
+    "max": 425,
+    "min": 225
+  },
+  "stats": {
+    "type": "nautec:simple",
+    "color": -12373321,
+    "growth_rate": {
+      "max": 1.0,
+      "min": 0.45
+    },
+    "lifespan": {
+      "max": 2100,
+      "min": 1000
+    },
+    "mutation_resistance": {
+      "max": 0.1,
+      "min": 0.0
+    },
+    "production_rate": {
+      "max": 0.5,
+      "min": 0.15
+    }
+  }
+}

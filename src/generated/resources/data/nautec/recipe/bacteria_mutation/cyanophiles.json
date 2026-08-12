@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "bigreactors"
+        }
+      ]
+    }
+  ],
+  "type": "nautec:bacteria_mutation",
+  "catalyst": "#c:ingots/cyanite",
+  "chance": 5.0,
+  "input_bacteria": "nautec:ferrophiles",
+  "result_bacteria": "nautec:cyanophiles"
+}

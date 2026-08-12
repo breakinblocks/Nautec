@@ -10,8 +10,11 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +24,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,6 +46,26 @@ public final class ContentIntegrityTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("content/every_structure_still_parses", 5, helper -> {
+            HolderLookup.RegistryLookup<Structure> structures =
+                    helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
+
+            for (String name : List.of("ruins_1", "stone_crystal_geode", "deepslate_crystal_geode", "underwater_gateway")) {
+                ResourceKey<Structure> key = ResourceKey.create(Registries.STRUCTURE, Nautec.rl(name));
+                if (structures.get(key).isEmpty()) {
+                    helper.fail("Structure " + name + " did not load. The shared NTJigsawStructure codec must keep the "
+                            + "same field names as the three original copies, or existing worlds lose their structures.");
+                }
+            }
+
+            HolderLookup.RegistryLookup<StructureTemplatePool> pools =
+                    helper.getLevel().registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
+            if (pools.get(ResourceKey.create(Registries.TEMPLATE_POOL, Nautec.rl("underwater_gateway"))).isEmpty()) {
+                helper.fail("The underwater gateway template pool did not load");
+            }
+            helper.succeed();
+        });
+
         r.add("content/every_particle_has_a_definition", 5, helper -> {
             List<String> missing = new ArrayList<>();
             for (ParticleType<?> particle : BuiltInRegistries.PARTICLE_TYPE) {

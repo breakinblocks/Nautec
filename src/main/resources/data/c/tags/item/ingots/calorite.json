@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "ad_astra:calorite_ingot",
+      "required": false
+    },
+    {
+      "id": "beyond_earth:calorite_ingot",
+      "required": false
+    }
+  ]
+}

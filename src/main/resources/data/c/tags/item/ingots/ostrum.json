@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "ad_astra:ostrum_ingot",
+      "required": false
+    },
+    {
+      "id": "beyond_earth:ostrum_ingot",
+      "required": false
+    }
+  ]
+}
