@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "rod",
+  "item": {
+    "id": "nautec:nautec_fishing_rod"
+  },
+  "sort_number": 3,
+  "text": "book.nautec.nautec_guide.getting_started.fishing.rod.text",
+  "title": "book.nautec.nautec_guide.getting_started.fishing.rod.title"
+}

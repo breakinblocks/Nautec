@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:entity",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "entity_id": "nautec:silt_skipper",
+  "entity_name": "Silt Skipper",
+  "id": "silt_skipper",
+  "scale": 1.6,
+  "sort_number": 2,
+  "text": "book.nautec.nautec_guide.getting_started.deep_life.silt_skipper.text"
+}

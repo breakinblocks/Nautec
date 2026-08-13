@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:getting_started",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.getting_started.deep_oceans.description",
+  "icon": {
+    "id": "nautec:luminescent_algae"
+  },
+  "id": "nautec:getting_started/deep_oceans",
+  "name": "book.nautec.nautec_guide.getting_started.deep_oceans.name",
+  "parents": [
+    {
+      "entry": "nautec:getting_started/introduction"
+    }
+  ],
+  "sort_number": 9,
+  "x": -2,
+  "y": 0
+}

@@ -55,9 +55,7 @@ public class WaveJetEntry extends BaseNautecEntry {
                 the thruster is running. The bar under the item is
                 what is left in it.
                 Charge it in a Charger like a Battery or any other
-                powered tool. It holds far less than a Sea Scout,
-                which is the trade you are making: no hull, no
-                cargo, no crew, but nothing to park either.
+                powered tool. It holds far less than a Sea Scout.
                 """);
 
         page("wave_jet_recipe", () -> BookCraftingRecipePageModel.create()

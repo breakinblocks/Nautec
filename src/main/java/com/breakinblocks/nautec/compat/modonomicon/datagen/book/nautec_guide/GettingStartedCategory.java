@@ -47,6 +47,15 @@ public class GettingStartedCategory extends CategoryProvider {
         BookEntryModel machinePartEntry = new MachinePartEntry(this)
                 .generate(new Vec2(2, -2));
         add(machinePartEntry.withParent(structuresEntry));
+        BookEntryModel deepOceansEntry = new DeepOceansEntry(this)
+                .generate(new Vec2(-2, 0));
+        add(deepOceansEntry.withParent(introductionEntry));
+        BookEntryModel deepLifeEntry = new DeepLifeEntry(this)
+                .generate(new Vec2(-4, 0));
+        add(deepLifeEntry.withParent(deepOceansEntry));
+        BookEntryModel fishingEntry = new FishingEntry(this)
+                .generate(new Vec2(-2, 2));
+        add(fishingEntry.withParent(divingGear));
     }
 
     @Override

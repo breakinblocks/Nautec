@@ -37,6 +37,13 @@
 - Two new guide categories: **Deep Engineering** for beam optics, the Resonance Chamber,
   gateways and the Pressure Forge, and **Naval** for the Sea Scout, its dock, its modules
   and the Wave Jet.
+- Five more guide entries, covering the parts of the mod the book never mentioned. "The
+  Deep Oceans" and "Life in the Deep" introduce the four biomes, the six plants and the
+  four creatures, which until now were only ever named in passing as graft targets and
+  augment ingredients. "Fishing" covers lucky zones, the Prismatic Fishing Rod and the
+  three catch minigames, which had no coverage at all and are easy to sit through without
+  realising there was anything to react to. "Budding Prismarine" and "Fishing Station"
+  document two blocks you could already craft and find but could not read about.
 - Sound for the machines that had none. Gateways hum while idle and answer with a low
   note when their address pairs with nothing; the Resonance Chamber's tone climbs as it
   charges, chimes on a craft and cracks when it overloads; the Pressure Forge works and
@@ -59,10 +66,12 @@
   using a custom overworld preset should add it to the second one.
 - Budding Prismarine, which grows Prismarine Buds and Clusters the way Budding
   Amethyst does. Clusters drop Prismarine Crystal Shards, so shards are now
-  renewable. It generates rarely in all four new biomes.
+  renewable. It forms rarely in the rock under the Abyssal Trench and the
+  Bioluminescent Grove. Silk Touch picks the block up to move it; mining it
+  any other way breaks it into four to six shards and destroys it.
 - Six new plants: Deep Kelp, Luminescent Algae, Prismarine Frond, Vent
-  Tubeworm, Abyssal Coral and Glow Polyp. Luminescent Algae and Glow Polyp
-  give off light.
+  Tubeworm, Abyssal Coral and Glow Polyp. Three of them give off light:
+  Luminescent Algae brightly, Glow Polyp a little less, Vent Tubeworm faintly.
 - Four new creatures: the schooling Silt Skipper, the drifting Lantern Jelly,
   the armoured Vent Crawler, and the Abyssal Maw, which hunts in the dark
   below y=40. They drop Luminous Membrane, Chitin Plate and Abyssal Organ.

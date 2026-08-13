@@ -57,10 +57,8 @@ public class BacterialFuelCellEntry extends BaseNautecEntry {
         pageText("""
                 A Fuel Cell does not age a colony, it only
                 consumes it, so Vitality does not matter here.
-                That makes it the right place for a colony that
-                has outlived its Lifespan and is no longer worth
-                feeding. A worn out colony still burns exactly as
-                well as a fresh one.
+                A colony past its Lifespan burns exactly as well
+                as a fresh one.
                 The Bio Reactor and the Fuel Cell want the same
                 colonies. Deciding which one gets them is the
                 whole trade: matter or energy.

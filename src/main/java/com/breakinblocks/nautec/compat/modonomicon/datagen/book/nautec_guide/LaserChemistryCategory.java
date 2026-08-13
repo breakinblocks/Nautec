@@ -47,6 +47,12 @@ public class LaserChemistryCategory extends CategoryProvider {
         BookEntryModel batteryEntry = new BatteryEntry(this)
                 .generate(new Vec2(8, -2));
         add(batteryEntry.withParent(crystalShardsEntry));
+        BookEntryModel buddingPrismarineEntry = new BuddingPrismarineEntry(this)
+                .generate(new Vec2(8, 0));
+        add(buddingPrismarineEntry.withParent(crystalShardsEntry));
+        BookEntryModel fishingStationEntry = new FishingStationEntry(this)
+                .generate(new Vec2(6, -2));
+        add(fishingStationEntry.withParent(drainEntry));
     }
 
     @Override

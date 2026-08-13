@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:entity",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "entity_id": "nautec:lantern_jelly",
+  "entity_name": "Lantern Jelly",
+  "id": "lantern_jelly",
+  "scale": 1.2,
+  "sort_number": 3,
+  "text": "book.nautec.nautec_guide.getting_started.deep_life.lantern_jelly.text"
+}

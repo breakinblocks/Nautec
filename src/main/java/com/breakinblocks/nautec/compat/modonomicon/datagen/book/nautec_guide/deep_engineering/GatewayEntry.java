@@ -25,9 +25,7 @@ public class GatewayEntry extends BaseNautecEntry {
                 A flat prismarine plate that moves whatever stands
                 on it to another plate wearing the same address.
                 No power, no beam, no upkeep at all. The whole
-                cost was paid in Resonant Shards to build it,
-                which is why it sits at the end of the crystal
-                line rather than the start.
+                cost is paid in Resonant Shards to build it.
                 Build two, give them the same address, and the
                 distance between them stops mattering.
                 Some already sit on the sea floor, spread thin.
