@@ -92,7 +92,7 @@ public record GatewayAddress(List<DyeColor> slots) {
         return null;
     }
 
-    private static Item dyeItem(DyeColor colour) {
+    public static Item dyeItem(DyeColor colour) {
         return switch (colour) {
             case WHITE -> Items.WHITE_DYE;
             case LIGHT_BLUE -> Items.LIGHT_BLUE_DYE;

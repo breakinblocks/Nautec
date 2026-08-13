@@ -77,6 +77,14 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.submarine.ability.destination_blocked", "The anchor is blocked or dry");
         add("effect.nautec.stunned", "Stunned");
 
+        add("nautec.gateway.title", "Gateway Address");
+        add("nautec.gateway.apply", "Set");
+        add("nautec.gateway.cancel", "Cancel");
+        add("nautec.gateway.cost", "Costs");
+        add("nautec.gateway.cost_entry", "%sx %s");
+        add("nautec.gateway.no_change", "Pick a colour for each of the four fins");
+        add("nautec.gateway.missing_dye", "You do not have the dye for that address");
+
         add("subtitles.nautec.submarine.engine", "Sea Scout thrusters churn");
         add("subtitles.nautec.submarine.ambient", "Sea Scout hull hums");
         add("subtitles.nautec.submarine.deploy", "Sea Scout canopy seals");

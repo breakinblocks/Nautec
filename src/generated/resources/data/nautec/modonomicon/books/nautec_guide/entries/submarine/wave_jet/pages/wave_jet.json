@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "wave_jet",
+  "item": {
+    "id": "nautec:wave_jet"
+  },
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.submarine.wave_jet.wave_jet.text",
+  "title": "book.nautec.nautec_guide.submarine.wave_jet.wave_jet.title"
+}

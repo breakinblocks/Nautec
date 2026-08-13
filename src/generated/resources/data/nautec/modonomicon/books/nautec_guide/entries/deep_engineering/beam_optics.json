@@ -1,0 +1,21 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:deep_engineering",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.deep_engineering.beam_optics.description",
+  "icon": {
+    "id": "nautec:prismatic_mirror"
+  },
+  "id": "nautec:deep_engineering/beam_optics",
+  "name": "book.nautec.nautec_guide.deep_engineering.beam_optics.name",
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

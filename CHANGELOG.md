@@ -23,6 +23,19 @@
   under water and it drags you along wherever you are looking, both hands on the grips
   and flat out like a swimmer. It runs dry or breaks the surface and you simply let go.
   Charge it in a Charger like anything else.
+- Gateways have a screen. Right-click one empty-handed and you get the four fins laid out with
+  every colour you can put on them, what the change will cost, and what you are holding. Dyeing a
+  fin by hand still works and costs the same one dye per fin, so the screen is a better way to do
+  the same thing rather than a cheaper one.
+- Gateways look alive: a spark orbits an idle pad, travel bursts at both ends, and a gateway that
+  finds no partner puffs where it would have sent you.
+- Sonar draws its pulse. The ring expands from the hull at the speed the scan is actually
+  travelling, through terrain, so you can see the front reach a contact as it lights up.
+- Teleporting streaks the screen from the centre and pulls back as you arrive.
+- The guide has a **Deep Engineering** category. Beam optics, the Resonance Chamber, gateways and
+  the Pressure Forge move there out of Laser Chemistry, which was carrying twelve entries and two
+  unrelated subjects. "The Sea Scout" is now **Naval** and covers the Wave Jet, which had no entry
+  at all.
 - Sound for the machines that had none. Gateways hum while idle and answer with a low
   note when their address pairs with nothing; the Resonance Chamber's tone climbs as it
   charges, chimes on a craft and cracks when it overloads; the Pressure Forge works and

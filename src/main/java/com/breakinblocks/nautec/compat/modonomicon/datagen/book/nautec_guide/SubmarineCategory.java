@@ -37,6 +37,9 @@ public class SubmarineCategory extends CategoryProvider {
         BookEntryModel dockEntry = new SubmarineDockEntry(this).generate(new Vec2(2, 4));
         add(dockEntry.withParent(powerEntry));
 
+        BookEntryModel waveJetEntry = new WaveJetEntry(this).generate(new Vec2(0, 4));
+        add(waveJetEntry);
+
         BookEntryModel modulesEntry = new SubmarineModulesEntry(this).generate(new Vec2(4, 0));
         add(modulesEntry.withParent(powerEntry).withParent(controlsEntry));
 
@@ -67,7 +70,7 @@ public class SubmarineCategory extends CategoryProvider {
 
     @Override
     protected String categoryName() {
-        return "The Sea Scout";
+        return "Naval";
     }
 
     @Override

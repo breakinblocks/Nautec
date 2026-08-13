@@ -75,6 +75,10 @@ public final class NautecSonarManager {
         return center;
     }
 
+    public static float range() {
+        return range;
+    }
+
     public static float fade() {
         return ticksLeft >= FADE_TICKS ? 1F : (float) ticksLeft / FADE_TICKS;
     }

@@ -47,18 +47,6 @@ public class LaserChemistryCategory extends CategoryProvider {
         BookEntryModel batteryEntry = new BatteryEntry(this)
                 .generate(new Vec2(8, -2));
         add(batteryEntry.withParent(crystalShardsEntry));
-        BookEntryModel beamOpticsEntry = new BeamOpticsEntry(this)
-                .generate(new Vec2(2, -2));
-        add(beamOpticsEntry.withParent(laserManipulationEntry));
-        BookEntryModel resonanceChamberEntry = new ResonanceChamberEntry(this)
-                .generate(new Vec2(8, 0));
-        add(resonanceChamberEntry.withParent(crystalShardsEntry).withParent(beamOpticsEntry));
-        BookEntryModel gatewayEntry = new GatewayEntry(this)
-                .generate(new Vec2(10, 0));
-        add(gatewayEntry.withParent(resonanceChamberEntry));
-        BookEntryModel pressureForgeEntry = new PressureForgeEntry(this)
-                .generate(new Vec2(10, 2));
-        add(pressureForgeEntry.withParent(resonanceChamberEntry));
     }
 
     @Override

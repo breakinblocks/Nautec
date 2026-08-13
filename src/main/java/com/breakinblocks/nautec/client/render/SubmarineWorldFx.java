@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.client.render;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.sonar.SonarHighlightRenderer;
+import com.breakinblocks.nautec.client.sonar.SonarPulseRenderer;
 import com.breakinblocks.nautec.client.teleport.PortalRenderer;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -33,6 +34,7 @@ public final class SubmarineWorldFx {
         float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
         SonarHighlightRenderer.render(poseStack, collector, cameraPos);
+        SonarPulseRenderer.render(poseStack, collector, cameraPos);
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
 
         for (net.minecraft.world.entity.Entity entity : level.entitiesForRendering()) {

@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "gateway",
+  "item": {
+    "id": "nautec:gateway"
+  },
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.deep_engineering.gateway.gateway.text",
+  "title": "book.nautec.nautec_guide.deep_engineering.gateway.gateway.title"
+}

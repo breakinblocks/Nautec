@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.content.blocks.GatewayBlock;
+import com.breakinblocks.nautec.network.SetGatewayAddressPayload;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -12,6 +13,8 @@ import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public final class GatewayTests {
     private GatewayTests() {
@@ -43,6 +46,25 @@ public final class GatewayTests {
             helper.assertValueEqual(DyeColor.BLACK, changed.slots().get(2), "recoloured slot");
             helper.assertValueEqual(DyeColor.CYAN, changed.slots().get(0), "untouched slot");
             helper.assertFalse(changed.equals(cyan), "Recolouring should produce a different address");
+            helper.succeed();
+        });
+
+        r.add("gateway/screen_charges_one_dye_per_changed_fin", 20, helper -> {
+            GatewayAddress cyan = GatewayAddress.DEFAULT;
+
+            helper.assertTrue(SetGatewayAddressPayload.costOf(cyan, cyan).isEmpty(),
+                    "Setting the address it already has should be free");
+
+            List<DyeColor> one = SetGatewayAddressPayload.costOf(cyan, cyan.withSlot(0, DyeColor.BLACK));
+            helper.assertValueEqual(1, one.size(), "dyes charged for one changed fin");
+            helper.assertValueEqual(DyeColor.BLACK, one.get(0), "dye charged is the new colour, not the old one");
+
+            GatewayAddress twoChanged = cyan.withSlot(0, DyeColor.BLACK).withSlot(3, DyeColor.BLACK);
+            helper.assertValueEqual(2, SetGatewayAddressPayload.costOf(cyan, twoChanged).size(),
+                    "two changed fins of the same colour still cost two dyes");
+
+            helper.assertValueEqual(4, SetGatewayAddressPayload.costOf(cyan, GatewayAddress.uniform(DyeColor.LIME)).size(),
+                    "recolouring every fin costs four dyes");
             helper.succeed();
         });
 
