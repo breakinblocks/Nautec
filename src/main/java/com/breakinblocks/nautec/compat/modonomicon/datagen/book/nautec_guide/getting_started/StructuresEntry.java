@@ -19,11 +19,11 @@ public class StructuresEntry extends BaseNautecEntry {
 
         this.pageTitle("Deep Sea Structures");
         this.pageText("""
-                The first step to unlocking Aquatic Power is to locate an ocean and to search for a small and unlikely structure.
+                Find an ocean and look for something on the floor that is too regular to be natural.
                 \\
-                The structure is mainly built out of dark prismarine with a mysterious device in the middle of the "arch"
-                However, this structure should not be your main point of interest as below it, in a small radius, there often
-                is a geode like cave, containing a mighty crystal.
+                Dark prismarine, cut and laid in an arch, with a device still seated in the middle of it. Nothing grows in that shape on its own.
+                \\
+                The arch is not what you came for. Below it, within a short radius, there is usually a geode, and in the geode a crystal.
                 """);
 
         this.page("geode", () -> BookTextPageModel.create()
@@ -32,11 +32,12 @@ public class StructuresEntry extends BaseNautecEntry {
 
         this.pageTitle("Deep Sea Structures");
         this.pageText("""
-                Around the crystal there is also a variety of loot. The crystal itself is surrounded with scaffolding which might be useful
-                later on...
+                There is salvage scattered around the crystal, and the crystal itself stands inside scaffolding.
+                \\
+                Somebody put that scaffolding there. They were working on this one when they stopped, and whatever they were part way through, they never came back for it.
                 \\
                 \\
-                Edit: Do NOT break the crystal (yet) as it seems to shatter completely, without leaving anything behind.
+                Edit: Do NOT break the crystal (yet). It shatters and leaves nothing behind.
                 """);
     }
 }

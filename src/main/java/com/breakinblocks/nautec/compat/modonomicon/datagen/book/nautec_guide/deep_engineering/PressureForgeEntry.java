@@ -29,6 +29,8 @@ public class PressureForgeEntry extends BaseNautecEntry {
                 Take away the water and it stops, however deep it
                 is. Dig a dry shaft to bedrock and you have built
                 nothing. The sea has to be sitting on top of it.
+                Nobody designs around that unless working at that
+                depth was ordinary to them.
                 """);
 
         page("requirements", () -> BookTextPageModel.create()

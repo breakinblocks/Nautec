@@ -37,6 +37,13 @@
 - Two new guide categories: **Deep Engineering** for beam optics, the Resonance Chamber,
   gateways and the Pressure Forge, and **Naval** for the Sea Scout, its dock, its modules
   and the Wave Jet.
+- The guide has a story. None of this technology is yours... The sea floor is covered in
+  working machinery somebody else built and then stopped maintaining, and the book is the
+  notes of whoever is getting it running again. The gateways you find already share one address,
+  so they were a network before you arrived. Machine parts can be cleaned and repaired
+  but never manufactured. The Pressure Forge only runs under a real column of water.
+  The Augmentation Station was built to fit a body for the sea.
+  The book now points at all of that instead of leaving it lying there.
 - Five more guide entries, covering the parts of the mod the book never mentioned. "The
   Deep Oceans" and "Life in the Deep" introduce the four biomes, the six plants and the
   four creatures, which until now were only ever named in passing as graft targets and

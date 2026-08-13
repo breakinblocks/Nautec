@@ -18,13 +18,18 @@ public class LaserAugmentationIntroductionEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("Introduction to Laser Augmentation");
         this.pageText("""
-                Now that you have made such huge progress in your studies,
-                you are able to explore the most dangerous parts of science.
-                Body Augmentation. Since this is such an
-                advanced topic I have dedicated this entire chapter to it.
+                The Augmentation Station is theirs. I did not work out how to
+                cut a limb off and seat a machine in its place; I found a room
+                built to do it, and the sockets were already the right shape.
                 \\
                 \\
-                Read it carefully and with patience.
+                They did not visit the water. They were rebuilt for it. Once
+                you understand that, the organs we pull out of the deep stop
+                looking like trophies and start looking like spare parts.
+                \\
+                \\
+                Read this chapter carefully. It is the one that is done to you
+                rather than by you.
                 """);
     }
 }

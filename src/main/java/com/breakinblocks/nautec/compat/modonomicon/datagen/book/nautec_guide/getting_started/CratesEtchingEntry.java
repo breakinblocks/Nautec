@@ -19,11 +19,11 @@ public class CratesEtchingEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("Etching");
         this.pageText("""
-                Etching is a mechanic that allows you to remove the rust from rusty objects.
+                Etching strips the rust off anything that has been down there long enough to grow some.
                 \\
-                The process is simple, by dropping a rusty crate or item into a pool of etching acid, the rust will slowly disappear, and a new shiny object will emerge.
+                Drop a rusty crate or item into a pool of Etching Acid and the corrosion lifts away, leaving what was underneath it intact. The metal survives. It is better metal than we make.
                 \\
-                You probably noticed that the crates are locked, and you can't open them. This is because the lock is messed up and needs a crowbar to be removed.
+                The crates are locked because somebody locked them. The mechanisms have seized solid since, so the only way in now is a crowbar.
                 """);
         this.page("etching_acid_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Etching Acid Recipe")

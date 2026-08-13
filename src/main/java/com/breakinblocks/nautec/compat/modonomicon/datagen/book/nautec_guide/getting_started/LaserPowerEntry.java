@@ -19,12 +19,13 @@ public class LaserPowerEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("An Introduction to Laser Power");
         this.pageText("""
-                Lasers are a mysterious technology. Nobody really knows
-                exactly how to create them. However using some prismarine,
-                both dark and light, one is able to create an Aquatic Catalyst.
+                Nobody alive knows how they made a beam. We know it was
+                light through crystal, because every ruin down there is
+                built around that, and we know it carried enough power to
+                run a city.
                 \\
-                While this block itself does not possesses the ability to channel
-                energy into a laser.
+                What we can build is an Aquatic Catalyst, out of prismarine,
+                both dark and light. It does not channel anything by itself.
                 """);
         this.page("aquatic_catalyst_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Aquatic Catalyst")

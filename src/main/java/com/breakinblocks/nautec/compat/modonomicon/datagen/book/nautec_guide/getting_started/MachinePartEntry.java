@@ -19,16 +19,20 @@ public class MachinePartEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("Machine Parts");
         this.pageText("""
-                On your journey trough the ocean
-                you will find lots of seemingly
-                dirty or damaged items that are
-                in fact required for most machinery
-                and even tools.
+                The ocean floor is littered with
+                gears, valves, coils and chips that
+                look like refuse and are not.
                 \\
                 \\
-                Note however, that most of these items
-                need to be cleaned or repaired before
-                being used.
+                Most machinery here needs them, and
+                no recipe I have found will make one
+                from raw material. They can only be
+                cleaned and repaired.
+                \\
+                \\
+                Every one of them was manufactured by
+                somebody. We are working through what
+                is left of their stock.
                 """);
 
         this.page("machine_part_examples", () -> BookSpotlightPageModel.create()

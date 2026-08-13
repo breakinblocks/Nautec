@@ -19,11 +19,11 @@ public class DivingGearEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("Diving Gear");
         this.pageText("""
-                The Diving Suit is a special suit that allows you to explore the depths of the ocean.
+                A suit, made of polymer, that lets you stay under long enough to work.
                 \\
-                Crafted from a special Polymer material, the Diving Suit is must-have for any underwater explorer.
+                They needed nothing like it. This is the crude answer to a problem they solved by changing themselves, and until you are ready to do the same it is the only answer you have.
                 \\
-                The Helmet will clear your vision underwater while the chestplate will provide you with 10min of oxygen.
+                The helmet clears your vision. The chestplate holds ten minutes of air.
                 """);
         this.page("oxygen_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle2("Filling the tanks")
