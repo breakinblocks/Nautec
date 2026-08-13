@@ -29,8 +29,10 @@ public class GatewayEntry extends BaseNautecEntry {
                 Build two, give them the same address, and the
                 distance between them stops mattering.
                 Some already sit on the sea floor, spread thin.
-                Those all share one address, so the ones you find
-                are a network before you touch them.
+                Every one of those wears the same four colours.
+                They were not scattered, they were addressed, and
+                they have been running with nobody stepping onto
+                them for a very long time.
                 """);
 
         page("addresses", () -> BookTextPageModel.create()

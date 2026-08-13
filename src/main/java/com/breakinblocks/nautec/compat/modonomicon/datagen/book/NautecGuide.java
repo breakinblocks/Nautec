@@ -35,6 +35,6 @@ public class NautecGuide extends SingleBookSubProvider {
 
     @Override
     protected String bookTooltip() {
-        return "Nautec Guide Tooltip";
+        return "Notes on machinery somebody else left on the sea floor";
     }
 }

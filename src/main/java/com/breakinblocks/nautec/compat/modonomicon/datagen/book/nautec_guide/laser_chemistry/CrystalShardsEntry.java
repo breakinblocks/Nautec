@@ -20,9 +20,11 @@ public class CrystalShardsEntry extends BaseNautecEntry {
                 .withText(this.context().pageText()));
         this.pageTitle("Prismarine Crystal Shard");
         this.pageText("""
-                Prismarine Crystal Shards are a pristine
-                material required for some of the most
-                advanced machinery.
+                The material every one of their better
+                machines is built around. Nothing we
+                refine comes close, and every recipe
+                that asks for it asks for it because
+                they used it there first.
                 """);
         this.page("shard_and_crystal", () -> BookTextPageModel.create()
                 .withText(this.context().pageText()));
