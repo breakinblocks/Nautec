@@ -1,0 +1,10 @@
+{
+  "type": "modonomicon:crafting_recipe",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "rod_recipe",
+  "recipe_id_1": "nautec:nautec_fishing_rod",
+  "sort_number": 6,
+  "title1": "Prismatic Fishing Rod"
+}

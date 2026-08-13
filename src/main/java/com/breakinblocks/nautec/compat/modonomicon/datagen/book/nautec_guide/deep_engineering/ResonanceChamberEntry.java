@@ -42,9 +42,8 @@ public class ResonanceChamberEntry extends BaseNautecEntry {
                 straight off a Prismarine Crystal gives a ceiling
                 several times higher.
                 Near the top of that range the Chamber goes
-                critical, and that is the only moment it will
-                craft. Go past it and the charge lets go all at
-                once.
+                critical. It crafts only while critical. Go past
+                it and the charge lets go all at once.
                 """);
 
         page("venting", () -> BookTextPageModel.create()

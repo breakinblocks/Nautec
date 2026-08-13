@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:getting_started",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.getting_started.fishing.description",
+  "icon": {
+    "id": "nautec:nautec_fishing_rod"
+  },
+  "id": "nautec:getting_started/fishing",
+  "name": "book.nautec.nautec_guide.getting_started.fishing.name",
+  "parents": [
+    {
+      "entry": "nautec:getting_started/diving_gear"
+    }
+  ],
+  "sort_number": 11,
+  "x": -2,
+  "y": 2
+}

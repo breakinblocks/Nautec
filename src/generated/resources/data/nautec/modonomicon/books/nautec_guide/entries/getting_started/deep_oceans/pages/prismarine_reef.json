@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "prismarine_reef",
+  "show_title_separator": true,
+  "sort_number": 4,
+  "text": "book.nautec.nautec_guide.getting_started.deep_oceans.prismarine_reef.text",
+  "title": "book.nautec.nautec_guide.getting_started.deep_oceans.prismarine_reef.title"
+}

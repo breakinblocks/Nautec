@@ -1,0 +1,12 @@
+{
+  "type": "modonomicon:entity",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "entity_id": "nautec:abyssal_maw",
+  "entity_name": "Abyssal Maw",
+  "id": "abyssal_maw",
+  "scale": 0.9,
+  "sort_number": 5,
+  "text": "book.nautec.nautec_guide.getting_started.deep_life.abyssal_maw.text"
+}

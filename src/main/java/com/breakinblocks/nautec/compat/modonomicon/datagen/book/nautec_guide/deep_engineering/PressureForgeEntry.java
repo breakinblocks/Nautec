@@ -44,8 +44,7 @@ public class PressureForgeEntry extends BaseNautecEntry {
                 Crystal has to supply. And Etching Acid, which it
                 drinks steadily.
                 The deepest recipes want to be far below sea
-                level, which is the point: the Abyssal Trench is
-                where this machine belongs.
+                level.
                 """);
 
         page("outputs", () -> BookTextPageModel.create()

@@ -21,7 +21,7 @@ public class ArmorModuleEntry extends BaseNautecEntry {
         this.pageText("""
                 Bolts another layer onto the hull: tougher plating against heavy hits, and enough mass that being struck no longer shoves you off course.
                 \\
-                Passive, and worth the netherite. Pull it and the hull goes straight back to stock.
+                Passive. Pull it and the hull goes straight back to stock.
                 """);
         this.page("armor_module_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Armour Module")

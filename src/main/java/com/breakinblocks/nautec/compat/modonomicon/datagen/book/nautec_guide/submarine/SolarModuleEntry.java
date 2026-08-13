@@ -21,7 +21,7 @@ public class SolarModuleEntry extends BaseNautecEntry {
         this.pageText("""
                 Trickles the cell full again whenever the hull sits in open, sunlit water. It works through the water column, so you do not have to surface, but anything solid overhead stops it.
                 \\
-                It keeps collecting while the submersible is parked and empty, which makes it the difference between a vehicle and a base you can leave somewhere.
+                It keeps collecting while the hull is parked and empty.
                 """);
         this.page("solar_module_recipe", () -> BookCraftingRecipePageModel.create()
                 .withTitle1("Solar Module")

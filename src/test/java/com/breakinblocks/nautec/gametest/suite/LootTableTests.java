@@ -2,8 +2,13 @@ package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.datagen.BiomeTagProvider;
+import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTLootTables;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -116,6 +121,39 @@ public final class LootTableTests {
             helper.succeed();
         });
 
+        r.add("loot/budding_prismarine_pays_either_way", 10, helper -> {
+            ServerLevel level = helper.getLevel();
+            LootTable table = level.getServer().reloadableRegistries().getLootTable(
+                    ResourceKey.create(Registries.LOOT_TABLE, Nautec.rl("blocks/budding_prismarine")));
+            if (table == LootTable.EMPTY) {
+                helper.fail("The Budding Prismarine loot table did not load");
+                return;
+            }
+
+            ItemStack silk = new ItemStack(Items.DIAMOND_PICKAXE);
+            silk.enchant(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                    .getOrThrow(Enchantments.SILK_TOUCH), 1);
+
+            List<ItemStack> silkDrops = drops(level, helper, table, silk);
+            if (silkDrops.size() != 1 || !silkDrops.getFirst().is(NTBlocks.BUDDING_PRISMARINE.asItem())) {
+                helper.fail("Silk Touch should return the block itself, got " + silkDrops);
+            }
+
+            for (int attempt = 0; attempt < 40; attempt++) {
+                List<ItemStack> plain = drops(level, helper, table, new ItemStack(Items.DIAMOND_PICKAXE));
+                if (plain.size() != 1 || !plain.getFirst().is(NTItems.PRISMARINE_CRYSTAL_SHARD.get())) {
+                    helper.fail("Mining without Silk Touch should give shards, got " + plain);
+                    return;
+                }
+                int count = plain.getFirst().getCount();
+                if (count < 4 || count > 6) {
+                    helper.fail("Shards from a plain break should be 4 to 6, got " + count);
+                    return;
+                }
+            }
+            helper.succeed();
+        });
+
         r.add("loot/biome_gated_entries_have_real_tags", 5, helper -> {
             List<TagKey<Biome>> tags = List.of(BiomeTagProvider.ABYSSAL, BiomeTagProvider.VENTS,
                     BiomeTagProvider.BIOLUMINESCENT, BiomeTagProvider.REEF);
@@ -129,6 +167,14 @@ public final class LootTableTests {
             }
             helper.succeed();
         });
+    }
+
+    private static List<ItemStack> drops(ServerLevel level, GameTestHelper helper, LootTable table, ItemStack tool) {
+        return table.getRandomItems(new LootParams.Builder(level)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(helper.absolutePos(new BlockPos(1, 2, 1))))
+                .withParameter(LootContextParams.BLOCK_STATE, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState())
+                .withParameter(LootContextParams.TOOL, tool)
+                .create(LootContextParamSets.BLOCK));
     }
 
     private LootTableTests() {

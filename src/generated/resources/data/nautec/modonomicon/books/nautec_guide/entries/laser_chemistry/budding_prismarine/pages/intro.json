@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "intro",
+  "item": {
+    "id": "nautec:budding_prismarine"
+  },
+  "sort_number": 0,
+  "text": "book.nautec.nautec_guide.laser_chemistry.budding_prismarine.intro.text",
+  "title": "book.nautec.nautec_guide.laser_chemistry.budding_prismarine.intro.title"
+}

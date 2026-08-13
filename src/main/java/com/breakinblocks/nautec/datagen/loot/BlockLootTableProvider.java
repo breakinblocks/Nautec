@@ -113,7 +113,9 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get());
         add(NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL_PART.get(), noDrop());
 
-        dropSelf(NTBlocks.BUDDING_PRISMARINE.get());
+        add(NTBlocks.BUDDING_PRISMARINE.get(), block -> createSilkTouchDispatchTable(block,
+                this.applyExplosionDecay(block, LootItem.lootTableItem(NTItems.PRISMARINE_CRYSTAL_SHARD.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(4.0F, 6.0F))))));
         add(NTBlocks.PRISMARINE_CLUSTER.get(), block -> createSilkTouchDispatchTable(block,
                 this.applyExplosionDecay(block, LootItem.lootTableItem(NTItems.PRISMARINE_CRYSTAL_SHARD.get())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2.0F)))

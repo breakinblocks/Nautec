@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "output",
+  "show_title_separator": true,
+  "sort_number": 2,
+  "text": "book.nautec.nautec_guide.laser_chemistry.fishing_station.output.text",
+  "title": "book.nautec.nautec_guide.laser_chemistry.fishing_station.output.title"
+}

@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "harvest",
+  "item": {
+    "id": "nautec:prismarine_crystal_shard"
+  },
+  "sort_number": 2,
+  "text": "book.nautec.nautec_guide.laser_chemistry.budding_prismarine.harvest.text",
+  "title": "book.nautec.nautec_guide.laser_chemistry.budding_prismarine.harvest.title"
+}
