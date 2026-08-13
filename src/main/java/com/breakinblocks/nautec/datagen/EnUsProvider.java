@@ -53,8 +53,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         addItem(SUBMARINE, "Sea Scout");
         add("entity.nautec.submarine", "Sea Scout");
-        add("nautec.submarine.controls", "W/S throttle, A/D rudder, Space rises, C dives");
-        add("nautec.submarine.aim", "Hold use to steer with the mouse");
+        add("nautec.submarine.controls", "W/S throttle, mouse steers, Space rises, C dives");
+        add("nautec.submarine.aim", "Hold use to look around without steering");
         add("nautec.submarine.oxygen", "Sealed and powered, it keeps its crew breathing");
         add("nautec.submarine.hull", "Hull integrity:");
         add("nautec.submarine.breached", "The hull is breached. Repair it on an anvil before launching");

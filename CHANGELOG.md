@@ -4,8 +4,8 @@
 
 ### Added
 - The **Sea Scout**, a two seat powered submersible. Right-click to
-  board; first in drives. W/S throttle, A/D rudder, Space rises, C dives,
-  hold right mouse to steer. Sneak plus right-click picks it back up with
+  board; first in drives. W/S throttle, the mouse steers, Space rises, C dives,
+  hold right mouse to look around. Sneak plus right-click picks it back up with
   its charge. Charge it in a Charger.
 - Sealed and powered, it keeps its crew breathing.
 - The **Sea Scout Dock**, a powered pad to park it on. It fills the hull's cells without
@@ -14,7 +14,9 @@
   left on the pad is still there when you get back. A pilot always overrides the clamps.
 - Piloting shows the controls on the HUD, so the scheme is not something you have to
   guess at or go looking in the guide for.
-- Driving shows a compact power and hull readout, repositionable with Ctrl+H.
+- Driving shows a compact power and hull readout, repositionable with Ctrl+H. It stands in
+  for the vanilla vehicle health hearts, which eighty hull points would otherwise spread
+  across four rows of the screen. A passenger in the back keeps their ordinary hotbar.
 - Collision follows the actual hull shape as it turns, so it does not snag
   in tight caverns. It only collides with the world: fish and other creatures
   get shoved aside rather than bringing several tonnes of hull to a dead stop.
@@ -32,10 +34,9 @@
 - Sonar draws its pulse. The ring expands from the hull at the speed the scan is actually
   travelling, through terrain, so you can see the front reach a contact as it lights up.
 - Teleporting streaks the screen from the centre and pulls back as you arrive.
-- The guide has a **Deep Engineering** category. Beam optics, the Resonance Chamber, gateways and
-  the Pressure Forge move there out of Laser Chemistry, which was carrying twelve entries and two
-  unrelated subjects. "The Sea Scout" is now **Naval** and covers the Wave Jet, which had no entry
-  at all.
+- Two new guide categories: **Deep Engineering** for beam optics, the Resonance Chamber,
+  gateways and the Pressure Forge, and **Naval** for the Sea Scout, its dock, its modules
+  and the Wave Jet.
 - Sound for the machines that had none. Gateways hum while idle and answer with a low
   note when their address pairs with nothing; the Resonance Chamber's tone climbs as it
   charges, chimes on a craft and cracks when it overloads; the Pressure Forge works and
@@ -111,10 +112,8 @@
 - Seventy eight ready-made bacteria for materials that other mods add, covering
   metals, alloys and gems from tin and steel up to titanium, iridium and beyond.
   Each one appears once you are playing with a mod that adds that material, and
-  stays out of the way otherwise. They ship as ordinary datapack files now, so a
-  pack can override or disable any of them the same way it would any other
-  content, and they work from the first time you load a world rather than the
-  second.
+  stays out of the way otherwise. They ship as ordinary datapack files, so a pack
+  can override or disable any of them the same way it would any other content.
 - Nautec now fills in the common material tags for a number of mods that keep
   their alloys to themselves, including the Tinkers family, Botania, Ad Astra,
   Draconic Evolution and Big Reactors. That makes those materials usable by
@@ -181,7 +180,7 @@
   form their own separate network.
 - Breaking a Gateway keeps its address on the dropped block, so moving one does not mean
   dyeing it again.
-- Gateways now generate on the ocean floor as small prismarine pads, spread thinly so the
+- Gateways generate on the ocean floor as small prismarine pads, spread thinly so the
   nearest one is a real distance away. Every one that generates shares the same address, so
   the ones you find are already a network before you touch any of them.
 - A "Gateway" guide entry covering addresses, what travels with you, and the limits.
@@ -193,16 +192,14 @@
   is the point. The Abyssal Trench is where it belongs.
 - **Flawless Prismarine Crystals**, pressed from Resonant Shards. The Forge is the only
   way to get them.
-- **Deep Steel Plating**, pressed from Aquarine Steel further down still. This is now
-  what repairs a breached submersible hull on an anvil, so the thing that carries you
-  into the deep is mended with something only the deep can make. Packs that want the old
-  behaviour can point the repair item back at diamonds in the config.
+- **Deep Steel Plating**, pressed from Aquarine Steel further down still. It repairs a
+  breached Sea Scout hull on an anvil, so the thing that carries you into the deep is
+  mended with something only the deep can make. Packs can point the repair item at
+  diamonds instead in the config.
 - An "Abyssal Pressure Forge" guide entry, and config for its depth, water column, power
   draw, acid use and tank size.
 
 ### Fixed
-- The Sea Scout no longer floats a name tag reading "Submersible Modules" above
-  itself. The module screen's title was being used as the vehicle's name.
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data
   component that no longer exists, which stopped the whole table loading.
 - Rusty Crates in ocean ruins now generate their loot. Their loot table still
@@ -220,27 +217,18 @@
 - The Incubator guide page showed a Mutator, and claimed incubating doubles a
   colony, which it never did.
 - Recipe pages no longer show bacteria percentages like 7.0000005%.
-- Prismarine Sand, the basalt and magma in the Hydrothermal Vents, and the prismarine
-  outcrops in the Prismarine Reef no longer spill into neighbouring biomes. They were
-  missing the check that keeps a feature inside the biome it belongs to.
-- Worlds no longer fail to generate chunks when Nautec is installed alongside other
-  biome mods. The Bioluminescent Grove and Prismarine Reef listed some vanilla
-  decorations in an order no other biome uses, and if another mod happened to disagree
-  about that order the game could not work out how to build a chunk and crashed. All
-  four Nautec oceans now follow the same decoration order as vanilla oceans.
+- Prismarine Sand no longer spills into neighbouring biomes. It was missing the check
+  that keeps a feature inside the biome it belongs to.
 
 ### Compatibility
-- Nautec's oceans now work with Terralith and Tectonic out of the box. When
-  Lithostitched is installed, the four biomes place themselves through it, the same way
-  those mods do, instead of going through the vanilla overworld layout that Terralith
-  replaces. Packs that had to write their own biome injector files to get Nautec oceans
-  generating can delete them.
-- Packs can still take over placement themselves by overriding the four biome injector
-  files Nautec now ships.
-- Prismarine Sand, the vent basalt and magma, the reef prismarine outcrops and Budding
-  Prismarine now sit on the real sea floor wherever it happens to be, instead of at fixed
-  heights that assumed Nautec was the only mod shaping the ocean. With Tectonic installed
-  the reef outcrops were generating above the sea floor and so never appeared at all.
+- The four new oceans work with Terralith and Tectonic out of the box. Where Lithostitched
+  is installed they place themselves through it, the same way those mods do, rather than
+  through the vanilla overworld layout that Terralith replaces. No injector files to write.
+- Packs can take placement over themselves by overriding the four biome injector files
+  Nautec ships.
+- Prismarine Sand now sits on the real sea floor wherever it happens to be, instead of at
+  a fixed height that assumed Nautec was the only mod shaping the ocean. Everything the
+  new biomes place follows the same rule.
 - Nautec's Deeper Oceans has no effect when Tectonic is installed, because Tectonic
   replaces the terrain system Nautec builds on. Tectonic decides ocean depth in that
   case, which is the sensible outcome, and Nautec now says so in the log at startup
