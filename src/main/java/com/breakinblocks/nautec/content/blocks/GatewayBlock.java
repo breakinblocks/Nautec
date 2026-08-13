@@ -7,6 +7,8 @@ import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -62,9 +64,6 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock {
         return SHAPE;
     }
 
-    /**
-     * The four address fins sit one per quadrant of the top face, so where you click picks the slot.
-     */
     public static int slotFor(BlockPos pos, Vec3 hit) {
         double x = hit.x - pos.getX();
         double z = hit.z - pos.getZ();
@@ -98,6 +97,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock {
             if (player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendSystemMessage(updated.describe(), true);
             }
+            MachineSounds.play(level, pos, NTSounds.GATEWAY_RECODE, 0.8f, 1.0f + slot * 0.1f);
         }
         return InteractionResult.SUCCESS;
     }

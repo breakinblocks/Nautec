@@ -6,6 +6,8 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import com.breakinblocks.nautec.utils.ParticleUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -25,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class SubmarineDockBlockEntity extends LaserBlockEntity {
+    private boolean holding;
+
     public SubmarineDockBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.SUBMARINE_DOCK.get(), blockPos, blockState);
     }
@@ -45,12 +49,16 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
     public void commonTick() {
         super.commonTick();
 
-        if (getPower() < NTConfig.dockPowerUsage) {
-            return;
+        List<SubmarineEntity> submarines = getPower() < NTConfig.dockPowerUsage ? List.of() : docked();
+        boolean holdingNow = !submarines.isEmpty();
+
+        if (holdingNow != this.holding) {
+            MachineSounds.play(level, worldPosition,
+                    holdingNow ? NTSounds.DOCK_CLAMP : NTSounds.DOCK_RELEASE, 0.7f, holdingNow ? 0.8f : 0.9f);
+            this.holding = holdingNow;
         }
 
-        List<SubmarineEntity> submarines = docked();
-        if (submarines.isEmpty()) {
+        if (!holdingNow) {
             return;
         }
 
@@ -65,10 +73,6 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
         }
     }
 
-    /**
-     * A parked hull drifts on the current otherwise, so anything left on a dock would slowly wander off
-     * it. Only unmanned hulls are held; a pilot always wins over the clamps.
-     */
     private static void hold(SubmarineEntity submarine) {
         if (submarine.getControllingPassenger() != null) {
             return;

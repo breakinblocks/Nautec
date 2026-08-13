@@ -6,8 +6,11 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.ItemUtils;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,6 +69,7 @@ public class WaveJetItem extends Item implements IPowerItem {
         }
 
         player.startUsingItem(hand);
+        playAt(level, player, NTSounds.WAVE_JET_START.get(), 0.6f, 1.3f);
         return InteractionResult.CONSUME;
     }
 
@@ -83,7 +87,6 @@ public class WaveJetItem extends Item implements IPowerItem {
         Vec3 look = player.getLookAngle();
         player.setDeltaMovement(player.getDeltaMovement().add(look.scale(NTConfig.waveJetThrust)));
 
-        // Prone, like a swimmer, rather than upright and dragging a jet along
         player.setSwimming(true);
         player.setPose(Pose.SWIMMING);
 
@@ -103,7 +106,15 @@ public class WaveJetItem extends Item implements IPowerItem {
         if (entity instanceof Player player && !player.isInWater()) {
             player.setSwimming(false);
         }
+        playAt(level, entity, NTSounds.WAVE_JET_STOP.get(), 0.5f, 1.4f);
         return false;
+    }
+
+    private static void playAt(Level level, LivingEntity entity, SoundEvent sound, float volume, float pitch) {
+        if (level.isClientSide()) {
+            return;
+        }
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, volume, pitch);
     }
 
     private static boolean hasCharge(ItemStack stack, Player player) {

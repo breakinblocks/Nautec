@@ -47,10 +47,6 @@ public final class SubmarineHudOverlay {
         drawControls(guiGraphics, x, y + PANEL_H + 3);
     }
 
-    /**
-     * A quiet reminder of the controls under the gauges. Piloting is not a vanilla scheme, so leaving
-     * players to guess at it was the wrong call.
-     */
     private static void drawControls(GuiGraphicsExtractor guiGraphics, int x, int y) {
         Minecraft minecraft = Minecraft.getInstance();
         String[] lines = {

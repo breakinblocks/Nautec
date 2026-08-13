@@ -26,11 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Emits one bacteria and its two recipes per modded material, each gated on the mods known to
- * provide that material. The produced item is a tag rather than a concrete item, so a single
- * definition covers every mod that supplies it.
- */
 public class BacteriaMaterialProvider implements DataProvider {
     private enum Kind {
         METAL("ingots"),

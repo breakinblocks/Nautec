@@ -2,10 +2,6 @@ package com.breakinblocks.nautec.data.generated;
 
 import java.util.List;
 
-/**
- * The material bacteria Nautec ships as datapack files. Kept here so the upgrade cleanup knows which
- * names it may remove from the generated pack without touching anything a packdev made.
- */
 public final class BacteriaMaterials {
     public static final List<String> SHIPPED_NAMES = List.of(
             "stannophiles",

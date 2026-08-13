@@ -92,7 +92,6 @@ public final class NTBlocks {
     public static final DeferredBlock<ResonanceChamberBlock> RESONANCE_CHAMBER = registerBlockAndItem("resonance_chamber", ResonanceChamberBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(3.0f).noOcclusion());
 
-    // Beam optics
     public static final DeferredBlock<PrismaticMirrorBlock> PRISMATIC_MIRROR = registerBlockAndItem("prismatic_mirror", PrismaticMirrorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());
     public static final DeferredBlock<BeamSplitterBlock> BEAM_SPLITTER = registerBlockAndItem("beam_splitter", BeamSplitterBlock::new,
@@ -144,7 +143,6 @@ public final class NTBlocks {
     public static final DeferredBlock<EnergyConverterBlock> ENERGY_CONVERTER = registerBlockAndItem("energy_converter", EnergyConverterBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), false, true);
 
-    // BUDDING PRISMARINE
     public static final DeferredBlock<BuddingPrismarineBlock> BUDDING_PRISMARINE = registerBlockAndItem("budding_prismarine", BuddingPrismarineBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).randomTicks().strength(1.5f).requiresCorrectToolForDrops());
     public static final DeferredBlock<AmethystClusterBlock> SMALL_PRISMARINE_BUD = registerBlockAndItem("small_prismarine_bud",
@@ -156,7 +154,6 @@ public final class NTBlocks {
     public static final DeferredBlock<AmethystClusterBlock> PRISMARINE_CLUSTER = registerBlockAndItem("prismarine_cluster",
             props -> new AmethystClusterBlock(7.0f, 3.0f, props), prismarineBudProperties(9));
 
-    // FLORA
     public static final DeferredBlock<DeepKelpBlock> DEEP_KELP = registerBlockAndItem("deep_kelp", DeepKelpBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.KELP));
     public static final DeferredBlock<DeepKelpPlantBlock> DEEP_KELP_PLANT = BLOCKS.registerBlock("deep_kelp_plant", DeepKelpPlantBlock::new,

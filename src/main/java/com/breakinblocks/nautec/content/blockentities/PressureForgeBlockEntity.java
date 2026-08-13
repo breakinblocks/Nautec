@@ -8,6 +8,8 @@ import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -27,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class PressureForgeBlockEntity extends LaserBlockEntity {
+    private static final int WORK_PERIOD = 40;
+
     private int progress;
 
     public PressureForgeBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -40,10 +44,6 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         return progress;
     }
 
-    /**
-     * Depth alone is not enough. The forge wants real water overhead, so a dry shaft dug to bedrock
-     * will not run one.
-     */
     public static boolean hasPressure(Level level, BlockPos pos) {
         if (pos.getY() > NTConfig.pressureForgeDepth) {
             return false;
@@ -80,6 +80,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
 
         if (this.progress < recipe.duration()) {
             this.progress++;
+            MachineSounds.interval(serverLevel, worldPosition, NTSounds.PRESSURE_FORGE_WORK, WORK_PERIOD, 0.5f, 0.7f);
             return;
         }
 
@@ -96,6 +97,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         getItemStackHandler().extractItem(0, 1, false);
         getItemStackHandler().insertItem(1, result, false);
         getFluidTank().drain(NTConfig.pressureForgeAcidUsage, IFluidHandler.FluidAction.EXECUTE);
+        MachineSounds.play(level, worldPosition, NTSounds.PRESSURE_FORGE_COMPLETE, 0.8f, 0.9f);
     }
 
     private @Nullable PressureForgingRecipe currentRecipe(ServerLevel level) {

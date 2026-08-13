@@ -63,17 +63,14 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<ConfiguredFeature<?, ?>> PRISMARINE_SAND_OCEAN_KEY = registerConfigKey("prismarine_sand_ocean");
     public static final ResourceKey<PlacedFeature> PRISMARINE_SAND_OCEAN_PLACE_KEY = registerPlaceKey("prismarine_sand_ocean");
 
-    // Hydrothermal Vents floor
     public static final ResourceKey<ConfiguredFeature<?, ?>> VENT_BASALT_KEY = registerConfigKey("vent_basalt");
     public static final ResourceKey<PlacedFeature> VENT_BASALT_PLACE_KEY = registerPlaceKey("vent_basalt");
     public static final ResourceKey<ConfiguredFeature<?, ?>> VENT_MAGMA_KEY = registerConfigKey("vent_magma");
     public static final ResourceKey<PlacedFeature> VENT_MAGMA_PLACE_KEY = registerPlaceKey("vent_magma");
 
-    // Prismarine Reef outcrops
     public static final ResourceKey<ConfiguredFeature<?, ?>> REEF_PRISMARINE_KEY = registerConfigKey("reef_prismarine");
     public static final ResourceKey<PlacedFeature> REEF_PRISMARINE_PLACE_KEY = registerPlaceKey("reef_prismarine");
 
-    // Flora
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEEP_KELP_KEY = registerConfigKey("deep_kelp");
     public static final ResourceKey<PlacedFeature> DEEP_KELP_PLACE_KEY = registerPlaceKey("deep_kelp");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LUMINESCENT_ALGAE_KEY = registerConfigKey("luminescent_algae");
@@ -87,7 +84,6 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<ConfiguredFeature<?, ?>> GLOW_POLYP_KEY = registerConfigKey("glow_polyp");
     public static final ResourceKey<PlacedFeature> GLOW_POLYP_PLACE_KEY = registerPlaceKey("glow_polyp");
 
-    // Budding Prismarine
     public static final ResourceKey<ConfiguredFeature<?, ?>> BUDDING_PRISMARINE_KEY = registerConfigKey("budding_prismarine");
     public static final ResourceKey<PlacedFeature> BUDDING_PRISMARINE_PLACE_KEY = registerPlaceKey("budding_prismarine");
 

@@ -23,6 +23,12 @@
   under water and it drags you along wherever you are looking, both hands on the grips
   and flat out like a swimmer. It runs dry or breaks the surface and you simply let go.
   Charge it in a Charger like anything else.
+- Sound for the machines that had none. Gateways hum while idle and answer with a low
+  note when their address pairs with nothing; the Resonance Chamber's tone climbs as it
+  charges, chimes on a craft and cracks when it overloads; the Pressure Forge works and
+  finishes audibly; the dock clamps and releases; optics carry a faint hum while a beam
+  is passing through them; a Bacterial Fuel Cell bubbles as it burns. The Wave Jet spins
+  up, drives on a loop that follows its rider and tracks their speed, and winds down.
 - Now requires **GeckoLib** 5.5.2 or newer.
 - Four new ocean biomes, added to the world's biome layout without replacing
   any vanilla ocean outright:

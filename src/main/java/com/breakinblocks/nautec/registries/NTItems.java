@@ -101,7 +101,6 @@ public final class NTItems {
     public static final DeferredItem<RobotArmItem> CLAW_ROBOT_ARM = registerItem("claw_robot_arm",
             RobotArmItem::new, new Item.Properties());
 
-    // OCEAN LIFE
     public static final DeferredItem<Item> LUMINOUS_MEMBRANE = registerItem("luminous_membrane",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> CHITIN_PLATE = registerItem("chitin_plate",
@@ -120,7 +119,6 @@ public final class NTItems {
     public static final DeferredItem<NautecFishingRodItem> NAUTEC_FISHING_ROD = registerItem("nautec_fishing_rod",
             NautecFishingRodItem::new, new Item.Properties().durability(128));
 
-    // SPAWN EGGS
     public static final DeferredItem<Item> SILT_SKIPPER_SPAWN_EGG = registerItem("silt_skipper_spawn_egg",
             Item::new, () -> new Item.Properties().spawnEgg(NTEntities.SILT_SKIPPER.get()));
     public static final DeferredItem<Item> LANTERN_JELLY_SPAWN_EGG = registerItem("lantern_jelly_spawn_egg",
@@ -130,7 +128,6 @@ public final class NTItems {
     public static final DeferredItem<Item> ABYSSAL_MAW_SPAWN_EGG = registerItem("abyssal_maw_spawn_egg",
             Item::new, () -> new Item.Properties().spawnEgg(NTEntities.ABYSSAL_MAW.get()));
 
-    // AUGMENT PARTS
     public static final DeferredItem<Item> HYDRAULIC_LEG = registerItem("hydraulic_leg",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SERVO_KNEE = registerItem("servo_knee",
@@ -196,11 +193,9 @@ public final class NTItems {
     public static final DeferredItem<AquarinePickaxeItem> AQUARINE_PICKAXE = registerItem("aquarine_steel_pickaxe", AquarinePickaxeItem::new, new Item.Properties());
     public static final DeferredItem<AquarineShovelItem> AQUARINE_SHOVEL = registerItem("aquarine_steel_shovel", AquarineShovelItem::new, new Item.Properties());
 
-    // VEHICLES
     public static final DeferredItem<SubmarineItem> SUBMARINE = registerItem("submarine",
             SubmarineItem::new, Item.Properties::new);
 
-    // SUBMARINE MODULES
     public static final DeferredItem<SubmarineModuleItem> SOLAR_MODULE = moduleItem(SubmarineModuleType.SOLAR);
     public static final DeferredItem<SubmarineModuleItem> BOOSTER_MODULE = moduleItem(SubmarineModuleType.BOOSTER);
     public static final DeferredItem<SubmarineModuleItem> STEALTH_MODULE = moduleItem(SubmarineModuleType.STEALTH);

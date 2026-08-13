@@ -5,6 +5,8 @@ import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class BacterialFuelCellBlockEntity extends LaserBlockEntity {
+    private static final int BURN_PERIOD = 70;
+
     private float burnBuffer;
 
     public BacterialFuelCellBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -51,6 +55,7 @@ public class BacterialFuelCellBlockEntity extends LaserBlockEntity {
 
         if (!level.isClientSide()) {
             burn(bacteria);
+            MachineSounds.interval(level, worldPosition, NTSounds.FUEL_CELL_BURN, BURN_PERIOD, 0.4f, 0.8f);
         }
     }
 

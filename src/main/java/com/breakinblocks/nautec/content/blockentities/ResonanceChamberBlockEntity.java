@@ -6,6 +6,8 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ResonanceRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -27,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ResonanceChamberBlockEntity extends LaserBlockEntity {
+    private static final int CHARGE_PERIOD = 30;
+
     private float charge;
     private int ventCooldown;
 
@@ -86,8 +90,12 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
             return;
         }
 
+        MachineSounds.interval(level, worldPosition, NTSounds.RESONANCE_CHARGE, CHARGE_PERIOD,
+                0.4f, 0.8f + Math.min(1f, getChargeFraction()) * 0.7f);
+
         if (isCritical() && tryCraft()) {
             this.charge = 0;
+            MachineSounds.play(level, worldPosition, NTSounds.RESONANCE_CRAFT, 0.9f, 1.0f);
             return;
         }
 
@@ -135,6 +143,8 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         if (level.isClientSide()) {
             return;
         }
+
+        MachineSounds.play(level, worldPosition, NTSounds.RESONANCE_VENT, 1.0f, 0.9f);
 
         double radius = NTConfig.resonanceVentRadius;
         AABB box = new AABB(worldPosition).inflate(radius);
