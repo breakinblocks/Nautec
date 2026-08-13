@@ -114,6 +114,9 @@ public final class NTItems {
             props -> new MobBucketItem(NTEntities.SILT_SKIPPER.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, props),
             new Item.Properties().stacksTo(1));
 
+    public static final DeferredItem<WaveJetItem> WAVE_JET = registerItem("wave_jet",
+            WaveJetItem::new, new Item.Properties().stacksTo(1));
+
     public static final DeferredItem<NautecFishingRodItem> NAUTEC_FISHING_ROD = registerItem("nautec_fishing_rod",
             NautecFishingRodItem::new, new Item.Properties().durability(128));
 
