@@ -16,11 +16,6 @@ public final class GeneratedPackEvents {
     private GeneratedPackEvents() {
     }
 
-    /**
-     * Material bacteria used to be written into the generated pack at runtime. They ship as ordinary
-     * datapack files now, so anything the old preset pass left behind is a duplicate and gets cleared
-     * out once. Only files matching a name we ship are touched, so hand written content is left alone.
-     */
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         List<String> removed = new ArrayList<>();

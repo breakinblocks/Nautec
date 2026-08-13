@@ -69,9 +69,6 @@ public class GatewayIndex extends SavedData {
         return entry == null ? null : entry.address();
     }
 
-    /**
-     * Finds the closest other gateway sharing an address, dropping any entry whose block is gone.
-     */
     public @Nullable BlockPos findNearest(ServerLevel level, BlockPos from, GatewayAddress address) {
         List<BlockPos> stale = new ArrayList<>();
         BlockPos best = null;

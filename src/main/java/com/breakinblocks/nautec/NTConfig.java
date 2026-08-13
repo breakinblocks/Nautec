@@ -291,7 +291,6 @@ public final class NTConfig {
             .comment("Fraction of the hull restored by each repair item used in an anvil")
             .defineInRange("submarineRepairPercent", 0.20, 0.01, 1.0);
 
-    // Submarine modules
     private static final ModConfigSpec.DoubleValue SUBMARINE_SOLAR_PERCENT = BUILDER
             .comment("Percent of the submarine's power capacity the Solar Module collects every 5 seconds in open sunlit water")
             .defineInRange("submarineSolarPercentPer5s", 1.0, 0.0, 100.0);
@@ -371,7 +370,6 @@ public final class NTConfig {
             .comment("Armor toughness of the hull while an Armor Module is installed. Netherite armor is 12")
             .defineInRange("submarineArmorModuleToughness", 12.0, 0.0, 20.0);
 
-    // Lucky fishing zones
     private static final ModConfigSpec.BooleanValue LUCKY_ZONES_ENABLED = BUILDER
             .comment("Whether lucky fishing zones appear on the water around players")
             .define("luckyZonesEnabled", true);
@@ -400,7 +398,6 @@ public final class NTConfig {
             .comment("Whether a lucky fishing zone disappears after one successful catch")
             .define("luckyZoneConsumedOnCatch", true);
 
-    // Worldgen
     private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = BUILDER
             .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
                     "This only applies when Lithostitched is absent. With Lithostitched installed, placement comes from the biome injectors in data/nautec/lithostitched/biome_injector, which a datapack can override or empty out")

@@ -87,5 +87,106 @@
     "sounds": [
       { "name": "minecraft:block.bell.use", "type": "event", "volume": 0.7, "pitch": 0.55 }
     ]
+  },
+  "gateway.ambient": {
+    "subtitle": "subtitles.nautec.gateway.ambient",
+    "sounds": [
+      { "name": "minecraft:block.portal.ambient", "type": "event", "volume": 0.25, "pitch": 0.8 }
+    ]
+  },
+  "gateway.travel": {
+    "subtitle": "subtitles.nautec.gateway.travel",
+    "sounds": [
+      { "name": "minecraft:entity.enderman.teleport", "type": "event", "volume": 0.9, "pitch": 0.8 },
+      { "name": "minecraft:block.beacon.power_select", "type": "event", "volume": 0.5, "pitch": 1.4 }
+    ]
+  },
+  "gateway.recode": {
+    "subtitle": "subtitles.nautec.gateway.recode",
+    "sounds": [
+      { "name": "minecraft:block.amethyst_block.chime", "type": "event", "volume": 0.8, "pitch": 1.2 }
+    ]
+  },
+  "gateway.unlinked": {
+    "subtitle": "subtitles.nautec.gateway.unlinked",
+    "sounds": [
+      { "name": "minecraft:block.note_block.didgeridoo", "type": "event", "volume": 0.5, "pitch": 0.6 }
+    ]
+  },
+  "resonance.charge": {
+    "subtitle": "subtitles.nautec.resonance.charge",
+    "sounds": [
+      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.4, "pitch": 1.0 }
+    ]
+  },
+  "resonance.craft": {
+    "subtitle": "subtitles.nautec.resonance.craft",
+    "sounds": [
+      { "name": "minecraft:block.amethyst_cluster.place", "type": "event", "volume": 0.9, "pitch": 1.3 },
+      { "name": "minecraft:block.beacon.activate", "type": "event", "volume": 0.4, "pitch": 1.5 }
+    ]
+  },
+  "resonance.vent": {
+    "subtitle": "subtitles.nautec.resonance.vent",
+    "sounds": [
+      { "name": "minecraft:entity.wind_charge.wind_burst", "type": "event", "volume": 1.0, "pitch": 0.6 },
+      { "name": "minecraft:block.conduit.deactivate", "type": "event", "volume": 0.7, "pitch": 0.6 }
+    ]
+  },
+  "pressure_forge.work": {
+    "subtitle": "subtitles.nautec.pressure_forge.work",
+    "sounds": [
+      { "name": "minecraft:block.blastfurnace.fire_crackle", "type": "event", "volume": 0.45, "pitch": 0.7 }
+    ]
+  },
+  "pressure_forge.complete": {
+    "subtitle": "subtitles.nautec.pressure_forge.complete",
+    "sounds": [
+      { "name": "minecraft:block.anvil.use", "type": "event", "volume": 0.7, "pitch": 0.9 },
+      { "name": "minecraft:block.smithing_table.use", "type": "event", "volume": 0.6, "pitch": 0.8 }
+    ]
+  },
+  "dock.clamp": {
+    "subtitle": "subtitles.nautec.dock.clamp",
+    "sounds": [
+      { "name": "minecraft:block.piston.contract", "type": "event", "volume": 0.8, "pitch": 0.7 },
+      { "name": "minecraft:block.iron_door.close", "type": "event", "volume": 0.4, "pitch": 0.8 }
+    ]
+  },
+  "dock.release": {
+    "subtitle": "subtitles.nautec.dock.release",
+    "sounds": [
+      { "name": "minecraft:block.piston.extend", "type": "event", "volume": 0.8, "pitch": 0.8 }
+    ]
+  },
+  "optics.hum": {
+    "subtitle": "subtitles.nautec.optics.hum",
+    "sounds": [
+      { "name": "minecraft:block.beacon.ambient", "type": "event", "volume": 0.15, "pitch": 1.5 }
+    ]
+  },
+  "fuel_cell.burn": {
+    "subtitle": "subtitles.nautec.fuel_cell.burn",
+    "sounds": [
+      { "name": "minecraft:block.brewing_stand.brew", "type": "event", "volume": 0.35, "pitch": 0.8 }
+    ]
+  },
+  "wave_jet.start": {
+    "subtitle": "subtitles.nautec.wave_jet.start",
+    "sounds": [
+      { "name": "minecraft:item.trident.riptide_1", "type": "event", "volume": 0.6, "pitch": 1.3 }
+    ]
+  },
+  "wave_jet.loop": {
+    "subtitle": "subtitles.nautec.wave_jet.loop",
+    "sounds": [
+      { "name": "minecraft:entity.minecart.riding", "type": "event", "volume": 0.5, "pitch": 1.5 }
+    ]
+  },
+  "wave_jet.stop": {
+    "subtitle": "subtitles.nautec.wave_jet.stop",
+    "sounds": [
+      { "name": "minecraft:item.trident.return", "type": "event", "volume": 0.5, "pitch": 1.4 }
+    ]
   }
 }

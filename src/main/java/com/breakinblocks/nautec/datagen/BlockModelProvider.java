@@ -72,14 +72,12 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.AQUARINE_STEEL_BLOCK.get());
         simpleBlock(NTBlocks.CAST_IRON_BLOCK.get());
 
-        // Budding Prismarine
         simpleBlock(NTBlocks.BUDDING_PRISMARINE.get());
         prismarineBud(NTBlocks.SMALL_PRISMARINE_BUD.get());
         prismarineBud(NTBlocks.MEDIUM_PRISMARINE_BUD.get());
         prismarineBud(NTBlocks.LARGE_PRISMARINE_BUD.get());
         prismarineBud(NTBlocks.PRISMARINE_CLUSTER.get());
 
-        // Flora
         blockModels.createGrowingPlant(NTBlocks.DEEP_KELP.get(), NTBlocks.DEEP_KELP_PLANT.get(), BlockModelGenerators.PlantType.NOT_TINTED);
         blockModels.registerSimpleFlatItemModel(NTBlocks.DEEP_KELP.get());
         waterPlant(NTBlocks.LUMINESCENT_ALGAE.get());

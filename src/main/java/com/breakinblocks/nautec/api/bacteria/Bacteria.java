@@ -41,11 +41,6 @@ public interface Bacteria {
         return initialSize().getMax();
     }
 
-    /**
-     * Written as a plain item id, or as "#some:tag" to mean whichever item of that tag happens to be
-     * present. The tag form is resolved on use rather than on load, because tags are not bound yet when
-     * the bacteria registry is read.
-     */
     interface Resource {
         Resource EMPTY = new ItemResource(Items.AIR);
 

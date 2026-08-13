@@ -63,10 +63,6 @@ public abstract class NTJigsawStructure extends Structure {
         this.liquidSettings = liquidSettings;
     }
 
-    /**
-     * Field names here are load-bearing: existing worlds hold these structures serialised with
-     * exactly these keys, so renaming one breaks those saves.
-     */
     protected static <S extends NTJigsawStructure> MapCodec<S> codec(Factory<S> factory) {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 settingsCodec(instance),

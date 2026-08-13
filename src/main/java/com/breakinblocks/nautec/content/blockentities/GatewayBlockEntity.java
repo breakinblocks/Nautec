@@ -6,6 +6,8 @@ import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.utils.MachineSounds;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +28,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class GatewayBlockEntity extends ContainerBlockEntity {
+    private static final int AMBIENT_PERIOD = 120;
+    private static final int UNLINKED_PERIOD = 60;
+
     private GatewayAddress address = GatewayAddress.DEFAULT;
 
     public GatewayBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -64,6 +69,8 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
     public void commonTick() {
         super.commonTick();
 
+        MachineSounds.interval(level, worldPosition, NTSounds.GATEWAY_AMBIENT, AMBIENT_PERIOD, 0.5f, 0.8f);
+
         if (!(level instanceof ServerLevel serverLevel) || level.getGameTime() % 10 != 0) {
             return;
         }
@@ -76,6 +83,9 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
 
         BlockPos target = GatewayIndex.get(serverLevel).findNearest(serverLevel, worldPosition, address);
         if (target == null) {
+            if (serverLevel.getGameTime() % UNLINKED_PERIOD == 0) {
+                MachineSounds.play(serverLevel, worldPosition, NTSounds.GATEWAY_UNLINKED, 0.6f, 0.6f);
+            }
             return;
         }
 
@@ -98,8 +108,12 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
         }
 
         Vec3 destination = Vec3.atBottomCenterOf(target.above());
+        MachineSounds.play(level, worldPosition, NTSounds.GATEWAY_TRAVEL, 0.9f, 0.9f);
+
         root.teleport(new TeleportTransition(level, destination, Vec3.ZERO, root.getYRot(), root.getXRot(),
                 Set.of(), TeleportTransition.DO_NOTHING));
+
+        MachineSounds.play(level, target, NTSounds.GATEWAY_TRAVEL, 0.9f, 1.1f);
 
         for (Entity part : root.getSelfAndPassengers().toList()) {
             part.setPortalCooldown(NTConfig.gatewayCooldown);

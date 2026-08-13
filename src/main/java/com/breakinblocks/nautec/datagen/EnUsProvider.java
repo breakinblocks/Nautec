@@ -91,6 +91,22 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("subtitles.nautec.submarine.module_install", "Module seats home");
         add("subtitles.nautec.submarine.hull_damage", "Hull takes a hit");
         add("subtitles.nautec.submarine.low_power", "Power reserve warning");
+        add("subtitles.nautec.gateway.ambient", "Gateway hums");
+        add("subtitles.nautec.gateway.travel", "Gateway swallows");
+        add("subtitles.nautec.gateway.recode", "Gateway address set");
+        add("subtitles.nautec.gateway.unlinked", "Gateway finds no pair");
+        add("subtitles.nautec.resonance.charge", "Resonance Chamber rings");
+        add("subtitles.nautec.resonance.craft", "Resonance settles");
+        add("subtitles.nautec.resonance.vent", "Resonance Chamber vents");
+        add("subtitles.nautec.pressure_forge.work", "Pressure Forge works");
+        add("subtitles.nautec.pressure_forge.complete", "Pressure Forge finishes");
+        add("subtitles.nautec.dock.clamp", "Dock clamps hull");
+        add("subtitles.nautec.dock.release", "Dock releases hull");
+        add("subtitles.nautec.optics.hum", "Optics hum");
+        add("subtitles.nautec.fuel_cell.burn", "Colony feeds the cell");
+        add("subtitles.nautec.wave_jet.start", "Wave Jet spins up");
+        add("subtitles.nautec.wave_jet.loop", "Wave Jet drives");
+        add("subtitles.nautec.wave_jet.stop", "Wave Jet winds down");
         add("key.category.nautec.main", "Nautec");
 
         add("nautec.submarine.module.passive", "Passive, works from any slot");
@@ -299,7 +315,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("augment_type.nautec.magnet", "Magnet");
         add("augment_type.nautec.ender_magnet", "Ender Magnet");
 
-        // Fluid block names (FluidRegistrationHelper registers each fluid as <name>_fluid block)
         addBlock("oil_fluid", "Oil");
         addBlock("saltwater_fluid", "Salt Water");
         addBlock("eas_fluid", "Electrolyte Algae Serum");
@@ -327,7 +342,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         add("block.nautec.brown_polymer_block", "Brown Polymer Block");
 
-        // Jade plugin config entries
         add("config.jade.plugin_nautec.mixer", "Mixer");
         add("config.jade.plugin_nautec.aquatic_catalyst", "Aquatic Catalyst");
         add("config.jade.plugin_nautec.laser_junction", "Laser Junction");

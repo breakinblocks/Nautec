@@ -379,10 +379,6 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         shoveAside();
     }
 
-    /**
-     * The hull only collides with blocks, so anything soft enough to swim into gets pushed out of the
-     * way rather than stopping several tonnes of submersible.
-     */
     private void shoveAside() {
         if (level().isClientSide()) {
             return;
@@ -638,10 +634,6 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         return player.startRiding(this) ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    /**
-     * Deliberately not a MenuProvider. Entity.getDisplayName is what the renderer puts on a name tag,
-     * so using it for the module screen's title made every submersible wear one.
-     */
     private MenuProvider moduleMenu() {
         return new SimpleMenuProvider(
                 (containerId, inventory, player) -> new SubmarineModuleMenu(containerId, inventory, this),
