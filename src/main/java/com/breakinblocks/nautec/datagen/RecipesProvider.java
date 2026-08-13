@@ -42,6 +42,7 @@ public class RecipesProvider extends RecipeProvider {
         gatewayRecipes(pRecipeOutput);
         pressureForgeRecipes(pRecipeOutput);
         dockRecipes(pRecipeOutput);
+        waveJetRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -187,6 +188,18 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(2.0f)
                 .duration(80)
                 .save(pRecipeOutput, key("aquarine_steel_ingot_dense"));
+    }
+
+    private void waveJetRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.TRANSPORTATION, NTItems.WAVE_JET.get())
+                .pattern(" AC")
+                .pattern("ABA")
+                .pattern(" A ")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('B', NTItems.PRISMATIC_BATTERY)
+                .define('C', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.PRISMATIC_BATTERY))
+                .save(pRecipeOutput, key("wave_jet"));
     }
 
     private void dockRecipes(@NotNull RecipeOutput pRecipeOutput) {

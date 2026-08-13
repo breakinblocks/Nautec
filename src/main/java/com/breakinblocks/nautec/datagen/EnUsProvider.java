@@ -41,6 +41,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("augment_type.nautec.photophore_skin", "Photophore Skin");
         add("augment_type.nautec.vent_carapace", "Vent Carapace");
 
+        addItem(WAVE_JET, "Wave Jet");
+        add("nautec.wave_jet.needs_water", "The Wave Jet only bites under water");
         addItem(NAUTEC_FISHING_ROD, "Prismatic Fishing Rod");
         add("nautec.fishing_minigame.timing_bar", "Something is biting");
         add("nautec.fishing_minigame.rhythm", "It is fighting you");

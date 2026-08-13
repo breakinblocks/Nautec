@@ -216,6 +216,14 @@ public final class NTConfig {
             .comment("The Etching Acid capacity of an Abyssal Pressure Forge")
             .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.DoubleValue WAVE_JET_THRUST = BUILDER
+            .comment("Thrust the Wave Jet adds each tick while held under water")
+            .defineInRange("waveJetThrust", 0.035, 0.001, 1.0);
+
+    private static final ModConfigSpec.IntValue WAVE_JET_POWER_USAGE = BUILDER
+            .comment("The amount of power the Wave Jet uses each tick while running")
+            .defineInRange("waveJetPowerUsage", 2, 0, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue DOCK_POWER_USAGE = BUILDER
             .comment("The amount of power a Sea Scout Dock requires before it will service a hull")
             .defineInRange("dockPowerUsage", 20, 0, Integer.MAX_VALUE);
@@ -466,6 +474,8 @@ public final class NTConfig {
     public static double resonanceVentRadius = 4.0;
     public static double resonanceVentDamage = 8.0;
     public static int gatewayCooldown = 100;
+    public static double waveJetThrust = 0.035;
+    public static int waveJetPowerUsage = 2;
     public static int dockPowerUsage = 20;
     public static int dockChargeRate = 40;
     public static int pressureForgeDepth = 0;
@@ -607,6 +617,8 @@ public final class NTConfig {
         resonanceVentRadius = RESONANCE_VENT_RADIUS.getAsDouble();
         resonanceVentDamage = RESONANCE_VENT_DAMAGE.getAsDouble();
         gatewayCooldown = GATEWAY_COOLDOWN.get();
+        waveJetThrust = WAVE_JET_THRUST.getAsDouble();
+        waveJetPowerUsage = WAVE_JET_POWER_USAGE.get();
         dockPowerUsage = DOCK_POWER_USAGE.get();
         dockChargeRate = DOCK_CHARGE_RATE.get();
         pressureForgeDepth = PRESSURE_FORGE_DEPTH.get();

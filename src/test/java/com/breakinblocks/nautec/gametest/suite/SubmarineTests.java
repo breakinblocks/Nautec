@@ -19,6 +19,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMobEffects;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.core.BlockPos;
 import java.util.Set;
 import net.minecraft.world.level.block.Blocks;
@@ -99,6 +100,23 @@ public final class SubmarineTests {
             List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
                     new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
             helper.assertTrue(launched.isEmpty(), "a submersible was launched onto dry land");
+            helper.succeed();
+        }));
+
+        r.add("wave_jet/only_runs_under_water_with_charge", 60, helper -> helper.runAfterDelay(1, () -> {
+            ItemStack jet = new ItemStack(NTItems.WAVE_JET.get());
+            IPowerStorage storage = jet.getCapability(NTCapabilities.PowerStorage.ITEM);
+            if (storage == null) {
+                helper.fail("The Wave Jet should expose the item power capability so it charges in a Charger");
+                return;
+            }
+
+            helper.assertValueEqual(0, storage.getPowerStored(), "a fresh Wave Jet starts empty");
+            storage.setPowerStored(storage.getPowerCapacity());
+            helper.assertTrue(storage.getPowerStored() > 0, "the Wave Jet should hold a charge");
+
+            helper.assertValueEqual(ItemUseAnimation.SPEAR, NTItems.WAVE_JET.get().getUseAnimation(jet),
+                    "the two handed pose is what makes it read as gripped rather than waved about");
             helper.succeed();
         }));
 

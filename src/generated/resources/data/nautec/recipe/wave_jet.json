@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:laser_channeling_coil"
+  },
+  "pattern": [
+    " AC",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "id": "nautec:wave_jet"
+  }
+}

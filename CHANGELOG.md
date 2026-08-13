@@ -19,6 +19,10 @@
   in tight caverns. It only collides with the world: fish and other creatures
   get shoved aside rather than bringing several tonnes of hull to a dead stop.
 - Creative pilots use no power.
+- The **Wave Jet**, a handheld thruster. Hold it in your main hand and hold use while
+  under water and it drags you along wherever you are looking, both hands on the grips
+  and flat out like a swimmer. It runs dry or breaks the surface and you simply let go.
+  Charge it in a Charger like anything else.
 - Now requires **GeckoLib** 5.5.2 or newer.
 - Four new ocean biomes, added to the world's biome layout without replacing
   any vanilla ocean outright:
