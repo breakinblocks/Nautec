@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:deep_engineering",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.deep_engineering.resonance_chamber.description",
+  "icon": {
+    "id": "nautec:resonance_chamber"
+  },
+  "id": "nautec:deep_engineering/resonance_chamber",
+  "name": "book.nautec.nautec_guide.deep_engineering.resonance_chamber.name",
+  "parents": [
+    {
+      "entry": "nautec:deep_engineering/beam_optics"
+    }
+  ],
+  "sort_number": 1,
+  "x": 2,
+  "y": 0
+}

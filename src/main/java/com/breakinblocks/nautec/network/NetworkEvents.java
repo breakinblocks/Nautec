@@ -49,6 +49,16 @@ public class NetworkEvents {
                 FishingMinigameResultPayload.STREAM_CODEC,
                 FishingMinigameResultPayload::handle
         );
+        registrar.playToClient(
+                OpenGatewayScreenPayload.TYPE,
+                OpenGatewayScreenPayload.STREAM_CODEC,
+                OpenGatewayScreenPayload::handle
+        );
+        registrar.playToServer(
+                SetGatewayAddressPayload.TYPE,
+                SetGatewayAddressPayload.STREAM_CODEC,
+                SetGatewayAddressPayload::handle
+        );
         registrar.playToServer(
                 SubmarineAbilityPayload.TYPE,
                 SubmarineAbilityPayload.STREAM_CODEC,

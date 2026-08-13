@@ -6,10 +6,12 @@ import com.breakinblocks.nautec.api.blocks.DisplayBlock;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.network.OpenGatewayScreenPayload;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
 import com.mojang.serialization.MapCodec;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -107,10 +109,8 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock {
         if (!(level.getBlockEntity(pos) instanceof GatewayBlockEntity gateway)) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide()) {
-            if (player instanceof ServerPlayer serverPlayer) {
-                serverPlayer.sendSystemMessage(gateway.getAddress().describe(), true);
-            }
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new OpenGatewayScreenPayload(pos, gateway.getAddress()));
         }
         return InteractionResult.SUCCESS;
     }

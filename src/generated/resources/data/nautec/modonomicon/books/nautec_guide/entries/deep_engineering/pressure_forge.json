@@ -1,0 +1,26 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "nautec:deep_engineering",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.nautec.nautec_guide.deep_engineering.pressure_forge.description",
+  "icon": {
+    "id": "nautec:pressure_forge"
+  },
+  "id": "nautec:deep_engineering/pressure_forge",
+  "name": "book.nautec.nautec_guide.deep_engineering.pressure_forge.name",
+  "parents": [
+    {
+      "entry": "nautec:deep_engineering/resonance_chamber"
+    }
+  ],
+  "sort_number": 3,
+  "x": 4,
+  "y": 2
+}

@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:spotlight",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "splitter",
+  "item": {
+    "id": "nautec:beam_splitter"
+  },
+  "sort_number": 4,
+  "text": "book.nautec.nautec_guide.deep_engineering.beam_optics.splitter.text",
+  "title": "book.nautec.nautec_guide.deep_engineering.beam_optics.splitter.title"
+}

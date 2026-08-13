@@ -5,6 +5,8 @@ import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemRenderer;
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
+import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
+import com.breakinblocks.nautec.client.teleport.TeleportStreakRenderer;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
@@ -117,8 +119,8 @@ public final class NautecClient {
         event.registerAboveAll(Nautec.rl("diving_suit_overlay"), DivingSuitOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_power_overlay"), SubmarineHudOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_ability_bar"), SubmarineAbilityBarOverlay::render);
-        event.registerAboveAll(Nautec.rl("submarine_teleport_fade"),
-                com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer::render);
+        event.registerAboveAll(Nautec.rl("submarine_teleport_streaks"), TeleportStreakRenderer::render);
+        event.registerAboveAll(Nautec.rl("submarine_teleport_fade"), TeleportFadeRenderer::render);
     }
 
     private void registerClientExtensions(RegisterClientExtensionsEvent event) {

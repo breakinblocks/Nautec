@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.blockentities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
+import com.breakinblocks.nautec.api.gateways.GatewayEffects;
 import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -30,6 +31,7 @@ import java.util.Set;
 public class GatewayBlockEntity extends ContainerBlockEntity {
     private static final int AMBIENT_PERIOD = 120;
     private static final int UNLINKED_PERIOD = 60;
+    private static final int SWEEP_PERIOD = 3;
 
     private GatewayAddress address = GatewayAddress.DEFAULT;
 
@@ -71,7 +73,15 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
 
         MachineSounds.interval(level, worldPosition, NTSounds.GATEWAY_AMBIENT, AMBIENT_PERIOD, 0.5f, 0.8f);
 
-        if (!(level instanceof ServerLevel serverLevel) || level.getGameTime() % 10 != 0) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        if (serverLevel.getGameTime() % SWEEP_PERIOD == 0) {
+            GatewayEffects.sweep(serverLevel, worldPosition);
+        }
+
+        if (serverLevel.getGameTime() % 10 != 0) {
             return;
         }
 
@@ -85,6 +95,7 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
         if (target == null) {
             if (serverLevel.getGameTime() % UNLINKED_PERIOD == 0) {
                 MachineSounds.play(serverLevel, worldPosition, NTSounds.GATEWAY_UNLINKED, 0.6f, 0.6f);
+                GatewayEffects.unlinked(serverLevel, worldPosition);
             }
             return;
         }
@@ -109,11 +120,13 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
 
         Vec3 destination = Vec3.atBottomCenterOf(target.above());
         MachineSounds.play(level, worldPosition, NTSounds.GATEWAY_TRAVEL, 0.9f, 0.9f);
+        GatewayEffects.travel(level, worldPosition);
 
         root.teleport(new TeleportTransition(level, destination, Vec3.ZERO, root.getYRot(), root.getXRot(),
                 Set.of(), TeleportTransition.DO_NOTHING));
 
         MachineSounds.play(level, target, NTSounds.GATEWAY_TRAVEL, 0.9f, 1.1f);
+        GatewayEffects.travel(level, target);
 
         for (Entity part : root.getSelfAndPassengers().toList()) {
             part.setPortalCooldown(NTConfig.gatewayCooldown);
