@@ -34,7 +34,7 @@ public final class SubmarineAbilityBarOverlay {
             return;
         }
 
-        if (!(minecraft.player.getVehicle() instanceof SubmarineEntity submarine)) {
+        if (!(minecraft.player.getControlledVehicle() instanceof SubmarineEntity submarine)) {
             return;
         }
 

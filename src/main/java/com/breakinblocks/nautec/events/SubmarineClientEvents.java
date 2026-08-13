@@ -10,7 +10,11 @@ import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -18,6 +22,7 @@ import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
@@ -43,7 +48,7 @@ public final class SubmarineClientEvents {
         }
 
         submarine.setInput(player.input.keyPresses);
-        submarine.setSteering(minecraft.options.keyUse.isDown());
+        submarine.setFreeLook(minecraft.options.keyUse.isDown());
         submarine.setDescending(NTKeybinds.SUBMARINE_DESCEND_KEYBIND.get().isDown());
 
         SubmarineAbilityBarState.follow(submarine.getId());
@@ -109,16 +114,37 @@ public final class SubmarineClientEvents {
     @SubscribeEvent
     public static void onRenderGuiLayer(RenderGuiLayerEvent.Pre event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !(player.getVehicle() instanceof SubmarineEntity)) {
+        if (player == null || !(player.getControlledVehicle() instanceof SubmarineEntity)) {
             return;
         }
 
         Identifier layer = event.getName();
         if (layer.equals(VanillaGuiLayers.HOTBAR)
                 || layer.equals(VanillaGuiLayers.SELECTED_ITEM_NAME)
-                || layer.equals(VanillaGuiLayers.EXPERIENCE_LEVEL)) {
+                || layer.equals(VanillaGuiLayers.EXPERIENCE_LEVEL)
+                || layer.equals(VanillaGuiLayers.VEHICLE_HEALTH)) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onRenderPlayer(RenderPlayerEvent.Pre<?> event) {
+        Level level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+
+        AvatarRenderState state = event.getRenderState();
+        if (!(level.getEntity(state.id) instanceof Player player)
+                || !(player.getVehicle() instanceof SubmarineEntity submarine)
+                || submarine.getControllingPassenger() != player) {
+            return;
+        }
+
+        float yaw = Mth.rotLerp(event.getPartialTick(), submarine.yRotO, submarine.getYRot());
+        state.bodyRot = yaw;
+        state.yRot = yaw;
+        state.xRot = Mth.lerp(event.getPartialTick(), submarine.xRotO, submarine.getXRot());
     }
 
     @SubscribeEvent

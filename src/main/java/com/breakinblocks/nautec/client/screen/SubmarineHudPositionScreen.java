@@ -39,7 +39,7 @@ public class SubmarineHudPositionScreen extends Screen {
         }
 
         long ticks = this.minecraft != null && this.minecraft.level != null ? this.minecraft.level.getGameTime() : 0L;
-        SubmarineHudOverlay.drawGauge(guiGraphics, panelX(), panelY(), power, capacity, health, maxHealth, ticks);
+        SubmarineHudOverlay.drawPanel(guiGraphics, panelX(), panelY(), power, capacity, health, maxHealth, ticks);
 
         guiGraphics.text(this.font, "Drag the readout where you want it", centeredX("Drag the readout where you want it"), 20, 0xFFF0F4F5, true);
         guiGraphics.text(this.font, "ESC or Ctrl+H to save", centeredX("ESC or Ctrl+H to save"), 32, 0xFF3EFDFF, true);
@@ -62,7 +62,7 @@ public class SubmarineHudPositionScreen extends Screen {
         int x = panelX();
         int y = panelY();
         if (event.x() >= x && event.x() <= x + SubmarineHudOverlay.PANEL_W
-                && event.y() >= y && event.y() <= y + SubmarineHudOverlay.PANEL_H) {
+                && event.y() >= y && event.y() <= y + SubmarineHudOverlay.TOTAL_H) {
             this.dragging = true;
             this.grabOffsetX = event.x() - x;
             this.grabOffsetY = event.y() - y;
@@ -75,7 +75,7 @@ public class SubmarineHudPositionScreen extends Screen {
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if (this.dragging) {
             int spanX = Math.max(1, this.width - SubmarineHudOverlay.PANEL_W);
-            int spanY = Math.max(1, this.height - SubmarineHudOverlay.PANEL_H);
+            int spanY = Math.max(1, this.height - SubmarineHudOverlay.TOTAL_H);
             this.hudX = Mth.clamp((event.x() - this.grabOffsetX) / spanX, 0.0, 1.0);
             this.hudY = Mth.clamp((event.y() - this.grabOffsetY) / spanY, 0.0, 1.0);
             return true;

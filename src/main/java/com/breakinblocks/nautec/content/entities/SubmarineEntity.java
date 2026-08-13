@@ -119,7 +119,6 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final float MAX_PITCH = 75F;
     private static final float PASSENGER_HEAD_YAW = 85F;
     private static final float PITCH_LEVEL_RATE = 6F;
-    private static final float YAW_RATE = 2.5F;
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
     private static final double AGGRO_TRANSFER_RANGE = 32D;
@@ -133,7 +132,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             NTConfig.submarinePowerCapacity, 200, 0);
 
     private Input input = Input.EMPTY;
-    private boolean steering;
+    private boolean freeLook;
     private boolean steeringLast;
     private boolean descending;
     private float lastDriverYaw;
@@ -326,8 +325,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         this.input = input;
     }
 
-    public void setSteering(boolean steering) {
-        this.steering = steering;
+    public void setFreeLook(boolean freeLook) {
+        this.freeLook = freeLook;
     }
 
     public void setDescending(boolean descending) {
@@ -412,11 +411,11 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         Vec3 motion = getDeltaMovement();
 
         if (driver != null) {
-            if (this.steering) {
+            boolean steering = !this.freeLook;
+            if (steering) {
                 aimSteer(driver, submerged);
             }
-            this.steeringLast = this.steering;
-            rudder(driver);
+            this.steeringLast = steering;
             if (!submerged) {
                 levelOut();
             }
@@ -501,23 +500,6 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
         this.lastDriverYaw = getYRot();
         this.lastDriverPitch = getXRot();
-    }
-
-    private void rudder(LivingEntity driver) {
-        float yaw = 0F;
-        if (this.input.left()) {
-            yaw -= YAW_RATE;
-        }
-        if (this.input.right()) {
-            yaw += YAW_RATE;
-        }
-        if (yaw != 0F && !SubmarineCollision.blocked(level(), this, position(), getYRot() + yaw, getXRot())) {
-            setYRot(getYRot() + yaw);
-            driver.setYRot(driver.getYRot() + yaw);
-            if (this.steering) {
-                this.lastDriverYaw = Mth.wrapDegrees(this.lastDriverYaw + yaw);
-            }
-        }
     }
 
     private void seatRotation(Entity passenger) {
@@ -788,7 +770,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         super.removePassenger(passenger);
         if (getPassengers().isEmpty()) {
             this.input = Input.EMPTY;
-            this.steering = false;
+            this.freeLook = false;
             this.descending = false;
         }
     }
