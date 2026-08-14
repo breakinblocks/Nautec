@@ -140,7 +140,7 @@ public final class LuckyFishingZoneEvents {
 
     @SubscribeEvent
     public static void onHookTick(EntityTickEvent.Post event) {
-        if (!NTConfig.luckyZonesEnabled || NTConfig.luckyZoneBiteSpeed <= 1
+        if (!NTConfig.luckyZonesEnabled
                 || !(event.getEntity() instanceof FishingHook hook)
                 || !(hook.level() instanceof ServerLevel level)) {
             return;
@@ -149,7 +149,9 @@ public final class LuckyFishingZoneEvents {
         FishingHookAccessor accessor = (FishingHookAccessor) hook;
         int lured = accessor.nautec$getTimeUntilLured();
         int hooked = accessor.nautec$getTimeUntilHooked();
-        if (lured <= 1 && hooked <= 1) {
+        boolean counting = lured > 1 || hooked > 1;
+        boolean floating = hook.isInWater() && hook.getHookedIn() == null;
+        if (!counting && !floating) {
             return;
         }
 
@@ -157,11 +159,18 @@ public final class LuckyFishingZoneEvents {
             return;
         }
 
-        int extra = NTConfig.luckyZoneBiteSpeed - 1;
-        if (lured > 1) {
-            accessor.nautec$setTimeUntilLured(Math.max(1, lured - extra));
-        } else {
-            accessor.nautec$setTimeUntilHooked(Math.max(1, hooked - extra));
+        if (floating) {
+            hook.setPos(hook.xo, hook.getY(), hook.zo);
+            hook.setDeltaMovement(0.0, hook.getDeltaMovement().y, 0.0);
+        }
+
+        if (counting && NTConfig.luckyZoneBiteSpeed > 1) {
+            int extra = NTConfig.luckyZoneBiteSpeed - 1;
+            if (lured > 1) {
+                accessor.nautec$setTimeUntilLured(Math.max(1, lured - extra));
+            } else {
+                accessor.nautec$setTimeUntilHooked(Math.max(1, hooked - extra));
+            }
         }
     }
 
