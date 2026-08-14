@@ -41,6 +41,11 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
     }
 
     @Override
+    public boolean shouldShowName(SubmarineEntity submarine, double distanceToCameraSq) {
+        return false;
+    }
+
+    @Override
     public RenderType getRenderType(EntityRenderState state, Identifier texture) {
         return RenderTypes.entityTranslucent(texture);
     }

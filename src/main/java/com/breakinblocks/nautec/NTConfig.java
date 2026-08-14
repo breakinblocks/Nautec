@@ -259,10 +259,10 @@ public final class NTConfig {
             .defineInRange("submarineOxygenPowerUsage", 2, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.DoubleValue SUBMARINE_SPEED = BUILDER
             .comment("Thrust applied to the submarine each tick while the throttle is open")
-            .defineInRange("submarineSpeed", 0.045, 0.001, 1.0);
+            .defineInRange("submarineSpeed", 0.056, 0.001, 1.0);
     private static final ModConfigSpec.DoubleValue SUBMARINE_MAX_SPEED = BUILDER
             .comment("Maximum speed of the submarine in blocks per tick. Values above 1.5 risk tripping server movement checks")
-            .defineInRange("submarineMaxSpeed", 0.65, 0.05, 1.5);
+            .defineInRange("submarineMaxSpeed", 0.81, 0.05, 1.5);
     private static final ModConfigSpec.DoubleValue SUBMARINE_CAMERA_DISTANCE = BUILDER
             .comment("Third person camera distance while riding the submarine, in blocks. Vanilla default is 4")
             .defineInRange("submarineCameraDistance", 10.0, 4.0, 32.0);
@@ -390,13 +390,16 @@ public final class NTConfig {
             .defineInRange("luckyZoneLifetimeSeconds", 300, 10, 36000);
     private static final ModConfigSpec.IntValue LUCKY_ZONE_MIN_RADIUS = BUILDER
             .comment("Smallest lucky fishing zone radius. Every block in the radius must be open water")
-            .defineInRange("luckyZoneMinRadius", 1, 1, 8);
+            .defineInRange("luckyZoneMinRadius", 2, 1, 16);
     private static final ModConfigSpec.IntValue LUCKY_ZONE_MAX_RADIUS = BUILDER
             .comment("Largest lucky fishing zone radius. Every block in the radius must be open water")
-            .defineInRange("luckyZoneMaxRadius", 3, 1, 8);
+            .defineInRange("luckyZoneMaxRadius", 6, 1, 16);
     private static final ModConfigSpec.BooleanValue LUCKY_ZONE_CONSUMED = BUILDER
             .comment("Whether a lucky fishing zone disappears after one successful catch")
             .define("luckyZoneConsumedOnCatch", true);
+    private static final ModConfigSpec.IntValue LUCKY_ZONE_BITE_SPEED = BUILDER
+            .comment("How many times faster fish bite while the bobber floats in a lucky fishing zone")
+            .defineInRange("luckyZoneBiteSpeed", 2, 1, 10);
 
     private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = BUILDER
             .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
@@ -490,6 +493,7 @@ public final class NTConfig {
     public static int luckyZoneMinRadius;
     public static int luckyZoneMaxRadius;
     public static boolean luckyZoneConsumedOnCatch;
+    public static int luckyZoneBiteSpeed;
 
     public static int abyssalEyesDepth;
     public static double photophoreSkinRadius;
@@ -498,8 +502,8 @@ public final class NTConfig {
     public static int submarineIdlePowerUsage = 1;
     public static int submarineMovePowerUsage = 6;
     public static int submarineOxygenPowerUsage = 2;
-    public static double submarineSpeed = 0.045;
-    public static double submarineMaxSpeed = 0.65;
+    public static double submarineSpeed = 0.056;
+    public static double submarineMaxSpeed = 0.81;
     public static double submarineCameraDistance = 10.0;
     public static double submarineMaxHealth = 80.0;
     public static double submarineArmor = 20.0;
@@ -633,6 +637,7 @@ public final class NTConfig {
         luckyZoneMinRadius = LUCKY_ZONE_MIN_RADIUS.getAsInt();
         luckyZoneMaxRadius = Math.max(LUCKY_ZONE_MIN_RADIUS.getAsInt(), LUCKY_ZONE_MAX_RADIUS.getAsInt());
         luckyZoneConsumedOnCatch = LUCKY_ZONE_CONSUMED.getAsBoolean();
+        luckyZoneBiteSpeed = LUCKY_ZONE_BITE_SPEED.getAsInt();
 
         abyssalEyesDepth = ABYSSAL_EYES_DEPTH.get();
         photophoreSkinRadius = PHOTOPHORE_SKIN_RADIUS.getAsDouble();

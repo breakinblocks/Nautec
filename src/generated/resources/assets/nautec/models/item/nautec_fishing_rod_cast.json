@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld_rod",
   "textures": {
-    "layer0": "nautec:item/nautec_fishing_rod"
+    "layer0": "nautec:item/nautec_fishing_rod_cast"
   }
 }
