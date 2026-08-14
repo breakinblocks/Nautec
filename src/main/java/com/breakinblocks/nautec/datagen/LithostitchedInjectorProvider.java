@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Climate;
 
 import java.nio.file.Path;
@@ -32,7 +31,7 @@ public class LithostitchedInjectorProvider implements DataProvider {
         int priority = 10;
         for (NTOceanRegion.Slice slice : NTOceanRegion.slices()) {
             String name = slice.biome().identifier().getPath();
-            Path file = path.json(Identifier.fromNamespaceAndPath(Nautec.MODID, name));
+            Path file = path.json(Nautec.rl(name));
             futures.add(DataProvider.saveStable(cache, injector(slice, priority), file));
             priority += 10;
         }

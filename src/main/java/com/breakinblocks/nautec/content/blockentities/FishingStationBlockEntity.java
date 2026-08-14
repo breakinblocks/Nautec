@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class FishingStationBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private static final int RUN_CHECK_INTERVAL_TICKS = 100;
+
     private boolean running;
     private int progress;
 
@@ -101,8 +103,7 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
                 progress++;
             }
 
-            // Check every 5 seconds
-            if (level.getGameTime() % 100 == 0) {
+            if (level.getGameTime() % RUN_CHECK_INTERVAL_TICKS == 0) {
                 running = canRun();
             }
         } else {

@@ -8,7 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-import java.util.List;
 
 public interface BacteriaStats<C extends CollapsedBacteriaStats> {
     Codec<BacteriaStats<?>> CODEC =

@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.breakinblocks.nautec.client.AugmentClientHelper;
 
 public final class AugmentHelper {
     public static Augment getAugmentBySlot(Player player, AugmentSlot augmentSlot) {

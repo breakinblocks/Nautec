@@ -50,10 +50,13 @@ public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity im
 
     private BlockPos controllerPos;
 
+    public static final int AUGMENT_SLOT = 0;
+    public static final int ROBOT_ARM_SLOT = 1;
+
     public AugmentationStationExtensionBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.AUGMENTATION_STATION_EXTENSION.get(), blockPos, blockState);
-        // Augment:0, Robot arm:1
-        addItemHandler(2, 1, (slot, stack) -> (slot == 1 && stack.getItem() instanceof RobotArmItem) || (slot == 0));
+        addItemHandler(2, 1, (slot, stack) -> (slot == ROBOT_ARM_SLOT && stack.getItem() instanceof RobotArmItem)
+                || (slot == AUGMENT_SLOT));
         this.animation = Animation.IDLE;
     }
 
@@ -126,7 +129,7 @@ public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity im
     }
 
     public ItemStack getAugmentItem() {
-        if (getItemStackHandler().getStackInSlot(1).is(NTItems.CLAW_ROBOT_ARM)) {
+        if (getItemStackHandler().getStackInSlot(ROBOT_ARM_SLOT).is(NTItems.CLAW_ROBOT_ARM)) {
             return getItemStackHandler().getStackInSlot(0);
         }
         return ItemStack.EMPTY;

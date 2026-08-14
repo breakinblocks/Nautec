@@ -3,19 +3,32 @@ package com.breakinblocks.nautec.datagen;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataComponents;
-import com.breakinblocks.nautec.datagen.recipeBuilder.*;
-import com.breakinblocks.nautec.registries.*;
+import com.breakinblocks.nautec.datagen.recipeBuilder.AquaticCatalystChannelingRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.AugmentationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.IncubationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.ItemEtchingRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.ItemTransformationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.MixingRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.MutationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.PressureForgingRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.ResonanceCraftingRecipeBuilder;
+import com.breakinblocks.nautec.registries.NTAugments;
+import com.breakinblocks.nautec.registries.NTBacterias;
+import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.ranges.IntRange;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CookingBookCategory;
@@ -1212,7 +1225,6 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void mutationRecipes(RecipeOutput output) {
-        // Ores and Minerals
         new MutationRecipeBuilder(NTBacterias.THERMOPHILES, NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), 5f)
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.CARBOPHAGES, Ingredient.of(Items.COAL), 5f)
@@ -1238,7 +1250,6 @@ public class RecipesProvider extends RecipeProvider {
         new MutationRecipeBuilder(NTBacterias.ADAMANTOPHILES, NTBacterias.SMARAGDOPHILES, Ingredient.of(Items.EMERALD), 5f)
                 .save(output);
 
-        // Mushrooms and Wood
         new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), 5f)
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), 20f)
@@ -1274,7 +1285,6 @@ public class RecipesProvider extends RecipeProvider {
         new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), 5f)
                 .save(output);
 
-        // Plants
         new MutationRecipeBuilder(NTBacterias.CYANOBACTERIA, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 10f)
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.CACTOPHYLES, Ingredient.of(Items.CACTUS), 10f)
@@ -1308,7 +1318,6 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void incubationRecipes(RecipeOutput output) {
-        // Wood Bacteria
         new IncubationRecipeBuilder(NTBacterias.LIGNOCYTES, Ingredient.of(Items.OAK_LOG), IntRange.of(10, 30), 0.07f)
                 .save(output);
         new IncubationRecipeBuilder(NTBacterias.DARK_LIGNOCYTES, Ingredient.of(Items.DARK_OAK_LOG), IntRange.of(10, 30), 0.07f)
@@ -1330,7 +1339,6 @@ public class RecipesProvider extends RecipeProvider {
         new IncubationRecipeBuilder(NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), IntRange.of(10, 30), 0.07f)
                 .save(output);
 
-        // Mineral Bacteria
         new IncubationRecipeBuilder(NTBacterias.SILICOPHILES, Ingredient.of(Items.SAND), IntRange.of(8, 25), 0.05f)
                 .save(output);
         new IncubationRecipeBuilder(NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), IntRange.of(8, 25), 0.05f)
@@ -1354,7 +1362,6 @@ public class RecipesProvider extends RecipeProvider {
         new IncubationRecipeBuilder(NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_BLOCK), IntRange.of(8, 25), 0.1f)
                 .save(output);
 
-        // Plants
         new IncubationRecipeBuilder(NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), IntRange.of(10, 30), 0.07f)
                 .save(output);
         new IncubationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f)
@@ -1388,7 +1395,6 @@ public class RecipesProvider extends RecipeProvider {
         new IncubationRecipeBuilder(NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_NYLIUM), IntRange.of(10, 30), 0.07f)
                 .save(output);
 
-        // Misc
         new IncubationRecipeBuilder(NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), IntRange.of(5, 15), 0.1f)
                 .save(output);
         new IncubationRecipeBuilder(NTBacterias.CRYOBIONTS, Ingredient.of(Items.PACKED_ICE), IntRange.of(5, 15), 0.1f)

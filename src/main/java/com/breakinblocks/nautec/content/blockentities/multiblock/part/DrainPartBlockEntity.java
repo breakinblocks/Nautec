@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.multiblock.part;
 
 import com.google.common.collect.ImmutableMap;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.FakeBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
@@ -10,9 +9,7 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
-import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.utils.BlockUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -43,7 +40,6 @@ public class DrainPartBlockEntity extends LaserBlockEntity implements FakeBlockE
 
     public void open() {
         BlockPos actualBlockEntityPos = getActualBlockEntityPos();
-        Nautec.LOGGER.debug("Attempt to open");
         if (actualBlockEntityPos != null && level.getBlockEntity(actualBlockEntityPos) instanceof DrainBlockEntity drainBlockEntity) {
             drainBlockEntity.open();
         }

@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.utils.ItemUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -21,10 +22,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ChargerBlock extends LaserBlock {
+    private static final int CHARGE_SLOT = 0;
+
     public static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(1, 3, 1, 15, 7, 15));
 
     public ChargerBlock(Properties properties) {
@@ -54,43 +57,13 @@ public class ChargerBlock extends LaserBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof ChargerBlockEntity be) {
-            IItemHandler itemHandler = IItemHandler.of(be.getItemHandler());
+            ResourceHandler<ItemResource> itemHandler = be.getItemHandler();
 
-            Direction clickedFace = player.getDirection();
             if (stack.isEmpty()) {
-                return extractItemsSided(player, itemHandler, clickedFace);
-            } else {
-                return insertItemsSided(stack, player, hand, itemHandler, clickedFace);
+                return ItemUtils.extractItemToPlayer(itemHandler, CHARGE_SLOT, player);
             }
+            return ItemUtils.insertHeldItem(itemHandler, CHARGE_SLOT, stack, player, hand);
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
-
-    private InteractionResult extractItemsSided(Player player, IItemHandler itemHandler, Direction clickedFace) {
-        ItemStack stackInSlot = itemHandler.getStackInSlot(0);
-        ItemStack itemStack = itemHandler.extractItem(0, stackInSlot.getMaxStackSize(), false);
-        if (!itemStack.isEmpty()) {
-            ItemHandlerHelper.giveItemToPlayer(player, itemStack);
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    private InteractionResult insertItemsSided(ItemStack stack, Player player, InteractionHand hand, IItemHandler itemHandler, Direction clickedFace) {
-        ItemStack stackInSlot = itemHandler.getStackInSlot(0);
-
-        if (canInsert(stack, itemHandler, stackInSlot, 0)) {
-            ItemStack itemStack = itemHandler.insertItem(0, stack, false);
-            player.setItemInHand(hand, itemStack);
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    private static boolean canInsert(ItemStack stack, IItemHandler itemHandler, ItemStack stackInSlot, int slot) {
-        return stackInSlot.isEmpty()
-                || (stackInSlot.is(stack.getItem())
-                && stack.getCount() + stackInSlot.getCount() <= Math.min(itemHandler.getSlotLimit(slot), stack.getMaxStackSize()));
-    }
-
 }

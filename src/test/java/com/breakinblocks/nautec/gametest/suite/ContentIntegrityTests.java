@@ -32,6 +32,14 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import com.breakinblocks.nautec.NTRegistries;
+import com.breakinblocks.nautec.api.augments.AugmentType;
+import com.breakinblocks.nautec.content.augments.VentCarapaceAugment;
+import com.breakinblocks.nautec.registries.NTAugmentSlots;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 
 public final class ContentIntegrityTests {
     private static JsonObject readJson(String path) {
@@ -196,9 +204,9 @@ public final class ContentIntegrityTests {
 
         r.add("content/every_augment_is_installable", 5, helper -> {
             List<String> slotless = new ArrayList<>();
-            for (com.breakinblocks.nautec.api.augments.AugmentType<?> type : com.breakinblocks.nautec.NTRegistries.AUGMENT_TYPE) {
+            for (AugmentType<?> type : NTRegistries.AUGMENT_TYPE) {
                 if (type.getAugmentSlots().isEmpty()) {
-                    slotless.add(String.valueOf(com.breakinblocks.nautec.NTRegistries.AUGMENT_TYPE.getKey(type)));
+                    slotless.add(String.valueOf(NTRegistries.AUGMENT_TYPE.getKey(type)));
                 }
             }
             if (!slotless.isEmpty()) {
@@ -209,18 +217,18 @@ public final class ContentIntegrityTests {
 
         r.add("content/vent_carapace_modifiers_are_reversible", 5, helper -> {
             ServerLevel level = helper.getLevel();
-            net.minecraft.world.entity.player.Player player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
-            net.minecraft.world.entity.ai.attributes.AttributeInstance armor =
-                    player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            AttributeInstance armor =
+                    player.getAttribute(Attributes.ARMOR);
             if (armor == null) {
                 helper.fail("Player has no armor attribute");
                 return;
             }
 
             double before = armor.getValue();
-            com.breakinblocks.nautec.content.augments.VentCarapaceAugment augment =
-                    new com.breakinblocks.nautec.content.augments.VentCarapaceAugment(
-                            com.breakinblocks.nautec.registries.NTAugmentSlots.BODY.get());
+            VentCarapaceAugment augment =
+                    new VentCarapaceAugment(
+                            NTAugmentSlots.BODY.get());
 
             augment.onAdded(player);
             double during = armor.getValue();
@@ -247,7 +255,7 @@ public final class ContentIntegrityTests {
                 return;
             }
             if (helper.getLevel().getServer().reloadableRegistries().getLootTable(
-                    net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, lootTable)) == null) {
+                    ResourceKey.create(Registries.LOOT_TABLE, lootTable)) == null) {
                 helper.fail("Prismarine Cluster loot table " + lootTable + " does not resolve");
             }
             if (NTItems.PRISMARINE_CRYSTAL_SHARD.get().getDefaultInstance().isEmpty()) {

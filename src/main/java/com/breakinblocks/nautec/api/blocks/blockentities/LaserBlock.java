@@ -82,9 +82,6 @@ public abstract class LaserBlock extends ContainerBlock implements DisplayBlock,
         );
     }
 
-    // WATERLOGGED BLOCK METHODS
-
-
     @Override
     public boolean canPlaceLiquid(@Nullable LivingEntity entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
         if (waterloggable()) {

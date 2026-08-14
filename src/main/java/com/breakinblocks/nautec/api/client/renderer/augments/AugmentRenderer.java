@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.api.client.renderer.augments;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.api.augments.Augment;
-import com.breakinblocks.nautec.events.helper.AugmentLayerRenderer;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 

@@ -1,12 +1,12 @@
-package com.breakinblocks.nautec.events;
+package com.breakinblocks.nautec.client.events;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.client.renderer.augments.helper.GuardianEyeRenderHelper;
 import com.breakinblocks.nautec.content.augments.GuardianEyeAugment;
-import com.breakinblocks.nautec.events.helper.AugmentLayerRenderer;
-import com.breakinblocks.nautec.events.helper.AugmentSlotsRenderer;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentSlotsRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -26,7 +26,6 @@ public final class AugmentClientEvents {
 
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Post<?> event) {
-        // Needs to be outside the augment renderer cuz pose stacks
         Map<AugmentSlot, Augment> augments = AugmentLayerRenderer.AUGMENTS_CACHE;
         for (Augment augment : augments.values()) {
             if (augment != null && augment instanceof GuardianEyeAugment eyeAugment && eyeAugment.getTargetEntity() != null) {

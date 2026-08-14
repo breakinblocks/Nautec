@@ -1,17 +1,12 @@
 package com.breakinblocks.nautec.content.blocks.multiblock.part;
 
 import com.mojang.serialization.MapCodec;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.shapes.AugmentStationShapes;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
-import com.breakinblocks.nautec.registries.NTBlocks;
-import com.breakinblocks.nautec.registries.NTMultiblocks;
-import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;

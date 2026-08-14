@@ -33,7 +33,6 @@ public class PrismarineSandBlock extends FallingBlock {
         super.spawnAfterBreak(state, level, pos, stack, dropExperience);
     }
 
-    // Neo: Patch-in override for getExpDrop. Original vanilla logic passes this.xpRange to tryDropExperience.
     @Override
     public int getExpDrop(BlockState state, LevelAccessor level, BlockPos pos,
                           @Nullable BlockEntity blockEntity,

@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.tags;
 
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 

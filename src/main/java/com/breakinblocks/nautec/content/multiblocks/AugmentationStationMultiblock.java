@@ -25,9 +25,6 @@ import java.util.Map;
 public class AugmentationStationMultiblock implements Multiblock {
     public static final IntegerProperty AS_PART = IntegerProperty.create("as_part", 0, 8);
 
-    // FIXME: Problematic on multiplayer
-    private int actualIndex = 0;
-
     @Override
     public Block getUnformedController() {
         return NTBlocks.AUGMENTATION_STATION.get();
@@ -68,39 +65,15 @@ public class AugmentationStationMultiblock implements Multiblock {
     }
 
     @Override
-    public void onStartForming(Level level, BlockPos firstPos, BlockPos controllerPos) {
-        this.actualIndex = 0;
-    }
-
-    @Override
-    public void onStartUnforming(Level level, BlockPos firstPos, BlockPos controllerPos) {
-        this.actualIndex = 0;
-    }
-
-    @Override
-    public void iterBlock(Level level, BlockPos blockPos, BlockPos controllerPos, int layerIndex, int layoutIndex, MultiblockData data, boolean forming) {
-        Map<Integer, Block> def = getDefinition();
-        int[] curLayer = getLayout()[0].layer();
-        Block block = def.get(curLayer[layerIndex]);
-        if (block == getUnformedController()
-                || block == NTBlocks.POLISHED_PRISMARINE.get()
-                || block == NTBlocks.AQUARINE_STEEL_BLOCK.get()) {
-            actualIndex++;
-        }
-    }
-
-    @Override
     public @Nullable BlockState formBlock(Level level, BlockPos blockPos, BlockPos controllerPos, int layerIndex, int layoutIndex, MultiblockData multiblockData, @Nullable Player player) {
         Map<Integer, Block> def = getDefinition();
         int[] curLayer = getLayout()[0].layer();
-        Block block = def.get(curLayer[layerIndex]);
-        if (block == getUnformedController()
-                || block == NTBlocks.POLISHED_PRISMARINE.get()
-                || block == NTBlocks.AQUARINE_STEEL_BLOCK.get()) {
-            if (actualIndex == 4) {
-                return getFormedController().defaultBlockState().setValue(FORMED, true).setValue(AS_PART, actualIndex);
+        if (isStationPart(def.get(curLayer[layerIndex]))) {
+            int partIndex = countStationPartsBefore(def, curLayer, layerIndex);
+            if (partIndex == 4) {
+                return getFormedController().defaultBlockState().setValue(FORMED, true).setValue(AS_PART, partIndex);
             }
-            return NTBlocks.AUGMENTATION_STATION_PART.get().defaultBlockState().trySetValue(FORMED, true).trySetValue(AS_PART, actualIndex);
+            return NTBlocks.AUGMENTATION_STATION_PART.get().defaultBlockState().trySetValue(FORMED, true).trySetValue(AS_PART, partIndex);
 
         }
 
@@ -109,6 +82,22 @@ public class AugmentationStationMultiblock implements Multiblock {
         }
 
         return null;
+    }
+
+    private boolean isStationPart(Block block) {
+        return block == getUnformedController()
+                || block == NTBlocks.POLISHED_PRISMARINE.get()
+                || block == NTBlocks.AQUARINE_STEEL_BLOCK.get();
+    }
+
+    private int countStationPartsBefore(Map<Integer, Block> def, int[] layer, int layerIndex) {
+        int count = 0;
+        for (int i = 0; i < layerIndex; i++) {
+            if (isStationPart(def.get(layer[i]))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private Direction indexToDir(int index) {

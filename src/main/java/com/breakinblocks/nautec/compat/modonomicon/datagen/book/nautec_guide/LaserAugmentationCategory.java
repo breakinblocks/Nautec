@@ -4,7 +4,14 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconProviderBase;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.*;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.ArmorEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.AugmentationEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.AugmentationStationEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.CraftedAugmentsEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.DeepFaunaAugmentsEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.LaserAugmentationIntroductionEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.LongDistanceLaserEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_augmentation.MobAugmentEntry;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.world.phys.Vec2;
 

@@ -14,7 +14,6 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -55,11 +54,9 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
         super(output, registries, BUILDER, Set.of(Nautec.MODID));
     }
 
-    // Beach - Higher Spawn Chance - 1 to 4 Ores in a Vein
     public static final ResourceKey<ConfiguredFeature<?, ?>> PRISMARINE_SAND_BEACH_KEY = registerConfigKey("prismarine_sand_beach");
     public static final ResourceKey<PlacedFeature> PRISMARINE_SAND_BEACH_PLACE_KEY = registerPlaceKey("prismarine_sand_beach");
 
-    // Ocean - Lower Spawn Chance - Larger Veins
     public static final ResourceKey<ConfiguredFeature<?, ?>> PRISMARINE_SAND_OCEAN_KEY = registerConfigKey("prismarine_sand_ocean");
     public static final ResourceKey<PlacedFeature> PRISMARINE_SAND_OCEAN_PLACE_KEY = registerPlaceKey("prismarine_sand_ocean");
 
@@ -92,10 +89,7 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
     private static final RuleTest GRAVEL_REPLACEABLES = new BlockMatchTest(Blocks.GRAVEL);
 
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            // -- BACTERIA --
             .add(NTRegistries.BACTERIA_KEY, NTBacterias::bootstrap)
-            // -- WORLDGEN --
-            // Beach - Higher Spawn Chance - 1 to 4 Ores in a Vein
             .add(Registries.CONFIGURED_FEATURE, context -> {
                 List<OreConfiguration.TargetBlockState> prismarine_sand_config = List.of(
                         OreConfiguration.target(SAND_REPLACEABLES, NTBlocks.PRISMARINE_SAND.get().defaultBlockState())

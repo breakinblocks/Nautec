@@ -12,7 +12,6 @@ import com.breakinblocks.nautec.utils.ranges.LongRange;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaStats<?> stats) implements Bacteria {
     public static Builder of() {

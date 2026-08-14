@@ -8,7 +8,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.breakinblocks.nautec.NTRegistries;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
@@ -36,7 +35,6 @@ public class AugmentSlotArgumentType implements ArgumentType<AugmentSlot> {
     @Override
     public AugmentSlot parse(StringReader reader) throws CommandSyntaxException {
         Identifier read = Identifier.read(reader);
-        Nautec.LOGGER.debug("Res: {}", read);
         AugmentSlot augmentSlot = NTRegistries.AUGMENT_SLOT.getValue(ResourceKey.create(NTRegistries.AUGMENT_SLOT_KEY, read));
         if (augmentSlot != null) {
             return augmentSlot;

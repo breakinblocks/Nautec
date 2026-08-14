@@ -17,9 +17,9 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.List;
+import com.breakinblocks.nautec.utils.ItemUtils;
 
 public class ResonanceChamberBlock extends LaserBlock {
     public ResonanceChamberBlock(Properties properties) {
@@ -63,7 +63,7 @@ public class ResonanceChamberBlock extends LaserBlock {
         if (result.isEmpty()) {
             return InteractionResult.CONSUME;
         }
-        ItemHandlerHelper.giveItemToPlayer(player, result, player.getInventory().getSelectedSlot());
+        ItemUtils.giveItemToPlayer(player, result, player.getInventory().getSelectedSlot());
         return InteractionResult.SUCCESS;
     }
 

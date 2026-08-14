@@ -14,23 +14,23 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class NTBacterias {
-    public static final ArrayList<ResourceKey<Bacteria>> BACTERIAS;
+    private static final List<ResourceKey<Bacteria>> BACTERIAS = new ArrayList<>();
 
-    static {
-        BACTERIAS = new ArrayList<>();
+    public static List<ResourceKey<Bacteria>> bacterias() {
+        return Collections.unmodifiableList(BACTERIAS);
     }
 
     public static final ResourceKey<Bacteria> EMPTY = keyAndAddBacteria("empty");
 
-    // Primary - Do not produce anything
     public static final ResourceKey<Bacteria> CYANOBACTERIA = keyAndAddBacteria("cyanobacteria");
     public static final ResourceKey<Bacteria> HALOBACTERIA = keyAndAddBacteria("halobacteria");
     public static final ResourceKey<Bacteria> METHANOGENS = keyAndAddBacteria("methanogens");
     public static final ResourceKey<Bacteria> THERMOPHILES = keyAndAddBacteria("thermophiles");
 
-    // Wood
     public static final ResourceKey<Bacteria> LIGNOCYTES = keyAndAddBacteria("lignocytes");
     public static final ResourceKey<Bacteria> DARK_LIGNOCYTES = keyAndAddBacteria("dark_lignocytes");
     public static final ResourceKey<Bacteria> ACACIOPHYLES = keyAndAddBacteria("acaciophyles");
@@ -43,7 +43,6 @@ public final class NTBacterias {
     public static final ResourceKey<Bacteria> PRUNUS_LIGNOCYTES = keyAndAddBacteria("prunus_lignocytes");
 
 
-    // Ores and Minerals
     public static final ResourceKey<Bacteria> SILICOPHILES = keyAndAddBacteria("silicophiles");
     public static final ResourceKey<Bacteria> LITHOPHILES = keyAndAddBacteria("lithophiles");
     public static final ResourceKey<Bacteria> METALLOPHILES = keyAndAddBacteria("metallophiles");
@@ -56,7 +55,6 @@ public final class NTBacterias {
     public static final ResourceKey<Bacteria> AZURITOPHILES = keyAndAddBacteria("azuritophiles");
     public static final ResourceKey<Bacteria> CARBOPHAGES = keyAndAddBacteria("carbophages");
 
-    // Plants
     public static final ResourceKey<Bacteria> PHOTOTROPHS = keyAndAddBacteria("phototrophs");
     public static final ResourceKey<Bacteria> CRIMSON_MICROBES = keyAndAddBacteria("crimson_microbes");
     public static final ResourceKey<Bacteria> WARPED_MICROBES = keyAndAddBacteria("warped_microbes");
@@ -75,7 +73,6 @@ public final class NTBacterias {
     public static final ResourceKey<Bacteria> SOLANOPHILES = keyAndAddBacteria("solanophiles");
     public static final ResourceKey<Bacteria> COCOAPHILES = keyAndAddBacteria("cocoaphiles");
 
-    // Misc
     public static final ResourceKey<Bacteria> SULFUROPHILES = keyAndAddBacteria("sulfurophiles");
     public static final ResourceKey<Bacteria> CRYOBIONTS = keyAndAddBacteria("cryobionts");
     public static final ResourceKey<Bacteria> CARNIVOROUS_BACTERIA = keyAndAddBacteria("carnivorous_bacteria");
@@ -83,7 +80,6 @@ public final class NTBacterias {
     public static void bootstrap(BootstrapContext<Bacteria> context) {
         register(context, EMPTY, EmptyBacteria.INSTANCE);
 
-        // Primary
         register(context, CYANOBACTERIA, SimpleBacteria.of()
                 .initialSize(LongRange.of(320, 480))
                 .resource(Items.AIR)
@@ -117,7 +113,6 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.1F))
                 .color(ARGB.color(235, 186, 237)));
 
-        // Plants
         register(context, PHOTOTROPHS, SimpleBacteria.of()
                 .initialSize(LongRange.of(300, 500))
                 .resource(Items.SUGAR_CANE)
@@ -264,7 +259,6 @@ public final class NTBacterias {
                 .color(ARGB.color(84, 60, 33)));
 
 
-        // Wood
         register(context, ACACIOPHYLES, SimpleBacteria.of()
                 .initialSize(LongRange.of(300, 500))
                 .resource(Items.ACACIA_LOG)
@@ -346,7 +340,6 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(227, 179, 171)));
 
-        // Ores and minerals
         register(context, LITHOPHILES, SimpleBacteria.of()
                 .initialSize(LongRange.of(280, 520))
                 .resource(Items.STONE)
@@ -428,7 +421,6 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(0, 255, 0)));
 
-        // Misc
         register(context, CARNIVOROUS_BACTERIA, SimpleBacteria.of()
                 .initialSize(LongRange.of(300, 500))
                 .resource(Items.ROTTEN_FLESH)

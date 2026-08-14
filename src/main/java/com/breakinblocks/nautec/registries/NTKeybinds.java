@@ -9,6 +9,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class NTKeybinds {
@@ -41,8 +43,8 @@ public final class NTKeybinds {
 
     public static final Lazy<KeyMapping> SUBMARINE_HUD_KEYBIND = Lazy.of(() -> new KeyMapping(
             "Reposition Submarine HUD",
-            net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME,
-            net.neoforged.neoforge.client.settings.KeyModifier.CONTROL,
+            KeyConflictContext.IN_GAME,
+            KeyModifier.CONTROL,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, NAUTEC_CATEGORY));
 
 

@@ -187,7 +187,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addItem(ANCIENT_VALVE, "Ancient Valve");
         addItem(PETRI_DISH, "Petri Dish");
 
-        // Adding missing items
         addItem("drowned_lungs", "Drowned Lungs");
         addItem("diving_helmet", "Diving Helmet");
         addItem("diving_chestplate", "Diving Chestplate");
@@ -244,7 +243,6 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         
         add("nautec_guide.desc.0","Nautec's Guide");
 
-        // Adding missing block translations
         addBlock("rusty_crate", "Rusty Crate");
         addBlock("polished_prismarine", "Polished Prismarine");
         addBlock("mixer", "Mixer");
@@ -289,13 +287,11 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD, "Bacteria Containment Shield");
         addBlock(NTBlocks.CAST_IRON_BLOCK, "Cast Iron Block");
 
-        // Multiblock information
         add("multiblock.info.failed_to_construct", "Missing or invalid block");
         add("multiblock.info.actual_block", "Block: %s");
         add("multiblock.info.expected_block", "Expected: %s");
         add("multiblock.info.block_pos", "Coordinates: %d, %d, %d");
 
-        // Augmentation slots
         add("augment_slot.nautec.head", "Head");
         add("augment_slot.nautec.eyes", "Eyes");
         add("augment_slot.nautec.body", "Body");
@@ -364,8 +360,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.jei.category.item_transformation", "Item Transformation");
         add("nautec.jei.category.mixing", "Mixing");
 
-        // Bacteria
-        for (ResourceKey<?> key : BACTERIAS) {
+        for (ResourceKey<?> key : bacterias()) {
             addDirectBacteria(key);
         }
     }

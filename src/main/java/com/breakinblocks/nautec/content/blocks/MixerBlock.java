@@ -27,8 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
@@ -86,42 +84,13 @@ public class MixerBlock extends LaserBlock {
                 if (fluidTank != null && secFluidTank != null) {
                     var targetTank = secFluidTank.getFluidInTank(0).isEmpty() ? fluidTank : secFluidTank;
 
-                    if (FluidUtil.interactWithFluidHandler(player, hand, pos, targetTank)) {
+                    if (FluidUtil.interactWithFluidHandler(player, hand, pos, targetTank, null)) {
                         return InteractionResult.SUCCESS;
                     }
                 }
             }
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
-    }
-
-    private InteractionResult insertItemsSided(ItemStack stack, Player player, InteractionHand hand, IItemHandler itemHandler, Direction clickedFace) {
-        int slot = HorizontalDirection.fromRegularDirection(clickedFace).ordinal();
-        ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
-
-        if (canInsert(stack, itemHandler, stackInSlot, slot)) {
-            ItemStack itemStack = itemHandler.insertItem(slot, stack, false);
-            player.setItemInHand(hand, itemStack);
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    private InteractionResult extractItemsSided(Player player, IItemHandler itemHandler, Direction clickedFace) {
-        int slot = HorizontalDirection.fromRegularDirection(clickedFace).ordinal();
-        ItemStack stackInSlot = itemHandler.getStackInSlot(slot);
-        ItemStack itemStack = itemHandler.extractItem(slot, stackInSlot.getMaxStackSize(), false);
-        if (!itemStack.isEmpty()) {
-            ItemHandlerHelper.giveItemToPlayer(player, itemStack);
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    private static boolean canInsert(ItemStack stack, IItemHandler itemHandler, ItemStack stackInSlot, int slot) {
-        return stackInSlot.isEmpty()
-                || (stackInSlot.is(stack.getItem())
-                && stack.getCount() + stackInSlot.getCount() <= Math.min(itemHandler.getSlotLimit(slot), stack.getMaxStackSize()));
     }
 
 }

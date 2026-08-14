@@ -42,6 +42,12 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import com.breakinblocks.nautec.Nautec;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.phys.AABB;
 
 public final class SubmarineTests {
     private static final BlockPos SUB_POS = new BlockPos(4, 2, 4);
@@ -67,22 +73,22 @@ public final class SubmarineTests {
             for (int x = 1; x <= 7; x++) {
                 for (int z = 1; z <= 7; z++) {
                     for (int y = 1; y <= 6; y++) {
-                        helper.setBlock(new BlockPos(x, y, z), net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+                        helper.setBlock(new BlockPos(x, y, z), Blocks.WATER.defaultBlockState());
                     }
                 }
             }
 
             helper.runAfterDelay(5, () -> {
                 Player diver = helper.makeMockPlayer(GameType.SURVIVAL);
-                net.minecraft.core.BlockPos stand = helper.absolutePos(new BlockPos(1, 3, 4));
+                BlockPos stand = helper.absolutePos(new BlockPos(1, 3, 4));
                 diver.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 90F, 0F);
-                diver.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
+                diver.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
 
-                InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), diver, net.minecraft.world.InteractionHand.MAIN_HAND);
+                InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), diver, InteractionHand.MAIN_HAND);
                 helper.assertTrue(result.consumesAction(), "launching into open water was refused");
 
                 List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
-                        new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
+                        new AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
                 helper.assertValueEqual(1, launched.size(), "submarines in the pool after launching");
                 helper.succeed();
             });
@@ -90,15 +96,15 @@ public final class SubmarineTests {
 
         r.add("submarine/refuses_to_launch_on_land", 40, helper -> helper.runAfterDelay(1, () -> {
             Player lubber = helper.makeMockPlayer(GameType.SURVIVAL);
-            net.minecraft.core.BlockPos stand = helper.absolutePos(new BlockPos(4, 2, 4));
+            BlockPos stand = helper.absolutePos(new BlockPos(4, 2, 4));
             lubber.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0F, 0F);
-            lubber.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
+            lubber.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
 
-            InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), lubber, net.minecraft.world.InteractionHand.MAIN_HAND);
+            InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), lubber, InteractionHand.MAIN_HAND);
             helper.assertFalse(result.consumesAction(), "a submersible should not launch on dry land");
 
             List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
-                    new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
+                    new AABB(helper.absolutePos(new BlockPos(0, 0, 0))).inflate(12D));
             helper.assertTrue(launched.isEmpty(), "a submersible was launched onto dry land");
             helper.succeed();
         }));
@@ -232,7 +238,7 @@ public final class SubmarineTests {
         }));
 
         r.add("submarine/deploys_in_water", 60, helper -> {
-            helper.setBlock(SUB_POS, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+            helper.setBlock(SUB_POS, Blocks.WATER.defaultBlockState());
             helper.runAfterDelay(5, () -> {
                 SubmarineEntity submarine = spawnSubmarine(helper);
                 helper.runAfterDelay(5, () -> {
@@ -623,7 +629,7 @@ public final class SubmarineTests {
             helper.assertFalse(submarine.isCharging(), "a dry anchor should refuse to fire");
 
             BlockPos wetTarget = new BlockPos(4, 5, 4);
-            helper.setBlock(wetTarget, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+            helper.setBlock(wetTarget, Blocks.WATER.defaultBlockState());
             ItemStack bound = new ItemStack(NTItems.TELEPORT_MODULE.get());
             bound.set(NTDataComponents.TELEPORT_ANCHOR,
                     new TeleportAnchor(GlobalPos.of(helper.getLevel().dimension(), helper.absolutePos(wetTarget)), 0F));
@@ -655,17 +661,17 @@ public final class SubmarineTests {
             });
         });
 
-        r.add("submarine/oriented_collision", com.breakinblocks.nautec.Nautec.rl("empty_19x11x19"), 80, 0, helper -> {
+        r.add("submarine/oriented_collision", Nautec.rl("empty_19x11x19"), 80, 0, helper -> {
             for (int x = 3; x <= 15; x++) {
                 for (int y = 1; y <= 9; y++) {
-                    helper.setBlock(new BlockPos(x, y, 15), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+                    helper.setBlock(new BlockPos(x, y, 15), Blocks.STONE.defaultBlockState());
                 }
             }
 
             helper.runAfterDelay(5, () -> {
                 SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(9, 4, 9));
-                net.minecraft.world.phys.Vec3 pos = submarine.position();
-                net.minecraft.server.level.ServerLevel level = helper.getLevel();
+                Vec3 pos = submarine.position();
+                ServerLevel level = helper.getLevel();
 
                 helper.assertFalse(SubmarineCollision.blocked(level, submarine, pos, 0F, 0F),
                         "the hull should clear the wall at rest");
@@ -674,8 +680,8 @@ public final class SubmarineTests {
                 helper.assertFalse(SubmarineCollision.blocked(level, submarine, pos, 90F, 0F),
                         "parallel to the wall the beam should clear it");
 
-                net.minecraft.world.phys.Vec3 clamped = SubmarineCollision.clampMotion(level, submarine, pos,
-                        new net.minecraft.world.phys.Vec3(0, 0, 1), 0F, 0F);
+                Vec3 clamped = SubmarineCollision.clampMotion(level, submarine, pos,
+                        new Vec3(0, 0, 1), 0F, 0F);
                 helper.assertTrue(clamped.z < 0.62 && clamped.z >= 0.25,
                         "forward motion should clamp at the wall, got " + clamped.z);
                 helper.succeed();
@@ -685,7 +691,7 @@ public final class SubmarineTests {
         r.add("submarine/creative_pilot_no_upkeep", 60, helper -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
             submarine.setPowerStored(5_000);
-            net.minecraft.world.entity.player.Player pilot = helper.makeMockPlayer(net.minecraft.world.level.GameType.CREATIVE);
+            Player pilot = helper.makeMockPlayer(GameType.CREATIVE);
             pilot.startRiding(submarine);
 
             helper.runAfterDelay(10, () -> {
@@ -712,14 +718,14 @@ public final class SubmarineTests {
     private static void registerCraftingTests(NTTestRegistrar r) {
         r.add("submarine/everything_is_craftable", 40, helper -> helper.runAfterDelay(1, () -> {
             java.util.Set<String> crafting = helper.getLevel().recipeAccess().recipeMap()
-                    .byType(net.minecraft.world.item.crafting.RecipeType.CRAFTING).stream()
+                    .byType(RecipeType.CRAFTING).stream()
                     .map(holder -> holder.id().identifier().toString())
                     .collect(java.util.stream.Collectors.toSet());
 
             List<String> expected = new java.util.ArrayList<>();
             expected.add("nautec:submarine");
             for (var module : NTItems.SUBMARINE_MODULES) {
-                expected.add(String.valueOf(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(module.get())));
+                expected.add(String.valueOf(BuiltInRegistries.ITEM.getKey(module.get())));
             }
 
             List<String> missing = expected.stream().filter(id -> !crafting.contains(id)).toList();

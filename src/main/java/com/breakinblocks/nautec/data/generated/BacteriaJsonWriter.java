@@ -24,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class BacteriaJsonWriter {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -118,7 +119,7 @@ public final class BacteriaJsonWriter {
     }
 
     public static String blockKey(Block block) {
-        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block).toString();
+        return BuiltInRegistries.BLOCK.getKey(block).toString();
     }
 
     private static void writeObtaining(JsonObject values) throws IOException {

@@ -9,19 +9,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
-public class EnergyConverterBlockEntity extends LaserBlockEntity implements IEnergyStorage {
+public class EnergyConverterBlockEntity extends LaserBlockEntity {
     private static final int FE_CONVERSION_RATE = 100;
-    private int feStored = 0;
     private static final int MAX_FE = 100000;
+    private static final String FE_BUFFER_KEY = "fe_buffer";
+
+    private final SimpleEnergyHandler feBuffer = new SimpleEnergyHandler(MAX_FE, MAX_FE, 0);
 
     public EnergyConverterBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.ENERGY_CONVERTER.get(), blockPos, blockState);
+    }
+
+    public EnergyHandler getFeBuffer() {
+        return feBuffer;
     }
 
     @Override
@@ -41,53 +50,30 @@ public class EnergyConverterBlockEntity extends LaserBlockEntity implements IEne
 
     @Override
     public void commonTick() {
-        if (!level.isClientSide()) {
-            Direction[] directions = Direction.values();
-            for (Direction direction : directions) {
-                BlockPos pos = worldPosition.relative(direction);
-                if (level.getBlockEntity(pos) instanceof LaserBlockEntity laserBlockEntity) {
-                    if (laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
-                        int energyToConvert = Math.min(FE_CONVERSION_RATE, feStored);
-                        if (energyToConvert > 0) {
-                            transmitPower(energyToConvert);
-                            feStored -= energyToConvert;
-                        }
-                    }
-                }
-            }
+        super.commonTick();
+
+        if (level.isClientSide()) {
+            return;
+        }
+
+        int energyToConvert = Math.min(FE_CONVERSION_RATE, feBuffer.getAmountAsInt());
+        if (energyToConvert > 0 && connectedOutputs() > 0) {
+            transmitPower(energyToConvert);
+            feBuffer.set(feBuffer.getAmountAsInt() - energyToConvert);
+        } else {
+            transmitPower(0);
         }
     }
+
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        int energyReceived = Math.min(MAX_FE - feStored, maxReceive);
-        if (!simulate) {
-            feStored += energyReceived;
-        }
-        return energyReceived;
+    protected void saveData(ValueOutput out) {
+        super.saveData(out);
+        feBuffer.serialize(out.child(FE_BUFFER_KEY));
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        return 0;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return feStored;
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return MAX_FE;
-    }
-
-    @Override
-    public boolean canExtract() {
-        return false;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return true;
+    protected void loadData(ValueInput in) {
+        super.loadData(in);
+        feBuffer.deserialize(in.childOrEmpty(FE_BUFFER_KEY));
     }
 }

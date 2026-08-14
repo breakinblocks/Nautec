@@ -1,11 +1,7 @@
 package com.breakinblocks.nautec.datagen.loot;
 
-import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
-import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerTopBlock;
-import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
-import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -24,7 +20,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
@@ -51,7 +46,6 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected void add(@NotNull Block block, @NotNull LootTable.Builder table) {
-        //Overwrite the core register method to add to our list of known blocks
         super.add(block, table);
         knownBlocks.add(block);
     }

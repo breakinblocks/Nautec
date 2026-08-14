@@ -2,14 +2,12 @@ package com.breakinblocks.nautec.content.bacteria;
 
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
-import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.bacteria.BacteriaSerializer;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Items;
 
-import java.util.List;
 
 public class EmptyBacteria implements Bacteria, Bacteria.Builder<EmptyBacteria> {
     public static final EmptyBacteria INSTANCE = new EmptyBacteria();

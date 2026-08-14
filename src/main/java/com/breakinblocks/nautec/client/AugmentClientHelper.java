@@ -1,12 +1,13 @@
-package com.breakinblocks.nautec.utils;
+package com.breakinblocks.nautec.client;
 
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
-import com.breakinblocks.nautec.events.helper.AugmentLayerRenderer;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.breakinblocks.nautec.utils.AugmentHelper;
 
 public final class AugmentClientHelper {
     public static void initCache(Player player) {

@@ -4,7 +4,14 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.NautecGuide;
-import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.*;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BacteriaGraftingEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BacteriaIntroductionEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BacteriaStatsEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BacterialAnalyzerEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BacterialFuelCellEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.BioReactorEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.IncubatorEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aquatic_biology.MutatorEntry;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.world.phys.Vec2;
 

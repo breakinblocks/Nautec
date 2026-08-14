@@ -6,7 +6,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.deep_engineering.*;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.deep_engineering.BeamOpticsEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.deep_engineering.GatewayEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.deep_engineering.PressureForgeEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.deep_engineering.ResonanceChamberEntry;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.world.phys.Vec2;
 

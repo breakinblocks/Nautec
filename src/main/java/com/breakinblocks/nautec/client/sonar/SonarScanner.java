@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.core.Direction;
 
 public final class SonarScanner {
     public record Cluster(AABB box, Identifiable ore) {
@@ -114,7 +115,7 @@ public final class SonarScanner {
 
             while (!frontier.isEmpty()) {
                 BlockPos current = frontier.poll();
-                for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+                for (Direction direction : Direction.values()) {
                     BlockPos neighbour = current.relative(direction);
                     String neighbourId = this.found.get(neighbour);
                     if (neighbourId == null || !neighbourId.equals(entry.getValue()) || !visited.add(neighbour)) {

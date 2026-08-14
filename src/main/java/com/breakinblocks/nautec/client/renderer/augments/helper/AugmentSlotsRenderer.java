@@ -1,4 +1,4 @@
-package com.breakinblocks.nautec.events.helper;
+package com.breakinblocks.nautec.client.renderer.augments.helper;
 
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;

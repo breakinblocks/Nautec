@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.api.augments;
 
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.data.NTDataAttachments;
-import com.breakinblocks.nautec.utils.AugmentClientHelper;
+import com.breakinblocks.nautec.client.AugmentClientHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +16,6 @@ public abstract class Augment {
     protected Player player;
     protected final AugmentSlot augmentSlot;
 
-    // Serialized
     private int cooldown;
 
     public Augment(AugmentType<?> augmentType, AugmentSlot augmentSlot) {
@@ -92,7 +91,6 @@ public abstract class Augment {
         return getCooldown() > 0;
     }
 
-    // Call this, whenever NBT should be saved
     protected final void setChanged() {
         player.setData(NTDataAttachments.AUGMENT_DATA_CHANGED, NTRegistries.AUGMENT_SLOT.getId(augmentSlot));
         if (player.level().isClientSide()) {

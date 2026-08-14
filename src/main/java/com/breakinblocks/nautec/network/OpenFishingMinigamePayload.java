@@ -6,6 +6,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.breakinblocks.nautec.client.screen.FishingMinigameScreen;
 
 public record OpenFishingMinigamePayload(int kind, long nonce, long seed) implements CustomPacketPayload {
     public static final Type<OpenFishingMinigamePayload> TYPE = new Type<>(Nautec.rl("open_fishing_minigame"));
@@ -23,6 +24,6 @@ public record OpenFishingMinigamePayload(int kind, long nonce, long seed) implem
     }
 
     public static void handle(OpenFishingMinigamePayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> com.breakinblocks.nautec.client.screen.FishingMinigameScreen.open(payload.kind(), payload.nonce(), payload.seed()));
+        context.enqueueWork(() -> FishingMinigameScreen.open(payload.kind(), payload.nonce(), payload.seed()));
     }
 }

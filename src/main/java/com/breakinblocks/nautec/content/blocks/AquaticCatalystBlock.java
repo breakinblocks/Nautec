@@ -1,13 +1,11 @@
 package com.breakinblocks.nautec.content.blocks;
 
 import com.mojang.serialization.MapCodec;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.DisplayBlock;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.utils.BlockUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,13 +22,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import com.breakinblocks.nautec.utils.ItemUtils;
 
 public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
     public static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 8);
@@ -83,7 +80,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
             }
         } else {
             ItemStack extracted = itemHandler.extractItem(0, itemHandler.getSlotLimit(0), false);
-            ItemHandlerHelper.giveItemToPlayer(player, extracted, player.getInventory().getSelectedSlot());
+            ItemUtils.giveItemToPlayer(player, extracted, player.getInventory().getSelectedSlot());
             return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

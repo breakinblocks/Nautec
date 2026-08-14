@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.content.blocks;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
-import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 

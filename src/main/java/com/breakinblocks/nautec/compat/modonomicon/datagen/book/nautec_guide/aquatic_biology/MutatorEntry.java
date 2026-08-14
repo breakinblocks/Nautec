@@ -6,7 +6,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.breakinblocks.nautec.registries.NTBlocks;
-import com.breakinblocks.nautec.registries.NTItems;
 
 public class MutatorEntry extends BaseNautecEntry {
     public MutatorEntry(CategoryProviderBase parent) {

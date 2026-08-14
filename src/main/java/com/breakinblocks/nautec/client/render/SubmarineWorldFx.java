@@ -14,6 +14,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import net.minecraft.world.entity.Entity;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineWorldFx {
@@ -37,7 +38,7 @@ public final class SubmarineWorldFx {
         SonarPulseRenderer.render(poseStack, collector, cameraPos);
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
 
-        for (net.minecraft.world.entity.Entity entity : level.entitiesForRendering()) {
+        for (Entity entity : level.entitiesForRendering()) {
             if (entity instanceof SubmarineEntity submarine && submarine.isLaserActive()) {
                 SubmarineLaserRenderer.render(submarine, poseStack, collector, cameraPos, partialTick);
             }

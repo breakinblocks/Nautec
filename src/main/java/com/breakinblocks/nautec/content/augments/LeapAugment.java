@@ -18,7 +18,6 @@ public class LeapAugment extends Augment {
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
         if (NTKeybinds.LEAP_KEYBIND.get().consumeClick() && !isOnCooldown() && event.getEntity().onGround()) {
-            // Not to be sent to server, movement is on the client apparently
             handleKeybindPress();
         }
     }

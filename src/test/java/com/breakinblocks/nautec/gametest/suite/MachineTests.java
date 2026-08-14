@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.Set;
 
@@ -210,7 +209,7 @@ public final class MachineTests {
                 return;
             }
             int filled = mixer.getFluidTank().fill(
-                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
+                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000));
             helper.assertValueEqual(1000, filled, "salt water filled into mixer input tank");
             mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.RAW_IRON, 2));
             mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.PRISMARINE_CRYSTALS));
@@ -238,7 +237,7 @@ public final class MachineTests {
                 return;
             }
             mixer.getFluidTank().fill(
-                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
+                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000));
             mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.PUFFERFISH));
             mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.GUNPOWDER));
             mixer.getItemStackHandler().setStackInSlot(2, new ItemStack(Items.BONE_MEAL));
@@ -262,7 +261,7 @@ public final class MachineTests {
                 return;
             }
             mixer.getFluidTank().fill(
-                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000), IFluidHandler.FluidAction.EXECUTE);
+                    new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000));
             mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.RAW_IRON, 2));
             mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.PRISMARINE_CRYSTALS));
 
@@ -288,23 +287,23 @@ public final class MachineTests {
             }
 
             FluidStack oil5000 = new FluidStack(NTFluids.OIL.getStillFluid(), 5000);
-            helper.assertValueEqual(5000, barrel.getFluidTank().fill(oil5000, IFluidHandler.FluidAction.EXECUTE), "first oil fill");
+            helper.assertValueEqual(5000, barrel.getFluidTank().fill(oil5000), "first oil fill");
             helper.assertValueEqual(5000, barrel.getFluidTank().getFluidAmount(), "amount after first fill");
 
-            helper.assertValueEqual(3000, barrel.getFluidTank().fill(oil5000, IFluidHandler.FluidAction.SIMULATE), "simulated overfill");
+            helper.assertValueEqual(3000, barrel.getFluidTank().simulateFill(oil5000), "simulated overfill");
             helper.assertValueEqual(5000, barrel.getFluidTank().getFluidAmount(), "amount unchanged by simulation");
 
-            helper.assertValueEqual(3000, barrel.getFluidTank().fill(oil5000, IFluidHandler.FluidAction.EXECUTE), "overfill clamped to capacity");
+            helper.assertValueEqual(3000, barrel.getFluidTank().fill(oil5000), "overfill clamped to capacity");
             helper.assertValueEqual(8000, barrel.getFluidTank().getFluidAmount(), "amount at capacity");
-            helper.assertValueEqual(0, barrel.getFluidTank().fill(oil5000, IFluidHandler.FluidAction.EXECUTE), "fill when full");
+            helper.assertValueEqual(0, barrel.getFluidTank().fill(oil5000), "fill when full");
 
-            FluidStack drained = barrel.getFluidTank().drain(3000, IFluidHandler.FluidAction.EXECUTE);
+            FluidStack drained = barrel.getFluidTank().drain(3000);
             helper.assertTrue(drained.is(NTFluids.OIL.getStillFluid()), "drained fluid should be oil");
             helper.assertValueEqual(3000, drained.getAmount(), "drained amount");
             helper.assertValueEqual(5000, barrel.getFluidTank().getFluidAmount(), "amount after drain");
 
             helper.assertValueEqual(0, barrel.getFluidTank().fill(
-                    new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE), "water rejected by oil barrel");
+                    new FluidStack(Fluids.WATER, 1000)), "water rejected by oil barrel");
 
             helper.succeed();
         });

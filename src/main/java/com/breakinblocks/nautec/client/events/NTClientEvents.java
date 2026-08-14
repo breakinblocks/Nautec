@@ -1,4 +1,4 @@
-package com.breakinblocks.nautec.events;
+package com.breakinblocks.nautec.client.events;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.screen.AugmentationViewerScreen;

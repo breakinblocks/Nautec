@@ -29,13 +29,16 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     public static final int OUTPUT_SLOT = 4;
@@ -143,7 +146,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
                 }
             }
         }
-        fluidHandler.drain(mixingRecipe.fluidIngredient().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+        fluidHandler.drain(mixingRecipe.fluidIngredient().getAmount());
     }
 
     @Override
@@ -195,7 +198,6 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         Optional<MixingRecipe> recipe = serverLevel.recipeAccess()
                 .getRecipeFor(MixingRecipe.Type.INSTANCE, input, level).map(RecipeHolder::value);
         
-        // Retry with input subsets to handle overflow (e.g. single-item recipes with overflow in other slots)
         if (recipe.isEmpty() && itemHandlerStacksList.size() > 1) {
             recipe = tryRecipeWithSubsets(itemHandlerStacksList);
         }
@@ -210,7 +212,6 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         if (!(level instanceof ServerLevel serverLevel)) {
             return Optional.empty();
         }
-        // Try with individual items first (most common overflow case)
         for (ItemStack singleInput : allInputs) {
             List<ItemStack> singleInputList = List.of(singleInput);
             MixingRecipeInput input = new MixingRecipeInput(singleInputList, getFluidTank().getFluid());

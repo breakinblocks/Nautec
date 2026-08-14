@@ -1,9 +1,9 @@
 package com.breakinblocks.nautec.utils;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -55,11 +55,14 @@ public final class ParticleUtils {
         }
     }
 
-    public static void spawnBreakParticle(BlockPos pos, Block block, int count) {
-        assert Minecraft.getInstance().level != null && Minecraft.getInstance().level.isClientSide();
+    public static void spawnBreakParticle(BlockPos pos, Block block, int count, Level level) {
+        assert level.isClientSide();
+        BlockParticleOption particle = new BlockParticleOption(ParticleTypes.BLOCK, block.defaultBlockState());
         for (int i = 0; i < count; i++) {
-            Minecraft.getInstance().particleEngine.add(new TerrainParticle(Minecraft.getInstance().level, pos.getX() + 0.5f, pos.above().getY(), pos.getZ() + 0.5f,
-                    0 + ((double) i / 10), 0 + ((double) i / 10), 0 + ((double) i / 10), block.defaultBlockState()));
+            double spread = (double) i / 10;
+            level.addParticle(particle,
+                    pos.getX() + 0.5, pos.above().getY(), pos.getZ() + 0.5,
+                    spread, spread, spread);
         }
     }
 }

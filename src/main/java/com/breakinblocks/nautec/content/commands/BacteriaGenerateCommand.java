@@ -46,6 +46,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import com.mojang.serialization.JsonOps;
+import com.breakinblocks.nautec.data.NTDataMaps;
+import com.breakinblocks.nautec.NTRegistries;
 
 public final class BacteriaGenerateCommand {
     private static final SuggestionProvider<CommandSourceStack> RARITIES =
@@ -135,8 +138,8 @@ public final class BacteriaGenerateCommand {
             source.sendFailure(Component.literal("'" + name + "' is not a usable bacteria name. Use lower case letters, numbers, _ , - and ."));
             return 0;
         }
-        if (NTBacterias.BACTERIAS.contains(GeneratedPackPaths.bacteriaKey(name))
-                || NTBacterias.BACTERIAS.contains(ResourceKey.create(com.breakinblocks.nautec.NTRegistries.BACTERIA_KEY, Nautec.rl(name)))) {
+        if (NTBacterias.bacterias().contains(GeneratedPackPaths.bacteriaKey(name))
+                || NTBacterias.bacterias().contains(ResourceKey.create(NTRegistries.BACTERIA_KEY, Nautec.rl(name)))) {
             source.sendFailure(Component.literal("Nautec already ships a bacteria called '" + name + "'"));
             return 0;
         }
@@ -251,7 +254,7 @@ public final class BacteriaGenerateCommand {
     }
 
     private static boolean shippedObtaining(CommandSourceStack source, Block block) {
-        return block.builtInRegistryHolder().getData(com.breakinblocks.nautec.data.NTDataMaps.BACTERIA_OBTAINING) != null;
+        return block.builtInRegistryHolder().getData(NTDataMaps.BACTERIA_OBTAINING) != null;
     }
 
     private static int listGenerated(CommandContext<CommandSourceStack> ctx) {
@@ -306,7 +309,7 @@ public final class BacteriaGenerateCommand {
             return null;
         }
         try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-            return Bacteria.CODEC.parse(com.mojang.serialization.JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElse(null);
+            return Bacteria.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseReader(reader)).result().orElse(null);
         } catch (Exception e) {
             return null;
         }

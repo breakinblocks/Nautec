@@ -2,8 +2,6 @@ package com.breakinblocks.nautec.api.bacteria;
 
 import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.NTRegistries;
-import com.breakinblocks.nautec.utils.ranges.FloatRange;
-import com.breakinblocks.nautec.utils.ranges.IntRange;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;

@@ -1,16 +1,11 @@
 package com.breakinblocks.nautec.utils.rng;
 
-import com.mojang.serialization.Codec;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-/**
- * A list composed of {@link WeightedElement}<br>
- * Allows weighted random selection of elements
- */
 public class WeightedList<T> {
     private final List<WeightedElement<? extends T>> elements = new ArrayList<>();
     private final List<Integer> prefixSums = new ArrayList<>();

@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.capabilities.fluid;
 
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -57,43 +56,47 @@ public class FluidTank extends FluidStacksResourceHandler {
         return isFluidValid(stack);
     }
 
-    public int fill(@NotNull FluidStack resource, IFluidHandler.FluidAction action) {
+    public int fill(@NotNull FluidStack resource) {
+        return fill(resource, true);
+    }
+
+    public int simulateFill(@NotNull FluidStack resource) {
+        return fill(resource, false);
+    }
+
+    private int fill(@NotNull FluidStack resource, boolean execute) {
         if (resource.isEmpty()) {
             return 0;
         }
         try (Transaction tx = Transaction.openRoot()) {
             int filled = insert(0, FluidResource.of(resource), resource.getAmount(), tx);
-            if (action.execute()) {
+            if (execute) {
                 tx.commit();
             }
             return filled;
         }
     }
 
-    public @NotNull FluidStack drain(@NotNull FluidStack resource, IFluidHandler.FluidAction action) {
+    public @NotNull FluidStack drain(@NotNull FluidStack resource) {
         if (resource.isEmpty()) {
             return FluidStack.EMPTY;
         }
         try (Transaction tx = Transaction.openRoot()) {
             FluidResource fluidResource = FluidResource.of(resource);
             int drained = extract(0, fluidResource, resource.getAmount(), tx);
-            if (action.execute()) {
-                tx.commit();
-            }
+            tx.commit();
             return drained <= 0 ? FluidStack.EMPTY : fluidResource.toStack(drained);
         }
     }
 
-    public @NotNull FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
+    public @NotNull FluidStack drain(int maxDrain) {
         FluidResource resource = getResource(0);
         if (resource.isEmpty() || maxDrain <= 0) {
             return FluidStack.EMPTY;
         }
         try (Transaction tx = Transaction.openRoot()) {
             int drained = extract(0, resource, maxDrain, tx);
-            if (action.execute()) {
-                tx.commit();
-            }
+            tx.commit();
             return drained <= 0 ? FluidStack.EMPTY : resource.toStack(drained);
         }
     }

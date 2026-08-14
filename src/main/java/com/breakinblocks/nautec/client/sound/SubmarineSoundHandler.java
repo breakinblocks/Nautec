@@ -19,6 +19,7 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.util.RandomSource;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineSoundHandler {
@@ -72,7 +73,7 @@ public final class SubmarineSoundHandler {
         Minecraft.getInstance().getSoundManager().play(
                 new SimpleSoundInstance(sound, SoundSource.PLAYERS, volume, pitch,
                         Minecraft.getInstance().level == null
-                                ? net.minecraft.util.RandomSource.create()
+                                ? RandomSource.create()
                                 : Minecraft.getInstance().level.getRandom(),
                         at.x, at.y, at.z));
     }

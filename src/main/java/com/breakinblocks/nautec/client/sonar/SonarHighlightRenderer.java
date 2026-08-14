@@ -6,12 +6,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 
 public final class SonarHighlightRenderer {
     private SonarHighlightRenderer() {
     }
 
-    public static void render(PoseStack poseStack, net.minecraft.client.renderer.SubmitNodeCollector collector, Vec3 cameraPos) {
+    public static void render(PoseStack poseStack, SubmitNodeCollector collector, Vec3 cameraPos) {
         if (!NautecSonarManager.isActive()) {
             return;
         }

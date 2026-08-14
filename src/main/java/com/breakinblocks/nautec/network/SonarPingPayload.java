@@ -6,6 +6,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.breakinblocks.nautec.client.SubmarineFxHooks;
 
 public record SonarPingPayload(int entityId, double x, double y, double z, float range, int highlightTicks) implements CustomPacketPayload {
     public static final Type<SonarPingPayload> TYPE = new Type<>(Nautec.rl("sonar_ping"));
@@ -26,6 +27,6 @@ public record SonarPingPayload(int entityId, double x, double y, double z, float
     }
 
     public static void handle(SonarPingPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> com.breakinblocks.nautec.client.SubmarineFxHooks.onSonarPing(payload));
+        context.enqueueWork(() -> SubmarineFxHooks.onSonarPing(payload));
     }
 }

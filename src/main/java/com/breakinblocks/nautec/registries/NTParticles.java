@@ -6,9 +6,10 @@ import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
+import net.minecraft.core.particles.ParticleType;
 
 public final class NTParticles {
-    public static final DeferredRegister<net.minecraft.core.particles.ParticleType<?>> PARTICLE_TYPES =
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(Registries.PARTICLE_TYPE, Nautec.MODID);
 
     public static final Supplier<SimpleParticleType> VENT_BUBBLE = PARTICLE_TYPES.register("vent_bubble",
