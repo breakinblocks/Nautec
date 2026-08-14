@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
 import com.breakinblocks.nautec.content.fishing.LuckyZoneIndex;
+import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -13,11 +14,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashMap;
@@ -132,6 +135,33 @@ public final class LuckyFishingZoneEvents {
                 level.removeBlock(zone.pos(), false);
             }
             index.remove(zone.pos());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onHookTick(EntityTickEvent.Post event) {
+        if (!NTConfig.luckyZonesEnabled || NTConfig.luckyZoneBiteSpeed <= 1
+                || !(event.getEntity() instanceof FishingHook hook)
+                || !(hook.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        FishingHookAccessor accessor = (FishingHookAccessor) hook;
+        int lured = accessor.nautec$getTimeUntilLured();
+        int hooked = accessor.nautec$getTimeUntilHooked();
+        if (lured <= 1 && hooked <= 1) {
+            return;
+        }
+
+        if (LuckyZoneIndex.get(level).zoneAt(level, hook.blockPosition()) == null) {
+            return;
+        }
+
+        int extra = NTConfig.luckyZoneBiteSpeed - 1;
+        if (lured > 1) {
+            accessor.nautec$setTimeUntilLured(Math.max(1, lured - extra));
+        } else {
+            accessor.nautec$setTimeUntilHooked(Math.max(1, hooked - extra));
         }
     }
 

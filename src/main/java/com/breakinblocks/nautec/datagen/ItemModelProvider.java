@@ -158,7 +158,7 @@ public class ItemModelProvider extends ModelProvider {
                         List.of(ItemDisplayContext.GUI, ItemDisplayContext.FIXED, ItemDisplayContext.GROUND),
                         ItemModelUtils.plainModel(Nautec.rl("item/neptunes_trident_gui")))));
 
-        handHeldItem(NTItems.NAUTEC_FISHING_ROD.get());
+        itemModels.generateFishingRod(NTItems.NAUTEC_FISHING_ROD.get());
         handHeldItem(NTItems.AQUARINE_WRENCH.get());
         handHeldItem(NTItems.CROWBAR.get());
         handHeldItem(NTItems.GRAFTING_TOOL.get());

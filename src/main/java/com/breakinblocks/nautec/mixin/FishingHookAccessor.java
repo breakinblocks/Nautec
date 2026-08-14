@@ -17,4 +17,16 @@ public interface FishingHookAccessor {
     @Mutable
     @Accessor("lureSpeed")
     void nautec$setLureSpeed(int lureSpeed);
+
+    @Accessor("timeUntilLured")
+    int nautec$getTimeUntilLured();
+
+    @Accessor("timeUntilLured")
+    void nautec$setTimeUntilLured(int timeUntilLured);
+
+    @Accessor("timeUntilHooked")
+    int nautec$getTimeUntilHooked();
+
+    @Accessor("timeUntilHooked")
+    void nautec$setTimeUntilHooked(int timeUntilHooked);
 }
