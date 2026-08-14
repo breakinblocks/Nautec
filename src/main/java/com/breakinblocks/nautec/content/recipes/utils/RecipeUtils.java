@@ -5,7 +5,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public final class RecipeUtils {
     public static List<IngredientWithCount> ingredientsToIWC(List<Ingredient> ingredients) {

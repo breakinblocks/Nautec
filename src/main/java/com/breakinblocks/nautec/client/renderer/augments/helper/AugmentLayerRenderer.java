@@ -1,4 +1,4 @@
-package com.breakinblocks.nautec.events.helper;
+package com.breakinblocks.nautec.client.renderer.augments.helper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.api.augments.Augment;

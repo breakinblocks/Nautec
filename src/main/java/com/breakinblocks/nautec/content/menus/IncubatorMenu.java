@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.menus;
 
-import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotBacteriaStorage;
 import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
@@ -18,7 +17,6 @@ public class IncubatorMenu extends NTMachineMenu<IncubatorBlockEntity> {
     public IncubatorMenu(int containerId, @NotNull Inventory inv, @NotNull IncubatorBlockEntity blockEntity) {
         super(NTMenuTypes.INCUBATOR.get(), containerId, inv, blockEntity);
 
-        // Nutrient
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 80, 49));
 
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 0, 79, 26));

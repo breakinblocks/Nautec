@@ -79,7 +79,6 @@ public final class NTConfig {
             .comment("The y depth the fisher checks for water")
             .defineInRange("fisherDepth", 2, 1, Integer.MAX_VALUE);
 
-    // Biology
     private static final ModConfigSpec.DoubleValue BACTERIA_GROWTH_RATE_CAP = BUILDER
             .comment("The maximum rate at which bacteria can grow")
             .defineInRange("bacteriaGrowthRateCap", 5, 0, Float.MAX_VALUE);
@@ -243,7 +242,6 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue PHOTOPHORE_SKIN_RADIUS = BUILDER
             .comment("The radius in which the Photophore Skin augment reveals nearby creatures")
             .defineInRange("photophoreSkinRadius", 12.0, 1.0, 64.0);
-
 
     private static final ModConfigSpec.IntValue SUBMARINE_POWER_CAPACITY = BUILDER
             .comment("The power capacity of the submarine")
@@ -410,8 +408,6 @@ public final class NTConfig {
             .comment("The multi-noise presets Nautec's ocean biomes are added to. Packs using a custom overworld preset should list it here",
                     "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
-
-
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

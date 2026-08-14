@@ -70,6 +70,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final double SHOVE_STRENGTH = 2.5;
@@ -162,7 +163,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0D);
     }
 
-    private void rebaseAttribute(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, double value) {
+    private void rebaseAttribute(Holder<Attribute> attribute, double value) {
         AttributeInstance instance = getAttribute(attribute);
         if (instance != null) {
             instance.setBaseValue(value);
@@ -831,7 +832,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean canBeRiddenUnderFluidType(net.neoforged.neoforge.fluids.FluidType type, Entity rider) {
+    public boolean canBeRiddenUnderFluidType(FluidType type, Entity rider) {
         return true;
     }
 

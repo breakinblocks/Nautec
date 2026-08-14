@@ -14,7 +14,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-// /nautec augments cooldown set <slot> <cooldown>
 
 public class SetAugmentCooldownCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

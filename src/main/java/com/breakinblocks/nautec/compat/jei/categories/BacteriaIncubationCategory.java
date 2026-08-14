@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubationRecipe> {
-    static final Identifier SINGLE_SLOT_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/empty_slot");
+
     static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/incubator/progress_arrow_off");
     public static final Identifier UID = Nautec.rl(BacteriaIncubationRecipe.NAME);
     public static final IRecipeType<BacteriaIncubationRecipe> RECIPE_TYPE =
@@ -46,8 +46,8 @@ public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubat
     public void setRecipe(IRecipeLayoutBuilder builder, BacteriaIncubationRecipe recipe, IFocusGroup focuses) {
         addBacteriaSlot(recipe, DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 1, GAP + Y_GAP_BETWEEN_IN_CATA - 22, recipe.bacteria());
 
-        builder.addSlot(RecipeIngredientRole.INPUT, DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 2, GAP + Y_GAP_BETWEEN_IN_CATA)
-                .setBackground(NTJeiUtil.sprite(SINGLE_SLOT_SPRITE, 18, 18), -1, -1)
+        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT,
+                        DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 2, GAP + Y_GAP_BETWEEN_IN_CATA)
                 .add(recipe.nutrient());
     }
 

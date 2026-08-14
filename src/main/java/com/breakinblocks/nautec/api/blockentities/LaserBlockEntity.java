@@ -4,7 +4,14 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
 import com.breakinblocks.nautec.utils.ParticleUtils;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -83,7 +90,6 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return 10;
     }
 
-    // POWER
     public void setPowerPerSide(Direction direction, int power) {
         this.powerPerSide.put(direction, power);
     }
@@ -126,7 +132,6 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
     }
 
-    // PURITY
     public void setPurityPerSide(Direction direction, float purity) {
         this.purityPerSide.put(direction, purity);
     }
@@ -143,7 +148,6 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         setPurityPerSide(direction, amount);
     }
 
-    // LOGIC
     @Override
     public void commonTick() {
         super.commonTick();
@@ -324,7 +328,6 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
     }
 
-    // CLIENT
     public int getLaserAnimTimeDuration() {
         return 80;
     }

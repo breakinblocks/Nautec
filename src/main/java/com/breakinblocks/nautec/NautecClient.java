@@ -20,19 +20,51 @@ import com.breakinblocks.nautec.client.item.BacteriaColorTintSource;
 import com.breakinblocks.nautec.client.item.HasBacteriaProperty;
 import com.breakinblocks.nautec.client.model.augment.DolphinFinModel;
 import com.breakinblocks.nautec.client.model.augment.GuardianEyeModel;
-import com.breakinblocks.nautec.client.model.block.*;
-import com.breakinblocks.nautec.client.model.entity.*;
+import com.breakinblocks.nautec.client.model.block.AnchorModel;
+import com.breakinblocks.nautec.client.model.block.DrainTopModel;
+import com.breakinblocks.nautec.client.model.block.FishingNetModel;
+import com.breakinblocks.nautec.client.model.block.PrismarineCrystalModel;
+import com.breakinblocks.nautec.client.model.block.RobotArmModel;
+import com.breakinblocks.nautec.client.model.block.WhiskModel;
+import com.breakinblocks.nautec.client.model.entity.AbyssalMawModel;
+import com.breakinblocks.nautec.client.model.entity.LanternJellyModel;
+import com.breakinblocks.nautec.client.model.entity.SiltSkipperModel;
+import com.breakinblocks.nautec.client.model.entity.VentCrawlerModel;
 import com.breakinblocks.nautec.client.renderer.entity.NTMobRenderers;
 import com.breakinblocks.nautec.client.renderer.entity.SubmarineRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.GuardianEyeRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.SimpleAugmentRenderer;
-import com.breakinblocks.nautec.client.renderer.blockentities.*;
+import com.breakinblocks.nautec.client.renderer.blockentities.AnchorBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.AugmentStationExtensionBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.BacterialAnalyzerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.ChargerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.FishingStationBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.LongDistanceLaserBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.MixerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.PrismarineCrystalBERenderer;
 import com.breakinblocks.nautec.client.renderer.robotArms.ClawRobotArmRenderer;
-import com.breakinblocks.nautec.client.screen.*;
-import com.breakinblocks.nautec.events.helper.AugmentLayerRenderer;
-import com.breakinblocks.nautec.events.helper.AugmentSlotsRenderer;
-import com.breakinblocks.nautec.registries.*;
-import com.breakinblocks.nautec.utils.ArmorModelsHandler;
+import com.breakinblocks.nautec.client.screen.AugmentationStationExtensionScreen;
+import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
+import com.breakinblocks.nautec.client.screen.BioReactorScreen;
+import com.breakinblocks.nautec.client.screen.CrateScreen;
+import com.breakinblocks.nautec.client.screen.FishingStationScreen;
+import com.breakinblocks.nautec.client.screen.IncubatorScreen;
+import com.breakinblocks.nautec.client.screen.MixerScreen;
+import com.breakinblocks.nautec.client.screen.MutatorScreen;
+import com.breakinblocks.nautec.client.screen.SubmarineModuleScreen;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
+import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentSlotsRenderer;
+import com.breakinblocks.nautec.registries.NTAugmentSlots;
+import com.breakinblocks.nautec.registries.NTAugments;
+import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTEntities;
+import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTMenuTypes;
+import com.breakinblocks.nautec.registries.NTParticles;
+import com.breakinblocks.nautec.client.ArmorModelsHandler;
 import net.minecraft.client.Camera;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -52,7 +84,16 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -64,13 +105,17 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 import net.minecraft.client.renderer.block.FluidModel;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.minecraft.client.renderer.entity.FishingHookRenderer;
+import com.breakinblocks.nautec.client.render.NTRenderPipelines;
 
 @Mod(value = NautecClient.MODID, dist = Dist.CLIENT)
 public final class NautecClient {
     public static final String MODID = "nautec";
 
     public NautecClient(IEventBus modEventBus, ModContainer container) {
-        container.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, NTClientConfig.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, NTClientConfig.SPEC);
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
         modEventBus.addListener(this::registerBERenderers);
@@ -88,8 +133,8 @@ public final class NautecClient {
         modEventBus.addListener(this::registerRenderPipelines);
     }
 
-    private void registerRenderPipelines(net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent event) {
-        event.registerPipeline(com.breakinblocks.nautec.client.render.NTRenderPipelines.SONAR_HIGHLIGHT);
+    private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(NTRenderPipelines.SONAR_HIGHLIGHT);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -181,7 +226,7 @@ public final class NautecClient {
     private void registerBERenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(NTEntities.THROWN_BOUNCING_TRIDENT.get(), ThrownTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.THROWN_SPREADING_TRIDENT.get(), ThrownTridentRenderer::new);
-        event.registerEntityRenderer(NTEntities.NAUTEC_FISHING_HOOK.get(), net.minecraft.client.renderer.entity.FishingHookRenderer::new);
+        event.registerEntityRenderer(NTEntities.NAUTEC_FISHING_HOOK.get(), FishingHookRenderer::new);
         event.registerEntityRenderer(NTEntities.SUBMARINE.get(), SubmarineRenderer::new);
         event.registerEntityRenderer(NTEntities.SILT_SKIPPER.get(), NTMobRenderers.SiltSkipperRenderer::new);
         event.registerEntityRenderer(NTEntities.LANTERN_JELLY.get(), NTMobRenderers.LanternJellyRenderer::new);

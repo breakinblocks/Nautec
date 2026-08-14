@@ -2,11 +2,9 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
-import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +14,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 

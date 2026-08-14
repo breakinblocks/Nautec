@@ -4,7 +4,6 @@ import com.breakinblocks.nautec.compat.modonomicon.datagen.book.BaseNautecEntry;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProviderBase;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 
 public class SubmarinePowerEntry extends BaseNautecEntry {

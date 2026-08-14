@@ -14,7 +14,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -45,11 +44,15 @@ public class AquarineArmorItem extends Item implements IPowerItem {
         this.armorType = type;
     }
 
-    public static final AttributeModifier ENABLED_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(Nautec.MODID,"armor"),10,AttributeModifier.Operation.ADD_VALUE);
-    public static final AttributeModifier DISABLED_ARMOR_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(Nautec.MODID,"armor"),0,AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier ENABLED_ARMOR_MODIFIER = modifier("armor", 10);
+    private static final AttributeModifier DISABLED_ARMOR_MODIFIER = modifier("armor", 0);
 
-    public static final AttributeModifier ENABLED_TOUGHNESS_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(Nautec.MODID,"toughness"),5,AttributeModifier.Operation.ADD_VALUE);
-    public static final AttributeModifier DISABLED_TOUGHNESS_MODIFIER = new AttributeModifier(Identifier.fromNamespaceAndPath(Nautec.MODID,"toughness"),0,AttributeModifier.Operation.ADD_VALUE);
+    private static final AttributeModifier ENABLED_TOUGHNESS_MODIFIER = modifier("toughness", 5);
+    private static final AttributeModifier DISABLED_TOUGHNESS_MODIFIER = modifier("toughness", 0);
+
+    private static AttributeModifier modifier(String name, double value) {
+        return new AttributeModifier(Nautec.rl(name), value, AttributeModifier.Operation.ADD_VALUE);
+    }
 
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {

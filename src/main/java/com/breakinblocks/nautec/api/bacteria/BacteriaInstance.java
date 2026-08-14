@@ -15,7 +15,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 
-import javax.swing.plaf.basic.ComboPopup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -179,7 +178,7 @@ public final class BacteriaInstance {
         return tooltip;
     }
 
-    public List<Component> getExpandableTooltip(boolean hasShiftDown, boolean hasControlDown) {
+    public List<Component> getExpandableTooltip(HolderLookup.Provider lookup, boolean hasShiftDown, boolean hasControlDown) {
         List<Component> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(Component.literal("Name: ").append(Utils.registryTranslation(bacteria)).withStyle(ChatFormatting.WHITE));
         if (bacteria != NTBacterias.EMPTY) {
@@ -199,13 +198,13 @@ public final class BacteriaInstance {
                 }
                 tooltipComponents.add(statsCaption);
                 if (hasShiftDown && hasControlDown) {
-                    tooltipComponents.add(BacteriaHelper.resourceTooltip(bacteria));
+                    tooltipComponents.add(BacteriaHelper.resourceTooltip(bacteria, lookup));
                     for (Component tooltipComponent : getStats().statsTooltipWithMutatorValues()) {
                         tooltipComponents.add(Component.literal(" ".repeat(2)).append(tooltipComponent));
                     }
                 }
                 if (hasShiftDown && !hasControlDown) {
-                    tooltipComponents.add(BacteriaHelper.resourceTooltip(bacteria));
+                    tooltipComponents.add(BacteriaHelper.resourceTooltip(bacteria, lookup));
                     for (Component tooltipComponent : getStats().statsTooltip()) {
                         tooltipComponents.add(Component.literal(" ".repeat(2)).append(tooltipComponent));
                     }

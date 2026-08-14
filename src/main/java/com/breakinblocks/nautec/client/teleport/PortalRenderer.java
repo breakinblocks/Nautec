@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 
 public final class PortalRenderer {
     public static final Identifier SPIRAL = Nautec.rl("textures/effect/teleport_spiral.png");
@@ -33,8 +35,8 @@ public final class PortalRenderer {
 
         Vec3 at = TeleportFxManager.portalPos();
         float yaw = TeleportFxManager.portalYaw();
-        float spin = (net.minecraft.client.Minecraft.getInstance().level == null ? 0F
-                : net.minecraft.client.Minecraft.getInstance().level.getGameTime() + partialTick) * 2.5F;
+        float spin = (Minecraft.getInstance().level == null ? 0F
+                : Minecraft.getInstance().level.getGameTime() + partialTick) * 2.5F;
 
         poseStack.pushPose();
         poseStack.translate(at.x - cameraPos.x, at.y - cameraPos.y, at.z - cameraPos.z);
@@ -66,7 +68,7 @@ public final class PortalRenderer {
         buffer.addVertex(pose, x, y, 0F)
                 .setColor(color)
                 .setUv(u, v)
-                .setOverlay(net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(FULL_BRIGHT)
                 .setNormal(pose, 0F, 0F, 1F);
     }

@@ -20,9 +20,6 @@ import java.util.List;
 import static com.breakinblocks.nautec.NTConfig.*;
 import static com.breakinblocks.nautec.NTConfig.bacteriaLifespanCap;
 
-/**
- * Collapses the ranges of a {@link BacteriaStats} instance.
- */
 public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
                                    float growthRate,
                                    float mutationResistance,
@@ -122,15 +119,6 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
 
     public SimpleCollapsedStats rollStats() {
         return rollGrowthRate().rollMutationResistance().rollProductionRate().rollLifespan();
-    }
-
-    // TODO: Might wanna move this to SimpleBacteriaInstance
-    public SimpleCollapsedStats grow() {
-        return this;
-    }
-
-    public SimpleCollapsedStats shrink() {
-        return this;
     }
 
     public SimpleCollapsedStats copy() {

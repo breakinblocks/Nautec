@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.api.bacteria.BacteriaStatsSerializer;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
 public final class NTRegistries {

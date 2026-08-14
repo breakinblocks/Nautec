@@ -24,7 +24,6 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -37,6 +36,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
+import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class GeneratedPackTests {
     private static final String PROBE = "gametest_probe";
@@ -105,7 +106,7 @@ public final class GeneratedPackTests {
 
             JsonElement tagged = BacteriaJsonWriter.encodeRecipe(
                     BacteriaBalance.incubationRecipe(GeneratedPackPaths.bacteriaKey(PROBE),
-                            Ingredient.of(net.minecraft.core.registries.BuiltInRegistries.ITEM.getOrThrow(
+                            Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(
                                     TagKey.create(Registries.ITEM, Identifier.parse("c:ingots/iron")))),
                             rarity),
                     helper.getLevel().registryAccess());
@@ -113,7 +114,7 @@ public final class GeneratedPackTests {
                     "A tag nutrient must stay a tag so it follows whichever mod fills it");
 
             Recipe<?> decoded = Recipe.CODEC.parse(ops, mutation).getOrThrow();
-            helper.assertTrue(decoded instanceof com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe,
+            helper.assertTrue(decoded instanceof BacteriaMutationRecipe,
                     "decoded mutation recipe has the wrong class");
             helper.succeed();
         }));

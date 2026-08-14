@@ -4,9 +4,10 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class CreativeEnergySourceBlockEntity extends BlockEntity implements IEnergyStorage {
+public class CreativeEnergySourceBlockEntity extends BlockEntity implements EnergyHandler {
     private static final int MAX_ENERGY = Integer.MAX_VALUE;
 
     public CreativeEnergySourceBlockEntity(BlockPos pos, BlockState blockState) {
@@ -14,32 +15,22 @@ public class CreativeEnergySourceBlockEntity extends BlockEntity implements IEne
     }
 
     @Override
-    public int receiveEnergy(int toReceive, boolean simulate) {
+    public long getAmountAsLong() {
+        return MAX_ENERGY;
+    }
+
+    @Override
+    public long getCapacityAsLong() {
+        return MAX_ENERGY;
+    }
+
+    @Override
+    public int insert(int amount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public int extractEnergy(int toExtract, boolean simulate) {
-        return toExtract;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return MAX_ENERGY;
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return MAX_ENERGY;
-    }
-
-    @Override
-    public boolean canExtract() {
-        return true;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return false;
+    public int extract(int amount, TransactionContext transaction) {
+        return amount;
     }
 }

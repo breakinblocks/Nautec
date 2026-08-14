@@ -4,9 +4,7 @@ import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 

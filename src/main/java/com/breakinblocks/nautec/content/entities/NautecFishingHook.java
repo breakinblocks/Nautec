@@ -5,7 +5,6 @@ import com.breakinblocks.nautec.content.fishing.MinigameKind;
 import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.network.OpenFishingMinigamePayload;
 import com.breakinblocks.nautec.registries.NTEntities;
-import com.breakinblocks.nautec.registries.NTLootTables;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +27,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import net.minecraft.world.phys.Vec3;
 
 public class NautecFishingHook extends FishingHook {
     private boolean biteAnnounced;
@@ -60,7 +60,7 @@ public class NautecFishingHook extends FishingHook {
 
         this.snapTo(player.getX() - ySin * 0.3, player.getEyeY(), player.getZ() - yCos * 0.3, yRot, xRot);
 
-        net.minecraft.world.phys.Vec3 movement = new net.minecraft.world.phys.Vec3(
+        Vec3 movement = new Vec3(
                 -ySin, Mth.clamp(-(xSin / xCos), -5.0F, 5.0F), -yCos);
         double length = movement.length();
         movement = movement.multiply(

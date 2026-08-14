@@ -3,7 +3,10 @@ package com.breakinblocks.nautec.datagen;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
-import com.breakinblocks.nautec.content.blocks.*;
+import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
+import com.breakinblocks.nautec.content.blocks.CrateBlock;
+import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
+import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -87,7 +90,6 @@ public class BlockModelProvider extends ModelProvider {
         blockModels.createMultifaceBlockStates(NTBlocks.GLOW_POLYP.get());
         blockModels.registerSimpleFlatItemModel(NTBlocks.GLOW_POLYP.get());
 
-        // Laser Stuffs
         simpleBlock(NTBlocks.CREATIVE_POWER_SOURCE.get());
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 
@@ -128,7 +130,6 @@ public class BlockModelProvider extends ModelProvider {
         longDistanceLaser(NTBlocks.LONG_DISTANCE_LASER.get());
         laserJunction(NTBlocks.LASER_JUNCTION.get());
 
-        // Stuff
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         simpleBlock(NTBlocks.CHARGER.get(), existingModelFile(NTBlocks.CHARGER.get()));
         simpleBlock(NTBlocks.FISHING_STATION.get(), existingModelFile(NTBlocks.FISHING_STATION.get()));
@@ -143,7 +144,6 @@ public class BlockModelProvider extends ModelProvider {
                 blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
                 blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
 
-        // Multiblock
         helper.drainController(NTBlocks.DRAIN.get());
         helper.drainPart(NTBlocks.DRAIN_PART.get(), IntegerRange.of(0, 8));
 
@@ -375,12 +375,12 @@ public class BlockModelProvider extends ModelProvider {
 
     public Material blockTexture(Block block, String suffix) {
         Identifier name = key(block);
-        return new Material(Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath() + suffix));
+        return new Material(ModelPaths.blockModel(name, suffix));
     }
 
     public Identifier existingModelFile(Block block) {
         Identifier name = key(block);
-        return Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath());
+        return ModelPaths.blockModel(name);
     }
 
     public Identifier existingModelFile(String name) {
@@ -396,6 +396,6 @@ public class BlockModelProvider extends ModelProvider {
     }
 
     public Identifier extend(Identifier rl, String suffix) {
-        return Identifier.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + suffix);
+        return ModelPaths.extend(rl, suffix);
     }
 }

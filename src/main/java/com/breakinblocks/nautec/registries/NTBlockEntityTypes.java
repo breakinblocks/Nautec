@@ -1,7 +1,32 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.content.blockentities.*;
+import com.breakinblocks.nautec.content.blockentities.AnchorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.BacterialFuelCellBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.BeamSplitterBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.CreativeEnergySourceBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.DecorativePrismarineCrystalBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.FocusingLensBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LongDistanceLaserBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.PrismarineLaserRelayBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.PrismaticMirrorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.SubmarineDockBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
@@ -73,7 +98,6 @@ public final class NTBlockEntityTypes {
             () -> new BlockEntityType<>(FocusingLensBlockEntity::new,
                     NTBlocks.FOCUSING_LENS.get()));
 
-    // Biology
     public static final Supplier<BlockEntityType<MutatorBlockEntity>> MUTATOR = BLOCK_ENTITIES.register("mutator",
             () -> new BlockEntityType<>(MutatorBlockEntity::new,
                     NTBlocks.MUTATOR.get()));
@@ -106,7 +130,6 @@ public final class NTBlockEntityTypes {
             () -> new BlockEntityType<>(ChargerBlockEntity::new,
                     NTBlocks.CHARGER.get()));
 
-    // MULTIBLOCKS
     public static final Supplier<BlockEntityType<DrainBlockEntity>> DRAIN = BLOCK_ENTITIES.register("drain",
             () -> new BlockEntityType<>(DrainBlockEntity::new,
                     NTBlocks.DRAIN.get()));

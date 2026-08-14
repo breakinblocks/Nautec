@@ -6,9 +6,17 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryParentModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.*;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.BatteryEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.BuddingPrismarineEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.ChargerEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.ChemistryIntroductionEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.CrystalShardsEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.DrainEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.FishingStationEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.LaserManipulationEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.MixerEntry;
+import com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.laser_chemistry.ToolsEntry;
 import com.breakinblocks.nautec.registries.NTItems;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
 
 public class LaserChemistryCategory extends CategoryProvider {

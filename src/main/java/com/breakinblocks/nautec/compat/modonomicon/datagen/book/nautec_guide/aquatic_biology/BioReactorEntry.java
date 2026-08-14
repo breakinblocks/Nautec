@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.aq
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.BaseNautecEntry;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProviderBase;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookMultiblockPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookSpotlightPageModel;
 import com.breakinblocks.nautec.registries.NTBlocks;

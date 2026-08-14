@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.apache.commons.lang3.IntegerRange;
 import org.jetbrains.annotations.NotNull;
+import java.util.function.IntFunction;
 
 public class MultiblockModelHelper {
     private final BlockModelProvider bmp;
@@ -116,30 +117,10 @@ public class MultiblockModelHelper {
         String postfix = laserPort ? "_open" : "";
         String name = bmp.name(drainPartBlock) + "_" + index + postfix;
         Multiblock multiblock = NTMultiblocks.DRAIN.get();
-        // TODO: Clean up
         Material up = bmp.multiblockTexture(multiblock, "top_" + index);
         Material down = bmp.multiblockTexture(multiblock, "bottom_" + index);
-        Material north;
-        Material east;
-        Material south;
-        Material west;
-        if (index % 2 != 0) {
-            north = bmp.multiblockTexture(multiblock, "side_1" + postfix);
-            east = north;
-            south = north;
-            west = north;
-        } else if (index == 0 || index == 2) {
-            north = bmp.multiblockTexture(multiblock, "side_" + (2 - index % 3));
-            east = bmp.multiblockTexture(multiblock, "side_" + index % 3);
-            south = north;
-            west = east;
-        } else {
-            north = bmp.multiblockTexture(multiblock, "side_" + index % 3);
-            east = bmp.multiblockTexture(multiblock, "side_" + (2 - index % 3));
-            south = north;
-            west = east;
-        }
-        return bmp.cube(name, down, up, north, south, east, west, north);
+        SideTextures sides = sideTextures(multiblock, index, "side_1" + postfix, corner -> "side_" + corner);
+        return bmp.cube(name, down, up, sides.north(), sides.south(), sides.east(), sides.west(), sides.north());
     }
 
     public void bioReactorPart(Block block) {
@@ -162,31 +143,36 @@ public class MultiblockModelHelper {
         Multiblock multiblock = NTMultiblocks.BIO_REACTOR.get();
         String middleFix = top ? "top" : "bottom";
         String name = bmp.name(block) + "_" + index + "_" + middleFix + (hatch ? "_hatch" : "");
-        // TODO: Clean up
         Material up = hatch && index % 2 != 0
                 ? bmp.multiblockTexture(multiblock, "top_" + index + "_hatch")
                 : bmp.multiblockTexture(multiblock, "top_" + index);
         Material down = bmp.blockTexture(NTBlocks.POLISHED_PRISMARINE.get());
-        Material north;
-        Material east;
-        Material south;
-        Material west;
+        SideTextures sides = sideTextures(multiblock, index, "side_" + middleFix + "_1",
+                corner -> "side_" + middleFix + "_" + corner);
+        return bmp.cube(name, down, up, sides.north(), sides.south(), sides.east(), sides.west(), sides.north());
+    }
+
+    private SideTextures sideTextures(Multiblock multiblock, int index, String uniformKey, IntFunction<String> cornerKey) {
         if (index % 2 != 0) {
-            north = bmp.multiblockTexture(multiblock, "side_" + middleFix + "_1");
-            east = north;
-            south = north;
-            west = north;
-        } else if (index == 0 || index == 2) {
-            north = bmp.multiblockTexture(multiblock, "side_" + middleFix + "_" + (2 - index % 3));
-            east = bmp.multiblockTexture(multiblock, "side_" + middleFix + "_" + index % 3);
-            south = north;
-            west = east;
-        } else {
-            north = bmp.multiblockTexture(multiblock, "side_" + middleFix + "_" + index % 3);
-            east = bmp.multiblockTexture(multiblock, "side_" + middleFix + "_" + (2 - index % 3));
-            south = north;
-            west = east;
+            Material uniform = bmp.multiblockTexture(multiblock, uniformKey);
+            return new SideTextures(uniform, uniform);
         }
-        return bmp.cube(name, down, up, north, south, east, west, north);
+
+        int corner = index % 3;
+        int opposite = 2 - corner;
+        boolean mirrored = index == 0 || index == 2;
+        return new SideTextures(
+                bmp.multiblockTexture(multiblock, cornerKey.apply(mirrored ? opposite : corner)),
+                bmp.multiblockTexture(multiblock, cornerKey.apply(mirrored ? corner : opposite)));
+    }
+
+    private record SideTextures(Material north, Material east) {
+        Material south() {
+            return north;
+        }
+
+        Material west() {
+            return east;
+        }
     }
 }

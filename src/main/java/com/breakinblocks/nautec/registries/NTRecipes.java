@@ -1,7 +1,15 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.content.recipes.*;
+import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
+import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
+import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
+import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
+import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
+import com.breakinblocks.nautec.content.recipes.MixingRecipe;
+import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
+import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;

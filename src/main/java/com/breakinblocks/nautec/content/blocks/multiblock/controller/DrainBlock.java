@@ -8,9 +8,7 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.controller.Drai
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.ItemUtils;
-import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -33,10 +31,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 
 public class DrainBlock extends ContainerBlock {
     public DrainBlock(Properties properties) {
@@ -84,7 +84,7 @@ public class DrainBlock extends ContainerBlock {
                 ItemStack stack = player.getMainHandItem();
                 var itemFluidCap = stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
                 if (itemFluidCap != null) {
-                    extractFluid(player, level, InteractionHand.MAIN_HAND, drainBlockEntity.getFluidTank(), IFluidHandler.of(itemFluidCap));
+                    extractFluid(player, level, InteractionHand.MAIN_HAND, drainBlockEntity.getFluidTank(), itemFluidCap);
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -109,7 +109,8 @@ public class DrainBlock extends ContainerBlock {
         return super.getBubbleColumnDirection(state);
     }
 
-    private static void extractFluid(Player player, Level level, InteractionHand interactionHand, FluidTank fluidHandler, IFluidHandler fluidHandlerItem) {
+    private static void extractFluid(Player player, Level level, InteractionHand interactionHand, FluidTank fluidHandler,
+                                     ResourceHandler<FluidResource> fluidHandlerItem) {
         FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
         if (player.getItemInHand(interactionHand).is(Items.BUCKET)) {
             player.getItemInHand(interactionHand).shrink(1);
@@ -119,13 +120,17 @@ public class DrainBlock extends ContainerBlock {
             } else if (fluidInTank.is(Fluids.LAVA)) {
                 level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS, 0.8F, 1.0F);
             }
-            fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            fluidHandler.drain(1000);
         } else {
-            FluidStack fluidStack = fluidHandler.drain(fluidHandler.getFluidInTank(0).getAmount(), IFluidHandler.FluidAction.EXECUTE);
-            int remainderAmount = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-            FluidStack newFluidStack = fluidStack.copy();
-            newFluidStack.setAmount(remainderAmount);
-            fluidHandler.setFluid(newFluidStack);
+            FluidStack fluidStack = fluidHandler.drain(fluidInTank.getAmount());
+            int inserted;
+            try (Transaction tx = Transaction.openRoot()) {
+                inserted = fluidHandlerItem.insert(FluidResource.of(fluidStack), fluidStack.getAmount(), tx);
+                tx.commit();
+            }
+            FluidStack remainder = fluidStack.copy();
+            remainder.setAmount(fluidStack.getAmount() - inserted);
+            fluidHandler.setFluid(remainder);
         }
     }
 

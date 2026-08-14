@@ -9,6 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.input.KeyEvent;
 
 public class SubmarineHudPositionScreen extends Screen {
     private double hudX = NTClientConfig.hudX();
@@ -90,7 +91,7 @@ public class SubmarineHudPositionScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+    public boolean keyPressed(KeyEvent event) {
         if (event.key() == GLFW.GLFW_KEY_H && event.hasControlDown()) {
             onClose();
             return true;

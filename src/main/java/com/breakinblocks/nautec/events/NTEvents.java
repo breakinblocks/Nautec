@@ -25,7 +25,6 @@ import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.ParticleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,10 +45,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
+import com.breakinblocks.nautec.utils.ItemUtils;
 
 public final class NTEvents {
     @EventBusSubscriber(modid = Nautec.MODID)
@@ -93,7 +92,7 @@ public final class NTEvents {
 
             if (ModList.get().isLoaded("modonomicon")) {
                 if (!player.getData(NTAttachmentTypes.HAS_NAUTEC_GUIDE.get()) && NTConfig.spawnBookInInventory) {
-                    ItemHandlerHelper.giveItemToPlayer(player, ModonomiconCompat.getItemStack());
+                    ItemUtils.giveItemToPlayer(player, ModonomiconCompat.getItemStack());
                     player.setData(NTAttachmentTypes.HAS_NAUTEC_GUIDE.get(), true);
                 }
             }
@@ -118,11 +117,11 @@ public final class NTEvents {
 
                 if (be != null && !be.isBreaking()) {
                     be.playBreakAnimation();
-                    ItemHandlerHelper.giveItemToPlayer(player, NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(level.getRandom().nextInt(1, 3)));
+                    ItemUtils.giveItemToPlayer(player, NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(level.getRandom().nextInt(1, 3)));
                     if (level.getRandom().nextInt(0, 4) == 0) {
                         PrismarineCrystalBlock.removeCrystal(level, player, be.getBlockPos());
                         if (level.isClientSide()) {
-                            ParticleUtils.spawnBreakParticle(be.getBlockPos(), be.getBlockState().getBlock(), 50);
+                            ParticleUtils.spawnBreakParticle(be.getBlockPos(), be.getBlockState().getBlock(), 50, level);
                         }
                         level.playSound(null, pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 4, 0.75f);
                     } else {

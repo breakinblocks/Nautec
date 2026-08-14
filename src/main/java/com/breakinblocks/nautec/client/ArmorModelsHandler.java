@@ -4,7 +4,7 @@
  * contributors of quark <3
  */
 
-package com.breakinblocks.nautec.utils;
+package com.breakinblocks.nautec.client;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.model.armor.NTArmorModel;
@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.apache.commons.lang3.tuple.Pair;

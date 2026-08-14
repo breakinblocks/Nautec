@@ -72,17 +72,10 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     }
 
     // Item quick move code from cofh. Thanks to KingLemming and CofhTeam :3
-    protected boolean supportsShiftClick(Player player, int index) {
-        return true;
-    }
-
     protected abstract int getMergeableSlotCount();
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        if (!supportsShiftClick(player, index)) {
-            return ItemStack.EMPTY;
-        }
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = slots.get(index);
 
@@ -109,7 +102,6 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     }
 
     protected boolean performMerge(int index, ItemStack stack) {
-        // TODO: Consider reverting or allowing augment shift-click in some cases.
         int invBase = getMergeableSlotCount();
         int invFull = slots.size();
         int invHotbar = invFull - 9;

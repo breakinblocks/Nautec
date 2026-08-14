@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.menus;
 
-import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotBacteriaStorage;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
@@ -17,13 +16,10 @@ public class MutatorMenu extends NTMachineMenu<MutatorBlockEntity> {
 
     public MutatorMenu(int containerId, @NotNull Inventory inv, @NotNull MutatorBlockEntity blockEntity) {
         super(NTMenuTypes.MUTATOR.get(), containerId, inv, blockEntity);
-        // Input
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 0, 32, 33));
 
-        // Output
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 1, 126, 33));
 
-        // Catalyst
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 79, 61));
     }
 

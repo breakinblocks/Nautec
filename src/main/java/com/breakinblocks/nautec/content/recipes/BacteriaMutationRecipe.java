@@ -6,36 +6,25 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
-import com.breakinblocks.nautec.utils.BacteriaHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 public record BacteriaMutationRecipe(ResourceKey<Bacteria> inputBacteria, ResourceKey<Bacteria> resultBacteria,
                                      Ingredient catalyst, float chance) implements Recipe<BacteriaRecipeInput> {
     public static final String NAME = "bacteria_mutation";
     public static final RecipeType<BacteriaMutationRecipe> TYPE = RecipeType.simple(Nautec.rl("bacteria_mutation"));
-
-
-    /**
-     * <b><i>THIS METHOD SHOULD ONLY BE USED CLIENT SIDE :3</i></b>
-     */
-    public ItemStack getInputDish() {
-        return BacteriaHelper.getMaxStatDish(inputBacteria, Minecraft.getInstance().level.registryAccess());
-    }
-
-    /**
-     * <b><i>THIS METHOD SHOULD ONLY BE USED CLIENT SIDE :3</i></b>
-     */
-    public ItemStack getOutputDish() {
-        return BacteriaHelper.getMaxStatDish(resultBacteria, Minecraft.getInstance().level.registryAccess());
-    }
 
     @Override
     public boolean matches(BacteriaRecipeInput input, Level level) {

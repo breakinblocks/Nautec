@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.capabilities.power;
 
-import com.breakinblocks.nautec.Nautec;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Range;
 
@@ -47,7 +46,6 @@ public interface IPowerStorage {
 
         int powerExtracted = Math.min(getPowerStored(), Math.min(getMaxOutput(), value));
         if (!simulate) {
-            Nautec.LOGGER.debug("Draining Power");
             setPowerStored(getPowerStored() - powerExtracted);
         }
         return powerExtracted;

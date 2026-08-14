@@ -19,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BacteriaMutationsCategory extends BacteriaCategory<BacteriaMutationRecipe> {
-    static final Identifier SINGLE_SLOT_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/empty_slot");
     static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/mutator/progress_arrow_off");
     public static final Identifier UID = Nautec.rl(BacteriaMutationRecipe.NAME);
     public static final IRecipeType<BacteriaMutationRecipe> RECIPE_TYPE =
@@ -48,10 +47,10 @@ public class BacteriaMutationsCategory extends BacteriaCategory<BacteriaMutation
         addBacteriaSlot(recipe, GAP - 1, GAP + 7, recipe.inputBacteria());
         addBacteriaSlot(recipe, DRAWABLE_WIDTH - GAP - SLOT_SIZE, GAP + 7, recipe.resultBacteria());
 
-        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(recipe.getInputDish());
+        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(NTJeiUtil.maxStatDish(recipe.inputBacteria()));
 
-        builder.addSlot(RecipeIngredientRole.INPUT, DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 1, GAP + 8 + Y_GAP_BETWEEN_IN_CATA)
-                .setBackground(NTJeiUtil.sprite(SINGLE_SLOT_SPRITE, 18, 18), -1, -1)
+        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT,
+                        DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 1, GAP + 8 + Y_GAP_BETWEEN_IN_CATA)
                 .add(recipe.catalyst());
     }
 

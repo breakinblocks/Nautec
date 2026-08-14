@@ -1,8 +1,39 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.content.blocks.*;
-import com.breakinblocks.nautec.content.blocks.flora.*;
+import com.breakinblocks.nautec.content.blocks.AnchorBlock;
+import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
+import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
+import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerTopBlock;
+import com.breakinblocks.nautec.content.blocks.BacterialFuelCellBlock;
+import com.breakinblocks.nautec.content.blocks.BeamSplitterBlock;
+import com.breakinblocks.nautec.content.blocks.BuddingPrismarineBlock;
+import com.breakinblocks.nautec.content.blocks.ChargerBlock;
+import com.breakinblocks.nautec.content.blocks.CrateBlock;
+import com.breakinblocks.nautec.content.blocks.CreativeEnergySourceBlock;
+import com.breakinblocks.nautec.content.blocks.CreativePowerSourceBlock;
+import com.breakinblocks.nautec.content.blocks.DecorativePrismarineCrystalBlock;
+import com.breakinblocks.nautec.content.blocks.DecorativePrismarineCrystalPartBlock;
+import com.breakinblocks.nautec.content.blocks.EnergyConverterBlock;
+import com.breakinblocks.nautec.content.blocks.FishingStationBlock;
+import com.breakinblocks.nautec.content.blocks.FocusingLensBlock;
+import com.breakinblocks.nautec.content.blocks.GatewayBlock;
+import com.breakinblocks.nautec.content.blocks.IncubatorBlock;
+import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
+import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
+import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
+import com.breakinblocks.nautec.content.blocks.MixerBlock;
+import com.breakinblocks.nautec.content.blocks.MutatorBlock;
+import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
+import com.breakinblocks.nautec.content.blocks.PressureForgeBlock;
+import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
+import com.breakinblocks.nautec.content.blocks.PrismarineSandBlock;
+import com.breakinblocks.nautec.content.blocks.PrismaticMirrorBlock;
+import com.breakinblocks.nautec.content.blocks.ResonanceChamberBlock;
+import com.breakinblocks.nautec.content.blocks.SubmarineDockBlock;
+import com.breakinblocks.nautec.content.blocks.flora.DeepKelpBlock;
+import com.breakinblocks.nautec.content.blocks.flora.DeepKelpPlantBlock;
+import com.breakinblocks.nautec.content.blocks.flora.UnderwaterPlantBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.AugmentationStationBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.BioReactorBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.DrainBlock;
@@ -99,7 +130,6 @@ public final class NTBlocks {
     public static final DeferredBlock<FocusingLensBlock> FOCUSING_LENS = registerBlockAndItem("focusing_lens", FocusingLensBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(1.5f).noOcclusion());
 
-    // Biology
     public static final DeferredBlock<MutatorBlock> MUTATOR = bacteriaBlock(registerBlockAndItem("mutator", MutatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
     public static final DeferredBlock<IncubatorBlock> INCUBATOR = bacteriaBlock(registerBlockAndItem("incubator", IncubatorBlock::new,
@@ -115,7 +145,6 @@ public final class NTBlocks {
     public static final DeferredBlock<BacterialAnalyzerTopBlock> BACTERIAL_ANALYZER_TOP = BLOCKS.registerBlock("bacterial_analyzer_top", BacterialAnalyzerTopBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 
-    // MULTIBLOCKS
     public static final DeferredBlock<DrainBlock> DRAIN = registerBlockAndItem("deep_sea_drain", DrainBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
     public static final DeferredBlock<Block> DRAIN_WALL = registerBlockAndItem("deep_sea_drain_wall", Block::new,
@@ -181,16 +210,15 @@ public final class NTBlocks {
     }
 
     public static <T extends Block> DeferredBlock<T> bacteriaBlock(DeferredBlock<T> block) {
-        NTItems.BACTERIA_ITEMS.add(block);
+        NTItems.addBacteriaItem(block);
         return block;
     }
 
-    // NOTE: This also attempts to generate the item model for the block, when running datagen
     private static <T extends Block> DeferredBlock<T> registerBlockAndItem(String name, Function<BlockBehaviour.Properties, T> blockConstructor, BlockBehaviour.Properties properties, boolean addToTab, boolean genItemModel) {
         DeferredBlock<T> block = BLOCKS.registerBlock(name, blockConstructor, () -> properties);
         DeferredItem<BlockItem> blockItem = NTItems.registerItem(name, props -> new BlockItem(block.get(), props), new Item.Properties().useBlockDescriptionPrefix(), addToTab);
         if (genItemModel) {
-            NTItems.BLOCK_ITEMS.add(blockItem);
+            NTItems.addBlockItem(blockItem);
         }
         return block;
     }
@@ -198,7 +226,7 @@ public final class NTBlocks {
     private static <T extends Block> DeferredBlock<T> registerBlockAndItem(String name, Function<BlockBehaviour.Properties, T> blockConstructor, BlockBehaviour.Properties properties, BiFunction<T, Item.Properties, BlockItem> blockItemConstructor) {
         DeferredBlock<T> block = BLOCKS.registerBlock(name, blockConstructor, () -> properties);
         DeferredItem<BlockItem> blockItem = NTItems.registerItem(name, props -> blockItemConstructor.apply(block.get(), props), new Item.Properties().useBlockDescriptionPrefix());
-        NTItems.BLOCK_ITEMS.add(blockItem);
+        NTItems.addBlockItem(blockItem);
         return block;
     }
 }

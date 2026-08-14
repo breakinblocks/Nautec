@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.utils;
 
 import com.mojang.datafixers.util.Pair;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.multiblock.FakeBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.SavesControllerPosBlockEntity;
@@ -27,21 +26,16 @@ import org.apache.commons.lang3.IntegerRange;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class MultiblockHelper {
     private MultiblockHelper() {
     }
 
-    /**
-     * Check if all multiblock parts are placed correctly
-     *
-     * @param multiblock    multiblocks controller (multiblock to check)
-     * @param controllerPos blockPos of the multiblock controller
-     * @param level         level of the controller block
-     * @param player        player that is trying to form the multi
-     * @return first: isValid? second: Direction that multi is valid
-     */
     public static MultiblockData getUnformedMultiblock(Multiblock multiblock, BlockPos controllerPos, Level level, @Nullable Player player, boolean sendErrorMsg) {
         MultiblockLayer[] layout = multiblock.getLayout();
         MultiblockLayer[] actualLayout = new MultiblockLayer[multiblock.getMaxSize()];
@@ -54,8 +48,7 @@ public final class MultiblockHelper {
         BooleanList multiblockIndexList = new BooleanArrayList();
 
         Pair<BooleanList, HorizontalDirection> prioritizedDirectionLayout = Pair.of(BooleanLists.emptyList(), HorizontalDirection.NORTH);
-        // Direction, blockPos, blockDefinitionIndex
-        Map<HorizontalDirection, Pair<BlockPos, Integer>> firstMissingBlockPoses = new HashMap<>();
+        Map<HorizontalDirection, MissingBlock> firstMissingBlockPoses = new HashMap<>();
 
         for (HorizontalDirection mDirection : directions) {
             BlockPos firstBlockPos = getFirstBlockPos(mDirection, controllerPos, relativeControllerPos);
@@ -74,7 +67,7 @@ public final class MultiblockHelper {
                         if (def.get(blockIndex) != null && level.getBlockState(curBlockPos).is(def.get(blockIndex)) && !multiblock.isFormed(level, curBlockPos) || def.get(blockIndex) == null) {
                             multiblockIndexList.add(true);
                         } else {
-                            firstMissingBlockPoses.putIfAbsent(mDirection, Pair.of(curBlockPos, blockIndex));
+                            firstMissingBlockPoses.putIfAbsent(mDirection, new MissingBlock(curBlockPos, blockIndex));
                             multiblockIndexList.add(false);
                         }
                         if (x + 1 < width) {
@@ -106,7 +99,7 @@ public final class MultiblockHelper {
                                 if (i >= minSize) {
                                     break outer;
                                 } else {
-                                    firstMissingBlockPoses.putIfAbsent(mDirection, Pair.of(curBlockPos, blockIndex));
+                                    firstMissingBlockPoses.putIfAbsent(mDirection, new MissingBlock(curBlockPos, blockIndex));
                                     multiblockIndexList.add(false);
                                 }
                             }
@@ -142,7 +135,8 @@ public final class MultiblockHelper {
         HorizontalDirection prioritizedDirection = prioritizedDirectionLayout.getSecond();
 
         if (sendErrorMsg && player != null && !level.isClientSide()) {
-            sendFailureMsg(player, level, firstMissingBlockPoses.get(prioritizedDirection).getFirst(), def, firstMissingBlockPoses.get(prioritizedDirection).getSecond());
+            MissingBlock missing = firstMissingBlockPoses.get(prioritizedDirection);
+            sendFailureMsg(player, level, missing.pos(), def, missing.definitionIndex());
         }
 
         return new MultiblockData(false, null, null);
@@ -229,6 +223,9 @@ public final class MultiblockHelper {
         throw new IllegalStateException("Multiblock pre checks failed, controller not found");
     }
 
+    private record MissingBlock(BlockPos pos, int definitionIndex) {
+    }
+
     private static void sendFailureMsg(Player player, Level level, BlockPos curBlockPos, Map<Integer, Block> def, int blockIndex) {
         player.sendSystemMessage(Component.translatable("multiblock.info.failed_to_construct").withStyle(ChatFormatting.RED).append(":"));
         player.sendSystemMessage(Component.literal("| ")
@@ -275,7 +272,6 @@ public final class MultiblockHelper {
         Vec3i relativeControllerPos = getRelativeControllerPos(multiblock);
         BlockPos firstBlockPos = getFirstBlockPos(direction, controllerPos, relativeControllerPos);
         Map<Integer, Block> def = multiblock.getDefinition();
-        Nautec.LOGGER.debug("first: {}", firstBlockPos);
 
         multiblock.onStartForming(level, firstBlockPos, controllerPos);
 

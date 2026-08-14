@@ -9,9 +9,7 @@ import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-// TODO: Implement this
 public class ThrowBouncingTridentAugment extends Augment {
     public ThrowBouncingTridentAugment(AugmentSlot augmentSlot) {
         super(NTAugments.THROWN_BOUNCING_TRIDENT_AUGMENT.get(), augmentSlot);

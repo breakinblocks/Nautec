@@ -17,6 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import net.minecraft.world.entity.Mob;
 
 public final class NTEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, Nautec.MODID);
@@ -48,7 +49,7 @@ public final class NTEntities {
     public static final Supplier<EntityType<AbyssalMaw>> ABYSSAL_MAW = mob("abyssal_maw", AbyssalMaw::new,
             MobCategory.MONSTER, builder -> builder.sized(1.4f, 0.9f).eyeHeight(0.65f));
 
-    private static <T extends net.minecraft.world.entity.Mob> Supplier<EntityType<T>> mob(String name,
+    private static <T extends Mob> Supplier<EntityType<T>> mob(String name,
                                                                                          EntityType.EntityFactory<T> factory,
                                                                                          MobCategory category,
                                                                                          UnaryOperator<EntityType.Builder<T>> builder) {

@@ -21,7 +21,28 @@ import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.generated.GeneratedPackFinder;
-import com.breakinblocks.nautec.registries.*;
+import com.breakinblocks.nautec.registries.NTArgumentTypes;
+import com.breakinblocks.nautec.registries.NTAttachmentTypes;
+import com.breakinblocks.nautec.registries.NTAugmentSlots;
+import com.breakinblocks.nautec.registries.NTAugments;
+import com.breakinblocks.nautec.registries.NTBacteriaSerializers;
+import com.breakinblocks.nautec.registries.NTBacteriaStatsSerializers;
+import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTCreativeTabs;
+import com.breakinblocks.nautec.registries.NTEntities;
+import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTLootConditions;
+import com.breakinblocks.nautec.registries.NTLootFunctions;
+import com.breakinblocks.nautec.registries.NTLootModifier;
+import com.breakinblocks.nautec.registries.NTMenuTypes;
+import com.breakinblocks.nautec.registries.NTMobEffects;
+import com.breakinblocks.nautec.registries.NTMultiblocks;
+import com.breakinblocks.nautec.registries.NTParticles;
+import com.breakinblocks.nautec.registries.NTRecipes;
+import com.breakinblocks.nautec.registries.NTSounds;
+import com.breakinblocks.nautec.registries.NTStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -171,6 +192,11 @@ public final class Nautec {
     }
 
     private static void registerBECaps(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.ENERGY_CONVERTER.get(),
+                (blockEntity, dir) -> blockEntity.getFeBuffer());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CREATIVE_ENERGY_SOURCE.get(),
+                (blockEntity, dir) -> blockEntity);
+
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : NTBlockEntityTypes.BLOCK_ENTITIES.getEntries()) {
             Block validBlock = be.get().getValidBlocks().stream().iterator().next();
             BlockEntity testBE = be.get().create(BlockPos.ZERO, validBlock.defaultBlockState());

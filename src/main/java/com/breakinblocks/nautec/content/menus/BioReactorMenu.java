@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.menus;
 
-import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotBacteriaStorage;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;

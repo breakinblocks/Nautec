@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public class AugmentationRecipeCategory extends AbstractRecipeCategory<AugmentationRecipe> {
-    static final Identifier SINGLE_SLOT_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/empty_slot");
     public static final Identifier UID = Nautec.rl("augmentation");
     public static final IRecipeType<AugmentationRecipe> RECIPE_TYPE =
             IRecipeType.create(UID, AugmentationRecipe.class);
@@ -45,8 +44,8 @@ public class AugmentationRecipeCategory extends AbstractRecipeCategory<Augmentat
 
         for (int i = 0; i < ingredients.size(); i++) {
             IngredientWithCount ingredient = ingredients.get(i);
-            NTJeiUtil.addIngredientWithCount(builder.addSlot(RecipeIngredientRole.INPUT, width + i * 20 + 1, 32)
-                    .setBackground(NTJeiUtil.sprite(SINGLE_SLOT_SPRITE, 18, 18), -1, -1), ingredient);
+            NTJeiUtil.addIngredientWithCount(
+                    NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, width + i * 20 + 1, 32), ingredient);
         }
     }
 

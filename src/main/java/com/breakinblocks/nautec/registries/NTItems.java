@@ -2,11 +2,27 @@ package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
-import com.breakinblocks.nautec.content.items.*;
+import com.breakinblocks.nautec.content.items.AirBottleItem;
+import com.breakinblocks.nautec.content.items.AquarineArmorItem;
+import com.breakinblocks.nautec.content.items.BatteryItem;
+import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
+import com.breakinblocks.nautec.content.items.GraftingToolItem;
+import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
+import com.breakinblocks.nautec.content.items.PetriDishItem;
+import com.breakinblocks.nautec.content.items.PrismMonocleItem;
+import com.breakinblocks.nautec.content.items.RobotArmItem;
+import com.breakinblocks.nautec.content.items.SubmarineItem;
+import com.breakinblocks.nautec.content.items.WaveJetItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
 import com.breakinblocks.nautec.content.items.submarine.TeleportModuleItem;
-import com.breakinblocks.nautec.content.items.tools.*;
+import com.breakinblocks.nautec.content.items.tools.AquarineAxeItem;
+import com.breakinblocks.nautec.content.items.tools.AquarineHoeItem;
+import com.breakinblocks.nautec.content.items.tools.AquarinePickaxeItem;
+import com.breakinblocks.nautec.content.items.tools.AquarineShovelItem;
+import com.breakinblocks.nautec.content.items.tools.AquarineSwordItem;
+import com.breakinblocks.nautec.content.items.tools.AquarineWrenchItem;
+import com.breakinblocks.nautec.content.items.tools.NautecFishingRodItem;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import net.minecraft.core.component.DataComponents;
@@ -22,19 +38,40 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.world.food.FoodProperties;
 
 public final class NTItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Nautec.MODID);
-    public static final List<ItemLike> CREATIVE_TAB_ITEMS = new ArrayList<>();
-    public static final List<ItemLike> BACTERIA_ITEMS = new ArrayList<>();
-    public static final List<Supplier<BlockItem>> BLOCK_ITEMS = new ArrayList<>();
+    private static final List<ItemLike> CREATIVE_TAB_ITEMS = new ArrayList<>();
+    private static final List<ItemLike> BACTERIA_ITEMS = new ArrayList<>();
+    private static final List<Supplier<BlockItem>> BLOCK_ITEMS = new ArrayList<>();
+
+    public static List<ItemLike> creativeTabItems() {
+        return Collections.unmodifiableList(CREATIVE_TAB_ITEMS);
+    }
+
+    public static List<ItemLike> bacteriaItems() {
+        return Collections.unmodifiableList(BACTERIA_ITEMS);
+    }
+
+    public static List<Supplier<BlockItem>> blockItems() {
+        return Collections.unmodifiableList(BLOCK_ITEMS);
+    }
+
+    static void addBacteriaItem(ItemLike item) {
+        BACTERIA_ITEMS.add(item);
+    }
+
+    static void addBlockItem(Supplier<BlockItem> blockItem) {
+        BLOCK_ITEMS.add(blockItem);
+    }
 
     public static final Supplier<Item> NAUTEC_GUIDE;
 
-    // MATERIALS
     public static final DeferredItem<Item> AQUARINE_STEEL_INGOT = registerItem("aquarine_steel_ingot",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> ATLANTIC_GOLD_INGOT = registerItem("atlantic_gold_ingot",
@@ -59,7 +96,6 @@ public final class NTItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SALT = registerItem("salt", Item::new, new Item.Properties());
 
-    // MACHINE PARTS
     public static final DeferredItem<Item> RUSTY_GEAR = registerItem("rusty_gear",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> GEAR = registerItem("gear",
@@ -87,7 +123,6 @@ public final class NTItems {
     public static final DeferredItem<Item> CAST_IRON_ROD = registerItem("cast_iron_rod", Item::new, new Item.Properties());
     public static final DeferredItem<Item> BROWN_POLYMER = registerItem("brown_polymer", Item::new, new Item.Properties());
 
-    // MOB DROPS
     public static final DeferredItem<Item> DROWNED_LUNGS = registerItem("drowned_lungs",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> DOLPHIN_FIN = registerItem("dolphin_fin",
@@ -97,7 +132,6 @@ public final class NTItems {
     public static final DeferredItem<Item> ELDRITCH_HEART = registerItem("eldritch_heart",
             Item::new, new Item.Properties());
 
-    // Robot Arms
     public static final DeferredItem<RobotArmItem> CLAW_ROBOT_ARM = registerItem("claw_robot_arm",
             RobotArmItem::new, new Item.Properties());
 
@@ -108,7 +142,7 @@ public final class NTItems {
     public static final DeferredItem<Item> ABYSSAL_ORGAN = registerItem("abyssal_organ",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SILT_SKIPPER = registerItem("silt_skipper",
-            Item::new, new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build()));
+            Item::new, new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).build()));
     public static final DeferredItem<MobBucketItem> SILT_SKIPPER_BUCKET = registerItem("silt_skipper_bucket",
             props -> new MobBucketItem(NTEntities.SILT_SKIPPER.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, props),
             new Item.Properties().stacksTo(1));
@@ -153,19 +187,15 @@ public final class NTItems {
     public static final DeferredItem<Item> AUXILIARY_VENTRICLE = registerItem("auxiliary_ventricle",
             Item::new, new Item.Properties());
 
-    // VIALS
     public static final DeferredItem<Item> GLASS_VIAL = registerItem("glass_vial", Item::new, new Item.Properties());
     public static final DeferredItem<Item> ELECTROLYTE_ALGAE_SERUM_VIAL = registerItem("eas_vial", Item::new, new Item.Properties());
 
-    // BACTERIA
     public static final DeferredItem<GraftingToolItem> GRAFTING_TOOL = bacteriaItem(registerItem("grafting_tool", GraftingToolItem::new,
             () -> new Item.Properties().durability(80)));
     public static final DeferredItem<PetriDishItem> PETRI_DISH = bacteriaItem(registerItem("petri_dish", PetriDishItem::new, () -> new Item.Properties()
             .stacksTo(1)
             .component(NTDataComponents.BACTERIA, ComponentBacteriaStorage.EMPTY)));
 
-    // ARMOR
-    // CURIO ITEMS
     public static final DeferredItem<BatteryItem> PRISMATIC_BATTERY = registerItem("prismatic_battery",
             BatteryItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<PrismMonocleItem> PRISM_MONOCLE = registerItem("prism_monocle",
@@ -181,7 +211,6 @@ public final class NTItems {
     public static final DeferredItem<AquarineArmorItem> AQUARINE_LEGGINGS = registerItem("aquarine_steel_leggings", props -> new AquarineArmorItem(ArmorType.LEGGINGS, props), new Item.Properties());
     public static final DeferredItem<AquarineArmorItem> AQUARINE_BOOTS = registerItem("aquarine_steel_boots", props -> new AquarineArmorItem(ArmorType.BOOTS, props), new Item.Properties());
 
-    // TOOLS 'N WEAPONS
     public static final DeferredItem<NeptunesTridentItem> NEPTUNES_TRIDENT = registerItem("neptunes_trident",
             NeptunesTridentItem::new, new Item.Properties()
                     .attributes(NeptunesTridentItem.createAttributes())
@@ -210,7 +239,6 @@ public final class NTItems {
             SOLAR_MODULE, BOOSTER_MODULE, STEALTH_MODULE, ARMOR_MODULE,
             SONAR_MODULE, SHIELD_MODULE, IMPULSE_LASER_MODULE, TELEPORT_MODULE);
 
-    // TOOLS
     public static final DeferredItem<AquarineWrenchItem> AQUARINE_WRENCH = registerItem("aquarine_steel_wrench",
             AquarineWrenchItem::new, new Item.Properties());
     public static final DeferredItem<Item> CROWBAR = registerItem("crowbar",

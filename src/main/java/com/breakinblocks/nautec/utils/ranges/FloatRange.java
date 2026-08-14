@@ -5,14 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Collection;
-import java.util.List;
 
 public class FloatRange extends AbstractRange<Float>{
     public static final MapCodec<FloatRange> MAP_CODEC = rangeMapCodec(Codec.FLOAT, FloatRange::new);

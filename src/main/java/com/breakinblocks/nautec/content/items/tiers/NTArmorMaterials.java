@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.content.items.tiers;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.tags.NTTags;
 import net.minecraft.util.Util;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.equipment.ArmorMaterial;

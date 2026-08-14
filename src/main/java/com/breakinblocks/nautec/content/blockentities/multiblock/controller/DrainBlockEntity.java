@@ -2,12 +2,10 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 
 import com.google.common.collect.ImmutableMap;
 import com.breakinblocks.nautec.NTConfig;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.multiblocks.MultiblockData;
 import com.breakinblocks.nautec.capabilities.IOActions;
-import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -32,26 +30,25 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-// TODO: Require power to work
 public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEntity {
+    private static final int DRAIN_INTERVAL_TICKS = 20;
+    private static final int VALVE_TRAVEL_TICKS = 12;
+    private static final int VALVE_SPEED = 30;
+    private static final int LID_OPEN_TRAVEL_TICKS = 72;
+    private static final int LID_OPEN_SPEED = 3;
+    private static final int LID_CLOSE_TRAVEL_TICKS = 36;
+    private static final int LID_CLOSE_SPEED = -6;
+    private static final int VALVE_TO_LID_DELAY = 60;
+    private static final int LID_TO_VALVE_DELAY = 30;
+
     private MultiblockData multiblockData;
 
-    // TODO: Merge these variables
-    // Client side animation stuff
-    private float valveIndependentAngle;
-    private float valveChasingVelocity;
-    private int valveInUse;
-    private int valveSpeed;
-
-    private float lidIndependentAngle;
-    private float lidChasingVelocity;
-    private int lidInUse;
-    private int lidSpeed;
+    private final Rotator valve = new Rotator();
+    private final Rotator lid = new Rotator();
 
     private boolean closing;
     private int valveLidInterval;
@@ -62,9 +59,16 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         this.multiblockData = MultiblockData.EMPTY;
     }
 
+    public boolean hasOperatingPower() {
+        return getPower() > NTConfig.drainPower;
+    }
+
     public void open() {
-        this.valveInUse = 12;
-        this.valveSpeed = 30;
+        if (!hasOperatingPower()) {
+            return;
+        }
+
+        this.valve.start(VALVE_TRAVEL_TICKS, VALVE_SPEED);
         level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 1, 1f);
 
         setOpen(true);
@@ -79,13 +83,12 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     }
 
     public void close() {
-        this.lidInUse = 36;
-        this.lidSpeed = -6;
+        this.lid.start(LID_CLOSE_TRAVEL_TICKS, LID_CLOSE_SPEED);
         this.closing = true;
     }
 
     public boolean isMoving() {
-        return lidInUse > 0 || valveInUse > 0;
+        return lid.isMoving() || valve.isMoving();
     }
 
     public boolean isClosing() {
@@ -167,12 +170,11 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     }
 
     private void performDraining() {
-        // Every second
-        if (level.getGameTime() % 20 == 0 && lidInUse == 0 && getPower() > NTConfig.drainPower) {
+        if (level.getGameTime() % DRAIN_INTERVAL_TICKS == 0 && !lid.isMoving() && hasOperatingPower()) {
             if (hasWater()) {
                 if (openAndFormed()) {
                     if (level.getBiome(worldPosition).is(BiomeTags.IS_OCEAN)) {
-                        getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.drainSaltWaterAmount), IFluidHandler.FluidAction.EXECUTE);
+                        getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.drainSaltWaterAmount));
                     }
                 }
             }
@@ -180,58 +182,33 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     }
 
     private void performRotation() {
-        // Valve opening/closing
-        float actualValveSpeed = getValveSpeed();
-        valveChasingVelocity += ((actualValveSpeed * 10 / 3f) - valveChasingVelocity) * .25f;
-        valveIndependentAngle += valveChasingVelocity;
+        if (valve.tick()) {
+            if (!closing) {
+                this.valveLidInterval = VALVE_TO_LID_DELAY;
+            } else {
+                this.closing = false;
 
-        if (valveInUse > 0) {
-            valveInUse--;
-
-            if (valveInUse == 0) {
-                this.valveSpeed = 0;
-
-                if (!closing) {
-                    this.valveLidInterval = 60;
-                } else {
-                    this.closing = false;
-
-                    setOpen(false);
-                }
+                setOpen(false);
             }
         }
 
-        // Interval between both actions
         if (valveLidInterval > 0) {
             valveLidInterval--;
 
             if (valveLidInterval == 0) {
                 if (!closing) {
-                    this.lidInUse = 72;
-                    this.lidSpeed = 3;
+                    lid.start(LID_OPEN_TRAVEL_TICKS, LID_OPEN_SPEED);
                 } else {
-                    this.valveInUse = 12;
-                    this.valveSpeed = -30;
+                    valve.start(VALVE_TRAVEL_TICKS, -VALVE_SPEED);
                 }
             }
         }
 
-        // Lid opening/closing
-        float actualLidSpeed = getLidSpeed();
-        lidChasingVelocity += ((actualLidSpeed * 10 / 3f) - lidChasingVelocity) * .25f;
-        lidIndependentAngle += lidChasingVelocity;
-
-        if (lidInUse > 0) {
-            lidInUse--;
-
-            if (lidInUse == 0) {
-                this.lidSpeed = 0;
-
-                if (closing) {
-                    this.valveLidInterval = 30;
-                } else {
-                    updateBubbleColumns();
-                }
+        if (lid.tick()) {
+            if (closing) {
+                this.valveLidInterval = LID_TO_VALVE_DELAY;
+            } else {
+                updateBubbleColumns();
             }
         }
     }
@@ -248,20 +225,43 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         }
     }
 
-    private float getValveSpeed() {
-        return valveSpeed;
-    }
-
     public float getValveIndependentAngle(float partialTicks) {
-        return (valveIndependentAngle + partialTicks * valveChasingVelocity) / 360;
-    }
-
-    private float getLidSpeed() {
-        return lidSpeed;
+        return valve.renderAngle(partialTicks);
     }
 
     public float getLidIndependentAngle(float partialTicks) {
-        return (lidIndependentAngle + partialTicks * lidChasingVelocity) / 360;
+        return lid.renderAngle(partialTicks);
+    }
+
+    private static final class Rotator {
+        private float independentAngle;
+        private float chasingVelocity;
+        private int ticksRemaining;
+        private int speed;
+
+        void start(int ticks, int speed) {
+            this.ticksRemaining = ticks;
+            this.speed = speed;
+        }
+
+        boolean isMoving() {
+            return ticksRemaining > 0;
+        }
+
+        boolean tick() {
+            chasingVelocity += ((speed * 10 / 3f) - chasingVelocity) * .25f;
+            independentAngle += chasingVelocity;
+
+            if (ticksRemaining > 0 && --ticksRemaining == 0) {
+                this.speed = 0;
+                return true;
+            }
+            return false;
+        }
+
+        float renderAngle(float partialTicks) {
+            return (independentAngle + partialTicks * chasingVelocity) / 360;
+        }
     }
 
     @Override
@@ -301,13 +301,13 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.store("multiblockData", CompoundTag.CODEC, saveMBData());
-        out.putFloat("angle", this.lidIndependentAngle);
+        out.putFloat("angle", this.lid.independentAngle);
     }
 
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.multiblockData = loadMBData(in.read("multiblockData", CompoundTag.CODEC).orElseGet(CompoundTag::new));
-        this.lidIndependentAngle = in.getFloatOr("angle", 0);
+        this.lid.independentAngle = in.getFloatOr("angle", 0);
     }
 }

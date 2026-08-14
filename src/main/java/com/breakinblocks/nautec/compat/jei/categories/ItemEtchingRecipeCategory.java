@@ -18,7 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemEtchingRecipeCategory extends AbstractRecipeCategory<ItemEtchingRecipe> {
-    static final Identifier BURN_PROGRESS_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/empty_arrow");
+    static final Identifier BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
     public static final Identifier UID = Nautec.rl("item_etching");
     public static final IRecipeType<ItemEtchingRecipe> RECIPE_TYPE =
             IRecipeType.create(UID, ItemEtchingRecipe.class);

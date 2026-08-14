@@ -9,7 +9,6 @@ import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ThrowSpreadingTrident extends Augment {
     private static final float SPREAD_ANGLE = 8.0f;

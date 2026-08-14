@@ -1,8 +1,9 @@
-package com.breakinblocks.nautec.utils;
+package com.breakinblocks.nautec.client;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
+import com.breakinblocks.nautec.utils.BacteriaHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;

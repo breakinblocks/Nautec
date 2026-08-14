@@ -15,9 +15,7 @@ public class AugmentationStationExtensionMenu extends NTAbstractContainerMenu<Au
 
     public AugmentationStationExtensionMenu(int containerId, @NotNull Inventory inv, @NotNull AugmentationStationExtensionBlockEntity blockEntity) {
         super(NTMenuTypes.AUGMENT_STATION_EXTENSION.get(), containerId, inv, blockEntity);
-        // Augment
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 176 / 2 - 8, 48));
-        // Robot Arm
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 1, 176 / 2 - 8, 26));
         addPlayerInventory(inv, 84);
         addPlayerHotbar(inv, 142);

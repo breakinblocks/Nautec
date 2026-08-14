@@ -191,7 +191,7 @@ public class ItemModelProvider extends ModelProvider {
     private void specialItemBlock(Item item, SpecialModelRenderer.Unbaked<?> renderer) {
         Identifier name = key(item);
         itemModels.itemModelOutput.accept(item, ItemModelUtils.specialModel(
-                Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath()), renderer));
+                ModelPaths.blockModel(name), renderer));
     }
 
     private void bucket(Fluid f) {
@@ -209,7 +209,7 @@ public class ItemModelProvider extends ModelProvider {
     }
 
     private void blockItems() {
-        for (Supplier<BlockItem> blockItem : NTItems.BLOCK_ITEMS) {
+        for (Supplier<BlockItem> blockItem : NTItems.blockItems()) {
             BlockItem item = blockItem.get();
             if (item == NTBlocks.LASER_JUNCTION.asItem()
                     || item == NTBlocks.ANCHOR.asItem()
@@ -227,7 +227,7 @@ public class ItemModelProvider extends ModelProvider {
 
     public void parentItemBlock(Item item, String suffix) {
         Identifier name = key(item);
-        blockModels.registerSimpleItemModel(item, Identifier.fromNamespaceAndPath(name.getNamespace(), "block/" + name.getPath() + suffix));
+        blockModels.registerSimpleItemModel(item, ModelPaths.blockModel(name, suffix));
     }
 
     public void petriDishItem(Item item) {
@@ -259,6 +259,6 @@ public class ItemModelProvider extends ModelProvider {
     private void handAuthoredItem(Item item) {
         Identifier name = key(item);
         itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(
-                Identifier.fromNamespaceAndPath(name.getNamespace(), "item/" + name.getPath())));
+                ModelPaths.itemModel(name)));
     }
 }

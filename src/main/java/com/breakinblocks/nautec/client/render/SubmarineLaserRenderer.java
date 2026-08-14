@@ -1,7 +1,7 @@
 package com.breakinblocks.nautec.client.render;
 
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
-import com.breakinblocks.nautec.utils.LaserRendererHelper;
+import com.breakinblocks.nautec.client.render.LaserRendererHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;

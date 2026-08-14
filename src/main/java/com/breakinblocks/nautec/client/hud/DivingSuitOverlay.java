@@ -16,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 
 public final class DivingSuitOverlay {
-    private static final Identifier OXYGEN_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "hud/oxygen");
-    private static final Identifier OXYGEN_BURSTING_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "hud/oxygen_bursting");
-    private static final Identifier OXYGEN_EMPTY_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "hud/oxygen_empty");
+    private static final Identifier OXYGEN_SPRITE = Nautec.rl("hud/oxygen");
+    private static final Identifier OXYGEN_BURSTING_SPRITE = Nautec.rl("hud/oxygen_bursting");
+    private static final Identifier OXYGEN_EMPTY_SPRITE = Nautec.rl("hud/oxygen_empty");
 
     private static boolean isWearingFullDivingSuit(@NotNull Player player) {
         return player.getItemBySlot(EquipmentSlot.HEAD).is(NTItems.DIVING_HELMET) &&

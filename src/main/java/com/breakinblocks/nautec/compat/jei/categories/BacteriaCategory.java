@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.compat.jei.categories;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
-import com.breakinblocks.nautec.utils.GuiUtils;
+import com.breakinblocks.nautec.client.GuiUtils;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;

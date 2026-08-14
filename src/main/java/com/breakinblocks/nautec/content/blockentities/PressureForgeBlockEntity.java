@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.content.blockentities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -96,7 +95,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
 
         getItemStackHandler().extractItem(0, 1, false);
         getItemStackHandler().insertItem(1, result, false);
-        getFluidTank().drain(NTConfig.pressureForgeAcidUsage, IFluidHandler.FluidAction.EXECUTE);
+        getFluidTank().drain(NTConfig.pressureForgeAcidUsage);
         MachineSounds.play(level, worldPosition, NTSounds.PRESSURE_FORGE_COMPLETE, 0.8f, 0.9f);
     }
 

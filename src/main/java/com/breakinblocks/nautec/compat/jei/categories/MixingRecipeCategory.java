@@ -18,8 +18,8 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
-    static final Identifier SINGLE_SLOT_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/empty_slot");
-    static final Identifier DOWN_ARROW_SPRITE = Identifier.fromNamespaceAndPath(Nautec.MODID, "container/furnace/down_arrow");
+
+    static final Identifier DOWN_ARROW_SPRITE = Nautec.rl("container/furnace/down_arrow");
     public static final Identifier UID = Nautec.rl(MixingRecipe.NAME);
     public static final IRecipeType<MixingRecipe> RECIPE_TYPE =
             IRecipeType.create(UID, MixingRecipe.class);
@@ -46,8 +46,8 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
 
             for (int i = 0; i < recipe.ingredients().size(); i++) {
                 int x = startX + i * (slotSize + gap);
-                NTJeiUtil.addIngredientWithCount(builder.addSlot(RecipeIngredientRole.INPUT, x, 0)
-                        .setBackground(NTJeiUtil.sprite(SINGLE_SLOT_SPRITE, 18, 18), -1, -1), recipe.ingredients().get(i));
+                NTJeiUtil.addIngredientWithCount(
+                        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, x, 0), recipe.ingredients().get(i));
             }
         }
 
@@ -55,8 +55,7 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
             int outputSlotSize = 18;
             int outputX = (80 - outputSlotSize) / 2;
 
-            builder.addSlot(RecipeIngredientRole.OUTPUT, outputX, 50)
-                    .setBackground(NTJeiUtil.sprite(SINGLE_SLOT_SPRITE, 18, 18), -1, -1)
+            NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.OUTPUT, outputX, 50)
                     .add(recipe.result());
         }
 
@@ -75,8 +74,8 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
 
     @Override
     public void draw(@NotNull MixingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
-        NTJeiUtil.blitSprite(guiGraphics, SINGLE_SLOT_SPRITE, 87, -1, 18, 18);
-        NTJeiUtil.blitSprite(guiGraphics, SINGLE_SLOT_SPRITE, 87, 47, 18, 18);
+        NTJeiUtil.blitSprite(guiGraphics, NTJeiUtil.SINGLE_SLOT_SPRITE, 87, -1, 18, 18);
+        NTJeiUtil.blitSprite(guiGraphics, NTJeiUtil.SINGLE_SLOT_SPRITE, 87, 47, 18, 18);
 
         NTJeiUtil.blitSprite(guiGraphics, DOWN_ARROW_SPRITE, 32, 22, 15, 23);
         NTJeiUtil.blitSprite(guiGraphics, DOWN_ARROW_SPRITE, 88, 22, 15, 23);

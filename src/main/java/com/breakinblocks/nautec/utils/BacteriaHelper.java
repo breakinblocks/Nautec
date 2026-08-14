@@ -7,7 +7,6 @@ import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -51,12 +50,13 @@ public final class BacteriaHelper {
         return dish;
     }
 
-    /**
-     * <b><i>THIS METHOD SHOULD ONLY BE USED CLIENT SIDE :3</i></b>
-     */
-    public static Component resourceTooltip(ResourceKey<Bacteria> key) {
-        Bacteria bacteria = getBacteria(Minecraft.getInstance().level.registryAccess(), key);
+    public static Component resourceTooltip(ResourceKey<Bacteria> key, HolderLookup.Provider lookup) {
+        Bacteria bacteria = getBacteria(lookup, key);
         MutableComponent component = Component.literal("  Resource: ").withStyle(ChatFormatting.YELLOW);
+        if (bacteria == null) {
+            return component;
+        }
+
         Item item = bacteria.resource().resolve();
         if (item != Items.AIR) component.append(
                 item.getName(ItemStack.EMPTY).copy().withStyle(ChatFormatting.WHITE)

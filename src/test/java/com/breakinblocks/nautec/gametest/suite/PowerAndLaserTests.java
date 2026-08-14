@@ -20,6 +20,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Set;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 public final class PowerAndLaserTests {
     private static final BlockPos SOURCE_POS = new BlockPos(2, 1, 4);
@@ -436,5 +439,63 @@ public final class PowerAndLaserTests {
                 helper.succeed();
             });
         });
+
+        registerEnergyBridge(r);
+    }
+
+    private static final int FE_BUFFER = 100_000;
+    private static final int FE_PER_TICK = 100;
+
+    private static void registerEnergyBridge(NTTestRegistrar r) {
+        r.add("power/creative_energy_source_exposes_energy_capability", 20, helper -> {
+            BlockPos pos = new BlockPos(4, 1, 4);
+            helper.setBlock(pos, NTBlocks.CREATIVE_ENERGY_SOURCE.get().defaultBlockState());
+
+            EnergyHandler handler = energyAt(helper, pos);
+            if (handler == null) {
+                helper.fail("Creative Energy Source should expose the energy capability");
+                return;
+            }
+
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(500, handler.extract(500, tx), "creative source extraction");
+                helper.assertValueEqual(0, handler.insert(500, tx), "creative source rejects insertion");
+                tx.commit();
+            }
+            helper.succeed();
+        });
+
+        r.add("power/energy_converter_accepts_fe_and_converts_it", 120, helper -> {
+            BlockPos converterPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(converterPos, NTBlocks.ENERGY_CONVERTER.get().defaultBlockState());
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            EnergyHandler handler = energyAt(helper, converterPos);
+            if (handler == null) {
+                helper.fail("Energy Converter should expose the energy capability");
+                return;
+            }
+
+            int accepted;
+            try (Transaction tx = Transaction.openRoot()) {
+                accepted = handler.insert(FE_BUFFER, tx);
+                helper.assertValueEqual(0, handler.extract(100, tx), "converter refuses to give FE back");
+                tx.commit();
+            }
+            helper.assertValueEqual(FE_BUFFER, accepted, "FE accepted by converter");
+            helper.assertValueEqual(FE_BUFFER, handler.getAmountAsInt(), "FE buffered by converter");
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(handler.getAmountAsInt() < FE_BUFFER, "converter should drain its FE buffer");
+                helper.assertValueEqual(FE_PER_TICK, mixer(helper, mixerPos).getPower(), "converted power reaching the mixer");
+                helper.succeed();
+            });
+        });
+    }
+
+    private static EnergyHandler energyAt(GameTestHelper helper, BlockPos pos) {
+        BlockPos absolute = helper.absolutePos(pos);
+        return helper.getLevel().getCapability(Capabilities.Energy.BLOCK, absolute, null);
     }
 }

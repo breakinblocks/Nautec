@@ -25,6 +25,11 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.breakinblocks.nautec.content.fishing.CaughtEntitySpawner;
+import com.breakinblocks.nautec.data.NTDataComponents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.level.block.Blocks;
 
 public final class LootTableTests {
     public static void register(NTTestRegistrar r) {
@@ -63,7 +68,7 @@ public final class LootTableTests {
         r.add("loot/lucky_zone_tables_produce_items", 10, helper -> {
             ServerLevel level = helper.getLevel();
             LootParams params = new LootParams.Builder(level)
-                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(helper.absolutePos(new net.minecraft.core.BlockPos(1, 2, 1))))
+                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(helper.absolutePos(new BlockPos(1, 2, 1))))
                     .withParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD))
                     .create(LootContextParamSets.FISHING);
 
@@ -88,31 +93,31 @@ public final class LootTableTests {
 
         r.add("loot/catch_as_entity_spawns_and_removes_the_stack", 20, 1, helper -> {
             ServerLevel level = helper.getLevel();
-            net.minecraft.core.BlockPos pos = helper.absolutePos(new net.minecraft.core.BlockPos(4, 2, 4));
-            level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.WATER.defaultBlockState());
+            BlockPos pos = helper.absolutePos(new BlockPos(4, 2, 4));
+            level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
 
-            net.minecraft.world.entity.projectile.FishingHook hook =
-                    new net.minecraft.world.entity.projectile.FishingHook(
-                            net.minecraft.world.entity.EntityType.FISHING_BOBBER, level);
+            FishingHook hook =
+                    new FishingHook(
+                            EntityType.FISHING_BOBBER, level);
             hook.snapTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
             level.addFreshEntity(hook);
 
             ItemStack marked = new ItemStack(Items.COD);
-            marked.set(com.breakinblocks.nautec.data.NTDataComponents.CATCH_ENTITY.get(),
-                    net.minecraft.world.entity.EntityType.COD);
+            marked.set(NTDataComponents.CATCH_ENTITY.get(),
+                    EntityType.COD);
             ItemStack plain = new ItemStack(Items.SALMON);
 
             List<ItemStack> drops = new ArrayList<>(List.of(marked, plain));
-            int codsBefore = level.getEntities(net.minecraft.world.entity.EntityType.COD,
+            int codsBefore = level.getEntities(EntityType.COD,
                     hook.getBoundingBox().inflate(6.0), e -> true).size();
 
-            com.breakinblocks.nautec.content.fishing.CaughtEntitySpawner.releaseAll(hook, drops);
+            CaughtEntitySpawner.releaseAll(hook, drops);
 
             if (drops.size() != 1 || !drops.getFirst().is(Items.SALMON)) {
                 helper.fail("The marked stack should have been removed from the drops, leaving only the salmon, got " + drops);
                 return;
             }
-            int codsAfter = level.getEntities(net.minecraft.world.entity.EntityType.COD,
+            int codsAfter = level.getEntities(EntityType.COD,
                     hook.getBoundingBox().inflate(6.0), e -> true).size();
             if (codsAfter <= codsBefore) {
                 helper.fail("No cod entity was released when a marked stack was caught");

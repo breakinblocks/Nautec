@@ -13,7 +13,6 @@ public class JadePlugin implements IWailaPlugin {
 
     @Override
     public void register(IWailaCommonRegistration registration) {
-        //TODO register data providers
     }
 
     @Override

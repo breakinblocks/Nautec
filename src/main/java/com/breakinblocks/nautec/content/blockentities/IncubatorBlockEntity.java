@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
-import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;

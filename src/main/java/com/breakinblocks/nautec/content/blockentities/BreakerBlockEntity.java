@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
-import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;

@@ -15,7 +15,7 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
-import com.breakinblocks.nautec.utils.PlayerUtils;
+import com.breakinblocks.nautec.client.ClientScreenHooks;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +36,12 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class AugmentationStationBlockEntity extends ContainerBlockEntity implements MultiblockEntity {
     private MultiblockData multiblockData;
@@ -45,7 +50,6 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
 
     private final Map<BlockPos, ItemStack> augmentItems;
 
-    // Recipe dependent
     private boolean isRunning;
     private int duration;
     private Player player;
@@ -135,7 +139,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                     if (playerOpenMenuInterval > 0) {
                         playerOpenMenuInterval--;
                         if (playerOpenMenuInterval == 0 && player.level().isClientSide()) {
-                            PlayerUtils.openAugmentationStationScreen(player, this, Component.literal("Augmentation Station"));
+                            ClientScreenHooks.openAugmentationStationScreen(player, this, Component.literal("Augmentation Station"));
                         }
                     }
                 } else {

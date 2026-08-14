@@ -35,6 +35,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.IntegerRange;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 
 public final class PersistenceTests {
     private static final BlockPos SOURCE_POS = new BlockPos(2, 1, 2);
@@ -56,6 +58,18 @@ public final class PersistenceTests {
             helper.assertValueEqual(1, loadedStack.getCount(), "charger slot count");
             helper.assertValueEqual(new ComponentPowerStorage(1234, 10000, 0.5f),
                     loadedStack.get(NTDataComponents.POWER), "charger battery power component");
+            helper.succeed();
+        }));
+
+        r.add("persistence/energy_converter_fe_buffer_roundtrip", 40, helper -> helper.runAfterDelay(1, () -> {
+            EnergyConverterBlockEntity source = placePair(helper, NTBlocks.ENERGY_CONVERTER.get(), EnergyConverterBlockEntity.class);
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(2500, source.getFeBuffer().insert(2500, tx), "FE buffered before save");
+                tx.commit();
+            }
+
+            EnergyConverterBlockEntity loaded = reload(helper, source, EnergyConverterBlockEntity.class);
+            helper.assertValueEqual(2500, loaded.getFeBuffer().getAmountAsInt(), "FE buffer across save/load");
             helper.succeed();
         }));
 

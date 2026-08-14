@@ -1,7 +1,16 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.content.menus.*;
+import com.breakinblocks.nautec.content.menus.AugmentMenu;
+import com.breakinblocks.nautec.content.menus.AugmentationStationExtensionMenu;
+import com.breakinblocks.nautec.content.menus.BacterialAnalyzerMenu;
+import com.breakinblocks.nautec.content.menus.BioReactorMenu;
+import com.breakinblocks.nautec.content.menus.CrateMenu;
+import com.breakinblocks.nautec.content.menus.FishingStationMenu;
+import com.breakinblocks.nautec.content.menus.IncubatorMenu;
+import com.breakinblocks.nautec.content.menus.MixerMenu;
+import com.breakinblocks.nautec.content.menus.MutatorMenu;
+import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
