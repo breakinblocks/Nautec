@@ -53,6 +53,80 @@ public final class ContentIntegrityTests {
         }
     }
 
+    private static void checkGeckolibArt(List<String> problems, String name, List<String> wantedAnimations) {
+        int[] base = pngSize("/assets/nautec/textures/entity/" + name + ".png");
+        int[] glow = pngSize("/assets/nautec/textures/entity/" + name + "_e.png");
+
+        if (base == null) {
+            problems.add(name + ".png is missing");
+        }
+        if (glow == null) {
+            problems.add(name + "_e.png is missing");
+        }
+        if (base != null && glow != null && (base[0] != glow[0] || base[1] != glow[1])) {
+            problems.add(name + "_e.png is " + glow[0] + "x" + glow[1]
+                    + " but the base sheet is " + base[0] + "x" + base[1]);
+        }
+
+        JsonObject geo = readJson("/assets/nautec/geckolib/models/entity/" + name + ".geo.json");
+        if (geo == null) {
+            problems.add(name + ".geo.json is missing or does not parse");
+        } else {
+            JsonObject description = geo.getAsJsonArray("minecraft:geometry")
+                    .get(0).getAsJsonObject().getAsJsonObject("description");
+            String identifier = description.get("identifier").getAsString();
+            if (!identifier.equals("geometry." + name)) {
+                problems.add(name + ".geo.json declares " + identifier + ", not geometry." + name);
+            }
+            if (base != null) {
+                int width = description.get("texture_width").getAsInt();
+                int height = description.get("texture_height").getAsInt();
+                if (width != base[0] || height != base[1]) {
+                    problems.add(name + ".geo.json is unwrapped for " + width + "x" + height
+                            + " but " + name + ".png is " + base[0] + "x" + base[1]);
+                }
+            }
+        }
+
+        JsonObject animationFile = readJson("/assets/nautec/geckolib/animations/entity/" + name + ".animation.json");
+        if (animationFile == null) {
+            problems.add(name + ".animation.json is missing or does not parse");
+            return;
+        }
+
+        JsonObject declared = animationFile.getAsJsonObject("animations");
+        for (String wanted : wantedAnimations) {
+            if (!declared.has(wanted)) {
+                problems.add(name + ".animation.json has no \"" + wanted + "\" animation");
+            } else if (declared.getAsJsonObject(wanted).has("animation_length")
+                    && declared.getAsJsonObject(wanted).get("animation_length").getAsDouble() <= 0.0) {
+                problems.add(name + ".animation.json declares \"" + wanted + "\" with zero length");
+            }
+        }
+    }
+
+    private static int[] pngSize(String path) {
+        try (InputStream stream = ContentIntegrityTests.class.getResourceAsStream(path)) {
+            if (stream == null) {
+                return null;
+            }
+            byte[] header = stream.readNBytes(24);
+            if (header.length < 24) {
+                return null;
+            }
+            return new int[]{readBigEndianInt(header, 16), readBigEndianInt(header, 20)};
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static int readBigEndianInt(byte[] bytes, int offset) {
+        return ((bytes[offset] & 0xFF) << 24)
+                | ((bytes[offset + 1] & 0xFF) << 16)
+                | ((bytes[offset + 2] & 0xFF) << 8)
+                | (bytes[offset + 3] & 0xFF);
+    }
+
     public static void register(NTTestRegistrar r) {
         r.add("content/every_structure_still_parses", 5, helper -> {
             HolderLookup.RegistryLookup<Structure> structures =
@@ -148,6 +222,16 @@ public final class ContentIntegrityTests {
             }
             if (!missing.isEmpty()) {
                 helper.fail("Items that produce an empty stack: " + String.join(", ", missing));
+            }
+            helper.succeed();
+        });
+
+        r.add("content/geckolib_art_is_installed", 5, helper -> {
+            List<String> problems = new ArrayList<>();
+            checkGeckolibArt(problems, "submarine", List.of("deploy", "idle"));
+            checkGeckolibArt(problems, "wave_jet", List.of("activated"));
+            if (!problems.isEmpty()) {
+                helper.fail("GeckoLib art problems: " + String.join("; ", problems));
             }
             helper.succeed();
         });

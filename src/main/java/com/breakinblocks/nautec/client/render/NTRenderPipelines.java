@@ -21,6 +21,16 @@ public final class NTRenderPipelines {
             .withCull(false)
             .build();
 
+    public static final RenderPipeline SPOTLIGHT_CONE = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+            .withLocation(Nautec.rl("pipeline/spotlight_cone"))
+            .withVertexShader("core/position_color")
+            .withFragmentShader("core/position_color")
+            .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+            .withCull(false)
+            .build();
+
     private NTRenderPipelines() {
     }
 }

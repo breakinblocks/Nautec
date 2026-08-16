@@ -72,7 +72,6 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.ATLANTIC_GOLD_NUGGET.get());
         basicItem(NTItems.PRISMARINE_CRYSTAL_SHARD.get());
         basicItem(NTItems.RESONANT_SHARD.get());
-        handHeldItem(NTItems.WAVE_JET.get());
         basicItem(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get());
         basicItem(NTItems.DEEP_STEEL_PLATING.get());
         basicItem(NTItems.PRISMARINE_LENS.get());
@@ -139,6 +138,9 @@ public class ItemModelProvider extends ModelProvider {
 
         itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+
+        itemModels.itemModelOutput.accept(NTItems.WAVE_JET.get(), ItemModelUtils.specialModel(
+                Nautec.rl("item/wave_jet_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
         for (var module : NTItems.SUBMARINE_MODULES) {
             basicItem(module.get());

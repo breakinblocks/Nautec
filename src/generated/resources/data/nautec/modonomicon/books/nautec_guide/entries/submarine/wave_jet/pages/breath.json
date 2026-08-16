@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "breath",
+  "show_title_separator": true,
+  "sort_number": 3,
+  "text": "book.nautec.nautec_guide.submarine.wave_jet.breath.text",
+  "title": "book.nautec.nautec_guide.submarine.wave_jet.breath.title"
+}

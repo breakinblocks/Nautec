@@ -5,7 +5,7 @@
   },
   "id": "power",
   "show_title_separator": true,
-  "sort_number": 2,
+  "sort_number": 5,
   "text": "book.nautec.nautec_guide.submarine.wave_jet.power.text",
   "title": "book.nautec.nautec_guide.submarine.wave_jet.power.title"
 }

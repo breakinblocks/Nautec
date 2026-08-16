@@ -43,6 +43,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         addItem(WAVE_JET, "Wave Jet");
         add("nautec.wave_jet.needs_water", "The Wave Jet only bites under water");
+        add("nautec.wave_jet.both_hands", "The Wave Jet takes both hands");
+        add("nautec.wave_jet.spotlight", "Spotlight: ");
+        add("nautec.wave_jet.spotlight_hint", "Toggle the spotlight with your Wave Jet key (F by default) while holding it");
         addItem(NAUTEC_FISHING_ROD, "Prismatic Fishing Rod");
         add("nautec.fishing_minigame.timing_bar", "Something is biting");
         add("nautec.fishing_minigame.rhythm", "It is fighting you");
@@ -50,6 +53,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.fishing_minigame.prompt.timing_bar", "Strike when the marker hits the green");
         add("nautec.fishing_minigame.prompt.rhythm", "Strike on all three marks");
         add("nautec.fishing_minigame.prompt.hold", "Hold through the green, then let go");
+        add("nautec.fishing_minigame.missed", "It slipped the hook");
+        add("nautec.fishing_minigame.hooked", "Hooked it");
 
         addItem(SUBMARINE, "Sea Scout");
         add("entity.nautec.submarine", "Sea Scout");

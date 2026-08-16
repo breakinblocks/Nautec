@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "submarine_hud",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.nautec.nautec_guide.submarine.submarine_controls.submarine_hud.text",
+  "title": "book.nautec.nautec_guide.submarine.submarine_controls.submarine_hud.title"
+}

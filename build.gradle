@@ -10,7 +10,11 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+def releaseBuild = (providers.gradleProperty('release')
+        .orElse(providers.environmentVariable('RELEASE'))
+        .getOrElse('false')).toBoolean()
+
+version = releaseBuild ? mod_version : "${mod_version}-SNAPSHOT.${new Date().format('yyyyMMdd-HHmmss')}"
 group = mod_group_id
 
 repositories {
@@ -135,7 +139,7 @@ tasks.withType(ProcessResources).configureEach {
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,
-            mod_version            : mod_version,
+            mod_version            : project.version.toString(),
             mod_authors            : mod_authors,
             mod_description        : mod_description
     ]
@@ -147,6 +151,44 @@ tasks.withType(ProcessResources).configureEach {
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+}
+
+def deployDir = providers.gradleProperty('nautec_deploy_dir')
+        .orElse(providers.environmentVariable('NAUTEC_DEPLOY_DIR'))
+
+tasks.register('deployToPack') {
+    group = 'nautec'
+    description = 'Builds and drops the jar into a modpack instance, clearing out older Nautec jars first'
+    dependsOn tasks.named('build')
+
+    doLast {
+        if (!deployDir.isPresent()) {
+            throw new GradleException("No target set. Put nautec_deploy_dir in gradle.properties or set "
+                    + "NAUTEC_DEPLOY_DIR, pointing at the instance's mods folder, or pass "
+                    + "-Pnautec_deploy_dir=<path>")
+        }
+
+        def mods = file(deployDir.get())
+        if (!mods.isDirectory()) {
+            throw new GradleException("Not a directory: ${mods}")
+        }
+
+        def built = tasks.jar.archiveFile.get().asFile
+        mods.listFiles({ File candidate ->
+            candidate.name.startsWith(mod_id + "-") && candidate.name.endsWith(".jar")
+        } as FileFilter).each {
+            if (it.name != built.name) {
+                logger.lifecycle("removing stale ${it.name}")
+            }
+            it.delete()
+        }
+
+        copy {
+            from built
+            into mods
+        }
+        logger.lifecycle("deployed ${built.name} to ${mods}")
+    }
 }
 
 publishing {

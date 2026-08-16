@@ -9,6 +9,7 @@ import java.util.List;
 public final class FishingMinigame {
     public static final int DURATION_TICKS = 60;
     public static final int TREASURE_CHANCE = 15;
+    public static final int INPUT_GRACE_TICKS = 8;
 
     public static List<ResourceKey<LootTable>> rewardTables(boolean minigameSucceeded, boolean baseWasTreasure) {
         if (!minigameSucceeded) {

@@ -37,6 +37,7 @@ public final class SubmarineWorldFx {
         SonarHighlightRenderer.render(poseStack, collector, cameraPos);
         SonarPulseRenderer.render(poseStack, collector, cameraPos);
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
+        WaveJetLightRenderer.render(poseStack, collector, cameraPos, partialTick);
 
         for (Entity entity : level.entitiesForRendering()) {
             if (entity instanceof SubmarineEntity submarine && submarine.isLaserActive()) {
