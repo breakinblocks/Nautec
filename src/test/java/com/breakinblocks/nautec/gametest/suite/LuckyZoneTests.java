@@ -148,6 +148,36 @@ public final class LuckyZoneTests {
             helper.succeed();
         });
 
+        r.add("fishing/input_grace_never_eats_a_real_strike", 5, helper -> {
+            for (MinigameKind kind : MinigameKind.values()) {
+                for (long seed = -400; seed < 400; seed++) {
+                    for (int[] window : kind.windows(seed)) {
+                        if (window[0] < FishingMinigame.INPUT_GRACE_TICKS) {
+                            helper.fail(kind + " seed " + seed + " opens a window at tick " + window[0]
+                                    + ", inside the " + FishingMinigame.INPUT_GRACE_TICKS + " tick input grace");
+                            return;
+                        }
+                    }
+                }
+            }
+            helper.succeed();
+        });
+
+        r.add("fishing/rhythm_marks_never_overlap", 5, helper -> {
+            for (long seed = -400; seed < 400; seed++) {
+                List<int[]> marks = MinigameKind.RHYTHM.windows(seed);
+                for (int i = 1; i < marks.size(); i++) {
+                    int previousEnd = marks.get(i - 1)[0] + marks.get(i - 1)[1];
+                    if (marks.get(i)[0] < previousEnd) {
+                        helper.fail("Rhythm seed " + seed + " overlaps mark " + i
+                                + " (starts at " + marks.get(i)[0] + ", previous ends at " + previousEnd + ")");
+                        return;
+                    }
+                }
+            }
+            helper.succeed();
+        });
+
         r.add("fishing/every_minigame_can_be_won_and_lost", 5, helper -> {
             long seed = 123456789L;
 

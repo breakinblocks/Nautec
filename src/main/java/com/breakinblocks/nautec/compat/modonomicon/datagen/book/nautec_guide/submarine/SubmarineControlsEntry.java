@@ -24,5 +24,17 @@ public class SubmarineControlsEntry extends BaseNautecEntry {
                 \\
                 Sneak always dismounts, so it can never be a control. On the surface the thrusters barely bite; the submersible is built for the deep.
                 """);
+
+        this.page("submarine_hud", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("The Readout");
+        this.pageText("""
+                Taking the seat puts a panel on your screen: the cell on top, the hull below it, and the control scheme listed underneath so you are not hunting through this book mid-dive.
+                \\
+                It stands in for the vanilla vehicle hearts, which eighty hull points would otherwise smear across four rows of your screen.
+                \\
+                Ctrl and H picks the panel up so you can drop it somewhere that suits you. A passenger in the back keeps their ordinary hotbar and sees none of it.
+                """);
     }
 }

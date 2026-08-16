@@ -20,7 +20,7 @@ public class SubmarineModulesEntry extends BaseNautecEntry {
         this.pageText("""
                 Right-click the hull with a wrench to open its module bay: nine slots, one module each.
                 \\
-                While you pilot, your hotbar is replaced by those nine slots. Scroll or use the number keys to select, then left-click, or press F, to fire the selected module.
+                While you pilot, your hotbar is replaced by those nine slots. Scroll or use the number keys to select, then left-click, or press F, to fire the selected module. F belongs to the hull while you are in the seat, even if you happen to be carrying a Wave Jet.
                 \\
                 Solar and Armour are passive and work from any slot. Everything else costs power and has a cooldown that sweeps across its cell while it recharges.
                 \\

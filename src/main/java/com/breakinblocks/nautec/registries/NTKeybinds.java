@@ -41,6 +41,11 @@ public final class NTKeybinds {
     public static final Lazy<KeyMapping> SUBMARINE_ABILITY_KEYBIND = keyBind(
             "Fire Submarine Module", GLFW.GLFW_KEY_F);
 
+    public static final Lazy<KeyMapping> WAVE_JET_LIGHT_KEYBIND = Lazy.of(() -> new KeyMapping(
+            "Toggle Wave Jet Spotlight",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F, NAUTEC_CATEGORY));
+
     public static final Lazy<KeyMapping> SUBMARINE_HUD_KEYBIND = Lazy.of(() -> new KeyMapping(
             "Reposition Submarine HUD",
             KeyConflictContext.IN_GAME,
@@ -62,6 +67,7 @@ public final class NTKeybinds {
         event.register(ACTIVATE_LASER_KEYBIND.get());
         event.register(SUBMARINE_DESCEND_KEYBIND.get());
         event.register(SUBMARINE_ABILITY_KEYBIND.get());
+        event.register(WAVE_JET_LIGHT_KEYBIND.get());
         event.register(SUBMARINE_HUD_KEYBIND.get());
     }
 }

@@ -4,11 +4,28 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.client.renderer.items.WaveJetItemRenderer;
 import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.ItemUtils;
+import com.breakinblocks.nautec.utils.Tooltips;
+import com.geckolib.animatable.GeoItem;
+import com.geckolib.animatable.client.GeoRenderProvider;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.renderer.GeoItemRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -23,11 +40,46 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class WaveJetItem extends Item implements IPowerItem {
+import java.util.function.Consumer;
+
+public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     private static final int USE_DURATION = 72000;
 
+    public static final DataTicket<Boolean> THRUSTING = DataTicket.create("nautec:wave_jet_thrusting", Boolean.class);
+
+    private static final RawAnimation ACTIVATED = RawAnimation.begin().thenLoop("activated");
+
+    private final AnimatableInstanceCache animatableCache = new SingletonAnimatableInstanceCache(this);
+
     public WaveJetItem(Properties properties) {
-        super(properties.component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(6000)));
+        super(properties.component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(6000))
+                .component(NTDataComponents.ABILITY_ENABLED, false));
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<WaveJetItem>("fan", 0, state ->
+                state.getDataOrDefault(THRUSTING, false) ? state.setAndContinue(ACTIVATED) : PlayState.STOP));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.animatableCache;
+    }
+
+    @Override
+    public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
+        consumer.accept(new GeoRenderProvider() {
+            private WaveJetItemRenderer renderer;
+
+            @Override
+            public GeoItemRenderer<?> getGeoItemRenderer() {
+                if (this.renderer == null) {
+                    this.renderer = new WaveJetItemRenderer();
+                }
+                return this.renderer;
+            }
+        });
     }
 
     @Override
@@ -94,6 +146,10 @@ public class WaveJetItem extends Item implements IPowerItem {
             drain(stack, NTConfig.waveJetPowerUsage);
         }
 
+        if (!level.isClientSide()) {
+            holdBreath(player);
+        }
+
         if (level.isClientSide()) {
             Vec3 wake = player.position().subtract(look.scale(0.6));
             level.addParticle(ParticleTypes.BUBBLE_COLUMN_UP, wake.x, wake.y + 0.4, wake.z,
@@ -110,11 +166,47 @@ public class WaveJetItem extends Item implements IPowerItem {
         return false;
     }
 
+    public static void holdBreath(Player player) {
+        int air = player.getAirSupply();
+        if (air > 0 && air < player.getMaxAirSupply()) {
+            player.setAirSupply(Math.min(air + 1, player.getMaxAirSupply()));
+        }
+    }
+
     private static void playAt(Level level, LivingEntity entity, SoundEvent sound, float volume, float pitch) {
         if (level.isClientSide()) {
             return;
         }
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, volume, pitch);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        IPowerStorage powerStorage = storage(stack);
+        if (powerStorage != null) {
+            Tooltips.transInsert(tooltipComponents, "nautec.armor.power",
+                    " " + powerStorage.getPowerStored() + "/" + powerStorage.getPowerCapacity(), ChatFormatting.DARK_AQUA);
+        }
+
+        boolean lit = NTDataComponentsUtils.isAbilityEnabled(stack);
+        Tooltips.transtrans(tooltipComponents, "nautec.wave_jet.spotlight",
+                lit ? "nautec.armor.enabled" : "nautec.armor.disabled",
+                lit ? ChatFormatting.GREEN : ChatFormatting.RED);
+        Tooltips.trans(tooltipComponents, "nautec.wave_jet.spotlight_hint", ChatFormatting.GRAY);
+        Tooltips.trans(tooltipComponents, "nautec.wave_jet.both_hands", ChatFormatting.GRAY);
+    }
+
+    static boolean spendLightPower(ItemStack stack, Player player) {
+        if (player.getAbilities().instabuild || NTConfig.waveJetLightPowerUsage <= 0) {
+            return true;
+        }
+        IPowerStorage storage = storage(stack);
+        if (storage == null || storage.getPowerStored() < NTConfig.waveJetLightPowerUsage) {
+            return false;
+        }
+        storage.tryDrainPower(NTConfig.waveJetLightPowerUsage, false);
+        return true;
     }
 
     private static boolean hasCharge(ItemStack stack, Player player) {

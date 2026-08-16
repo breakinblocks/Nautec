@@ -215,7 +215,56 @@
 - An "Abyssal Pressure Forge" guide entry, and config for its depth, water column, power
   draw, acid use and tank size.
 
+### Added
+- Riding the Wave Jet holds your breath. Your air bar stops draining for as long as you
+  are thrusting and starts again the moment you let go, so a crossing costs you the power
+  rather than the lungful. It preserves the air you have rather than topping you up: it
+  will not save you once the bar is already empty, and it does not make the Diving Suit
+  redundant.
+- The Wave Jet takes both hands. It is a thruster with two grips, so you hold it in one
+  hand and the other has to be empty. Putting anything in your other hand hands the Wave
+  Jet back to your inventory rather than letting you carry both.
+- Because your other hand is always empty while you hold it, F stops swapping your hands
+  while the Wave Jet is in one of them and toggles the spotlight instead. Rebind the
+  spotlight off F and vanilla's hand swap goes back to normal.
+- The Wave Jet has a spotlight. Press F while holding it and it throws a cone of light
+  wherever you are looking, out to 12 blocks, and actually lights what it lands on rather
+  than only looking like it does. It draws a trickle of power while lit and switches
+  itself off when the cell runs dry. Range, brightness and power draw are all configurable,
+  and setting the brightness to 0 leaves the visible cone with no world lighting.
+
+### Changed
+- The Wave Jet is the artist's model now, not the flat placeholder icon. It renders through
+  GeckoLib in hand, in the inventory and on the ground, with an emissive layer for the
+  headlights and readout, and the fan spins while you are actually thrusting.
+- The catch minigame has a real panel now, in the same slanted plate and cyan trim
+  as the submersible HUD, instead of a flat rectangle floating over the hotbar. It
+  reads at a glance and it moves while you play it:
+  - The line runs as a tension wave across the gauge, and the wave winds up tighter
+    the closer you get to the end of the bar.
+  - The needle carries a trail and a chevron above and below, and the whole panel
+    snaps to green the moment the needle is inside a strike window, so the timing is
+    something you see rather than something you guess.
+  - Strike windows breathe, struck rhythm marks stamp with a pop, and a hold draws as
+    a filling bar that turns green while you are holding in the right place.
+  - A countdown under the gauge runs cyan to amber to red and flashes at the end.
+  - Winning freezes the gauge for half a second on a green burst reading "Hooked it";
+    missing shakes the panel and goes slack and red.
+  - Strikes, wins and misses have their own sounds.
+- The minigame no longer dims and blurs the whole world while it is up. It was
+  inheriting the standard in-world menu background, which put a dark sheet over the
+  water, the bobber and everything else for the three seconds you had to play it.
+
 ### Fixed
+- The catch minigame no longer disappears the instant a fish bites. Right-click
+  is the reflex when a bobber dips, and the bar was taking that click as your
+  strike and closing on the same frame, so most casts looked like no minigame
+  appeared at all. Only left-click, Space and Enter strike now, the first eight
+  ticks of the bar ignore input entirely, and a held key no longer machine-guns
+  strikes through key repeat.
+- Missing the window keeps the bar on screen until it runs out, tinted red with
+  "It slipped the hook", instead of closing on the spot. The catch is unchanged;
+  you can now see what you missed.
 - Breaking a Crate now drops the Crate again. Its loot table referenced a data
   component that no longer exists, which stopped the whole table loading.
 - Rusty Crates in ocean ruins now generate their loot. Their loot table still

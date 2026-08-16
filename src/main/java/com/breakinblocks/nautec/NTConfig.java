@@ -223,6 +223,18 @@ public final class NTConfig {
             .comment("The amount of power the Wave Jet uses each tick while running")
             .defineInRange("waveJetPowerUsage", 2, 0, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.IntValue WAVE_JET_LIGHT_RANGE = BUILDER
+            .comment("How far ahead the Wave Jet spotlight throws its pool of light, in blocks")
+            .defineInRange("waveJetLightRange", 12, 1, 32);
+
+    private static final ModConfigSpec.IntValue WAVE_JET_LIGHT_LEVEL = BUILDER
+            .comment("Light level the Wave Jet spotlight casts where it lands, 0 to disable world lighting and leave only the visible cone")
+            .defineInRange("waveJetLightLevel", 14, 0, 15);
+
+    private static final ModConfigSpec.IntValue WAVE_JET_LIGHT_POWER_USAGE = BUILDER
+            .comment("The amount of power the Wave Jet spotlight uses each tick while lit")
+            .defineInRange("waveJetLightPowerUsage", 1, 0, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue DOCK_POWER_USAGE = BUILDER
             .comment("The amount of power a Sea Scout Dock requires before it will service a hull")
             .defineInRange("dockPowerUsage", 20, 0, Integer.MAX_VALUE);
@@ -472,6 +484,9 @@ public final class NTConfig {
     public static int gatewayCooldown = 100;
     public static double waveJetThrust = 0.035;
     public static int waveJetPowerUsage = 2;
+    public static int waveJetLightRange = 12;
+    public static int waveJetLightLevel = 14;
+    public static int waveJetLightPowerUsage = 1;
     public static int dockPowerUsage = 20;
     public static int dockChargeRate = 40;
     public static int pressureForgeDepth = 0;
@@ -616,6 +631,9 @@ public final class NTConfig {
         gatewayCooldown = GATEWAY_COOLDOWN.get();
         waveJetThrust = WAVE_JET_THRUST.getAsDouble();
         waveJetPowerUsage = WAVE_JET_POWER_USAGE.get();
+        waveJetLightRange = WAVE_JET_LIGHT_RANGE.get();
+        waveJetLightLevel = WAVE_JET_LIGHT_LEVEL.get();
+        waveJetLightPowerUsage = WAVE_JET_LIGHT_POWER_USAGE.get();
         dockPowerUsage = DOCK_POWER_USAGE.get();
         dockChargeRate = DOCK_CHARGE_RATE.get();
         pressureForgeDepth = PRESSURE_FORGE_DEPTH.get();

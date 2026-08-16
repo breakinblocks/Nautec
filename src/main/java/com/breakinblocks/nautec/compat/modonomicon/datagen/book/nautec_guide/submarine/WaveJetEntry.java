@@ -26,10 +26,21 @@ public class WaveJetEntry extends BaseNautecEntry {
                 it, you climb into it. Some days you want none of
                 that and you only want to get somewhere.
                 The Wave Jet is a thruster with two grips on it.
-                Hold it in your main hand, get under water, and
-                hold use. It pulls you along wherever you are
-                looking, both hands on the grips, flat out like a
-                swimmer.
+                Hold it, get under water, and hold use. It pulls
+                you along wherever you are looking, both hands on
+                the grips, flat out like a swimmer.
+                """);
+
+        page("hands", () -> BookTextPageModel.create()
+                .withTitle(context.pageTitle())
+                .withText(context.pageText()));
+        pageTitle("Both Hands");
+        pageText("""
+                Two grips means two hands. Carry it in either one
+                and the other has to stay empty.
+                Put anything in your free hand and the jet is
+                handed straight back to your pack. It is not a
+                thing you hold alongside a sword.
                 """);
 
         page("using", () -> BookTextPageModel.create()
@@ -46,14 +57,45 @@ public class WaveJetEntry extends BaseNautecEntry {
                 stop being pulled and go back to swimming.
                 """);
 
+        page("breath", () -> BookTextPageModel.create()
+                .withTitle(context.pageTitle())
+                .withText(context.pageText()));
+        pageTitle("Holding Your Breath");
+        pageText("""
+                Riding it holds your breath. Your air stops
+                draining for as long as you are thrusting, and
+                picks up again the moment you let go.
+                It keeps what you have rather than filling you up.
+                Set off with half a lungful and you arrive with
+                half a lungful. Set off with none and it will not
+                save you. For that you want a Diving Suit.
+                """);
+
+        page("spotlight", () -> BookTextPageModel.create()
+                .withTitle(context.pageTitle())
+                .withText(context.pageText()));
+        pageTitle("The Spotlight");
+        pageText("""
+                Press F while holding it to light the lamps. They
+                throw a cone wherever you look and put a real pool
+                of light on whatever you point at, which is worth
+                more than the beam itself once you are deep enough
+                that nothing else reaches.
+                It burns a little power while lit and puts itself
+                out when the cell is empty. It works out of the
+                water too, if you would rather carry a lamp than a
+                torch.
+                """);
+
         page("power", () -> BookTextPageModel.create()
                 .withTitle(context.pageTitle())
                 .withText(context.pageText()));
         pageTitle("Feeding It");
         pageText("""
                 It carries its own cell and drinks steadily while
-                the thruster is running. The bar under the item is
-                what is left in it.
+                the thruster is running, and a trickle more while
+                the lamps are lit. The bar under the item is what
+                is left in it.
                 Charge it in a Charger like a Battery or any other
                 powered tool. It holds far less than a Sea Scout.
                 """);
