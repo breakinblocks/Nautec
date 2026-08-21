@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends LaserRenderState> extends NTBERenderer<T, S> {
     public static final Identifier BEAM_LOCATION = Nautec.rl("textures/entity/laser_beam.png");
-    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian_beam.png");
+    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
     private static final RenderType BEAM_RENDER_TYPE = RenderTypes.entityCutout(GUARDIAN_BEAM_LOCATION);
 
     public LaserBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {

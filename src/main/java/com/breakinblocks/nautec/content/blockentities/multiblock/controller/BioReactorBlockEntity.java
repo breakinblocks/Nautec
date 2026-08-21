@@ -130,7 +130,7 @@ public class BioReactorBlockEntity extends LaserBlockEntity implements MenuProvi
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.literal("Bio Reactor");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

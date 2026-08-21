@@ -70,12 +70,11 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
             return;
         }
 
-        String text = "Production: "
-                + MathUtils.roundToPrecision(stats.productionRate().getMin(), 2)
-                + " - "
-                + MathUtils.roundToPrecision(stats.productionRate().getMax(), 2);
+        Component text = Component.translatable("nautec.jei.production",
+                MathUtils.roundToPrecision(stats.productionRate().getMin(), 2),
+                MathUtils.roundToPrecision(stats.productionRate().getMax(), 2));
 
-        builder.addText(Component.literal(text), getWidth(), font.lineHeight)
+        builder.addText(text, getWidth(), font.lineHeight)
                 .setPosition(0, getHeight() - font.lineHeight)
                 .setTextAlignment(HorizontalAlignment.CENTER)
                 .setColor(0xFF808080)

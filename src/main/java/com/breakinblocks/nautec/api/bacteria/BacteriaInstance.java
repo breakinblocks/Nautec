@@ -165,14 +165,14 @@ public final class BacteriaInstance {
     public List<Component> getTooltip(boolean showMutatorValues, boolean analyzed) {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(getName());
-        MutableComponent statsCaption = Component.literal("Stats: ").withStyle(ChatFormatting.WHITE);
+        MutableComponent statsCaption = Component.translatable("nautec.bacteria.stats").withStyle(ChatFormatting.WHITE);
         if (analyzed) {
-            tooltip.add(Component.literal("Size: " + this.size));
+            tooltip.add(Component.translatable("nautec.bacteria.size", this.size));
             tooltip.add(vitalityTooltip());
             tooltip.add(statsCaption);
             tooltip.addAll(showMutatorValues ? this.stats.statsTooltipWithMutatorValues() : this.stats.statsTooltip());
         } else {
-            statsCaption.append(Component.literal("???").withStyle(ChatFormatting.YELLOW));
+            statsCaption.append(Component.translatable("nautec.bacteria.unknown").withStyle(ChatFormatting.YELLOW));
             tooltip.add(statsCaption);
         }
         return tooltip;
@@ -180,20 +180,20 @@ public final class BacteriaInstance {
 
     public List<Component> getExpandableTooltip(HolderLookup.Provider lookup, boolean hasShiftDown, boolean hasControlDown) {
         List<Component> tooltipComponents = new ArrayList<>();
-        tooltipComponents.add(Component.literal("Name: ").append(Utils.registryTranslation(bacteria)).withStyle(ChatFormatting.WHITE));
+        tooltipComponents.add(Component.translatable("nautec.bacteria.name").append(Utils.registryTranslation(bacteria)).withStyle(ChatFormatting.WHITE));
         if (bacteria != NTBacterias.EMPTY) {
-            MutableComponent statsCaption = Component.literal("Stats: ").withStyle(ChatFormatting.WHITE);
+            MutableComponent statsCaption = Component.translatable("nautec.bacteria.stats").withStyle(ChatFormatting.WHITE);
             if (isAnalyzed()) {
-                tooltipComponents.add(Component.literal("Size: " + this.size));
+                tooltipComponents.add(Component.translatable("nautec.bacteria.size", this.size));
                 tooltipComponents.add(vitalityTooltip());
                 if (!hasShiftDown) {
                     statsCaption
                             .append(Component.literal("<").withStyle(ChatFormatting.WHITE))
-                            .append(Component.literal("Shift").withStyle(ChatFormatting.YELLOW))
+                            .append(Component.translatable("nautec.bacteria.hint.shift").withStyle(ChatFormatting.YELLOW))
                             .append(Component.literal(">").withStyle(ChatFormatting.WHITE))
-                            .append(Component.literal(" and ").withStyle(ChatFormatting.WHITE))
+                            .append(Component.translatable("nautec.bacteria.hint.and").withStyle(ChatFormatting.WHITE))
                             .append(Component.literal("<").withStyle(ChatFormatting.WHITE))
-                            .append(Component.literal("Control").withStyle(ChatFormatting.YELLOW))
+                            .append(Component.translatable("nautec.bacteria.hint.control").withStyle(ChatFormatting.YELLOW))
                             .append(Component.literal(">").withStyle(ChatFormatting.WHITE));
                 }
                 tooltipComponents.add(statsCaption);
@@ -210,7 +210,7 @@ public final class BacteriaInstance {
                     }
                 }
             } else {
-                statsCaption.append(Component.literal("???").withStyle(ChatFormatting.YELLOW));
+                statsCaption.append(Component.translatable("nautec.bacteria.unknown").withStyle(ChatFormatting.YELLOW));
                 tooltipComponents.add(statsCaption);
             }
         }
@@ -220,14 +220,14 @@ public final class BacteriaInstance {
 
     private Component vitalityTooltip() {
         float vitality = getVitality();
-        MutableComponent caption = Component.literal("Vitality: ").withStyle(ChatFormatting.WHITE);
+        MutableComponent caption = Component.translatable("nautec.bacteria.vitality").withStyle(ChatFormatting.WHITE);
         if (vitality <= 0) {
-            return caption.append(Component.literal("Senescent").withStyle(ChatFormatting.RED));
+            return caption.append(Component.translatable("nautec.bacteria.senescent").withStyle(ChatFormatting.RED));
         }
         ChatFormatting color = vitality >= 0.5f
                 ? ChatFormatting.GREEN
                 : vitality >= 0.2f ? ChatFormatting.YELLOW : ChatFormatting.RED;
-        return caption.append(Component.literal(Math.round(vitality * 100) + "%").withStyle(color));
+        return caption.append(Component.translatable("nautec.bacteria.percent", Math.round(vitality * 100)).withStyle(color));
     }
 
     public static boolean isSameBacteriaAndStats(BacteriaInstance a, BacteriaInstance b) {

@@ -178,7 +178,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Mutator");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

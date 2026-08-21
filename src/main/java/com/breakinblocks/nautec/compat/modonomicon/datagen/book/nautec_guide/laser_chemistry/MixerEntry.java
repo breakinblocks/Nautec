@@ -17,6 +17,7 @@ public class MixerEntry extends BaseNautecEntry {
             this.page("mixer", () -> BookTextPageModel.create()
                     .withTitle(this.context().pageTitle())
                     .withText(this.context().pageText()));
+            this.pageTitle("The Mixer");
             this.pageText("""
                     The Mixer is a powerful machine that can mix and combine items in a variety of ways.
                     \\

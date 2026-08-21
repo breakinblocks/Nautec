@@ -91,7 +91,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
         BlockState blockState = level.getBlockState(blockPos);
         AquaticCatalystBlockEntity be = (AquaticCatalystBlockEntity) level.getBlockEntity(blockPos);
         return List.of(
-                Component.literal("Duration: " + be.getDuration()).withStyle(ChatFormatting.WHITE)
+                Component.translatable("nautec.monocle.duration", be.getDuration()).withStyle(ChatFormatting.WHITE)
         );
     }
 

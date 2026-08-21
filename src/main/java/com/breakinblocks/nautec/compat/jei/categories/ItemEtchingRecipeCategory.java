@@ -38,7 +38,7 @@ public class ItemEtchingRecipeCategory extends AbstractRecipeCategory<ItemEtchin
 
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, ItemEtchingRecipe recipe, IFocusGroup focuses) {
-        builder.addText(Component.literal(((float) recipe.duration() / 20) + "s"), getWidth() / 2, Minecraft.getInstance().font.lineHeight)
+        builder.addText(Component.translatable("nautec.jei.seconds", (float) recipe.duration() / 20), getWidth() / 2, Minecraft.getInstance().font.lineHeight)
                 .setPosition(0, 20)
                 .setColor(0xFF808080)
                 .setShadow(false);

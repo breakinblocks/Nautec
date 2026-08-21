@@ -38,5 +38,6 @@ public class MachinePartEntry extends BaseNautecEntry {
         this.page("machine_part_examples", () -> BookSpotlightPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withItem(NTItems.BURNT_COIL));
+        this.pageTitle("Burnt Coil");
     }
 }

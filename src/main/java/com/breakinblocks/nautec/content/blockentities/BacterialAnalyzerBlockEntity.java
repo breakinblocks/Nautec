@@ -116,7 +116,7 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Bacterial Analyzer");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

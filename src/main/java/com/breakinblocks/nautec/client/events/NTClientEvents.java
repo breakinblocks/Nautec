@@ -38,7 +38,7 @@ public final class NTClientEvents {
             Minecraft mc = Minecraft.getInstance();
             if (NTKeybinds.AUGMENT_SCREEN_KEYBIND.get().consumeClick()) {
                 if (mc.screen == null && mc.player != null && !AugmentHelper.getAugments(mc.player).isEmpty()) {
-                    mc.setScreen(new AugmentationViewerScreen(Component.literal("test"), mc.player));
+                    mc.setScreen(new AugmentationViewerScreen(Component.translatable("nautec.augment_viewer.title"), mc.player));
                 }
             }
         }

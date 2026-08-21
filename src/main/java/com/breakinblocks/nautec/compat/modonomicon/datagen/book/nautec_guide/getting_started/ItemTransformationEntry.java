@@ -1,13 +1,10 @@
 package com.breakinblocks.nautec.compat.modonomicon.datagen.book.nautec_guide.getting_started;
 
 import com.breakinblocks.nautec.compat.modonomicon.datagen.book.BaseNautecEntry;
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProviderBase;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookImagePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.breakinblocks.nautec.registries.NTItems;
-import net.minecraft.resources.Identifier;
 
 public class ItemTransformationEntry extends BaseNautecEntry {
     public ItemTransformationEntry(CategoryProviderBase parent) {
@@ -26,9 +23,17 @@ public class ItemTransformationEntry extends BaseNautecEntry {
                 \\
                 Some recipes may require a certain level of purity so be sure to check before crafting.
                 """);
-        this.page("transformation_recipe", () -> BookImagePageModel.create()
-                .withTitle("Recipe Exemples")
-                .withImages(Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/book/recipe/transformation_recipes.png")));
-
+        this.page("transformation_recipe", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Recipe Examples");
+        this.pageText("""
+                Point a laser at an Aquatic Catalyst with an item on it and the
+                beam does the rest.
+                \\
+                \\
+                Every transformation the pack knows about is listed under Item
+                Transformation in JEI, along with the purity each one needs.
+                """);
     }
 }

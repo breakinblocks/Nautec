@@ -62,13 +62,13 @@ public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubat
     public void createRecipeExtras(IRecipeExtrasBuilder builder, BacteriaIncubationRecipe recipe, IFocusGroup focuses) {
         int fontSize = Minecraft.getInstance().font.lineHeight;
         String chanceText = Math.round(recipe.consumeChance() * 100) + "%";
-        String growthText = "Growth: " + recipe.growth().toString();
+        Component growthText = Component.translatable("nautec.jei.growth", recipe.growth().toString());
 
         builder.addText(Component.literal(chanceText), getWidth() / 2, fontSize)
                 .setPosition(getWidth() / 2 + 15, getHeight() - 26)
                 .setColor(0xFF808080)
                 .setShadow(false);
-        builder.addText(Component.literal(growthText), getWidth(), fontSize)
+        builder.addText(growthText, getWidth(), fontSize)
                 .setPosition(0, getHeight() - 9)
                 .setTextAlignment(HorizontalAlignment.CENTER)
                 .setColor(0xFF808080)

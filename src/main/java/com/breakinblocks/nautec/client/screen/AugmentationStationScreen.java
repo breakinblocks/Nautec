@@ -57,7 +57,7 @@ public class AugmentationStationScreen extends Screen {
         addRenderableWidget(this.dataPanel);
         this.dataPanel.setAugmentSlots(recipe != null ? recipe.resultAugment().getAugmentSlots() : NTRegistries.AUGMENT_SLOT.stream().toList());
 
-        this.applyButton = addRenderableWidget(Button.builder(Component.literal("Apply"), btn -> {
+        this.applyButton = addRenderableWidget(Button.builder(Component.translatable("nautec.augmentation_station.apply"), btn -> {
             AugmentSlot selected = dataPanel.getSelectedSlot();
             if (selected == null) return;
             blockEntity.startAugmentation(player, selected);
@@ -123,7 +123,7 @@ public class AugmentationStationScreen extends Screen {
 
         renderRect(guiGraphics);
 
-        MutableComponent text = Component.literal("Augmentation Station");
+        MutableComponent text = Component.translatable("block.nautec.augmentation_station");
         int textWidth = minecraft.font.width(text);
         guiGraphics.text(minecraft.font, text, x + (imageWidth / 2) - (textWidth / 2) - 14, y + 2, ARGB.opaque(4210752), false);
     }

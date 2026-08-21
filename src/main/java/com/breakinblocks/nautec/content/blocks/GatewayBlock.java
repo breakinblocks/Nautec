@@ -144,7 +144,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock {
         if (!(level.getBlockEntity(blockPos) instanceof GatewayBlockEntity gateway)) {
             return List.of();
         }
-        return List.of(Component.literal("Address: ").withStyle(ChatFormatting.WHITE)
+        return List.of(Component.translatable("nautec.monocle.address").withStyle(ChatFormatting.WHITE)
                 .append(gateway.getAddress().describe()));
     }
 }

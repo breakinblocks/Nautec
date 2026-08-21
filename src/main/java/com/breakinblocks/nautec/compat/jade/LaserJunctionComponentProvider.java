@@ -15,9 +15,9 @@ public enum LaserJunctionComponentProvider implements IBlockComponentProvider {
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof LaserJunctionBlockEntity blockEntity) {
             String inputDirections = blockEntity.getLaserInputsAsString();
-            iTooltip.add(Component.literal("Inputs: " + inputDirections));
+            iTooltip.add(Component.translatable("nautec.jade.inputs", inputDirections));
             String outputDirections = blockEntity.getLaserOutputsAsString();
-            iTooltip.add(Component.literal("Outputs: " + outputDirections));
+            iTooltip.add(Component.translatable("nautec.jade.outputs", outputDirections));
         }
     }
 

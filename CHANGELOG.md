@@ -256,6 +256,45 @@
   water, the bobber and everything else for the three seconds you had to play it.
 
 ### Fixed
+- Laser beams render again. Every laser in the mod, the machine beams, the
+  Guardian Eye augment and the long distance relays, drew with
+  `minecraft:textures/entity/guardian_beam.png`, which moved into an
+  `entity/guardian/` folder in 26.1, so they all came out as the purple and
+  black missing texture.
+- Bacteria in JEI and in machine screens show their colour again instead of a
+  checkerboard. The overlay sprite was being looked up on the block atlas, and
+  26.1 moved item textures onto their own atlas.
+- The Glow Polyp had no block model at all, so it placed as a missing-texture
+  cube.
+- The Creative Energy Source and Energy Converter had no model either. Both use
+  placeholder textures borrowed from existing blocks for now.
+- The Item Transformation guide entry pointed at a Modonomicon image that no
+  longer ships with the mod. It is a text page now.
+- The 78 bacteria strains that cover other mods' metals and gems now show their
+  names. Tin, Lead, Graphite and the rest shipped with data files but no
+  translations, so the Bio Reactor and every tooltip showed the raw
+  `bacteria.nautec.graphitophiles` key instead. Bacteria you make yourself with
+  `/nautec bacteria generate` fall back to a tidied version of their id rather
+  than a raw key.
+- The Augmentation viewer screen now names the augment in each slot. It was
+  building its lookup key with a colon instead of a dot, so every filled slot
+  read as a raw key.
+- Fluid tank tooltips now show the amount. They were asking for a key that no
+  longer belongs to any loaded mod.
+- Named the Creative Energy Source, Energy Converter, Nautec Guide, and the
+  Bacterial Analyzer, Bio Reactor and Deep Sea Drain part blocks, all of which
+  showed raw keys when picked up in creative.
+- Two guide pages, the Burnt Coil spotlight and the Mixer intro, had blank
+  titles.
+- Nautec's key bindings are translatable now instead of being hardcoded English.
+  Existing binds reset to their defaults once, since the game stores them by
+  name.
+- Nautec's UI text goes through the language file now, so it can be translated.
+  Jade tooltips, JEI recipe text, the Prism Monocle readouts, bacteria tooltips
+  and stat names, machine screen titles, the diving suit oxygen line and the
+  tool ability messages were all hardcoded English. Gateway addresses use
+  vanilla's colour names. Command output and game test text are still plain
+  English.
 - The catch minigame no longer disappears the instant a fish bites. Right-click
   is the reflex when a bobber dips, and the bar was taking that click as your
   strike and closing on the same frame, so most casts looked like no minigame

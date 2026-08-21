@@ -79,9 +79,9 @@ public class DivingSuitArmorItem extends Item {
 
             int colorHex = (red << 16) | (green << 8);
 
-            tooltipComponents.accept(Component.literal(String.format("Oxygen: %d minutes %d seconds", minutesRemaining, secondsRemaining))
+            tooltipComponents.accept(Component.translatable("nautec.diving_suit.oxygen", minutesRemaining, secondsRemaining)
                     .withStyle(style -> style.withColor(TextColor.fromRgb(colorHex))));
-            tooltipComponents.accept(Component.literal("Can be filled up using Bottles of pressurized air").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.accept(Component.translatable("nautec.diving_suit.refill").withStyle(ChatFormatting.GRAY));
         }
     }
 }

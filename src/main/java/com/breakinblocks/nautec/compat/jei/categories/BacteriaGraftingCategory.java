@@ -50,7 +50,7 @@ public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGra
 
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, GraftingRecipe recipe, IFocusGroup focuses) {
-        builder.addText(Component.literal("Only In: ").append(recipe.val.biome().location().toString()), getWidth(), Minecraft.getInstance().font.lineHeight)
+        builder.addText(Component.translatable("nautec.jei.only_in", recipe.val.biome().location().toString()), getWidth(), Minecraft.getInstance().font.lineHeight)
                 .setPosition(0, 0)
                 .setColor(0xFF000000 | ChatFormatting.DARK_GRAY.getColor())
                 .setShadow(false);

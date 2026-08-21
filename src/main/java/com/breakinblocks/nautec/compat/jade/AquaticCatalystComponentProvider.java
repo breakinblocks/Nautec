@@ -16,14 +16,16 @@ public enum AquaticCatalystComponentProvider implements IBlockComponentProvider 
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof AquaticCatalystBlockEntity blockEntity) {
             if (blockEntity.isActive()) {
-                iTooltip.add(Component.literal("Status: Active"));
+                iTooltip.add(Component.translatable("nautec.jade.status.active"));
                if (blockEntity.getCurrentRecipe() != null) {
-                    iTooltip.add(Component.literal("Processing: ").append(Component.literal(blockEntity.getItemStackHandler().getStackInSlot(0).getCount() +"x ").append(blockEntity.getProcessingItem().getHoverName())));
-                    iTooltip.add(Component.literal("Remaining Duration: " + blockEntity.getRemainingDuration() + " ticks"));
-                    iTooltip.add(Component.literal("Transferring: " + blockEntity.getPowerToTransfer() + "AP/T"));
+                    iTooltip.add(Component.translatable("nautec.jade.processing",
+                            blockEntity.getItemStackHandler().getStackInSlot(0).getCount(),
+                            blockEntity.getProcessingItem().getHoverName()));
+                    iTooltip.add(Component.translatable("nautec.jade.remaining_duration", blockEntity.getRemainingDuration()));
+                    iTooltip.add(Component.translatable("nautec.jade.transferring", blockEntity.getPowerToTransfer()));
                 }
             } else {
-                iTooltip.add(Component.literal("Status: Inactive"));
+                iTooltip.add(Component.translatable("nautec.jade.status.inactive"));
             }
         }
     }

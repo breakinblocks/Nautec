@@ -96,13 +96,13 @@ public class BacterialFuelCellBlock extends LaserBlock {
 
         BacteriaInstance bacteria = be.getBacteriaStorage().getBacteria(0);
         if (bacteria.isEmpty()) {
-            return List.of(Component.literal("No colony").withStyle(ChatFormatting.GRAY));
+            return List.of(Component.translatable("nautec.monocle.no_colony").withStyle(ChatFormatting.GRAY));
         }
 
         return List.of(
-                Component.literal("Output: " + BacterialFuelCellBlockEntity.powerOutput(bacteria) + " AP/t").withStyle(ChatFormatting.WHITE),
-                Component.literal("Purity: " + String.format("%.2f", BacterialFuelCellBlockEntity.purityOutput(bacteria))).withStyle(ChatFormatting.WHITE),
-                Component.literal("Fuel: " + bacteria.getSize()).withStyle(ChatFormatting.WHITE)
+                Component.translatable("nautec.monocle.output", BacterialFuelCellBlockEntity.powerOutput(bacteria)).withStyle(ChatFormatting.WHITE),
+                Component.translatable("nautec.monocle.purity", String.format("%.2f", BacterialFuelCellBlockEntity.purityOutput(bacteria))).withStyle(ChatFormatting.WHITE),
+                Component.translatable("nautec.monocle.fuel", bacteria.getSize()).withStyle(ChatFormatting.WHITE)
         );
     }
 }

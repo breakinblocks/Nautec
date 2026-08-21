@@ -77,8 +77,8 @@ public abstract class LaserBlock extends ContainerBlock implements DisplayBlock,
     public List<Component> displayText(Level level, BlockPos blockPos, Player player) {
         LaserBlockEntity laserBE = (LaserBlockEntity) level.getBlockEntity(blockPos);
         return List.of(
-                Component.literal("Power: " + laserBE.getPower()).withStyle(ChatFormatting.WHITE),
-                Component.literal("Purity: " + laserBE.getPurity()).withStyle(ChatFormatting.WHITE)
+                Component.translatable("nautec.monocle.power", laserBE.getPower()).withStyle(ChatFormatting.WHITE),
+                Component.translatable("nautec.monocle.purity", laserBE.getPurity()).withStyle(ChatFormatting.WHITE)
         );
     }
 
