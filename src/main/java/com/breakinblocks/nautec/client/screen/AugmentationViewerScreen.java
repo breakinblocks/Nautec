@@ -1,9 +1,11 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.utils.AugmentHelper;
+import com.breakinblocks.nautec.utils.Utils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -81,7 +83,7 @@ public class AugmentationViewerScreen extends Screen {
 
     public void displayAugment(GuiGraphicsExtractor graphics, AugmentSlot slot, Augment aug, int x, int y) {
         graphics.text(this.font, Component.translatable("augment_slot.nautec." + slot.getName()).append(Component.literal(":")), x, y, ARGB.opaque(0));
-        graphics.text(this.font, aug == null ? Component.literal("    No Augment in slot") : Component.literal("    ").append(Component.translatable("augment_type." + aug.getAugmentType().toString())), x, y + 10, ARGB.opaque(0));
+        graphics.text(this.font, aug == null ? Component.literal("    ").append(Component.translatable("nautec.augment.empty_slot")) : Component.literal("    ").append(Utils.registryTranslation(NTRegistries.AUGMENT_TYPE, aug.getAugmentType())), x, y + 10, ARGB.opaque(0));
     }
 
     @Override

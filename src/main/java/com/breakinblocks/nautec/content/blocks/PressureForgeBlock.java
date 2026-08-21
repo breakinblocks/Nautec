@@ -43,15 +43,14 @@ public class PressureForgeBlock extends LaserBlock {
         }
 
         if (!forge.isPressurised()) {
-            return List.of(Component.literal("Not under pressure: needs y " + NTConfig.pressureForgeDepth
-                    + " or lower with " + NTConfig.pressureForgeWaterColumn + " blocks of water above")
+            return List.of(Component.translatable("nautec.monocle.not_pressurised", NTConfig.pressureForgeDepth, NTConfig.pressureForgeWaterColumn)
                     .withStyle(ChatFormatting.RED));
         }
 
         return List.of(
-                Component.literal("Under pressure").withStyle(ChatFormatting.AQUA),
-                Component.literal("Acid: " + forge.getFluidTank().getFluidAmount() + " mb").withStyle(ChatFormatting.WHITE),
-                Component.literal("Purity: " + String.format("%.2f", forge.getPurity())).withStyle(ChatFormatting.WHITE)
+                Component.translatable("nautec.monocle.pressurised").withStyle(ChatFormatting.AQUA),
+                Component.translatable("nautec.monocle.acid", forge.getFluidTank().getFluidAmount()).withStyle(ChatFormatting.WHITE),
+                Component.translatable("nautec.monocle.purity", String.format("%.2f", forge.getPurity())).withStyle(ChatFormatting.WHITE)
         );
     }
 }

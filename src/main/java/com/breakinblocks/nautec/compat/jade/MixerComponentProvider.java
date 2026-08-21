@@ -19,25 +19,21 @@ public enum MixerComponentProvider implements IBlockComponentProvider {
         if (blockAccessor.getBlockEntity() instanceof MixerBlockEntity blockEntity) {
             FluidStack inputFluid = blockEntity.getInputFluid();
             if (!inputFluid.isEmpty()) {
-                iTooltip.add(Component.literal("Fluid Input: ")
-                        .append(inputFluid.getHoverName())
-                        .append(" - " + blockEntity.getInputFluidAmount() + " mB"));
+                iTooltip.add(Component.translatable("nautec.jade.fluid_input", inputFluid.getHoverName(), blockEntity.getInputFluidAmount()));
             }
 
             FluidStack outputFluid = blockEntity.getOutputFluid();
             if (!outputFluid.isEmpty()) {
-                iTooltip.add(Component.literal("Fluid Output: ")
-                        .append(outputFluid.getHoverName())
-                        .append(" - " + blockEntity.getOutputFluidAmount() + " mB"));
+                iTooltip.add(Component.translatable("nautec.jade.fluid_output", outputFluid.getHoverName(), blockEntity.getOutputFluidAmount()));
             }
 
             int duration = blockEntity.getDuration();
             int maxDuration = blockEntity.getMaxDuration();
             if (duration > 0 && maxDuration > 0) {
-                iTooltip.add(Component.literal("Mixing Progress: " + duration + " / " + maxDuration + " ticks"));
+                iTooltip.add(Component.translatable("nautec.jade.mixing_progress", duration, maxDuration));
             }
 
-            iTooltip.add(Component.literal("Energy: " + blockEntity.getPower() + " AP"));
+            iTooltip.add(Component.translatable("nautec.jade.energy", blockEntity.getPower()));
         }
     }
 

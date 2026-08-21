@@ -323,7 +323,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Mixer");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

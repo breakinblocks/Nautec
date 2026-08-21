@@ -33,10 +33,10 @@ public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCateg
     public void createRecipeExtras(IRecipeExtrasBuilder builder, AquaticCatalystChannelingRecipe recipe, IFocusGroup focuses) {
         int fontSize = Minecraft.getInstance().font.lineHeight;
         Component[] text = new Component[]{
-                Component.literal("Power per tick: " + recipe.powerAmount() / recipe.duration() + " AP/t"),
-                Component.literal("Total Power amount: " + recipe.powerAmount() + " AP"),
-                Component.literal("Duration: " + recipe.duration()),
-                Component.literal("Purity: " + recipe.purity()),
+                Component.translatable("nautec.jei.power_per_tick", recipe.powerAmount() / recipe.duration()),
+                Component.translatable("nautec.jei.total_power", recipe.powerAmount()),
+                Component.translatable("nautec.jei.duration_ticks", recipe.duration()),
+                Component.translatable("nautec.jei.purity", recipe.purity()),
         };
 
         for (int i = 0; i < text.length; i++) {

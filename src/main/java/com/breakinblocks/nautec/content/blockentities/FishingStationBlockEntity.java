@@ -156,7 +156,7 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Fishing Station");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

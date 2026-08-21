@@ -140,7 +140,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("Incubator");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

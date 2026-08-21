@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.datagen;
 import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.data.generated.BacteriaMaterials;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.utils.Utils;
@@ -11,7 +12,6 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 import static com.breakinblocks.nautec.registries.NTBacterias.*;
@@ -121,6 +121,16 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("subtitles.nautec.wave_jet.loop", "Wave Jet drives");
         add("subtitles.nautec.wave_jet.stop", "Wave Jet winds down");
         add("key.category.nautec.main", "Nautec");
+        add("key.nautec.augment_screen", "Open the Augmentation Screen");
+        add("key.nautec.throw_trident", "Throw Trident");
+        add("key.nautec.leap", "Leap");
+        add("key.nautec.throw_potion", "Throw Potion");
+        add("key.nautec.throw_spreading_trident", "Throw Spreading Trident");
+        add("key.nautec.activate_laser", "Activate Guardian Eye Augment Laser");
+        add("key.nautec.submarine_descend", "Sea Scout Descend");
+        add("key.nautec.submarine_ability", "Fire Sea Scout Module");
+        add("key.nautec.wave_jet_light", "Toggle Wave Jet Spotlight");
+        add("key.nautec.submarine_hud", "Reposition Sea Scout HUD");
 
         add("nautec.submarine.module.passive", "Passive, works from any slot");
         add("nautec.submarine.module.cost", "Draws %s power per use");
@@ -246,6 +256,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addItem(PRISMARINE_LENS, "Prismarine Lens");
         addItem(AQUATIC_CHIP, "Aquatic Chip");
         
+        addItem("nautec_guide", "Nautec Guide");
         add("nautec_guide.desc.0","Nautec's Guide");
 
         addBlock("rusty_crate", "Rusty Crate");
@@ -283,6 +294,11 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addBlock(NTBlocks.FOCUSING_LENS, "Focusing Lens");
         addBlock(NTBlocks.PRISMARINE_SAND, "Prismarine Sand");
         addBlock(NTBlocks.CREATIVE_POWER_SOURCE,"Creative Power Source");
+        addBlock(NTBlocks.CREATIVE_ENERGY_SOURCE, "Creative Energy Source");
+        addBlock(NTBlocks.ENERGY_CONVERTER, "Energy Converter");
+        addBlock(NTBlocks.BACTERIAL_ANALYZER_TOP, "Bacterial Analyzer");
+        addBlock(NTBlocks.BIO_REACTOR_PART, "Bio Reactor");
+        addBlock(NTBlocks.DRAIN_PART, "Deep Sea Drain");
         addBlock(NTBlocks.MUTATOR, "Mutator");
         addBlock(NTBlocks.INCUBATOR, "Incubator");
         addBlock(NTBlocks.BIO_REACTOR, "Bio Reactor");
@@ -331,6 +347,77 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
 
         add("nautec.air_bottle.fill","Right click a glass bottle on a bubble column to fill with pressurized air");
         add("nautec.air_bottle.craft_msg","Either Craft with Chestplate or drink while wearing chestplate to increase oxygen level");
+        add("nautec.bacteria.name", "Name: ");
+        add("nautec.bacteria.size", "Size: %s");
+        add("nautec.bacteria.stats", "Stats: ");
+        add("nautec.bacteria.unknown", "???");
+        add("nautec.bacteria.vitality", "Vitality: ");
+        add("nautec.bacteria.senescent", "Senescent");
+        add("nautec.bacteria.percent", "%s%%");
+        add("nautec.bacteria.resource", "  Resource: ");
+        add("nautec.bacteria.hint.shift", "Shift");
+        add("nautec.bacteria.hint.control", "Control");
+        add("nautec.bacteria.hint.and", " and ");
+        add("nautec.bacteria.stat.growth_rate", "Growth Rate");
+        add("nautec.bacteria.stat.mutation_resistance", "Mutation Resistance");
+        add("nautec.bacteria.stat.production_rate", "Production Rate");
+        add("nautec.bacteria.stat.lifespan", "Lifespan");
+
+        add("nautec.monocle.power", "Power: %s");
+        add("nautec.monocle.purity", "Purity: %s");
+        add("nautec.monocle.duration", "Duration: %s");
+        add("nautec.monocle.no_colony", "No colony");
+        add("nautec.monocle.output", "Output: %s AP/t");
+        add("nautec.monocle.fuel", "Fuel: %s");
+        add("nautec.monocle.address", "Address: ");
+        add("nautec.monocle.fluid_stored", "Fluid Stored: %s");
+        add("nautec.monocle.not_pressurised", "Not under pressure: needs y %s or lower with %s blocks of water above");
+        add("nautec.monocle.pressurised", "Under pressure");
+        add("nautec.monocle.acid", "Acid: %s mb");
+        add("nautec.monocle.cracked", "Cracked, cooling down");
+        add("nautec.monocle.charge", "Charge: %s%%");
+        add("nautec.monocle.ceiling", "Ceiling: %s");
+        add("nautec.monocle.dock.occupied", "Sea Scout docked");
+        add("nautec.monocle.dock.empty", "No Sea Scout on the pad");
+
+        add("nautec.jade.status.active", "Status: Active");
+        add("nautec.jade.status.inactive", "Status: Inactive");
+        add("nautec.jade.processing", "Processing: %sx %s");
+        add("nautec.jade.remaining_duration", "Remaining Duration: %s ticks");
+        add("nautec.jade.transferring", "Transferring: %s AP/T");
+        add("nautec.jade.locked", "Locked");
+        add("nautec.jade.inputs", "Inputs: %s");
+        add("nautec.jade.outputs", "Outputs: %s");
+        add("nautec.jade.fluid_input", "Fluid Input: %s - %s mB");
+        add("nautec.jade.fluid_output", "Fluid Output: %s - %s mB");
+        add("nautec.jade.mixing_progress", "Mixing Progress: %s / %s ticks");
+        add("nautec.jade.energy", "Energy: %s AP");
+
+        add("nautec.jei.power_per_tick", "Power per tick: %s AP/t");
+        add("nautec.jei.total_power", "Total Power amount: %s AP");
+        add("nautec.jei.duration_ticks", "Duration: %s");
+        add("nautec.jei.purity", "Purity: %s");
+        add("nautec.jei.purity_value", "%s purity");
+        add("nautec.jei.seconds", "%ss");
+        add("nautec.jei.only_in", "Only In: %s");
+        add("nautec.jei.growth", "Growth: %s");
+        add("nautec.jei.production", "Production: %s - %s");
+        add("nautec.jei.info.prismarine_crystal_shard", "Prismarine Crystal Shards are pristine crystals, capable of channeling power like no other material. They can be obtained by breaking a prismarine crystal using an Aquarine Steel Pickaxe with its ability enabled.");
+        add("nautec.jei.info.machine_parts", "These ancient machine components can be found in chests and are dropped by underwater mobs");
+
+        add("nautec.augmentation_station.apply", "Apply");
+        add("nautec.augment.empty_slot", "No Augment in slot");
+        add("nautec.augment_viewer.title", "Augments");
+        add("nautec.submarine.hud_position.title", "Sea Scout HUD Position");
+        add("nautec.diving_suit.oxygen", "Oxygen: %s minutes %s seconds");
+        add("nautec.diving_suit.refill", "Can be filled up using Bottles of pressurized air");
+        add("nautec.tool.no_power", "Not enough power");
+        add("nautec.tool.ability_enabled", "Ability Enabled");
+        add("nautec.tool.ability_disabled", "Ability Disabled");
+        add("nautec.network.action_failed", "Action failed: %s");
+
+        add("nautec.tooltip.liquid.amount", "%s mB");
+        add("nautec.tooltip.liquid.amount_with_capacity", "%s / %s mB");
         add("nautec.edible","Edible");
         add("nautec.armor.ability.desc", "Ability: Increases protection when powered");
         add("nautec.armor.power", "Power: ");
@@ -368,6 +455,10 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         for (ResourceKey<?> key : bacterias()) {
             addDirectBacteria(key);
         }
+
+        for (String name : BacteriaMaterials.SHIPPED_NAMES) {
+            add("bacteria." + Nautec.MODID + "." + name, Utils.prettify(name));
+        }
     }
 
     private void addFluidType(Supplier<? extends FluidType> fluidType, String val) {
@@ -387,10 +478,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
     }
 
     private void addDirectBacteria(ResourceKey<?> key) {
-        String[] name = key.identifier().getPath().split("_");
-        String val = Arrays.stream(name).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).reduce((s1, s2) -> s1 + " " + s2).orElse("");
-
-        add(key.registry().getPath() + "." + key.identifier().getNamespace() + "." + key.identifier().getPath(), val);
+        add(key.registry().getPath() + "." + key.identifier().getNamespace() + "." + key.identifier().getPath(),
+                Utils.prettify(key.identifier().getPath()));
     }
 
     private void addBlock(String key, String val) {

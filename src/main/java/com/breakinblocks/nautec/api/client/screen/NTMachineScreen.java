@@ -80,9 +80,9 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
             FluidStack fluid = this.hoveredFluidHandlerSlot.getFluidStack();
             guiGraphics.setComponentTooltipForNextFrame(font, List.of(
                     fluid.getHoverName(),
-                    Component.literal("%s / %s mb".formatted(
+                    Component.translatable("nautec.tooltip.liquid.amount_with_capacity",
                             nf.format(fluid.getAmount()),
-                            nf.format(this.hoveredFluidHandlerSlot.getFluidCapacity()))
+                            nf.format(this.hoveredFluidHandlerSlot.getFluidCapacity())
                     ).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }

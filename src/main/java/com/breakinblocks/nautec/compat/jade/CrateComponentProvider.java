@@ -20,7 +20,7 @@ public enum CrateComponentProvider implements IBlockComponentProvider {
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof CrateBlockEntity) {
             iTooltip.append(JadeUI.item(new ItemStack(NTItems.CROWBAR.get())));
-            iTooltip.add(Component.literal("Locked"));
+            iTooltip.add(Component.translatable("nautec.jade.locked"));
         }
     }
 

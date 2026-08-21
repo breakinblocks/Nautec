@@ -185,7 +185,7 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
                 if (first != null) {
                     return List.of(
                             first,
-                            Component.literal("Fluid Stored: " + fluidCap.getAmountAsInt(0)).withStyle(ChatFormatting.WHITE)
+                            Component.translatable("nautec.monocle.fluid_stored", fluidCap.getAmountAsInt(0)).withStyle(ChatFormatting.WHITE)
                     );
                 }
             }

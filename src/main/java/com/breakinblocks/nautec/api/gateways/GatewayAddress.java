@@ -113,13 +113,8 @@ public record GatewayAddress(List<DyeColor> slots) {
                 text.append(Component.literal(" ").withStyle(ChatFormatting.GRAY));
             }
             DyeColor colour = slots.get(i);
-            text.append(Component.literal(name(colour)).withStyle(style -> style.withColor(colour.getTextColor())));
+            text.append(Component.translatable("color.minecraft." + colour.getName()).withStyle(style -> style.withColor(colour.getTextColor())));
         }
         return text;
-    }
-
-    private static String name(DyeColor colour) {
-        String raw = colour.getName().replace('_', ' ');
-        return Character.toUpperCase(raw.charAt(0)) + raw.substring(1);
     }
 }

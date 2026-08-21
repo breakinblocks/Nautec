@@ -9,8 +9,8 @@ public final class ComponentUtils {
         return Component.literal(text).withStyle(col);
     }
 
-    public static MutableComponent countableStatShow(String name, Number val, Number max) {
-        MutableComponent mc1 = colored(name, ChatFormatting.YELLOW)
+    public static MutableComponent countableStatShow(Component name, Number val, Number max) {
+        MutableComponent mc1 = name.copy().withStyle(ChatFormatting.YELLOW)
                 .append(Component.literal(": ").withStyle(ChatFormatting.WHITE));
 
         if (val.doubleValue() < max.doubleValue()) {
@@ -22,8 +22,8 @@ public final class ComponentUtils {
         return mc1;
     }
 
-    public static MutableComponent stringStatShow(String name, String val) {
-        return colored(name, ChatFormatting.YELLOW)
+    public static MutableComponent stringStatShow(Component name, String val) {
+        return name.copy().withStyle(ChatFormatting.YELLOW)
                 .append(Component.literal(": ").withStyle(ChatFormatting.WHITE))
                 .append(colored(val, ChatFormatting.GREEN));
     }

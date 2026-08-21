@@ -17,37 +17,37 @@ public final class NTKeybinds {
     public static final KeyMapping.Category NAUTEC_CATEGORY = new KeyMapping.Category(Nautec.rl("main"));
 
     public static final Lazy<KeyMapping> AUGMENT_SCREEN_KEYBIND = keyBind(
-            "Open the Augmentation Screen", GLFW.GLFW_KEY_B);
+            "key.nautec.augment_screen", GLFW.GLFW_KEY_B);
 
 
     public static final Lazy<KeyMapping> THROW_TRIDENT_KEYBIND = keyBind(
-            "Throw Trident", GLFW.GLFW_KEY_Y);
+            "key.nautec.throw_trident", GLFW.GLFW_KEY_Y);
 
     public static final Lazy<KeyMapping> LEAP_KEYBIND = keyBind(
-            "Leap", GLFW.GLFW_KEY_LEFT_ALT);
+            "key.nautec.leap", GLFW.GLFW_KEY_LEFT_ALT);
 
     public static final Lazy<KeyMapping> THROW_POTION_KEYBIND = keyBind(
-            "Throw Potion", GLFW.GLFW_KEY_G);
+            "key.nautec.throw_potion", GLFW.GLFW_KEY_G);
 
     public static final Lazy<KeyMapping> THROW_SPREADING_KEYBIND = keyBind(
-            "Throw Spreading Trident", GLFW.GLFW_KEY_U);
+            "key.nautec.throw_spreading_trident", GLFW.GLFW_KEY_U);
 
     public static final Lazy<KeyMapping> ACTIVATE_LASER_KEYBIND = keyBind(
-            "Activate Guardian Eye Augment Laser", GLFW.GLFW_KEY_L);
+            "key.nautec.activate_laser", GLFW.GLFW_KEY_L);
 
     public static final Lazy<KeyMapping> SUBMARINE_DESCEND_KEYBIND = keyBind(
-            "Submarine Descend", GLFW.GLFW_KEY_C);
+            "key.nautec.submarine_descend", GLFW.GLFW_KEY_C);
 
     public static final Lazy<KeyMapping> SUBMARINE_ABILITY_KEYBIND = keyBind(
-            "Fire Submarine Module", GLFW.GLFW_KEY_F);
+            "key.nautec.submarine_ability", GLFW.GLFW_KEY_F);
 
     public static final Lazy<KeyMapping> WAVE_JET_LIGHT_KEYBIND = Lazy.of(() -> new KeyMapping(
-            "Toggle Wave Jet Spotlight",
+            "key.nautec.wave_jet_light",
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F, NAUTEC_CATEGORY));
 
     public static final Lazy<KeyMapping> SUBMARINE_HUD_KEYBIND = Lazy.of(() -> new KeyMapping(
-            "Reposition Submarine HUD",
+            "key.nautec.submarine_hud",
             KeyConflictContext.IN_GAME,
             KeyModifier.CONTROL,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, NAUTEC_CATEGORY));

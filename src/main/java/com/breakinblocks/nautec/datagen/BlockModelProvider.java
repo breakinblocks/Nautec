@@ -91,6 +91,12 @@ public class BlockModelProvider extends ModelProvider {
         blockModels.registerSimpleFlatItemModel(NTBlocks.GLOW_POLYP.get());
 
         simpleBlock(NTBlocks.CREATIVE_POWER_SOURCE.get());
+        simpleBlock(NTBlocks.CREATIVE_ENERGY_SOURCE.get(), cubeAll(name(NTBlocks.CREATIVE_ENERGY_SOURCE.get()),
+                blockTexture(NTBlocks.CREATIVE_POWER_SOURCE.get())));
+        simpleBlock(NTBlocks.ENERGY_CONVERTER.get(), cubeBottomTop(name(NTBlocks.ENERGY_CONVERTER.get()),
+                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
+                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
+                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
@@ -344,6 +350,12 @@ public class BlockModelProvider extends ModelProvider {
         return createdModels.computeIfAbsent(id, key -> ModelTemplates.CUBE_TOP.create(key, new TextureMapping()
                 .put(TextureSlot.SIDE, side)
                 .put(TextureSlot.TOP, top), blockModels.modelOutput));
+    }
+
+    public Identifier cubeAll(String name, Material all) {
+        Identifier id = Nautec.rl("block/" + name);
+        return createdModels.computeIfAbsent(id, key -> ModelTemplates.CUBE_ALL.create(key, new TextureMapping()
+                .put(TextureSlot.ALL, all), blockModels.modelOutput));
     }
 
     public Identifier cubeBottomTop(String name, Material side, Material bottom, Material top) {

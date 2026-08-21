@@ -55,7 +55,7 @@ public class SubmarineDockBlock extends LaserBlock {
         }
 
         return List.of(dock.isDocking()
-                ? Component.literal("Sea Scout docked").withStyle(ChatFormatting.AQUA)
-                : Component.literal("No Sea Scout on the pad").withStyle(ChatFormatting.GRAY));
+                ? Component.translatable("nautec.monocle.dock.occupied").withStyle(ChatFormatting.AQUA)
+                : Component.translatable("nautec.monocle.dock.empty").withStyle(ChatFormatting.GRAY));
     }
 }

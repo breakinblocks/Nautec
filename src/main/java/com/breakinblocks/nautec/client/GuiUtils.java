@@ -16,7 +16,7 @@ public final class GuiUtils {
     public static final Identifier BACTERIA = Nautec.rl("item/petri_dish_overlay");
 
     public static void renderBacteria(GuiGraphicsExtractor guiGraphics, BacteriaInstance instance, int x, int y) {
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(BACTERIA);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.ITEMS).getSprite(BACTERIA);
         if (!instance.isEmpty()) {
             Bacteria bacteria = BacteriaHelper.getBacteria(Minecraft.getInstance().level.registryAccess(), instance.getBacteria());
             int color = bacteria.stats().color();

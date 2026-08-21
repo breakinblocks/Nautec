@@ -30,7 +30,7 @@ public record KeyPressedPayload(AugmentSlot augmentSlot) implements CustomPacket
             Player player = context.player();
             AugmentHelper.getAugmentBySlot(player, payload.augmentSlot).handleKeybindPress();
         }).exceptionally(e -> {
-            context.disconnect(Component.literal("action failed:  " + e.getMessage()));
+            context.disconnect(Component.translatable("nautec.network.action_failed", e.getMessage()));
             return null;
         });
 

@@ -74,7 +74,7 @@ public class ResonanceChamberBlock extends LaserBlock {
         }
 
         if (be.isVenting()) {
-            return List.of(Component.literal("Cracked, cooling down").withStyle(ChatFormatting.RED));
+            return List.of(Component.translatable("nautec.monocle.cracked").withStyle(ChatFormatting.RED));
         }
 
         int percent = Math.round(be.getChargeFraction() * 100f);
@@ -82,9 +82,9 @@ public class ResonanceChamberBlock extends LaserBlock {
                 : percent > 100 ? ChatFormatting.RED : ChatFormatting.WHITE;
 
         return List.of(
-                Component.literal("Charge: " + percent + "%").withStyle(colour),
-                Component.literal("Ceiling: " + Math.round(be.getStabilityCeiling())).withStyle(ChatFormatting.WHITE),
-                Component.literal("Purity: " + String.format("%.2f", be.getPurity())).withStyle(ChatFormatting.WHITE)
+                Component.translatable("nautec.monocle.charge", percent).withStyle(colour),
+                Component.translatable("nautec.monocle.ceiling", Math.round(be.getStabilityCeiling())).withStyle(ChatFormatting.WHITE),
+                Component.translatable("nautec.monocle.purity", String.format("%.2f", be.getPurity())).withStyle(ChatFormatting.WHITE)
         );
     }
 }

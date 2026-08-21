@@ -127,10 +127,10 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
 
     public List<Component> statsTooltip() {
         return List.of(
-                ComponentUtils.countableStatShow("Growth Rate", growthRate, bacteriaGrowthRateCap),
-                ComponentUtils.countableStatShow("Mutation Resistance", mutationResistance, bacteriaMutationResistanceCap),
-                ComponentUtils.countableStatShow("Production Rate", productionRate, bacteriaProductionRateCap),
-                ComponentUtils.countableStatShow("Lifespan", lifespan, bacteriaLifespanCap)
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.growth_rate"), growthRate, bacteriaGrowthRateCap),
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.mutation_resistance"), mutationResistance, bacteriaMutationResistanceCap),
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.production_rate"), productionRate, bacteriaProductionRateCap),
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.lifespan"), lifespan, bacteriaLifespanCap)
         );
     }
 
@@ -138,7 +138,7 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
         final MutableComponent arrow = ComponentUtils.colored(" -> ", ChatFormatting.YELLOW);
 
         return List.of(
-                ComponentUtils.countableStatShow("Growth Rate", growthRate, bacteriaGrowthRateCap)
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.growth_rate"), growthRate, bacteriaGrowthRateCap)
                         .append(arrow)
                         .append(ComponentUtils.colored("[", ChatFormatting.GREEN))
                         .append(ComponentUtils.statRange(
@@ -146,7 +146,7 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
                                 MathUtils.roundToPrecision(growthRate + (growthRate / (10 * (1 + mutationResistance))), 2),
                                 bacteriaGrowthRateCap))
                         .append(ComponentUtils.colored("]", ChatFormatting.GREEN)),
-                ComponentUtils.countableStatShow("Mutation Resistance", mutationResistance, bacteriaMutationResistanceCap)
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.mutation_resistance"), mutationResistance, bacteriaMutationResistanceCap)
                         .append(arrow)
                         .append(ComponentUtils.colored("[", ChatFormatting.GREEN))
                         .append(ComponentUtils.statRange(
@@ -154,7 +154,7 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
                                 MathUtils.roundToPrecision(mutationResistance + 0.1f, 2),
                                 bacteriaMutationResistanceCap))
                         .append(ComponentUtils.colored("]", ChatFormatting.GREEN)),
-                ComponentUtils.countableStatShow("Production Rate", productionRate, bacteriaProductionRateCap)
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.production_rate"), productionRate, bacteriaProductionRateCap)
                         .append(arrow)
                         .append(ComponentUtils.colored("[", ChatFormatting.GREEN))
                         .append(ComponentUtils.statRange(
@@ -162,7 +162,7 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
                                 MathUtils.roundToPrecision(productionRate + (productionRate / (10 * (1 + mutationResistance))), 2),
                                 bacteriaProductionRateCap))
                         .append(ComponentUtils.colored("]", ChatFormatting.GREEN)),
-                ComponentUtils.countableStatShow("Lifespan", lifespan, bacteriaLifespanCap)
+                ComponentUtils.countableStatShow(Component.translatable("nautec.bacteria.stat.lifespan"), lifespan, bacteriaLifespanCap)
                         .append(arrow)
                         .append(ComponentUtils.colored("[", ChatFormatting.GREEN))
                         .append(ComponentUtils.statRange(

@@ -19,7 +19,7 @@ public class SubmarineHudPositionScreen extends Screen {
     private double grabOffsetY;
 
     public SubmarineHudPositionScreen() {
-        super(Component.literal("Submarine HUD Position"));
+        super(Component.translatable("nautec.submarine.hud_position.title"));
     }
 
     @Override

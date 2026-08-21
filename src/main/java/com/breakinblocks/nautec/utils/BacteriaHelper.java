@@ -52,7 +52,7 @@ public final class BacteriaHelper {
 
     public static Component resourceTooltip(ResourceKey<Bacteria> key, HolderLookup.Provider lookup) {
         Bacteria bacteria = getBacteria(lookup, key);
-        MutableComponent component = Component.literal("  Resource: ").withStyle(ChatFormatting.YELLOW);
+        MutableComponent component = Component.translatable("nautec.bacteria.resource").withStyle(ChatFormatting.YELLOW);
         if (bacteria == null) {
             return component;
         }

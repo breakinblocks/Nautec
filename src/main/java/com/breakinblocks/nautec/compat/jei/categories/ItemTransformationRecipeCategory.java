@@ -40,11 +40,11 @@ public class ItemTransformationRecipeCategory extends AbstractRecipeCategory<Ite
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, ItemTransformationRecipe recipe, IFocusGroup focuses) {
         int fontSize = Minecraft.getInstance().font.lineHeight;
-        builder.addText(Component.literal(((float) recipe.duration() / 20) + "s"), getWidth() / 2, fontSize)
+        builder.addText(Component.translatable("nautec.jei.seconds", (float) recipe.duration() / 20), getWidth() / 2, fontSize)
                 .setPosition(0, 20)
                 .setColor(0xFF808080)
                 .setShadow(false);
-        builder.addText(Component.literal(recipe.purity() + " purity"), getWidth(), fontSize)
+        builder.addText(Component.translatable("nautec.jei.purity_value", recipe.purity()), getWidth(), fontSize)
                 .setPosition(0, 20)
                 .setTextAlignment(HorizontalAlignment.RIGHT)
                 .setColor(0xFF808080)

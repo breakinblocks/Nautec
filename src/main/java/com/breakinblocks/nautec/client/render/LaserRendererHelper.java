@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class LaserRendererHelper {
     public static final Identifier BEAM_LOCATION = Nautec.rl("textures/entity/laser_beam.png");
-    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian_beam.png");
+    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
     private static final RenderType BEAM_RENDER_TYPE = RenderTypes.entityCutout(GUARDIAN_BEAM_LOCATION);
 
     public static <T extends LaserBlockEntity> void renderOuterBeam(T blockEntity, BlockPos originPos, BlockPos targetPos, float targetOffset, Direction direction, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {

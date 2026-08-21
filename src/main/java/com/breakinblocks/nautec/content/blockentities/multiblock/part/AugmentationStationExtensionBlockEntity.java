@@ -211,7 +211,7 @@ public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity im
 
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.literal("Augmentation Station Extension");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

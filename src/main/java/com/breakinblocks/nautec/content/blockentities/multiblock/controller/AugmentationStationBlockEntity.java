@@ -139,7 +139,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                     if (playerOpenMenuInterval > 0) {
                         playerOpenMenuInterval--;
                         if (playerOpenMenuInterval == 0 && player.level().isClientSide()) {
-                            ClientScreenHooks.openAugmentationStationScreen(player, this, Component.literal("Augmentation Station"));
+                            ClientScreenHooks.openAugmentationStationScreen(player, this, getBlockState().getBlock().getName());
                         }
                     }
                 } else {

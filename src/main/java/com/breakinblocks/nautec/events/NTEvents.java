@@ -163,7 +163,7 @@ public final class NTEvents {
                 IPowerStorage powerStorage = event.getEntity().getMainHandItem().getCapability(NTCapabilities.PowerStorage.ITEM);
                 if (powerStorage.getPowerStored() <= 0 && event.getTarget() instanceof LivingEntity) {
                     event.setCanceled(true);
-                    event.getEntity().sendOverlayMessage(Component.literal("Not Enough Power !"));
+                    event.getEntity().sendOverlayMessage(Component.translatable("nautec.tool.no_power"));
                 }
             }
         }
@@ -180,7 +180,7 @@ public final class NTEvents {
                     if (NTDataComponentsUtils.isInfused(stack)) {
                         boolean enabled = NTDataComponentsUtils.isAbilityEnabled(stack);
                         NTDataComponentsUtils.setAbilityStatus(stack, !enabled);
-                        event.getEntity().sendOverlayMessage(Component.literal("Ability " + (enabled ? "Disabled" : "Enabled")).withStyle((enabled ? ChatFormatting.RED : ChatFormatting.GREEN)));
+                        event.getEntity().sendOverlayMessage(Component.translatable(enabled ? "nautec.tool.ability_disabled" : "nautec.tool.ability_enabled").withStyle(enabled ? ChatFormatting.RED : ChatFormatting.GREEN));
                         if (event.getLevel().isClientSide()) {
                             Player player = event.getEntity();
                             Level level = event.getLevel();
@@ -192,7 +192,7 @@ public final class NTEvents {
                         }
                     } else {
                         if (event.getLevel().isClientSide()) {
-                            event.getEntity().sendSystemMessage(Component.literal("Infuse in Algae Serum to unlock Abilities").withStyle(ChatFormatting.RED));
+                            event.getEntity().sendSystemMessage(Component.translatable("nautec.tool.infuse-me").withStyle(ChatFormatting.RED));
                         }
                     }
                     event.setCanceled(true);
