@@ -26,8 +26,8 @@ public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
-        root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
-        root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+        head.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.ZERO);
@@ -76,31 +76,31 @@ public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
     public record PartsDefinition(PartDefinition root) {
 
         public PartDefinition getHat() {
-            return root().addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+            return getHead().getChild("hat");
         }
 
         public PartDefinition getHead() {
-            return root().addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("head");
         }
 
         public PartDefinition getBody() {
-            return root().addOrReplaceChild("body", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("body");
         }
 
         public PartDefinition getLeftArm() {
-            return root().addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("left_arm");
         }
 
         public PartDefinition getRightArm() {
-            return root().addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("right_arm");
         }
 
         public PartDefinition getLeftLeg() {
-            return root().addOrReplaceChild("left_leg", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("left_leg");
         }
 
         public PartDefinition getRightLeg() {
-            return root().addOrReplaceChild("right_leg", CubeListBuilder.create(), PartPose.ZERO);
+            return root().getChild("right_leg");
         }
 
     }

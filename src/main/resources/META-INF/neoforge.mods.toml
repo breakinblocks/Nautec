@@ -4,11 +4,14 @@ loaderVersion = "${loader_version_range}"
 
 license = "${mod_license}"
 
+issueTrackerURL = "https://github.com/breakinblocks/Nautec/issues"
+
 [[mods]]
 modId = "${mod_id}"
 version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
+displayURL = "https://github.com/breakinblocks/Nautec"
 
 description = '''${mod_description}'''
 

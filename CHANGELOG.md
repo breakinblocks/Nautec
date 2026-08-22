@@ -256,6 +256,10 @@
   water, the bobber and everything else for the three seconds you had to play it.
 
 ### Fixed
+- Wearing the Diving Helmet no longer crashes the client. 26.1 moved the `hat`
+  model part under `head` instead of beside it, and Nautec's armor models still
+  built the old flat layout, so baking one threw and took down anyone who could
+  see the wearer. ([FTBT#4184])
 - Salt Water, EAS, Oil and Etching Acid no longer freeze you in place when you
   walk into them. All four were registered with a bare `FluidType.Properties`, and
   NeoForge 26.1 only moves an entity through a fluid whose type is water-like or
@@ -361,6 +365,8 @@
   and the machine tries again. Success keeps the parent's stats, so good
   bacteria stay good after the jump.
 - The Mutator needs its output slot empty before it starts.
+
+[FTBT#4184]: https://github.com/FTBTesting/Testing-Issues/issues/4184
 
 ## [0.5.1]
 
