@@ -66,5 +66,9 @@ public abstract class NTFluid {
     public Supplier<FluidType> registerFluidType(FluidType.Properties properties, Vector4i color, FluidTemplate template) {
         return () -> new BaseFluidType(template.getStillTexture(), template.getFlowingTexture(), template.getOverlayTexture(), color, properties);
     }
+
+    public Supplier<FluidType> registerViscousFluidType(FluidType.Properties properties, Vector4i color, FluidTemplate template) {
+        return () -> new ViscousFluidType(template.getStillTexture(), template.getFlowingTexture(), template.getOverlayTexture(), color, properties);
+    }
 }
 
