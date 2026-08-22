@@ -256,6 +256,13 @@
   water, the bobber and everything else for the three seconds you had to play it.
 
 ### Fixed
+- Salt Water, EAS, Oil and Etching Acid no longer freeze you in place when you
+  walk into them. All four were registered with a bare `FluidType.Properties`, and
+  NeoForge 26.1 only moves an entity through a fluid whose type is water-like or
+  implements `move` itself, so nothing applied movement or gravity at all. Salt
+  Water and EAS are now declared water-like and swim the way water does. Oil and
+  Etching Acid get lava-style physics of their own: you sink, you wade, and mobs
+  path around them.
 - Laser beams render again. Every laser in the mod, the machine beams, the
   Guardian Eye augment and the long distance relays, drew with
   `minecraft:textures/entity/guardian_beam.png`, which moved into an

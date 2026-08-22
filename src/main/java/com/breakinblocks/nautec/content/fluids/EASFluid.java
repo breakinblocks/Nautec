@@ -1,8 +1,10 @@
 package com.breakinblocks.nautec.content.fluids;
 
 import com.breakinblocks.nautec.api.fluids.NTFluid;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.joml.Vector4i;
@@ -10,7 +12,17 @@ import org.joml.Vector4i;
 public class EASFluid extends NTFluid {
     public EASFluid(String name) {
         super(name);
-        this.fluidType = registerFluidType(FluidType.Properties.create(), new Vector4i(255, 255, 255, 255), FluidTemplates.EAS);
+        this.fluidType = registerFluidType(FluidType.Properties.create()
+                .isWaterLike(true)
+                .fallDistanceModifier(0.0F)
+                .canExtinguish(true)
+                .supportsBoating(true)
+                .density(1100)
+                .viscosity(1400)
+                .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+                .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+                .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH),
+                new Vector4i(255, 255, 255, 255), FluidTemplates.EAS);
     }
 
     @Override
