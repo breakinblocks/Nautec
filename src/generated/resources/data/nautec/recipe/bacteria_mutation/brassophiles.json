@@ -24,6 +24,13 @@
           "modid": "thaumaturge"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/brass"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

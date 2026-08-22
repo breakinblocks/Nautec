@@ -8,6 +8,13 @@
           "modid": "arsmagicalegacy"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/sunstone"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

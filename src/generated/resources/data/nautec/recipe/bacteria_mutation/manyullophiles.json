@@ -12,6 +12,13 @@
           "modid": "tconstruct"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/manyullyn"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

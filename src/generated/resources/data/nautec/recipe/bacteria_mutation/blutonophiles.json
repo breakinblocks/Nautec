@@ -8,6 +8,13 @@
           "modid": "bigreactors"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/blutonium"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

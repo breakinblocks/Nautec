@@ -12,6 +12,13 @@
           "modid": "irons_jewelry"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/moonstone"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

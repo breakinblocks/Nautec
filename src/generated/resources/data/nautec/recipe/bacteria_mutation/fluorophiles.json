@@ -12,6 +12,13 @@
           "modid": "ltxi"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/fluorite"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

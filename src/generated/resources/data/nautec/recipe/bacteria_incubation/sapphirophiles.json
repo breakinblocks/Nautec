@@ -20,6 +20,13 @@
           "modid": "techreborn"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/sapphire"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

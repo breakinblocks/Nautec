@@ -16,6 +16,13 @@
           "modid": "oritech"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/plutonium"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

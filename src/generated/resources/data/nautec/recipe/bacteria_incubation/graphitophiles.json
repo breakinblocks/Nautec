@@ -12,6 +12,13 @@
           "modid": "ftbmaterials"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/graphite"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

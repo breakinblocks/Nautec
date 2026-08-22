@@ -12,6 +12,13 @@
           "modid": "extendedcrafting"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/neutronium"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",
