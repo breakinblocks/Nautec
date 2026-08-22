@@ -8,6 +8,13 @@
           "modid": "colossal_reactors"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/boron"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

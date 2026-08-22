@@ -36,6 +36,13 @@
           "modid": "xycraft_world"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/aluminum"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

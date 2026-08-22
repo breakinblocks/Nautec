@@ -8,6 +8,13 @@
           "modid": "ftbmaterials"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/bauxite"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

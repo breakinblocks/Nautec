@@ -12,6 +12,13 @@
           "modid": "thaumaturge"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/cinnabar"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

@@ -16,6 +16,13 @@
           "modid": "mekanism"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/osmium"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

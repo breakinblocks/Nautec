@@ -28,6 +28,13 @@
           "modid": "thermal"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/electrum"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

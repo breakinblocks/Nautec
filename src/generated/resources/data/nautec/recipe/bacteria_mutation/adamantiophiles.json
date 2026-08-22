@@ -8,6 +8,13 @@
           "modid": "allthemodium"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/allthemodium"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

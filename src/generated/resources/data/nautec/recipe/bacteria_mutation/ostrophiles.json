@@ -12,6 +12,13 @@
           "modid": "beyond_earth"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/ostrum"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

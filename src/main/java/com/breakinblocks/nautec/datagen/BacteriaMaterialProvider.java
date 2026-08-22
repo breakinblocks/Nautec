@@ -170,11 +170,24 @@ public class BacteriaMaterialProvider implements DataProvider {
 
     private static CompletableFuture<?> save(CachedOutput cache, Path path, JsonElement json, Entry entry) {
         JsonObject object = json.getAsJsonObject();
-        object.add("neoforge:conditions", conditions(entry));
+        object.add("neoforge:conditions", conditions(entry, materialTag(object)));
         return DataProvider.saveStable(cache, object, path);
     }
 
-    private static JsonArray conditions(Entry entry) {
+    private static String materialTag(JsonObject recipe) {
+        for (String key : new String[]{"nutrient", "catalyst"}) {
+            JsonElement element = recipe.get(key);
+            if (element != null && element.isJsonPrimitive()) {
+                String value = element.getAsString();
+                if (value.startsWith("#")) {
+                    return value.substring(1);
+                }
+            }
+        }
+        return null;
+    }
+
+    private static JsonArray conditions(Entry entry, String materialTag) {
         JsonArray any = new JsonArray();
         for (String mod : entry.mods()) {
             JsonObject loaded = new JsonObject();
@@ -189,6 +202,19 @@ public class BacteriaMaterialProvider implements DataProvider {
 
         JsonArray conditions = new JsonArray();
         conditions.add(or);
+
+        if (materialTag != null) {
+            JsonObject empty = new JsonObject();
+            empty.addProperty("type", "neoforge:tag_empty");
+            empty.addProperty("tag", materialTag);
+
+            JsonObject not = new JsonObject();
+            not.addProperty("type", "neoforge:not");
+            not.add("value", empty);
+
+            conditions.add(not);
+        }
+
         return conditions;
     }
 

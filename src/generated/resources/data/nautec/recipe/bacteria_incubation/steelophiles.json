@@ -56,6 +56,13 @@
           "modid": "techreborn"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/steel"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

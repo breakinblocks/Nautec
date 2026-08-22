@@ -8,6 +8,13 @@
           "modid": "occultism"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/jade"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

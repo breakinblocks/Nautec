@@ -12,6 +12,13 @@
           "modid": "occultism"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/certus_quartz"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

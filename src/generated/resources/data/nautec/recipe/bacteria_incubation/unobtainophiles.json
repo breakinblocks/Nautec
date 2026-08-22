@@ -8,6 +8,13 @@
           "modid": "allthemodium"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/unobtainium"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

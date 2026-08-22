@@ -8,6 +8,13 @@
           "modid": "ftbic"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/enderium"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

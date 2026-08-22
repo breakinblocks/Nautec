@@ -44,6 +44,13 @@
           "modid": "thermal"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/tin"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",

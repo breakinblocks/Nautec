@@ -32,6 +32,13 @@
           "modid": "thermal"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/silver"
+      }
     }
   ],
   "type": "nautec:bacteria_incubation",

@@ -28,6 +28,13 @@
           "modid": "techreborn"
         }
       ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/iridium"
+      }
     }
   ],
   "type": "nautec:bacteria_mutation",
