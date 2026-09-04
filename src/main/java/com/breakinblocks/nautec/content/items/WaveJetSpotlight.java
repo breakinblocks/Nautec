@@ -39,6 +39,8 @@ public final class WaveJetSpotlight {
     }
 
     private static final Map<UUID, Lit> LIT = new HashMap<>();
+    private static final double BACK_OFF_STEP = 0.5D;
+    private static final double BACK_OFF_LIMIT = 3.0D;
 
     public static boolean isLit(ItemStack stack) {
         return stack.is(NTItems.WAVE_JET.get()) && NTDataComponentsUtils.isAbilityEnabled(stack);
@@ -115,8 +117,19 @@ public final class WaveJetSpotlight {
         BlockPos candidate = hit.getType() == HitResult.Type.BLOCK
                 ? hit.getBlockPos().relative(hit.getDirection())
                 : BlockPos.containing(end);
+        if (canHold(level, candidate)) {
+            return candidate;
+        }
 
-        return canHold(level, candidate) ? candidate : null;
+        Vec3 impact = hit.getType() == HitResult.Type.BLOCK ? hit.getLocation() : end;
+        Vec3 look = holder.getLookAngle();
+        for (double back = BACK_OFF_STEP; back <= BACK_OFF_LIMIT; back += BACK_OFF_STEP) {
+            BlockPos fallback = BlockPos.containing(impact.subtract(look.scale(back)));
+            if (canHold(level, fallback)) {
+                return fallback;
+            }
+        }
+        return null;
     }
 
     private static boolean canHold(ServerLevel level, BlockPos pos) {

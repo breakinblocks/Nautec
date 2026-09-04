@@ -142,6 +142,9 @@ public class ItemModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(NTItems.WAVE_JET.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/wave_jet_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
+        itemModels.itemModelOutput.accept(NTItems.ATLANTEAN_RIFLE.get(), ItemModelUtils.specialModel(
+                Nautec.rl("item/atlantean_rifle_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+
         for (var module : NTItems.SUBMARINE_MODULES) {
             basicItem(module.get());
         }

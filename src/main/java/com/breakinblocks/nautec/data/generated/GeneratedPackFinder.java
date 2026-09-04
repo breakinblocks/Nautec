@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.data.generated;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.compat.apotheosis.ApotheosisCompat;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,6 +27,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -44,6 +46,7 @@ public final class GeneratedPackFinder {
         }
 
         event.addRepositorySource(consumer -> {
+            ApotheosisCompat.syncLootCategoryOverride();
             if (!Files.isDirectory(GeneratedPackPaths.root())) {
                 return;
             }
@@ -96,7 +99,7 @@ public final class GeneratedPackFinder {
             Path renamed = file.resolveSibling(file.getFileName().toString().replace(
                     GeneratedPackPaths.JSON_SUFFIX, GeneratedPackPaths.INVALID_SUFFIX));
             try {
-                Files.move(file, renamed, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                Files.move(file, renamed, StandardCopyOption.REPLACE_EXISTING);
                 quarantined++;
                 Nautec.LOGGER.error("Generated bacteria {} could not be read ({}), renamed it to {}",
                         file, error, renamed.getFileName());

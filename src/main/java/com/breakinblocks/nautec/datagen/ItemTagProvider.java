@@ -33,6 +33,9 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ItemTags.SHOVELS, NTItems.AQUARINE_SHOVEL);
         tag(ItemTags.HOES, NTItems.AQUARINE_HOE);
         tag(ItemTags.HEAD_ARMOR_ENCHANTABLE, NTItems.AQUARINE_HELMET);
+        tag(ItemTags.BOW_ENCHANTABLE, NTItems.ATLANTEAN_RIFLE);
+        tag(ItemTags.DURABILITY_ENCHANTABLE, NTItems.ATLANTEAN_RIFLE);
+        tag(ItemTags.VANISHING_ENCHANTABLE, NTItems.ATLANTEAN_RIFLE);
         tag(ItemTags.CHEST_ARMOR_ENCHANTABLE, NTItems.AQUARINE_CHESTPLATE);
         tag(ItemTags.LEG_ARMOR_ENCHANTABLE, NTItems.AQUARINE_LEGGINGS);
         tag(ItemTags.FOOT_ARMOR_ENCHANTABLE, NTItems.AQUARINE_BOOTS);

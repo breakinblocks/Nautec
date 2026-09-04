@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.registries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
 import com.breakinblocks.nautec.content.items.AirBottleItem;
+import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.breakinblocks.nautec.content.items.AquarineArmorItem;
 import com.breakinblocks.nautec.content.items.BatteryItem;
 import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
@@ -149,6 +150,8 @@ public final class NTItems {
 
     public static final DeferredItem<WaveJetItem> WAVE_JET = registerItem("wave_jet",
             WaveJetItem::new, new Item.Properties().stacksTo(1));
+    public static final DeferredItem<AtlanteanRifleItem> ATLANTEAN_RIFLE = registerItem("atlantean_rifle",
+            AtlanteanRifleItem::new, Item.Properties::new);
 
     public static final DeferredItem<NautecFishingRodItem> NAUTEC_FISHING_ROD = registerItem("nautec_fishing_rod",
             NautecFishingRodItem::new, new Item.Properties().durability(128));

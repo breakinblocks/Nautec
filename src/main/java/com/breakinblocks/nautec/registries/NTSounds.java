@@ -46,6 +46,10 @@ public final class NTSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> WAVE_JET_LOOP = sound("wave_jet.loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> WAVE_JET_STOP = sound("wave_jet.stop");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> ATLANTEAN_RIFLE_CHARGE = sound("atlantean_rifle.charge");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ATLANTEAN_RIFLE_FIRE = sound("atlantean_rifle.fire");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ATLANTEAN_RIFLE_SPARK = sound("atlantean_rifle.spark");
+
     private static DeferredHolder<SoundEvent, SoundEvent> sound(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Nautec.rl(name)));
     }

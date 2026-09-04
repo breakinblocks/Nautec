@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTDamageTypes;
 import com.breakinblocks.nautec.worldgen.NTBiomes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
@@ -186,7 +187,8 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
                 Nautec.LOGGER.info("Registered Prismarine Sand Generation as a placed feature.");
             })
-            .add(Registries.BIOME, NTBiomes::bootstrap);
+            .add(Registries.BIOME, NTBiomes::bootstrap)
+            .add(Registries.DAMAGE_TYPE, NTDamageTypes::bootstrap);
 
     private static ConfiguredFeature<?, ?> simpleBlockFeature(Block block) {
         return new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(block)));

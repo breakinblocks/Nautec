@@ -46,6 +46,14 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.wave_jet.both_hands", "The Wave Jet takes both hands");
         add("nautec.wave_jet.spotlight", "Spotlight: ");
         add("nautec.wave_jet.spotlight_hint", "Toggle the spotlight with your Wave Jet key (F by default) while holding it");
+        addItem(ATLANTEAN_RIFLE, "Atlantean Rifle");
+        add("nautec.atlantean_rifle.hint", "Hold use to spin up and fire a particle beam");
+        add("nautec.atlantean_rifle.ramp", "The beam bites harder and drinks more power the longer you hold it");
+        add("nautec.atlantean_rifle.no_power", "The Atlantean Rifle has no charge");
+        add("nautec.atlantean_rifle.infinity", "Infinity halves the power draw");
+        add("death.attack.nautec.particle_beam", "%1$s was vaporized by a particle beam.");
+        add("death.attack.nautec.particle_beam.player", "%1$s was vaporized by a particle beam.");
+        add("death.attack.nautec.particle_beam.item", "%1$s was vaporized by a particle beam.");
         addItem(NAUTEC_FISHING_ROD, "Prismatic Fishing Rod");
         add("nautec.fishing_minigame.timing_bar", "Something is biting");
         add("nautec.fishing_minigame.rhythm", "It is fighting you");
@@ -120,6 +128,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("subtitles.nautec.wave_jet.start", "Wave Jet spins up");
         add("subtitles.nautec.wave_jet.loop", "Wave Jet drives");
         add("subtitles.nautec.wave_jet.stop", "Wave Jet winds down");
+        add("subtitles.nautec.atlantean_rifle.charge", "Atlantean Rifle spins up");
+        add("subtitles.nautec.atlantean_rifle.fire", "Particle beam burns");
+        add("subtitles.nautec.atlantean_rifle.spark", "Atlantean Rifle crackles");
         add("key.category.nautec.main", "Nautec");
         add("key.nautec.augment_screen", "Open the Augmentation Screen");
         add("key.nautec.throw_trident", "Throw Trident");

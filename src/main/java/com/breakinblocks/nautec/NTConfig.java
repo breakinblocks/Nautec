@@ -235,6 +235,42 @@ public final class NTConfig {
             .comment("The amount of power the Wave Jet spotlight uses each tick while lit")
             .defineInRange("waveJetLightPowerUsage", 1, 0, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.IntValue RIFLE_POWER_CAPACITY = BUILDER
+            .comment("How much power an Atlantean Rifle holds")
+            .defineInRange("riflePowerCapacity", 1_000_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue RIFLE_MAX_INPUT = BUILDER
+            .comment("How much power an Atlantean Rifle accepts per tick while charging")
+            .defineInRange("rifleMaxInput", 20_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue RIFLE_CHARGE_TICKS = BUILDER
+            .comment("Ticks the Atlantean Rifle spins up for before the beam appears")
+            .defineInRange("rifleChargeTicks", 10, 0, 200);
+
+    private static final ModConfigSpec.IntValue RIFLE_RAMP_TICKS = BUILDER
+            .comment("Ticks of continuous fire it takes the Atlantean Rifle to reach full damage and full power draw")
+            .defineInRange("rifleRampTicks", 200, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue RIFLE_BASE_DAMAGE = BUILDER
+            .comment("Damage the Atlantean Rifle beam deals every two ticks when it first fires")
+            .defineInRange("rifleBaseDamage", 4.0, 0.0, 1024.0);
+
+    private static final ModConfigSpec.DoubleValue RIFLE_MAX_DAMAGE = BUILDER
+            .comment("Damage the Atlantean Rifle beam deals every two ticks once fully ramped")
+            .defineInRange("rifleMaxDamage", 20.0, 0.0, 1024.0);
+
+    private static final ModConfigSpec.IntValue RIFLE_BASE_DRAIN = BUILDER
+            .comment("Power the Atlantean Rifle draws every two ticks when it first fires")
+            .defineInRange("rifleBaseDrain", 1_000, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue RIFLE_MAX_DRAIN = BUILDER
+            .comment("Power the Atlantean Rifle draws every two ticks once fully ramped")
+            .defineInRange("rifleMaxDrain", 5_000, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue RIFLE_RANGE = BUILDER
+            .comment("How far the Atlantean Rifle beam reaches, in blocks")
+            .defineInRange("rifleRange", 128.0, 1.0, 256.0);
+
     private static final ModConfigSpec.IntValue DOCK_POWER_USAGE = BUILDER
             .comment("The amount of power a Sea Scout Dock requires before it will service a hull")
             .defineInRange("dockPowerUsage", 20, 0, Integer.MAX_VALUE);
@@ -487,6 +523,15 @@ public final class NTConfig {
     public static int waveJetLightRange = 12;
     public static int waveJetLightLevel = 14;
     public static int waveJetLightPowerUsage = 1;
+    public static int riflePowerCapacity = 1_000_000;
+    public static int rifleMaxInput = 20_000;
+    public static int rifleChargeTicks = 10;
+    public static int rifleRampTicks = 200;
+    public static double rifleBaseDamage = 4.0;
+    public static double rifleMaxDamage = 20.0;
+    public static int rifleBaseDrain = 1_000;
+    public static int rifleMaxDrain = 5_000;
+    public static double rifleRange = 128.0;
     public static int dockPowerUsage = 20;
     public static int dockChargeRate = 40;
     public static int pressureForgeDepth = 0;
@@ -634,6 +679,15 @@ public final class NTConfig {
         waveJetLightRange = WAVE_JET_LIGHT_RANGE.get();
         waveJetLightLevel = WAVE_JET_LIGHT_LEVEL.get();
         waveJetLightPowerUsage = WAVE_JET_LIGHT_POWER_USAGE.get();
+        riflePowerCapacity = RIFLE_POWER_CAPACITY.get();
+        rifleMaxInput = RIFLE_MAX_INPUT.get();
+        rifleChargeTicks = RIFLE_CHARGE_TICKS.get();
+        rifleRampTicks = RIFLE_RAMP_TICKS.get();
+        rifleBaseDamage = RIFLE_BASE_DAMAGE.getAsDouble();
+        rifleMaxDamage = RIFLE_MAX_DAMAGE.getAsDouble();
+        rifleBaseDrain = RIFLE_BASE_DRAIN.get();
+        rifleMaxDrain = RIFLE_MAX_DRAIN.get();
+        rifleRange = RIFLE_RANGE.getAsDouble();
         dockPowerUsage = DOCK_POWER_USAGE.get();
         dockChargeRate = DOCK_CHARGE_RATE.get();
         pressureForgeDepth = PRESSURE_FORGE_DEPTH.get();

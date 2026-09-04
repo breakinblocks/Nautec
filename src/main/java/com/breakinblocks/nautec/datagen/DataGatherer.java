@@ -48,6 +48,7 @@ public class DataGatherer {
 
         DatapackRegistryProvider datapackRegistries = generator.addProvider(true, new DatapackRegistryProvider(output, lookupProvider));
         generator.addProvider(true, new BiomeTagProvider(output, datapackRegistries.getRegistryProvider()));
+        generator.addProvider(true, new DamageTypeTagProvider(output, datapackRegistries.getRegistryProvider()));
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
         generator.addProvider(true, new BacteriaMaterialProvider(output, lookupProvider));
         generator.addProvider(true, new LithostitchedInjectorProvider(output));
