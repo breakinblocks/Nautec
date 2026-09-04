@@ -3,6 +3,13 @@
 ## [Unreleased]
 
 ### Added
+- The **Atlantean Rifle**, a two-handed particle beam weapon. Hold use to spin it up for half
+  a second, then it cuts a beam out to 128 blocks that bites every two ticks and ignores hurt
+  cooldowns. The longer you hold it the harder it hits, from 4 up to 20 per hit over ten
+  seconds, and the faster it drinks its million-point buffer, from 1,000 up to 5,000 per
+  hit. Letting go resets it. Its own death message, its own damage type. Takes every bow
+  enchantment; Infinity halves the power draw. With Apotheosis installed it counts as a bow, so
+  bow affixes and gem sockets apply.
 - The **Sea Scout**, a two seat powered submersible. Right-click to
   board; first in drives. W/S throttle, the mouse steers, Space rises, C dives,
   hold right mouse to look around. Sneak plus right-click picks it back up with

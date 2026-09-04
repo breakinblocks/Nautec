@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemRenderer;
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
+import com.breakinblocks.nautec.client.render.RifleArmPose;
 import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
 import com.breakinblocks.nautec.client.teleport.TeleportStreakRenderer;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
@@ -66,6 +67,7 @@ import com.breakinblocks.nautec.registries.NTMenuTypes;
 import com.breakinblocks.nautec.registries.NTParticles;
 import com.breakinblocks.nautec.client.ArmorModelsHandler;
 import net.minecraft.client.Camera;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.ThrownTridentRenderer;
@@ -77,7 +79,9 @@ import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -194,6 +198,13 @@ public final class NautecClient {
                 return ArmorModelsHandler.armorModel(ArmorModelsHandler.divingSuit, EquipmentSlot.HEAD);
             }
         }, NTItems.DIVING_HELMET);
+
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return RifleArmPose.RIFLE.getValue();
+            }
+        }, NTItems.ATLANTEAN_RIFLE);
     }
 
     private void registerFluidModels(RegisterFluidModelsEvent event) {

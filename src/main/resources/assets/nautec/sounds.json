@@ -188,5 +188,25 @@
     "sounds": [
       { "name": "minecraft:item.trident.return", "type": "event", "volume": 0.5, "pitch": 1.4 }
     ]
+  },
+  "atlantean_rifle.charge": {
+    "subtitle": "subtitles.nautec.atlantean_rifle.charge",
+    "sounds": [
+      { "name": "nautec:atlantean_rifle/charge", "volume": 1.0, "pitch": 1.0 }
+    ]
+  },
+  "atlantean_rifle.fire": {
+    "subtitle": "subtitles.nautec.atlantean_rifle.fire",
+    "sounds": [
+      { "name": "nautec:atlantean_rifle/fire", "volume": 1.0, "pitch": 1.0 }
+    ]
+  },
+  "atlantean_rifle.spark": {
+    "subtitle": "subtitles.nautec.atlantean_rifle.spark",
+    "sounds": [
+      { "name": "minecraft:block.redstone_torch.burnout", "type": "event", "volume": 0.45, "pitch": 1.5 },
+      { "name": "minecraft:block.redstone_torch.burnout", "type": "event", "volume": 0.45, "pitch": 1.9 },
+      { "name": "minecraft:block.fire.extinguish", "type": "event", "volume": 0.3, "pitch": 1.8 }
+    ]
   }
 }

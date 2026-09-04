@@ -24,7 +24,12 @@ public final class BiomeInjector {
             return vanilla;
         }
 
-        if (ModList.get().isLoaded(LITHOSTITCHED)) {
+        ModList modList = ModList.get();
+        if (modList == null) {
+            return vanilla;
+        }
+
+        if (modList.isLoaded(LITHOSTITCHED)) {
             Nautec.LOGGER.info("Lithostitched is present, leaving preset {} to the biome injectors in data/nautec/lithostitched/biome_injector", preset.id());
             return vanilla;
         }

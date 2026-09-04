@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "nautec:item/atlantean_rifle_base",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
+  }
+}
