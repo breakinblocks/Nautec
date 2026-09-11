@@ -10,7 +10,12 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar(Nautec.MODID);
+        final PayloadRegistrar registrar = event.registrar("2");
+        registrar.playToClient(
+                OpenAugmentationScreenPayload.TYPE,
+                OpenAugmentationScreenPayload.STREAM_CODEC,
+                OpenAugmentationScreenPayload::handle
+        );
         registrar.playToServer(
                 KeyPressedPayload.TYPE,
                 KeyPressedPayload.STREAM_CODEC,
@@ -21,22 +26,19 @@ public class NetworkEvents {
                 BacteriaSlotClickedPayload.STREAM_CODEC,
                 BacteriaSlotClickedPayload::handle
         );
-        registrar.playBidirectional(
+        registrar.playToClient(
                 SyncAugmentPayload.TYPE,
                 SyncAugmentPayload.STREAM_CODEC,
-                SyncAugmentPayload::setAugmentDataAction,
                 SyncAugmentPayload::setAugmentDataAction
         );
-        registrar.playBidirectional(
+        registrar.playToClient(
                 SetCooldownPayload.TYPE,
                 SetCooldownPayload.STREAM_CODEC,
-                SetCooldownPayload::setCooldownAction,
                 SetCooldownPayload::setCooldownAction
         );
-        registrar.playBidirectional(
+        registrar.playToServer(
                 StartAugmentationPayload.TYPE,
                 StartAugmentationPayload.STREAM_CODEC,
-                StartAugmentationPayload::startAugmentation,
                 StartAugmentationPayload::startAugmentation
         );
         registrar.playToClient(
@@ -84,10 +86,9 @@ public class NetworkEvents {
                 TeleportFxPayload.STREAM_CODEC,
                 TeleportFxPayload::handle
         );
-        registrar.playBidirectional(
+        registrar.playToClient(
                 ClearAugmentPayload.TYPE,
                 ClearAugmentPayload.STREAM_CODEC,
-                ClearAugmentPayload::clearAugmentAction,
                 ClearAugmentPayload::clearAugmentAction
         );
     }

@@ -84,6 +84,10 @@ public abstract class Augment {
 
     }
 
+    public boolean canActivate() {
+        return player != null && player.isAlive() && !player.isSpectator() && !isOnCooldown();
+    }
+
     public void handleKeybindPress() {
     }
 

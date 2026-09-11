@@ -23,7 +23,15 @@ public class LeapAugment extends Augment {
     }
 
     @Override
+    public boolean canActivate() {
+        return super.canActivate() && player.onGround();
+    }
+
+    @Override
     public void handleKeybindPress() {
+        if (!canActivate()) {
+            return;
+        }
         Vec3 lookVec = player.getLookAngle();
         float magnitude = 1.8f;
         Vec3 leapVector = new Vec3(lookVec.x, lookVec.y, lookVec.z);

@@ -37,12 +37,20 @@ public abstract class BucketItemMixin {
         if (NTConfig.collectSaltWater) {
 
             ItemStack itemStack = player.getItemInHand(hand);
+            if (!itemStack.is(Items.BUCKET)) {
+                return;
+            }
             BlockHitResult blockHitResult = getPlayerPOVHitResult(
                     level, player, ClipContext.Fluid.SOURCE_ONLY
             );
 
             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                 BlockPos blockPos = blockHitResult.getBlockPos();
+                if (!level.mayInteract(player, blockPos)
+                        || !player.mayUseItemAt(blockPos.relative(blockHitResult.getDirection()), blockHitResult.getDirection(), itemStack)) {
+                    cir.setReturnValue(InteractionResult.FAIL);
+                    return;
+                }
                 BlockState blockState = level.getBlockState(blockPos);
 
                 if (blockState.getBlock() instanceof BucketPickup bucketPickup) {
@@ -59,8 +67,8 @@ public abstract class BucketItemMixin {
                                     level.playSound(player, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F)
                             );
 
-                            if (!level.isClientSide()) {
-                                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer) player, filledBucket);
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                CriteriaTriggers.FILLED_BUCKET.trigger(serverPlayer, filledBucket);
                             }
 
                             cir.setReturnValue(InteractionResult.SUCCESS.heldItemTransformedTo(ItemUtils.createFilledResult(itemStack, player, filledBucket)));

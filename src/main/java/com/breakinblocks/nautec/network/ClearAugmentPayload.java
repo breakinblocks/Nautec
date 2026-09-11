@@ -34,6 +34,9 @@ public record ClearAugmentPayload(AugmentSlot augmentSlot) implements CustomPack
 
     public static void clearAugmentAction(ClearAugmentPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
+            if (!context.player().level().isClientSide()) {
+                return;
+            }
             Player player = context.player();
             AugmentSlot slot = payload.augmentSlot();
             

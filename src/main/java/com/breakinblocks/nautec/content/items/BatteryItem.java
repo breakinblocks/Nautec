@@ -67,16 +67,22 @@ public class BatteryItem extends Item implements IPowerItem, ICurioItem {
 
     @Override
     public void curioTick(ItemStack stack, SlotContext slotContext) {
+        if (!(slotContext.entity() instanceof Player player) || player.level().isClientSide()) {
+            return;
+        }
         IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
-        Player player = (Player) slotContext.entity();
         if (NTDataComponentsUtils.isAbilityEnabled(stack)) {
             for (ItemStack itemStack : player.getInventory().getNonEquipmentItems()) {
                 if (itemStack.getCapability(NTCapabilities.PowerStorage.ITEM) != null) {
                     IPowerStorage itemPowerStorage = itemStack.getCapability(NTCapabilities.PowerStorage.ITEM);
                     if (itemPowerStorage.getPowerStored() < itemPowerStorage.getPowerCapacity()) {
-                        int powerToTransfer = Math.min(powerStorage.getPowerStored(), itemPowerStorage.getPowerCapacity() - itemPowerStorage.getPowerStored());
-                        powerStorage.tryDrainPower(powerToTransfer,false);
-                        itemPowerStorage.tryFillPower(powerToTransfer,false);
+                        int available = powerStorage.tryDrainPower(powerStorage.getPowerStored(), true);
+                        int accepted = itemPowerStorage.tryFillPower(available, true);
+                        int drained = powerStorage.tryDrainPower(accepted, false);
+                        int filled = itemPowerStorage.tryFillPower(drained, false);
+                        if (filled < drained) {
+                            powerStorage.setPowerStored(powerStorage.getPowerStored() + drained - filled);
+                        }
                     }
                 }
             }

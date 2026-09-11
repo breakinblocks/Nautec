@@ -33,6 +33,9 @@ public class ThrowRandomPotionAugments extends Augment {
 
     @Override
     public void handleKeybindPress() {
+        if (!canActivate()) {
+            return;
+        }
         List<Holder<Potion>> potions = new ArrayList<>();
         potions.add(Potions.HEALING);
         potions.add(Potions.HARMING);

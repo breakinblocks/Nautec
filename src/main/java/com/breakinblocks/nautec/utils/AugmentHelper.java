@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.network.ClearAugmentPayload;
+import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -49,15 +50,45 @@ public final class AugmentHelper {
     }
 
     public static Augment createAugment(AugmentType<?> augmentType, Player player, AugmentSlot augmentSlot) {
+        Augment previous = getAugmentBySlot(player, augmentSlot);
+        if (previous != null) {
+            previous.onRemoved(player);
+        }
         Augment augment = augmentType.create(augmentSlot);
         augment.setPlayer(player);
-        augment.onAdded(player);
-
         AugmentHelper.setAugment(player, augmentSlot, augment);
+        reapplyEffects(player);
+        syncAugment(player, augment);
         if (player.level().isClientSide()) {
             AugmentClientHelper.invalidateCacheFor(player, augmentSlot);
         }
         return augment;
+    }
+
+    public static void syncAugment(Player player, Augment augment) {
+        CompoundTag data = augment.serializeNBT(player.level().registryAccess());
+        setAugmentExtraData(player, augment.getAugmentSlot(), data);
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncAugmentPayload(augment, data));
+        }
+    }
+
+    public static void restoreAugments(Player player) {
+        for (Augment augment : getAugments(player).values()) {
+            augment.setPlayer(player);
+            CompoundTag data = getAugmentsData(player).get(augment.getAugmentSlot());
+            if (data != null) {
+                augment.deserializeNBT(player.level().registryAccess(), data);
+            }
+            augment.onAdded(player);
+            syncAugment(player, augment);
+        }
+    }
+
+    private static void reapplyEffects(Player player) {
+        for (Augment installed : getAugments(player).values()) {
+            installed.onAdded(player);
+        }
     }
 
     public static void removeAugment(Player player, AugmentSlot augmentSlot) {
@@ -71,6 +102,7 @@ public final class AugmentHelper {
         augmentsData.remove(augmentSlot);
         player.setData(NTDataAttachments.AUGMENTS, augments);
         player.setData(NTDataAttachments.AUGMENTS_EXTRA_DATA, augmentsData);
+        reapplyEffects(player);
         
         if (!player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new ClearAugmentPayload(augmentSlot));

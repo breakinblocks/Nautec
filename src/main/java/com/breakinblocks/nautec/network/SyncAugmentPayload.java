@@ -33,6 +33,9 @@ public record SyncAugmentPayload(Augment augment, CompoundTag extraData) impleme
 
     public static void setAugmentDataAction(SyncAugmentPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
+            if (!context.player().level().isClientSide()) {
+                return;
+            }
             Augment augment = payload.augment();
             CompoundTag tag = payload.extraData();
             Player player = context.player();

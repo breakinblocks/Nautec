@@ -9,14 +9,11 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
 import com.breakinblocks.nautec.content.commands.arguments.AugmentSlotArgumentType;
 import com.breakinblocks.nautec.content.commands.arguments.AugmentTypeArgumentType;
-import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 
 public class SetAugmentCommand {
@@ -35,12 +32,7 @@ public class SetAugmentCommand {
     private static int execute(CommandContext<CommandSourceStack> ctx) {
         ServerPlayer player = ctx.getSource().getPlayer();
         AugmentSlot slot = ctx.getArgument("slot", AugmentSlot.class);
-        Augment currentAug = AugmentHelper.getAugmentBySlot(player, slot);
-        if (currentAug != null) {
-            currentAug.onRemoved(player);
-        }
         Augment augment = AugmentHelper.createAugment(ctx.getArgument("augment", AugmentType.class), player, slot);
-        PacketDistributor.sendToPlayer(player, new SyncAugmentPayload(augment, new CompoundTag()));
         player.sendSystemMessage(Component.literal("Set augment in slot '" + slot.getName() + "' to: " + augment.getAugmentType()));
         return 1;
     }

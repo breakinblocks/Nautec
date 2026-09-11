@@ -65,6 +65,7 @@ public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity im
         this.robotArmSpeed = 7;
         this.animation = Animation.FORWARD;
         this.animationRunning = true;
+        update();
     }
 
     public Animation getAnimation() {
@@ -199,11 +200,21 @@ public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity im
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.controllerPos = BlockPos.of(in.getLongOr("controllerPos", 0));
+        this.animationTime = in.getIntOr("animationTime", 0);
+        this.animationInterval = in.getIntOr("animationInterval", 0);
+        this.robotArmSpeed = in.getIntOr("robotArmSpeed", 0);
+        this.animationRunning = in.getBooleanOr("animationRunning", false);
+        this.animation = Animation.values()[Math.clamp(in.getIntOr("animation", Animation.IDLE.ordinal()), 0, Animation.values().length - 1)];
     }
 
     @Override
     protected void saveData(ValueOutput out) {
         super.saveData(out);
+        out.putInt("animationTime", animationTime);
+        out.putInt("animationInterval", animationInterval);
+        out.putInt("robotArmSpeed", robotArmSpeed);
+        out.putBoolean("animationRunning", animationRunning);
+        out.putInt("animation", animation.ordinal());
         if (controllerPos != null) {
             out.putLong("controllerPos", controllerPos.asLong());
         }

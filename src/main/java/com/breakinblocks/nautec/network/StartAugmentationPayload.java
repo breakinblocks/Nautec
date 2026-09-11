@@ -5,7 +5,6 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
 import com.breakinblocks.nautec.utils.codec.AugmentCodecs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -14,9 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
 
-public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot, UUID playerUUID) implements CustomPacketPayload {
+public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot) implements CustomPacketPayload {
     public static final Type<StartAugmentationPayload> TYPE = new Type<>(Nautec.rl("start_augmentation_payload"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StartAugmentationPayload> STREAM_CODEC = StreamCodec.composite(
@@ -24,8 +22,6 @@ public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot, UUID play
             StartAugmentationPayload::pos,
             AugmentCodecs.AUGMENT_SLOT_STREAM_CODEC,
             StartAugmentationPayload::slot,
-            UUIDUtil.STREAM_CODEC,
-            StartAugmentationPayload::playerUUID,
             StartAugmentationPayload::new
     );
 
@@ -37,9 +33,13 @@ public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot, UUID play
     public static void startAugmentation(StartAugmentationPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Level level = context.player().level();
+            if (level.isClientSide() || !level.isLoaded(payload.pos())
+                    || context.player().distanceToSqr(payload.pos().getCenter()) > 16) {
+                return;
+            }
             BlockEntity be = level.getBlockEntity(payload.pos());
             if (be instanceof AugmentationStationBlockEntity asbe) {
-                asbe.startAugmentation(level.getPlayerByUUID(payload.playerUUID), payload.slot());
+                asbe.startAugmentation(context.player(), payload.slot());
             }
         });
     }

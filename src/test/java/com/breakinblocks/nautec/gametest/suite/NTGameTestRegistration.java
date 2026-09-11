@@ -34,5 +34,6 @@ public final class NTGameTestRegistration {
         AtlanteanRifleTests.register(r);
         SubmarineTests.register(r);
         GatewayTests.register(r);
+        ReviewRegressionTests.register(r);
     }
 }

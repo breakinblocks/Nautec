@@ -169,9 +169,12 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
             if (distance > 0) {
                 AABB box = createLaserBeamAABB(direction, distance);
 
-                damageLivingEntities(box);
-
-                processItemCrafting(box, direction);
+                if (!level.isClientSide() && outgoingPower(direction) > 0) {
+                    damageLivingEntities(box);
+                    processItemCrafting(box, direction);
+                } else if (!level.isClientSide()) {
+                    activeTransformations.remove(direction);
+                }
 
                 BlockPos targetPos = worldPosition.relative(direction, distance);
                 if (level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
