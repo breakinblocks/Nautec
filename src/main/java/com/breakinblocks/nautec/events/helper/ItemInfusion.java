@@ -2,6 +2,9 @@ package com.breakinblocks.nautec.events.helper;
 
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
+import com.breakinblocks.nautec.data.NTDataAttachments;
+import com.breakinblocks.nautec.registries.NTFluids;
+import java.util.Optional;
 import com.breakinblocks.nautec.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -13,8 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class ItemInfusion {
 
@@ -44,34 +45,38 @@ public class ItemInfusion {
     private static final float SOUND_VOLUME = 1.0F;
     private static final float SOUND_PITCH = 1.0F;
 
-    private static final Map<ItemEntity, ItemInfusion> activeInfusions = new HashMap<>();
+    public static void cancel(ItemEntity itemEntity) {
+        itemEntity.removeData(NTDataAttachments.ITEM_INFUSION);
+    }
 
     public static void processPowerItemInfusion(ItemEntity itemEntity, Level level) {
         ItemStack stack = itemEntity.getItem();
-        if (!(stack.getItem() instanceof IPowerItem)) {
+        if (!(stack.getItem() instanceof IPowerItem) || NTDataComponentsUtils.isInfused(stack)) {
+            cancel(itemEntity);
             return;
         }
 
-        if (NTDataComponentsUtils.isInfused(stack)) {
-            return;
-        }
-
-        if (!activeInfusions.containsKey(itemEntity)) {
+        Optional<ItemInfusion> active = itemEntity.getData(NTDataAttachments.ITEM_INFUSION);
+        if (active.isEmpty()) {
             BlockPos originalFluidPos = itemEntity.blockPosition();
-            activeInfusions.put(itemEntity, new ItemInfusion(originalFluidPos));
+            if (!level.getFluidState(originalFluidPos).is(NTFluids.EAS.getStillFluid())) {
+                originalFluidPos = originalFluidPos.below();
+            }
+            itemEntity.setData(NTDataAttachments.ITEM_INFUSION, Optional.of(new ItemInfusion(originalFluidPos)));
         } else {
-            ItemInfusion infusionData = activeInfusions.get(itemEntity);
+            ItemInfusion infusionData = active.get();
 
             if (infusionData.getInfusionProgress() >= MAX_INFUSION_TIME) {
                 NTDataComponentsUtils.setInfusedStatus(stack, true);
 
                 spawnCompletionEffects(itemEntity, level);
 
-                activeInfusions.remove(itemEntity);
+                cancel(itemEntity);
 
                 BlockPos originalFluidPos = infusionData.getOriginalFluidPos();
-                if (level.getBlockState(originalFluidPos).getFluidState().isSource()) {
-                    level.setBlock(itemEntity.getOnPos(), Blocks.AIR.defaultBlockState(), 11);
+                if (!level.isClientSide() && level.getFluidState(originalFluidPos).is(NTFluids.EAS.getStillFluid())
+                        && level.getFluidState(originalFluidPos).isSource()) {
+                    level.setBlock(originalFluidPos, Blocks.AIR.defaultBlockState(), 11);
                 }
             } else {
                 infusionData.incrementInfusionProgress();

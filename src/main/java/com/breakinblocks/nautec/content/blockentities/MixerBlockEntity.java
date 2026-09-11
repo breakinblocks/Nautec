@@ -109,7 +109,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     }
 
     private void performRecipe() {
-        if (recipe != null && getPower() > NTConfig.mixerPower) {
+        if (recipe != null && getPower() >= NTConfig.mixerPower) {
             this.running = true;
             if (duration >= recipe.duration()) {
                 duration = 0;
@@ -129,7 +129,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     }
 
     private void removeInputs(MixingRecipe mixingRecipe) {
-        if (mixingRecipe == null || mixingRecipe.ingredients().isEmpty()) {
+        if (mixingRecipe == null) {
             return;
         }
 
@@ -170,14 +170,17 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
             return;
         }
 
-        ItemStackHandler handler = getItemStackHandler();
-        int prevCount = handler.getStackInSlot(OUTPUT_SLOT).getCount();
-        int newCount = mixingRecipe.result().getCount() + prevCount;
-        handler.setStackInSlot(OUTPUT_SLOT, mixingRecipe.result().copyWithCount(newCount));
-        FluidTank tank = getSecondaryFluidTank();
-        int prevAmount = tank.getFluidAmount();
-        int newAmount = mixingRecipe.fluidResult().getAmount() + prevAmount;
-        tank.setFluid(mixingRecipe.fluidResult().copyWithAmount(newAmount));
+        ItemStack itemResult = mixingRecipe.result();
+        if (!itemResult.isEmpty()) {
+            ItemStackHandler handler = getItemStackHandler();
+            int newCount = itemResult.getCount() + handler.getStackInSlot(OUTPUT_SLOT).getCount();
+            handler.setStackInSlot(OUTPUT_SLOT, itemResult.copyWithCount(newCount));
+        }
+        FluidStack fluidResult = mixingRecipe.fluidResult();
+        if (!fluidResult.isEmpty()) {
+            FluidTank tank = getSecondaryFluidTank();
+            tank.setFluid(fluidResult.copyWithAmount(fluidResult.getAmount() + tank.getFluidAmount()));
+        }
     }
 
     private Optional<MixingRecipe> getRecipe() {
@@ -239,14 +242,14 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
 
     private boolean canInsertItem(ItemStack result) {
         ItemStack stack = getItemStackHandler().getStackInSlot(OUTPUT_SLOT);
-        boolean itemMatches = result.isEmpty() || stack.isEmpty() || result.is(stack.getItem());
+        boolean itemMatches = result.isEmpty() || stack.isEmpty() || ItemStack.isSameItemSameComponents(result, stack);
         int stackLimit = stack.isEmpty() ? result.getMaxStackSize() : stack.getMaxStackSize();
         boolean amountMatches = result.getCount() + stack.getCount() <= Math.min(stackLimit, getItemStackHandler().getSlotLimit(OUTPUT_SLOT));
         return itemMatches && amountMatches;
     }
 
     private boolean canInsertFluid(FluidStack fluidStack) {
-        boolean fluidMatches = fluidStack.isEmpty() || getSecondaryFluidTank().isEmpty() || fluidStack.is(getSecondaryFluidTank().getFluid().getFluid());
+        boolean fluidMatches = fluidStack.isEmpty() || getSecondaryFluidTank().isEmpty() || FluidResource.of(fluidStack).equals(FluidResource.of(getSecondaryFluidTank().getFluid()));
         int fluidAmount = getSecondaryFluidTank().getFluidAmount();
         boolean amountMatches = fluidAmount + fluidStack.getAmount() <= getSecondaryFluidTank().getCapacity();
         return fluidMatches && amountMatches;

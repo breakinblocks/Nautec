@@ -28,7 +28,16 @@ public record KeyPressedPayload(AugmentSlot augmentSlot) implements CustomPacket
     public static void keyPressedAction(KeyPressedPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
-            AugmentHelper.getAugmentBySlot(player, payload.augmentSlot).handleKeybindPress();
+            if (player.level().isClientSide()) {
+                return;
+            }
+            var augment = AugmentHelper.getAugmentBySlot(player, payload.augmentSlot);
+            if (augment != null && augment.canActivate()
+                    && augment.getAugmentType().getAugmentSlots().contains(payload.augmentSlot)) {
+                augment.setPlayer(player);
+                augment.handleKeybindPress();
+                AugmentHelper.syncAugment(player, augment);
+            }
         }).exceptionally(e -> {
             context.disconnect(Component.translatable("nautec.network.action_failed", e.getMessage()));
             return null;

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -124,7 +125,16 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return SidedCapUtils.allInsert(0);
+        if (capability == Capabilities.Item.BLOCK) {
+            return Map.of(
+                    Direction.DOWN, Pair.of(IOActions.EXTRACT, new int[]{1}),
+                    Direction.UP, Pair.of(IOActions.INSERT, new int[]{0}),
+                    Direction.NORTH, Pair.of(IOActions.INSERT, new int[]{0}),
+                    Direction.EAST, Pair.of(IOActions.INSERT, new int[]{0}),
+                    Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{0}),
+                    Direction.WEST, Pair.of(IOActions.INSERT, new int[]{0}));
+        }
+        return capability == Capabilities.Fluid.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
     }
 
     @Override

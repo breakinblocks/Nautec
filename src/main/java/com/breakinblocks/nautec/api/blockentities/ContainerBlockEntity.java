@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.api.blockentities;
 
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.bacteria.BacteriaStorage;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
@@ -376,7 +375,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
                 return getCapOnSide(handlerSupplier, direction, baseHandler, ioPorts, localDir);
             }
 
-            Nautec.LOGGER.warn("Sided io for non facing block");
+            return handlerSupplier.get(baseHandler, ioPorts.get(direction));
         }
 
         return null;

@@ -7,8 +7,6 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotBacteriaStorage;
 import com.breakinblocks.nautec.api.menu.slots.SlotFluidHandler;
-import com.breakinblocks.nautec.capabilities.NTCapabilities;
-import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.network.BacteriaSlotClickedPayload;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
@@ -139,8 +137,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         ItemStack carried = menu.getCarried();
         SlotBacteriaStorage slot = getHoveredBacteriaStorageSlot();
         if (carried.is(NTItems.PETRI_DISH) && slot != null) {
-            IBacteriaStorage itemStorage = carried.getCapability(NTCapabilities.BacteriaStorage.ITEM);
-            ClientPacketDistributor.sendToServer(new BacteriaSlotClickedPayload(menu.blockEntity.getBlockPos(), slot.getSlot(), itemStorage.getBacteria(0)));
+            ClientPacketDistributor.sendToServer(new BacteriaSlotClickedPayload(menu.blockEntity.getBlockPos(), menu.containerId, slot.getSlot()));
         }
         return super.mouseClicked(event, doubleClick);
     }

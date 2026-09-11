@@ -17,7 +17,6 @@ import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.events.helper.ItemEtching;
 import com.breakinblocks.nautec.events.helper.ItemInfusion;
-import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import com.breakinblocks.nautec.registries.NTAttachmentTypes;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -27,7 +26,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,7 +43,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
 import com.breakinblocks.nautec.utils.ItemUtils;
@@ -64,6 +61,8 @@ public final class NTEvents {
 
                 if (level.getFluidState(itemEntity.blockPosition()).getFluidType() == NTFluids.EAS.getFluidType().get() || level.getBlockState(itemEntity.blockPosition().below()).getFluidState().is(NTFluids.EAS.getStillFluid())) {
                     ItemInfusion.processPowerItemInfusion(itemEntity, level);
+                } else {
+                    ItemInfusion.cancel(itemEntity);
                 }
             }
         }
@@ -72,23 +71,14 @@ public final class NTEvents {
         public static void onEntityLeaveLevel(EntityLeaveLevelEvent event) {
             if (event.getEntity() instanceof ItemEntity itemEntity) {
                 ItemEtching.onEntityLeave(itemEntity);
+                ItemInfusion.cancel(itemEntity);
             }
         }
 
         @SubscribeEvent
         public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
             Player player = event.getEntity();
-            Map<AugmentSlot, Augment> augments = player.getData(NTDataAttachments.AUGMENTS);
-            Map<AugmentSlot, CompoundTag> augmentsExtraData = player.getData(NTDataAttachments.AUGMENTS_EXTRA_DATA);
-            for (AugmentSlot augmentSlot : augments.keySet()) {
-                Augment augment = augments.get(augmentSlot);
-                augment.setPlayer(player);
-                CompoundTag nbt = augmentsExtraData.get(augmentSlot);
-                if (nbt != null) {
-                    augment.deserializeNBT(player.level().registryAccess(), nbt);
-                }
-                PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncAugmentPayload(augment, nbt != null ? nbt : new CompoundTag()));
-            }
+            AugmentHelper.restoreAugments(player);
 
             if (ModList.get().isLoaded("modonomicon")) {
                 if (!player.getData(NTAttachmentTypes.HAS_NAUTEC_GUIDE.get()) && NTConfig.spawnBookInInventory) {
@@ -139,8 +129,11 @@ public final class NTEvents {
                 Map<AugmentSlot, Augment> augments = AugmentHelper.getAugments(player);
                 Map<AugmentSlot, CompoundTag> augmentsExtraData = AugmentHelper.getAugmentsData(player);
                 AugmentSlot changedSlot = NTRegistries.AUGMENT_SLOT.byId(changedIndex);
-                CompoundTag tag = augments.get(changedSlot).serializeNBT(player.level().registryAccess());
-                AugmentHelper.setAugmentExtraData(player, changedSlot, tag);
+                Augment changed = augments.get(changedSlot);
+                if (changed != null) {
+                    CompoundTag tag = changed.serializeNBT(player.level().registryAccess());
+                    AugmentHelper.setAugmentExtraData(player, changedSlot, tag);
+                }
                 player.setData(NTDataAttachments.AUGMENT_DATA_CHANGED, -1);
             }
         }

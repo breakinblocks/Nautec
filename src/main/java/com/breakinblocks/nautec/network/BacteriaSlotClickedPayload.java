@@ -2,9 +2,10 @@ package com.breakinblocks.nautec.network;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
-import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
+import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,16 +15,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record BacteriaSlotClickedPayload(BlockPos pos, int slot,
-                                         BacteriaInstance bacteria) implements CustomPacketPayload {
+public record BacteriaSlotClickedPayload(BlockPos pos, int containerId, int slot) implements CustomPacketPayload {
     public static final Type<BacteriaSlotClickedPayload> TYPE = new Type<>(Nautec.rl("insert_bacteria"));
     public static final StreamCodec<RegistryFriendlyByteBuf, BacteriaSlotClickedPayload> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC,
-            BacteriaSlotClickedPayload::pos,
-            ByteBufCodecs.INT,
-            BacteriaSlotClickedPayload::slot,
-            BacteriaInstance.STREAM_CODEC,
-            BacteriaSlotClickedPayload::bacteria,
+            BlockPos.STREAM_CODEC, BacteriaSlotClickedPayload::pos,
+            ByteBufCodecs.VAR_INT, BacteriaSlotClickedPayload::containerId,
+            ByteBufCodecs.VAR_INT, BacteriaSlotClickedPayload::slot,
             BacteriaSlotClickedPayload::new
     );
 
@@ -36,25 +33,34 @@ public record BacteriaSlotClickedPayload(BlockPos pos, int slot,
         context.enqueueWork(() -> {
             Player player = context.player();
             Level level = player.level();
-            IBacteriaStorage itemBacteriaStorage = player.containerMenu.getCarried().getCapability(NTCapabilities.BacteriaStorage.ITEM);
-            if (level.getBlockEntity(pos) instanceof ContainerBlockEntity be) {
-                IBacteriaStorage beBacteriaStorage = be.getBacteriaStorage();
-                if (itemBacteriaStorage.getBacteria(0).isEmpty()
-                        || BacteriaInstance.isSameBacteriaAndStats(itemBacteriaStorage.getBacteria(0), beBacteriaStorage.getBacteria(slot))) {
-                    BacteriaInstance instance = beBacteriaStorage.getBacteria(slot).copy();
-                    itemBacteriaStorage.setBacteria(0, instance);
-                    itemBacteriaStorage.onBacteriaChanged(slot);
-                    beBacteriaStorage.setBacteria(slot, BacteriaInstance.EMPTY.copy());
-                    beBacteriaStorage.onBacteriaChanged(slot);
-                } else {
-                    beBacteriaStorage.insertBacteria(slot, bacteria, false);
-                    itemBacteriaStorage.setBacteria(0, BacteriaInstance.EMPTY.copy());
-                    itemBacteriaStorage.onBacteriaChanged(slot);
-                }
+            if (level.isClientSide() || !player.isAlive() || player.isSpectator() || !level.isLoaded(pos)
+                    || !(player.containerMenu instanceof NTMachineMenu<?> menu)
+                    || menu.containerId != containerId || !menu.blockEntity.getBlockPos().equals(pos)
+                    || level.getBlockEntity(pos) != menu.blockEntity || !menu.stillValid(player)
+                    || !menu.getCarried().is(NTItems.PETRI_DISH)) {
+                return;
             }
-        }).exceptionally(err -> {
-            Nautec.LOGGER.error("Error handling bacteria payload", err);
-            return null;
+
+            IBacteriaStorage machine = menu.blockEntity.getBacteriaStorage();
+            IBacteriaStorage carried = menu.getCarried().getCapability(NTCapabilities.BacteriaStorage.ITEM);
+            if (machine == null || carried == null || slot < 0 || slot >= machine.getBacteriaSlots()
+                    || menu.getBacteriaStorageSlots().stream().noneMatch(entry -> entry.getSlot() == slot
+                    && entry.getBacteriaStorage() == machine)) {
+                return;
+            }
+
+            BacteriaInstance held = carried.getBacteria(0);
+            BacteriaInstance stored = machine.getBacteria(slot);
+            if (held.isEmpty() || BacteriaInstance.isSameBacteriaAndStats(held, stored)) {
+                BacteriaInstance remainder = carried.insertBacteria(0, stored, false);
+                machine.setBacteria(slot, remainder);
+                machine.onBacteriaChanged(slot);
+            } else {
+                BacteriaInstance remainder = machine.insertBacteria(slot, held, false);
+                carried.setBacteria(0, remainder);
+                carried.onBacteriaChanged(0);
+            }
+            menu.broadcastChanges();
         });
     }
 }

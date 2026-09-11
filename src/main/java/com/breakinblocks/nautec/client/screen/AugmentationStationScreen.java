@@ -1,10 +1,12 @@
 package com.breakinblocks.nautec.client.screen;
 
-import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
+import com.breakinblocks.nautec.api.augments.AugmentType;
+import net.minecraft.world.item.ItemStack;
+import java.util.Optional;
+import java.util.List;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
-import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.network.StartAugmentationPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -33,15 +35,17 @@ public class AugmentationStationScreen extends Screen {
     private AugmentationStationDataPanel dataPanel;
     private Button applyButton;
 
-    private final AugmentationRecipe recipe;
+    private final Optional<AugmentType<?>> augmentType;
+    private final ItemStack preview;
 
-    public AugmentationStationScreen(AugmentationStationBlockEntity blockEntity, Player player, Component title) {
+    public AugmentationStationScreen(AugmentationStationBlockEntity blockEntity, Player player, Component title, Optional<AugmentType<?>> augmentType, ItemStack preview) {
         super(title);
         this.imageWidth = 202;
         this.imageHeight = 160;
         this.player = player;
         this.blockEntity = blockEntity;
-        this.recipe = blockEntity.getRecipe().orElse(null);
+        this.augmentType = augmentType;
+        this.preview = preview.copy();
     }
 
     @Override
@@ -55,13 +59,12 @@ public class AugmentationStationScreen extends Screen {
 
         this.dataPanel = new AugmentationStationDataPanel(Minecraft.getInstance(), width / 3 - 10, height - 50, y + 18, x + imageWidth - 58);
         addRenderableWidget(this.dataPanel);
-        this.dataPanel.setAugmentSlots(recipe != null ? recipe.resultAugment().getAugmentSlots() : NTRegistries.AUGMENT_SLOT.stream().toList());
+        this.dataPanel.setAugmentSlots(augmentType.map(AugmentType::getAugmentSlots).orElse(List.of()));
 
         this.applyButton = addRenderableWidget(Button.builder(Component.translatable("nautec.augmentation_station.apply"), btn -> {
             AugmentSlot selected = dataPanel.getSelectedSlot();
             if (selected == null) return;
-            blockEntity.startAugmentation(player, selected);
-            ClientPacketDistributor.sendToServer(new StartAugmentationPayload(blockEntity.getBlockPos(), selected, player.getUUID()));
+            ClientPacketDistributor.sendToServer(new StartAugmentationPayload(blockEntity.getBlockPos(), selected));
             Minecraft.getInstance().setScreen(null);
         }).bounds(x + imageWidth / 2 - 40, y + imageHeight - 55, 50, 15).build());
         this.applyButton.active = false;
@@ -82,8 +85,8 @@ public class AugmentationStationScreen extends Screen {
         int augmentY = y + 48;
 
         if (mouseX > augmentX && mouseX < augmentX + 16 && mouseY > augmentY && mouseY < augmentY + 16) {
-            if (recipe != null) {
-                Item augmentItem = recipe.augmentItem();
+            if (!preview.isEmpty()) {
+                Item augmentItem = preview.getItem();
                 if (augmentItem != Items.AIR) {
                     guiGraphics.setTooltipForNextFrame(this.font, augmentItem.getName(augmentItem.getDefaultInstance()), mouseX, mouseY);
                 }
@@ -106,8 +109,8 @@ public class AugmentationStationScreen extends Screen {
         int augmentX = x + 24;
         int augmentY = y + 48;
 
-        if (recipe != null) {
-            Item augmentItem = recipe.augmentItem();
+        if (!preview.isEmpty()) {
+            Item augmentItem = preview.getItem();
 
             if (augmentItem != Items.AIR) {
                 guiGraphics.fakeItem(augmentItem.getDefaultInstance(), augmentX, augmentY);

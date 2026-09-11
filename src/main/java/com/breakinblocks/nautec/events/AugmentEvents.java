@@ -1,21 +1,18 @@
 package com.breakinblocks.nautec.events;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
-import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import com.breakinblocks.nautec.utils.AugmentHelper;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Map;
 
 @SuppressWarnings("unused")
 @EventBusSubscriber(modid = Nautec.MODID)
@@ -35,6 +32,9 @@ public final class AugmentEvents {
     @SubscribeEvent
     public static void playerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
+        if (!player.level().isClientSide()) {
+            AugmentationStationBlockEntity.checkPlayer(player);
+        }
         Iterable<Augment> augments = AugmentHelper.getAugments(player).values();
         for (Augment augment : augments) {
             if (augment != null) {
@@ -45,18 +45,15 @@ public final class AugmentEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerLeave(EntityLeaveLevelEvent event) {
+        if (event.getEntity() instanceof Player player && !player.level().isClientSide()) {
+            AugmentationStationBlockEntity.cancelFor(player);
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
-        Iterable<Augment> augments = AugmentHelper.getAugments(player).values();
-        Map<AugmentSlot, CompoundTag> data = AugmentHelper.getAugmentsData(player);
-        for (Augment augment : augments) {
-            if (augment != null) {
-                AugmentSlot slot = augment.getAugmentSlot();
-                augment.setPlayer(player);
-                augment.onAdded(player);
-                CompoundTag nbt = data.get(slot);
-                PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncAugmentPayload(augment, nbt != null ? nbt : new CompoundTag()));
-            }
-        }
+        AugmentHelper.restoreAugments(player);
     }
 }
