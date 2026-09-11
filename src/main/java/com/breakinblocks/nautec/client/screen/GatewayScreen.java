@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.network.SetGatewayAddressPayload;
 import net.minecraft.client.Minecraft;
@@ -26,9 +27,9 @@ public class GatewayScreen extends Screen {
     private static final int PANEL_W = LABEL_W + GatewayAddress.PALETTE.size() * (SWATCH + GAP) + GAP * 3;
     private static final int PANEL_H = HEADER_H + GatewayAddress.SLOTS * (SWATCH + GAP) + FOOTER_H;
 
-    private static final int BACKDROP = 0xE8071B1F;
-    private static final int BORDER = 0xFF3EFDFF;
-    private static final int ROW_BACKDROP = 0x40103038;
+    private static final int BACKDROP = ArtPalette.GATEWAY_PANEL;
+    private static final int BORDER = ArtPalette.CASING;
+    private static final int ROW_BACKDROP = ArtPalette.ROW_PANEL;
     private static final int SELECTED = 0xFFFFFFFF;
     private static final int AFFORDABLE = 0x60000000;
     private static final int UNAFFORDABLE = 0xC0101010;
@@ -140,7 +141,7 @@ public class GatewayScreen extends Screen {
         guiGraphics.fill(x - 1, y - 1, x + PANEL_W + 1, y + PANEL_H + 1, BORDER);
         guiGraphics.fill(x, y, x + PANEL_W, y + PANEL_H, BACKDROP);
 
-        guiGraphics.centeredText(this.font, this.title, x + PANEL_W / 2, y + 10, 0xFF3EFDFF);
+        guiGraphics.centeredText(this.font, this.title, x + PANEL_W / 2, y + 10, ArtPalette.ACCENT);
         guiGraphics.centeredText(this.font, this.selected.describe(), x + PANEL_W / 2, y + 24, 0xFFFFFFFF);
 
         List<DyeColor> palette = GatewayAddress.PALETTE;

@@ -3,6 +3,7 @@
 	"render_type": "minecraft:cutout",
 	"credit": "Made with Blockbench",
 	"textures": {
+		"missing": "#particle",
 		"0": "nautec:block/mutator_bottom",
 		"1": "nautec:block/mutator_side",
 		"2": "nautec:block/mutator_top",

@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
+		"missing": "#particle",
 		"1": "nautec:block/multiblock/augmentation_station/bottom_side",
 		"2": "nautec:block/multiblock/augmentation_station/bottom_top",
 		"3": "nautec:block/multiblock/augmentation_station/middle_middle",

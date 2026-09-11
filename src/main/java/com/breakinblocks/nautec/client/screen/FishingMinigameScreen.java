@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.fishing.MinigameKind;
 import com.breakinblocks.nautec.network.FishingMinigameResultPayload;
@@ -37,16 +38,16 @@ public class FishingMinigameScreen extends Screen {
     private static final int SHAKE_TICKS = 8;
     private static final int POP_TICKS = 6;
 
-    private static final int PLATE = 0xD9070B10;
-    private static final int PLATE_EDGE = 0xF0050809;
-    private static final int CYAN = 0xFF3EFDFF;
-    private static final int CYAN_DIM = 0xFF19646B;
+    private static final int PLATE = ArtPalette.PANEL;
+    private static final int PLATE_EDGE = ArtPalette.PANEL_EDGE;
+    private static final int CYAN = ArtPalette.ACCENT;
+    private static final int CYAN_DIM = ArtPalette.ACCENT_DIM;
     private static final int GREEN = 0xFF5FE8B0;
     private static final int AMBER = 0xFFFFB03C;
     private static final int RED = 0xFFFF5A3C;
-    private static final int WHITE = 0xFFF0F4F5;
-    private static final int WELL_TOP = 0xE6132631;
-    private static final int WELL_BOTTOM = 0xE60B161D;
+    private static final int WHITE = ArtPalette.TEXT;
+    private static final int WELL_TOP = 0xE6323A36;
+    private static final int WELL_BOTTOM = 0xE61E2221;
 
     private final MinigameKind kind;
     private final long nonce;

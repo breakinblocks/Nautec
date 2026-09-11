@@ -1,8 +1,3 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "nautec:block/polished_prismarine",
-    "side": "nautec:block/dark_prismarine_pillar_side",
-    "top": "nautec:block/prism_glass"
-  }
+  "parent": "nautec:block/art/gateway"
 }

@@ -3,6 +3,7 @@
 	"parent": "minecraft:block/cube_bottom_top",
 	"render_type": "minecraft:cutout",
 	"textures": {
+		"missing": "#particle",
 		"2": "nautec:block/crate/top_inner",
 		"4": "nautec:block/crate/base",
 		"5": "nautec:block/crate/top",

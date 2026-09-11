@@ -13,13 +13,13 @@ public enum FluidTemplates implements FluidTemplate {
             Nautec.rl("fluid/oil_overlay")),
     EAS(modFluidTexture("eas_fluid"),
             modFluidTexture("eas_fluid"),
-            Nautec.rl("misc/in_water")),
+            Identifier.withDefaultNamespace("block/water_overlay")),
     ETCHING_ACID(modFluidTexture("etching_acid"),
             modFluidTexture("etching_acid"),
-            Nautec.rl("misc/in_water")),
+            Identifier.withDefaultNamespace("block/water_overlay")),
     WATER(Identifier.parse("block/water_still"),
             Identifier.parse("block/water_flow"),
-            Nautec.rl("misc/in_soap_water"));
+            Identifier.withDefaultNamespace("block/water_overlay"));
 
     private final Identifier still;
     private final Identifier flowing;
