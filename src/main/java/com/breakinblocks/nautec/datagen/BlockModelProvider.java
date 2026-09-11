@@ -93,46 +93,22 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.CREATIVE_POWER_SOURCE.get());
         simpleBlock(NTBlocks.CREATIVE_ENERGY_SOURCE.get(), cubeAll(name(NTBlocks.CREATIVE_ENERGY_SOURCE.get()),
                 blockTexture(NTBlocks.CREATIVE_POWER_SOURCE.get())));
-        simpleBlock(NTBlocks.ENERGY_CONVERTER.get(), cubeBottomTop(name(NTBlocks.ENERGY_CONVERTER.get()),
-                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+        simpleBlock(NTBlocks.ENERGY_CONVERTER.get(), artModel(NTBlocks.ENERGY_CONVERTER.get()));
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
 
-        simpleBlock(NTBlocks.SUBMARINE_DOCK.get(), cubeBottomTop(name(NTBlocks.SUBMARINE_DOCK.get()),
-                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+        simpleBlock(NTBlocks.SUBMARINE_DOCK.get(), artModel(NTBlocks.SUBMARINE_DOCK.get()));
 
-        simpleBlock(NTBlocks.PRESSURE_FORGE.get(), cubeBottomTop(name(NTBlocks.PRESSURE_FORGE.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
-                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
-                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+        simpleBlock(NTBlocks.PRESSURE_FORGE.get(), artModel(NTBlocks.PRESSURE_FORGE.get()));
 
-        simpleBlock(NTBlocks.GATEWAY.get(), cubeBottomTop(name(NTBlocks.GATEWAY.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                new Material(Nautec.rl("block/prism_glass"))));
+        simpleBlock(NTBlocks.GATEWAY.get(), artModel(NTBlocks.GATEWAY.get()));
 
-        simpleBlock(NTBlocks.RESONANCE_CHAMBER.get(), cubeBottomTop(name(NTBlocks.RESONANCE_CHAMBER.get()),
-                new Material(Nautec.rl("block/prism_glass")),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end")));
+        simpleBlock(NTBlocks.RESONANCE_CHAMBER.get(), artModel(NTBlocks.RESONANCE_CHAMBER.get()));
 
-        facingBlock(NTBlocks.PRISMATIC_MIRROR.get(), cubeBottomTop(name(NTBlocks.PRISMATIC_MIRROR.get()),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
-                new Material(Nautec.rl("block/prism_glass"))));
-        facingBlock(NTBlocks.BEAM_SPLITTER.get(), cubeBottomTop(name(NTBlocks.BEAM_SPLITTER.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_side"),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
-                new Material(Nautec.rl("block/prism_glass"))));
-        facingBlock(NTBlocks.FOCUSING_LENS.get(), cubeBottomTop(name(NTBlocks.FOCUSING_LENS.get()),
-                blockTexture(NTBlocks.AQUARINE_STEEL_BLOCK.get()),
-                blockTexture(NTBlocks.DARK_PRISMARINE_PILLAR.get(), "_end"),
-                new Material(Nautec.rl("block/prism_glass"))));
+        facingBlock(NTBlocks.PRISMATIC_MIRROR.get(), artModel(NTBlocks.PRISMATIC_MIRROR.get()));
+        facingBlock(NTBlocks.BEAM_SPLITTER.get(), artModel(NTBlocks.BEAM_SPLITTER.get()));
+        facingBlock(NTBlocks.FOCUSING_LENS.get(), artModel(NTBlocks.FOCUSING_LENS.get()));
         longDistanceLaser(NTBlocks.LONG_DISTANCE_LASER.get());
         laserJunction(NTBlocks.LASER_JUNCTION.get());
 
@@ -145,10 +121,7 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.MUTATOR.get(), existingModelFile(NTBlocks.MUTATOR.get()));
         simpleBlock(NTBlocks.INCUBATOR.get(), existingModelFile(NTBlocks.INCUBATOR.get()));
 
-        facingBlock(NTBlocks.BACTERIAL_FUEL_CELL.get(), cubeBottomTop(name(NTBlocks.BACTERIAL_FUEL_CELL.get()),
-                blockTexture(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get()),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()),
-                blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
+        facingBlock(NTBlocks.BACTERIAL_FUEL_CELL.get(), artModel(NTBlocks.BACTERIAL_FUEL_CELL.get()));
 
         helper.drainController(NTBlocks.DRAIN.get());
         helper.drainPart(NTBlocks.DRAIN_PART.get(), IntegerRange.of(0, 8));
@@ -343,6 +316,12 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.EAST, east)
                 .put(TextureSlot.WEST, west)
                 .put(TextureSlot.PARTICLE, particle), blockModels.modelOutput));
+    }
+
+    private Identifier artModel(Block block) {
+        Identifier id = ModelLocationUtils.getModelLocation(block);
+        ModelTemplate template = new ModelTemplate(Optional.of(Nautec.rl("block/art/" + name(block))), Optional.empty());
+        return template.create(id, new TextureMapping(), blockModels.modelOutput);
     }
 
     public Identifier cubeTop(Block block, Material side, Material top) {

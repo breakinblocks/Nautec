@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.hud;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.NTClientConfig;
 import com.breakinblocks.nautec.client.screen.SubmarineHudPositionScreen;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
@@ -13,13 +14,13 @@ public final class SubmarineHudOverlay {
     public static final int PANEL_W = 116;
     public static final int PANEL_H = 27;
 
-    private static final int CYAN = 0xFF3EFDFF;
-    private static final int CYAN_DIM = 0xFF19646B;
+    private static final int CYAN = ArtPalette.ACCENT;
+    private static final int CYAN_DIM = ArtPalette.ACCENT_DIM;
     private static final int AMBER = 0xFFFFB03C;
     private static final int RED = 0xFFFF5A3C;
     private static final int RED_DIM = 0xFF6B231A;
-    private static final int WHITE = 0xFFF0F4F5;
-    private static final int PLATE = 0xD9070B10;
+    private static final int WHITE = ArtPalette.TEXT;
+    private static final int PLATE = ArtPalette.PANEL;
     private static final int CELL_EMPTY = 0x26FFFFFF;
 
     private static final int CELLS = 8;

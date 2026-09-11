@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -11,13 +12,13 @@ public class SubmarineModuleScreen extends AbstractContainerScreen<SubmarineModu
     private static final int WIDTH = 176;
     private static final int HEIGHT = 166;
 
-    private static final int PLATE = 0xFF0B1118;
-    private static final int PLATE_EDGE = 0xFF16222B;
-    private static final int CYAN = 0xFF3EFDFF;
-    private static final int CYAN_DIM = 0xFF19646B;
-    private static final int SLOT_BG = 0xFF131E26;
-    private static final int SLOT_EDGE = 0xFF273A45;
-    private static final int TEXT = 0xFFF0F4F5;
+    private static final int PLATE = ArtPalette.PANEL_SOLID;
+    private static final int PLATE_EDGE = ArtPalette.PANEL_EDGE;
+    private static final int CYAN = ArtPalette.ACCENT;
+    private static final int CYAN_DIM = ArtPalette.ACCENT_DIM;
+    private static final int SLOT_BG = ArtPalette.SLOT;
+    private static final int SLOT_EDGE = ArtPalette.SLOT_EDGE;
+    private static final int TEXT = ArtPalette.TEXT;
 
     public SubmarineModuleScreen(SubmarineModuleMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, WIDTH, HEIGHT);

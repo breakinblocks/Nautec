@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.hud;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
@@ -17,13 +18,13 @@ public final class SubmarineAbilityBarOverlay {
     private static final int GAP = 2;
     private static final int BAR_BOTTOM_MARGIN = 6;
 
-    private static final int CYAN = 0xFF3EFDFF;
-    private static final int CYAN_DIM = 0xFF19646B;
-    private static final int WHITE = 0xFFF0F4F5;
-    private static final int PLATE = 0xD9070B10;
+    private static final int CYAN = ArtPalette.ACCENT;
+    private static final int CYAN_DIM = ArtPalette.ACCENT_DIM;
+    private static final int WHITE = ArtPalette.TEXT;
+    private static final int PLATE = ArtPalette.PANEL;
     private static final int EDGE = 0x66FFFFFF;
-    private static final int SWEEP = 0x9E0B1118;
-    private static final int PASSIVE = 0x593EFDFF;
+    private static final int SWEEP = 0x9E1E2221;
+    private static final int PASSIVE = 0x5995CFC7;
 
     private SubmarineAbilityBarOverlay() {
     }

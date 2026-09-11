@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Art
+- Unified finished machinery, vehicles, augments and UI around the Atlantean Rifle's pale mineral casing, import new assets from artist
+- Added distinct faces for nine machines, with dock and optic models matching their existing shapes. Redrew augment parts, module cartridges, refined crystals, ocean drops and flora, and simplified creature palettes.
+- Repacked both vehicle texture atlases for consistent pixel density and synchronized their emissive maps and Blockbench masters.
+- Added editable Aseprite sources, a checked export workflow and a visual art review; archived three unused legacy textures.
+- Fixed unbound model-face textures, missing blockstate definitions for custom-rendered blocks, and invalid fluid-overlay sprite references found during client loading.
+
 ### Added
 - The **Atlantean Rifle**, a two-handed particle beam weapon. Hold use to spin it up for half
   a second, then it cuts a beam out to 128 blocks that bites every two ticks and ignores hurt

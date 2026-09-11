@@ -2,6 +2,7 @@
 	"render_type": "minecraft:cutout",
 	"credit": "Made with Blockbench",
 	"textures": {
+		"missing": "#particle",
 		"0": "nautec:block/incubator_top_top",
 		"1": "nautec:block/incubator_top_glass",
 		"2": "nautec:block/incubator_top_bottom",

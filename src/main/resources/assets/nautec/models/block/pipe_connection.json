@@ -2,7 +2,8 @@
   "parent": "minecraft:block/block",
   "render_type": "cutout",
   "textures": {
-    "particle": "#texture"
+    "particle": "#texture",
+    "texture": "nautec:block/bacteria_pipe"
   },
   "elements": [
     {

@@ -7,7 +7,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ public final class PrismMonocleOverlay {
             BlockPos blockPos = blockHitResult.getBlockPos();
             if (level.getBlockState(blockPos).getBlock() instanceof DisplayBlock displayBlock && displayBlock.display(level, blockPos, player)) {
                 for (Component component : displayBlock.displayText(level, blockPos, player)) {
-                    guiGraphics.centeredText(mc.font, component, x, y + lineOffset, ARGB.opaque(256));
+                    guiGraphics.centeredText(mc.font, component, x, y + lineOffset, com.breakinblocks.nautec.client.ArtPalette.TEXT);
                     lineOffset += mc.font.lineHeight + 3;
                 }
             }

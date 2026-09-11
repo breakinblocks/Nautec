@@ -14,6 +14,8 @@ out
 .idea
 
 src/generated/resources/.cache/*
+assets-src/
+art-review/
 *.md
 !README.md
 !CHANGELOG.md
@@ -33,6 +35,7 @@ repo
 *.log
 
 .vscode/
+assets-src/art/__pycache__/
 
 tools/
 !src/generated/resources/data/*/tags/**/tools/

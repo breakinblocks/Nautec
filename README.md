@@ -5,6 +5,8 @@ colonies, and the endgame is rebuilding your own body part by part with ancient 
 
 Minecraft 26.1.2, NeoForge 26.1.2.94, Java 25.
 
+
+
 ## Aquatic Power
 
 Power in Nautec is a beams, not cables. An Aquatic Catalyst fed prismarine fires a laser out of its
