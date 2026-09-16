@@ -15,6 +15,7 @@ import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.GeoRenderer;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.builtin.TextureLayerGeoLayer;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -79,8 +80,9 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         }
 
         Matrix4f pose = pass.poseStack().last().pose();
-        Vec3 cameraPos = minecraft.gameRenderer.getMainCamera().position();
-        Vector3f muzzleRelative = pose.transformPosition(new Vector3f(MUZZLE_LOCAL));
+        Matrix4f worldToRoot = worldToRoot(pass);
+        Vec3 cameraPos = pass.cameraState().pos;
+        Vector3f muzzleRelative = worldToRoot.invert(new Matrix4f()).transformPosition(pose.transformPosition(new Vector3f(MUZZLE_LOCAL)));
         AtlanteanRifleBeamRenderer.trackMuzzle(holder.getId(), cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z));
 
         float partialTick = pass.getOrDefaultGeckolibData(DataTickets.PARTIAL_TICK, 1.0F);
@@ -91,13 +93,22 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
 
         AtlanteanRifleBeam.Hit hit = AtlanteanRifleBeam.trace(level, holder, NTConfig.rifleRange, partialTick);
         Vec3 hitRelative = hit.end().subtract(cameraPos);
-        Vector3f hitLocal = new Matrix4f(pose).invert().transformPosition(new Vector3f((float) hitRelative.x, (float) hitRelative.y, (float) hitRelative.z));
+        Vector3f hitRoot = worldToRoot.transformPosition(new Vector3f((float) hitRelative.x, (float) hitRelative.y, (float) hitRelative.z));
+        Vector3f hitLocal = new Matrix4f(pose).invert().transformPosition(hitRoot);
         float radiusScale = 1F / Math.max(0.01F, pose.getScale(new Vector3f()).x);
 
         AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks,
                 new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z),
                 new Vec3(hitLocal.x, hitLocal.y, hitLocal.z),
                 radiusScale, firing, level.getGameTime(), partialTick);
+    }
+
+    private static Matrix4f worldToRoot(RenderPassInfo<GeoRenderState> pass) {
+        ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
+        if (!perspective.firstPerson()) {
+            return new Matrix4f();
+        }
+        return new Matrix4f(RenderSystem.getModelViewStack()).invert().mul(pass.cameraState().viewRotationMatrix);
     }
 
     @Override

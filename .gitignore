@@ -16,10 +16,6 @@ out
 src/generated/resources/.cache/*
 assets-src/
 art-review/
-*.md
-!README.md
-!CHANGELOG.md
-!LICENSE.md
 
 # gradle
 build
@@ -37,5 +33,19 @@ repo
 .vscode/
 assets-src/art/__pycache__/
 
-tools/
-!src/generated/resources/data/*/tags/**/tools/
+# Markdown: ignored by default. Tracked: root README, LICENSE and CHANGELOG,
+# release changelogs, docs and wiki pages, and markdown inside mod sources
+*.md
+!/README.md
+!/LICENSE.md
+!/CHANGELOG.md
+!/metadata/changelogs/**/*.md
+!/docs/**/*.md
+!/wiki/**/*.md
+!**/src/**/*.md
+
+# Batch files: only the Gradle wrapper
+*.bat
+!gradlew.bat
+
+/tools/

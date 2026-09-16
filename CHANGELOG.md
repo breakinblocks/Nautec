@@ -16,7 +16,9 @@
   seconds, and the faster it drinks its million-point buffer, from 1,000 up to 5,000 per
   hit. Letting go resets it. Its own death message, its own damage type. Takes every bow
   enchantment; Infinity halves the power draw. With Apotheosis installed it counts as a bow, so
-  bow affixes and gem sockets apply.
+  bow affixes and gem sockets apply. Crafted from a Flawless Prismarine Crystal, two Deep Steel
+  Plating, a Laser Channeling Coil, a Prismatic Battery and an Aquatic Chip, so it sits behind
+  the Pressure Forge. It comes out of the table empty.
 - The **Sea Scout**, a two seat powered submersible. Right-click to
   board; first in drives. W/S throttle, the mouse steers, Space rises, C dives,
   hold right mouse to look around. Sneak plus right-click picks it back up with
@@ -270,6 +272,10 @@
   water, the bobber and everything else for the three seconds you had to play it.
 
 ### Fixed
+- The Atlantean Rifle's beam no longer swings away from the crosshair in first person with
+  an Iris shader pack active. Iris draws the hands in view space rather than the
+  camera-relative world space vanilla uses, and the beam converted its hit point through the
+  wrong frame. The muzzle particles are corrected the same way.
 - Bacteria strains for materials a pack has disabled no longer error on load.
 - Wearing the Diving Helmet no longer crashes the client. ([FTBT#4184])
 - Salt Water, EAS, Oil and Etching Acid no longer freeze you in place when you

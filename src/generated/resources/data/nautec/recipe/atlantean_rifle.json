@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "nautec:prismatic_battery",
+    "C": "nautec:aquatic_chip",
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal",
+    "L": "nautec:laser_channeling_coil"
+  },
+  "pattern": [
+    "  F",
+    " DL",
+    "BDC"
+  ],
+  "result": {
+    "id": "nautec:atlantean_rifle"
+  }
+}

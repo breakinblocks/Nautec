@@ -56,6 +56,7 @@ public class RecipesProvider extends RecipeProvider {
         pressureForgeRecipes(pRecipeOutput);
         dockRecipes(pRecipeOutput);
         waveJetRecipes(pRecipeOutput);
+        atlanteanRifleRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -213,6 +214,20 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.PRISMATIC_BATTERY))
                 .save(pRecipeOutput, key("wave_jet"));
+    }
+
+    private void atlanteanRifleRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.COMBAT, NTItems.ATLANTEAN_RIFLE.get())
+                .pattern("  F")
+                .pattern(" DL")
+                .pattern("BDC")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('B', NTItems.PRISMATIC_BATTERY)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("atlantean_rifle"));
     }
 
     private void dockRecipes(@NotNull RecipeOutput pRecipeOutput) {
