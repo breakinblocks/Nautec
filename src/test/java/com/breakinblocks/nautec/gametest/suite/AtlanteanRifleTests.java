@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
@@ -9,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -16,10 +18,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public final class AtlanteanRifleTests {
     private static final BlockPos TARGET = new BlockPos(4, 1, 6);
@@ -156,6 +163,42 @@ public final class AtlanteanRifleTests {
             }
             if (target.getHealth() != health) {
                 helper.fail("The rifle fired without enough power, dealing " + (health - target.getHealth()));
+                return;
+            }
+            helper.succeed();
+        });
+
+        r.add("atlantean_rifle/crafted_from_pressure_forged_parts_with_an_empty_buffer", 20, 1, helper -> {
+            RecipeHolder<?> holder = helper.getLevel().recipeAccess()
+                    .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl("atlantean_rifle")))
+                    .orElse(null);
+            if (holder == null || !(holder.value() instanceof ShapedRecipe recipe)) {
+                helper.fail("nautec:atlantean_rifle is not a loaded shaped recipe: " + holder);
+                return;
+            }
+
+            ItemStack empty = ItemStack.EMPTY;
+            ItemStack crystal = new ItemStack(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get());
+            ItemStack plating = new ItemStack(NTItems.DEEP_STEEL_PLATING.get());
+            ItemStack coil = new ItemStack(NTItems.LASER_CHANNELING_COIL.get());
+            ItemStack battery = new ItemStack(NTItems.PRISMATIC_BATTERY.get());
+            ItemStack chip = new ItemStack(NTItems.AQUATIC_CHIP.get());
+            CraftingInput grid = CraftingInput.of(3, 3, List.of(
+                    empty, empty, crystal,
+                    empty, plating, coil,
+                    battery, plating, chip));
+            if (!recipe.matches(grid, helper.getLevel())) {
+                helper.fail("The rifle recipe does not match a crystal, two platings, a coil, a battery and a chip");
+                return;
+            }
+
+            ItemStack result = recipe.assemble(grid);
+            if (!result.is(NTItems.ATLANTEAN_RIFLE.get()) || result.getCount() != 1) {
+                helper.fail("Crafting produced " + result + " instead of one rifle");
+                return;
+            }
+            if (stored(result) != 0) {
+                helper.fail("A freshly crafted rifle came with " + stored(result) + " power stored");
                 return;
             }
             helper.succeed();
