@@ -1,7 +1,8 @@
 package com.breakinblocks.nautec.content.entities.mobs;
 
+import com.breakinblocks.nautec.registries.NTSounds;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class LanternJelly extends WaterAnimal {
+    public static final float SWIM_PULSE_SPEED = 0.09F;
+
     public LanternJelly(EntityType<? extends LanternJelly> type, Level level) {
         super(type, level);
         this.moveControl = new MoveControl(this);
@@ -44,16 +47,41 @@ public class LanternJelly extends WaterAnimal {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.GLOW_SQUID_AMBIENT;
+        return NTSounds.LANTERN_JELLY_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.GLOW_SQUID_DEATH;
+        return NTSounds.LANTERN_JELLY_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return SoundEvents.GLOW_SQUID_HURT;
+        return NTSounds.LANTERN_JELLY_HURT.get();
+    }
+
+    public static float swimPulse(float ageInTicks) {
+        return Mth.sin(SWIM_PULSE_SPEED * ageInTicks);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        // Use the same client tick clock as the bell and emissive layer, once per stroke.
+        if (this.level().isClientSide() && this.isAlive() && this.isInWater() && !this.isSilent()
+                && swimPulse(this.tickCount - 1) < 0.8F && swimPulse(this.tickCount) >= 0.8F) {
+            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), NTSounds.LANTERN_JELLY_PULSE.get(),
+                    this.getSoundSource(), 0.16F, this.getVoicePitch(), false);
+        }
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.4F;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 280;
     }
 }

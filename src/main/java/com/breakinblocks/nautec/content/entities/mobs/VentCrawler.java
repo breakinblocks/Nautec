@@ -1,7 +1,8 @@
 package com.breakinblocks.nautec.content.entities.mobs;
 
+import com.breakinblocks.nautec.registries.NTSounds;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.animal.fish.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class VentCrawler extends WaterAnimal {
@@ -51,16 +53,31 @@ public class VentCrawler extends WaterAnimal {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.TURTLE_AMBIENT_LAND;
+        return NTSounds.VENT_CRAWLER_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.TURTLE_DEATH;
+        return NTSounds.VENT_CRAWLER_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return SoundEvents.TURTLE_HURT;
+        return NTSounds.VENT_CRAWLER_HURT.get();
+    }
+
+    @Override
+    protected void playStepSound(@NotNull BlockPos pos, @NotNull BlockState state) {
+        this.playSound(NTSounds.VENT_CRAWLER_STEP.get(), 0.2F, this.getVoicePitch());
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 200;
     }
 }

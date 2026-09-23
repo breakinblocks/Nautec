@@ -50,6 +50,26 @@ public final class NTSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ATLANTEAN_RIFLE_FIRE = sound("atlantean_rifle.fire");
     public static final DeferredHolder<SoundEvent, SoundEvent> ATLANTEAN_RIFLE_SPARK = sound("atlantean_rifle.spark");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> SILT_SKIPPER_AMBIENT = sound("silt_skipper.ambient");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SILT_SKIPPER_HURT = sound("silt_skipper.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SILT_SKIPPER_DEATH = sound("silt_skipper.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SILT_SKIPPER_FLOP = sound("silt_skipper.flop");
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_JELLY_AMBIENT = sound("lantern_jelly.ambient");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_JELLY_HURT = sound("lantern_jelly.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_JELLY_DEATH = sound("lantern_jelly.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LANTERN_JELLY_PULSE = sound("lantern_jelly.pulse");
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> VENT_CRAWLER_AMBIENT = sound("vent_crawler.ambient");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VENT_CRAWLER_HURT = sound("vent_crawler.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VENT_CRAWLER_DEATH = sound("vent_crawler.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VENT_CRAWLER_STEP = sound("vent_crawler.step");
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> ABYSSAL_MAW_AMBIENT = sound("abyssal_maw.ambient");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ABYSSAL_MAW_HURT = sound("abyssal_maw.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ABYSSAL_MAW_DEATH = sound("abyssal_maw.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ABYSSAL_MAW_ATTACK = sound("abyssal_maw.attack");
+
     private static DeferredHolder<SoundEvent, SoundEvent> sound(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(Nautec.rl(name)));
     }

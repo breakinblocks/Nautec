@@ -208,5 +208,101 @@
       { "name": "minecraft:block.redstone_torch.burnout", "type": "event", "volume": 0.45, "pitch": 1.9 },
       { "name": "minecraft:block.fire.extinguish", "type": "event", "volume": 0.3, "pitch": 1.8 }
     ]
+  },
+  "silt_skipper.ambient": {
+    "subtitle": "subtitles.nautec.silt_skipper.ambient",
+    "sounds": [
+      { "name": "nautec:entity/silt_skipper/ambient", "volume": 0.55, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "silt_skipper.hurt": {
+    "subtitle": "subtitles.nautec.silt_skipper.hurt",
+    "sounds": [
+      { "name": "nautec:entity/silt_skipper/hurt", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "silt_skipper.death": {
+    "subtitle": "subtitles.nautec.silt_skipper.death",
+    "sounds": [
+      { "name": "nautec:entity/silt_skipper/death", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "silt_skipper.flop": {
+    "subtitle": "subtitles.nautec.silt_skipper.flop",
+    "sounds": [
+      { "name": "nautec:entity/silt_skipper/flop", "volume": 0.45, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "lantern_jelly.ambient": {
+    "subtitle": "subtitles.nautec.lantern_jelly.ambient",
+    "sounds": [
+      { "name": "nautec:entity/lantern_jelly/ambient", "volume": 0.55, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "lantern_jelly.hurt": {
+    "subtitle": "subtitles.nautec.lantern_jelly.hurt",
+    "sounds": [
+      { "name": "nautec:entity/lantern_jelly/hurt", "volume": 0.75, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "lantern_jelly.death": {
+    "subtitle": "subtitles.nautec.lantern_jelly.death",
+    "sounds": [
+      { "name": "nautec:entity/lantern_jelly/death", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "lantern_jelly.pulse": {
+    "subtitle": "subtitles.nautec.lantern_jelly.pulse",
+    "sounds": [
+      { "name": "nautec:entity/lantern_jelly/pulse", "volume": 0.65, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "vent_crawler.ambient": {
+    "subtitle": "subtitles.nautec.vent_crawler.ambient",
+    "sounds": [
+      { "name": "nautec:entity/vent_crawler/ambient", "volume": 0.65, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "vent_crawler.hurt": {
+    "subtitle": "subtitles.nautec.vent_crawler.hurt",
+    "sounds": [
+      { "name": "nautec:entity/vent_crawler/hurt", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "vent_crawler.death": {
+    "subtitle": "subtitles.nautec.vent_crawler.death",
+    "sounds": [
+      { "name": "nautec:entity/vent_crawler/death", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "vent_crawler.step": {
+    "subtitle": "subtitles.nautec.vent_crawler.step",
+    "sounds": [
+      { "name": "nautec:entity/vent_crawler/step", "volume": 0.7, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "abyssal_maw.ambient": {
+    "subtitle": "subtitles.nautec.abyssal_maw.ambient",
+    "sounds": [
+      { "name": "nautec:entity/abyssal_maw/ambient", "volume": 0.75, "pitch": 1.0, "attenuation_distance": 12 }
+    ]
+  },
+  "abyssal_maw.hurt": {
+    "subtitle": "subtitles.nautec.abyssal_maw.hurt",
+    "sounds": [
+      { "name": "nautec:entity/abyssal_maw/hurt", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "abyssal_maw.death": {
+    "subtitle": "subtitles.nautec.abyssal_maw.death",
+    "sounds": [
+      { "name": "nautec:entity/abyssal_maw/death", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
+  },
+  "abyssal_maw.attack": {
+    "subtitle": "subtitles.nautec.abyssal_maw.attack",
+    "sounds": [
+      { "name": "nautec:entity/abyssal_maw/attack", "volume": 0.85, "pitch": 1.0, "attenuation_distance": 16 }
+    ]
   }
 }

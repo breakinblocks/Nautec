@@ -1,7 +1,7 @@
 package com.breakinblocks.nautec.content.entities.mobs;
 
+import com.breakinblocks.nautec.registries.NTSounds;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -55,16 +55,31 @@ public class AbyssalMaw extends Monster {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.GUARDIAN_AMBIENT;
+        return NTSounds.ABYSSAL_MAW_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.GUARDIAN_DEATH;
+        return NTSounds.ABYSSAL_MAW_DEATH.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return SoundEvents.GUARDIAN_HURT;
+        return NTSounds.ABYSSAL_MAW_HURT.get();
+    }
+
+    @Override
+    protected void playAttackSound() {
+        this.playSound(NTSounds.ABYSSAL_MAW_ATTACK.get(), 0.8F, this.getVoicePitch());
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.8F;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 160;
     }
 }

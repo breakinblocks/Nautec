@@ -11,7 +11,9 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.LivingEntityEmissiveLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -50,7 +52,8 @@ public final class NTMobRenderers {
     public static class LanternJellyRenderer extends SimpleMobRenderer<Mob, LanternJellyModel> {
         public LanternJellyRenderer(EntityRendererProvider.Context context) {
             super(context, new LanternJellyModel(context.bakeLayer(LANTERN_JELLY_LAYER)), 0.5F, texture("lantern_jelly"));
-            this.addLayer(new GlowOverlayLayer<>(this, texture("lantern_jelly_glow")));
+            this.addLayer(new LivingEntityEmissiveLayer<>(this, state -> texture("lantern_jelly_glow"),
+                    LanternJellyModel::glowBrightness, this.getModel(), RenderTypes::entityTranslucentEmissive, false));
         }
     }
 
