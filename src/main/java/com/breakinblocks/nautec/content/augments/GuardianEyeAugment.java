@@ -15,12 +15,16 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.List;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import com.breakinblocks.nautec.utils.AugmentHelper;
 
 public class GuardianEyeAugment extends Augment {
     public Vec3 laserFiredPos = null;
     public int timeLeft = 0;
 
     private Entity targetEntity;
+    private int beamTicks;
 
     private float clientLaserTime;
 
@@ -30,7 +34,7 @@ public class GuardianEyeAugment extends Augment {
 
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
-        if (NTKeybinds.ACTIVATE_LASER_KEYBIND.get().isDown()) {
+        if (player.isLocalPlayer() && NTKeybinds.ACTIVATE_LASER_KEYBIND.get().isDown()) {
             ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }
@@ -102,12 +106,46 @@ public class GuardianEyeAugment extends Augment {
                         laserFiredPos = entity.getEyePosition();
                     }
                     this.targetEntity = entity;
+                    this.beamTicks = 3;
                     return;
                 }
             }
         }
 
         this.targetEntity = null;
+    }
+
+    @Override
+    public void serverTick(PlayerTickEvent.Post event) {
+        if (beamTicks > 0 && --beamTicks == 0 && targetEntity != null) {
+            targetEntity = null;
+            AugmentHelper.syncAugment(player, this);
+        }
+    }
+
+    @Override
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        CompoundTag tag = super.serializeNBT(provider);
+        tag.putInt("beam_target", targetEntity == null ? -1 : targetEntity.getId());
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
+        super.deserializeNBT(provider, tag);
+        if (player != null && player.level().isClientSide()) {
+            Entity target = player.level().getEntity(tag.getIntOr("beam_target", -1));
+            if (target != targetEntity) clientLaserTime = 0;
+            targetEntity = target;
+        }
+    }
+
+    @Override
+    public GuardianEyeAugment copyForRender() {
+        GuardianEyeAugment copy = (GuardianEyeAugment) super.copyForRender();
+        copy.targetEntity = targetEntity;
+        copy.clientLaserTime = clientLaserTime;
+        return copy;
     }
 
     public Entity getTargetEntity() {

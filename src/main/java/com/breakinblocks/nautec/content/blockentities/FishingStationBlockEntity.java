@@ -85,16 +85,11 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
                 progress = 0;
                 if (!level.isClientSide()) {
                     List<ItemStack> items = spawnLoot();
-                    itemsLoop:
                     for (ItemStack stack : items) {
-                        for (int i = 0; i < getItemStackHandler().getSlots(); i++) {
-                            ItemStack itemStack = forceInsertItem(i, stack.copy(), false);
-                            if (itemStack.isEmpty()) {
-                                continue itemsLoop;
-                            }
+                        ItemStack remainder = storeCatch(stack);
+                        if (!remainder.isEmpty()) {
+                            Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY() + 0.5f, worldPosition.getZ(), remainder);
                         }
-
-                        Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY() + 0.5f, worldPosition.getZ(), stack.copy());
                     }
                 }
             }
@@ -119,6 +114,14 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
         } else {
             this.speed = 0;
         }
+    }
+
+    public ItemStack storeCatch(ItemStack stack) {
+        ItemStack remainder = stack.copy();
+        for (int i = 0; i < getItemStackHandler().getSlots() && !remainder.isEmpty(); i++) {
+            remainder = forceInsertItem(i, remainder, false);
+        }
+        return remainder;
     }
 
     public int getSpeed() {

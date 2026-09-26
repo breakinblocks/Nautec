@@ -61,7 +61,7 @@ public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<Fluid
         boolean fluidMatches = recipeInput.fluidStack() != null && !fluidIngredient.isEmpty() &&
                 recipeInput.fluidStack().is(fluidIngredient.getFluid()) &&
                 recipeInput.fluidStack().getAmount() >= fluidIngredient.getAmount();
-        boolean itemsMatch = RecipeUtils.compareItems(recipeInput.items(), this.ingredients);
+        boolean itemsMatch = RecipeUtils.consumptionPlan(recipeInput.items(), this.ingredients) != null;
         return itemsMatch && fluidMatches;
     }
 

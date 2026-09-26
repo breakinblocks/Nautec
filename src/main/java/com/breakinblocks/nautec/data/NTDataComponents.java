@@ -10,6 +10,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
+import com.breakinblocks.nautec.data.components.SubmarineModuleState;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -34,6 +35,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<Boolean>> IS_INFUSED = registerDataComponentType("is_infused",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final Supplier<DataComponentType<SubmarineModuleState>> SUBMARINE_MODULE_STATE = registerDataComponentType("submarine_module_state",
+            () -> builder -> builder.persistent(SubmarineModuleState.CODEC).networkSynchronized(ByteBufCodecs.fromCodec(SubmarineModuleState.CODEC)));
 
     public static final Supplier<DataComponentType<Float>> SUBMARINE_HEALTH = registerDataComponentType("submarine_health",
             () -> builder -> builder.persistent(Codec.FLOAT).networkSynchronized(ByteBufCodecs.FLOAT));

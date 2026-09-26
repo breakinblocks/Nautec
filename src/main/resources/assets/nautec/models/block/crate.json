@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench and by iglee42",
-	"parent": "minecraft:block/cube_bottom_top",
+	"parent": "minecraft:block/block",
 	"render_type": "minecraft:cutout",
 	"textures": {
 		"missing": "#particle",
@@ -19,7 +19,7 @@
 				"east": {"uv": [2, 2, 14, 14], "texture": "#4"},
 				"south": {"uv": [2, 2, 14, 14], "texture": "#4"},
 				"west": {"uv": [2, 2, 14, 14], "texture": "#4"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"up": {"uv": [0.0, 0.0, 12.0, 12.0], "texture": "#2"},
 				"down": {"uv": [2.28571, 2.28571, 13.71429, 13.71429], "texture": "#5"}
 			}
 		},

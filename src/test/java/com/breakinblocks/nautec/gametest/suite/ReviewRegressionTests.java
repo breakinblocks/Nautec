@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.data.NTDataComponentsUtils;
+import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
@@ -130,7 +132,7 @@ public final class ReviewRegressionTests {
             carried.setBacteria(0, bacteria.copy());
             machine.getBacteriaStorage().setBacteria(0, bacteria.copyWithSize(200));
             player.setPos(helper.absolutePos(pos).getCenter());
-            player.containerMenu = new com.breakinblocks.nautec.content.menus.IncubatorMenu(1, player.getInventory(), machine);
+            player.containerMenu = new IncubatorMenu(1, player.getInventory(), machine);
             player.containerMenu.setCarried(dish);
             new BacteriaSlotClickedPayload(helper.absolutePos(pos), 1, 0).handle(context(player));
             long total = carried.getBacteria(0).getSize() + machine.getBacteriaStorage().getBacteria(0).getSize();
@@ -146,7 +148,7 @@ public final class ReviewRegressionTests {
             BacteriaInstance bacteria = BacteriaInstance.roll(NTBacterias.LITHOPHILES, helper.getLevel().registryAccess()).copyWithSize(100);
             dish.getCapability(NTCapabilities.BacteriaStorage.ITEM).setBacteria(0, bacteria);
             player.setPos(helper.absolutePos(pos).getCenter());
-            player.containerMenu = new com.breakinblocks.nautec.content.menus.IncubatorMenu(1, player.getInventory(), machine);
+            player.containerMenu = new IncubatorMenu(1, player.getInventory(), machine);
             player.containerMenu.setCarried(dish);
             new BacteriaSlotClickedPayload(helper.absolutePos(pos), 1, 0).handle(context(player));
             helper.assertValueEqual(100L, machine.getBacteriaStorage().getBacteria(0).getSize(), "server carried population inserted");
@@ -155,11 +157,11 @@ public final class ReviewRegressionTests {
         tests.put("mixer_preserves_unrelated_fluid_output", helper -> {
             BlockPos pos = new BlockPos(4, 1, 4);
             helper.setBlock(pos, NTBlocks.MIXER.get().defaultBlockState());
-            var mixer = helper.getBlockEntity(pos, com.breakinblocks.nautec.content.blockentities.MixerBlockEntity.class);
+            var mixer = helper.getBlockEntity(pos, MixerBlockEntity.class);
             mixer.getSecondaryFluidTank().setFluid(new net.neoforged.neoforge.fluids.FluidStack(NTFluids.ETCHING_ACID.getStillFluid(), 1000));
             mixer.getFluidTank().setFluid(new net.neoforged.neoforge.fluids.FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000));
-            mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(net.minecraft.world.item.Items.RAW_IRON, 2));
-            mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(net.minecraft.world.item.Items.PRISMARINE_CRYSTALS));
+            mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.RAW_IRON, 2));
+            mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.PRISMARINE_CRYSTALS));
             for (int tick = 0; tick < 1200; tick++) {
                 mixer.setPowerPerSide(Direction.EAST, 1000);
                 mixer.commonTick();
@@ -390,7 +392,7 @@ public final class ReviewRegressionTests {
             Vec3 location = helper.absolutePos(pos).getCenter();
             var item = new ItemEntity(helper.getLevel(), location.x, location.y, location.z, NTItems.AQUARINE_PICKAXE.toStack());
             for (int tick = 0; tick < 152; tick++) NTEvents.Game.onItemEntityTick(new EntityTickEvent.Post(item));
-            helper.assertTrue(com.breakinblocks.nautec.data.NTDataComponentsUtils.isInfused(item.getItem()), "item finishes infusion");
+            helper.assertTrue(NTDataComponentsUtils.isInfused(item.getItem()), "item finishes infusion");
             helper.assertTrue(helper.getBlockState(pos).isAir(), "infusion consumes original fluid source");
             helper.assertBlockPresent(Blocks.STONE, pos.below());
             helper.assertTrue(item.getData(NTDataAttachments.ITEM_INFUSION).isEmpty(), "completed infusion releases state");

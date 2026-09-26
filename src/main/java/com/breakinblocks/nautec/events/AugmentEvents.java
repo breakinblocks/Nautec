@@ -7,6 +7,9 @@ import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
+import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
@@ -17,6 +20,21 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 @SuppressWarnings("unused")
 @EventBusSubscriber(modid = Nautec.MODID)
 public final class AugmentEvents {
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer viewer && event.getTarget() instanceof Player target) {
+            for (Augment augment : AugmentHelper.getAugments(target).values()) {
+                PacketDistributor.sendToPlayer(viewer, new SyncAugmentPayload(target.getId(), augment,
+                        augment.serializeNBT(target.level().registryAccess())));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChanged(PlayerEvent.PlayerChangedDimensionEvent event) {
+        AugmentHelper.restoreAugments(event.getEntity());
+    }
+
     @SubscribeEvent
     public static void fallEvent(LivingFallEvent event) {
         if (event.getEntity() instanceof Player) {

@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -52,7 +53,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         int required = NTConfig.pressureForgeWaterColumn;
         for (int i = 1; i <= required; i++) {
             BlockPos above = pos.above(i);
-            if (level.isOutsideBuildHeight(above) || !level.getFluidState(above).isSource()) {
+            if (level.isOutsideBuildHeight(above) || (!level.getFluidState(above).is(FluidTags.WATER) || !level.getFluidState(above).isSource())) {
                 return false;
             }
         }

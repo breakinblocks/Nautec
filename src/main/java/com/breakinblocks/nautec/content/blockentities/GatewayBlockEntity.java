@@ -118,6 +118,10 @@ public class GatewayBlockEntity extends ContainerBlockEntity {
         }
 
         Vec3 destination = Vec3.atBottomCenterOf(target.above());
+        Vec3 offset = destination.subtract(root.position());
+        if (root.getSelfAndPassengers().anyMatch(part -> !level.noCollision(part, part.getBoundingBox().move(offset)))) {
+            return;
+        }
         MachineSounds.play(level, worldPosition, NTSounds.GATEWAY_TRAVEL, 0.9f, 0.9f);
         GatewayEffects.travel(level, worldPosition);
 

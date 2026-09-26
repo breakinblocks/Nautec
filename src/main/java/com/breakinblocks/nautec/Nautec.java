@@ -72,6 +72,10 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.IOException;
+import net.neoforged.fml.loading.FMLPaths;
 import java.util.stream.Collectors;
 
 @Mod(Nautec.MODID)
@@ -100,6 +104,7 @@ public final class Nautec {
         NTBlocks.BLOCKS.register(modEventBus);
         NTParticles.PARTICLE_TYPES.register(modEventBus);
         NTRecipes.SERIALIZERS.register(modEventBus);
+        NTRecipes.TYPES.register(modEventBus);
         NTDataAttachments.ATTACHMENTS.register(modEventBus);
         NTArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
         NTBlockEntityTypes.BLOCK_ENTITIES.register(modEventBus);
@@ -125,11 +130,26 @@ public final class Nautec {
         modEventBus.addListener(this::onRegisterAugments);
         modEventBus.addListener(this::registerCapabilities);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.SPEC);
+        preserveWorldgenConfig();
+        modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.WORLDGEN_SPEC, "nautec-worldgen.toml");
+        modContainer.registerConfig(ModConfig.Type.SERVER, NTConfig.SPEC, "nautec-common.toml");
 
 
         if (ModList.get().isLoaded("duradisplay")) {
             DuraDisplayCompat.register();
+        }
+    }
+
+    private static void preserveWorldgenConfig() {
+        Path config = FMLPaths.CONFIGDIR.get();
+        Path previous = config.resolve("nautec-common.toml");
+        Path worldgen = config.resolve("nautec-worldgen.toml");
+        if (Files.isRegularFile(previous) && !Files.exists(worldgen)) {
+            try {
+                Files.copy(previous, worldgen);
+            } catch (IOException exception) {
+                throw new IllegalStateException("Cannot preserve Nautec worldgen settings", exception);
+            }
         }
     }
 

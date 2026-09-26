@@ -57,7 +57,7 @@ public final class NTBiomes {
     private static Biome bioluminescentGrove(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 6, 4, 12);
-        mobs.addSpawn(MobCategory.WATER_AMBIENT, 20, new MobSpawnSettings.SpawnerData(EntityType.GLOW_SQUID, 2, 4));
+        mobs.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.GLOW_SQUID, 2, 4));
         mobs.addSpawn(MobCategory.WATER_CREATURE, 12, new MobSpawnSettings.SpawnerData(NTEntities.LANTERN_JELLY.get(), 1, 3));
         mobs.addSpawn(MobCategory.WATER_AMBIENT, 15, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 4, 8));
 

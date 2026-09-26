@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.fishing;
 
+import java.util.ArrayList;
 import net.minecraft.util.RandomSource;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public enum MinigameKind {
             case TIMING_BAR -> List.of(new int[]{start(seed, length(seed)), length(seed)});
             case RHYTHM -> {
                 int slot = (FishingMinigame.DURATION_TICKS - LEAD_IN) / 3;
-                List<int[]> windows = new java.util.ArrayList<>(3);
+                List<int[]> windows = new ArrayList<>(3);
                 for (int i = 0; i < 3; i++) {
                     int base = LEAD_IN + i * slot;
                     int jitter = (int) Math.floorMod(seed >> (i * 8), Math.max(1, slot - RHYTHM_WINDOW));

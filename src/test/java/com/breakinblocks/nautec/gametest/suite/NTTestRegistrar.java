@@ -16,6 +16,10 @@ import java.util.function.Consumer;
 public final class NTTestRegistrar {
     private static final Identifier ARENA = Nautec.rl("empty_9x9x9");
 
+    private int registered;
+
+    public int registeredCount() { return registered; }
+
     private final RegisterGameTestsEvent event;
     private final Holder<TestEnvironmentDefinition<?>> environment;
 
@@ -43,8 +47,9 @@ public final class NTTestRegistrar {
         );
         try {
             event.registerTest(Nautec.rl(name), new NautecGameTests.DirectGameTestInstance(name, body, info));
+            registered++;
         } catch (Throwable t) {
-            Nautec.LOGGER.error("Failed to register gametest {}", name, t);
+            throw new IllegalStateException("Failed to register gametest " + name, t);
         }
     }
 }

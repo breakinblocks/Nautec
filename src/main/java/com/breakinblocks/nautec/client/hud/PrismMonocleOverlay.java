@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.hud;
 
+import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.api.blocks.DisplayBlock;
 import com.breakinblocks.nautec.compat.curio.CurioCompat;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
@@ -32,7 +33,7 @@ public final class PrismMonocleOverlay {
             BlockPos blockPos = blockHitResult.getBlockPos();
             if (level.getBlockState(blockPos).getBlock() instanceof DisplayBlock displayBlock && displayBlock.display(level, blockPos, player)) {
                 for (Component component : displayBlock.displayText(level, blockPos, player)) {
-                    guiGraphics.centeredText(mc.font, component, x, y + lineOffset, com.breakinblocks.nautec.client.ArtPalette.TEXT);
+                    guiGraphics.centeredText(mc.font, component, x, y + lineOffset, ArtPalette.TEXT);
                     lineOffset += mc.font.lineHeight + 3;
                 }
             }

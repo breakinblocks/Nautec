@@ -1,33 +1,45 @@
 package com.breakinblocks.nautec.client;
 
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
-import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
+import com.breakinblocks.nautec.utils.AugmentHelper;
+import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.player.Player;
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import java.util.HashMap;
 import java.util.Map;
-import com.breakinblocks.nautec.utils.AugmentHelper;
 
+@EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class AugmentClientHelper {
-    public static void initCache(Player player) {
-        Map<AugmentSlot, Augment> playerAugments = AugmentHelper.getAugments(player);
-        Map<AugmentSlot, Augment> filteredAugments = new HashMap<>();
-        
-        for (Map.Entry<AugmentSlot, Augment> entry : playerAugments.entrySet()) {
-            if (entry.getValue() != null) {
-                filteredAugments.put(entry.getKey(), entry.getValue());
+    private static final ContextKey<Map<AugmentSlot, Augment>> AUGMENTS = new ContextKey<>(Nautec.rl("render_augments"));
+
+    @SubscribeEvent
+    public static void register(RegisterRenderStateModifiersEvent event) {
+        event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
+            @Override
+            public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
+                Map<AugmentSlot, Augment> snapshot = new HashMap<>();
+                if (avatar instanceof Player player) {
+                    AugmentHelper.getAugments(player).forEach((slot, source) -> {
+                        snapshot.put(slot, source.copyForRender());
+                    });
+                }
+                state.setRenderData(AUGMENTS, Map.copyOf(snapshot));
             }
-        }
-        
-        AugmentLayerRenderer.AUGMENTS_CACHE = filteredAugments;
+        });
     }
 
-    public static void invalidateCacheFor(Player player, AugmentSlot augmentSlot) {
-        AugmentLayerRenderer.AUGMENTS_CACHE.remove(augmentSlot);
-        var augment = AugmentHelper.getAugmentBySlot(player, augmentSlot);
-        if (augment != null) {
-            AugmentLayerRenderer.AUGMENTS_CACHE.put(augmentSlot, augment);
-        }
+    public static Map<AugmentSlot, Augment> forState(LivingEntityRenderState state) {
+        Map<AugmentSlot, Augment> snapshot = state.getRenderData(AUGMENTS);
+        return snapshot == null ? Map.of() : snapshot;
     }
 }

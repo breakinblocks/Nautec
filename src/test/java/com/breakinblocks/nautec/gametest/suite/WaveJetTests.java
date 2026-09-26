@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.content.items.WaveJetSpotlight;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
+import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -82,6 +83,33 @@ public final class WaveJetTests {
                 return;
             }
             WaveJetSpotlight.extinguish(holder);
+            helper.succeed();
+        });
+
+        r.add("wave_jet/overlapping_lights_keep_water_until_last_holder", 20, 1, helper -> {
+            ServerLevel level = helper.getLevel();
+            BlockPos floor = shaft(helper, Blocks.WATER.defaultBlockState());
+            Player first = aiming(helper, floor);
+            Player second = aiming(helper, floor);
+            second.setUUID(UUID.randomUUID());
+            WaveJetSpotlight.aim(level, first);
+            WaveJetSpotlight.aim(level, second);
+            helper.assertTrue(level.getBlockState(floor.above()).getValue(LightBlock.WATERLOGGED), "Overlapping light lost water");
+            WaveJetSpotlight.extinguish(first);
+            helper.assertTrue(level.getBlockState(floor.above()).is(Blocks.LIGHT), "First holder removed the second holder's light");
+            WaveJetSpotlight.extinguish(second);
+            helper.assertTrue(level.getBlockState(floor.above()).is(Blocks.WATER), "Final holder did not restore water");
+            helper.succeed();
+        });
+        r.add("wave_jet/preexisting_light_is_not_owned", 20, 1, helper -> {
+            ServerLevel level = helper.getLevel();
+            BlockPos floor = shaft(helper, Blocks.AIR.defaultBlockState());
+            BlockState original = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 7);
+            level.setBlockAndUpdate(floor.above(), original);
+            Player holder = aiming(helper, floor);
+            WaveJetSpotlight.aim(level, holder);
+            WaveJetSpotlight.extinguish(holder);
+            helper.assertValueEqual(original, level.getBlockState(floor.above()), "Map light changed");
             helper.succeed();
         });
 

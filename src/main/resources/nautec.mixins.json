@@ -3,6 +3,7 @@
   "package": "com.breakinblocks.nautec.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AttachmentHolderMixin",
     "BottleItemMixin",
     "BucketItemMixin",
     "FishingHookAccessor",

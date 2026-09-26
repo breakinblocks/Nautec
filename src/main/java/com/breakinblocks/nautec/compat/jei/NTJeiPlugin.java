@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.compat.jei;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.client.ClientRecipes;
 import com.breakinblocks.nautec.compat.jei.categories.AquaticCatalystChannelingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.AugmentationRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaGraftingCategory;
@@ -12,6 +13,8 @@ import com.breakinblocks.nautec.compat.jei.categories.BioReactorCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemEtchingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemTransformationRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
@@ -19,6 +22,8 @@ import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
+import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
+import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTBacterias;
@@ -28,10 +33,12 @@ import com.breakinblocks.nautec.registries.NTItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.recipe.IRecipeManager;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.common.Internal;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
@@ -47,6 +54,8 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -55,6 +64,71 @@ import java.util.Map;
 @JeiPlugin
 public class NTJeiPlugin implements IModPlugin {
 
+    private final List<RecipeBinding<?, ?>> recipeBindings = List.of(
+            new RecipeBinding<>(PressureForgingRecipe.Type.INSTANCE, PressureForgingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(ResonanceCraftingRecipe.Type.INSTANCE, ResonanceCraftingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(ItemTransformationRecipe.Type.INSTANCE, ItemTransformationRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(AquaticCatalystChannelingRecipe.Type.INSTANCE, AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(ItemEtchingRecipe.Type.INSTANCE, ItemEtchingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE),
+            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE));
+    private IJeiRuntime runtime;
+
+    public NTJeiPlugin() {
+        // Only instantiated by JEI, so clients without JEI never load its API classes.
+        NeoForge.EVENT_BUS.addListener(this::recipesReceived);
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime runtime) {
+        this.runtime = runtime;
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        runtime = null;
+    }
+
+    private void recipesReceived(RecipesReceivedEvent event) {
+        if (runtime != null) {
+            for (RecipeBinding<?, ?> binding : recipeBindings) {
+                binding.refresh(runtime.getRecipeManager(), event.getRecipeMap());
+            }
+        }
+    }
+
+    private static final class RecipeBinding<I extends RecipeInput, R extends Recipe<I>> {
+        private final RecipeType<R> minecraftType;
+        private final IRecipeType<R> jeiType;
+        private List<R> registered = List.of();
+
+        private RecipeBinding(RecipeType<R> minecraftType, IRecipeType<R> jeiType) {
+            this.minecraftType = minecraftType;
+            this.jeiType = jeiType;
+        }
+
+        private List<R> recipes(RecipeMap map) {
+            return map.byType(minecraftType).stream().map(RecipeHolder::value).toList();
+        }
+
+        private void register(IRecipeRegistration registration, RecipeMap map) {
+            registered = recipes(map);
+            registration.addRecipes(jeiType, registered);
+        }
+
+        private void refresh(IRecipeManager manager, RecipeMap map) {
+            // JEI exposes hide/add for runtime changes, rather than removal.
+            manager.hideRecipes(jeiType, registered);
+            registered = recipes(map);
+            manager.addRecipes(jeiType, registered);
+            // Record recipes compare by value; unchanged replacements may share a hidden key.
+            manager.unhideRecipes(jeiType, registered);
+        }
+    }
+
+
     @Override
     public @NotNull Identifier getPluginUid() {
         return Nautec.rl("jei_plugin");
@@ -62,6 +136,8 @@ public class NTJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new PressureForgingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new ResonanceCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new ItemTransformationRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -92,16 +168,13 @@ public class NTJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        for (RecipeBinding<?, ?> binding : recipeBindings) {
+            binding.register(registration, ClientRecipes.get());
+        }
         ClientLevel level = Minecraft.getInstance().level;
         RegistryAccess registryAccess = level.registryAccess();
 
-        List<ItemTransformationRecipe> transformationRecipes = recipesFor(ItemTransformationRecipe.Type.INSTANCE);
-        List<AquaticCatalystChannelingRecipe> channelingRecipes = recipesFor(AquaticCatalystChannelingRecipe.Type.INSTANCE);
-        List<ItemEtchingRecipe> etchingRecipes = recipesFor(ItemEtchingRecipe.Type.INSTANCE);
-        List<MixingRecipe> mixingRecipes = recipesFor(MixingRecipe.Type.INSTANCE);
         List<AugmentationRecipe> augmentationRecipes = recipesFor(AugmentationRecipe.Type.INSTANCE);
-        List<BacteriaMutationRecipe> mutationRecipes = recipesFor(BacteriaMutationRecipe.TYPE);
-        List<BacteriaIncubationRecipe> incubationRecipes = recipesFor(BacteriaIncubationRecipe.TYPE);
 
         Registry<Bacteria> registry = registryAccess.lookupOrThrow(NTRegistries.BACTERIA_KEY);
         List<BioReactorCategory.BioReactorRecipe> bioReactorRecipes = registry.entrySet().stream()
@@ -114,13 +187,6 @@ public class NTJeiPlugin implements IModPlugin {
                 .map(entry -> new BacteriaGraftingCategory.GraftingRecipe(BuiltInRegistries.BLOCK.getValueOrThrow(entry.getKey()), entry.getValue()))
                 .toList();
 
-        registration.addRecipes(AugmentationRecipeCategory.RECIPE_TYPE, augmentationRecipes);
-        registration.addRecipes(ItemTransformationRecipeCategory.RECIPE_TYPE, transformationRecipes);
-        registration.addRecipes(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE, channelingRecipes);
-        registration.addRecipes(ItemEtchingRecipeCategory.RECIPE_TYPE, etchingRecipes);
-        registration.addRecipes(MixingRecipeCategory.RECIPE_TYPE, mixingRecipes);
-        registration.addRecipes(BacteriaMutationsCategory.RECIPE_TYPE, mutationRecipes);
-        registration.addRecipes(BacteriaIncubationCategory.RECIPE_TYPE, incubationRecipes);
         registration.addRecipes(BioReactorCategory.RECIPE_TYPE, bioReactorRecipes);
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
 
@@ -135,20 +201,13 @@ public class NTJeiPlugin implements IModPlugin {
     }
 
     private static <I extends RecipeInput, R extends Recipe<I>> List<R> recipesFor(RecipeType<R> type) {
-        return syncedRecipes().byType(type).stream().map(RecipeHolder::value).toList();
-    }
-
-    private static RecipeMap syncedRecipes() {
-        try {
-            return Internal.getClientSyncedRecipes();
-        } catch (LinkageError e) {
-            Nautec.LOGGER.error("Failed to access JEI synced recipes", e);
-            return RecipeMap.EMPTY;
-        }
+        return ClientRecipes.get().byType(type).stream().map(RecipeHolder::value).toList();
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addCraftingStation(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
+        registration.addCraftingStation(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
         registration.addCraftingStation(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AQUATIC_CATALYST.get()));
         registration.addCraftingStation(ItemEtchingRecipeCategory.RECIPE_TYPE,

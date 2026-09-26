@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.items.tools;
 
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
 import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.event.EventHooks;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -31,7 +32,7 @@ public class NautecFishingRodItem extends FishingRodItem {
                 ItemStack original = rod.copy();
                 rod.hurtAndBreak(damage, player, hand.asEquipmentSlot());
                 if (rod.isEmpty()) {
-                    net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem(player, original, hand);
+                    EventHooks.onPlayerDestroyItem(player, original, hand);
                 }
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_RETRIEVE,

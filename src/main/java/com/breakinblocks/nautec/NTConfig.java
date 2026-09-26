@@ -11,6 +11,7 @@ import java.util.Set;
 @EventBusSubscriber(modid = Nautec.MODID)
 public final class NTConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    private static final ModConfigSpec.Builder WORLDGEN_BUILDER = new ModConfigSpec.Builder();
 
     private static final ModConfigSpec.IntValue KELP_HEIGHT = BUILDER
             .comment("The height of kelp to be able to grow.")
@@ -447,17 +448,18 @@ public final class NTConfig {
             .comment("How many times faster fish bite while the bobber floats in a lucky fishing zone")
             .defineInRange("luckyZoneBiteSpeed", 2, 1, 10);
 
-    private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = BUILDER
+    private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = WORLDGEN_BUILDER
             .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
                     "This only applies when Lithostitched is absent. With Lithostitched installed, placement comes from the biome injectors in data/nautec/lithostitched/biome_injector, which a datapack can override or empty out")
             .define("enableBiomeInjection", true);
 
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> INJECTABLE_WORLD_PRESETS = BUILDER
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> INJECTABLE_WORLD_PRESETS = WORLDGEN_BUILDER
             .comment("The multi-noise presets Nautec's ocean biomes are added to. Packs using a custom overworld preset should list it here",
                     "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
 
     static final ModConfigSpec SPEC = BUILDER.build();
+    static final ModConfigSpec WORLDGEN_SPEC = WORLDGEN_BUILDER.build();
 
     public static int kelpHeight;
     public static boolean spawnBookInInventory;
@@ -598,160 +600,167 @@ public final class NTConfig {
     public static double submarineArmorModuleToughness = 12.0;
 
     public static boolean biomeInjectionEnabled() {
-        return !SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
+        return !WORLDGEN_SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
     }
 
     public static Set<String> injectableWorldPresets() {
-        if (!SPEC.isLoaded()) {
+        if (!WORLDGEN_SPEC.isLoaded()) {
             return Set.of("minecraft:overworld");
         }
         return Set.copyOf(INJECTABLE_WORLD_PRESETS.get());
     }
 
-    @SubscribeEvent
-    static void onLoad(final ModConfigEvent event) {
-        if (event.getConfig().getSpec() != SPEC) {
-            return;
-        }
-
-        kelpHeight = KELP_HEIGHT.get();
-        spawnBookInInventory = SPAWN_BOOK_IN_INVENTORY.get();
-        collectSaltWater = COLLECT_SALT_WATER.getAsBoolean();
-        collectAirWithBottle = COLLECT_AIR_WITH_BOTTLE.getAsBoolean();
-
-        mixerPower = MIXER_POWER_REQUIREMENT.get();
-        drainPower = DRAIN_POWER_REQUIREMENT.get();
-        augmentationStationPower = AUGMENTATION_STATION_POWER_REQUIREMENT.get();
-
-        laserDistance = REGULAR_LASER_DISTANCE.get();
-        longDistanceLaserDistance = LONG_DISTANCE_LASER_DISTANCE.get();
-
-        mixerInputCapacity = MIXER_INPUT_CAPACITY.getAsInt();
-        mixerOutputCapacity = MIXER_OUTPUT_CAPACITY.getAsInt();
-
-        drainSaltWaterAmount = DRAIN_SALT_WATER_AMOUNT.getAsInt();
-        drainCapacity = DRAIN_CAPACITY.getAsInt();
-
-        guardianAugmentDamage = GUARDIAN_AUGMENT_DAMAGE.get();
-        allowAugmentRendering = ALLOW_AUGMENT_RENDERING.get();
-
-        fisherLaserLevel = FISHER_LASER_LEVEL.getAsInt();
-        fisherRunDuration = FISHER_DURATION.getAsInt();
-        fisherDepth = FISHER_DEPTH.getAsInt();
-        fisherRadius = FISHER_RADIUS.getAsInt();
-
-        bacteriaGrowthRateCap = (float) BACTERIA_GROWTH_RATE_CAP.getAsDouble();
-        bacteriaProductionRateCap = (float) BACTERIA_PRODUCTION_RATE_CAP.getAsDouble();
-        bacteriaMutationResistanceCap = (float) BACTERIA_MUTATION_RESISTANCE_CAP.getAsDouble();
-        bacteriaColonySizeCap = BACTERIA_COLONY_SIZE_CAP.get();
-        bacteriaLifespanCap = BACTERIA_LIFESPAN_CAP.get();
-
-        bacteriaAnalyzerCraftingSpeed = BACTERIA_ANALYZER_CRAFTING_SPEED.get();
-        bacteriaAnalyzerPowerUsage = BACTERIA_ANALYZER_POWER_USAGE.get();
-
-        mutatorCraftingSpeed = MUTATOR_CRAFTING_SPEED.get();
-        mutatorPowerUsage = MUTATOR_POWER_USAGE.get();
-        mutatorFailureShrink = MUTATOR_FAILURE_SHRINK.getAsDouble();
-
-        incubatorCraftingSpeed = INCUBATOR_CRAFTING_SPEED.get();
-        incubatorPowerUsage = INCUBATOR_POWER_USAGE.get();
-
-        bioReactorBaseSpeed = BIO_REACTOR_BASE_SPEED.getAsDouble();
-        bioReactorPowerBase = BIO_REACTOR_POWER_BASE.get();
-        bioReactorPowerPerColony = BIO_REACTOR_POWER_PER_COLONY.get();
-        bioReactorDecayFraction = BIO_REACTOR_DECAY_FRACTION.getAsDouble();
-        fuelCellPowerBase = FUEL_CELL_POWER_BASE.get();
-        fuelCellBurnRate = FUEL_CELL_BURN_RATE.getAsDouble();
-        fuelCellMaxPurity = FUEL_CELL_MAX_PURITY.getAsDouble();
-        mirrorPurityFactor = MIRROR_PURITY_FACTOR.getAsDouble();
-        splitterPurityFactor = SPLITTER_PURITY_FACTOR.getAsDouble();
-        lensPurityBonus = LENS_PURITY_BONUS.getAsDouble();
-        resonanceBaseCeiling = RESONANCE_BASE_CEILING.getAsDouble();
-        resonancePowerUsage = RESONANCE_POWER_USAGE.get();
-        resonanceCriticalLow = RESONANCE_CRITICAL_LOW.getAsDouble();
-        resonanceCriticalHigh = RESONANCE_CRITICAL_HIGH.getAsDouble();
-        resonanceVentCooldown = RESONANCE_VENT_COOLDOWN.get();
-        resonanceVentRadius = RESONANCE_VENT_RADIUS.getAsDouble();
-        resonanceVentDamage = RESONANCE_VENT_DAMAGE.getAsDouble();
-        gatewayCooldown = GATEWAY_COOLDOWN.get();
-        waveJetThrust = WAVE_JET_THRUST.getAsDouble();
-        waveJetPowerUsage = WAVE_JET_POWER_USAGE.get();
-        waveJetLightRange = WAVE_JET_LIGHT_RANGE.get();
-        waveJetLightLevel = WAVE_JET_LIGHT_LEVEL.get();
-        waveJetLightPowerUsage = WAVE_JET_LIGHT_POWER_USAGE.get();
-        riflePowerCapacity = RIFLE_POWER_CAPACITY.get();
-        rifleMaxInput = RIFLE_MAX_INPUT.get();
-        rifleChargeTicks = RIFLE_CHARGE_TICKS.get();
-        rifleRampTicks = RIFLE_RAMP_TICKS.get();
-        rifleBaseDamage = RIFLE_BASE_DAMAGE.getAsDouble();
-        rifleMaxDamage = RIFLE_MAX_DAMAGE.getAsDouble();
-        rifleBaseDrain = RIFLE_BASE_DRAIN.get();
-        rifleMaxDrain = RIFLE_MAX_DRAIN.get();
-        rifleRange = RIFLE_RANGE.getAsDouble();
-        dockPowerUsage = DOCK_POWER_USAGE.get();
-        dockChargeRate = DOCK_CHARGE_RATE.get();
-        pressureForgeDepth = PRESSURE_FORGE_DEPTH.get();
-        pressureForgeWaterColumn = PRESSURE_FORGE_WATER_COLUMN.get();
-        pressureForgePowerUsage = PRESSURE_FORGE_POWER_USAGE.get();
-        pressureForgeAcidUsage = PRESSURE_FORGE_ACID_USAGE.get();
-        pressureForgeCapacity = PRESSURE_FORGE_CAPACITY.get();
-
-        luckyZonesEnabled = LUCKY_ZONES_ENABLED.getAsBoolean();
-        luckyZoneIntervalSeconds = LUCKY_ZONE_INTERVAL.getAsInt();
-        luckyZoneSpawnDistance = LUCKY_ZONE_SPAWN_DISTANCE.getAsInt();
-        luckyZoneMinSeparation = LUCKY_ZONE_MIN_SEPARATION.getAsInt();
-        luckyZonesPerChunk = LUCKY_ZONE_PER_CHUNK.getAsInt();
-        luckyZoneLifetimeSeconds = LUCKY_ZONE_LIFETIME.getAsInt();
-        luckyZoneMinRadius = LUCKY_ZONE_MIN_RADIUS.getAsInt();
-        luckyZoneMaxRadius = Math.max(LUCKY_ZONE_MIN_RADIUS.getAsInt(), LUCKY_ZONE_MAX_RADIUS.getAsInt());
-        luckyZoneConsumedOnCatch = LUCKY_ZONE_CONSUMED.getAsBoolean();
-        luckyZoneBiteSpeed = LUCKY_ZONE_BITE_SPEED.getAsInt();
-
-        abyssalEyesDepth = ABYSSAL_EYES_DEPTH.get();
-        photophoreSkinRadius = PHOTOPHORE_SKIN_RADIUS.getAsDouble();
-
-        submarinePowerCapacity = SUBMARINE_POWER_CAPACITY.getAsInt();
-        submarineIdlePowerUsage = SUBMARINE_IDLE_POWER_USAGE.getAsInt();
-        submarineMovePowerUsage = SUBMARINE_MOVE_POWER_USAGE.getAsInt();
-        submarineOxygenPowerUsage = SUBMARINE_OXYGEN_POWER_USAGE.getAsInt();
-        submarineSpeed = SUBMARINE_SPEED.getAsDouble();
-        submarineMaxSpeed = SUBMARINE_MAX_SPEED.getAsDouble();
-        submarineCameraDistance = SUBMARINE_CAMERA_DISTANCE.getAsDouble();
-        submarineMaxHealth = SUBMARINE_MAX_HEALTH.getAsDouble();
-        submarineArmor = SUBMARINE_ARMOR.getAsDouble();
-        submarineArmorToughness = SUBMARINE_ARMOR_TOUGHNESS.getAsDouble();
-        submarineKnockbackResistance = SUBMARINE_KNOCKBACK_RESISTANCE.getAsDouble();
-        submarineAutorepairIntervalTicks = SUBMARINE_AUTOREPAIR_INTERVAL.getAsInt();
-        submarineAutorepairPercent = SUBMARINE_AUTOREPAIR_PERCENT.getAsDouble();
-        submarineRepairItem = SUBMARINE_REPAIR_ITEM.get();
-        submarineRepairPercent = SUBMARINE_REPAIR_PERCENT.getAsDouble();
-
-        submarineSolarPercentPer5s = SUBMARINE_SOLAR_PERCENT.getAsDouble();
-        submarineBoostPowerCost = SUBMARINE_BOOST_POWER.getAsInt();
-        submarineBoostDurationTicks = SUBMARINE_BOOST_DURATION.getAsInt();
-        submarineBoostCooldownTicks = SUBMARINE_BOOST_COOLDOWN.getAsInt();
-        submarineBoostSpeedBonus = SUBMARINE_BOOST_SPEED.getAsDouble();
-        submarineStealthPowerCost = SUBMARINE_STEALTH_POWER.getAsInt();
-        submarineStealthDurationTicks = SUBMARINE_STEALTH_DURATION.getAsInt();
-        submarineStealthCooldownTicks = SUBMARINE_STEALTH_COOLDOWN.getAsInt();
-        submarineStealthSpeedPenalty = SUBMARINE_STEALTH_SLOW.getAsDouble();
-        submarineSonarPowerCost = SUBMARINE_SONAR_POWER.getAsInt();
-        submarineSonarCooldownTicks = SUBMARINE_SONAR_COOLDOWN.getAsInt();
-        submarineSonarRadius = SUBMARINE_SONAR_RADIUS.getAsDouble();
-        submarineShieldPowerCost = SUBMARINE_SHIELD_POWER.getAsInt();
-        submarineShieldCooldownTicks = SUBMARINE_SHIELD_COOLDOWN.getAsInt();
-        submarineShieldStunTicks = SUBMARINE_SHIELD_STUN.getAsInt();
-        submarineShieldDamage = SUBMARINE_SHIELD_DAMAGE.getAsDouble();
-        submarineShieldRadius = SUBMARINE_SHIELD_RADIUS.getAsDouble();
-        submarineShieldPowerPerHeart = SUBMARINE_SHIELD_POWER_PER_HEART.getAsInt();
-        submarineLaserPowerCost = SUBMARINE_LASER_POWER.getAsInt();
-        submarineLaserRange = SUBMARINE_LASER_RANGE.getAsDouble();
-        submarineLaserDamage = SUBMARINE_LASER_DAMAGE.getAsDouble();
-        submarineLaserHealthPercent = SUBMARINE_LASER_HEALTH_PERCENT.getAsDouble();
-        submarineTeleportPowerCost = SUBMARINE_TELEPORT_POWER.getAsInt();
-        submarineTeleportMinPowerPercent = SUBMARINE_TELEPORT_MIN_POWER.getAsDouble();
-        submarineTeleportCooldownTicks = SUBMARINE_TELEPORT_COOLDOWN.getAsInt();
-        submarineArmorModuleToughness = SUBMARINE_ARMOR_MODULE_TOUGHNESS.getAsDouble();
+    static {
+        loadValues();
     }
 
+    private static <T> T value(ModConfigSpec.ConfigValue<T> value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
+    @SubscribeEvent
+    static void onLoad(final ModConfigEvent event) {
+        if (event.getConfig().getSpec() == SPEC) loadValues();
+    }
+
+    private static void loadValues() {
+        kelpHeight = value(KELP_HEIGHT);
+        spawnBookInInventory = value(SPAWN_BOOK_IN_INVENTORY);
+        collectSaltWater = value(COLLECT_SALT_WATER);
+        collectAirWithBottle = value(COLLECT_AIR_WITH_BOTTLE);
+
+        mixerPower = value(MIXER_POWER_REQUIREMENT);
+        drainPower = value(DRAIN_POWER_REQUIREMENT);
+        augmentationStationPower = value(AUGMENTATION_STATION_POWER_REQUIREMENT);
+
+        laserDistance = value(REGULAR_LASER_DISTANCE);
+        longDistanceLaserDistance = value(LONG_DISTANCE_LASER_DISTANCE);
+
+        mixerInputCapacity = value(MIXER_INPUT_CAPACITY);
+        mixerOutputCapacity = value(MIXER_OUTPUT_CAPACITY);
+
+        drainSaltWaterAmount = value(DRAIN_SALT_WATER_AMOUNT);
+        drainCapacity = value(DRAIN_CAPACITY);
+
+        guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
+        allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);
+
+        fisherLaserLevel = value(FISHER_LASER_LEVEL);
+        fisherRunDuration = value(FISHER_DURATION);
+        fisherDepth = value(FISHER_DEPTH);
+        fisherRadius = value(FISHER_RADIUS);
+
+        bacteriaGrowthRateCap = value(BACTERIA_GROWTH_RATE_CAP).floatValue();
+        bacteriaProductionRateCap = value(BACTERIA_PRODUCTION_RATE_CAP).floatValue();
+        bacteriaMutationResistanceCap = value(BACTERIA_MUTATION_RESISTANCE_CAP).floatValue();
+        bacteriaColonySizeCap = value(BACTERIA_COLONY_SIZE_CAP);
+        bacteriaLifespanCap = value(BACTERIA_LIFESPAN_CAP);
+
+        bacteriaAnalyzerCraftingSpeed = value(BACTERIA_ANALYZER_CRAFTING_SPEED);
+        bacteriaAnalyzerPowerUsage = value(BACTERIA_ANALYZER_POWER_USAGE);
+
+        mutatorCraftingSpeed = value(MUTATOR_CRAFTING_SPEED);
+        mutatorPowerUsage = value(MUTATOR_POWER_USAGE);
+        mutatorFailureShrink = value(MUTATOR_FAILURE_SHRINK);
+
+        incubatorCraftingSpeed = value(INCUBATOR_CRAFTING_SPEED);
+        incubatorPowerUsage = value(INCUBATOR_POWER_USAGE);
+
+        bioReactorBaseSpeed = value(BIO_REACTOR_BASE_SPEED);
+        bioReactorPowerBase = value(BIO_REACTOR_POWER_BASE);
+        bioReactorPowerPerColony = value(BIO_REACTOR_POWER_PER_COLONY);
+        bioReactorDecayFraction = value(BIO_REACTOR_DECAY_FRACTION);
+        fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
+        fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
+        fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);
+        mirrorPurityFactor = value(MIRROR_PURITY_FACTOR);
+        splitterPurityFactor = value(SPLITTER_PURITY_FACTOR);
+        lensPurityBonus = value(LENS_PURITY_BONUS);
+        resonanceBaseCeiling = value(RESONANCE_BASE_CEILING);
+        resonancePowerUsage = value(RESONANCE_POWER_USAGE);
+        resonanceCriticalLow = value(RESONANCE_CRITICAL_LOW);
+        resonanceCriticalHigh = value(RESONANCE_CRITICAL_HIGH);
+        resonanceVentCooldown = value(RESONANCE_VENT_COOLDOWN);
+        resonanceVentRadius = value(RESONANCE_VENT_RADIUS);
+        resonanceVentDamage = value(RESONANCE_VENT_DAMAGE);
+        gatewayCooldown = value(GATEWAY_COOLDOWN);
+        waveJetThrust = value(WAVE_JET_THRUST);
+        waveJetPowerUsage = value(WAVE_JET_POWER_USAGE);
+        waveJetLightRange = value(WAVE_JET_LIGHT_RANGE);
+        waveJetLightLevel = value(WAVE_JET_LIGHT_LEVEL);
+        waveJetLightPowerUsage = value(WAVE_JET_LIGHT_POWER_USAGE);
+        riflePowerCapacity = value(RIFLE_POWER_CAPACITY);
+        rifleMaxInput = value(RIFLE_MAX_INPUT);
+        rifleChargeTicks = value(RIFLE_CHARGE_TICKS);
+        rifleRampTicks = value(RIFLE_RAMP_TICKS);
+        rifleBaseDamage = value(RIFLE_BASE_DAMAGE);
+        rifleMaxDamage = value(RIFLE_MAX_DAMAGE);
+        rifleBaseDrain = value(RIFLE_BASE_DRAIN);
+        rifleMaxDrain = value(RIFLE_MAX_DRAIN);
+        rifleRange = value(RIFLE_RANGE);
+        dockPowerUsage = value(DOCK_POWER_USAGE);
+        dockChargeRate = value(DOCK_CHARGE_RATE);
+        pressureForgeDepth = value(PRESSURE_FORGE_DEPTH);
+        pressureForgeWaterColumn = value(PRESSURE_FORGE_WATER_COLUMN);
+        pressureForgePowerUsage = value(PRESSURE_FORGE_POWER_USAGE);
+        pressureForgeAcidUsage = value(PRESSURE_FORGE_ACID_USAGE);
+        pressureForgeCapacity = value(PRESSURE_FORGE_CAPACITY);
+
+        luckyZonesEnabled = value(LUCKY_ZONES_ENABLED);
+        luckyZoneIntervalSeconds = value(LUCKY_ZONE_INTERVAL);
+        luckyZoneSpawnDistance = value(LUCKY_ZONE_SPAWN_DISTANCE);
+        luckyZoneMinSeparation = value(LUCKY_ZONE_MIN_SEPARATION);
+        luckyZonesPerChunk = value(LUCKY_ZONE_PER_CHUNK);
+        luckyZoneLifetimeSeconds = value(LUCKY_ZONE_LIFETIME);
+        luckyZoneMinRadius = value(LUCKY_ZONE_MIN_RADIUS);
+        luckyZoneMaxRadius = Math.max(value(LUCKY_ZONE_MIN_RADIUS), value(LUCKY_ZONE_MAX_RADIUS));
+        luckyZoneConsumedOnCatch = value(LUCKY_ZONE_CONSUMED);
+        luckyZoneBiteSpeed = value(LUCKY_ZONE_BITE_SPEED);
+
+        abyssalEyesDepth = value(ABYSSAL_EYES_DEPTH);
+        photophoreSkinRadius = value(PHOTOPHORE_SKIN_RADIUS);
+
+        submarinePowerCapacity = value(SUBMARINE_POWER_CAPACITY);
+        submarineIdlePowerUsage = value(SUBMARINE_IDLE_POWER_USAGE);
+        submarineMovePowerUsage = value(SUBMARINE_MOVE_POWER_USAGE);
+        submarineOxygenPowerUsage = value(SUBMARINE_OXYGEN_POWER_USAGE);
+        submarineSpeed = value(SUBMARINE_SPEED);
+        submarineMaxSpeed = value(SUBMARINE_MAX_SPEED);
+        submarineCameraDistance = value(SUBMARINE_CAMERA_DISTANCE);
+        submarineMaxHealth = value(SUBMARINE_MAX_HEALTH);
+        submarineArmor = value(SUBMARINE_ARMOR);
+        submarineArmorToughness = value(SUBMARINE_ARMOR_TOUGHNESS);
+        submarineKnockbackResistance = value(SUBMARINE_KNOCKBACK_RESISTANCE);
+        submarineAutorepairIntervalTicks = value(SUBMARINE_AUTOREPAIR_INTERVAL);
+        submarineAutorepairPercent = value(SUBMARINE_AUTOREPAIR_PERCENT);
+        submarineRepairItem = value(SUBMARINE_REPAIR_ITEM);
+        submarineRepairPercent = value(SUBMARINE_REPAIR_PERCENT);
+
+        submarineSolarPercentPer5s = value(SUBMARINE_SOLAR_PERCENT);
+        submarineBoostPowerCost = value(SUBMARINE_BOOST_POWER);
+        submarineBoostDurationTicks = value(SUBMARINE_BOOST_DURATION);
+        submarineBoostCooldownTicks = value(SUBMARINE_BOOST_COOLDOWN);
+        submarineBoostSpeedBonus = value(SUBMARINE_BOOST_SPEED);
+        submarineStealthPowerCost = value(SUBMARINE_STEALTH_POWER);
+        submarineStealthDurationTicks = value(SUBMARINE_STEALTH_DURATION);
+        submarineStealthCooldownTicks = value(SUBMARINE_STEALTH_COOLDOWN);
+        submarineStealthSpeedPenalty = value(SUBMARINE_STEALTH_SLOW);
+        submarineSonarPowerCost = value(SUBMARINE_SONAR_POWER);
+        submarineSonarCooldownTicks = value(SUBMARINE_SONAR_COOLDOWN);
+        submarineSonarRadius = value(SUBMARINE_SONAR_RADIUS);
+        submarineShieldPowerCost = value(SUBMARINE_SHIELD_POWER);
+        submarineShieldCooldownTicks = value(SUBMARINE_SHIELD_COOLDOWN);
+        submarineShieldStunTicks = value(SUBMARINE_SHIELD_STUN);
+        submarineShieldDamage = value(SUBMARINE_SHIELD_DAMAGE);
+        submarineShieldRadius = value(SUBMARINE_SHIELD_RADIUS);
+        submarineShieldPowerPerHeart = value(SUBMARINE_SHIELD_POWER_PER_HEART);
+        submarineLaserPowerCost = value(SUBMARINE_LASER_POWER);
+        submarineLaserRange = value(SUBMARINE_LASER_RANGE);
+        submarineLaserDamage = value(SUBMARINE_LASER_DAMAGE);
+        submarineLaserHealthPercent = value(SUBMARINE_LASER_HEALTH_PERCENT);
+        submarineTeleportPowerCost = value(SUBMARINE_TELEPORT_POWER);
+        submarineTeleportMinPowerPercent = value(SUBMARINE_TELEPORT_MIN_POWER);
+        submarineTeleportCooldownTicks = value(SUBMARINE_TELEPORT_COOLDOWN);
+        submarineArmorModuleToughness = value(SUBMARINE_ARMOR_MODULE_TOUGHNESS);
+    }
 }

@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.client.renderer.augments.helper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.api.augments.Augment;
-import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
 import com.breakinblocks.nautec.api.client.renderer.augments.AugmentRenderer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -16,14 +15,13 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.breakinblocks.nautec.client.AugmentClientHelper;
 
 public class AugmentLayerRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
     private static final Object2ObjectMap<AugmentType<?>, AugmentRendererProvider<?>> RENDERER_PROVIDERS = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectMap<AugmentType<?>, AugmentRenderer<?>> RENDERERS = new Object2ObjectOpenHashMap<>();
 
-    public static Map<AugmentSlot, Augment> AUGMENTS_CACHE = new HashMap<>();
+
 
     public AugmentLayerRenderer(RenderLayerParent<S, M> renderLayerParent) {
         super(renderLayerParent);
@@ -31,7 +29,7 @@ public class AugmentLayerRenderer<S extends LivingEntityRenderState, M extends E
 
     @Override
     public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int packedLight, @NotNull S state, float yRot, float xRot) {
-        Iterable<Augment> augments = AUGMENTS_CACHE.values();
+        Iterable<Augment> augments = AugmentClientHelper.forState(state).values();
         for (Augment augment : augments) {
             if (augment != null) {
                 poseStack.pushPose();

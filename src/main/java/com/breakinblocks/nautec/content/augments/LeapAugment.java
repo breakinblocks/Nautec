@@ -17,7 +17,7 @@ public class LeapAugment extends Augment {
 
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
-        if (NTKeybinds.LEAP_KEYBIND.get().consumeClick() && !isOnCooldown() && event.getEntity().onGround()) {
+        if (player.isLocalPlayer() && NTKeybinds.LEAP_KEYBIND.get().consumeClick() && !isOnCooldown() && event.getEntity().onGround()) {
             handleKeybindPress();
         }
     }

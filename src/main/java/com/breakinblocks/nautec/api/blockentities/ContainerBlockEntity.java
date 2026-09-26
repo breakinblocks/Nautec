@@ -162,7 +162,6 @@ public abstract class ContainerBlockEntity extends BlockEntity {
                 super.onContentsChanged(slot, stack);
                 update();
                 onItemsChanged(slot);
-                invalidateCapabilities();
             }
 
             @Override
@@ -192,7 +191,6 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         if (existing.getCount() <= toExtract) {
             if (!simulate) {
                 itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
-                onItemsChanged(slot);
                 return existing;
             } else {
                 return existing.copy();
@@ -200,7 +198,6 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         } else {
             if (!simulate) {
                 itemHandler.setStackInSlot(slot, existing.copyWithCount(existing.getCount() - toExtract));
-                onItemsChanged(slot);
             }
 
             return existing.copyWithCount(toExtract);
@@ -229,11 +226,10 @@ public abstract class ContainerBlockEntity extends BlockEntity {
 
         if (!simulate) {
             if (existing.isEmpty()) {
-                itemHandler.setStackInSlot(slot, reachedLimit ? stack.copyWithCount(limit) : stack);
+                itemHandler.setStackInSlot(slot, reachedLimit ? stack.copyWithCount(limit) : stack.copy());
             } else {
-                existing.grow(reachedLimit ? limit : stack.getCount());
+                itemHandler.setStackInSlot(slot, existing.copyWithCount(existing.getCount() + (reachedLimit ? limit : stack.getCount())));
             }
-            onItemsChanged(slot);
         }
 
         return reachedLimit ? stack.copyWithCount(stack.getCount() - limit) : ItemStack.EMPTY;
@@ -300,7 +296,9 @@ public abstract class ContainerBlockEntity extends BlockEntity {
 
     public void update() {
         setChanged();
-        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
     }
 
     protected void onItemsChanged(int slot) {

@@ -14,7 +14,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.breakinblocks.nautec.client.AugmentClientHelper;
 
 public final class AugmentHelper {
     public static Augment getAugmentBySlot(Player player, AugmentSlot augmentSlot) {
@@ -59,9 +58,6 @@ public final class AugmentHelper {
         AugmentHelper.setAugment(player, augmentSlot, augment);
         reapplyEffects(player);
         syncAugment(player, augment);
-        if (player.level().isClientSide()) {
-            AugmentClientHelper.invalidateCacheFor(player, augmentSlot);
-        }
         return augment;
     }
 
@@ -69,7 +65,7 @@ public final class AugmentHelper {
         CompoundTag data = augment.serializeNBT(player.level().registryAccess());
         setAugmentExtraData(player, augment.getAugmentSlot(), data);
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncAugmentPayload(augment, data));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncAugmentPayload(player.getId(), augment, data));
         }
     }
 
@@ -105,11 +101,7 @@ public final class AugmentHelper {
         reapplyEffects(player);
         
         if (!player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new ClearAugmentPayload(augmentSlot));
-        }
-        
-        if (player.level().isClientSide()) {
-            AugmentClientHelper.invalidateCacheFor(player, augmentSlot);
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new ClearAugmentPayload(player.getId(), augmentSlot));
         }
     }
 }

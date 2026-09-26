@@ -37,6 +37,11 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         addItem(VENT_CRAWLER_SPAWN_EGG, "Vent Crawler Spawn Egg");
         addItem(ABYSSAL_MAW_SPAWN_EGG, "Abyssal Maw Spawn Egg");
 
+        add("nautec.jei.category.pressure_forging", "Pressure Forging");
+        add("nautec.jei.category.resonance_crafting", "Resonance Crafting");
+        add("nautec.jei.pressure_requirements", "%s water blocks, %s AP");
+        add("nautec.jei.pressure_depth", "Y \u2264 %s, under source water");
+        add("nautec.jei.resonance_critical", "Crafts at critical charge");
         add("augment_type.nautec.abyssal_eyes", "Abyssal Eyes");
         add("augment_type.nautec.photophore_skin", "Photophore Skin");
         add("augment_type.nautec.vent_carapace", "Vent Carapace");

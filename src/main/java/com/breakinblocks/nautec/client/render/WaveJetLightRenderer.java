@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.render;
 
+import net.minecraft.world.entity.HumanoidArm;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.items.WaveJetSpotlight;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -99,7 +100,7 @@ public final class WaveJetLightRenderer {
         if (side.lengthSqr() < 1.0E-4D) {
             return eyes.subtract(0.0D, 0.15D, 0.0D);
         }
-        double offset = player.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT ? 0.25D : -0.25D;
+        double offset = player.getMainArm() == HumanoidArm.RIGHT ? 0.25D : -0.25D;
         return eyes.add(side.normalize().scale(offset)).subtract(0.0D, 0.2D, 0.0D);
     }
 

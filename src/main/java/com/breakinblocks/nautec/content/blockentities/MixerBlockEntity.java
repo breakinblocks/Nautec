@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
@@ -9,7 +10,7 @@ import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.MixingRecipeInput;
-import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
+import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +56,9 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
             Direction.SOUTH, Pair.of(IOActions.BOTH, new int[]{0, 1}),
             Direction.WEST, Pair.of(IOActions.BOTH, new int[]{0, 1})
     );
+    private final RecipeRevision recipeRevision = new RecipeRevision();
     private boolean running;
+    private int maxDuration;
 
     private float independentAngle;
     private float chasingVelocity;
@@ -94,12 +98,25 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     @Override
     public void commonTick() {
         super.commonTick();
+        if (level instanceof ServerLevel server && recipeRevision.changed(server)) {
+            duration = 0;
+            this.recipe = getRecipe().orElse(null);
+        }
 
         float actualSpeed = getSpeed();
         chasingVelocity += ((actualSpeed * 10 / 3f) - chasingVelocity) * .25f;
         independentAngle += chasingVelocity;
 
-        performRecipe();
+        if (!level.isClientSide()) {
+            boolean wasRunning = running;
+            int oldDuration = duration;
+            performRecipe();
+            maxDuration = recipe == null ? 0 : recipe.duration();
+            if (oldDuration != duration || wasRunning != running) {
+                setChanged();
+                if (wasRunning != running || duration == 0 || level.getGameTime() % 10 == 0) update();
+            }
+        }
 
         if (running) {
             this.speed = 20;
@@ -115,8 +132,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
                 duration = 0;
                 this.running = false;
                 MixingRecipe currentRecipe = this.recipe;
-                setOutputs(currentRecipe);
-                removeInputs(currentRecipe);
+                if (removeInputs(currentRecipe)) setOutputs(currentRecipe);
                 this.recipe = getRecipe().orElse(null);
             } else {
                 duration++;
@@ -128,25 +144,23 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         }
     }
 
-    private void removeInputs(MixingRecipe mixingRecipe) {
-        if (mixingRecipe == null) {
-            return;
-        }
-
-        FluidTank fluidHandler = getFluidTank();
-        ItemStackHandler itemHandler = getItemStackHandler();
-        List<IngredientWithCount> ingredients = new ArrayList<>(mixingRecipe.ingredients());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            ItemStack item = itemHandler.getStackInSlot(i);
-            for (IngredientWithCount ingredient : ingredients) {
-                if (ingredient.test(item)) {
-                    itemHandler.extractItem(i, ingredient.count(), false);
-                    ingredients.remove(ingredient);
-                    break;
-                }
+    private boolean removeInputs(MixingRecipe mixingRecipe) {
+        if (mixingRecipe == null) return false;
+        ItemStackHandler handler = getItemStackHandler();
+        List<ItemStack> inputs = new ArrayList<>();
+        for (int slot = 0; slot < OUTPUT_SLOT; slot++) inputs.add(handler.getStackInSlot(slot));
+        int[] plan = RecipeUtils.consumptionPlan(inputs, mixingRecipe.ingredients());
+        if (plan == null || !canInsertItem(mixingRecipe.result()) || !canInsertFluid(mixingRecipe.fluidResult())) return false;
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (int i = 0; i < plan.length; i++) {
+                int amount = mixingRecipe.ingredients().get(i).count();
+                if (handler.extract(plan[i], handler.getResource(plan[i]), amount, transaction) != amount) return false;
             }
+            FluidStack fluid = mixingRecipe.fluidIngredient();
+            if (!fluid.isEmpty() && getFluidTank().extract(0, FluidResource.of(fluid), fluid.getAmount(), transaction) != fluid.getAmount()) return false;
+            transaction.commit();
         }
-        fluidHandler.drain(mixingRecipe.fluidIngredient().getAmount());
+        return true;
     }
 
     @Override
@@ -201,45 +215,12 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         Optional<MixingRecipe> recipe = serverLevel.recipeAccess()
                 .getRecipeFor(MixingRecipe.Type.INSTANCE, input, level).map(RecipeHolder::value);
         
-        if (recipe.isEmpty() && itemHandlerStacksList.size() > 1) {
-            recipe = tryRecipeWithSubsets(itemHandlerStacksList);
-        }
-        
         if (recipe.isPresent() && canInsertItem(recipe.get().result()) && canInsertFluid(recipe.get().fluidResult())) {
             return recipe;
         }
         return Optional.empty();
     }
     
-    private Optional<MixingRecipe> tryRecipeWithSubsets(List<ItemStack> allInputs) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return Optional.empty();
-        }
-        for (ItemStack singleInput : allInputs) {
-            List<ItemStack> singleInputList = List.of(singleInput);
-            MixingRecipeInput input = new MixingRecipeInput(singleInputList, getFluidTank().getFluid());
-            Optional<MixingRecipe> recipe = serverLevel.recipeAccess()
-                    .getRecipeFor(MixingRecipe.Type.INSTANCE, input, level).map(RecipeHolder::value);
-            if (recipe.isPresent()) {
-                return recipe;
-            }
-        }
-
-        for (int size = 2; size < allInputs.size(); size++) {
-            for (int start = 0; start <= allInputs.size() - size; start++) {
-                List<ItemStack> subset = allInputs.subList(start, start + size);
-                MixingRecipeInput input = new MixingRecipeInput(subset, getFluidTank().getFluid());
-                Optional<MixingRecipe> recipe = serverLevel.recipeAccess()
-                        .getRecipeFor(MixingRecipe.Type.INSTANCE, input, level).map(RecipeHolder::value);
-                if (recipe.isPresent()) {
-                    return recipe;
-                }
-            }
-        }
-
-        return Optional.empty();
-    }
-
     private boolean canInsertItem(ItemStack result) {
         ItemStack stack = getItemStackHandler().getStackInSlot(OUTPUT_SLOT);
         boolean itemMatches = result.isEmpty() || stack.isEmpty() || ItemStack.isSameItemSameComponents(result, stack);
@@ -258,6 +239,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     @Override
     public void onLoad() {
         super.onLoad();
+        if (level instanceof ServerLevel server) recipeRevision.changed(server);
         this.recipe = getRecipe().orElse(null);
     }
 
@@ -285,6 +267,8 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.duration = in.getIntOr("duration", 0);
+        this.running = in.getBooleanOr("running", false);
+        this.maxDuration = in.getIntOr("max_duration", 0);
         this.independentAngle = in.getFloatOr("independentAngle", 0);
     }
 
@@ -292,6 +276,8 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.putInt("duration", this.duration);
+        out.putBoolean("running", this.running);
+        out.putInt("max_duration", this.maxDuration);
         out.putFloat("independentAngle", this.independentAngle);
     }
 
@@ -320,7 +306,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     }
 
     public int getMaxDuration() {
-        return getRecipe().map(MixingRecipe::duration).orElse(0);
+        return level != null && level.isClientSide() ? maxDuration : getRecipe().map(MixingRecipe::duration).orElse(0);
     }
 
 

@@ -3,6 +3,11 @@ package com.breakinblocks.nautec.content.items;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
+import com.breakinblocks.nautec.data.NTDataAttachments;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
@@ -31,6 +37,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import java.util.UUID;
 
 @EventBusSubscriber(modid = Nautec.MODID)
@@ -38,7 +47,10 @@ public final class WaveJetSpotlight {
     private record Lit(ResourceKey<Level> dimension, BlockPos pos) {
     }
 
+    private static final Queue<LevelChunk> LOADED = new ConcurrentLinkedQueue<>();
     private static final Map<UUID, Lit> LIT = new HashMap<>();
+    private record LightState(BlockState original, Set<UUID> holders) {}
+    private static final Map<Lit, LightState> LIGHTS = new HashMap<>();
     private static final double BACK_OFF_STEP = 0.5D;
     private static final double BACK_OFF_LIMIT = 3.0D;
 
@@ -104,8 +116,16 @@ public final class WaveJetSpotlight {
             return;
         }
 
-        place(level, target);
-        LIT.put(holder.getUUID(), new Lit(level.dimension(), target));
+        Lit key = new Lit(level.dimension(), target.immutable());
+        LightState light = LIGHTS.computeIfAbsent(key, ignored -> new LightState(level.getBlockState(target), new HashSet<>()));
+        light.holders().add(holder.getUUID());
+        LevelChunk chunk = level.getChunkAt(target);
+        Map<BlockPos, BlockState> originals = new HashMap<>(chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS));
+        originals.put(target.immutable(), light.original());
+        chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
+        chunk.markUnsaved();
+        place(level, target, light.original());
+        LIT.put(holder.getUUID(), key);
     }
 
     private static @Nullable BlockPos findSpot(ServerLevel level, LivingEntity holder) {
@@ -138,12 +158,12 @@ public final class WaveJetSpotlight {
         }
         BlockState state = level.getBlockState(pos);
         return state.isAir()
-                || state.is(Blocks.LIGHT)
+                || (state.is(Blocks.LIGHT) && LIGHTS.containsKey(new Lit(level.dimension(), pos)))
                 || (state.is(Blocks.WATER) && state.getFluidState().isSource());
     }
 
-    private static void place(ServerLevel level, BlockPos pos) {
-        boolean waterlogged = level.getBlockState(pos).is(Blocks.WATER);
+    private static void place(ServerLevel level, BlockPos pos, BlockState original) {
+        boolean waterlogged = original.is(Blocks.WATER);
         level.setBlock(pos, Blocks.LIGHT.defaultBlockState()
                 .setValue(LightBlock.LEVEL, NTConfig.waveJetLightLevel)
                 .setValue(LightBlock.WATERLOGGED, waterlogged), Block.UPDATE_CLIENTS);
@@ -155,20 +175,26 @@ public final class WaveJetSpotlight {
         if (lit == null || server == null) {
             return;
         }
-        clear(server.getLevel(lit.dimension()), lit.pos());
+        LightState light = LIGHTS.get(lit);
+        if (light != null) {
+            light.holders().remove(holder.getUUID());
+            if (light.holders().isEmpty()) clear(server.getLevel(lit.dimension()), lit.pos());
+        }
     }
 
     private static void clear(@Nullable ServerLevel level, BlockPos pos) {
         if (level == null || !level.isLoaded(pos)) {
             return;
         }
-        BlockState state = level.getBlockState(pos);
-        if (!state.is(Blocks.LIGHT)) {
-            return;
+        LevelChunk chunk = level.getChunkAt(pos);
+        Map<BlockPos, BlockState> originals = new HashMap<>(chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS));
+        originals.remove(pos);
+        chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
+        chunk.markUnsaved();
+        LightState light = LIGHTS.remove(new Lit(level.dimension(), pos));
+        if (light != null && level.getBlockState(pos).is(Blocks.LIGHT)) {
+            level.setBlock(pos, light.original(), Block.UPDATE_CLIENTS);
         }
-        level.setBlock(pos, state.getValue(LightBlock.WATERLOGGED)
-                ? Blocks.WATER.defaultBlockState()
-                : Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @SubscribeEvent
@@ -193,6 +219,46 @@ public final class WaveJetSpotlight {
             clear(event.getServer().getLevel(lit.dimension()), lit.pos());
         }
         LIT.clear();
+        LIGHTS.clear();
+        LOADED.clear();
+    }
+
+    @SubscribeEvent
+    public static void onChunkUnload(ChunkEvent.Unload event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        for (Lit lit : Set.copyOf(LIGHTS.keySet())) {
+            if (lit.dimension().equals(level.dimension()) && event.getChunk().getPos().equals(new ChunkPos(lit.pos().getX() >> 4, lit.pos().getZ() >> 4))) {
+                LIGHTS.remove(lit);
+                LIT.values().removeIf(lit::equals);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onChunkLoad(ChunkEvent.Load event) {
+        if (event.getLevel() instanceof ServerLevel) LOADED.add(event.getChunk());
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        LevelChunk chunk;
+        while ((chunk = LOADED.poll()) != null) {
+            ServerLevel level = (ServerLevel) chunk.getLevel();
+            if (!level.isLoaded(chunk.getPos().getWorldPosition())) continue;
+            Map<BlockPos, BlockState> originals = chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS);
+            Map<BlockPos, BlockState> retained = new HashMap<>();
+            for (Map.Entry<BlockPos, BlockState> entry : originals.entrySet()) {
+                if (LIGHTS.containsKey(new Lit(level.dimension(), entry.getKey()))) {
+                    retained.put(entry.getKey(), entry.getValue());
+                } else if (chunk.getBlockState(entry.getKey()).is(Blocks.LIGHT)) {
+                    level.setBlock(entry.getKey(), entry.getValue(), Block.UPDATE_CLIENTS);
+                }
+            }
+            if (!originals.equals(retained)) {
+                chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(retained));
+                chunk.markUnsaved();
+            }
+        }
     }
 
     private WaveJetSpotlight() {

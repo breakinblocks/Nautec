@@ -25,7 +25,7 @@ public class ThrowRandomPotionAugments extends Augment {
 
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
-        if (NTKeybinds.THROW_POTION_KEYBIND.get().consumeClick() && !isOnCooldown()) {
+        if (player.isLocalPlayer() && NTKeybinds.THROW_POTION_KEYBIND.get().consumeClick() && !isOnCooldown()) {
             ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }

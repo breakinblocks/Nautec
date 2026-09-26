@@ -6,9 +6,6 @@ import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,41 +31,5 @@ public class MixerMenu extends NTMachineMenu<MixerBlockEntity> {
     protected int getMergeableSlotCount() {
         return 4;
     }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        Slot slot = this.slots.get(index);
-        if (slot.hasItem()) {
-            ItemStack stack = slot.getItem();
-            ItemStack copy = stack.copy();
-
-            int playerInventoryStart = 0;
-            int hotbarStart = 27;
-            int hotbarEnd = 36;
-            int machineSlotStart = 36;
-            int machineSlotEnd = 41;
-
-            if (index < hotbarEnd) {
-                if (!moveItemStackTo(stack, machineSlotStart, machineSlotEnd, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                if (!moveItemStackTo(stack, playerInventoryStart, hotbarEnd, false)) {
-                    return ItemStack.EMPTY;
-                }
-            }
-
-            if (stack.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-
-            slot.onTake(player, stack);
-            return copy;
-        }
-        return ItemStack.EMPTY;
-    }
-
 
 }

@@ -18,6 +18,7 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     public final @NotNull T blockEntity;
     protected final @NotNull Inventory inv;
     private final ContainerLevelAccess access;
+    private int playerSlotStart;
     private final ImmutableList<Block> validBlocks;
 
     public @NotNull T getBlockEntity() {
@@ -33,6 +34,7 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     }
 
     protected void addPlayerInventory(Inventory playerInventory) {
+        playerSlotStart = slots.size();
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
                 this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 83 + i * 18));
@@ -47,6 +49,7 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     }
 
     protected void addPlayerInventory(Inventory playerInventory, int y) {
+        playerSlotStart = slots.size();
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
                 this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, y + i * 18));
@@ -102,16 +105,12 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     }
 
     protected boolean performMerge(int index, ItemStack stack) {
-        int invBase = getMergeableSlotCount();
-        int invFull = slots.size();
-        int invHotbar = invFull - 9;
-        int invPlayer = invHotbar - 27;
-
-        if (index < invPlayer) {
-            return moveItemStackTo(stack, invPlayer, invFull, false);
-        } else {
-            return moveItemStackTo(stack, 0, invBase, false);
+        int playerEnd = playerSlotStart + 36;
+        if (index < playerSlotStart || index >= playerEnd) {
+            return moveItemStackTo(stack, playerSlotStart, playerEnd, false);
         }
+        int machineStart = playerSlotStart == 0 ? playerEnd : 0;
+        return moveItemStackTo(stack, machineStart, machineStart + getMergeableSlotCount(), false);
     }
 
     @Override

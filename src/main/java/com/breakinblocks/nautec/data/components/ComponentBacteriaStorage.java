@@ -8,6 +8,15 @@ import net.minecraft.network.codec.StreamCodec;
 import java.util.Objects;
 
 public record ComponentBacteriaStorage(BacteriaInstance bacteriaInstance) {
+    public ComponentBacteriaStorage {
+        bacteriaInstance = bacteriaInstance.copy();
+    }
+
+    @Override
+    public BacteriaInstance bacteriaInstance() {
+        return bacteriaInstance.copy();
+    }
+
     public static final ComponentBacteriaStorage EMPTY = new ComponentBacteriaStorage(BacteriaInstance.EMPTY);
 
     public static final Codec<ComponentBacteriaStorage> CODEC =

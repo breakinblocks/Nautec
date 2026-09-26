@@ -23,7 +23,12 @@ public class EnergyConverterBlockEntity extends LaserBlockEntity {
     private static final int MAX_FE = 100000;
     private static final String FE_BUFFER_KEY = "fe_buffer";
 
-    private final SimpleEnergyHandler feBuffer = new SimpleEnergyHandler(MAX_FE, MAX_FE, 0);
+    private final SimpleEnergyHandler feBuffer = new SimpleEnergyHandler(MAX_FE, MAX_FE, 0) {
+        @Override
+        protected void onEnergyChanged(int previousAmount) {
+            setChanged();
+        }
+    };
 
     public EnergyConverterBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.ENERGY_CONVERTER.get(), blockPos, blockState);

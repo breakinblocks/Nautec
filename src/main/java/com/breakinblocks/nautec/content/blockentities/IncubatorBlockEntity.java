@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final RecipeRevision recipeRevision = new RecipeRevision();
     private BacteriaIncubationRecipe recipe;
     private boolean active;
     private int progress;
@@ -45,6 +47,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     @Override
     public void onLoad() {
         super.onLoad();
+        if (level instanceof ServerLevel server) recipeRevision.changed(server);
         checkRecipe();
     }
 
@@ -79,6 +82,10 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     @Override
     public void commonTick() {
         super.commonTick();
+        if (level instanceof ServerLevel server && recipeRevision.changed(server)) {
+            progress = 0;
+            checkRecipe();
+        }
 
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
 

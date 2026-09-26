@@ -47,7 +47,7 @@ public record TwoTankSidedFluidHandler(ResourceHandler<FluidResource> primaryHan
         if (action != IOActions.INSERT && action != IOActions.BOTH) {
             return 0;
         }
-        return index == 0 ? primaryHandler.insert(0, resource, amount, transaction) : 0;
+        return index == 0 && tanks.contains(index) ? primaryHandler.insert(0, resource, amount, transaction) : 0;
     }
 
     @Override
@@ -55,6 +55,6 @@ public record TwoTankSidedFluidHandler(ResourceHandler<FluidResource> primaryHan
         if (action != IOActions.EXTRACT && action != IOActions.BOTH) {
             return 0;
         }
-        return index == 1 ? secondaryHandler.extract(0, resource, amount, transaction) : 0;
+        return index == 1 && tanks.contains(index) ? secondaryHandler.extract(0, resource, amount, transaction) : 0;
     }
 }

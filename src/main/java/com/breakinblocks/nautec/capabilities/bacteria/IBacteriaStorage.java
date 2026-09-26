@@ -20,6 +20,8 @@ public interface IBacteriaStorage {
         BacteriaInstance bacteriaInstance = getBacteria(slot);
         CollapsedBacteriaStats newStats = statsModifier.apply(bacteriaInstance.getStats());
         bacteriaInstance.setStats(newStats);
+        setBacteria(slot, bacteriaInstance);
+        onBacteriaChanged(slot);
     }
 
     /**

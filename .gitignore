@@ -44,8 +44,4 @@ assets-src/art/__pycache__/
 !/wiki/**/*.md
 !**/src/**/*.md
 
-# Batch files: only the Gradle wrapper
-*.bat
-!gradlew.bat
-
 /tools/

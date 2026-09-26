@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.data.components.SubmarineModuleState;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTParticles;
@@ -845,6 +846,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         ItemStack stack = new ItemStack(NTItems.SUBMARINE.get());
         stack.set(NTDataComponents.POWER, new ComponentPowerStorage(getPowerStored(), NTConfig.submarinePowerCapacity, 1F));
         stack.set(NTDataComponents.SUBMARINE_HEALTH, getHealth());
+        stack.set(NTDataComponents.SUBMARINE_MODULE_STATE, modules.snapshot());
         stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(getModuleStacks()));
         stack.set(DataComponents.CUSTOM_NAME, getCustomName());
         return stack;
@@ -860,6 +862,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         setHealth(health == null ? getMaxHealth() : Math.max(1F, health));
 
         setModules(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
+        modules.restore(stack.getOrDefault(NTDataComponents.SUBMARINE_MODULE_STATE, SubmarineModuleState.EMPTY));
     }
 
     @Override

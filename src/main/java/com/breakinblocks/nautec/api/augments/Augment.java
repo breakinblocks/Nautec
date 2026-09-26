@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.api.augments;
 
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.data.NTDataAttachments;
-import com.breakinblocks.nautec.client.AugmentClientHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +20,13 @@ public abstract class Augment {
     public Augment(AugmentType<?> augmentType, AugmentSlot augmentSlot) {
         this.augmentType = augmentType;
         this.augmentSlot = augmentSlot;
+    }
+
+    public Augment copyForRender() {
+        Augment copy = augmentType.create(augmentSlot);
+        copy.setPlayer(player);
+        copy.deserializeNBT(player.level().registryAccess(), serializeNBT(player.level().registryAccess()));
+        return copy;
     }
 
     public boolean replaceBodyPart() {
@@ -97,9 +103,6 @@ public abstract class Augment {
 
     protected final void setChanged() {
         player.setData(NTDataAttachments.AUGMENT_DATA_CHANGED, NTRegistries.AUGMENT_SLOT.getId(augmentSlot));
-        if (player.level().isClientSide()) {
-            AugmentClientHelper.invalidateCacheFor(player, augmentSlot);
-        }
     }
 
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {

@@ -43,9 +43,10 @@ public class NautecGameTests {
         try {
             Class<?> suite = Class.forName("com.breakinblocks.nautec.gametest.suite.NTGameTestRegistration");
             suite.getMethod("registerTests", RegisterGameTestsEvent.class).invoke(null, event);
-        } catch (ClassNotFoundException ignored) {
+        } catch (ClassNotFoundException missing) {
+            if (Boolean.getBoolean("nautec.requireGameTests")) throw new IllegalStateException("GameTest suites are missing", missing);
         } catch (Throwable t) {
-            Nautec.LOGGER.error("Failed to register nautec gametest suite", t);
+            throw new IllegalStateException("Failed to register nautec gametest suite", t);
         }
     }
 
@@ -61,7 +62,6 @@ public class NautecGameTests {
 
     public static class DirectGameTestInstance extends GameTestInstance {
         private static final Map<String, Consumer<GameTestHelper>> FUNCTIONS = new ConcurrentHashMap<>();
-        private static final Consumer<GameTestHelper> NOOP = GameTestHelper::succeed;
 
         static final MapCodec<DirectGameTestInstance> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 Codec.STRING.fieldOf("name").forGetter(d -> d.name),
@@ -74,15 +74,24 @@ public class NautecGameTests {
 
         public DirectGameTestInstance(String name, Consumer<GameTestHelper> testFunction,
                                       TestData<Holder<TestEnvironmentDefinition<?>>> info) {
+            this(name, testFunction, info, true);
+        }
+
+        private DirectGameTestInstance(String name, Consumer<GameTestHelper> testFunction,
+                                       TestData<Holder<TestEnvironmentDefinition<?>>> info, boolean register) {
             super(info);
             this.name = name;
             this.testFunction = testFunction;
             this.testData = info;
-            FUNCTIONS.put(name, testFunction);
+            if (register) FUNCTIONS.put(name, testFunction);
         }
 
         private static DirectGameTestInstance fromCodec(String name, TestData<Holder<TestEnvironmentDefinition<?>>> info) {
-            return new DirectGameTestInstance(name, FUNCTIONS.getOrDefault(name, NOOP), info);
+            return new DirectGameTestInstance(name, helper -> {
+                Consumer<GameTestHelper> function = FUNCTIONS.get(name);
+                if (function == null) throw new IllegalStateException("Unknown GameTest function: " + name);
+                function.accept(helper);
+            }, info, false);
         }
 
         @Override

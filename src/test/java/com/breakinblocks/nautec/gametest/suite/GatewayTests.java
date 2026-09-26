@@ -103,6 +103,7 @@ public final class GatewayTests {
             place(helper, to, address);
 
             Cow cow = helper.spawn(EntityType.COW, from.above());
+            cow.setNoAi(true);
 
             helper.succeedWhen(() -> {
                 BlockPos target = helper.absolutePos(to);
@@ -119,6 +120,7 @@ public final class GatewayTests {
             place(helper, to, GatewayAddress.uniform(DyeColor.MAGENTA));
 
             Cow cow = helper.spawn(EntityType.COW, from.above());
+            cow.setNoAi(true);
 
             helper.runAfterDelay(80, () -> {
                 helper.assertFalse(cow.isOnPortalCooldown(),
@@ -135,14 +137,39 @@ public final class GatewayTests {
             place(helper, to, address);
 
             Cow cow = helper.spawn(EntityType.COW, from.above());
+            cow.setNoAi(true);
 
             helper.runAfterDelay(40, () -> helper.assertTrue(cow.isOnPortalCooldown(),
                     "An entity that just travelled should be on cooldown"));
 
             helper.runAfterDelay(60, () -> {
-                BlockPos origin = helper.absolutePos(from);
-                helper.assertFalse(cow.blockPosition().closerThan(origin, 3.0),
+                BlockPos destination = helper.absolutePos(to);
+                helper.assertTrue(cow.blockPosition().closerThan(destination, 2.0),
                         "The cow bounced straight back to the gateway it came from, so the cooldown is not holding");
+                helper.succeed();
+            });
+        });
+        r.add("gateway/blocked_exit_preserves_entity", 100, helper -> {
+            BlockPos from = new BlockPos(1, 1, 4);
+            BlockPos to = new BlockPos(7, 1, 4);
+            GatewayAddress address = GatewayAddress.uniform(DyeColor.ORANGE);
+            place(helper, from, address);
+            place(helper, to, address);
+            helper.setBlock(to.above(), Blocks.STONE);
+            helper.setBlock(to.above(2), Blocks.STONE);
+            Cow cow = helper.spawn(EntityType.COW, from.above());
+            cow.setNoAi(true);
+            helper.runAfterDelay(40, () -> {
+                helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(from), 2.0),
+                        "Blocked exit must leave the entity at its source");
+                helper.assertFalse(cow.isOnPortalCooldown(), "Failed travel must not apply cooldown");
+                helper.setBlock(to.above(), Blocks.AIR);
+                helper.setBlock(to.above(2), Blocks.AIR);
+            });
+            helper.runAfterDelay(70, () -> {
+                helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(to), 2.0),
+                        "Clearing the exit should allow travel");
+                helper.assertTrue(cow.isOnPortalCooldown(), "Successful travel must apply cooldown");
                 helper.succeed();
             });
         });

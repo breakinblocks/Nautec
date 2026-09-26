@@ -1,8 +1,9 @@
 {
   "pack": {
     "description": {
-      "text": "${mod_id} resources"
+      "text": "Nautec resources"
     },
-    "pack_format": 15
+    "min_format": 84,
+    "max_format": [101, 1]
   }
 }

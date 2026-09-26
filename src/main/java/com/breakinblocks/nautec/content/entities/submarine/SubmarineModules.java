@@ -43,6 +43,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.ArrayList;
+import com.breakinblocks.nautec.data.components.SubmarineModuleState;
 
 public class SubmarineModules {
     public static final int TELEPORT_CHARGE_TICKS = 50;
@@ -88,16 +90,43 @@ public class SubmarineModules {
         teleportTick();
     }
 
+    public SubmarineModuleState snapshot() {
+        List<Integer> remaining = new ArrayList<>();
+        List<Integer> active = new ArrayList<>();
+        for (int slot = 0; slot < readyAt.length; slot++) {
+            int left = remainingCooldown(slot);
+            remaining.add(left);
+            long elapsed = Math.max(0L, submarine.level().getGameTime() - (readyAt[slot] - cooldownTicks[slot]));
+            active.add((int) Math.max(0L, activeTicks[slot] - elapsed));
+        }
+        return new SubmarineModuleState(remaining, active, boostTicks, stealthTicks);
+    }
+
+    public void restore(SubmarineModuleState state) {
+        clearCooldowns();
+        for (int slot = 0; slot < Math.min(readyAt.length, state.remaining().size()); slot++) {
+            int left = state.remaining().get(slot);
+            readyAt[slot] = submarine.level().getGameTime() + left;
+            cooldownTicks[slot] = left;
+            activeTicks[slot] = slot < state.active().size() ? state.active().get(slot) : 0;
+        }
+        boostTicks = state.boost();
+        stealthTicks = state.stealth();
+        teleportTicks = 0;
+        teleportTarget = null;
+        submarine.setCharging(false);
+        submarine.setLaserActive(false);
+        submarine.setStealthed(stealthTicks > 0);
+        updateSpeedMultiplier();
+    }
+
     public void save(ValueOutput output) {
-        output.putInt("boostTicks", this.boostTicks);
-        output.putInt("stealthTicks", this.stealthTicks);
+        output.store("moduleState", SubmarineModuleState.CODEC, snapshot());
     }
 
     public void load(ValueInput input) {
-        this.boostTicks = input.getIntOr("boostTicks", 0);
-        this.stealthTicks = input.getIntOr("stealthTicks", 0);
-        this.submarine.setStealthed(this.stealthTicks > 0);
-        updateSpeedMultiplier();
+        restore(input.read("moduleState", SubmarineModuleState.CODEC).orElseGet(() ->
+                new SubmarineModuleState(List.of(), List.of(), input.getIntOr("boostTicks", 0), input.getIntOr("stealthTicks", 0))));
     }
 
     public boolean isReady(int slot) {

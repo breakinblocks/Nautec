@@ -9,6 +9,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 
 import java.util.Map;
+import com.breakinblocks.nautec.client.AugmentClientHelper;
 import java.util.function.Supplier;
 
 public class AugmentSlotsRenderer {
@@ -28,7 +29,7 @@ public class AugmentSlotsRenderer {
 
     public static void render(RenderPlayerEvent.Pre<?> event) {
 
-        Map<AugmentSlot, Augment> augments = AugmentLayerRenderer.AUGMENTS_CACHE;
+        Map<AugmentSlot, Augment> augments = AugmentClientHelper.forState(event.getRenderState());
         for (AugmentSlot slot : augments.keySet()) {
             Augment augment = augments.get(slot);
             if (augment != null && augment.replaceBodyPart()) {

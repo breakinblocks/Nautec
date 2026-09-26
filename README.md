@@ -3,7 +3,7 @@
 Nautec is an underwater tech mod for NeoForge. Nautec moves progression off the land and onto the ocean floor. Powered by aquatic laser beams you aim by line of sight, resources are grown from bacteria
 colonies, and the endgame is rebuilding your own body part by part with ancient atlantean technology.
 
-Minecraft 26.1.2, NeoForge 26.1.2.94, Java 25.
+Minecraft 26.1.2, NeoForge 26.1.2.95, Java 25.
 
 
 
@@ -119,13 +119,13 @@ forward from "An Introduction to Laser Power".
 
 ## Configuration
 
-Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
+Gameplay values are synchronized from the server in `nautec-common.toml`; biome injection settings live in `nautec-worldgen.toml`. Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
 
 ## For pack developers
 
 Most of the mod's content is data-driven and safe to override from a datapack.
 
-**Recipes.** Seven custom types, all plain JSON in `data/<namespace>/recipe/`:
+**Recipes.** Nine custom types, all plain JSON in `data/<namespace>/recipe/`:
 
 | Type | Machine |
 | --- | --- |
@@ -136,6 +136,8 @@ Most of the mod's content is data-driven and safe to override from a datapack.
 | `nautec:augmentation` | Augmentation Station |
 | `nautec:bacteria_mutation` | Mutator |
 | `nautec:bacteria_incubation` | Incubator |
+| `nautec:pressure_forging` | Pressure Forge |
+| `nautec:resonance_crafting` | Resonance Chamber |
 
 Transformation recipes carry a `purity` float, which is the minimum beam purity the recipe will
 accept. Setting it gates a recipe behind crystal infrastructure rather than behind a material cost:
@@ -188,11 +190,13 @@ biomes to appear.
 **Guide book.** The in-game guide is a Modonomicon book, so entries and categories are datapack
 content and can be extended or replaced alongside your own recipes.
 
-`ASSETS.md` tracks which textures are placeholder art awaiting a real pass. `TESTING.md` lists
-behavior that automated tests cannot cover.
+[Release readiness](docs/release-readiness.md) tracks implementation status and release gates.
+[Manual testing](docs/manual-testing.md) lists behavior that needs client and multiplayer verification.
 
 ## Credits and license
 
 Nautec began as Porting Dead Mods' entry in the CurseForge 2024 Modjam, created by Thepigcat76,
-Leclowndu93150, Ktpatient, Reclipse and Iglee42. Released under the MIT license; see `LICENSE`.
+Leclowndu93150, Ktpatient, Reclipse and Iglee42. The original upstream MIT notice is preserved in `LICENSE`.
 It is now maintained and continued to be developed by Saereth and BreakinBlocks.
+Current development is licensed under both PolyForm Shield 1.0.0 and PolyForm Perimeter 1.0.0;
+compliance with both is required. See [LICENSE.md](LICENSE.md).

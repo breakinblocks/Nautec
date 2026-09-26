@@ -81,7 +81,9 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
                     }
 
                     getItemStackHandler().extractItem(0, 1, false);
-                    storage.getBacteria(0).setAnalyzed(true);
+                    BacteriaInstance analyzed = storage.getBacteria(0);
+                    analyzed.setAnalyzed(true);
+                    storage.setBacteria(0, analyzed);
 
                     forceInsertItem(1, result, false);
 

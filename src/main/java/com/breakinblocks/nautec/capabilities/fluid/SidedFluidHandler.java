@@ -1,52 +1,18 @@
 package com.breakinblocks.nautec.capabilities.fluid;
 
 import com.breakinblocks.nautec.capabilities.IOActions;
-import com.breakinblocks.nautec.utils.Utils;
+import com.breakinblocks.nautec.capabilities.SidedResourceHandler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public record SidedFluidHandler(ResourceHandler<FluidResource> innerHandler,
-                                IOActions action,
-                                IntList tanks) implements ResourceHandler<FluidResource> {
-    public SidedFluidHandler(ResourceHandler<FluidResource> innerHandler, Pair<IOActions, int[]> actionSlotsPair) {
-        this(innerHandler, actionSlotsPair != null ? actionSlotsPair.left() : IOActions.NONE, actionSlotsPair != null ? Utils.intArrayToList(actionSlotsPair.right()) : IntList.of());
+public final class SidedFluidHandler extends SidedResourceHandler<FluidResource> {
+    public SidedFluidHandler(ResourceHandler<FluidResource> inner, IOActions action, IntList slots) {
+        super(inner, action, slots);
     }
 
-    @Override
-    public int size() {
-        return innerHandler.size();
-    }
-
-    @Override
-    public FluidResource getResource(int index) {
-        return innerHandler.getResource(index);
-    }
-
-    @Override
-    public long getAmountAsLong(int index) {
-        return innerHandler.getAmountAsLong(index);
-    }
-
-    @Override
-    public long getCapacityAsLong(int index, FluidResource resource) {
-        return innerHandler.getCapacityAsLong(index, resource);
-    }
-
-    @Override
-    public boolean isValid(int index, FluidResource resource) {
-        return (action == IOActions.INSERT || action == IOActions.BOTH) && tanks.contains(index) && innerHandler.isValid(index, resource);
-    }
-
-    @Override
-    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
-        return (action == IOActions.INSERT || action == IOActions.BOTH) && tanks.contains(index) ? innerHandler.insert(index, resource, amount, transaction) : 0;
-    }
-
-    @Override
-    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
-        return (action == IOActions.EXTRACT || action == IOActions.BOTH) && tanks.contains(index) ? innerHandler.extract(index, resource, amount, transaction) : 0;
+    public SidedFluidHandler(ResourceHandler<FluidResource> inner, Pair<IOActions, int[]> actionSlots) {
+        super(inner, actionSlots);
     }
 }
