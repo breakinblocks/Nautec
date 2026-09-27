@@ -142,11 +142,20 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
         }
 
         Vec3 look = player.getLookAngle();
+        Vec3 heading = look;
         Vec3 motion = player.getDeltaMovement();
-        double push = Math.min(NTConfig.waveJetThrust, NTConfig.waveJetMaxSpeed - motion.dot(look));
-        if (push > 0) {
-            player.setDeltaMovement(motion.add(look.scale(push)));
+        if (!player.isUnderWater()) {
+            heading = new Vec3(look.x, Math.min(look.y, 0.0), look.z);
+            motion = new Vec3(motion.x, Math.min(motion.y, 0.0), motion.z);
         }
+        if (heading.lengthSqr() > 1.0E-4) {
+            heading = heading.normalize();
+            double push = Math.min(NTConfig.waveJetThrust, NTConfig.waveJetMaxSpeed - motion.dot(heading));
+            if (push > 0) {
+                motion = motion.add(heading.scale(push));
+            }
+        }
+        player.setDeltaMovement(motion);
 
         player.setSwimming(true);
         player.setPose(Pose.SWIMMING);

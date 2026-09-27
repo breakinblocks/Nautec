@@ -226,6 +226,32 @@ public final class WaveJetTests {
             helper.succeed();
         });
 
+        r.add("wave_jet/skims_along_the_surface", 20, helper -> {
+            for (BlockPos pos : BlockPos.betweenClosed(0, 0, 0, 8, 8, 8)) {
+                boolean wall = pos.getX() == 0 || pos.getX() == 8 || pos.getY() == 0 || pos.getY() == 8
+                        || pos.getZ() == 0 || pos.getZ() == 8;
+                helper.setBlock(pos, wall ? Blocks.GLASS : pos.getY() <= 5 ? Blocks.WATER : Blocks.AIR);
+            }
+            Player player = diver(helper, 0.0);
+            Vec3 start = helper.absoluteVec(new Vec3(1.3, 3.0, 4.5));
+            Vec3 end = helper.absoluteVec(new Vec3(7.5, 3.0, 4.5));
+            float yaw = (float) Mth.atan2(end.z - start.z, end.x - start.x) * Mth.RAD_TO_DEG - 90.0F;
+            player.snapTo(start.x, start.y, start.z, yaw, -30.0F);
+            player.startUsingItem(InteractionHand.MAIN_HAND);
+            double surface = helper.absoluteVec(new Vec3(0.0, 6.0, 0.0)).y;
+
+            boolean surfaced = false;
+            for (int tick = 0; tick < 200; tick++) {
+                player.tick();
+                surfaced |= !player.isUnderWater();
+                helper.assertTrue(player.isInWater(), "Thrusting up at the surface left the water on tick " + tick
+                        + ", feet at " + String.format("%.2f", player.getY()) + " with the surface at " + surface);
+                helper.assertTrue(player.isUsingItem(), "The Wave Jet cut out at the surface on tick " + tick);
+            }
+            helper.assertTrue(surfaced, "The player never reached the surface");
+            helper.succeed();
+        });
+
         r.add("wave_jet/dolphins_grace_stays_under_the_cap", 20, helper -> {
             Player player = lane(helper);
             player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 200, 1));
