@@ -57,6 +57,13 @@ sourceSets {
 
 tasks.named('test') { enabled = false }
 
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    def generatedPack = neoForge.runs.gameTestServer.gameDirectory.dir('config/nautec/generated_pack')
+    doFirst {
+        generatedPack.get().asFile.mkdirs()
+    }
+}
+
 neoForge {
     version = project.neoforge_full_version
 
