@@ -104,7 +104,7 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.SPEAR;
+        return ItemUseAnimation.NONE;
     }
 
     @Override

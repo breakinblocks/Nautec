@@ -8,6 +8,15 @@
         "class": "com/breakinblocks/nautec/client/render/RifleArmPose",
         "field": "RIFLE"
       }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "NAUTEC_WAVE_JET",
+      "constructor": "(ZZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "com/breakinblocks/nautec/client/render/WaveJetClientExtensions",
+        "field": "ARM_POSE"
+      }
     }
   ]
 }

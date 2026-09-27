@@ -121,8 +121,8 @@ public final class SubmarineTests {
             storage.setPowerStored(storage.getPowerCapacity());
             helper.assertTrue(storage.getPowerStored() > 0, "the Wave Jet should hold a charge");
 
-            helper.assertValueEqual(ItemUseAnimation.SPEAR, NTItems.WAVE_JET.get().getUseAnimation(jet),
-                    "the two handed pose is what makes it read as gripped rather than waved about");
+            helper.assertValueEqual(ItemUseAnimation.NONE, NTItems.WAVE_JET.get().getUseAnimation(jet),
+                    "Vanilla use animation must not override the custom two-handed Wave Jet pose");
             helper.succeed();
         }));
 

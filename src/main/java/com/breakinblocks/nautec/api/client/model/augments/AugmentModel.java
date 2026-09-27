@@ -21,6 +21,6 @@ public abstract class AugmentModel<T extends Augment> extends Model<Unit> {
     }
 
     public void submit(PoseStack poseStack, SubmitNodeCollector collector, RenderType renderType, int packedLight, int packedOverlay) {
-        collector.submitModel(this, Unit.INSTANCE, poseStack, renderType, packedLight, packedOverlay, -1, null);
+        collector.submitModel(this, Unit.INSTANCE, poseStack, renderType, packedLight, packedOverlay, 0, null);
     }
 }

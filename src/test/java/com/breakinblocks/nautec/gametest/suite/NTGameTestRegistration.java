@@ -27,6 +27,7 @@ public final class NTGameTestRegistration {
         PersistenceTests.register(r);
         WorldgenInjectionTests.register(r);
         ContentIntegrityTests.register(r);
+        AquaticMovementTests.register(r);
         LootTableTests.register(r);
         LuckyZoneTests.register(r);
         FishingHookFlowTests.register(r);
@@ -37,8 +38,8 @@ public final class NTGameTestRegistration {
         ReviewRegressionTests.register(r);
         ReleaseRegressionTests.register(r);
         ClientAcceptanceRegressionTests.register(r);
-        if (r.registeredCount() != 272) {
-            throw new IllegalStateException("Expected 272 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 274) {
+            throw new IllegalStateException("Expected 274 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

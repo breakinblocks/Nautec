@@ -9,8 +9,10 @@ import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemDisplayContext;
 
 public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
@@ -40,14 +42,25 @@ public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
     public void addRenderData(WaveJetItem item, RenderData data, GeoRenderState state, float partialTick) {
         super.addRenderData(item, data, state, partialTick);
         state.addGeckolibData(WaveJetItem.THRUSTING, isThrusting(data));
+        LivingEntity holder = data.itemOwner() == null ? null : data.itemOwner().asLivingEntity();
+        state.addGeckolibData(DataTickets.ENTITY_POSE, holder == null ? Pose.STANDING : holder.getPose());
     }
 
     @Override
     public void adjustRenderPose(RenderPassInfo<GeoRenderState> pass) {
         super.adjustRenderPose(pass);
         PoseStack poseStack = pass.poseStack();
-        float scale = scaleFor(pass.renderState().getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.GUI));
+        ItemDisplayContext context = pass.renderState().getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.GUI);
+        float scale = scaleFor(context);
         poseStack.scale(scale, scale, scale);
+        if (context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
+            boolean swimming = pass.renderState().getGeckolibData(DataTickets.ENTITY_POSE) == Pose.SWIMMING;
+            float gripOffset = swimming ? 0.45F : 0.22F;
+            poseStack.translate(context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND ? gripOffset : -gripOffset, -0.6F, 0.0F);
+            if (swimming) {
+                poseStack.mulPose(Axis.XP.rotationDegrees(53.0F));
+            }
+        }
         poseStack.translate(0F, -CENTRE_Y, -CENTRE_Z);
     }
 

@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemR
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.client.render.RifleArmPose;
+import com.breakinblocks.nautec.client.render.WaveJetClientExtensions;
 import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarOverlay;
@@ -205,6 +206,7 @@ public final class NautecClient {
                 return RifleArmPose.RIFLE.getValue();
             }
         }, NTItems.ATLANTEAN_RIFLE);
+        event.registerItem(new WaveJetClientExtensions(), NTItems.WAVE_JET);
     }
 
     private void registerFluidModels(RegisterFluidModelsEvent event) {
