@@ -139,8 +139,9 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
             }
         } else {
             this.running = false;
-            duration = 0;
-            this.recipe = null;
+            // Laser connections are rebuilt after loading. Keep valid work while
+            // waiting for power, including the progress restored from disk.
+            if (recipe == null) duration = 0;
         }
     }
 
@@ -246,13 +247,19 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     @Override
     protected void onItemsChanged(int slot) {
         super.onItemsChanged(slot);
-        this.recipe = getRecipe().orElse(null);
+        refreshRecipe();
     }
 
     @Override
     protected void onFluidChanged() {
         super.onFluidChanged();
-        this.recipe = getRecipe().orElse(null);
+        refreshRecipe();
+    }
+
+    private void refreshRecipe() {
+        MixingRecipe next = getRecipe().orElse(null);
+        if (next != recipe) duration = 0;
+        recipe = next;
     }
 
     public int getSpeed() {

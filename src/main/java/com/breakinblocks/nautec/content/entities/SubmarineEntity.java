@@ -26,6 +26,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -730,6 +731,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
+        syncPassengers();
         if (level().isClientSide() || !(passenger instanceof LivingEntity boarded)) {
             return;
         }
@@ -770,10 +772,19 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
+        syncPassengers();
         if (getPassengers().isEmpty()) {
             this.input = Input.EMPTY;
             this.freeLook = false;
             this.descending = false;
+        }
+    }
+
+    private void syncPassengers() {
+        if (level() instanceof ServerLevel server) {
+            // Vanilla filters newly mounted/dismounted players from the tick's update.
+            // Multiple seat changes in one tick can otherwise leave their view stale.
+            server.getChunkSource().sendToTrackingPlayers(this, new ClientboundSetPassengersPacket(this));
         }
     }
 
