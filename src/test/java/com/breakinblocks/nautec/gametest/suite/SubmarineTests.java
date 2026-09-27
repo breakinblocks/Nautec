@@ -577,6 +577,27 @@ public final class SubmarineTests {
             helper.succeed();
         }));
 
+        r.add("submarine/sonar_hostile_radius_is_spherical", 40, helper -> {
+            double previous = NTConfig.submarineSonarRadius;
+            try {
+                NTConfig.submarineSonarRadius = 3;
+                SubmarineEntity sub = spawnSubmarine(helper);
+                sub.setPowerStored(NTConfig.submarineSonarPowerCost);
+                sub.setModule(0, NTItems.SONAR_MODULE.toStack());
+                Drowned edge = helper.spawn(EntityType.DROWNED, SUB_POS);
+                Drowned outside = helper.spawn(EntityType.DROWNED, SUB_POS);
+                Drowned corner = helper.spawn(EntityType.DROWNED, SUB_POS);
+                edge.setPos(sub.position().add(3,0,0));
+                outside.setPos(sub.position().add(3.01,0,0));
+                corner.setPos(sub.position().add(2.5,0,2.5));
+                sub.getModules().activate(0, helper.makeMockPlayer(GameType.SURVIVAL));
+                helper.assertTrue(edge.hasEffect(MobEffects.GLOWING), "Hostile exactly at radius is included");
+                helper.assertTrue(!outside.hasEffect(MobEffects.GLOWING), "Hostile beyond radius is excluded");
+                helper.assertTrue(!corner.hasEffect(MobEffects.GLOWING), "Search-box corner is outside spherical radius");
+            } finally { NTConfig.submarineSonarRadius = previous; }
+            helper.succeed();
+        });
+
         r.add("submarine/shield_discharge_repels", 40, helper -> helper.runAfterDelay(1, () -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
             submarine.setPowerStored(NTConfig.submarineShieldPowerCost);

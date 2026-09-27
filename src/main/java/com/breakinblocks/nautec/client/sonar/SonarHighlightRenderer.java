@@ -10,10 +10,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class SonarHighlightRenderer {
     private static @Nullable ByteBufferBuilder renderBuffer;
+    private record VisibleBox(AABB box, int color) { }
 
     private SonarHighlightRenderer() {
     }
@@ -23,29 +26,31 @@ public final class SonarHighlightRenderer {
             return;
         }
 
-        float fade = NautecSonarManager.fade();
-        float pulse = NautecSonarManager.pulseRadius(partialTick);
-        List<NautecSonarManager.Mark> marks = NautecSonarManager.marks();
-        List<NautecSonarManager.Mark> hostiles = NautecSonarManager.hostiles();
+        Map<VisibleBox, Float> boxes = new HashMap<>();
+        for (SonarScan scan : NautecSonarManager.scans()) {
+            collect(boxes, scan.marks(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.45F);
+            collect(boxes, scan.hostiles(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.55F);
+        }
         Vec3 offset = cameraPos.reverse();
 
         if (renderBuffer == null) renderBuffer = new ByteBufferBuilder(4096);
         MultiBufferSource.BufferSource source = MultiBufferSource.immediate(renderBuffer);
         VertexConsumer buffer = source.getBuffer(NTRenderTypes.sonarHighlight());
         PoseStack.Pose pose = poseStack.last();
-        for (NautecSonarManager.Mark mark : marks) {
-            if (mark.revealAt() > pulse) {
-                continue;
-            }
-            box(pose, buffer, mark.box().move(offset), mark.color(), fade * 0.45F);
-        }
-
-        for (NautecSonarManager.Mark hostile : hostiles) {
-            if (hostile.revealAt() <= pulse) {
-                box(pose, buffer, hostile.box().move(offset), hostile.color(), fade * 0.55F);
-            }
+        for (Map.Entry<VisibleBox, Float> entry : boxes.entrySet()) {
+            VisibleBox visible = entry.getKey();
+            box(pose, buffer, visible.box().move(offset), visible.color(), entry.getValue());
         }
         source.endBatch();
+    }
+
+    private static void collect(Map<VisibleBox, Float> boxes, List<NautecSonarManager.Mark> marks,
+                                float pulse, float partialTick, float alpha) {
+        for (NautecSonarManager.Mark mark : marks) {
+            if (mark.revealAt() <= pulse) {
+                boxes.merge(new VisibleBox(mark.interpolatedBox(partialTick), mark.color()), alpha, Math::max);
+            }
+        }
     }
 
     public static void close() {

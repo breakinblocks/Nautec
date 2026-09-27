@@ -34,7 +34,7 @@ public final class SubmarineFxHooks {
         }
 
         SubmarineSoundHandler.play(center, NTSounds.SUBMARINE_SONAR_PING.get(), 1F, 1F);
-        NautecSonarManager.begin(center, ping.range(), ping.highlightTicks());
+        NautecSonarManager.begin(ping.entityId(), center, ping.range(), ping.hostileRange(), ping.highlightTicks());
     }
 
     public static void onTeleportFx(TeleportFxPayload fx) {

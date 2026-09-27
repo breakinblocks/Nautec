@@ -296,17 +296,18 @@ public class SubmarineModules {
         }
 
         double radius = NTConfig.submarineSonarRadius;
+        Vec3 center = this.submarine.position();
         List<LivingEntity> hostiles = this.submarine.level().getEntitiesOfClass(LivingEntity.class,
-                this.submarine.getBoundingBox().inflate(radius), living -> living instanceof Enemy);
+                this.submarine.getBoundingBox().inflate(radius),
+                living -> living instanceof Enemy && living.position().distanceToSqr(center) <= radius * radius);
         for (LivingEntity hostile : hostiles) {
             hostile.addEffect(new MobEffectInstance(MobEffects.GLOWING, SONAR_GLOW_TICKS, 0, true, false));
         }
 
         play(NTSounds.SUBMARINE_SONAR_PING.get(), 1F, 1F);
 
-        Vec3 center = this.submarine.position();
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.submarine, new SonarPingPayload(
-                this.submarine.getId(), center.x, center.y, center.z, SONAR_PULSE_RANGE, NTConfig.submarineSonarCooldownTicks));
+                this.submarine.getId(), center.x, center.y, center.z, SONAR_PULSE_RANGE, (float) radius, NTConfig.submarineSonarCooldownTicks));
     }
 
     private void shieldDischarge(Player pilot) {

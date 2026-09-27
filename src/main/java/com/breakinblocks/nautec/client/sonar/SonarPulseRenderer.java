@@ -20,16 +20,17 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.GameShuttingDownEvent;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.util.OptionalInt;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Depth-reconstructed surface sweep, adapted from Scannable Reforged (MIT; LICENSE-SCANNABLE). */
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SonarPulseRenderer {
     private static final int UNIFORM_SIZE = new Std140SizeCalculator().putMat4f().putVec4().putVec4().get();
-    private static @Nullable MappableRingBuffer uniforms;
+    private static final List<MappableRingBuffer> uniformBuffers = new ArrayList<>();
 
     private SonarPulseRenderer() {
     }
@@ -44,18 +45,26 @@ public final class SonarPulseRenderer {
         PoseStack poseStack = new PoseStack();
         poseStack.last().pose().set(event.getModelViewMatrix());
         SonarHighlightRenderer.render(poseStack, camera, partialTick);
-        if (!NautecSonarManager.isPulseActive()) return;
+        int waveIndex = 0;
+        for (SonarScan scan : NautecSonarManager.scans()) {
+            if (scan.isPulseActive()) renderWave(event, minecraft, camera, partialTick, scan, waveIndex++);
+        }
+    }
 
+    private static void renderWave(RenderLevelStageEvent.AfterLevel event, Minecraft minecraft,
+                                   Vec3 camera, float partialTick, SonarScan scan, int waveIndex) {
         RenderTarget target = minecraft.getMainRenderTarget();
         if (target.getColorTextureView() == null || target.getDepthTextureView() == null) return;
 
-        if (uniforms == null) {
-            uniforms = new MappableRingBuffer(() -> "Nautec sonar uniforms",
-                    GpuBuffer.USAGE_UNIFORM | GpuBuffer.USAGE_MAP_WRITE, UNIFORM_SIZE);
+        // Each simultaneous wave rotates once per frame; never wait on a buffer drawn earlier in this frame.
+        if (waveIndex == uniformBuffers.size()) {
+            uniformBuffers.add(new MappableRingBuffer(() -> "Nautec sonar uniforms",
+                    GpuBuffer.USAGE_UNIFORM | GpuBuffer.USAGE_MAP_WRITE, UNIFORM_SIZE));
         }
+        MappableRingBuffer uniforms = uniformBuffers.get(waveIndex);
 
         // Use the same camera and projection as the depth buffer, before hand rendering clears it.
-        Vec3 center = NautecSonarManager.center().subtract(camera);
+        Vec3 center = scan.center().subtract(camera);
         Matrix4f inverseView = new Matrix4f(event.getModelViewMatrix()).invert();
         CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
         GpuBuffer buffer = uniforms.currentBuffer();
@@ -63,7 +72,7 @@ public final class SonarPulseRenderer {
             Std140Builder.intoBuffer(view.data())
                     .putMat4f(inverseView)
                     .putVec4((float) center.x, (float) center.y, (float) center.z, 0F)
-                    .putVec4(NautecSonarManager.pulseRadius(partialTick), SonarWave.BAND_WIDTH, 0F, 0F);
+                    .putVec4(scan.pulseRadius(partialTick), SonarWave.BAND_WIDTH, 0F, 0F);
         }
 
         // Depth is sampled, never attached for writing, so terrain and later overlays remain intact.
@@ -92,9 +101,7 @@ public final class SonarPulseRenderer {
 
     private static void close() {
         SonarHighlightRenderer.close();
-        if (uniforms != null) {
-            uniforms.close();
-            uniforms = null;
-        }
+        uniformBuffers.forEach(MappableRingBuffer::close);
+        uniformBuffers.clear();
     }
 }

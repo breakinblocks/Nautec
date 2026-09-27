@@ -3,6 +3,12 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.client.sonar.SonarScanner;
 import com.breakinblocks.nautec.client.sonar.SonarWave;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
+import java.util.Map;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
@@ -30,7 +36,40 @@ import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class ClientAcceptanceRegressionTests {
+    private static BlockGetter sonarFixture(Map<BlockPos, BlockState> blocks) {
+        return new BlockGetter() {
+            public BlockEntity getBlockEntity(BlockPos pos) { return null; }
+            public BlockState getBlockState(BlockPos pos) { return blocks.getOrDefault(pos, Blocks.STONE.defaultBlockState()); }
+            public FluidState getFluidState(BlockPos pos) { return getBlockState(pos).getFluidState(); }
+            public int getHeight() { return 384; }
+            public int getMinY() { return -64; }
+        };
+    }
+
     public static void register(NTTestRegistrar r) {
+        r.add("acceptance/sonar_fractional_and_section_boundaries", 40, helper -> {
+            BlockGetter fixture = sonarFixture(Map.of(new BlockPos(16,0,0), Blocks.DIAMOND_ORE.defaultBlockState(),
+                    new BlockPos(14,0,0), Blocks.IRON_ORE.defaultBlockState(),
+                    new BlockPos(0,0,0), Blocks.DIAMOND_ORE.defaultBlockState()));
+            for (Vec3 center : new Vec3[]{new Vec3(15.75,0.5,0.5), new Vec3(-0.25,0.5,0.5)}) {
+                SonarScanner scanner = new SonarScanner(fixture, center, 0.8);
+                while (!scanner.isDone()) scanner.tick();
+                helper.assertValueEqual(1, scanner.collectClusters().size(), "Fractional radius crosses section boundary without admitting out-of-range ore");
+            }
+            helper.succeed();
+        });
+        r.add("acceptance/sonar_incremental_vein_merges", 40, helper -> {
+            BlockGetter fixture = sonarFixture(Map.of(new BlockPos(15,0,0), Blocks.DIAMOND_ORE.defaultBlockState(),
+                    new BlockPos(16,0,0), Blocks.DIAMOND_ORE.defaultBlockState(),
+                    new BlockPos(17,0,0), Blocks.DIAMOND_ORE.defaultBlockState(),
+                    new BlockPos(16,1,0), Blocks.IRON_ORE.defaultBlockState(),
+                    new BlockPos(18,1,0), Blocks.DIAMOND_ORE.defaultBlockState()));
+            SonarScanner scanner = new SonarScanner(fixture, new BlockPos(15,0,0), 8);
+            while (!scanner.isDone()) { scanner.tick(1); scanner.collectClusters(); }
+            helper.assertValueEqual(3, scanner.collectClusters().size(), "Merge across sections, but not across ore types or diagonal corners");
+            helper.assertTrue(scanner.collectClusters().stream().anyMatch(cluster -> cluster.box().getXsize() == 3), "Connected vein spans both sections");
+            helper.succeed();
+        });
         r.add("acceptance/sonar_wave_clears_entire_scan_range", 40, helper -> {
             helper.assertValueEqual(40F, SonarWave.durationTicks(12), "Reference scan duration at 12 chunks");
             helper.assertValueEqual(10F, SonarWave.durationTicks(3), "Duration scales with render distance");

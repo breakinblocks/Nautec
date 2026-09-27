@@ -1,150 +1,139 @@
 package com.breakinblocks.nautec.client.sonar;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.core.Direction;
 
 public final class SonarScanner {
-    public record Cluster(AABB box, Identifiable ore) {
-    }
+    public record Cluster(AABB box, Identifiable ore) { }
+    public record Identifiable(String id, int color) { }
 
-    public record Identifiable(String id, int color) {
-    }
-
-    private static final int SECTIONS_PER_TICK = 4;
-
+    private static final Direction[] NEIGHBOURS = Direction.values();
     private final BlockGetter level;
-    private final BlockPos center;
-    private final int radius;
+    private final Vec3 center;
+    private final double radiusSquared;
     private final Deque<SectionPos> pending = new ArrayDeque<>();
-    private final Map<BlockPos, String> found = new HashMap<>();
-    private boolean scanned;
+    private final Long2ObjectOpenHashMap<Vein> found = new Long2ObjectOpenHashMap<>();
+    private final Map<Block, Identifiable> identities = new IdentityHashMap<>();
+    private final Set<Vein> roots = new HashSet<>();
+    private List<Cluster> clusters = List.of();
+    private boolean dirty;
 
     public SonarScanner(BlockGetter level, BlockPos center, int radius) {
+        this(level, center.getCenter(), radius);
+    }
+
+    public SonarScanner(BlockGetter level, Vec3 center, double radius) {
         this.level = level;
         this.center = center;
-        this.radius = radius;
-
-        int minSection = SectionPos.blockToSectionCoord(-radius);
-        int maxSection = SectionPos.blockToSectionCoord(radius);
-        for (int x = minSection; x <= maxSection; x++) {
-            for (int y = minSection; y <= maxSection; y++) {
-                for (int z = minSection; z <= maxSection; z++) {
-                    SectionPos section = SectionPos.of(
-                            SectionPos.blockToSectionCoord(center.getX()) + x,
-                            SectionPos.blockToSectionCoord(center.getY()) + y,
-                            SectionPos.blockToSectionCoord(center.getZ()) + z);
-                    if (reaches(section)) {
-                        this.pending.add(section);
-                    }
+        this.radiusSquared = radius * radius;
+        List<SectionPos> sections = new ArrayList<>();
+        for (int x = SectionPos.blockToSectionCoord(Mth.floor(center.x - radius)); x <= SectionPos.blockToSectionCoord(Mth.floor(center.x + radius)); x++) {
+            for (int y = SectionPos.blockToSectionCoord(Mth.floor(center.y - radius)); y <= SectionPos.blockToSectionCoord(Mth.floor(center.y + radius)); y++) {
+                for (int z = SectionPos.blockToSectionCoord(Mth.floor(center.z - radius)); z <= SectionPos.blockToSectionCoord(Mth.floor(center.z + radius)); z++) {
+                    SectionPos section = SectionPos.of(x, y, z);
+                    if (distanceSquared(section) <= radiusSquared) sections.add(section);
                 }
             }
         }
-        List<SectionPos> nearestFirst = new ArrayList<>(pending);
-        nearestFirst.sort(Comparator.comparingDouble(this::distanceSquared));
-        pending.clear();
-        pending.addAll(nearestFirst);
-    }
-
-    private boolean reaches(SectionPos section) {
-        return distanceSquared(section) <= (double) this.radius * this.radius;
+        sections.sort(Comparator.comparingDouble(this::distanceSquared));
+        pending.addAll(sections);
     }
 
     private double distanceSquared(SectionPos section) {
-        double dx = Math.max(0, Math.max(section.minBlockX() - this.center.getX(), this.center.getX() - section.maxBlockX()));
-        double dy = Math.max(0, Math.max(section.minBlockY() - this.center.getY(), this.center.getY() - section.maxBlockY()));
-        double dz = Math.max(0, Math.max(section.minBlockZ() - this.center.getZ(), this.center.getZ() - section.maxBlockZ()));
+        double dx = Math.max(0, Math.max(section.minBlockX() + 0.5 - center.x, center.x - section.maxBlockX() - 0.5));
+        double dy = Math.max(0, Math.max(section.minBlockY() + 0.5 - center.y, center.y - section.maxBlockY() - 0.5));
+        double dz = Math.max(0, Math.max(section.minBlockZ() + 0.5 - center.z, center.z - section.maxBlockZ() - 0.5));
         return dx * dx + dy * dy + dz * dz;
     }
 
-    public int pendingSections() {
-        return this.pending.size();
-    }
+    public int pendingSections() { return pending.size(); }
+    public boolean isDone() { return pending.isEmpty(); }
+    public void tick() { tick(4); }
 
-    public boolean isDone() {
-        return this.scanned;
-    }
-
-    public void tick() {
-        for (int i = 0; i < SECTIONS_PER_TICK && !this.pending.isEmpty(); i++) {
-            scanSection(this.pending.poll());
-        }
-
-        this.scanned = this.pending.isEmpty();
+    public void tick(int sectionBudget) {
+        for (int i = 0; i < sectionBudget && !pending.isEmpty(); i++) scanSection(pending.removeFirst());
     }
 
     private void scanSection(SectionPos section) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        int radiusSqr = this.radius * this.radius;
-
         for (int x = section.minBlockX(); x <= section.maxBlockX(); x++) {
             for (int y = section.minBlockY(); y <= section.maxBlockY(); y++) {
                 for (int z = section.minBlockZ(); z <= section.maxBlockZ(); z++) {
+                    if (center.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > radiusSquared) continue;
                     cursor.set(x, y, z);
-                    if (this.center.distSqr(cursor) > radiusSqr) {
-                        continue;
+                    BlockState state = level.getBlockState(cursor);
+                    if (!state.is(Tags.Blocks.ORES)) continue;
+                    Identifiable ore = identities.computeIfAbsent(state.getBlock(), block ->
+                            new Identifiable(block.getDescriptionId(), colorFor(block.getDescriptionId())));
+                    Vein vein = new Vein(new AABB(cursor), ore);
+                    found.put(cursor.asLong(), vein);
+                    roots.add(vein);
+                    for (Direction direction : NEIGHBOURS) {
+                        Vein neighbour = found.get(BlockPos.asLong(x + direction.getStepX(), y + direction.getStepY(), z + direction.getStepZ()));
+                        if (neighbour != null && neighbour.ore == ore) merge(vein, neighbour);
                     }
-
-                    BlockState state = this.level.getBlockState(cursor);
-                    if (state.is(Tags.Blocks.ORES)) {
-                        this.found.put(cursor.immutable(), state.getBlock().getDescriptionId());
-                    }
+                    dirty = true;
                 }
             }
         }
+    }
+
+    // Merge when blocks arrive instead of flood-filling all previous discoveries every tick.
+    private void merge(Vein first, Vein second) {
+        Vein a = first.root();
+        Vein b = second.root();
+        if (a == b) return;
+        if (a.size < b.size) { Vein swap = a; a = b; b = swap; }
+        b.parent = a;
+        a.size += b.size;
+        a.box = a.box.minmax(b.box);
+        roots.remove(b);
     }
 
     public List<Cluster> collectClusters() {
-        List<Cluster> clusters = new ArrayList<>();
-        Set<BlockPos> visited = new HashSet<>();
-
-        for (Map.Entry<BlockPos, String> entry : this.found.entrySet()) {
-            if (!visited.add(entry.getKey())) {
-                continue;
-            }
-
-            AABB box = new AABB(entry.getKey());
-            Deque<BlockPos> frontier = new ArrayDeque<>();
-            frontier.add(entry.getKey());
-
-            while (!frontier.isEmpty()) {
-                BlockPos current = frontier.poll();
-                for (Direction direction : Direction.values()) {
-                    BlockPos neighbour = current.relative(direction);
-                    String neighbourId = this.found.get(neighbour);
-                    if (neighbourId == null || !neighbourId.equals(entry.getValue()) || !visited.add(neighbour)) {
-                        continue;
-                    }
-
-                    box = box.minmax(new AABB(neighbour));
-                    frontier.add(neighbour);
-                }
-            }
-
-            clusters.add(new Cluster(box, new Identifiable(entry.getValue(), colorFor(entry.getValue()))));
+        if (dirty) {
+            clusters = roots.stream().map(root -> new Cluster(root.box, root.ore)).toList();
+            dirty = false;
         }
-
         return clusters;
     }
 
+    private static final class Vein {
+        private Vein parent = this;
+        private int size = 1;
+        private AABB box;
+        private final Identifiable ore;
+        private Vein(AABB box, Identifiable ore) { this.box = box; this.ore = ore; }
+        private Vein root() {
+            Vein root = this;
+            while (root.parent != root) root = root.parent;
+            Vein node = this;
+            while (node.parent != node) { Vein next = node.parent; node.parent = root; node = next; }
+            return root;
+        }
+    }
+
     public static int colorFor(String id) {
-        int hash = id.hashCode();
-        float hue = 0.45F + (Math.abs(hash) % 1000) / 1000F * 0.15F;
+        float hue = 0.45F + (Math.abs((long) id.hashCode()) % 1000) / 1000F * 0.15F;
         return Mth.hsvToArgb(hue, 0.75F, 1.0F, 255);
     }
 }

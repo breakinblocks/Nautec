@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("3");
+        final PayloadRegistrar registrar = event.registrar("4");
         registrar.playToClient(
                 OpenAugmentationScreenPayload.TYPE,
                 OpenAugmentationScreenPayload.STREAM_CODEC,
