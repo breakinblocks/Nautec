@@ -7,7 +7,7 @@ import net.minecraft.resources.Identifier;
 
 public final class NTRenderTypes {
     private static final RenderType SONAR_HIGHLIGHT = RenderType.create("nautec_sonar_highlight",
-            RenderSetup.builder(NTRenderPipelines.SONAR_HIGHLIGHT).sortOnUpload().createRenderSetup());
+            RenderSetup.builder(NTRenderPipelines.SONAR_HIGHLIGHT).createRenderSetup());
 
     private static final RenderType SPOTLIGHT_CONE = RenderType.create("nautec_spotlight_cone",
             RenderSetup.builder(NTRenderPipelines.SPOTLIGHT_CONE).sortOnUpload().createRenderSetup());

@@ -2,41 +2,57 @@ package com.breakinblocks.nautec.client.sonar;
 
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public final class SonarHighlightRenderer {
+    private static @Nullable ByteBufferBuilder renderBuffer;
+
     private SonarHighlightRenderer() {
     }
 
-    public static void render(PoseStack poseStack, SubmitNodeCollector collector, Vec3 cameraPos) {
+    public static void render(PoseStack poseStack, Vec3 cameraPos, float partialTick) {
         if (!NautecSonarManager.isActive()) {
             return;
         }
 
         float fade = NautecSonarManager.fade();
-        float pulse = NautecSonarManager.pulseRadius();
+        float pulse = NautecSonarManager.pulseRadius(partialTick);
+        List<NautecSonarManager.Mark> marks = NautecSonarManager.marks();
+        List<NautecSonarManager.Mark> hostiles = NautecSonarManager.hostiles();
+        Vec3 offset = cameraPos.reverse();
 
-        poseStack.pushPose();
-        poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.sonarHighlight(), (pose, buffer) -> {
-            for (NautecSonarManager.Mark mark : NautecSonarManager.marks()) {
-                if (mark.revealAt() > pulse) {
-                    continue;
-                }
-                box(pose, buffer, mark.box(), mark.color(), fade * 0.45F);
+        if (renderBuffer == null) renderBuffer = new ByteBufferBuilder(4096);
+        MultiBufferSource.BufferSource source = MultiBufferSource.immediate(renderBuffer);
+        VertexConsumer buffer = source.getBuffer(NTRenderTypes.sonarHighlight());
+        PoseStack.Pose pose = poseStack.last();
+        for (NautecSonarManager.Mark mark : marks) {
+            if (mark.revealAt() > pulse) {
+                continue;
             }
+            box(pose, buffer, mark.box().move(offset), mark.color(), fade * 0.45F);
+        }
 
-            for (NautecSonarManager.Mark hostile : NautecSonarManager.hostiles()) {
-                box(pose, buffer, hostile.box(), hostile.color(), fade * 0.55F);
+        for (NautecSonarManager.Mark hostile : hostiles) {
+            if (hostile.revealAt() <= pulse) {
+                box(pose, buffer, hostile.box().move(offset), hostile.color(), fade * 0.55F);
             }
-        });
+        }
+        source.endBatch();
+    }
 
-        poseStack.popPose();
+    public static void close() {
+        if (renderBuffer != null) {
+            renderBuffer.close();
+            renderBuffer = null;
+        }
     }
 
     private static void box(PoseStack.Pose pose, VertexConsumer buffer, AABB box, int color, float alpha) {
@@ -60,9 +76,9 @@ public final class SonarHighlightRenderer {
     private static void quad(PoseStack.Pose pose, VertexConsumer buffer, int color,
                              float x0, float y0, float z0, float x1, float y1, float z1,
                              float x2, float y2, float z2, float x3, float y3, float z3) {
-        buffer.addVertex(pose, x0, y0, z0).setColor(color);
-        buffer.addVertex(pose, x1, y1, z1).setColor(color);
-        buffer.addVertex(pose, x2, y2, z2).setColor(color);
-        buffer.addVertex(pose, x3, y3, z3).setColor(color);
+        buffer.addVertex(pose, x0, y0, z0).setUv(0F, 0F).setColor(color);
+        buffer.addVertex(pose, x1, y1, z1).setUv(0F, 1F).setColor(color);
+        buffer.addVertex(pose, x2, y2, z2).setUv(1F, 1F).setColor(color);
+        buffer.addVertex(pose, x3, y3, z3).setUv(1F, 0F).setColor(color);
     }
 }

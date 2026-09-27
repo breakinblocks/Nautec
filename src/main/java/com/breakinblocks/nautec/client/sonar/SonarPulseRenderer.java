@@ -1,78 +1,100 @@
 package com.breakinblocks.nautec.client.sonar;
 
-import com.breakinblocks.nautec.client.render.NTRenderTypes;
+import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.render.NTRenderPipelines;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.Std140Builder;
+import com.mojang.blaze3d.buffers.Std140SizeCalculator;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.event.GameShuttingDownEvent;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
+import java.util.OptionalInt;
+
+/** Depth-reconstructed surface sweep, adapted from Scannable Reforged (MIT; LICENSE-SCANNABLE). */
+@EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SonarPulseRenderer {
-    private static final int SEGMENTS = 72;
-    private static final int TRAIL_RINGS = 3;
-    private static final float TRAIL_SPACING = 1.6F;
-    private static final float BAND_HEIGHT = 1.1F;
-    private static final float PEAK_ALPHA = 0.5F;
-    private static final int COLOR = 0x3EFDFF;
+    private static final int UNIFORM_SIZE = new Std140SizeCalculator().putMat4f().putVec4().putVec4().get();
+    private static @Nullable MappableRingBuffer uniforms;
 
     private SonarPulseRenderer() {
     }
 
-    public static void render(PoseStack poseStack, SubmitNodeCollector collector, Vec3 cameraPos) {
-        if (!NautecSonarManager.isActive()) {
-            return;
+    @SubscribeEvent
+    public static void render(RenderLevelStageEvent.AfterLevel event) {
+        if (!NautecSonarManager.isActive()) return;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        PoseStack poseStack = new PoseStack();
+        poseStack.last().pose().set(event.getModelViewMatrix());
+        SonarHighlightRenderer.render(poseStack, camera, partialTick);
+        if (!NautecSonarManager.isPulseActive()) return;
+
+        RenderTarget target = minecraft.getMainRenderTarget();
+        if (target.getColorTextureView() == null || target.getDepthTextureView() == null) return;
+
+        if (uniforms == null) {
+            uniforms = new MappableRingBuffer(() -> "Nautec sonar uniforms",
+                    GpuBuffer.USAGE_UNIFORM | GpuBuffer.USAGE_MAP_WRITE, UNIFORM_SIZE);
         }
 
-        float leading = NautecSonarManager.pulseRadius();
-        float range = NautecSonarManager.range();
-        if (leading <= 0.05F || range <= 0F) {
-            return;
+        // Use the same camera and projection as the depth buffer, before hand rendering clears it.
+        Vec3 center = NautecSonarManager.center().subtract(camera);
+        Matrix4f inverseView = new Matrix4f(event.getModelViewMatrix()).invert();
+        CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
+        GpuBuffer buffer = uniforms.currentBuffer();
+        try (GpuBuffer.MappedView view = encoder.mapBuffer(buffer, false, true)) {
+            Std140Builder.intoBuffer(view.data())
+                    .putMat4f(inverseView)
+                    .putVec4((float) center.x, (float) center.y, (float) center.z, 0F)
+                    .putVec4(NautecSonarManager.pulseRadius(partialTick), SonarWave.BAND_WIDTH, 0F, 0F);
         }
 
-        Vec3 centre = NautecSonarManager.center();
-        float fade = NautecSonarManager.fade();
-
-        poseStack.pushPose();
-        poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.sonarHighlight(), (pose, buffer) -> {
-            for (int ring = 0; ring < TRAIL_RINGS; ring++) {
-                float radius = leading - ring * TRAIL_SPACING;
-                if (radius <= 0.05F) {
-                    continue;
-                }
-
-                float travelled = Mth.clamp(radius / range, 0F, 1F);
-                float alpha = PEAK_ALPHA * fade * (1F - travelled) / (1F + ring * 1.5F);
-                if (alpha <= 0.004F) {
-                    continue;
-                }
-
-                ring(pose, buffer, centre, radius, ARGB.color((int) (alpha * 255F), COLOR));
-            }
-        });
-
-        poseStack.popPose();
+        // Depth is sampled, never attached for writing, so terrain and later overlays remain intact.
+        try (RenderPass pass = encoder.createRenderPass(() -> "Nautec sonar surface sweep",
+                target.getColorTextureView(), OptionalInt.empty())) {
+            pass.setPipeline(NTRenderPipelines.SONAR_WAVE);
+            pass.setUniform("Projection", RenderSystem.getProjectionMatrixBuffer());
+            pass.setUniform("ScanInfo", buffer);
+            pass.bindTexture("DepthSampler", target.getDepthTextureView(),
+                    RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+            pass.draw(0, 3);
+        }
+        uniforms.rotate();
     }
 
-    private static void ring(PoseStack.Pose pose, VertexConsumer buffer, Vec3 centre, float radius, int color) {
-        float top = (float) centre.y + BAND_HEIGHT;
-        float bottom = (float) centre.y - BAND_HEIGHT;
+    @SubscribeEvent
+    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        NautecSonarManager.clear();
+        close();
+    }
 
-        for (int segment = 0; segment < SEGMENTS; segment++) {
-            double from = segment * Mth.TWO_PI / SEGMENTS;
-            double to = (segment + 1) * Mth.TWO_PI / SEGMENTS;
+    @SubscribeEvent
+    public static void onShutdown(GameShuttingDownEvent event) {
+        close();
+    }
 
-            float x0 = (float) (centre.x + Math.cos(from) * radius);
-            float z0 = (float) (centre.z + Math.sin(from) * radius);
-            float x1 = (float) (centre.x + Math.cos(to) * radius);
-            float z1 = (float) (centre.z + Math.sin(to) * radius);
-
-            buffer.addVertex(pose, x0, bottom, z0).setColor(color);
-            buffer.addVertex(pose, x0, top, z0).setColor(color);
-            buffer.addVertex(pose, x1, top, z1).setColor(color);
-            buffer.addVertex(pose, x1, bottom, z1).setColor(color);
+    private static void close() {
+        SonarHighlightRenderer.close();
+        if (uniforms != null) {
+            uniforms.close();
+            uniforms = null;
         }
     }
 }

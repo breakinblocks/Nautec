@@ -11,6 +11,7 @@ import net.neoforged.neoforge.common.Tags;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,13 +55,21 @@ public final class SonarScanner {
                 }
             }
         }
+        List<SectionPos> nearestFirst = new ArrayList<>(pending);
+        nearestFirst.sort(Comparator.comparingDouble(this::distanceSquared));
+        pending.clear();
+        pending.addAll(nearestFirst);
     }
 
     private boolean reaches(SectionPos section) {
+        return distanceSquared(section) <= (double) this.radius * this.radius;
+    }
+
+    private double distanceSquared(SectionPos section) {
         double dx = Math.max(0, Math.max(section.minBlockX() - this.center.getX(), this.center.getX() - section.maxBlockX()));
         double dy = Math.max(0, Math.max(section.minBlockY() - this.center.getY(), this.center.getY() - section.maxBlockY()));
         double dz = Math.max(0, Math.max(section.minBlockZ() - this.center.getZ(), this.center.getZ() - section.maxBlockZ()));
-        return dx * dx + dy * dy + dz * dz <= (double) this.radius * this.radius;
+        return dx * dx + dy * dy + dz * dz;
     }
 
     public int pendingSections() {

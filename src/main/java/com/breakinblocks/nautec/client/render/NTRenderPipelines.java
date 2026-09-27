@@ -5,20 +5,37 @@ import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.client.renderer.RenderPipelines;
 
+import java.util.Optional;
+
 public final class NTRenderPipelines {
     public static final RenderPipeline SONAR_HIGHLIGHT = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
             .withLocation(Nautec.rl("pipeline/sonar_highlight"))
-            .withVertexShader("core/position_color")
-            .withFragmentShader("core/position_color")
-            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withVertexShader("core/position_tex_color")
+            .withFragmentShader(Nautec.rl("core/sonar_result"))
+            .withUniform("Globals", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+            .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
             .withDepthStencilState(new DepthStencilState(CompareOp.ALWAYS_PASS, false))
             .withCull(false)
+            .build();
+
+    public static final RenderPipeline SONAR_WAVE = RenderPipeline.builder()
+            .withLocation(Nautec.rl("pipeline/sonar_wave"))
+            .withVertexShader("core/screenquad")
+            .withFragmentShader(Nautec.rl("core/sonar_wave"))
+            .withSampler("DepthSampler")
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+            .withUniform("ScanInfo", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+            .withDepthStencilState(Optional.empty())
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
             .build();
 
     public static final RenderPipeline SPOTLIGHT_CONE = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)

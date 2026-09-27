@@ -218,5 +218,5 @@ idea {
 }
 
 tasks.named('jar') {
-    from(rootProject.files('LICENSE.md', 'LICENSE')) { into 'META-INF' }
+    from(rootProject.files('LICENSE.md', 'LICENSE', 'LICENSE-SCANNABLE')) { into 'META-INF' }
 }

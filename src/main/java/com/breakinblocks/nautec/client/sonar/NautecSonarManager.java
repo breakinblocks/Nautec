@@ -23,16 +23,18 @@ import java.util.List;
 public final class NautecSonarManager {
     public static final int HOSTILE_COLOR = 0xFFFF5A3C;
 
-    private static final int PULSE_TICKS = 70;
     private static final int FADE_TICKS = 100;
 
     private static @Nullable SonarScanner scanner;
-    private static final List<Mark> marks = new ArrayList<>();
+    private static @Nullable ClientLevel scanLevel;
+    private static List<Mark> marks = List.of();
     private static List<Mark> hostiles = List.of();
     private static Vec3 center = Vec3.ZERO;
     private static float range;
+    private static float waveRange;
+    private static float waveDuration;
     private static int ticksLeft;
-    private static float pulseRadius;
+    private static int age;
 
     private NautecSonarManager() {
     }
@@ -41,34 +43,44 @@ public final class NautecSonarManager {
     }
 
     public static void begin(Vec3 origin, float pulseRange, int lifetime) {
-        ClientLevel level = Minecraft.getInstance().level;
+        Minecraft minecraft = Minecraft.getInstance();
+        ClientLevel level = minecraft.level;
         if (level == null) {
             return;
         }
 
         center = origin;
         range = pulseRange;
+        // Like Scannable, sweep the visible terrain; detection still uses the server's scan range.
+        waveRange = Math.max(pulseRange, minecraft.options.getEffectiveRenderDistance() * 16F);
+        waveDuration = SonarWave.durationTicks(minecraft.options.renderDistance().get());
         ticksLeft = lifetime;
-        pulseRadius = 0F;
-        marks.clear();
+        age = 0;
+        scanLevel = level;
+        marks = List.of();
         hostiles = List.of();
         scanner = new SonarScanner(level, BlockPos.containing(origin), Mth.floor(pulseRange));
     }
 
     public static void clear() {
         scanner = null;
-        marks.clear();
+        scanLevel = null;
+        marks = List.of();
         hostiles = List.of();
         ticksLeft = 0;
-        pulseRadius = 0F;
+        age = 0;
     }
 
     public static boolean isActive() {
-        return ticksLeft > 0;
+        return ticksLeft > 0 && scanLevel == Minecraft.getInstance().level;
     }
 
-    public static float pulseRadius() {
-        return pulseRadius;
+    public static boolean isPulseActive() {
+        return isActive() && age <= waveDuration + 1F;
+    }
+
+    public static float pulseRadius(float partialTick) {
+        return SonarWave.radius(waveRange, Math.max(0F, age - 1F + partialTick), waveDuration);
     }
 
     public static Vec3 center() {
@@ -95,7 +107,10 @@ public final class NautecSonarManager {
         List<Mark> tracked = new ArrayList<>();
         AABB search = AABB.ofSize(center, range * 2D, range * 2D, range * 2D);
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, search, entity -> entity instanceof Enemy)) {
-            tracked.add(new Mark(living.getBoundingBox().inflate(0.1D), HOSTILE_COLOR, 0F));
+            float distance = (float) living.position().distanceTo(center);
+            if (distance <= range) {
+                tracked.add(new Mark(living.getBoundingBox().inflate(0.1D), HOSTILE_COLOR, distance));
+            }
         }
         hostiles = List.copyOf(tracked);
     }
@@ -103,7 +118,7 @@ public final class NautecSonarManager {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.level == null) {
+        if (minecraft.level == null || minecraft.level != scanLevel) {
             clear();
             return;
         }
@@ -113,18 +128,18 @@ public final class NautecSonarManager {
         }
 
         ticksLeft--;
-        pulseRadius = Math.min(range, pulseRadius + range / PULSE_TICKS);
+        age++;
 
         SonarScanner active = scanner;
         if (active != null) {
             active.tick();
-            if (active.isDone()) {
-                for (SonarScanner.Cluster cluster : active.collectClusters()) {
-                    float distance = (float) cluster.box().getCenter().distanceTo(center);
-                    marks.add(new Mark(cluster.box().inflate(0.02D), cluster.ore().color(), distance));
-                }
-                scanner = null;
+            List<Mark> discovered = new ArrayList<>();
+            for (SonarScanner.Cluster cluster : active.collectClusters()) {
+                float distance = (float) cluster.box().getCenter().distanceTo(center);
+                discovered.add(new Mark(cluster.box().inflate(0.02D), cluster.ore().color(), distance));
             }
+            marks = List.copyOf(discovered);
+            if (active.isDone()) scanner = null;
         }
 
         trackHostiles(minecraft.level);
@@ -132,8 +147,11 @@ public final class NautecSonarManager {
     }
 
     private static void spawnRevealMotes(ClientLevel level) {
+        if (age > waveDuration + 1F) return;
+        float previousRadius = SonarWave.radius(waveRange, age - 1F, waveDuration);
+        float radius = SonarWave.radius(waveRange, age, waveDuration);
         for (Mark mark : marks) {
-            if (Math.abs(mark.revealAt() - pulseRadius) > range / PULSE_TICKS) {
+            if (mark.revealAt() <= previousRadius || mark.revealAt() > radius) {
                 continue;
             }
 

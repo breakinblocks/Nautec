@@ -139,6 +139,7 @@ public final class NautecClient {
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(NTRenderPipelines.SONAR_HIGHLIGHT);
+        event.registerPipeline(NTRenderPipelines.SONAR_WAVE);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {

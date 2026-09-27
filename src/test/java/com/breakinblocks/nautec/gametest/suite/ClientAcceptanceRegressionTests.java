@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.client.sonar.SonarScanner;
+import com.breakinblocks.nautec.client.sonar.SonarWave;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
@@ -20,6 +22,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
@@ -28,6 +31,33 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class ClientAcceptanceRegressionTests {
     public static void register(NTTestRegistrar r) {
+        r.add("acceptance/sonar_wave_clears_entire_scan_range", 40, helper -> {
+            helper.assertValueEqual(40F, SonarWave.durationTicks(12), "Reference scan duration at 12 chunks");
+            helper.assertValueEqual(10F, SonarWave.durationTicks(3), "Duration scales with render distance");
+            for (float range : new float[]{1F, 48F, 128F}) {
+                float previous = SonarWave.radius(range, 0F, SonarWave.DURATION_TICKS);
+                for (int tick = 1; tick <= SonarWave.DURATION_TICKS; tick++) {
+                    float radius = SonarWave.radius(range, tick, SonarWave.DURATION_TICKS);
+                    helper.assertTrue(radius > previous, "Wave must advance every tick");
+                    previous = radius;
+                }
+                helper.assertValueEqual(range, previous - SonarWave.BAND_WIDTH, "Trailing edge reaches final ore");
+                helper.assertValueEqual(previous, SonarWave.radius(range, 1000F, SonarWave.DURATION_TICKS), "Finished wave is bounded");
+                helper.assertValueEqual(SonarWave.radius(range, 0F, SonarWave.DURATION_TICKS), SonarWave.radius(range, -1F, SonarWave.DURATION_TICKS), "Negative interpolation is bounded");
+            }
+            helper.succeed();
+        });
+        r.add("acceptance/sonar_finds_nearby_veins_before_scan_finishes", 40, helper -> {
+            BlockPos local = new BlockPos(3, 2, 3);
+            helper.setBlock(local, Blocks.DIAMOND_ORE);
+            BlockPos center = helper.absolutePos(local);
+            SonarScanner scanner = new SonarScanner(helper.getLevel(), center, 48);
+            scanner.tick();
+            helper.assertTrue(!scanner.isDone(), "Fixture must still have distant sections to scan");
+            helper.assertTrue(scanner.collectClusters().stream().anyMatch(cluster -> cluster.box().contains(center.getCenter())),
+                    "Nearby ore must be available for reveal before distant sections finish");
+            helper.succeed();
+        });
         r.add("acceptance/mixer_saved_progress_waits_for_power", 40, helper -> {
             BlockPos pos = new BlockPos(2, 1, 2);
             helper.setBlock(pos, NTBlocks.MIXER.get());

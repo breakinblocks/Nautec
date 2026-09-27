@@ -176,3 +176,10 @@ A **product** can be a good or service, or a combination of them.
 
 
 The original upstream MIT notice is retained in `LICENSE` for the upstream work.
+
+## Third-party rendering code
+
+The sonar shaders and depth-buffer rendering approach are adapted from Scannable
+by Florian "Sangar" N?cke and Scannable Reforged by txmmytwostraps. The original
+MIT terms and copyright notices for those portions are retained in
+[LICENSE-SCANNABLE](LICENSE-SCANNABLE), also included in the packaged mod.
