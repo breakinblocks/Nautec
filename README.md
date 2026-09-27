@@ -119,7 +119,7 @@ forward from "An Introduction to Laser Power".
 
 ## Configuration
 
-Gameplay values are synchronized from the server in `nautec-common.toml`; biome injection settings live in `nautec-worldgen.toml`. Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), and submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
+Gameplay values are synchronized from the server in `nautec-common.toml`; biome injection settings live in `nautec-worldgen.toml`. Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance), and Wave Jet tuning (thrust, top speed, power draw, spotlight range, brightness and power draw). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
 
 ## For pack developers
 

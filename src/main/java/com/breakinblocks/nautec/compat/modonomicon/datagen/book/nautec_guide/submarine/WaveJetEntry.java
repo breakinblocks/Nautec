@@ -39,8 +39,9 @@ public class WaveJetEntry extends BaseNautecEntry {
                 Two grips means two hands. Carry it in either one
                 and the other has to stay empty.
                 Put anything in your free hand and the jet is
-                handed straight back to your pack. It is not a
-                thing you hold alongside a sword.
+                handed straight back to your pack, or dropped at
+                your feet if the pack is full. It is not a thing
+                you hold alongside a sword.
                 """);
 
         page("using", () -> BookTextPageModel.create()
@@ -50,7 +51,7 @@ public class WaveJetEntry extends BaseNautecEntry {
         pageText("""
                 Steer by looking. There is nothing else to it.
                 Point where you want to go and the jet takes you
-                there, faster the longer you hold it.
+                there, soon at about twice your swimming speed.
                 It only runs under water. Break the surface and it
                 cuts out on its own, and so does running the cell
                 dry. Neither one strands you mid-stroke, you simply
