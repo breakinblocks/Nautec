@@ -19,6 +19,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.phys.AABB;
+import java.util.List;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -277,6 +283,28 @@ public final class WaveJetTests {
     }
 
     private static void registerHands(NTTestRegistrar r) {
+        r.add("wave_jet/a_full_inventory_drops_it", 20, helper -> {
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
+            player.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
+            for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
+                player.getInventory().setItem(slot, new ItemStack(Items.COBBLESTONE, 64));
+            }
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.WAVE_JET.get()));
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.TORCH));
+
+            helper.assertTrue(WaveJetHands.enforce(player), "A torch in the offhand did not displace the Wave Jet");
+            for (EquipmentSlot slot : EquipmentSlot.values()) {
+                helper.assertFalse(WaveJetHands.isWaveJet(player.getItemBySlot(slot)),
+                        "With a full inventory the Wave Jet was put in the " + slot.getName() + " slot");
+            }
+            List<ItemEntity> dropped = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(at).inflate(3.0),
+                    entity -> WaveJetHands.isWaveJet(entity.getItem()));
+            helper.assertValueEqual(1, dropped.size(), "Wave Jets dropped at the player's feet");
+            dropped.forEach(Entity::discard);
+            helper.succeed();
+        });
+
         r.add("wave_jet/an_occupied_offhand_unequips_it", 20, helper -> {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.WAVE_JET.get()));

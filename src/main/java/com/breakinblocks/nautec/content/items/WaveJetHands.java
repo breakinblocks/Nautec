@@ -70,7 +70,7 @@ public final class WaveJetHands {
         Inventory inventory = player.getInventory();
         int held = from == InteractionHand.MAIN_HAND ? inventory.getSelectedSlot() : -1;
 
-        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+        for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
             if (slot != held && inventory.getItem(slot).isEmpty()) {
                 inventory.setItem(slot, waveJet);
                 return true;

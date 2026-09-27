@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.registries.NTSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -33,7 +34,7 @@ public class AbyssalMaw extends Monster {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0, true));
+        this.goalSelector.addGoal(1, new BiteGoal(this));
         this.goalSelector.addGoal(3, new RandomSwimmingGoal(this, 0.8, 20));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
@@ -81,5 +82,20 @@ public class AbyssalMaw extends Monster {
     @Override
     public int getAmbientSoundInterval() {
         return 160;
+    }
+
+    private static class BiteGoal extends MeleeAttackGoal {
+        BiteGoal(AbyssalMaw maw) {
+            super(maw, 1.0, true);
+        }
+
+        @Override
+        public void tick() {
+            super.tick();
+            LivingEntity target = this.mob.getTarget();
+            if (target != null && this.mob.getNavigation().isDone() && !this.mob.isWithinMeleeAttackRange(target)) {
+                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), 1.0);
+            }
+        }
     }
 }

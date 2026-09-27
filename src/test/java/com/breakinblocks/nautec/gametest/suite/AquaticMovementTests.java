@@ -7,6 +7,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -19,6 +20,36 @@ public final class AquaticMovementTests {
                 helper -> swimsUpward(helper, NTEntities.ABYSSAL_MAW.get()));
         registrar.add("fauna/maw_pursues_and_bites_a_target_on_the_seabed", 220,
                 AquaticMovementTests::pursuesAndBites);
+        registrar.add("fauna/maw_keeps_biting_a_target_that_stays_put", 320,
+                AquaticMovementTests::keepsBiting);
+    }
+
+    private static void keepsBiting(GameTestHelper helper) {
+        tank(helper);
+        Pig prey = helper.spawn(EntityType.PIG, new BlockPos(4, 1, 4));
+        prey.setNoAi(true);
+        prey.setPersistenceRequired();
+        prey.getAttribute(Attributes.MAX_HEALTH).setBaseValue(500.0);
+        prey.setHealth(500.0F);
+        AbyssalMaw maw = helper.spawn(NTEntities.ABYSSAL_MAW.get(), new BlockPos(1, 2, 1));
+        maw.setPersistenceRequired();
+        maw.setTarget(prey);
+        float[] lastHealth = {prey.getHealth()};
+        int[] bites = {0};
+        helper.onEachTick(() -> {
+            if (maw.getTarget() == null && prey.isAlive()) {
+                maw.setTarget(prey);
+            }
+            if (prey.getHealth() < lastHealth[0]) {
+                bites[0]++;
+            }
+            lastHealth[0] = prey.getHealth();
+            if (bites[0] >= 6) {
+                helper.succeed();
+            }
+        });
+        helper.runAfterDelay(300, () -> helper.fail("The Maw only bit " + bites[0] + " times in 300 ticks; it ended at "
+                + maw.position() + ", " + String.format("%.2f", maw.distanceTo(prey)) + " blocks from the target at " + prey.position()));
     }
 
     private static void pursuesAndBites(GameTestHelper helper) {
