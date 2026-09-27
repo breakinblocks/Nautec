@@ -3,12 +3,15 @@ package com.breakinblocks.nautec.client.teleport;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class TeleportFxManager {
@@ -20,11 +23,13 @@ public final class TeleportFxManager {
     private static Vec3 portalPos = Vec3.ZERO;
     private static float portalYaw;
     private static int trackedEntity = -1;
+    private static @Nullable ClientLevel effectLevel;
 
     private TeleportFxManager() {
     }
 
     public static void beginCharge(int entityId, Vec3 position, float yaw, int ticks) {
+        effectLevel = Minecraft.getInstance().level;
         trackedEntity = entityId;
         portalPos = position;
         portalYaw = yaw;
@@ -32,7 +37,9 @@ public final class TeleportFxManager {
         arriveTicks = 0;
     }
 
-    public static void beginArrival(Vec3 position, float yaw) {
+    public static void beginArrival(int entityId, Vec3 position, float yaw) {
+        effectLevel = Minecraft.getInstance().level;
+        trackedEntity = entityId;
         portalPos = position;
         portalYaw = yaw;
         chargeTicks = 0;
@@ -43,6 +50,7 @@ public final class TeleportFxManager {
         chargeTicks = 0;
         arriveTicks = 0;
         trackedEntity = -1;
+        effectLevel = null;
     }
 
     public static boolean isCharging() {
@@ -50,7 +58,8 @@ public final class TeleportFxManager {
     }
 
     public static boolean isVisible() {
-        return chargeTicks > 0 || arriveTicks > 0;
+        return effectLevel != null && effectLevel == Minecraft.getInstance().level
+                && (chargeTicks > 0 || arriveTicks > 0);
     }
 
     public static int trackedEntity() {
@@ -89,7 +98,7 @@ public final class TeleportFxManager {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
-        if (Minecraft.getInstance().level == null) {
+        if (Minecraft.getInstance().level == null || Minecraft.getInstance().level != effectLevel) {
             abort();
             return;
         }
@@ -99,5 +108,18 @@ public final class TeleportFxManager {
         } else if (arriveTicks > 0) {
             arriveTicks--;
         }
+    }
+
+    /** Tracking clients see the portal, but only occupants get screen-space effects. */
+    public static float screenStrength(float partialTick) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!isVisible() || minecraft.player == null || minecraft.player.getVehicle() == null
+                || minecraft.player.getVehicle().getId() != trackedEntity) return 0F;
+        return fadeStrength(partialTick);
+    }
+
+    @SubscribeEvent
+    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        abort();
     }
 }

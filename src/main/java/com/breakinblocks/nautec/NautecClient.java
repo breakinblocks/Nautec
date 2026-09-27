@@ -7,7 +7,6 @@ import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.client.render.RifleArmPose;
 import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
-import com.breakinblocks.nautec.client.teleport.TeleportStreakRenderer;
 import com.breakinblocks.nautec.client.hud.DivingSuitOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarOverlay;
 import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
@@ -140,6 +139,7 @@ public final class NautecClient {
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(NTRenderPipelines.SONAR_HIGHLIGHT);
         event.registerPipeline(NTRenderPipelines.SONAR_WAVE);
+        event.registerPipeline(NTRenderPipelines.TELEPORT_BLUR);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -169,7 +169,6 @@ public final class NautecClient {
         event.registerAboveAll(Nautec.rl("diving_suit_overlay"), DivingSuitOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_power_overlay"), SubmarineHudOverlay::render);
         event.registerAboveAll(Nautec.rl("submarine_ability_bar"), SubmarineAbilityBarOverlay::render);
-        event.registerAboveAll(Nautec.rl("submarine_teleport_streaks"), TeleportStreakRenderer::render);
         event.registerAboveAll(Nautec.rl("submarine_teleport_fade"), TeleportFadeRenderer::render);
     }
 

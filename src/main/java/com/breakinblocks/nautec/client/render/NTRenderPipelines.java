@@ -14,6 +14,18 @@ import net.minecraft.client.renderer.RenderPipelines;
 import java.util.Optional;
 
 public final class NTRenderPipelines {
+    public static final RenderPipeline TELEPORT_BLUR = RenderPipeline.builder()
+            .withLocation(Nautec.rl("pipeline/teleport_blur"))
+            .withVertexShader("core/screenquad")
+            .withFragmentShader(Nautec.rl("core/teleport_blur"))
+            .withSampler("SceneSampler")
+            .withUniform("BlurInfo", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(ColorTargetState.DEFAULT)
+            .withDepthStencilState(Optional.empty())
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
+            .build();
+
     public static final RenderPipeline SONAR_HIGHLIGHT = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
             .withLocation(Nautec.rl("pipeline/sonar_highlight"))
             .withVertexShader("core/position_tex_color")

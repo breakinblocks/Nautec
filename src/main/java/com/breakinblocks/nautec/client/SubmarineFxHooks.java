@@ -53,9 +53,11 @@ public final class SubmarineFxHooks {
             case TeleportFxPayload.STAGE_ARRIVE -> {
                 SubmarineSoundHandler.play(center, NTSounds.SUBMARINE_TELEPORT_WHOOSH.get(), 1F, 1F);
                 spawnSwirl(level, center);
-                TeleportFxManager.beginArrival(portalAhead(fx), fx.yaw());
+                TeleportFxManager.beginArrival(fx.entityId(), portalAhead(fx), fx.yaw());
             }
-            default -> TeleportFxManager.abort();
+            case TeleportFxPayload.STAGE_ABORT -> {
+                if (TeleportFxManager.trackedEntity() == fx.entityId()) TeleportFxManager.abort();
+            }
         }
     }
 

@@ -23,7 +23,7 @@ public final class TeleportFadeRenderer {
             return;
         }
 
-        float strength = TeleportFxManager.fadeStrength(deltaTracker.getGameTimeDeltaPartialTick(false));
+        float strength = TeleportFxManager.screenStrength(deltaTracker.getGameTimeDeltaPartialTick(false));
         if (strength <= 0F) {
             return;
         }
