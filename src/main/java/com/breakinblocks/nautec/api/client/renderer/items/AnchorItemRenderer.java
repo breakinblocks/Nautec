@@ -21,7 +21,7 @@ public class AnchorItemRenderer implements NoDataSpecialModelRenderer {
 
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
-        collector.submitModel(this.model, Unit.INSTANCE, poseStack, AnchorModel.RENDER_TYPE, packedLight, packedOverlay, -1, null);
+        collector.submitModel(this.model, Unit.INSTANCE, poseStack, AnchorModel.RENDER_TYPE, packedLight, packedOverlay, outlineColor, null);
     }
 
     @Override

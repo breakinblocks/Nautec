@@ -106,7 +106,7 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
             poseStack.mulPose(Axis.YP.rotation(state.whiskAngle));
             poseStack.translate(-0.5, 0, -0.5);
             poseStack.translate(0.5, 1.425, 0.75);
-            collector.submitModel(this.model, Unit.INSTANCE, poseStack, WhiskModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, state.breakProgress);
+            collector.submitModel(this.model, Unit.INSTANCE, poseStack, WhiskModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
         }
         poseStack.popPose();
 

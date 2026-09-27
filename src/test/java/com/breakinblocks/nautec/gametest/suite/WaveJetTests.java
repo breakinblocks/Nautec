@@ -1,15 +1,24 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.items.WaveJetHands;
-import com.breakinblocks.nautec.content.items.WaveJetItem;
 import com.breakinblocks.nautec.content.items.WaveJetSpotlight;
+import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
+import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import java.util.UUID;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -17,6 +26,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public final class WaveJetTests {
     public static void register(NTTestRegistrar r) {
@@ -119,47 +129,151 @@ public final class WaveJetTests {
 
     private static void registerBreath(NTTestRegistrar r) {
         r.add("wave_jet/thrusting_holds_the_air_you_have", 20, helper -> {
-            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-            int max = player.getMaxAirSupply();
+            Player player = thrusting(helper, 0.0);
+            int before = player.getMaxAirSupply() / 2;
+            player.setAirSupply(before);
 
-            player.setAirSupply(max / 2);
-            int before = player.getAirSupply();
-            player.setAirSupply(before - 1);
-            WaveJetItem.holdBreath(player);
-
-            if (player.getAirSupply() != before) {
-                helper.fail("A tick of air loss was not given back, went from " + before
-                        + " to " + player.getAirSupply());
-                return;
+            for (int tick = 0; tick < 40; tick++) {
+                player.tick();
             }
+
+            helper.assertTrue(player.isUsingItem(), "The Wave Jet stopped thrusting inside the tank");
+            helper.assertValueEqual(before, player.getAirSupply(), "Air after 40 ticks of thrust");
             helper.succeed();
         });
 
-        r.add("wave_jet/thrusting_does_not_refill_past_full", 20, helper -> {
-            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-            int max = player.getMaxAirSupply();
+        r.add("wave_jet/respiration_does_not_refill_while_thrusting", 20, helper -> {
+            Player player = thrusting(helper, 3.0);
+            int before = player.getMaxAirSupply() / 2;
+            player.setAirSupply(before);
 
-            player.setAirSupply(max);
-            WaveJetItem.holdBreath(player);
-            if (player.getAirSupply() != max) {
-                helper.fail("A full bar was pushed past full, to " + player.getAirSupply());
-                return;
+            int highest = before;
+            for (int tick = 0; tick < 200; tick++) {
+                player.tick();
+                highest = Math.max(highest, player.getAirSupply());
             }
+
+            helper.assertTrue(player.isUsingItem(), "The Wave Jet stopped thrusting inside the tank");
+            helper.assertValueEqual(before, highest, "Highest air while thrusting with Respiration III");
+            helper.assertValueEqual(before, player.getAirSupply(), "Air after 200 ticks of thrust with Respiration III");
             helper.succeed();
         });
 
         r.add("wave_jet/thrusting_does_not_rescue_you_from_empty", 20, helper -> {
-            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-
+            Player player = thrusting(helper, 0.0);
             player.setAirSupply(0);
-            WaveJetItem.holdBreath(player);
-            if (player.getAirSupply() != 0) {
-                helper.fail("An empty bar was topped up to " + player.getAirSupply()
-                        + ", which would stop you drowning for free");
-                return;
+
+            for (int tick = 0; tick < 10; tick++) {
+                player.tick();
             }
+
+            helper.assertTrue(player.isUsingItem(), "The Wave Jet stopped thrusting inside the tank");
+            helper.assertTrue(player.getAirSupply() < 0,
+                    "An empty bar stayed at " + player.getAirSupply() + ", which would stop you drowning for free");
             helper.succeed();
         });
+
+        r.add("wave_jet/riding_a_submarine_does_not_thrust", 20, helper -> {
+            tank(helper);
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 4));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.snapTo(submarine.getX(), submarine.getY(), submarine.getZ(), 0.0F, 0.0F);
+            Player passenger = diver(helper, 0.0);
+            try {
+                helper.assertTrue(pilot.startRiding(submarine), "The pilot was refused a seat");
+                helper.assertTrue(passenger.startRiding(submarine), "The passenger was refused a seat");
+                helper.assertTrue(submarine.getControllingPassenger() == pilot,
+                        "The Wave Jet holder took the pilot's seat instead of the rear seat");
+
+                passenger.tick();
+                helper.assertTrue(passenger.isInWater(), "The seated passenger should be under water");
+
+                ItemStack stack = passenger.getItemInHand(InteractionHand.MAIN_HAND);
+                int power = stack.getOrDefault(NTDataComponents.POWER, ComponentPowerStorage.EMPTY).powerStored();
+                stack.use(helper.getLevel(), passenger, InteractionHand.MAIN_HAND);
+                for (int tick = 0; tick < 5; tick++) {
+                    passenger.tick();
+                }
+
+                helper.assertFalse(passenger.isUsingItem(), "The rear seat passenger started thrusting");
+                helper.assertFalse(passenger.getPose() == Pose.SWIMMING, "The rear seat passenger was laid flat in a swimming pose");
+                helper.assertValueEqual(power, stack.getOrDefault(NTDataComponents.POWER, ComponentPowerStorage.EMPTY).powerStored(),
+                        "Wave Jet power after using it from a seat");
+                helper.succeed();
+            } finally {
+                passenger.stopRiding();
+                pilot.stopRiding();
+                submarine.discard();
+            }
+        });
+
+        r.add("wave_jet/thrust_outpaces_swimming", 20, helper -> {
+            Player player = lane(helper);
+            for (int tick = 0; tick < 10; tick++) {
+                player.tick();
+            }
+
+            double speed = player.getDeltaMovement().horizontalDistance();
+            helper.assertTrue(player.isUsingItem(), "The Wave Jet stopped thrusting inside the tank");
+            helper.assertTrue(speed >= 0.25, "After 10 ticks of thrust the Wave Jet was doing " + speed
+                    + " blocks per tick, no faster than sprint swimming at about 0.18");
+            helper.succeed();
+        });
+
+        r.add("wave_jet/dolphins_grace_stays_under_the_cap", 20, helper -> {
+            Player player = lane(helper);
+            player.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, 200, 1));
+            player.setDeltaMovement(player.getLookAngle().scale(0.35));
+
+            double fastest = 0.0;
+            for (int tick = 0; tick < 12; tick++) {
+                player.tick();
+                fastest = Math.max(fastest, player.getDeltaMovement().length());
+            }
+
+            helper.assertTrue(player.isUsingItem(), "The Wave Jet stopped thrusting inside the tank");
+            helper.assertTrue(fastest <= NTConfig.waveJetMaxSpeed, "With Dolphin's Grace the Wave Jet reached " + fastest
+                    + " blocks per tick, over the " + NTConfig.waveJetMaxSpeed + " cap");
+            helper.succeed();
+        });
+    }
+
+    private static Player lane(GameTestHelper helper) {
+        tank(helper);
+        Player player = diver(helper, 0.0);
+        Vec3 start = helper.absoluteVec(new Vec3(1.3, 2.0, 4.5));
+        Vec3 end = helper.absoluteVec(new Vec3(7.5, 2.0, 4.5));
+        float yaw = (float) Mth.atan2(end.z - start.z, end.x - start.x) * Mth.RAD_TO_DEG - 90.0F;
+        player.snapTo(start.x, start.y, start.z, yaw, 0.0F);
+        player.startUsingItem(InteractionHand.MAIN_HAND);
+        return player;
+    }
+
+    private static Player thrusting(GameTestHelper helper, double oxygenBonus) {
+        tank(helper);
+        Player player = diver(helper, oxygenBonus);
+        player.startUsingItem(InteractionHand.MAIN_HAND);
+        return player;
+    }
+
+    private static void tank(GameTestHelper helper) {
+        for (BlockPos pos : BlockPos.betweenClosed(0, 0, 0, 8, 8, 8)) {
+            boolean wall = pos.getX() == 0 || pos.getX() == 8 || pos.getY() == 0 || pos.getY() == 8
+                    || pos.getZ() == 0 || pos.getZ() == 8;
+            helper.setBlock(pos, wall ? Blocks.GLASS : Blocks.WATER);
+        }
+    }
+
+    private static Player diver(GameTestHelper helper, double oxygenBonus) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos centre = helper.absolutePos(new BlockPos(4, 1, 4));
+        player.snapTo(centre.getX() + 0.5, centre.getY(), centre.getZ() + 0.5, 0.0F, 90.0F);
+        player.getAttribute(Attributes.OXYGEN_BONUS).setBaseValue(oxygenBonus);
+
+        ItemStack stack = new ItemStack(NTItems.WAVE_JET.get());
+        stack.set(NTDataComponents.POWER, new ComponentPowerStorage(6000, 6000, 0F));
+        player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+        return player;
     }
 
     private static void registerHands(NTTestRegistrar r) {

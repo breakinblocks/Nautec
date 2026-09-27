@@ -48,7 +48,7 @@ public class FishingStationBERenderer implements BlockEntityRenderer<FishingStat
                     poseStack.mulPose(Axis.YN.rotationDegrees(state.angle));
                     poseStack.translate(1.75, 0, 0);
                 }
-                collector.submitModel(this.model, Unit.INSTANCE, poseStack, FishingNetModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, state.breakProgress);
+                collector.submitModel(this.model, Unit.INSTANCE, poseStack, FishingNetModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
             }
             poseStack.popPose();
         }

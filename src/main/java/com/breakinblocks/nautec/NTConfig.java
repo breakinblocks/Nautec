@@ -217,8 +217,12 @@ public final class NTConfig {
             .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.DoubleValue WAVE_JET_THRUST = BUILDER
-            .comment("Thrust the Wave Jet adds each tick while held under water")
-            .defineInRange("waveJetThrust", 0.035, 0.001, 1.0);
+            .comment("Speed the Wave Jet adds each tick while held under water, until it reaches waveJetMaxSpeed")
+            .defineInRange("waveJetThrust", 0.1, 0.001, 1.0);
+
+    private static final ModConfigSpec.DoubleValue WAVE_JET_MAX_SPEED = BUILDER
+            .comment("Fastest the Wave Jet pushes you along, in blocks per tick, before water drag takes about a fifth of it back")
+            .defineInRange("waveJetMaxSpeed", 0.4, 0.05, 2.0);
 
     private static final ModConfigSpec.IntValue WAVE_JET_POWER_USAGE = BUILDER
             .comment("The amount of power the Wave Jet uses each tick while running")
@@ -520,7 +524,8 @@ public final class NTConfig {
     public static double resonanceVentRadius = 4.0;
     public static double resonanceVentDamage = 8.0;
     public static int gatewayCooldown = 100;
-    public static double waveJetThrust = 0.035;
+    public static double waveJetThrust = 0.1;
+    public static double waveJetMaxSpeed = 0.4;
     public static int waveJetPowerUsage = 2;
     public static int waveJetLightRange = 12;
     public static int waveJetLightLevel = 14;
@@ -685,6 +690,7 @@ public final class NTConfig {
         resonanceVentDamage = value(RESONANCE_VENT_DAMAGE);
         gatewayCooldown = value(GATEWAY_COOLDOWN);
         waveJetThrust = value(WAVE_JET_THRUST);
+        waveJetMaxSpeed = value(WAVE_JET_MAX_SPEED);
         waveJetPowerUsage = value(WAVE_JET_POWER_USAGE);
         waveJetLightRange = value(WAVE_JET_LIGHT_RANGE);
         waveJetLightLevel = value(WAVE_JET_LIGHT_LEVEL);

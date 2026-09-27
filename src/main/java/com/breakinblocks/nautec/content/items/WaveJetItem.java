@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.items;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
@@ -38,10 +39,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@EventBusSubscriber(modid = Nautec.MODID)
 public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     private static final int USE_DURATION = 72000;
 
@@ -116,7 +121,7 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!player.isInWater() || !hasCharge(stack, player)) {
+        if (!player.isInWater() || player.isPassenger() || !hasCharge(stack, player)) {
             return InteractionResult.PASS;
         }
 
@@ -131,23 +136,23 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
             return;
         }
 
-        if (!player.isInWater() || !hasCharge(stack, player)) {
+        if (!player.isInWater() || player.isPassenger() || !hasCharge(stack, player)) {
             player.stopUsingItem();
             return;
         }
 
         Vec3 look = player.getLookAngle();
-        player.setDeltaMovement(player.getDeltaMovement().add(look.scale(NTConfig.waveJetThrust)));
+        Vec3 motion = player.getDeltaMovement();
+        double push = Math.min(NTConfig.waveJetThrust, NTConfig.waveJetMaxSpeed - motion.dot(look));
+        if (push > 0) {
+            player.setDeltaMovement(motion.add(look.scale(push)));
+        }
 
         player.setSwimming(true);
         player.setPose(Pose.SWIMMING);
 
         if (!player.getAbilities().instabuild) {
             drain(stack, NTConfig.waveJetPowerUsage);
-        }
-
-        if (!level.isClientSide()) {
-            holdBreath(player);
         }
 
         if (level.isClientSide()) {
@@ -166,10 +171,14 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
         return false;
     }
 
-    public static void holdBreath(Player player) {
-        int air = player.getAirSupply();
-        if (air > 0 && air < player.getMaxAirSupply()) {
-            player.setAirSupply(Math.min(air + 1, player.getMaxAirSupply()));
+    @SubscribeEvent
+    public static void onBreathe(LivingBreatheEvent event) {
+        if (event.canBreathe() || !(event.getEntity() instanceof Player player) || player.getAirSupply() <= 0) {
+            return;
+        }
+        ItemStack stack = player.getUseItem();
+        if (player.isUsingItem() && stack.getItem() instanceof WaveJetItem && player.isInWater() && hasCharge(stack, player)) {
+            event.setConsumeAirAmount(0);
         }
     }
 

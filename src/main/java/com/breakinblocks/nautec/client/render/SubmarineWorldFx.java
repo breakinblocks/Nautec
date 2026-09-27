@@ -33,7 +33,6 @@ public final class SubmarineWorldFx {
         float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
-        WaveJetLightRenderer.render(poseStack, collector, cameraPos, partialTick);
 
         for (Entity entity : level.entitiesForRendering()) {
             if (entity instanceof SubmarineEntity submarine && submarine.isLaserActive()) {

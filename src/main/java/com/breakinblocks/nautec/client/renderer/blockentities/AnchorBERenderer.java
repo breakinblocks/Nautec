@@ -41,7 +41,7 @@ public class AnchorBERenderer implements BlockEntityRenderer<AnchorBlockEntity, 
         {
             poseStack.translate(0.5, 0, 0.5);
             poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-            collector.submitModel(this.model, Unit.INSTANCE, poseStack, AnchorModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, state.breakProgress);
+            collector.submitModel(this.model, Unit.INSTANCE, poseStack, AnchorModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
         }
         poseStack.popPose();
     }
