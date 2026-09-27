@@ -34,7 +34,7 @@ public class AquarineHoeItem extends HoeItem implements IPowerItem {
     private static final int POWER_PER_BLOCK = 2;
 
     public AquarineHoeItem(Properties properties) {
-        super(NTToolMaterials.AQUARINE, 0, -3.0f, properties.stacksTo(1).component(NTDataComponents.ABILITY_ENABLED, false)
+        super(NTToolMaterials.AQUARINE, -3.0f, -3.0f, properties.stacksTo(1).component(NTDataComponents.ABILITY_ENABLED, false)
                 .component(NTDataComponents.IS_INFUSED,false).component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(700)));
     }
 

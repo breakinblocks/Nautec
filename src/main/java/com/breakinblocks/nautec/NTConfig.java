@@ -276,6 +276,30 @@ public final class NTConfig {
             .comment("How far the Atlantean Rifle beam reaches, in blocks")
             .defineInRange("rifleRange", 128.0, 1.0, 256.0);
 
+    private static final ModConfigSpec.DoubleValue TRIDENT_SHOCKWAVE_RADIUS = BUILDER
+            .comment("Radius in blocks of the tidal shockwave Neptune's Trident releases where it lands")
+            .defineInRange("tridentShockwaveRadius", 5.0, 0.0, 32.0);
+
+    private static final ModConfigSpec.DoubleValue TRIDENT_SHOCKWAVE_DAMAGE = BUILDER
+            .comment("Damage the tidal shockwave deals at its centre. It falls to half at the edge")
+            .defineInRange("tridentShockwaveDamage", 14.0, 0.0, 1024.0);
+
+    private static final ModConfigSpec.DoubleValue TRIDENT_SHOCKWAVE_DAMAGE_PER_SHARPNESS = BUILDER
+            .comment("Extra tidal shockwave damage per level of Sharpness on the trident")
+            .defineInRange("tridentShockwaveDamagePerSharpness", 3.0, 0.0, 1024.0);
+
+    private static final ModConfigSpec.DoubleValue TRIDENT_SHOCKWAVE_KNOCKBACK = BUILDER
+            .comment("Knockback strength of the tidal shockwave at its centre. It falls to half at the edge")
+            .defineInRange("tridentShockwaveKnockback", 1.2, 0.0, 10.0);
+
+    private static final ModConfigSpec.DoubleValue TRIDENT_SHOCKWAVE_KNOCKBACK_PER_LEVEL = BUILDER
+            .comment("Extra tidal shockwave knockback strength per level of Knockback on the trident")
+            .defineInRange("tridentShockwaveKnockbackPerLevel", 0.8, 0.0, 10.0);
+
+    private static final ModConfigSpec.IntValue TRIDENT_SHOCKWAVE_COOLDOWN = BUILDER
+            .comment("Ticks after a tidal shockwave before Neptune's Trident can release another. It can still be thrown in the meantime")
+            .defineInRange("tridentShockwaveCooldown", 60, 0, 72_000);
+
     private static final ModConfigSpec.IntValue DOCK_POWER_USAGE = BUILDER
             .comment("The amount of power a Sea Scout Dock requires before it will service a hull")
             .defineInRange("dockPowerUsage", 20, 0, Integer.MAX_VALUE);
@@ -539,6 +563,12 @@ public final class NTConfig {
     public static int rifleBaseDrain = 1_000;
     public static int rifleMaxDrain = 5_000;
     public static double rifleRange = 128.0;
+    public static double tridentShockwaveRadius = 5.0;
+    public static double tridentShockwaveDamage = 14.0;
+    public static double tridentShockwaveDamagePerSharpness = 3.0;
+    public static double tridentShockwaveKnockback = 1.2;
+    public static double tridentShockwaveKnockbackPerLevel = 0.8;
+    public static int tridentShockwaveCooldown = 60;
     public static int dockPowerUsage = 20;
     public static int dockChargeRate = 40;
     public static int pressureForgeDepth = 0;
@@ -704,6 +734,12 @@ public final class NTConfig {
         rifleBaseDrain = value(RIFLE_BASE_DRAIN);
         rifleMaxDrain = value(RIFLE_MAX_DRAIN);
         rifleRange = value(RIFLE_RANGE);
+        tridentShockwaveRadius = value(TRIDENT_SHOCKWAVE_RADIUS);
+        tridentShockwaveDamage = value(TRIDENT_SHOCKWAVE_DAMAGE);
+        tridentShockwaveDamagePerSharpness = value(TRIDENT_SHOCKWAVE_DAMAGE_PER_SHARPNESS);
+        tridentShockwaveKnockback = value(TRIDENT_SHOCKWAVE_KNOCKBACK);
+        tridentShockwaveKnockbackPerLevel = value(TRIDENT_SHOCKWAVE_KNOCKBACK_PER_LEVEL);
+        tridentShockwaveCooldown = value(TRIDENT_SHOCKWAVE_COOLDOWN);
         dockPowerUsage = value(DOCK_POWER_USAGE);
         dockChargeRate = value(DOCK_CHARGE_RATE);
         pressureForgeDepth = value(PRESSURE_FORGE_DEPTH);

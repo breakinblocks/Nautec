@@ -50,7 +50,20 @@ public final class NTRenderPipelines {
             .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
             .build();
 
-    public static final RenderPipeline SPOTLIGHT_CONE = RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
+    public static final RenderPipeline TIDAL_SHOCKWAVE = RenderPipeline.builder()
+            .withLocation(Nautec.rl("pipeline/tidal_shockwave"))
+            .withVertexShader("core/screenquad")
+            .withFragmentShader(Nautec.rl("core/tidal_shockwave"))
+            .withSampler("DepthSampler")
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+            .withUniform("ShockwaveInfo", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+            .withDepthStencilState(Optional.empty())
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
+            .build();
+
+    public static final RenderPipeline SPOTLIGHT_CONE =RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
             .withLocation(Nautec.rl("pipeline/spotlight_cone"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")

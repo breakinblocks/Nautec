@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.entities.ThrownBouncingTrident;
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.content.entities.ThrownNeptunesTrident;
 import com.breakinblocks.nautec.content.entities.ThrownSpreadingTrident;
 import com.breakinblocks.nautec.content.entities.mobs.AbyssalMaw;
 import com.breakinblocks.nautec.content.entities.mobs.LanternJelly;
@@ -28,6 +29,10 @@ public final class NTEntities {
     public static final Supplier<EntityType<ThrownSpreadingTrident>> THROWN_SPREADING_TRIDENT = ENTITIES.register("spreading_trident",
             () -> EntityType.Builder.<ThrownSpreadingTrident>of(ThrownSpreadingTrident::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f).build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("spreading_trident"))));
+    public static final Supplier<EntityType<ThrownNeptunesTrident>> NEPTUNES_TRIDENT = ENTITIES.register("neptunes_trident",
+            () -> EntityType.Builder.<ThrownNeptunesTrident>of(ThrownNeptunesTrident::new, MobCategory.MISC)
+                    .noLootTable().sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("neptunes_trident"))));
 
     public static final Supplier<EntityType<NautecFishingHook>> NAUTEC_FISHING_HOOK = ENTITIES.register("nautec_fishing_hook",
             () -> EntityType.Builder.<NautecFishingHook>of(NautecFishingHook::new, MobCategory.MISC)

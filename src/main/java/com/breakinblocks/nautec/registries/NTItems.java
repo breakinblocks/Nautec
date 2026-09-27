@@ -29,8 +29,11 @@ import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.component.Weapon;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
@@ -217,7 +220,9 @@ public final class NTItems {
     public static final DeferredItem<NeptunesTridentItem> NEPTUNES_TRIDENT = registerItem("neptunes_trident",
             NeptunesTridentItem::new, new Item.Properties()
                     .attributes(NeptunesTridentItem.createAttributes())
-                    .component(DataComponents.TOOL, NeptunesTridentItem.createToolProperties()));
+                    .component(DataComponents.TOOL, TridentItem.createToolProperties())
+                    .component(DataComponents.WEAPON, new Weapon(1))
+                    .component(DataComponents.UNBREAKABLE, Unit.INSTANCE));
 
     public static final DeferredItem<AquarineSwordItem> AQUARINE_SWORD = registerItem("aquarine_steel_sword", AquarineSwordItem::new, new Item.Properties());
     public static final DeferredItem<AquarineAxeItem> AQUARINE_AXE = registerItem("aquarine_steel_axe", AquarineAxeItem::new, new Item.Properties());

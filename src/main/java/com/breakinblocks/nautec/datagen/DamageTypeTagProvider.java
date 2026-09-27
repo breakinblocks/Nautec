@@ -23,6 +23,7 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType> {
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         tag(DamageTypeTags.BYPASSES_COOLDOWN).add(NTDamageTypes.PARTICLE_BEAM);
+        tag(DamageTypeTags.NO_KNOCKBACK).add(NTDamageTypes.TIDAL_SHOCKWAVE);
     }
 
     private TagAppender<ResourceKey<DamageType>, DamageType> tag(TagKey<DamageType> tag) {

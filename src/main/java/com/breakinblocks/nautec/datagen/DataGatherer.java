@@ -44,6 +44,7 @@ public class DataGatherer {
         ), lookupProvider));
         generator.addProvider(true, new BlockTagProvider(output, lookupProvider));
         generator.addProvider(true, new ItemTagProvider(output, lookupProvider));
+        generator.addProvider(true, new EntityTypeTagProvider(output, lookupProvider));
         generator.addProvider(true, new LootModifierProvider(output, lookupProvider));
 
         DatapackRegistryProvider datapackRegistries = generator.addProvider(true, new DatapackRegistryProvider(output, lookupProvider));

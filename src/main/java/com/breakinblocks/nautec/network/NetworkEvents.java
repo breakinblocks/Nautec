@@ -36,6 +36,11 @@ public class NetworkEvents {
                 SetCooldownPayload.STREAM_CODEC,
                 SetCooldownPayload::setCooldownAction
         );
+        registrar.playToClient(
+                TidalShockwavePayload.TYPE,
+                TidalShockwavePayload.STREAM_CODEC,
+                TidalShockwavePayload::handle
+        );
         registrar.playToServer(
                 StartAugmentationPayload.TYPE,
                 StartAugmentationPayload.STREAM_CODEC,

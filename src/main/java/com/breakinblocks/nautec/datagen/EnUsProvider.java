@@ -59,6 +59,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("death.attack.nautec.particle_beam", "%1$s was vaporized by a particle beam.");
         add("death.attack.nautec.particle_beam.player", "%1$s was vaporized by a particle beam.");
         add("death.attack.nautec.particle_beam.item", "%1$s was vaporized by a particle beam.");
+        add("death.attack.nautec.tidal_shockwave", "%1$s was swept away by %2$s's tidal shockwave");
+        add("death.attack.nautec.tidal_shockwave.player", "%1$s was swept away by a tidal shockwave");
+        add("death.attack.nautec.tidal_shockwave.item", "%1$s was swept away by %2$s wielding %3$s");
         addItem(NAUTEC_FISHING_ROD, "Prismatic Fishing Rod");
         add("nautec.fishing_minigame.timing_bar", "Something is biting");
         add("nautec.fishing_minigame.rhythm", "It is fighting you");
@@ -192,6 +195,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("entity.nautec.lantern_jelly", "Lantern Jelly");
         add("entity.nautec.vent_crawler", "Vent Crawler");
         add("entity.nautec.abyssal_maw", "Abyssal Maw");
+        add("entity.nautec.neptunes_trident", "Neptune's Trident");
 
         addBlock("budding_prismarine", "Budding Prismarine");
         addBlock("small_prismarine_bud", "Small Prismarine Bud");
@@ -457,6 +461,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         add("nautec.armor.enabled", "Enabled");
         add("nautec.armor.disabled", "Shift + Right Click to Enable");
         add("nautec.helm.desc", "Allows you to see better underwater.");
+        add("nautec.neptunes_trident.returns", "Returns to owner");
         add("nautec.tool.axe.ability", "Ability: Chop Down Entire Trees");
         add("nautec.tool.hoe.ability", "Ability: Till 3x3 Farmland");
         add("nautec.tool.pickaxe.ability", "Ability: Mine in a 3x3 Area");

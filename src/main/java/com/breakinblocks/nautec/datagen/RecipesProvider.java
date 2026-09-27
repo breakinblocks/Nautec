@@ -57,6 +57,7 @@ public class RecipesProvider extends RecipeProvider {
         dockRecipes(pRecipeOutput);
         waveJetRecipes(pRecipeOutput);
         atlanteanRifleRecipes(pRecipeOutput);
+        neptunesTridentRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
 
@@ -228,6 +229,19 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.AQUATIC_CHIP)
                 .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
                 .save(pRecipeOutput, key("atlantean_rifle"));
+    }
+
+    private void neptunesTridentRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.COMBAT, NTItems.NEPTUNES_TRIDENT.get())
+                .pattern("RFR")
+                .pattern("DHD")
+                .pattern(" D ")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('H', Items.HEART_OF_THE_SEA)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("neptunes_trident"));
     }
 
     private void dockRecipes(@NotNull RecipeOutput pRecipeOutput) {

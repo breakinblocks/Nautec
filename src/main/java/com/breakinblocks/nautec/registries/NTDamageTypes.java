@@ -8,9 +8,11 @@ import net.minecraft.world.damagesource.DamageType;
 
 public final class NTDamageTypes {
     public static final ResourceKey<DamageType> PARTICLE_BEAM = ResourceKey.create(Registries.DAMAGE_TYPE, Nautec.rl("particle_beam"));
+    public static final ResourceKey<DamageType> TIDAL_SHOCKWAVE = ResourceKey.create(Registries.DAMAGE_TYPE, Nautec.rl("tidal_shockwave"));
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(PARTICLE_BEAM, new DamageType("nautec.particle_beam", 0.1F));
+        context.register(TIDAL_SHOCKWAVE, new DamageType("nautec.tidal_shockwave", 0.1F));
     }
 
     private NTDamageTypes() {

@@ -32,6 +32,9 @@ import com.breakinblocks.nautec.client.model.entity.LanternJellyModel;
 import com.breakinblocks.nautec.client.model.entity.SiltSkipperModel;
 import com.breakinblocks.nautec.client.model.entity.VentCrawlerModel;
 import com.breakinblocks.nautec.client.renderer.entity.NTMobRenderers;
+import com.breakinblocks.nautec.client.renderer.entity.NeptunesTridentRenderer;
+import com.breakinblocks.nautec.client.shockwave.ShockwaveCooldownDecorator;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import com.breakinblocks.nautec.client.renderer.entity.SubmarineRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.GuardianEyeRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.SimpleAugmentRenderer;
@@ -135,12 +138,14 @@ public final class NautecClient {
         modEventBus.addListener(this::registerFluidModels);
         modEventBus.addListener(this::registerParticleProviders);
         modEventBus.addListener(this::registerRenderPipelines);
+        modEventBus.addListener(this::registerItemDecorations);
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(NTRenderPipelines.SONAR_HIGHLIGHT);
         event.registerPipeline(NTRenderPipelines.SONAR_WAVE);
         event.registerPipeline(NTRenderPipelines.TELEPORT_BLUR);
+        event.registerPipeline(NTRenderPipelines.TIDAL_SHOCKWAVE);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -226,6 +231,10 @@ public final class NautecClient {
         }
     }
 
+    private void registerItemDecorations(RegisterItemDecorationsEvent event) {
+        event.register(NTItems.NEPTUNES_TRIDENT.get(), new ShockwaveCooldownDecorator());
+    }
+
     private void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
         event.register(Nautec.rl("prismarine_crystal"), PrismarineCrystalItemRenderer.Unbaked.MAP_CODEC);
         event.register(Nautec.rl("anchor"), AnchorItemRenderer.Unbaked.MAP_CODEC);
@@ -239,6 +248,7 @@ public final class NautecClient {
     private void registerBERenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(NTEntities.THROWN_BOUNCING_TRIDENT.get(), ThrownTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.THROWN_SPREADING_TRIDENT.get(), ThrownTridentRenderer::new);
+        event.registerEntityRenderer(NTEntities.NEPTUNES_TRIDENT.get(), NeptunesTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.NAUTEC_FISHING_HOOK.get(), FishingHookRenderer::new);
         event.registerEntityRenderer(NTEntities.SUBMARINE.get(), SubmarineRenderer::new);
         event.registerEntityRenderer(NTEntities.SILT_SKIPPER.get(), NTMobRenderers.SiltSkipperRenderer::new);

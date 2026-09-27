@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.data.components.ShockwaveCooldown;
 import com.breakinblocks.nautec.data.components.TeleportAnchor;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +48,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<GatewayAddress>> GATEWAY_ADDRESS = registerDataComponentType("gateway_address",
             () -> builder -> builder.persistent(GatewayAddress.CODEC).networkSynchronized(GatewayAddress.STREAM_CODEC));
+
+    public static final Supplier<DataComponentType<ShockwaveCooldown>> SHOCKWAVE_COOLDOWN = registerDataComponentType("shockwave_cooldown",
+            () -> builder -> builder.persistent(ShockwaveCooldown.CODEC).networkSynchronized(ShockwaveCooldown.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<Integer>> OXYGEN = registerDataComponentType("oxygen",
             () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
