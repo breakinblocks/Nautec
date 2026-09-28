@@ -20,15 +20,12 @@ public class NeptunesTridentRenderer extends EntityRenderer<ThrownNeptunesTriden
     private static final float SHAFT_CENTRE = 0.4375F;
     private static final float TIP_REACH = -1.0F;
     private final ItemModelResolver itemModelResolver;
-    private final ItemStack trident;
-    private final ItemStack enchantedTrident;
+    private ItemStack trident;
+    private ItemStack enchantedTrident;
 
     public NeptunesTridentRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.itemModelResolver = context.getItemModelResolver();
-        this.trident = new ItemStack(NTItems.NEPTUNES_TRIDENT.get());
-        this.enchantedTrident = this.trident.copy();
-        this.enchantedTrident.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
     }
 
     @Override
@@ -52,6 +49,11 @@ public class NeptunesTridentRenderer extends EntityRenderer<ThrownNeptunesTriden
         super.extractRenderState(entity, state, partialTicks);
         state.yRot = entity.getYRot(partialTicks);
         state.xRot = entity.getXRot(partialTicks);
+        if (this.trident == null) {
+            this.trident = new ItemStack(NTItems.NEPTUNES_TRIDENT.get());
+            this.enchantedTrident = this.trident.copy();
+            this.enchantedTrident.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
         this.itemModelResolver.updateForNonLiving(
                 state.item, entity.isFoil() ? this.enchantedTrident : this.trident, ItemDisplayContext.NONE, entity);
     }

@@ -10,11 +10,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
+
+import java.util.List;
 
 public final class FishingHookFlowTests {
     public static void register(NTTestRegistrar r) {
@@ -50,6 +58,50 @@ public final class FishingHookFlowTests {
 
         r.add("fishing/live_bite_inside_a_lucky_zone", 400, 1, helper ->
                 liveBite(helper, true));
+
+        r.add("fishing/detached_hook_catch_in_lucky_zone_rolls_bonus", 40, 1, helper ->
+                zoneCatch(helper, false));
+
+        r.add("fishing/world_hook_catch_in_lucky_zone_gets_no_extra_roll", 40, 1, helper ->
+                zoneCatch(helper, true));
+    }
+
+    private static void zoneCatch(GameTestHelper helper, boolean hookInWorld) {
+        ServerLevel level = helper.getLevel();
+        BlockPos surface = pool(helper);
+        BlockPos zonePos = surface.above();
+        level.setBlock(zonePos, NTBlocks.LUCKY_FISHING_ZONE.get().defaultBlockState(), 3);
+        if (level.getBlockEntity(zonePos) instanceof LuckyFishingZoneBlockEntity zone) {
+            zone.setRadius(3);
+        }
+        LuckyZoneIndex.get(level).add(new LuckyZoneIndex.Zone(zonePos, 3, level.getGameTime() + 100000L));
+
+        Player owner = helper.makeMockPlayer(GameType.SURVIVAL);
+        owner.setPos(surface.getX() + 0.5, surface.getY() + 1.0, surface.getZ() + 3.5);
+        owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.FISHING_ROD));
+
+        FishingHook hook = new FishingHook(owner, level, 0, 0);
+        hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+        hook.setDeltaMovement(Vec3.ZERO);
+        if (hookInWorld) {
+            level.addFreshEntity(hook);
+        }
+
+        AABB area = new AABB(zonePos).inflate(6);
+        int before = level.getEntitiesOfClass(ItemEntity.class, area).size();
+        NeoForge.EVENT_BUS.post(new ItemFishedEvent(List.of(new ItemStack(Items.COD)), 0, hook));
+        int dropped = level.getEntitiesOfClass(ItemEntity.class, area).size() - before;
+        hook.discard();
+
+        if (hookInWorld && dropped != 0) {
+            helper.fail("A hook in the world got " + dropped + " extra drops from the lucky zone event");
+            return;
+        }
+        if (!hookInWorld && dropped <= 0) {
+            helper.fail("A detached hook catching inside a lucky zone got no bonus roll");
+            return;
+        }
+        helper.succeed();
     }
 
     private static void liveBite(GameTestHelper helper, boolean withZone) {

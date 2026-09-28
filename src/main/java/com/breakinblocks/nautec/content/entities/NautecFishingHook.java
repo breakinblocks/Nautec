@@ -162,7 +162,7 @@ public class NautecFishingHook extends FishingHook {
         }
     }
 
-    private void dropTowards(ServerLevel level, Player owner, ItemStack stack, double x, double y, double z) {
+    public static void dropTowards(ServerLevel level, Player owner, ItemStack stack, double x, double y, double z) {
         ItemEntity item = new ItemEntity(level, x, y, z, stack);
         double dx = owner.getX() - x;
         double dy = owner.getY() - y;

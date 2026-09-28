@@ -4,9 +4,11 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
+import com.breakinblocks.nautec.content.entities.NautecFishingHook;
 import com.breakinblocks.nautec.content.fishing.LuckyZoneIndex;
 import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTLootTables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,9 +16,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemFishedEvent;
@@ -188,14 +196,23 @@ public final class LuckyFishingZoneEvents {
 
     @SubscribeEvent
     public static void onItemFished(ItemFishedEvent event) {
-        if (!NTConfig.luckyZoneConsumedOnCatch || !(event.getEntity().level() instanceof ServerLevel level)) {
+        if (!(event.getEntity().level() instanceof ServerLevel level)) {
             return;
         }
 
-        BlockPos hook = event.getHookEntity().blockPosition();
+        FishingHook hookEntity = event.getHookEntity();
+        BlockPos hook = hookEntity.blockPosition();
         LuckyZoneIndex index = LuckyZoneIndex.get(level);
         LuckyZoneIndex.Zone zone = index.zoneAt(level, hook);
         if (zone == null) {
+            return;
+        }
+
+        if (!hookEntity.isAddedToLevel()) {
+            awardDetachedHookBonus(level, event.getEntity(), hookEntity);
+        }
+
+        if (!NTConfig.luckyZoneConsumedOnCatch) {
             return;
         }
 
@@ -204,5 +221,19 @@ public final class LuckyFishingZoneEvents {
                 24, zone.radius() * 0.6, 0.1, zone.radius() * 0.6, 0.1);
         level.removeBlock(zone.pos(), false);
         index.remove(zone.pos());
+    }
+
+    private static void awardDetachedHookBonus(ServerLevel level, Player player, FishingHook hook) {
+        ItemStack rod = player.getMainHandItem().isEmpty() ? player.getOffhandItem() : player.getMainHandItem();
+        LootParams params = new LootParams.Builder(level)
+                .withParameter(LootContextParams.ORIGIN, hook.position())
+                .withParameter(LootContextParams.TOOL, rod)
+                .withParameter(LootContextParams.THIS_ENTITY, hook)
+                .withLuck(player.getLuck())
+                .create(LootContextParamSets.FISHING);
+        LootTable table = level.getServer().reloadableRegistries().getLootTable(NTLootTables.LUCKY_ZONE);
+        for (ItemStack stack : table.getRandomItems(params)) {
+            NautecFishingHook.dropTowards(level, player, stack, hook.getX(), hook.getY() + 1.2, hook.getZ());
+        }
     }
 }
