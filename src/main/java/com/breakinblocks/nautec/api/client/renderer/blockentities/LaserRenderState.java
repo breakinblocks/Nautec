@@ -12,6 +12,9 @@ public class LaserRenderState extends BlockEntityRenderState {
     public long gameTime;
     public float partialTick;
 
-    public record Beam(Direction direction, int laserDistance, float shapeIndent) {
+    public record Beam(Direction direction, int laserDistance, float shapeIndent, boolean impact) {
+        public Beam(Direction direction, int laserDistance, float shapeIndent) {
+            this(direction, laserDistance, shapeIndent, true);
+        }
     }
 }

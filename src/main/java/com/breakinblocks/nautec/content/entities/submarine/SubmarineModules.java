@@ -343,7 +343,6 @@ public class SubmarineModules {
         }
 
         Vec3 forward = this.submarine.getForward();
-        Vec3 right = new Vec3(0D, 1D, 0D).cross(forward).normalize();
         boolean damageTick = this.submarine.tickCount % LASER_DAMAGE_INTERVAL == 0;
 
         if (damageTick && !drainForLaser()) {
@@ -351,8 +350,8 @@ public class SubmarineModules {
             return;
         }
 
-        float leftLength = fireBeam(forward, right, -MUZZLE_SIDE, damageTick);
-        float rightLength = fireBeam(forward, right, MUZZLE_SIDE, damageTick);
+        float leftLength = fireBeam(forward, true, damageTick);
+        float rightLength = fireBeam(forward, false, damageTick);
         this.submarine.setLaserLengths(leftLength, rightLength);
     }
 
@@ -370,11 +369,15 @@ public class SubmarineModules {
         return true;
     }
 
-    private float fireBeam(Vec3 forward, Vec3 right, double side, boolean damageTick) {
-        Vec3 origin = this.submarine.position()
-                .add(forward.scale(MUZZLE_FORWARD))
-                .add(right.scale(side))
+    public static Vec3 laserMuzzle(Vec3 position, Vec3 forward, boolean left) {
+        Vec3 right = new Vec3(0D, 1D, 0D).cross(forward).normalize();
+        return position.add(forward.scale(MUZZLE_FORWARD))
+                .add(right.scale(left ? -MUZZLE_SIDE : MUZZLE_SIDE))
                 .add(0D, MUZZLE_UP, 0D);
+    }
+
+    private float fireBeam(Vec3 forward, boolean left, boolean damageTick) {
+        Vec3 origin = laserMuzzle(this.submarine.position(), forward, left);
         double range = NTConfig.submarineLaserRange;
         Vec3 end = origin.add(forward.scale(range));
 
@@ -424,9 +427,10 @@ public class SubmarineModules {
         this.submarine.setCharging(true);
 
         Vec3 position = this.submarine.position();
+        this.submarine.setPortalTarget(SubmarineEntity.portalCenter(position, this.submarine.getYRot(), this.submarine.getXRot()));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.submarine, new TeleportFxPayload(
                 this.submarine.getId(), TeleportFxPayload.STAGE_CHARGE,
-                position.x, position.y, position.z, this.submarine.getYRot(), TELEPORT_CHARGE_TICKS));
+                position.x, position.y, position.z, this.submarine.getYRot(), this.submarine.getXRot(), TELEPORT_CHARGE_TICKS));
         return true;
     }
 
@@ -459,17 +463,20 @@ public class SubmarineModules {
             abortTeleport();
             return;
         }
+        if (teleported instanceof SubmarineEntity arrived) {
+            arrived.setExiting(true);
+        }
 
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(teleported, new TeleportFxPayload(
                 teleported.getId(), TeleportFxPayload.STAGE_ARRIVE,
-                target.x, target.y, target.z, anchor.yaw(), TELEPORT_CHARGE_TICKS));
+                target.x, target.y, target.z, anchor.yaw(), 0F, TELEPORT_CHARGE_TICKS));
     }
 
     private void abortTeleport() {
         Vec3 position = this.submarine.position();
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.submarine, new TeleportFxPayload(
                 this.submarine.getId(), TeleportFxPayload.STAGE_ABORT,
-                position.x, position.y, position.z, this.submarine.getYRot(), 0));
+                position.x, position.y, position.z, this.submarine.getYRot(), this.submarine.getXRot(), 0));
 
         if (this.submarine.getControllingPassenger() instanceof Player pilot) {
             refuse(pilot, "destination_blocked");

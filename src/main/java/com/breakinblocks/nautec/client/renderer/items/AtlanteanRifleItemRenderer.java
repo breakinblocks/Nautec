@@ -95,12 +95,12 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         Vec3 hitRelative = hit.end().subtract(cameraPos);
         Vector3f hitRoot = worldToRoot.transformPosition(new Vector3f((float) hitRelative.x, (float) hitRelative.y, (float) hitRelative.z));
         Vector3f hitLocal = new Matrix4f(pose).invert().transformPosition(hitRoot);
-        float radiusScale = 1F / Math.max(0.01F, pose.getScale(new Vector3f()).x);
+        boolean impact = hit.entity() != null || hit.length() < NTConfig.rifleRange - 0.01D;
 
         AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks,
                 new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z),
                 new Vec3(hitLocal.x, hitLocal.y, hitLocal.z),
-                radiusScale, firing, level.getGameTime(), partialTick);
+                firing, impact);
     }
 
     private static Matrix4f worldToRoot(RenderPassInfo<GeoRenderState> pass) {

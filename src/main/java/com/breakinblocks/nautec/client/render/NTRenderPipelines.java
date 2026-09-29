@@ -63,6 +63,19 @@ public final class NTRenderPipelines {
             .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
             .build();
 
+    public static final RenderPipeline PORTAL_ARRIVAL = RenderPipeline.builder()
+            .withLocation(Nautec.rl("pipeline/portal_arrival"))
+            .withVertexShader("core/screenquad")
+            .withFragmentShader(Nautec.rl("core/portal_arrival"))
+            .withSampler("DepthSampler")
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+            .withUniform("ArrivalInfo", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+            .withDepthStencilState(Optional.empty())
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
+            .build();
+
     public static final RenderPipeline SPOTLIGHT_CONE =RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
             .withLocation(Nautec.rl("pipeline/spotlight_cone"))
             .withVertexShader("core/position_color")
@@ -72,6 +85,22 @@ public final class NTRenderPipelines {
             .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
             .withCull(false)
             .build();
+
+    public static final RenderPipeline LASER_BEAM = laser("laser_beam");
+
+    public static final RenderPipeline LASER_FLARE = laser("laser_flare");
+
+    private static RenderPipeline laser(String name) {
+        return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+                .withLocation(Nautec.rl("pipeline/" + name))
+                .withVertexShader("core/position_tex_color")
+                .withFragmentShader(Nautec.rl("core/" + name))
+                .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+                .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                .withCull(false)
+                .build();
+    }
 
     private NTRenderPipelines() {
     }

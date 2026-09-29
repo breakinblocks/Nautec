@@ -1,23 +1,32 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
 import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
+import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 import java.util.Set;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -440,7 +449,67 @@ public final class PowerAndLaserTests {
             });
         });
 
+        registerCrystal(r);
         registerEnergyBridge(r);
+    }
+
+    private static void registerCrystal(NTTestRegistrar r) {
+        r.add("crystal/geode_template_places_part_indexes", 40, helper -> {
+            ServerLevel level = helper.getLevel();
+            StructureTemplate template = level.getStructureManager()
+                    .get(Nautec.rl("stone_crystal_geode"))
+                    .orElseThrow(() -> helper.assertionException("stone_crystal_geode template missing"));
+            BoundingBox arena = BoundingBox.fromCorners(helper.absolutePos(BlockPos.ZERO), helper.absolutePos(new BlockPos(8, 8, 8)));
+            StructurePlaceSettings settings = new StructurePlaceSettings()
+                    .setBoundingBox(arena)
+                    .setLiquidSettings(LiquidSettings.APPLY_WATERLOGGING);
+            template.placeInWorld(level, helper.absolutePos(new BlockPos(-6, -2, -5)), BlockPos.ZERO, settings, level.getRandom(), 18);
+
+            helper.runAfterDelay(5, () -> {
+                int[] expected = {5, 4, 3, -1, 1, 0};
+                for (int i = 0; i < expected.length; i++) {
+                    BlockPos pos = new BlockPos(4, 1 + i, 4);
+                    if (expected[i] < 0) {
+                        helper.assertBlockPresent(NTBlocks.PRISMARINE_CRYSTAL.get(), pos);
+                        continue;
+                    }
+                    helper.assertBlockPresent(NTBlocks.PRISMARINE_CRYSTAL_PART.get(), pos);
+                    helper.assertValueEqual(expected[i], helper.getBlockState(pos).getValue(PrismarineCrystalPartBlock.INDEX), "index at " + pos);
+                    helper.assertTrue(helper.getBlockEntity(pos, PrismarineCrystalPartBlockEntity.class).getCrystalBE() != null,
+                            "part at " + pos + " should find the crystal core");
+                }
+                helper.succeed();
+            });
+        });
+
+        r.add("crystal/powered_core_emits_from_top_and_bottom", 100, helper -> {
+            BlockPos corePos = new BlockPos(4, 5, 4);
+            BlockPos topPos = corePos.above(2);
+            BlockPos bottomPos = corePos.below(3);
+            for (int i = 0; i < 6; i++) {
+                BlockPos pos = topPos.below(i);
+                if (i == 2) {
+                    helper.setBlock(pos, NTBlocks.PRISMARINE_CRYSTAL.get().defaultBlockState());
+                } else {
+                    helper.setBlock(pos, NTBlocks.PRISMARINE_CRYSTAL_PART.get().defaultBlockState()
+                            .setValue(PrismarineCrystalPartBlock.INDEX, i));
+                }
+            }
+            placeShieldedSource(helper, new BlockPos(2, 5, 4), Direction.EAST);
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertValueEqual(100, helper.getBlockEntity(corePos, PrismarineCrystalBlockEntity.class).getPower(), "core received power");
+                PrismarineCrystalPartBlockEntity top = helper.getBlockEntity(topPos, PrismarineCrystalPartBlockEntity.class);
+                PrismarineCrystalPartBlockEntity bottom = helper.getBlockEntity(bottomPos, PrismarineCrystalPartBlockEntity.class);
+                helper.assertValueEqual(100, top.getPowerToTransfer(), "top part output");
+                helper.assertValueEqual(100, bottom.getPowerToTransfer(), "bottom part output");
+                helper.assertTrue(top.getLaserDistances().getInt(Direction.UP) > 0, "top beam has a length");
+                helper.assertTrue(bottom.getLaserDistances().getInt(Direction.DOWN) > 0, "bottom beam has a length");
+                helper.assertTrue(top.shouldRender(Direction.UP), "top beam should render");
+                helper.assertTrue(bottom.shouldRender(Direction.DOWN), "bottom beam should render");
+                helper.succeed();
+            });
+        });
     }
 
     private static final int FE_BUFFER = 100_000;

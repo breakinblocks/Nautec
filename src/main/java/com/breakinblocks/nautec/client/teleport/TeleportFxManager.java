@@ -21,27 +21,27 @@ public final class TeleportFxManager {
     private static int chargeTicks;
     private static int arriveTicks;
     private static Vec3 portalPos = Vec3.ZERO;
-    private static float portalYaw;
+    private static Vec3 portalFacing = new Vec3(0D, 0D, 1D);
     private static int trackedEntity = -1;
     private static @Nullable ClientLevel effectLevel;
 
     private TeleportFxManager() {
     }
 
-    public static void beginCharge(int entityId, Vec3 position, float yaw, int ticks) {
+    public static void beginCharge(int entityId, Vec3 position, Vec3 facing, int ticks) {
         effectLevel = Minecraft.getInstance().level;
         trackedEntity = entityId;
         portalPos = position;
-        portalYaw = yaw;
+        portalFacing = facing;
         chargeTicks = ticks;
         arriveTicks = 0;
     }
 
-    public static void beginArrival(int entityId, Vec3 position, float yaw) {
+    public static void beginArrival(int entityId, Vec3 position, Vec3 facing) {
         effectLevel = Minecraft.getInstance().level;
         trackedEntity = entityId;
         portalPos = position;
-        portalYaw = yaw;
+        portalFacing = facing;
         chargeTicks = 0;
         arriveTicks = ARRIVE_TICKS;
     }
@@ -70,8 +70,8 @@ public final class TeleportFxManager {
         return portalPos;
     }
 
-    public static float portalYaw() {
-        return portalYaw;
+    public static Vec3 portalFacing() {
+        return portalFacing;
     }
 
     public static float openProgress(float partialTick) {

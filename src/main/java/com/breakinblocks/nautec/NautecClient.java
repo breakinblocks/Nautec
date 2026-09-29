@@ -164,7 +164,7 @@ public final class NautecClient {
         event.registerSpriteSet(NTParticles.TELEPORT_SWIRL.get(),
                 sprites -> new SwirlParticle.Provider(sprites, 0.80F, 0.48F, 1.0F, 3.0D, 0.03D, 0.35F, 0.12F, 20, 34));
         event.registerSpriteSet(NTParticles.LASER_SPARK.get(),
-                sprites -> new SparkParticle.Provider(sprites, 1.0F, 0.45F, 0.35F, 0.12F, 0.11F, 5, 12));
+                sprites -> new SparkParticle.Provider(sprites, 0.6F, 0.94F, 1.0F, 0.12F, 0.11F, 5, 12));
 
         event.registerSpriteSet(NTParticles.ABYSSAL_MOTE.get(),
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.30F, 0.42F, 0.58F, -0.004F, 0.06F, 70, 130));

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
+import com.breakinblocks.nautec.client.render.LaserBeamRenderer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -26,11 +27,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends LaserRenderState> extends NTBERenderer<T, S> {
     public static final Identifier BEAM_LOCATION = Nautec.rl("textures/entity/laser_beam.png");
     private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
     private static final RenderType BEAM_RENDER_TYPE = RenderTypes.entityCutout(GUARDIAN_BEAM_LOCATION);
+    private static final float BEAM_HALF_WIDTH = 0.2F;
+    private static final float IMPACT_FLARE_RADIUS = 0.32F;
 
     public LaserBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
@@ -59,6 +63,10 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
             BlockState blockState = blockEntity.getLevel().getBlockState(targetPos.relative(direction));
             if (laserDistance > 0 && blockEntity.shouldRender(direction)) {
                 VoxelShape shape = blockState.getShape(blockEntity.getLevel(), targetPos.relative(direction), CollisionContext.empty());
+                if (shape.isEmpty()) {
+                    state.beams.add(new LaserRenderState.Beam(direction, laserDistance, 0.5F, false));
+                    continue;
+                }
 
                 float shapeIndent = (float) switch (direction.getAxisDirection()) {
                     case POSITIVE -> shape.min(direction.getAxis());
@@ -74,46 +82,17 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     public void submit(S state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         for (LaserRenderState.Beam beam : state.beams) {
             Direction direction = beam.direction();
-            int laserDistance = beam.laserDistance();
-            float shapeIndent = beam.shapeIndent();
+            float indent = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? beam.shapeIndent() : 1 - beam.shapeIndent();
+            submitLaser(poseStack, collector, direction, beam.laserDistance() - 0.5F + indent, beam.impact());
+        }
+    }
 
-            submitOuterBeam(poseStack, collector, direction, laserDistance, 1 - shapeIndent, state.laserTime, state.gameTime);
-
-            poseStack.pushPose();
-            {
-                poseStack.mulPose(direction.getRotation());
-                poseStack.scale(0.125f, 1, 0.125f);
-                switch (direction) {
-                    case UP -> poseStack.translate(3.5f, 0, 3.5f);
-                    case DOWN, SOUTH, WEST -> poseStack.translate(3.5f, 0, -4.5f);
-                    case EAST, NORTH -> poseStack.translate(-4.5f, 0, -4.5f);
-                }
-
-                int offset = 0;
-                int offset2 = 0;
-
-                if (direction == Direction.EAST || direction == Direction.SOUTH) {
-                    offset2 = 1;
-                }
-
-                if (direction == Direction.NORTH || direction == Direction.WEST) {
-                    offset2 = 1;
-                }
-
-
-                if (direction == Direction.DOWN) {
-                    offset2 = 1;
-                }
-
-                if (direction == Direction.UP) {
-                    offset = 1;
-                    offset2 = 1;
-                }
-
-                submitInnerBeam(poseStack, collector, state.partialTick, state.gameTime,
-                        offset, (laserDistance - offset - offset2 + (1 - shapeIndent)), ARGB.color(202, 214, 224));
-            }
-            poseStack.popPose();
+    public static void submitLaser(PoseStack poseStack, SubmitNodeCollector collector, Direction direction, float length, boolean impact) {
+        Vector3f from = new Vector3f(0.5F);
+        Vector3f to = new Vector3f(direction.getUnitVec3f()).mul(length).add(0.5F, 0.5F, 0.5F);
+        LaserBeamRenderer.submitBeam(poseStack, collector, from, to, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN);
+        if (impact) {
+            LaserBeamRenderer.submitFlare(poseStack, collector, to, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN);
         }
     }
 

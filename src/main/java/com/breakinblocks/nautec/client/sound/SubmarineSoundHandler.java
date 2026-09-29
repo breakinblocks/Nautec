@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.client.sound;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.breakinblocks.nautec.registries.NTParticles;
 import com.breakinblocks.nautec.registries.NTSounds;
 import net.minecraft.client.Minecraft;
@@ -143,17 +144,13 @@ public final class SubmarineSoundHandler {
             }
 
             Vec3 forward = this.submarine.getForward();
-            Vec3 right = new Vec3(0D, 1D, 0D).cross(forward).normalize();
             for (int beam = 0; beam < 2; beam++) {
                 float length = this.submarine.getLaserLength(beam == 0);
                 if (length <= 0F) {
                     continue;
                 }
 
-                Vec3 muzzle = this.submarine.position()
-                        .add(forward.scale(2D))
-                        .add(right.scale(beam == 0 ? -1D : 1D))
-                        .add(0D, 0.3D, 0D);
+                Vec3 muzzle = SubmarineModules.laserMuzzle(this.submarine.position(), forward, beam == 0);
                 Vec3 impact = muzzle.add(forward.scale(length));
                 this.submarine.level().addParticle(NTParticles.LASER_SPARK.get(), impact.x, impact.y, impact.z,
                         -forward.x * 0.08D, 0.02D, -forward.z * 0.08D);

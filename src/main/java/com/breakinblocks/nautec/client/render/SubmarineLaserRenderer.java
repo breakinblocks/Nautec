@@ -1,22 +1,18 @@
 package com.breakinblocks.nautec.client.render;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
-import com.breakinblocks.nautec.client.render.LaserRendererHelper;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public final class SubmarineLaserRenderer {
-    private static final int BEAM_COLOR = 0xFFFF6A50;
-    private static final float BEAM_RADIUS = 0.09F;
-    private static final float GLOW_RADIUS = 0.16F;
-    private static final double MUZZLE_SIDE = 1.0D;
-    private static final double MUZZLE_FORWARD = 2.0D;
-    private static final double MUZZLE_UP = 0.3D;
+    private static final float BEAM_HALF_WIDTH = 0.24F;
+    private static final float MUZZLE_FLARE_RADIUS = 0.3F;
+    private static final float IMPACT_FLARE_RADIUS = 0.6F;
 
     private SubmarineLaserRenderer() {
     }
@@ -30,40 +26,23 @@ public final class SubmarineLaserRenderer {
         float yaw = Mth.rotLerp(partialTick, submarine.yRotO, submarine.getYRot());
         float pitch = Mth.rotLerp(partialTick, submarine.xRotO, submarine.getXRot());
         Vec3 position = submarine.getPosition(partialTick);
-        long gameTime = submarine.level().getGameTime();
-
-        float scroll = LaserRendererHelper.beamScroll(gameTime, partialTick);
-        float spin = LaserRendererHelper.beamSpin(gameTime, partialTick);
+        Vec3 forward = Vec3.directionFromRotation(pitch, yaw);
 
         for (int beam = 0; beam < 2; beam++) {
-            float length = submarine.getLaserLength(beam == 0);
+            boolean left = beam == 0;
+            float length = submarine.getLaserLength(left);
             if (length <= 0F) {
                 continue;
             }
 
-            poseStack.pushPose();
-            poseStack.translate(position.x - cameraPos.x, position.y - cameraPos.y, position.z - cameraPos.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(180F - yaw));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-pitch));
-            poseStack.translate(beam == 0 ? MUZZLE_SIDE : -MUZZLE_SIDE, MUZZLE_UP, MUZZLE_FORWARD);
-            poseStack.mulPose(Axis.XP.rotationDegrees(90F));
-
-            float coreV1 = -1.0F + scroll;
-            float coreV0 = length * (0.5F / BEAM_RADIUS) + coreV1;
-            float glowV0 = length + coreV1;
-
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.YP.rotationDegrees(spin));
-            collector.submitCustomGeometry(poseStack, RenderTypes.beaconBeam(LaserRendererHelper.BEAM_LOCATION, false),
-                    (pose, buffer) -> LaserRendererHelper.beamColumnAlongY(pose, buffer, BEAM_COLOR,
-                            0F, length, BEAM_RADIUS, coreV0, coreV1));
-            poseStack.popPose();
-
-            collector.submitCustomGeometry(poseStack, RenderTypes.beaconBeam(LaserRendererHelper.BEAM_LOCATION, true),
-                    (pose, buffer) -> LaserRendererHelper.beamColumnAlongY(pose, buffer, ARGB.color(48, BEAM_COLOR),
-                            0F, length, GLOW_RADIUS, glowV0, coreV1));
-
-            poseStack.popPose();
+            Vec3 muzzleWorld = SubmarineModules.laserMuzzle(position, forward, left);
+            Vector3f muzzle = muzzleWorld.subtract(cameraPos).toVector3f();
+            Vector3f end = muzzleWorld.add(forward.scale(length)).subtract(cameraPos).toVector3f();
+            LaserBeamRenderer.submitBeam(poseStack, collector, muzzle, end, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN);
+            LaserBeamRenderer.submitFlare(poseStack, collector, muzzle, MUZZLE_FLARE_RADIUS, LaserBeamRenderer.CYAN);
+            if (length < NTConfig.submarineLaserRange - 0.01D) {
+                LaserBeamRenderer.submitFlare(poseStack, collector, end, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN);
+            }
         }
     }
 }

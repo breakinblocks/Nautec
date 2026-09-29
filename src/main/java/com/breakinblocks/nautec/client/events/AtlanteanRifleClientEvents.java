@@ -41,12 +41,6 @@ public final class AtlanteanRifleClientEvents {
     private static final double MUZZLE_SPREAD = 0.22D;
     private static final float CRACKLE_CHANCE = 0.14F;
 
-    private static final int MUZZLE_FLOW_COLD = 2;
-    private static final int MUZZLE_FLOW_HOT = 4;
-    private static final double MUZZLE_FLOW_SPEED = 0.45D;
-    private static final double MUZZLE_FLOW_SPREAD = 0.06D;
-    private static final float MUZZLE_POP_CHANCE = 0.35F;
-
     private AtlanteanRifleClientEvents() {
     }
 
@@ -78,7 +72,6 @@ public final class AtlanteanRifleClientEvents {
             if (AtlanteanRifleItem.isFiring(player)) {
                 float ramp = AtlanteanRifleItem.rampProgress(AtlanteanRifleItem.firingTicks(player, 1.0F));
                 spawnImpact(level, player, ramp);
-                streamMuzzle(minecraft, level, player, ramp);
                 shedSparks(minecraft, level, player, ramp);
             }
         }
@@ -108,24 +101,6 @@ public final class AtlanteanRifleClientEvents {
         if (random.nextFloat() < ramp) {
             level.addParticle(ParticleTypes.ELECTRIC_SPARK, end.x, end.y, end.z,
                     (random.nextDouble() - 0.5D) * IMPACT_SPREAD, random.nextDouble() * IMPACT_LIFT, (random.nextDouble() - 0.5D) * IMPACT_SPREAD);
-        }
-    }
-
-    private static void streamMuzzle(Minecraft minecraft, ClientLevel level, Player player, float ramp) {
-        RandomSource random = level.getRandom();
-        Vec3 muzzle = AtlanteanRifleBeamRenderer.muzzleWorld(player);
-        Vec3 look = player.getLookAngle();
-        int count = Math.round(Mth.lerp(ramp, MUZZLE_FLOW_COLD, MUZZLE_FLOW_HOT));
-        for (int i = 0; i < count; i++) {
-            Vec3 velocity = look.scale(MUZZLE_FLOW_SPEED * (0.6D + random.nextDouble() * 0.8D))
-                    .add((random.nextDouble() - 0.5D) * MUZZLE_FLOW_SPREAD,
-                            (random.nextDouble() - 0.5D) * MUZZLE_FLOW_SPREAD,
-                            (random.nextDouble() - 0.5D) * MUZZLE_FLOW_SPREAD);
-            level.addParticle(ParticleTypes.SCULK_SOUL, muzzle.x, muzzle.y, muzzle.z, velocity.x, velocity.y, velocity.z);
-        }
-        if (random.nextFloat() < MUZZLE_POP_CHANCE) {
-            Vec3 velocity = look.scale(MUZZLE_FLOW_SPEED * 0.5D);
-            level.addParticle(ParticleTypes.SCULK_CHARGE_POP, muzzle.x, muzzle.y, muzzle.z, velocity.x, velocity.y, velocity.z);
         }
     }
 

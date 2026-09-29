@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.breakinblocks.nautec.client.SubmarineFxHooks;
 
-public record TeleportFxPayload(int entityId, int stage, double x, double y, double z, float yaw, int ticks) implements CustomPacketPayload {
+public record TeleportFxPayload(int entityId, int stage, double x, double y, double z, float yaw, float pitch, int ticks) implements CustomPacketPayload {
     public static final int STAGE_CHARGE = 0;
     public static final int STAGE_ARRIVE = 1;
     public static final int STAGE_ABORT = 2;
@@ -22,6 +22,7 @@ public record TeleportFxPayload(int entityId, int stage, double x, double y, dou
             ByteBufCodecs.DOUBLE, TeleportFxPayload::y,
             ByteBufCodecs.DOUBLE, TeleportFxPayload::z,
             ByteBufCodecs.FLOAT, TeleportFxPayload::yaw,
+            ByteBufCodecs.FLOAT, TeleportFxPayload::pitch,
             ByteBufCodecs.VAR_INT, TeleportFxPayload::ticks,
             TeleportFxPayload::new
     );

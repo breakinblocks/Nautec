@@ -79,6 +79,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     public static final int MAX_PASSENGERS = 2;
     public static final float MODEL_Y_OFFSET = 3F / 16F;
     public static final float MODEL_Z_OFFSET = 2.5F / 16F;
+    public static final double PORTAL_DISTANCE = 6D;
+    public static final double PORTAL_AXIS_HEIGHT = 1D;
+    public static final double EXIT_PORTAL_DISTANCE = 5.5D;
+    public static final int EXIT_TICKS = 16;
     public static final float MODEL_SCALE = 4.5F;
 
     private static final double DRIVER_SEAT_Z = -0.5D / 16D * MODEL_SCALE;
@@ -101,6 +105,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> DATA_STEALTHED =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_CHARGING =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_EXITING =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_LASER_ACTIVE =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
@@ -125,7 +131,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final double MOVEMENT_EPSILON = 1.0E-4;
 
     private static final double AGGRO_TRANSFER_RANGE = 32D;
-    private static final double TELEPORT_DRIFT = 0.05D;
+    private static final double PORTAL_PULL_PEAK = 0.36D;
+    private static final double EXIT_PUSH = 0.09D;
     private static final Identifier TOUGHNESS_MODIFIER = Nautec.rl("submarine_armor_module_toughness");
     private static final Identifier KNOCKBACK_MODIFIER = Nautec.rl("submarine_armor_module_knockback");
 
@@ -137,6 +144,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private Input input = Input.EMPTY;
     private boolean freeLook;
     private boolean steeringLast;
+    private @Nullable Vec3 portalTarget;
+    private int chargeAge;
+    private int exitAge;
     private boolean descending;
     private float lastDriverYaw;
     private float lastDriverPitch;
@@ -179,6 +189,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         entityData.define(DATA_SPEED_MULTIPLIER, 1F);
         entityData.define(DATA_STEALTHED, false);
         entityData.define(DATA_CHARGING, false);
+        entityData.define(DATA_EXITING, false);
         entityData.define(DATA_LASER_ACTIVE, false);
         entityData.define(DATA_LASER_LEFT, 0F);
         entityData.define(DATA_LASER_RIGHT, 0F);
@@ -209,6 +220,26 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
     public void setCharging(boolean charging) {
         this.entityData.set(DATA_CHARGING, charging);
+    }
+
+    public boolean isExiting() {
+        return this.entityData.get(DATA_EXITING);
+    }
+
+    public void setExiting(boolean exiting) {
+        this.entityData.set(DATA_EXITING, exiting);
+    }
+
+    public static Vec3 portalCenter(Vec3 position, float yaw, float pitch) {
+        return position.add(0D, PORTAL_AXIS_HEIGHT, 0D).add(Vec3.directionFromRotation(pitch, yaw).scale(PORTAL_DISTANCE));
+    }
+
+    public static Vec3 exitPortalCenter(Vec3 position, float yaw, float pitch) {
+        return position.add(0D, PORTAL_AXIS_HEIGHT, 0D).add(Vec3.directionFromRotation(pitch, yaw).scale(-EXIT_PORTAL_DISTANCE));
+    }
+
+    public void setPortalTarget(Vec3 target) {
+        this.portalTarget = target;
     }
 
     public boolean isLaserActive() {
@@ -354,6 +385,22 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             this.input = driver.getLastClientInput();
         }
 
+        if (isCharging()) {
+            this.chargeAge++;
+        } else {
+            this.chargeAge = 0;
+            this.portalTarget = null;
+        }
+
+        if (isExiting()) {
+            this.exitAge++;
+            if (!level().isClientSide() && this.exitAge >= EXIT_TICKS) {
+                setExiting(false);
+            }
+        } else {
+            this.exitAge = 0;
+        }
+
         super.tick();
 
         if (!this.posTracked) {
@@ -413,24 +460,32 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         boolean submerged = isInWater();
         Vec3 motion = getDeltaMovement();
 
+        boolean charging = isCharging();
         if (driver != null) {
-            boolean steering = !this.freeLook;
+            boolean steering = !this.freeLook && !charging;
             if (steering) {
                 aimSteer(driver, submerged);
             }
             this.steeringLast = steering;
-            if (!submerged) {
+            if (!submerged && !charging) {
                 levelOut();
             }
             setYHeadRot(getYRot());
             setYBodyRot(getYRot());
-        } else {
+        } else if (!charging) {
             levelOut();
         }
 
-        if (isCharging()) {
-            motion = motion.add(getForward().scale(TELEPORT_DRIFT));
-        } else if (driver != null && getPowerStored() > 0) {
+        if (charging) {
+            setDeltaMovement(portalPull());
+            return;
+        }
+
+        if (isExiting() && this.exitAge < EXIT_TICKS) {
+            motion = motion.add(getForward().scale(EXIT_PUSH * (1D - (double) this.exitAge / EXIT_TICKS)));
+        }
+
+        if (driver != null && getPowerStored() > 0) {
             Input controls = this.input;
             float throttle = 0F;
             if (controls.forward()) {
@@ -474,6 +529,20 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         }
 
         setDeltaMovement(motion);
+    }
+
+    private Vec3 portalPull() {
+        if (this.portalTarget == null) {
+            this.portalTarget = portalCenter(position(), getYRot(), getXRot());
+        }
+
+        float progress = Mth.clamp((float) this.chargeAge / SubmarineModules.TELEPORT_CHARGE_TICKS, 0F, 1F);
+        Vec3 toPortal = this.portalTarget.subtract(position().add(0D, PORTAL_AXIS_HEIGHT, 0D));
+        double distance = toPortal.length();
+        if (distance < 1.0E-3D) {
+            return Vec3.ZERO;
+        }
+        return toPortal.scale(Math.min(distance, PORTAL_PULL_PEAK * progress * progress) / distance);
     }
 
     private void levelOut() {

@@ -629,7 +629,7 @@ public final class SubmarineTests {
             });
         });
 
-        r.add("submarine/teleport_validation", 90, helper -> {
+        r.add("submarine/teleport_validation", SubmarineModules.TELEPORT_CHARGE_TICKS + SubmarineEntity.EXIT_TICKS + 30, helper -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
             submarine.setPowerStored(NTConfig.submarinePowerCapacity);
             SubmarineModules modules = submarine.getModules();
@@ -663,6 +663,40 @@ public final class SubmarineTests {
                 helper.assertFalse(submarine.isCharging(), "the jump should have finished");
                 helper.assertTrue(submarine.blockPosition().equals(helper.absolutePos(wetTarget)),
                         "the submarine should have arrived at the anchor, got " + submarine.blockPosition());
+                helper.assertTrue(submarine.isExiting(), "the submarine should be pushing out of the exit portal");
+            });
+
+            helper.runAfterDelay(SubmarineModules.TELEPORT_CHARGE_TICKS + SubmarineEntity.EXIT_TICKS + 10, () -> {
+                helper.assertFalse(submarine.isExiting(), "the exit push should have finished");
+                helper.succeed();
+            });
+        });
+
+        r.add("submarine/charging_locks_heading_and_pulls_into_portal", SubmarineModules.TELEPORT_CHARGE_TICKS + 30, helper -> {
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 24, 4));
+            submarine.snapTo(submarine.getX(), submarine.getY(), submarine.getZ(), 90F, -15F);
+            helper.assertFalse(SubmarineCollision.blocked(helper.getLevel(), submarine, submarine.position(), 90F, -15F),
+                    "the tilted hull should start in open air above the arena");
+            Vec3 portal = SubmarineEntity.portalCenter(submarine.position(), 90F, -15F);
+            Vec3 pivot = submarine.position().add(0D, SubmarineEntity.PORTAL_AXIS_HEIGHT, 0D);
+            helper.assertTrue(portal.subtract(pivot).normalize().distanceTo(submarine.getForward()) < 1.0E-4D,
+                    "the portal should sit on the hull's forward axis");
+            submarine.setCharging(true);
+
+            helper.runAfterDelay(SubmarineModules.TELEPORT_CHARGE_TICKS / 2, () -> {
+                helper.assertValueEqual(90F, submarine.getYRot(), "yaw while charging");
+                helper.assertValueEqual(-15F, submarine.getXRot(), "pitch while charging");
+                double remaining = portal.distanceTo(submarine.position().add(0D, SubmarineEntity.PORTAL_AXIS_HEIGHT, 0D));
+                helper.assertTrue(remaining < SubmarineEntity.PORTAL_DISTANCE - 0.3D,
+                        "the hull should already be moving into the portal, " + remaining + " left");
+            });
+
+            helper.runAfterDelay(SubmarineModules.TELEPORT_CHARGE_TICKS + 10, () -> {
+                double remaining = portal.distanceTo(submarine.position().add(0D, SubmarineEntity.PORTAL_AXIS_HEIGHT, 0D));
+                helper.assertTrue(remaining < 0.25D, "the hull should have been pulled into the portal, " + remaining + " left");
+                helper.assertValueEqual(90F, submarine.getYRot(), "yaw at the end of the charge");
+                helper.assertValueEqual(-15F, submarine.getXRot(), "pitch at the end of the charge");
+                submarine.discard();
                 helper.succeed();
             });
         });

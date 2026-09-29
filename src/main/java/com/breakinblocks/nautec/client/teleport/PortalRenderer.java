@@ -11,6 +11,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import org.joml.Quaternionf;
 
 public final class PortalRenderer {
     public static final Identifier SPIRAL = Nautec.rl("textures/effect/teleport_spiral.png");
@@ -34,13 +35,13 @@ public final class PortalRenderer {
         }
 
         Vec3 at = TeleportFxManager.portalPos();
-        float yaw = TeleportFxManager.portalYaw();
+        Vec3 facing = TeleportFxManager.portalFacing();
         float spin = (Minecraft.getInstance().level == null ? 0F
                 : Minecraft.getInstance().level.getGameTime() + partialTick) * 2.5F;
 
         poseStack.pushPose();
         poseStack.translate(at.x - cameraPos.x, at.y - cameraPos.y, at.z - cameraPos.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180F - yaw));
+        poseStack.mulPose(new Quaternionf().rotationTo(0F, 0F, 1F, (float) facing.x, (float) facing.y, (float) facing.z));
 
         for (int layer = 0; layer < RADII.length; layer++) {
             float radius = RADII[layer] * progress;

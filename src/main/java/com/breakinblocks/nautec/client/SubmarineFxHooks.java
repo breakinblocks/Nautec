@@ -2,7 +2,9 @@ package com.breakinblocks.nautec.client;
 
 import com.breakinblocks.nautec.client.sonar.NautecSonarManager;
 import com.breakinblocks.nautec.client.sound.SubmarineSoundHandler;
+import com.breakinblocks.nautec.client.teleport.ArrivalWaves;
 import com.breakinblocks.nautec.client.teleport.TeleportFxManager;
+import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.network.SonarPingPayload;
 import com.breakinblocks.nautec.network.TeleportFxPayload;
 import com.breakinblocks.nautec.registries.NTParticles;
@@ -48,12 +50,18 @@ public final class SubmarineFxHooks {
             case TeleportFxPayload.STAGE_CHARGE -> {
                 SubmarineSoundHandler.play(center, NTSounds.SUBMARINE_TELEPORT_CHARGE.get(), 1F, 1F);
                 spawnSwirl(level, center);
-                TeleportFxManager.beginCharge(fx.entityId(), portalAhead(fx), fx.yaw(), fx.ticks());
+                Vec3 portal = portalAhead(fx);
+                if (level.getEntity(fx.entityId()) instanceof SubmarineEntity submarine) {
+                    submarine.setPortalTarget(portal);
+                }
+                TeleportFxManager.beginCharge(fx.entityId(), portal, forward(fx), fx.ticks());
             }
             case TeleportFxPayload.STAGE_ARRIVE -> {
                 SubmarineSoundHandler.play(center, NTSounds.SUBMARINE_TELEPORT_WHOOSH.get(), 1F, 1F);
                 spawnSwirl(level, center);
-                TeleportFxManager.beginArrival(fx.entityId(), portalAhead(fx), fx.yaw());
+                Vec3 exit = SubmarineEntity.exitPortalCenter(new Vec3(fx.x(), fx.y(), fx.z()), fx.yaw(), fx.pitch());
+                TeleportFxManager.beginArrival(fx.entityId(), exit, forward(fx));
+                ArrivalWaves.begin(exit);
             }
             case TeleportFxPayload.STAGE_ABORT -> {
                 if (TeleportFxManager.trackedEntity() == fx.entityId()) TeleportFxManager.abort();
@@ -62,8 +70,11 @@ public final class SubmarineFxHooks {
     }
 
     private static Vec3 portalAhead(TeleportFxPayload fx) {
-        float yaw = fx.yaw() * ((float) Math.PI / 180F);
-        return new Vec3(fx.x() - Math.sin(yaw) * 6D, fx.y() + 1D, fx.z() + Math.cos(yaw) * 6D);
+        return SubmarineEntity.portalCenter(new Vec3(fx.x(), fx.y(), fx.z()), fx.yaw(), fx.pitch());
+    }
+
+    private static Vec3 forward(TeleportFxPayload fx) {
+        return Vec3.directionFromRotation(fx.pitch(), fx.yaw());
     }
 
     private static void spawnSwirl(ClientLevel level, Vec3 center) {

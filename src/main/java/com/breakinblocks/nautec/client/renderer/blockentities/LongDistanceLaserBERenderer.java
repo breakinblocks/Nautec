@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -48,24 +47,7 @@ public class LongDistanceLaserBERenderer implements BlockEntityRenderer<LongDist
     @Override
     public void submit(LaserRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         for (LaserRenderState.Beam beam : state.beams) {
-            Direction direction = beam.direction();
-            int laserDistance = beam.laserDistance();
-
-            LaserBlockEntityRenderer.submitOuterBeam(poseStack, collector, direction, laserDistance, 0, state.laserTime, state.gameTime);
-
-            poseStack.pushPose();
-            {
-                poseStack.mulPose(direction.getRotation());
-                poseStack.scale(0.25f, 1, 0.25f);
-                switch (direction) {
-                    case UP -> poseStack.translate(1.5f, 0, 1.5f);
-                    case DOWN, SOUTH, WEST -> poseStack.translate(1.5f, 0, -2.5f);
-                    case NORTH, EAST -> poseStack.translate(-2.5f, 0, -2.5f);
-                }
-                LaserBlockEntityRenderer.submitInnerBeam(poseStack, collector, state.partialTick, state.gameTime,
-                        0, laserDistance, ARGB.color(202, 214, 224));
-            }
-            poseStack.popPose();
+            LaserBlockEntityRenderer.submitLaser(poseStack, collector, beam.direction(), beam.laserDistance() - 0.5F, true);
         }
     }
 
