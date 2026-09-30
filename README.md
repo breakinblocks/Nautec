@@ -114,8 +114,9 @@ power, charges in a Charger, and keeps its crew breathing while it is sealed and
 GeckoLib is a required dependency; it animates the submersible.
 
 JEI for recipes, Jade for in-world block info, Curios for equipment slots, and Durability Display.
-The in-game guide book is built on Modonomicon and is the intended starting point: craft it and work
-forward from "An Introduction to Laser Power".
+The in-game guide is built on GuideMe, an optional dependency, and is the intended starting point: craft
+the NauTec Guide and work forward from Laser Power. With GuideMe installed, holding its guide key over
+any NauTec item jumps to that item's page.
 
 ## Configuration
 
@@ -187,8 +188,8 @@ biome family without hardcoding biome ids.
 pack running a custom overworld preset needs to add that preset to `injectableWorldPresets` for the
 biomes to appear.
 
-**Guide book.** The in-game guide is a Modonomicon book, so entries and categories are datapack
-content and can be extended or replaced alongside your own recipes.
+**Guide book.** The in-game guide is a GuideMe guide (`nautec:guide`). Its pages are Markdown files under
+`assets/nautec/guides/nautec/guide/`, so a resource pack can add or replace pages.
 
 [Release readiness](docs/release-readiness.md) tracks implementation status and release gates.
 [Manual testing](docs/manual-testing.md) lists behavior that needs client and multiplayer verification.

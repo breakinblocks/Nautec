@@ -70,6 +70,11 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

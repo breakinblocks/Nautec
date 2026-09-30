@@ -1,7 +1,5 @@
 package com.breakinblocks.nautec.datagen;
 
-import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvider;
-import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.generated.BacteriaMaterials;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -9,6 +7,7 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.utils.Utils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -17,9 +16,9 @@ import java.util.function.Supplier;
 import static com.breakinblocks.nautec.registries.NTBacterias.*;
 import static com.breakinblocks.nautec.registries.NTItems.*;
 
-public class EnUsProvider extends AbstractModonomiconLanguageProvider {
-    public EnUsProvider(PackOutput output, ModonomiconLanguageProvider cacheProvider) {
-        super(output, Nautec.MODID, "en_us", cacheProvider);
+public class EnUsProvider extends LanguageProvider {
+    public EnUsProvider(PackOutput output) {
+        super(output, Nautec.MODID, "en_us");
     }
 
     @Override
@@ -294,6 +293,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         
         addItem("nautec_guide", "Nautec Guide");
         add("nautec_guide.desc.0","Nautec's Guide");
+        add("nautec_guide.missing_guideme", "Install GuideMe to read the NauTec guide");
 
         addBlock("rusty_crate", "Rusty Crate");
         addBlock("polished_prismarine", "Polished Prismarine");

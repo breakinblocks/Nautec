@@ -69,6 +69,11 @@ public record ItemEtchingRecipe(IngredientWithCount ingredient, ItemStackTemplat
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

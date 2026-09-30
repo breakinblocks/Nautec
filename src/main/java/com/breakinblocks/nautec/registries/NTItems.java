@@ -1,10 +1,10 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
 import com.breakinblocks.nautec.content.items.AirBottleItem;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.breakinblocks.nautec.content.items.AquarineArmorItem;
+import com.breakinblocks.nautec.content.items.NautecGuideItem;
 import com.breakinblocks.nautec.content.items.BatteryItem;
 import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
 import com.breakinblocks.nautec.content.items.GraftingToolItem;
@@ -37,7 +37,6 @@ import net.minecraft.world.item.component.Weapon;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -74,7 +73,8 @@ public final class NTItems {
         BLOCK_ITEMS.add(blockItem);
     }
 
-    public static final Supplier<Item> NAUTEC_GUIDE;
+    public static final DeferredItem<NautecGuideItem> NAUTEC_GUIDE = registerItem("nautec_guide",
+            NautecGuideItem::new, new Item.Properties().stacksTo(1));
 
     public static final DeferredItem<Item> AQUARINE_STEEL_INGOT = registerItem("aquarine_steel_ingot",
             Item::new, new Item.Properties());
@@ -293,13 +293,5 @@ public final class NTItems {
             CREATIVE_TAB_ITEMS.add(toReturn);
         }
         return toReturn;
-    }
-
-    static {
-        if (ModList.get().isLoaded("modonomicon")) {
-            NAUTEC_GUIDE = ModonomiconCompat.registerItem();
-        } else {
-            NAUTEC_GUIDE = null;
-        }
     }
 }

@@ -13,7 +13,6 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -36,9 +35,7 @@ public class NautecGameTests {
                 Nautec.rl("default"),
                 new TestEnvironmentDefinition.AllOf());
 
-        if (ModList.get().isLoaded("modonomicon")) {
-            reg(event, "all_book_recipe_ids_resolve", BookRecipeIdGameTest::allBookRecipeIdsResolve, env, 100);
-        }
+        reg(event, "all_guide_references_resolve", GuideReferencesGameTest::allGuideReferencesResolve, env, 100);
 
         try {
             Class<?> suite = Class.forName("com.breakinblocks.nautec.gametest.suite.NTGameTestRegistration");

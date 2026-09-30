@@ -1,0 +1,9 @@
+{
+  "item_settings": {
+    "display_name": {
+      "type": "translatable",
+      "translate": "item.nautec.nautec_guide"
+    }
+  },
+  "default_language": "en_us"
+}

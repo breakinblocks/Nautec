@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
-import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
@@ -80,9 +79,9 @@ public final class NTEvents {
             Player player = event.getEntity();
             AugmentHelper.restoreAugments(player);
 
-            if (ModList.get().isLoaded("modonomicon")) {
+            if (ModList.get().isLoaded("guideme")) {
                 if (!player.getData(NTAttachmentTypes.HAS_NAUTEC_GUIDE.get()) && NTConfig.spawnBookInInventory) {
-                    ItemUtils.giveItemToPlayer(player, ModonomiconCompat.getItemStack());
+                    ItemUtils.giveItemToPlayer(player, NTItems.NAUTEC_GUIDE.toStack());
                     player.setData(NTAttachmentTypes.HAS_NAUTEC_GUIDE.get(), true);
                 }
             }

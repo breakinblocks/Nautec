@@ -71,6 +71,11 @@ public record PressureForgingRecipe(Ingredient ingredient, ItemStackTemplate res
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

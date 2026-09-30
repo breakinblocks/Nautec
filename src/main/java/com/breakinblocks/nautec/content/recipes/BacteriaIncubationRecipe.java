@@ -61,6 +61,11 @@ public record BacteriaIncubationRecipe(ResourceKey<Bacteria> bacteria, Ingredien
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

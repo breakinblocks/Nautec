@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.api.blockentities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
-import com.breakinblocks.nautec.utils.ParticleUtils;
 import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -239,7 +238,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                 ItemEntity cookingItem = entry.getKey();
                 int cookTime = entry.getValue();
 
-                if (!cookingItem.isAlive() || !box.contains(cookingItem.position())) {
+                if (!cookingItem.isAlive() || !box.intersects(cookingItem.getBoundingBox())) {
                     iterator.remove();
                     continue;
                 }
@@ -257,8 +256,8 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                         iterator.remove();
                     } else {
                         activeTransformation.put(cookingItem, cookTime + 1);
-                        if (level.isClientSide()) {
-                            ParticleUtils.spawnParticlesAroundItem(cookingItem, level, ParticleTypes.END_ROD);
+                        if (level instanceof ServerLevel serverLevel && cookTime % 5 == 0) {
+                            serverLevel.sendParticles(ParticleTypes.END_ROD, cookingItem.getX(), cookingItem.getY() + 0.25, cookingItem.getZ(), 6, 0.25, 0.25, 0.25, 0.01);
                         }
                     }
                 }

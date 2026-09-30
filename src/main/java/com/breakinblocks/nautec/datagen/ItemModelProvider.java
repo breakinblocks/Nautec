@@ -152,9 +152,7 @@ public class ItemModelProvider extends ModelProvider {
         handAuthoredItem(NTItems.VALVE.get());
         handAuthoredItem(NTItems.ANCIENT_VALVE.get());
         handAuthoredItem(NTBlocks.BACTERIAL_ANALYZER.asItem());
-        if (NTItems.NAUTEC_GUIDE != null) {
-            handAuthoredItem(NTItems.NAUTEC_GUIDE.get());
-        }
+        handAuthoredItem(NTItems.NAUTEC_GUIDE.get());
 
         itemModels.itemModelOutput.accept(NTItems.NEPTUNES_TRIDENT.get(), ItemModelUtils.select(
                 new DisplayContext(),

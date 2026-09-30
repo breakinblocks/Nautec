@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.compat.modonomicon.datagen.ModonomiconDatagen;
 import com.breakinblocks.nautec.datagen.loot.BlockLootTableProvider;
 import com.breakinblocks.nautec.datagen.loot.ChestLootTableProvider;
 import com.breakinblocks.nautec.datagen.loot.EntityLootTableProvider;
@@ -13,7 +12,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -53,9 +51,6 @@ public class DataGatherer {
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
         generator.addProvider(true, new BacteriaMaterialProvider(output, lookupProvider));
         generator.addProvider(true, new LithostitchedInjectorProvider(output));
-
-        if (ModList.get().isLoaded("modonomicon")) {
-            ModonomiconDatagen.register(event);
-        }
+        generator.addProvider(true, new EnUsProvider(output));
     }
 }

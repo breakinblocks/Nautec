@@ -68,6 +68,11 @@ public record AugmentationRecipe(Item augmentItem, String desc, List<IngredientW
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

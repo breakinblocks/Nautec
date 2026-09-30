@@ -1,0 +1,78 @@
+---
+navigation:
+  title: Ancient Machine Parts
+  icon: nautec:ancient_valve
+  position: 5
+  parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:burnt_coil
+  - nautec:rusty_gear
+  - nautec:gear
+  - nautec:ancient_valve
+  - nautec:valve
+  - nautec:damaged_aquatic_chip
+  - nautec:aquatic_chip
+---
+
+# <Color id="light_purple">Ancient Machine Parts</Color>
+
+<Column alignItems="center" fullWidth={true}>
+  <ItemImage id="ancient_valve" scale="2"/>
+  Broken parts from the sea floor that you repair before a recipe will take them.
+</Column>
+
+Gears, valves, coils, chips and whisks come from the sea floor already damaged, and each kind is repaired in its own way. [Salvage](salvage.md) lists where they turn up.
+
+| Found | Repaired | How |
+|---|---|---|
+| <ItemLink id="rusty_gear"/> | <ItemLink id="gear"/> | [Etching](etching.md) |
+| <ItemLink id="ancient_valve"/> | <ItemLink id="valve"/> | [Etching](etching.md) |
+| <ItemLink id="burnt_coil"/> | Laser Channeling Coil | [Item Transformation](item_transformation.md) at purity 1.5 |
+| <ItemLink id="damaged_aquatic_chip"/> | <ItemLink id="aquatic_chip"/> | crafting |
+| Broken Whisk | Whisk | crafting |
+
+***
+
+<Row>
+  <ItemImage id="gear"/>
+  ### <Color id="aqua">Gear</Color>
+</Row>
+
+Drop Rusty Gears into Etching Acid. Gears go into the Aquarine Steel pickaxe, axe and shovel, the Mixer, the Fishing Station, the Deep Sea Drain and two augments.
+
+***
+
+<Row>
+  <ItemImage id="valve"/>
+  ### <Color id="aqua">Valve</Color>
+</Row>
+
+Drop Ancient Valves into Etching Acid. Valves go into the Aquarine Steel chestplate and leggings and the Deep Sea Drain.
+
+***
+
+<Row>
+  <ItemImage id="burnt_coil"/>
+  ### <Color id="aqua">Laser Channeling Coil</Color>
+</Row>
+
+Hold a Burnt Coil in a purity 1.5 beam for 10 seconds. Reach that purity with a Prismarine Crystal, a Bacterial Fuel Cell or a Focusing Lens, as [Item Transformation](item_transformation.md) explains. The coil goes into Aquarine Steel tools, the Charger, the Prismatic Battery and many machines.
+
+***
+
+<Row>
+  <ItemImage id="aquatic_chip"/>
+  ### <Color id="aqua">Aquatic Chip</Color>
+</Row>
+
+Craft a Damaged Aquatic Chip with Prismarine Shards. Aquatic Chips go into the Incubator, Bio Reactor and Bacterial Fuel Cell, the Pressure Forge, the Resonance Chamber, every Sea Scout module and most crafted augments. Lucky zone treasure in the Bioluminescent Grove sometimes gives one ready made.
+
+<Recipe id="nautec:aquatic_chip"/>
+
+***
+
+## <Color id="gold">Whisk</Color>
+
+Craft a Broken Whisk with Cast Iron Nuggets. The Whisk is needed for the [Mixer](nautec:laser_chemistry/mixer.md). Broken Whisks come from Drowned and lucky zone treasure.
+
+<Recipe id="nautec:whisk"/>

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -31,12 +32,14 @@ import com.breakinblocks.nautec.utils.ItemUtils;
 
 public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
     public static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 8);
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     public AquaticCatalystBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState()
                 .setValue(BlockStateProperties.FACING, Direction.NORTH)
                 .setValue(STAGE, 0)
+                .setValue(ACTIVE, false)
         );
     }
 
@@ -57,7 +60,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(BlockStateProperties.FACING, STAGE));
+        super.createBlockStateDefinition(builder.add(BlockStateProperties.FACING, STAGE, ACTIVE));
     }
 
     @Override

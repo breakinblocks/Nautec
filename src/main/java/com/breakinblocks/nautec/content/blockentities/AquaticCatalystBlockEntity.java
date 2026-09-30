@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -33,6 +34,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private int duration;
     private Identifier currentRecipeId;
     private Identifier nextRecipeId;
+    private int syncedTransfer;
 
     public AquaticCatalystBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
@@ -43,32 +45,52 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     public void commonTick() {
         super.commonTick();
 
-        if (isActive()) {
+        if (level.isClientSide()) {
+            transmitPower(isActive() ? syncedTransfer : 0);
+            return;
+        }
+
+        if (currentRecipe == null) {
+            startNextRecipe();
+        }
+
+        if (currentRecipe != null) {
+            int distance = getLaserDistances().getInt(getBlockState().getValue(BlockStateProperties.FACING).getOpposite());
+            if (distance > 0) {
+                int amount = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
+                transmitPower(amount);
+                setPurity(currentRecipe.value().purity());
+                duration++;
+            }
             if (duration >= currentRecipe.value().duration()) {
                 duration = 0;
                 currentRecipe = null;
-                setPurity(0);
-            } else {
-                int distance = getLaserDistances().getInt(getBlockState().getValue(BlockStateProperties.FACING).getOpposite());
-                if (distance > 0) {
-                    int amount = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
-                    transmitPower(amount);
-                    setPurity(currentRecipe.value().purity());
-                    duration++;
+                startNextRecipe();
+                if (currentRecipe == null) {
+                    setPurity(0);
                 }
             }
-        } else {
-            if (nextRecipe == null && !getItemStackHandler().getStackInSlot(0).isEmpty()) {
-                nextRecipe = getRecipeForCache(getItemStackHandler().getStackInSlot(0));
-            }
-            if (nextRecipe != null) {
-                currentRecipe = nextRecipe;
-                getItemStackHandler().extractItem(0, 1, false);
-            }
+        }
+
+        if (getBlockState().getValue(AquaticCatalystBlock.ACTIVE) != isActive()) {
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AquaticCatalystBlock.ACTIVE, isActive()));
+        }
+    }
+
+    private void startNextRecipe() {
+        if (nextRecipe == null && !getItemStackHandler().getStackInSlot(0).isEmpty()) {
+            nextRecipe = getRecipeForCache(getItemStackHandler().getStackInSlot(0));
+        }
+        if (nextRecipe != null) {
+            currentRecipe = nextRecipe;
+            getItemStackHandler().extractItem(0, 1, false);
         }
     }
 
     public boolean isActive() {
+        if (level != null && level.isClientSide()) {
+            return getBlockState().getValue(AquaticCatalystBlock.ACTIVE);
+        }
         return currentRecipe != null;
     }
 
@@ -105,7 +127,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
     public void setStage() {
         float i = (float) getItemStackHandler().getStackInSlot(0).getCount() / getItemStackHandler().getSlotLimit(0);
-        int stage = (int) (i * 8);
+        int stage = Mth.ceil(i * 8);
         level.setBlockAndUpdate(worldPosition, getBlockState()
                 .setValue(AquaticCatalystBlock.STAGE, stage));
     }
@@ -144,6 +166,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         this.duration = in.getIntOr("duration", 0);
         this.currentRecipeId = in.getString("current_recipe").map(Identifier::parse).orElse(null);
         this.nextRecipeId = in.getString("next_recipe").map(Identifier::parse).orElse(null);
+        this.syncedTransfer = in.getIntOr("transfer", 0);
     }
 
     @Override
@@ -168,7 +191,10 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         super.saveData(out);
 
         out.putInt("duration", duration);
-        if (currentRecipe != null) out.putString("current_recipe", currentRecipe.id().identifier().toString());
+        if (currentRecipe != null) {
+            out.putString("current_recipe", currentRecipe.id().identifier().toString());
+            out.putInt("transfer", currentRecipe.value().powerAmount() / currentRecipe.value().duration());
+        }
         if (nextRecipe != null) out.putString("next_recipe", nextRecipe.id().identifier().toString());
     }
 }

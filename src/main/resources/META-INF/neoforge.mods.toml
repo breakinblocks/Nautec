@@ -32,10 +32,10 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${ mod_id }]]
-modId = "modonomicon"
-type = "required"
-versionRange = "[2.2.0,)"
-ordering = "NONE"
+modId = "guideme"
+type = "optional"
+versionRange = "[26.1,)"
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${ mod_id }]]

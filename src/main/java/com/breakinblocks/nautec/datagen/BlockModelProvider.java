@@ -189,12 +189,14 @@ public class BlockModelProvider extends ModelProvider {
     }
 
     private void aquaticCatalyst(AquaticCatalystBlock block) {
-        PropertyDispatch.C2<MultiVariant, Direction, Integer> dispatch = PropertyDispatch.initial(BlockStateProperties.FACING, AquaticCatalystBlock.STAGE);
+        PropertyDispatch.C3<MultiVariant, Direction, Integer, Boolean> dispatch = PropertyDispatch.initial(BlockStateProperties.FACING, AquaticCatalystBlock.STAGE, AquaticCatalystBlock.ACTIVE);
         for (Direction dir : Direction.values()) {
             for (int stage : AquaticCatalystBlock.STAGE.getPossibleValues()) {
-                dispatch = dispatch.select(dir, stage, rotated(BlockModelGenerators.plainVariant(createActiveACModel(block, stage)),
-                        dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0,
-                        dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360));
+                for (boolean active : AquaticCatalystBlock.ACTIVE.getPossibleValues()) {
+                    dispatch = dispatch.select(dir, stage, active, rotated(BlockModelGenerators.plainVariant(createActiveACModel(block, stage, active)),
+                            dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0,
+                            dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360));
+                }
             }
         }
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(dispatch));
@@ -295,14 +297,15 @@ public class BlockModelProvider extends ModelProvider {
         return new Material(Nautec.rl("block/multiblock/" + NTRegistries.MULTIBLOCK.getKey(multiblock).getPath() + "/" + name));
     }
 
-    private Identifier createActiveACModel(AquaticCatalystBlock block, int stage) {
-        return cube(name(block) + (stage != 0 ? ("_" + stage) : ""),
-                blockTexture(block, "_bottom"),
+    private Identifier createActiveACModel(AquaticCatalystBlock block, int stage, boolean active) {
+        String suffix = active ? "_active" : "";
+        return cube(name(block) + suffix + (stage != 0 ? ("_" + stage) : ""),
+                blockTexture(block, "_bottom" + suffix),
                 blockTexture(block, "_top_" + stage),
-                blockTexture(block, "_side"),
-                blockTexture(block, "_side"),
-                blockTexture(block, "_side"),
-                blockTexture(block, "_side"),
+                blockTexture(block, "_side" + suffix),
+                blockTexture(block, "_side" + suffix),
+                blockTexture(block, "_side" + suffix),
+                blockTexture(block, "_side" + suffix),
                 blockTexture(block, "_side"));
     }
 

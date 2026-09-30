@@ -9,7 +9,6 @@ import com.breakinblocks.nautec.api.items.IBacteriaItem;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
-import com.breakinblocks.nautec.compat.modonomicon.ModonomiconCompat;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import net.minecraft.core.Holder;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -44,10 +42,6 @@ public final class NTCreativeTabs {
                             addPowered(output, item.asItem());
                         }
                     }
-                }
-
-                if (ModList.get().isLoaded("modonomicon")) {
-                    output.accept(ModonomiconCompat.getItemStack());
                 }
 
                 output.accept(NTBlocks.CREATIVE_POWER_SOURCE);

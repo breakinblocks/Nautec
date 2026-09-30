@@ -127,8 +127,10 @@ dependencies {
 
     implementation "maven.modrinth:curios:dRnRThvD"
     implementation "curse.maven:jade-324717:7938398"
-    implementation "maven.modrinth:modonomicon:fMVuqVVc"
     implementation "maven.modrinth:durability-display:7GxQSk24"
+
+    compileOnly "org.appliedenergistics:guideme:${guideme_version}"
+    runtimeOnly "org.appliedenergistics:guideme:${guideme_version}"
 
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"

@@ -63,6 +63,11 @@ public record AquaticCatalystChannelingRecipe(Ingredient ingredient, int powerAm
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

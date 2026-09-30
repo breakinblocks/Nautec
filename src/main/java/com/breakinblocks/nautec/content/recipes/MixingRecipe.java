@@ -95,6 +95,11 @@ public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<Fluid
     }
 
     @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
     public @NotNull PlacementInfo placementInfo() {
         return PlacementInfo.NOT_PLACEABLE;
     }

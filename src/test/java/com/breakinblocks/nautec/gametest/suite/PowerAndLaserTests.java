@@ -4,12 +4,14 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
+import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
 import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
@@ -20,9 +22,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -482,6 +487,51 @@ public final class PowerAndLaserTests {
             });
         });
 
+        r.add("crystal/catalyst_beam_reaches_core", 100, helper -> {
+            BlockPos corePos = new BlockPos(4, 5, 4);
+            placeCrystal(helper, corePos);
+            BlockPos catalystPos = new BlockPos(1, 5, 4);
+            helper.setBlock(catalystPos, NTBlocks.AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.PRISMARINE_SHARD, 4)));
+
+            helper.runAfterDelay(40, () -> {
+                helper.assertTrue(catalyst.isActive(), "catalyst burning fuel");
+                helper.assertValueEqual(3, catalyst.getLaserDistances().getInt(Direction.EAST), "catalyst beam length to the core");
+                helper.assertTrue(helper.getBlockEntity(corePos, PrismarineCrystalBlockEntity.class).getPower() > 0, "core received catalyst power");
+                helper.assertTrue(helper.getBlockState(catalystPos).getValue(AquaticCatalystBlock.ACTIVE), "active blockstate set");
+                helper.succeed();
+            });
+        });
+
+        r.add("crystal/bottom_beam_transforms_item_on_floor", 400, helper -> {
+            BlockPos corePos = new BlockPos(4, 6, 4);
+            placeCrystal(helper, corePos);
+            helper.setBlock(new BlockPos(4, 1, 4), Blocks.STONE.defaultBlockState());
+            BlockPos catalystPos = new BlockPos(1, 6, 4);
+            helper.setBlock(catalystPos, NTBlocks.AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.PRISMARINE_SHARD, 16)));
+            helper.runAfterDelay(20, () -> {
+                BlockPos drop = helper.absolutePos(new BlockPos(4, 2, 4));
+                ItemEntity coil = new ItemEntity(helper.getLevel(), drop.getX() + 0.15, drop.getY() + 0.1, drop.getZ() + 0.8,
+                        new ItemStack(NTItems.BURNT_COIL.get()));
+                coil.setDeltaMovement(0, 0, 0);
+                helper.getLevel().addFreshEntity(coil);
+            });
+
+            helper.succeedWhen(() -> {
+                AABB area = new AABB(helper.absolutePos(new BlockPos(3, 1, 3)).getCenter(), helper.absolutePos(new BlockPos(5, 4, 5)).getCenter());
+                boolean made = helper.getLevel().getEntitiesOfClass(ItemEntity.class, area).stream()
+                        .anyMatch(e -> e.getItem().is(NTItems.LASER_CHANNELING_COIL.get()));
+                helper.assertTrue(made, "burnt coil under the crystal should become a laser channeling coil");
+            });
+        });
+
         r.add("crystal/powered_core_emits_from_top_and_bottom", 100, helper -> {
             BlockPos corePos = new BlockPos(4, 5, 4);
             BlockPos topPos = corePos.above(2);
@@ -510,6 +560,19 @@ public final class PowerAndLaserTests {
                 helper.succeed();
             });
         });
+    }
+
+    private static void placeCrystal(GameTestHelper helper, BlockPos corePos) {
+        BlockPos topPos = corePos.above(2);
+        for (int i = 0; i < 6; i++) {
+            BlockPos pos = topPos.below(i);
+            if (i == 2) {
+                helper.setBlock(pos, NTBlocks.PRISMARINE_CRYSTAL.get().defaultBlockState());
+            } else {
+                helper.setBlock(pos, NTBlocks.PRISMARINE_CRYSTAL_PART.get().defaultBlockState()
+                        .setValue(PrismarineCrystalPartBlock.INDEX, i));
+            }
+        }
     }
 
     private static final int FE_BUFFER = 100_000;
