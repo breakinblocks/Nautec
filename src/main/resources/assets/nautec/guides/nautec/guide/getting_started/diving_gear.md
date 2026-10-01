@@ -42,7 +42,7 @@ Clears the underwater fog so you can see much further. This works on its own, wi
   ### <Color id="aqua">Diving Chestplate</Color>
 </Row>
 
-Holds the air tank, up to 10 minutes. Its tooltip shows how much is left, and under water the tank shows as a row of bubbles over your hotbar. A newly crafted chestplate is empty.
+Holds the air tank, up to 10 minutes. A new chestplate comes with a full tank. Its tooltip shows how much is left, and under water the tank shows as a row of bubbles over your hotbar. When the tank runs dry, that row turns to empty bubbles as a warning to refill it.
 
 <Recipe id="nautec:diving_chestplate"/>
 
@@ -74,6 +74,10 @@ To fill the tank, craft the chestplate surrounded by eight bottles. That gives a
 
 You can also drink a bottle while wearing the chestplate. Each bottle adds 2 minutes of air whenever the tank is not full, up to the full 10 minutes, so five bottles fill an empty tank. Drinking also makes you float upward for 10 seconds.
 
+### <Color id="aqua">Oxygen Fluid</Color>
+
+The chestplate also takes oxygen fluid from other mods, such as Stellaris oxygen. Put it in any machine or tank slot that fills items with fluid. Each mB of oxygen adds one second of air, so 600 mB fills an empty tank.
+
 ***
 
 <Row>
@@ -87,8 +91,17 @@ The material the suit is made of. Craft it from Dried Kelp and Brown Dye, or fin
 
 ***
 
+## <Color id="gold">With Stellaris</Color>
+
+If Stellaris is installed, the full Diving Suit also keeps you alive on planets with no air. The tank spends one second of air for each second you spend outside a breathable area, and the bubble row shows over your hotbar there too. Inside an Oxygen Distributor's area the tank is left alone.
+
+Drinking an Air Bottle while wearing a Stellaris space suit helmet with an oxygen module adds 120 mB of oxygen to the helmet, the same 2 minutes of air it gives the diving tank.
+
+***
+
 ## <Color id="gold">Other Ways to Breathe</Color>
 
 * The [Sea Scout](nautec:submarine/submarine.md) keeps everyone inside breathing while it has power.
 * Holding thrust on the [Wave Jet](nautec:submarine/wave_jet.md) stops your air bar draining.
+* A full Stellaris space suit lets you breathe under water while its helmet has oxygen.
 * The Drowned Lungs augment keeps your air full whenever you are under water: see [Mob Augments](nautec:laser_augmentation/mob_augments.md).

@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.utils.codec.AugmentCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.codec.ByteBufCodecs;
 import com.breakinblocks.nautec.events.helper.ItemInfusion;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -52,5 +53,9 @@ public final class NTDataAttachments {
     );
     public static final Supplier<AttachmentType<Optional<GlobalPos>>> AUGMENTATION_STATION = ATTACHMENTS.register(
             "augmentation_station", () -> AttachmentType.<Optional<GlobalPos>>builder(Optional::empty).build()
+    );
+    public static final Supplier<AttachmentType<Long>> AIRLESS_UNTIL = ATTACHMENTS.register(
+            "airless_until", () -> AttachmentType.builder(() -> 0L)
+                    .sync((holder, player) -> holder == player, ByteBufCodecs.VAR_LONG).build()
     );
 }

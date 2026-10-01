@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.client.hud;
 
+import com.breakinblocks.nautec.NTClientConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.client.DeltaTracker;
@@ -27,6 +29,11 @@ public final class DivingSuitOverlay {
                 player.getItemBySlot(EquipmentSlot.FEET).is(NTItems.DIVING_BOOTS);
     }
 
+    private static boolean isInAirlessSpace(@NotNull Player player) {
+        return NTClientConfig.showDivingSuitAirInSpace()
+                && player.level().getGameTime() < player.getData(NTDataAttachments.AIRLESS_UNTIL);
+    }
+
     public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         int rightOffset = 59;
         int maxOxygen = 600;
@@ -36,7 +43,8 @@ public final class DivingSuitOverlay {
         if (player == null) return;
 
         int oxygenLevels = NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST));
-        if (!player.isUnderWater() || !isWearingFullDivingSuit(player)) {
+        boolean inSpace = isInAirlessSpace(player);
+        if (!(player.isUnderWater() || inSpace) || !isWearingFullDivingSuit(player)) {
             return;
         }
 
@@ -57,7 +65,7 @@ public final class DivingSuitOverlay {
         int burstingBubbles = Mth.ceil((double) visibleOxygen * 10.0 / maxOxygen) - fullBubbles;
 
 
-        if (player.isEyeInFluid(FluidTags.WATER) || visibleOxygen < maxOxygen) {
+        if (player.isEyeInFluid(FluidTags.WATER) || inSpace || visibleOxygen < maxOxygen) {
             for (int i = 0; i < fullBubbles + burstingBubbles; i++) {
                 boolean isBursting = i >= fullBubbles;
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, isBursting ? OXYGEN_BURSTING_SPRITE : OXYGEN_SPRITE,

@@ -57,7 +57,11 @@ public class DivingSuitArmorItem extends Item {
     }
 
     private static boolean hasFullArmorSet(ItemStack stack, Player player) {
-        return stack == player.getItemBySlot(EquipmentSlot.CHEST) &&
+        return stack == player.getItemBySlot(EquipmentSlot.CHEST) && isWearingFullSuit(player);
+    }
+
+    public static boolean isWearingFullSuit(Player player) {
+        return player.getItemBySlot(EquipmentSlot.CHEST).is(NTItems.DIVING_CHESTPLATE) &&
                 player.getItemBySlot(EquipmentSlot.HEAD).is(NTItems.DIVING_HELMET) &&
                 player.getItemBySlot(EquipmentSlot.LEGS).is(NTItems.DIVING_LEGGINGS) &&
                 player.getItemBySlot(EquipmentSlot.FEET).is(NTItems.DIVING_BOOTS);

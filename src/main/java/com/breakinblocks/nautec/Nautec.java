@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.api.items.IFluidItem;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.ItemBacteriaWrapper;
+import com.breakinblocks.nautec.capabilities.fluid.DivingSuitAirHandler;
 import com.breakinblocks.nautec.capabilities.power.ItemPowerWrapper;
 import com.breakinblocks.nautec.capabilities.power.LaserPowerView;
 import com.breakinblocks.nautec.compat.duradisplay.DuraDisplayCompat;
@@ -183,6 +184,8 @@ public final class Nautec {
     }
 
     private static void registerItemCaps(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new DivingSuitAirHandler(access), NTItems.DIVING_CHESTPLATE.get());
+
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof IPowerItem powerItem) {
                 event.registerItem(NTCapabilities.PowerStorage.ITEM, (stack, ctx) -> new ItemPowerWrapper(stack, powerItem), item);

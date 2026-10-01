@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.fluid.DivingSuitAirHandler;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.augments.GuardianEyeAugment;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
@@ -38,6 +39,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -331,6 +334,35 @@ public final class MachineFixTests {
             another.getItem().finishUsingItem(another, helper.getLevel(), player);
             helper.assertValueEqual(600, NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST)),
                     "oxygen is capped at a full tank");
+            helper.succeed();
+        });
+
+        r.add("machinefix/diving_chestplate_air_handler", 20, helper -> {
+            ItemStack chest = new ItemStack(NTItems.DIVING_CHESTPLATE.get());
+            NTDataComponentsUtils.setOxygenLevels(chest, 100);
+            ResourceHandler<FluidResource> tank = ItemAccess.forStack(chest).getCapability(Capabilities.Fluid.ITEM);
+            helper.assertTrue(tank != null, "The diving chestplate should expose a fluid handler");
+            helper.assertValueEqual(600L, tank.getCapacityAsLong(0, FluidResource.EMPTY), "air tank capacity in mB");
+
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(0, tank.insert(FluidResource.of(Fluids.WATER), 50, tx), "water accepted into the air tank");
+                tx.commit();
+            }
+            helper.assertValueEqual(100, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen after offering water");
+
+            List<FluidResource> oxygenFluids = DivingSuitAirHandler.oxygenFluids();
+            if (!oxygenFluids.isEmpty()) {
+                try (Transaction tx = Transaction.openRoot()) {
+                    helper.assertValueEqual(50, tank.insert(oxygenFluids.getFirst(), 50, tx), "oxygen accepted into the air tank");
+                    tx.commit();
+                }
+                helper.assertValueEqual(150, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen after filling 50 mB");
+                try (Transaction tx = Transaction.openRoot()) {
+                    helper.assertValueEqual(450, tank.insert(oxygenFluids.getFirst(), 1000, tx), "oxygen accepted up to a full tank");
+                    tx.commit();
+                }
+                helper.assertValueEqual(600, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen is capped at a full tank");
+            }
             helper.succeed();
         });
 

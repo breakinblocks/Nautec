@@ -535,6 +535,16 @@ public final class NTConfig {
             .comment("How many times more often lucky fishing zones form near a player during the Eye of the Sea boost")
             .defineInRange("eyeOfTheSeaLuckyZoneMultiplier", 2, 1, 10);
 
+    private static final ModConfigSpec.BooleanValue DIVING_SUIT_ACCEPTS_OXYGEN_FLUID = BUILDER
+            .comment("Determines whether the Diving Chestplate can be filled with any fluid in the c:oxygen tag, such as Stellaris oxygen. 1 mB fills 1 second of air")
+            .define("divingSuitAcceptsOxygenFluid", true);
+    private static final ModConfigSpec.BooleanValue AIR_BOTTLES_FILL_OXYGEN_HELMETS = BUILDER
+            .comment("Determines whether drinking an Air Bottle also adds oxygen to a worn helmet from another mod that holds c:oxygen fluid, such as a Stellaris space suit helmet")
+            .define("airBottlesFillOxygenHelmets", true);
+    private static final ModConfigSpec.BooleanValue DIVING_SUIT_PROTECTS_IN_SPACE = BUILDER
+            .comment("Determines whether a full Diving Suit with air in its tank protects against Stellaris oxygen deprivation, using up its air instead")
+            .define("divingSuitProtectsInSpace", true);
+
     private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = WORLDGEN_BUILDER
             .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
                     "This only applies when Lithostitched is absent. With Lithostitched installed, placement comes from the biome injectors in data/nautec/lithostitched/biome_injector, which a datapack can override or empty out")
@@ -660,6 +670,9 @@ public final class NTConfig {
     public static int eyeOfTheSeaCooldownTicks = 40;
     public static int eyeOfTheSeaLuckyBoostSeconds = 300;
     public static int eyeOfTheSeaLuckyZoneMultiplier = 2;
+    public static boolean divingSuitAcceptsOxygenFluid = true;
+    public static boolean airBottlesFillOxygenHelmets = true;
+    public static boolean divingSuitProtectsInSpace = true;
 
     public static int abyssalEyesDepth;
     public static double photophoreSkinRadius;
@@ -847,6 +860,9 @@ public final class NTConfig {
         eyeOfTheSeaCooldownTicks = value(EYE_OF_THE_SEA_COOLDOWN);
         eyeOfTheSeaLuckyBoostSeconds = value(EYE_OF_THE_SEA_LUCKY_BOOST);
         eyeOfTheSeaLuckyZoneMultiplier = value(EYE_OF_THE_SEA_LUCKY_MULTIPLIER);
+        divingSuitAcceptsOxygenFluid = value(DIVING_SUIT_ACCEPTS_OXYGEN_FLUID);
+        airBottlesFillOxygenHelmets = value(AIR_BOTTLES_FILL_OXYGEN_HELMETS);
+        divingSuitProtectsInSpace = value(DIVING_SUIT_PROTECTS_IN_SPACE);
 
         abyssalEyesDepth = value(ABYSSAL_EYES_DEPTH);
         photophoreSkinRadius = value(PHOTOPHORE_SKIN_RADIUS);

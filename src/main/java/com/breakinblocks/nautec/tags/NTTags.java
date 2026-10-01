@@ -2,14 +2,20 @@ package com.breakinblocks.nautec.tags;
 
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public final class NTTags {
     public static final class DamageTypes {
         public static final TagKey<DamageType> ATLANTEAN_RIFLE = TagKey.create(Registries.DAMAGE_TYPE, Nautec.rl("atlantean_rifle"));
+    }
+
+    public static final class Fluids {
+        public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oxygen"));
     }
 
     public static final class Blocks {

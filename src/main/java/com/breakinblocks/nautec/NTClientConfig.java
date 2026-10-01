@@ -11,8 +11,15 @@ public final class NTClientConfig {
     private static final ModConfigSpec.DoubleValue SUBMARINE_HUD_Y = BUILDER
             .comment("Vertical position of the submarine power HUD, as a fraction of the screen height")
             .defineInRange("submarineHudY", 0.75, 0.0, 1.0);
+    private static final ModConfigSpec.BooleanValue SHOW_DIVING_SUIT_AIR_IN_SPACE = BUILDER
+            .comment("Determines whether the Diving Suit air bar also shows on Stellaris planets with no air, not only underwater")
+            .define("showDivingSuitAirInSpace", true);
 
     public static final ModConfigSpec SPEC = BUILDER.build();
+
+    public static boolean showDivingSuitAirInSpace() {
+        return !SPEC.isLoaded() || SHOW_DIVING_SUIT_AIR_IN_SPACE.getAsBoolean();
+    }
 
     public static double hudX() {
         return SPEC.isLoaded() ? SUBMARINE_HUD_X.getAsDouble() : 0.02;
