@@ -190,17 +190,27 @@ public class BlockModelProvider extends ModelProvider {
     }
 
     private void aquaticCatalyst(AquaticCatalystBlock block) {
-        PropertyDispatch.C3<MultiVariant, Direction, Integer, Boolean> dispatch = PropertyDispatch.initial(BlockStateProperties.FACING, AquaticCatalystBlock.STAGE, AquaticCatalystBlock.ACTIVE);
+        MultiPartGenerator builder = MultiPartGenerator.multiPart(block);
         for (Direction dir : Direction.values()) {
+            int xRot = dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0;
+            int yRot = dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360;
             for (int stage : AquaticCatalystBlock.STAGE.getPossibleValues()) {
                 for (boolean active : AquaticCatalystBlock.ACTIVE.getPossibleValues()) {
-                    dispatch = dispatch.select(dir, stage, active, rotated(BlockModelGenerators.plainVariant(createActiveACModel(block, stage, active)),
-                            dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0,
-                            dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360));
+                    builder = builder.with(BlockModelGenerators.condition()
+                                    .term(BlockStateProperties.FACING, dir)
+                                    .term(AquaticCatalystBlock.STAGE, stage)
+                                    .term(AquaticCatalystBlock.ACTIVE, active),
+                            rotated(BlockModelGenerators.plainVariant(createActiveACModel(block, stage, active)), xRot, yRot));
                 }
             }
+            for (boolean linked : AquaticCatalystBlock.LINKED.getPossibleValues()) {
+                builder = builder.with(BlockModelGenerators.condition()
+                                .term(BlockStateProperties.FACING, dir)
+                                .term(AquaticCatalystBlock.LINKED, linked),
+                        rotated(BlockModelGenerators.plainVariant(existingModelFile(linked ? "aquatic_catalyst_lamp_linked" : "aquatic_catalyst_lamp_unlinked")), xRot, yRot));
+            }
         }
-        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(dispatch));
+        blockModels.blockStateOutput.accept(builder);
     }
 
     private void laserJunction(Block block) {

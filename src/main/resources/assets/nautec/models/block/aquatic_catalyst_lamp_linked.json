@@ -1,0 +1,6 @@
+{
+  "parent": "nautec:block/aquatic_catalyst_lamp",
+  "textures": {
+    "lamp": "nautec:block/aquatic_catalyst_lamp_linked"
+  }
+}

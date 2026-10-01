@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
@@ -7,9 +8,12 @@ import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +28,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +41,8 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private Identifier currentRecipeId;
     private Identifier nextRecipeId;
     private int syncedTransfer;
+    private boolean burning;
+    private BeamScan beamScan;
 
     public AquaticCatalystBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
@@ -54,13 +62,21 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
             startNextRecipe();
         }
 
+        if (beamScan == null || level.getGameTime() % checkConnectionsInterval() == 0) {
+            beamScan = scanBeam(getEmitterDirection());
+        }
+
+        boolean burningNow = false;
         if (currentRecipe != null) {
-            int distance = getLaserDistances().getInt(getBlockState().getValue(BlockStateProperties.FACING).getOpposite());
-            if (distance > 0) {
+            int distance = getLaserDistances().getInt(getEmitterDirection());
+            if (distance > 0 && beamScan.connected()) {
                 int amount = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
                 transmitPower(amount);
                 setPurity(currentRecipe.value().purity());
                 duration++;
+                burningNow = true;
+            } else {
+                transmitPower(0);
             }
             if (duration >= currentRecipe.value().duration()) {
                 duration = 0;
@@ -70,10 +86,17 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
                     setPurity(0);
                 }
             }
+        } else {
+            transmitPower(0);
         }
+        this.burning = burningNow;
 
-        if (getBlockState().getValue(AquaticCatalystBlock.ACTIVE) != isActive()) {
-            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AquaticCatalystBlock.ACTIVE, isActive()));
+        BlockState state = getBlockState();
+        BlockState newState = state
+                .setValue(AquaticCatalystBlock.ACTIVE, burningNow)
+                .setValue(AquaticCatalystBlock.LINKED, beamScan.connected());
+        if (newState != state) {
+            level.setBlockAndUpdate(worldPosition, newState);
         }
     }
 
@@ -91,7 +114,82 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         if (level != null && level.isClientSide()) {
             return getBlockState().getValue(AquaticCatalystBlock.ACTIVE);
         }
-        return currentRecipe != null;
+        return burning;
+    }
+
+    public boolean isWaiting() {
+        return currentRecipe != null && !isActive();
+    }
+
+    public Direction getEmitterDirection() {
+        return getBlockState().getValue(BlockStateProperties.FACING).getOpposite();
+    }
+
+    public BeamScan getBeamScan() {
+        if (beamScan == null) {
+            beamScan = scanBeam(getEmitterDirection());
+        }
+        return beamScan;
+    }
+
+    public List<Component> diagnosticLines() {
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.translatable("nautec.catalyst.diagnostics.header").withStyle(ChatFormatting.AQUA));
+
+        ItemStack fuel = getProcessingItem();
+        if (!fuel.isEmpty()) {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.fuel", fuel.getCount(), fuel.getHoverName())
+                    .withStyle(ChatFormatting.WHITE));
+        } else if (currentRecipe == null) {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.fuel.empty").withStyle(ChatFormatting.RED));
+        }
+
+        Direction emitter = getEmitterDirection();
+        lines.add(Component.translatable("nautec.catalyst.diagnostics.emitter", directionName(emitter))
+                .withStyle(ChatFormatting.WHITE));
+
+        BeamScan scan = scanBeam(emitter);
+        this.beamScan = scan;
+        Component target = level.getBlockState(scan.targetPos(worldPosition)).getBlock().getName();
+        switch (scan.status()) {
+            case CONNECTED -> lines.add(Component.translatable("nautec.catalyst.diagnostics.beam.connected",
+                    target, distanceText(scan.distance(), emitter)).withStyle(ChatFormatting.GREEN));
+            case WRONG_SIDE -> {
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.beam.wrong_side",
+                        target, distanceText(scan.distance(), emitter)).withStyle(ChatFormatting.RED));
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.hint.wrong_side").withStyle(ChatFormatting.GRAY));
+            }
+            case BLOCKED -> {
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.beam.blocked",
+                        target, distanceText(scan.distance(), emitter)).withStyle(ChatFormatting.RED));
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.hint.blocked").withStyle(ChatFormatting.GRAY));
+            }
+            case NO_TARGET -> {
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.beam.no_target",
+                        getMaxLaserDistance(), directionName(emitter)).withStyle(ChatFormatting.RED));
+                lines.add(Component.translatable("nautec.catalyst.diagnostics.hint.no_target").withStyle(ChatFormatting.GRAY));
+            }
+        }
+
+        if (isActive()) {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.status.burning", getPowerToTransfer())
+                    .withStyle(ChatFormatting.GREEN));
+        } else if (currentRecipe != null) {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.status.waiting").withStyle(ChatFormatting.YELLOW));
+        } else {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.status.idle").withStyle(ChatFormatting.YELLOW));
+        }
+        return lines;
+    }
+
+    public static MutableComponent directionName(Direction direction) {
+        return Component.translatable("nautec.direction." + direction.getSerializedName());
+    }
+
+    public static MutableComponent distanceText(int distance, Direction direction) {
+        return distance == 1
+                ? Component.translatable("nautec.catalyst.distance.one", directionName(direction))
+                : Component.translatable("nautec.catalyst.distance", distance, directionName(direction));
     }
 
     public RecipeHolder<AquaticCatalystChannelingRecipe> getCurrentRecipe() {
@@ -148,10 +246,18 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
     @Override
     public Set<Direction> getLaserOutputs() {
-        if (isActive()) {
-            return Set.of(getBlockState().getValue(BlockStateProperties.FACING).getOpposite());
+        boolean emitting = level != null && level.isClientSide()
+                ? getBlockState().getValue(AquaticCatalystBlock.ACTIVE)
+                : currentRecipe != null;
+        if (emitting) {
+            return Set.of(getEmitterDirection());
         }
         return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Direction> getPotentialLaserOutputs() {
+        return Set.of(getEmitterDirection());
     }
 
     @Override

@@ -52,7 +52,7 @@ An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Cry
 
 Takes a beam in at the back and sends it out the front, another 16 blocks. Power and purity pass through unchanged, so chain relays to cover any distance. Relays can sit underwater.
 
-When you place one, its front points at the block you placed it against. Right-click it with an <ItemLink id="aquarine_steel_wrench"/> to turn it to the next direction.
+A relay lines itself up when you place it against another laser block. Place it on a source's emitting face (a catalyst's lens, another relay's front) and it takes that beam in and passes it on away from the source. Place it on a machine that takes a beam and it points into that machine. Against anything else, its front points the way you are looking. Right-click it with an <ItemLink id="aquarine_steel_wrench"/> to turn it to the next direction.
 
 <RecipeFor id="prismarine_laser_relay"/>
 

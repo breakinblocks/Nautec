@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -63,6 +64,20 @@ public class PrismarineLaserRelayBlock extends LaserBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        return state != null ? state.setValue(FACING, context.getClickedFace().getOpposite()) : null;
+        return state != null ? state.setValue(FACING, placementFacing(context)) : null;
+    }
+
+    private static Direction placementFacing(BlockPlaceContext context) {
+        Direction clickedFace = context.getClickedFace();
+        BlockPos against = context.getClickedPos().relative(clickedFace.getOpposite());
+        if (context.getLevel().getBlockEntity(against) instanceof LaserBlockEntity neighbour) {
+            if (neighbour.getPotentialLaserOutputs().contains(clickedFace)) {
+                return clickedFace;
+            }
+            if (neighbour.getLaserInputs().contains(clickedFace)) {
+                return clickedFace.getOpposite();
+            }
+        }
+        return context.getNearestLookingDirection();
     }
 }

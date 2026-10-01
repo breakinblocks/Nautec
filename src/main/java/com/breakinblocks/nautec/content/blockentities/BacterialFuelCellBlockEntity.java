@@ -115,6 +115,11 @@ public class BacterialFuelCellBlockEntity extends LaserBlockEntity {
     }
 
     @Override
+    public Set<Direction> getPotentialLaserOutputs() {
+        return ObjectSet.of(getOutputDirection());
+    }
+
+    @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
         return Map.of();
     }

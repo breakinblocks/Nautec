@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
@@ -306,22 +307,40 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return new AABB(start, end);
     }
 
-    protected void checkConnections() {
-        for (Direction direction : getLaserOutputs()) {
-            int maxLaserDistance = getMaxLaserDistance();
-            Vec3 from = worldPosition.relative(direction).getCenter();
-            Vec3 to = worldPosition.relative(direction, maxLaserDistance).getCenter();
-            BlockHitResult blockHitResult = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
-            Vec3i diffVec3 = blockHitResult.getBlockPos().subtract(worldPosition);
-            int hitDistance = Math.min(maxLaserDistance, Math.abs(diffVec3.getX() + diffVec3.getY() + diffVec3.getZ()));
-            int newDistance = 0;
-            for (int i = 1; i <= hitDistance; i++) {
-                if (level.getBlockEntity(worldPosition.relative(direction, i)) instanceof LaserBlockEntity laserBlockEntity
-                        && laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
-                    newDistance = i;
-                    break;
+    public Set<Direction> getPotentialLaserOutputs() {
+        return getLaserOutputs();
+    }
+
+    public BeamScan scanBeam(Direction direction) {
+        int maxLaserDistance = getMaxLaserDistance();
+        Vec3 from = worldPosition.relative(direction).getCenter();
+        Vec3 to = worldPosition.relative(direction, maxLaserDistance).getCenter();
+        BlockHitResult blockHitResult = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        Vec3i diffVec3 = blockHitResult.getBlockPos().subtract(worldPosition);
+        int hitDistance = Math.min(maxLaserDistance, Math.abs(diffVec3.getX() + diffVec3.getY() + diffVec3.getZ()));
+        int wrongSideDistance = 0;
+        for (int i = 1; i <= hitDistance; i++) {
+            if (level.getBlockEntity(worldPosition.relative(direction, i)) instanceof LaserBlockEntity laserBlockEntity) {
+                if (laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
+                    return new BeamScan(direction, BeamScan.Status.CONNECTED, i);
+                }
+                if (wrongSideDistance == 0) {
+                    wrongSideDistance = i;
                 }
             }
+        }
+        if (wrongSideDistance > 0) {
+            return new BeamScan(direction, BeamScan.Status.WRONG_SIDE, wrongSideDistance);
+        }
+        if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+            return new BeamScan(direction, BeamScan.Status.BLOCKED, hitDistance);
+        }
+        return new BeamScan(direction, BeamScan.Status.NO_TARGET, 0);
+    }
+
+    protected void checkConnections() {
+        for (Direction direction : getLaserOutputs()) {
+            int newDistance = scanBeam(direction).connectedDistance();
             int prevDistance = this.laserDistances.getInt(direction);
             if (prevDistance != newDistance) {
                 this.laserDistances.put(direction, newDistance);

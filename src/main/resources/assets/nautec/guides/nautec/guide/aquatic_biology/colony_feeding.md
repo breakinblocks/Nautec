@@ -44,7 +44,7 @@ Each strain has its own nutrient, and by default it is the same item that strain
 
 Strains for other mods' metals and gems eat the ingot or gem they make, so you can send a small share of a reactor's output back into its nutrient slot.
 
-Cyanobacteria, Halobacteria, Methanogens, Thermophiles and Cocoaphiles have no nutrient, so they always age while they work.
+Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient, so they always age while they work.
 
 ***
 

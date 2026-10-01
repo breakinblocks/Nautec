@@ -17,7 +17,7 @@ item_ids:
 
 Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain.
 
-Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first. Cocoaphiles has no nutrient either, so it cannot be grown here or fed in a reactor.
+Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first.
 
 ***
 

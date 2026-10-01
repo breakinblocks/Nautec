@@ -43,6 +43,8 @@ The face you are looking at when you place it is the pale intake, with eight soc
 
 The catalyst only burns while a receiver is on its emitter side. With nothing there it holds its fuel and waits, so a catalyst with no target wastes nothing. It moves straight from one fuel item to the next, so the beam stays on as long as the stack lasts.
 
+The two small lamps near the lens end of each side show whether it has found a receiver. Green means a laser block within range takes the beam. Red means it has not: nothing is in line with the lens, a solid block is in the way, or the block in front does not take a beam from that side (a relay facing the wrong way is the usual cause). Shift-right-click the catalyst with an empty hand for a chat readout of its fuel, which way it fires, what the beam hits and how to fix it.
+
 <Color id="gold">Tip</Color>: the beam burns anything standing in it, you included. Walk around running beams.
 
 ***

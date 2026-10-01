@@ -33,6 +33,7 @@ import com.breakinblocks.nautec.utils.ItemUtils;
 public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
     public static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 8);
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty LINKED = BooleanProperty.create("linked");
 
     public AquaticCatalystBlock(Properties properties) {
         super(properties);
@@ -40,6 +41,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
                 .setValue(BlockStateProperties.FACING, Direction.NORTH)
                 .setValue(STAGE, 0)
                 .setValue(ACTIVE, false)
+                .setValue(LINKED, false)
         );
     }
 
@@ -60,7 +62,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(BlockStateProperties.FACING, STAGE, ACTIVE));
+        super.createBlockStateDefinition(builder.add(BlockStateProperties.FACING, STAGE, ACTIVE, LINKED));
     }
 
     @Override
@@ -81,6 +83,11 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
 
                 return InteractionResult.SUCCESS;
             }
+        } else if (player.isShiftKeyDown()) {
+            if (!level.isClientSide()) {
+                be.diagnosticLines().forEach(player::sendSystemMessage);
+            }
+            return InteractionResult.SUCCESS;
         } else {
             ItemStack extracted = itemHandler.extractItem(0, itemHandler.getSlotLimit(0), false);
             ItemUtils.giveItemToPlayer(player, extracted, player.getInventory().getSelectedSlot());
