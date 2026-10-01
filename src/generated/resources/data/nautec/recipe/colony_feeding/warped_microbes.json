@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:warped_microbes",
+  "ingredient": {
+    "ingredient": "minecraft:warped_nylium"
+  },
+  "vitality_ticks": 1200
+}

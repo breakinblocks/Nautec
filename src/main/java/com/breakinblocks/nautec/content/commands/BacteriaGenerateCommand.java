@@ -174,10 +174,12 @@ public final class BacteriaGenerateCommand {
         JsonElement bacteriaJson;
         JsonElement incubationJson;
         JsonElement mutationJson;
+        JsonElement feedingJson;
         try {
             bacteriaJson = BacteriaJsonWriter.encodeBacteria(bacteria, source.registryAccess());
             incubationJson = BacteriaJsonWriter.encodeRecipe(BacteriaBalance.incubationRecipe(key, nutrient, rarity), source.registryAccess());
             mutationJson = BacteriaJsonWriter.encodeRecipe(BacteriaBalance.mutationRecipe(key, Ingredient.of(item), rarity), source.registryAccess());
+            feedingJson = BacteriaJsonWriter.encodeRecipe(BacteriaBalance.feedingRecipe(key, nutrient), source.registryAccess());
         } catch (Exception e) {
             source.sendFailure(Component.literal("Could not build the bacteria json: " + e.getMessage()));
             return 0;
@@ -189,6 +191,7 @@ public final class BacteriaGenerateCommand {
             sendCopyable(source, "bacteria", bacteriaJson);
             sendCopyable(source, "incubation recipe", incubationJson);
             sendCopyable(source, "mutation recipe", mutationJson);
+            sendCopyable(source, "feeding recipe", feedingJson);
             return 1;
         }
 
@@ -197,6 +200,7 @@ public final class BacteriaGenerateCommand {
             BacteriaJsonWriter.writeAtomic(GeneratedPackPaths.bacteriaFile(name), BacteriaJsonWriter.pretty(bacteriaJson));
             BacteriaJsonWriter.writeAtomic(GeneratedPackPaths.incubationRecipeFile(name), BacteriaJsonWriter.pretty(incubationJson));
             BacteriaJsonWriter.writeAtomic(GeneratedPackPaths.mutationRecipeFile(name), BacteriaJsonWriter.pretty(mutationJson));
+            BacteriaJsonWriter.writeAtomic(GeneratedPackPaths.feedingRecipeFile(name), BacteriaJsonWriter.pretty(feedingJson));
         } catch (IOException e) {
             source.sendFailure(Component.literal("Could not write the generated files: " + e.getMessage()));
             Nautec.LOGGER.error("Could not write generated bacteria {}", name, e);
@@ -299,6 +303,9 @@ public final class BacteriaGenerateCommand {
         if (Files.exists(GeneratedPackPaths.mutationRecipeFile(name))) {
             extras.append(extras.isEmpty() ? "mutation" : ", mutation");
         }
+        if (Files.exists(GeneratedPackPaths.feedingRecipeFile(name))) {
+            extras.append(extras.isEmpty() ? "feeding" : ", feeding");
+        }
         line.append(Component.literal(extras.isEmpty() ? ", no recipes" : ", " + extras));
 
         return line;
@@ -332,6 +339,9 @@ public final class BacteriaGenerateCommand {
                 deleted++;
             }
             if (Files.deleteIfExists(GeneratedPackPaths.mutationRecipeFile(name))) {
+                deleted++;
+            }
+            if (Files.deleteIfExists(GeneratedPackPaths.feedingRecipeFile(name))) {
                 deleted++;
             }
         } catch (IOException e) {

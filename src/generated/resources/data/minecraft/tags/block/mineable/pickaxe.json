@@ -31,8 +31,17 @@
     "nautec:bacterial_fuel_cell",
     "nautec:bio_reactor",
     "nautec:bio_reactor_part",
+    "nautec:industrial_bio_reactor",
+    "nautec:industrial_bio_reactor_part",
     "nautec:mutator",
     "nautec:incubator",
-    "nautec:fishing_station"
+    "nautec:fishing_station",
+    "nautec:budding_prismarine",
+    "nautec:cast_iron_block",
+    "nautec:anchor",
+    "nautec:oil_barrel",
+    "nautec:creative_power_source",
+    "nautec:creative_energy_source",
+    "nautec:energy_converter"
   ]
 }

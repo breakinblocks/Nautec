@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DecorativePrismarineCrystalBlock extends BaseEntityBlock {
+    public static final int HEIGHT = 6;
     private static final VoxelShape SHAPE = Shapes.or(
         Block.box(4, 0, 4, 12, 16, 12),
         Block.box(2, 2, 2, 14, 14, 14)
@@ -53,9 +55,22 @@ public class DecorativePrismarineCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        for (int i = 1; i < HEIGHT; i++) {
+            BlockPos curPos = pos.above(i);
+            if (level.isOutsideBuildHeight(curPos) || !level.getBlockState(curPos).canBeReplaced()) {
+                return null;
+            }
+        }
+        return super.getStateForPlacement(context);
+    }
+
+    @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < HEIGHT; i++) {
             BlockPos curPos = pos.above(i);
             if (i == 0) {
                 level.setBlockAndUpdate(curPos, NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get().defaultBlockState());
@@ -74,9 +89,15 @@ public class DecorativePrismarineCrystalBlock extends BaseEntityBlock {
 
     public static void removeCrystal(Level level, Player player, BlockPos thisPos) {
         if (thisPos != null) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < HEIGHT; i++) {
                 BlockPos curPos = thisPos.above(i);
-                level.removeBlock(curPos, false);
+                Block block = level.getBlockState(curPos).getBlock();
+                boolean ours = i == 0
+                        ? block instanceof DecorativePrismarineCrystalBlock
+                        : block instanceof DecorativePrismarineCrystalPartBlock;
+                if (ours) {
+                    level.removeBlock(curPos, false);
+                }
             }
         }
     }

@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "thermal"
+        }
+      ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/signalum"
+      }
+    }
+  ],
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:signalophiles",
+  "ingredient": {
+    "ingredient": "#c:ingots/signalum"
+  },
+  "vitality_ticks": 1200
+}

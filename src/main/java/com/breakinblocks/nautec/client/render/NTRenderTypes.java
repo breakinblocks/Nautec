@@ -18,6 +18,13 @@ public final class NTRenderTypes {
     private static final RenderType LASER_FLARE = RenderType.create("nautec_laser_flare",
             RenderSetup.builder(NTRenderPipelines.LASER_FLARE).createRenderSetup());
 
+    private static final RenderType REACTOR_GLOW = RenderType.create("nautec_reactor_glow",
+            RenderSetup.builder(NTRenderPipelines.REACTOR_GLOW).createRenderSetup());
+
+    public static RenderType reactorGlow() {
+        return REACTOR_GLOW;
+    }
+
     public static RenderType laserBeam() {
         return LASER_BEAM;
     }

@@ -39,8 +39,15 @@ public final class NTGameTestRegistration {
         ReviewRegressionTests.register(r);
         ReleaseRegressionTests.register(r);
         ClientAcceptanceRegressionTests.register(r);
-        if (r.registeredCount() != 299) {
-            throw new IllegalStateException("Expected 299 Nautec suite tests, registered " + r.registeredCount());
+        LaserFixTests.register(r);
+        BiologyFixTests.register(r);
+        DataFixTests.register(r);
+        MachineFixTests.register(r);
+        NavalFishingFixTests.register(r);
+        ShowcaseTests.register(r);
+        BioReactorOverhaulTests.register(r);
+        if (r.registeredCount() != 381) {
+            throw new IllegalStateException("Expected 381 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

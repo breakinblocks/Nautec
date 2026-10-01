@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.datagen.BiomeTagProvider;
 import com.breakinblocks.nautec.loot.CatchAsEntityFunction;
 import com.breakinblocks.nautec.registries.NTEntities;
 import net.minecraft.world.entity.EntityType;
+import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTLootTables;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.functions.SetContainerLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -89,7 +91,8 @@ public record FishingLootTableProvider(HolderLookup.Provider registries) impleme
                 .add(anywhere(NTItems.ANCIENT_VALVE.get(), 12))
                 .add(anywhere(NTItems.BROKEN_WHISK.get(), 12))
                 .add(anywhere(NTItems.PRISMARINE_LENS.get(), 6))
-                .add(anywhere(NTBlocks.CRATE.asItem(), 4))
+                .add(anywhere(NTBlocks.CRATE.asItem(), 4)
+                        .apply(SetContainerLootTable.withLootTable(NTBlockEntityTypes.CRATE.get(), NTLootTables.CRATE)))
 
                 .add(inBiome(Items.NAUTILUS_SHELL, 10, BiomeTags.IS_OCEAN))
                 .add(inBiome(NTItems.ATLANTIC_GOLD_NUGGET.get(), 10, 1, 4, BiomeTags.IS_OCEAN))

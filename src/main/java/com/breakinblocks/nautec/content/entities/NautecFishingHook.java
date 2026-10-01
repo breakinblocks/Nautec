@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.entities;
 
+import com.breakinblocks.nautec.content.fishing.CaughtEntitySpawner;
 import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.fishing.MinigameKind;
 import com.breakinblocks.nautec.mixin.FishingHookAccessor;
@@ -26,10 +27,16 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.world.phys.Vec3;
 
 public class NautecFishingHook extends FishingHook {
+    public static final int REEL_WINDOW_TICKS = 40;
+    public static final int WIN_SCREEN_TICKS = 10;
+    public static final int REPORT_GRACE_TICKS = 20;
+
+    private int holdBiteUntil = -1;
     private boolean biteAnnounced;
     private MinigameKind kind = MinigameKind.TIMING_BAR;
     private long nonce;
@@ -78,19 +85,57 @@ public class NautecFishingHook extends FishingHook {
     public void tick() {
         super.tick();
 
-        if (this.level().isClientSide() || !(this.getPlayerOwner() instanceof ServerPlayer player)) {
+        if (this.level().isClientSide() || this.isRemoved() || !(this.getPlayerOwner() instanceof Player player)) {
             return;
         }
 
-        int nibble = ((FishingHookAccessor) this).nautec$getNibble();
-        if (nibble > 0 && !this.biteAnnounced) {
+        FishingHookAccessor accessor = (FishingHookAccessor) this;
+        int nibble = accessor.nautec$getNibble();
+        if (nibble <= 0) {
+            if (this.biteAnnounced) {
+                resetChallenge();
+            }
+            return;
+        }
+
+        if (!this.biteAnnounced) {
             this.biteAnnounced = true;
             this.kind = MinigameKind.random(this.random);
             this.nonce = this.random.nextLong();
             this.seed = this.random.nextLong();
             this.challengeStartedAt = this.tickCount;
-            PacketDistributor.sendToPlayer(player, new OpenFishingMinigamePayload(this.kind.ordinal(), this.nonce, this.seed));
+            this.holdBiteUntil = this.tickCount + FishingMinigame.DURATION_TICKS + REEL_WINDOW_TICKS;
+            if (player instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new OpenFishingMinigamePayload(this.kind.ordinal(), this.nonce, this.seed));
+            }
         }
+
+        if (nibble < 2 && this.tickCount < this.holdBiteUntil) {
+            accessor.nautec$setNibble(2);
+        }
+    }
+
+    private void resetChallenge() {
+        this.biteAnnounced = false;
+        this.challengeStartedAt = -1;
+        this.holdBiteUntil = -1;
+        this.minigameSucceeded = false;
+    }
+
+    public MinigameKind minigameKind() {
+        return this.kind;
+    }
+
+    public long minigameNonce() {
+        return this.nonce;
+    }
+
+    public long minigameSeed() {
+        return this.seed;
+    }
+
+    public boolean minigameSucceeded() {
+        return this.minigameSucceeded;
     }
 
     public void onMinigameReport(long reportedNonce, List<Integer> reportedTicks) {
@@ -99,7 +144,7 @@ public class NautecFishingHook extends FishingHook {
         }
 
         int elapsed = this.tickCount - this.challengeStartedAt;
-        if (elapsed > FishingMinigame.DURATION_TICKS + 20) {
+        if (elapsed > FishingMinigame.DURATION_TICKS + REPORT_GRACE_TICKS) {
             return;
         }
 
@@ -114,6 +159,7 @@ public class NautecFishingHook extends FishingHook {
         }
 
         this.minigameSucceeded = true;
+        this.holdBiteUntil = Math.max(this.holdBiteUntil, this.tickCount + WIN_SCREEN_TICKS + REEL_WINDOW_TICKS);
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.playSound(null, this.getX(), this.getY(), this.getZ(),
                     SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.8F, 1.4F);
@@ -152,13 +198,19 @@ public class NautecFishingHook extends FishingHook {
 
         for (ResourceKey<LootTable> key : tables) {
             LootTable table = level.getServer().reloadableRegistries().getLootTable(key);
-            for (ItemStack stack : table.getRandomItems(params)) {
-                dropTowards(level, owner, stack, x, y, z);
-            }
+            deliverCatch(level, owner, this, table.getRandomItems(params), x, y, z);
         }
 
         if (this.minigameSucceeded) {
             level.addFreshEntity(new ExperienceOrb(level, x, y + 0.5, z, 4 + this.random.nextInt(5)));
+        }
+    }
+
+    public static void deliverCatch(ServerLevel level, Player owner, FishingHook hook, List<ItemStack> stacks, double x, double y, double z) {
+        List<ItemStack> items = new ArrayList<>(stacks);
+        CaughtEntitySpawner.releaseAll(hook, items);
+        for (ItemStack stack : items) {
+            dropTowards(level, owner, stack, x, y, z);
         }
     }
 

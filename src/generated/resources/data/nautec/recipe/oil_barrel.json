@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "nautec:cast_iron_ingot",
+    "R": "nautec:cast_iron_rod"
+  },
+  "pattern": [
+    "CRC",
+    "C C",
+    "CRC"
+  ],
+  "result": {
+    "id": "nautec:oil_barrel"
+  }
+}

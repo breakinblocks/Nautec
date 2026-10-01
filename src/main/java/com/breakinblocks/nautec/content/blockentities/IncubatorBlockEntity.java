@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.utils.RecipeRevision;
+import com.breakinblocks.nautec.utils.SidedCapUtils;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -69,9 +71,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         }
         ItemStack stack = getItemStackHandler().getStackInSlot(0);
         BacteriaInstance instance = getBacteriaStorage().getBacteria(0);
-        this.recipe = instance.getSize() < NTConfig.bacteriaColonySizeCap
-                ? serverLevel.recipeAccess().getRecipeFor(BacteriaIncubationRecipe.TYPE, new BacteriaRecipeInput(instance, stack), level).map(RecipeHolder::value).orElse(null)
-                : null;
+        this.recipe = serverLevel.recipeAccess().getRecipeFor(BacteriaIncubationRecipe.TYPE, new BacteriaRecipeInput(instance, stack), level).map(RecipeHolder::value).orElse(null);
 
         if (this.active != (this.recipe != null)) {
             this.active = this.recipe != null;
@@ -142,7 +142,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return Map.of();
+        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
     }
 
     @Override

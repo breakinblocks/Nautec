@@ -1,19 +1,16 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "nautec:block/bio_reactor",
-      "y": 90
-    },
-    "facing=north": {
+    "active=false,formed=false": {
       "model": "nautec:block/bio_reactor"
     },
-    "facing=south": {
-      "model": "nautec:block/bio_reactor",
-      "y": 180
+    "active=false,formed=true": {
+      "model": "nautec:block/bio_reactor_formed"
     },
-    "facing=west": {
-      "model": "nautec:block/bio_reactor",
-      "y": 270
+    "active=true,formed=false": {
+      "model": "nautec:block/bio_reactor"
+    },
+    "active=true,formed=true": {
+      "model": "nautec:block/bio_reactor_formed_active"
     }
   }
 }

@@ -5,8 +5,10 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.BioReactorPartBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.IndustrialBioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
+import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import com.breakinblocks.nautec.utils.BlockUtils;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
@@ -74,10 +76,19 @@ public class AquarineWrenchItem extends Item {
 
         if (level.getBlockEntity(pos) instanceof BioReactorPartBlockEntity partBE) {
             BlockState state = level.getBlockState(pos);
-            if (state.getValue(BioReactorMultiblock.BIO_REACTOR_PART) % 2 != 0) {
+            if (state.getValue(BioReactorMultiblock.TOP) && state.getValue(BioReactorMultiblock.BIO_REACTOR_PART) % 2 != 0) {
                 boolean hatch = !state.getValue(BioReactorMultiblock.HATCH);
                 level.setBlockAndUpdate(pos, state.setValue(BioReactorMultiblock.HATCH, hatch));
                 partBE.setLaserInput(hatch);
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.FAIL;
+        }
+
+        if (level.getBlockEntity(pos) instanceof IndustrialBioReactorPartBlockEntity industrialPart) {
+            BlockState state = level.getBlockState(pos);
+            if (IndustrialBioReactorMultiblock.isHatchCandidate(industrialPart.getLayer(), industrialPart.getCell())) {
+                level.setBlockAndUpdate(pos, state.setValue(BioReactorMultiblock.HATCH, !state.getValue(BioReactorMultiblock.HATCH)));
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.FAIL;

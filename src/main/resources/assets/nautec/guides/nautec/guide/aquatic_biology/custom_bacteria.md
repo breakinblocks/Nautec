@@ -2,7 +2,7 @@
 navigation:
   title: Custom Bacteria
   icon: minecraft:command_block
-  position: 8
+  position: 12
   parent: aquatic_biology/aquatic_biology-index.md
 ---
 
@@ -21,15 +21,15 @@ This page is for server admins and pack makers. The commands need operator permi
 
 `/nautec bacteria generate <name> <item> [rarity]`
 
-Creates a strain called `<name>` that produces `<item>`, together with an incubation recipe that uses the item itself as the nutrient and a mutation recipe that uses it as the catalyst. The rarity sets the starting stats, the incubation growth and the mutation chance, and picks the strain it mutates from:
+Creates a strain called `<name>` that produces `<item>`, together with an incubation recipe that uses the item itself as the nutrient, a colony feeding recipe with the same nutrient, and a mutation recipe that uses it as the catalyst. The rarity sets the starting stats, the incubation growth, the mutation chance and the [Strain Yield](production_rates.md), and picks the strain it mutates from:
 
-| Rarity | Mutates from |
-|---|---|
-| common | Lithophiles |
-| uncommon (default) | Metallophiles |
-| rare | Ferrophiles |
-| epic | Aurrophiles |
-| legendary | Adamantophiles |
+| Rarity | Mutates from | Strain Yield |
+|---|---|---|
+| common | Lithophiles | 1 |
+| uncommon (default) | Metallophiles | 0.8 |
+| rare | Ferrophiles | 0.6 |
+| epic | Aurrophiles | 0.4 |
+| legendary | Adamantophiles | 0.12 |
 
 `/nautec bacteria generate-tag <name> <item> <tag> [rarity]` does the same but uses a whole item tag as the nutrient.
 

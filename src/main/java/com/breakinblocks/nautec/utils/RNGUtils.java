@@ -36,7 +36,7 @@ public final class RNGUtils {
     }
 
     public static int intInRangeOf(int val, int range) {
-        return (int) (uniformRandInt(-val, val) * random() + range);
+        return uniformRandInt(-range, range) + val;
     }
 
     public static int intInRangeOf(int range) {
@@ -44,7 +44,7 @@ public final class RNGUtils {
     }
 
     public static float floatInRangeOf(float val, float range) {
-        return uniformRandFloat(-val, val) * random() + range;
+        return uniformRandFloat(-range, range) + val;
     }
 
     public static float floatInRangeOf(float range) {

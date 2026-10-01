@@ -31,6 +31,7 @@ public class BioReactorBlock extends LaserBlock {
         registerDefaultState(defaultBlockState()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(Multiblock.FORMED, false)
+                .setValue(BioReactorMultiblock.ACTIVE, false)
         );
     }
 
@@ -41,7 +42,7 @@ public class BioReactorBlock extends LaserBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(FACING, Multiblock.FORMED, BioReactorMultiblock.BIO_REACTOR_PART));
+        super.createBlockStateDefinition(builder.add(FACING, Multiblock.FORMED, BioReactorMultiblock.BIO_REACTOR_PART, BioReactorMultiblock.ACTIVE));
     }
 
     @Override

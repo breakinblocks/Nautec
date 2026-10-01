@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        }
+      ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/monazite"
+      }
+    }
+  ],
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:monazitophiles",
+  "ingredient": {
+    "ingredient": "#c:ingots/monazite"
+  },
+  "vitality_ticks": 1200
+}

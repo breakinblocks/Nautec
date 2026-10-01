@@ -26,6 +26,13 @@
         },
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "type": "nautec:crate",
+              "function": "minecraft:set_loot_table",
+              "name": "nautec:chests/crate"
+            }
+          ],
           "name": "nautec:crate",
           "weight": 4
         },

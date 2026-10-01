@@ -16,7 +16,7 @@ item_ids:
   The Bio Reactor puts up to three colonies to work making items.
 </Column>
 
-Each colony makes the item its strain produces, one at a time, for as long as the reactor has power. Producing items does not use up the colony. Only age does, once the colony outlives its Lifespan.
+Each colony makes the item its strain produces, one at a time, for as long as the reactor has power. Producing items does not use up the colony, and a colony that is kept fed from the reactor's nutrient slots does not age either. The [Industrial Bio Reactor](industrial_bio_reactor.md) is the larger version for nine colonies.
 
 ***
 
@@ -55,6 +55,17 @@ Once it is formed, right-click the Bio Reactor to open it.
 
 ***
 
+## <Color id="gold">The Screen</Color>
+
+* The three colony slots take colonies from Petri Dishes, as described in [Bacteria Introduction](bacteria_introduction.md).
+* The thin bar beside each colony is its nutrient buffer. Hover it to see how many seconds of feeding are left.
+* Each colony has its own output slot to its right.
+* The two slots on the far left are nutrient slots. [Colony Feeding](colony_feeding.md) explains what goes in them.
+* The two slots on the far right take [Reactor Upgrades](reactor_upgrades.md), one per slot.
+* Hover a progress arrow to see the power arriving against the power needed.
+
+***
+
 ## <Color id="gold">Power and Hatches</Color>
 
 The reactor takes power through hatches. Right-click one of the four Bacteria Containment Shields in the top layer with the wrench to turn it into a hatch (click again to turn it back), then point a beam down into the hatch from above. You can open more than one hatch, and their power adds together.
@@ -65,7 +76,7 @@ The reactor takes power through hatches. Right-click one of the four Bacteria Co
 | 2 | 75 |
 | 3 | 100 |
 
-That is 25 AP for the reactor plus 25 AP per colony, both configurable. The power is a threshold, not a cost. Below it nothing runs and all progress resets.
+That is 25 AP for the reactor plus 25 AP per filled colony slot, both configurable. Upgrades multiply the total, see [Reactor Upgrades](reactor_upgrades.md). The power is a threshold, not a cost. Below it nothing runs and all progress resets, and more power than needed does not make anything faster.
 
 One <ItemLink id="aquatic_catalyst"/> gives 12 AP at most, so even four hatches of single catalysts fall short. Combine beams in a <ItemLink id="laser_junction"/> before they reach a hatch. A [Bacterial Fuel Cell](bacterial_fuel_cell.md) gives up to 48 AP from a single beam.
 
@@ -73,7 +84,7 @@ One <ItemLink id="aquatic_catalyst"/> gives 12 AP at most, so even four hatches 
 
 ## <Color id="gold">Production Speed</Color>
 
-Speed is Production Rate times a size factor that runs from 0.5 for a tiny colony to 1 at the size cap.
+Speed is Production Rate times a size factor that runs from 0.5 for a tiny colony to 1 at the size cap, times the strain's Strain Yield. For a strain with a Strain Yield of 1, such as Lithophiles:
 
 | Colony | Time per item |
 |---|---|
@@ -81,17 +92,28 @@ Speed is Production Rate times a size factor that runs from 0.5 for a tiny colon
 | Production Rate 1, size 20,000 | about 1.2 seconds |
 | Production Rate 2, size 40,000 | under half a second |
 
-The base speed is configurable. JEI's Bio Reactor category shows what each strain makes.
+Valuable strains are slower: a diamond colony takes a little over eight times as long. [Production Rates](production_rates.md) has the full formula and every strain's Strain Yield.
 
-Each colony has its own output slot. Empty them often: once a slot holds a full stack, whatever that colony makes next is lost.
+Each colony has its own output slot. When a slot is full, that colony pauses until there is room: it makes nothing, eats nothing, does not age and does not shrink.
 
 ***
 
-## <Color id="gold">Aging</Color>
+## <Color id="gold">Automation</Color>
 
-Every tick the reactor has enough power, each colony in it ages by one tick, whether or not it makes anything. When its age passes its Lifespan the colony is Senescent, and every item it makes costs it a tenth of its size until the slot is empty.
+* Pull output from the underside of the base, for example with a hopper under the reactor, or from the Bio Reactor block with a pipe.
+* Insert nutrients and upgrades through the top of the Bio Reactor block, for example with a hopper sitting on it, or with a pipe into the underside of the base.
 
-Watch Vitality on the dish tooltip and move the colony to an [Incubator](incubator.md) before it hits 0%. One completed cycle resets its age. A fresh strain's Lifespan is at most about two minutes of work, so early on you will be swapping often.
+Automation only puts items into the nutrient and upgrade slots and only takes them from the output slots. With nutrients coming in and output going out, the reactor runs indefinitely.
+
+***
+
+## <Color id="gold">Aging and Decay</Color>
+
+A working colony spends its nutrient buffer instead of aging. When the buffer runs out, the reactor feeds it the next matching nutrient from a nutrient slot. Only when there is no matching nutrient does the colony age, one tick for every tick it works, and its bar reads "No nutrients: the colony is aging".
+
+Once its age passes its Lifespan the colony is Senescent. A senescent colony that is starving loses 2% of its size (at least 1) for every second it works, so about half of it is gone after 35 seconds. The rate is configurable.
+
+Feeding stops the loss at once, but it does not make the colony young again: it stays Senescent and starts shrinking again as soon as the nutrients run out. One completed [Incubator](incubator.md) cycle resets its age.
 
 ***
 

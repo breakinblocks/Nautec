@@ -122,7 +122,7 @@ public final class ClientAcceptanceRegressionTests {
             helper.succeed();
         });
         r.add("acceptance/custom_recipe_network_roundtrip", 40, helper -> {
-            helper.assertValueEqual(9, NTRecipes.TYPES.getEntries().size(), "Custom recipe type count");
+            helper.assertValueEqual(10, NTRecipes.TYPES.getEntries().size(), "Custom recipe type count");
             RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
             try {
                 for (var type : NTRecipes.TYPES.getEntries()) {

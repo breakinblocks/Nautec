@@ -29,9 +29,9 @@ Salt Water is the base of every [Mixer](mixer.md) recipe. The Mixer turns it int
   ### <Color id="aqua">Salt Water</Color>
 </Row>
 
-Fill an empty Bucket from any water source in an ocean biome and you get a Salt Water Bucket instead of a Water Bucket. NauTec's own ocean biomes count. This can be turned off in the config.
+Salt Water comes from the [Deep Sea Drain](drain.md), which pumps 500 mB every second into its tank. Draw it off with a Bucket or a pipe.
 
-For a steady supply, build a [Deep Sea Drain](drain.md), which pumps 500 mB of Salt Water every second.
+Ocean water in a Bucket stays plain water by default. Pack makers can set `collectSaltWater` to true in `config/nautec-common.toml` so that filling a Bucket from any water source in an ocean biome gives a Salt Water Bucket.
 
 ***
 
@@ -40,7 +40,7 @@ For a steady supply, build a [Deep Sea Drain](drain.md), which pumps 500 mB of S
   ### <Color id="aqua">Electrolyte Algae Serum (EAS)</Color>
 </Row>
 
-Made in the [Mixer](mixer.md). EAS unlocks the abilities of the [Aquarine Steel tools](tools.md).
+Made in the [Mixer](mixer.md) from Salt Water. EAS unlocks the abilities of the [Aquarine Steel tools](tools.md).
 
 To infuse a tool, pour the EAS out as a source block and drop the tool into it. After about 7.5 seconds the tool is infused for good and the EAS source is used up, so one bucket infuses one tool.
 
@@ -78,7 +78,9 @@ A thick fluid found in <ItemLink id="oil_barrel"/>s.
   ### <Color id="aqua">Electrolyte Algae Serum (EAS) Vial</Color>
 </Row>
 
-Glass Vials and an EAS Vial go into the <ItemLink id="syringe_robot_arm"/>.
+An EAS Bucket and three Glass Vials craft three EAS Vials, and you get the empty Bucket back. Glass Vials and an EAS Vial go into the <ItemLink id="syringe_robot_arm"/>.
+
+<Recipe id="nautec:eas_vial"/>
 
 <Row>
   <ItemImage id="salt"/>

@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "arsmagicalegacy"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "irons_jewelry"
+        }
+      ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/topaz"
+      }
+    }
+  ],
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:topazophiles",
+  "ingredient": {
+    "ingredient": "#c:gems/topaz"
+  },
+  "vitality_ticks": 1200
+}

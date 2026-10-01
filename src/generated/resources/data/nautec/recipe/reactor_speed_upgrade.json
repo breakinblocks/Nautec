@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquatic_chip",
+    "D": "nautec:deep_steel_plating",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    " R ",
+    "DAD",
+    " R "
+  ],
+  "result": {
+    "id": "nautec:reactor_speed_upgrade"
+  }
+}

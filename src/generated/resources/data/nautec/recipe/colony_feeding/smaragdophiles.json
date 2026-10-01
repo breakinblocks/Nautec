@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:smaragdophiles",
+  "ingredient": {
+    "ingredient": "#c:ores/emerald"
+  },
+  "vitality_ticks": 1200
+}

@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:cucurbitophiles",
+  "ingredient": {
+    "ingredient": "minecraft:pumpkin"
+  },
+  "vitality_ticks": 1200
+}

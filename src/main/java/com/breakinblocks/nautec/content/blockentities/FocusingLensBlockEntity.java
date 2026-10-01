@@ -20,6 +20,7 @@ import java.util.Set;
 
 public class FocusingLensBlockEntity extends LaserBlockEntity {
     private static final int HUM_PERIOD = 100;
+    public static final float MAX_FOCUSED_PURITY = 2.0f;
 
     public FocusingLensBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.FOCUSING_LENS.get(), blockPos, blockState);
@@ -42,7 +43,17 @@ public class FocusingLensBlockEntity extends LaserBlockEntity {
 
     @Override
     protected float outgoingPurity(Direction direction) {
-        return getPurity() > 0 ? getPurity() + (float) NTConfig.lensPurityBonus : 0f;
+        return focusedPurity(getPurity());
+    }
+
+    public static float focusedPurity(float incoming) {
+        if (incoming <= 0) {
+            return 0f;
+        }
+        if (incoming >= MAX_FOCUSED_PURITY) {
+            return incoming;
+        }
+        return Math.min(incoming + (float) NTConfig.lensPurityBonus, MAX_FOCUSED_PURITY);
     }
 
     @Override

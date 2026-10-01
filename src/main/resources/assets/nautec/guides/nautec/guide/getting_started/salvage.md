@@ -60,9 +60,13 @@ Lucky fishing zones and the Prismatic Fishing Rod roll extra loot that includes 
   ### <Color id="aqua">Atlantic Gold</Color>
 </Row>
 
-<ItemLink id="atlantic_gold_nugget"/>s turn up in Crates, Rusty Crates, ruin gravel and lucky zone treasure in any ocean.
+<ItemLink id="atlantic_gold_nugget"/>s turn up in Crates, Rusty Crates and lucky zone treasure in any ocean. Nine nuggets craft an <ItemLink id="atlantic_gold_ingot"/>, and an ingot crafts back into nine nuggets.
 
-The <ItemLink id="atlantic_gold_ingot"/> goes into the Sea Scout, the Solar and Sonar Modules and the Auxiliary Ventricle augment.
+<Recipe id="nautec:atlantic_gold_ingot_from_nuggets"/>
+
+<Recipe id="nautec:atlantic_gold_nuggets_from_ingot"/>
+
+The ingot goes into the Sea Scout, the Solar and Sonar Modules and the Auxiliary Ventricle augment.
 
 ***
 

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "nautec:atlantic_gold_ingot"
+  ],
+  "result": {
+    "count": 9,
+    "id": "nautec:atlantic_gold_nugget"
+  }
+}

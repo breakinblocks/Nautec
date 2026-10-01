@@ -25,7 +25,7 @@ Every colony belongs to a strain, has a size, and carries four stats that decide
 * [Analyze](bacterial_analyzer.md) the dish to see its size and stats.
 * [Mutate](mutator.md) it into the strain you want. The strains you graft from stone, sand, podzol and netherrack only exist to be mutated.
 * [Incubate](incubator.md) it to grow it and to restore its Vitality.
-* Put it to work in the [Bio Reactor](bio_reactor.md) for items, or burn it in the [Bacterial Fuel Cell](bacterial_fuel_cell.md) for a beam.
+* Put it to work in the [Bio Reactor](bio_reactor.md) for items, with its nutrient in the reactor so it does not age, or burn it in the [Bacterial Fuel Cell](bacterial_fuel_cell.md) for a beam.
 
 [Bacteria Stats](bacteria_stats.md) explains what each number does.
 
@@ -56,6 +56,6 @@ The Bacterial Analyzer takes the dish itself in an item slot, and the Bacterial 
 
 ## <Color id="gold">JEI</Color>
 
-JEI has a category for each step: Bacteria Grafting (where to graft each strain), Bacteria Mutations (catalyst and chance), Bacteria Incubation (nutrient, growth range and consume chance) and Bio Reactor (what each strain makes and its starting Production Rate range). Look there for per-strain details.
+JEI has a category for each step: Bacteria Grafting (where to graft each strain), Bacteria Mutations (catalyst and chance), Bacteria Incubation (nutrient, growth range and consume chance), Colony Feeding (the nutrient that keeps each strain from aging in a reactor) and Bio Reactor (what each strain makes, its Strain Yield and its starting Production Rate range). Look there for per-strain details.
 
 Strains for other mods' metals and gems only appear when a mod in the pack adds that material.

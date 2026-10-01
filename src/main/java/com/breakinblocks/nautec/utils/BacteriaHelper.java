@@ -16,8 +16,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public final class BacteriaHelper {
@@ -48,6 +50,28 @@ public final class BacteriaHelper {
         ));
 
         return dish;
+    }
+
+    public static @Nullable Bacteria findBacteria(@Nullable HolderLookup.Provider lookup, ResourceKey<Bacteria> key) {
+        if (lookup == null) {
+            return null;
+        }
+        Optional<? extends HolderLookup.RegistryLookup<Bacteria>> registry = lookup.lookup(NTRegistries.BACTERIA_KEY);
+        if (registry.isEmpty()) {
+            return null;
+        }
+        return registry.get().get(key).map(Holder.Reference::value).orElse(null);
+    }
+
+    public static Component productionMultiplierTooltip(float multiplier) {
+        ChatFormatting color = multiplier >= 1.0f ? ChatFormatting.GREEN : multiplier >= 0.5f ? ChatFormatting.YELLOW : ChatFormatting.GOLD;
+        return Component.translatable("nautec.bacteria.production_multiplier").withStyle(ChatFormatting.WHITE)
+                .append(Component.translatable("nautec.bacteria.multiplier_value", formatMultiplier(multiplier)).withStyle(color));
+    }
+
+    public static String formatMultiplier(float multiplier) {
+        String text = String.format(Locale.ROOT, "%.2f", multiplier);
+        return text.contains(".") ? text.replaceAll("0+$", "").replaceAll("\\.$", "") : text;
     }
 
     public static Component resourceTooltip(ResourceKey<Bacteria> key, HolderLookup.Provider lookup) {

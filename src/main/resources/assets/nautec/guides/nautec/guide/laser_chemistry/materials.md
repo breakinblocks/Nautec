@@ -42,7 +42,7 @@ Craft it by hand, or make it in the [Mixer](mixer.md) with Salt Water, which giv
   ### <Color id="aqua">Aquarine Steel Ingot</Color>
 </Row>
 
-Drop the compound into any powered laser beam and it becomes an ingot after 5 seconds. Any purity works, so one Aquatic Catalyst is enough. See [Item Transformation](nautec:getting_started/item_transformation.md) for the setup.
+Drop the compound into any powered laser beam and it becomes an ingot after 5 seconds. Any purity works, so one Aquatic Catalyst is enough. A beam of purity 2.0 or more gives 2 ingots per compound in 4 seconds instead. See [Item Transformation](nautec:getting_started/item_transformation.md) for the setup.
 
 <Row>
   <ItemImage id="aquarine_steel_block"/>
@@ -107,7 +107,9 @@ Storage for nine ingots.
   ### <Color id="aqua">Oil Barrel</Color>
 </Row>
 
-A sealed cast iron drum that holds Oil. A <ItemLink id="crowbar"/> pries its lid open. Blast it for Cast Iron Ingots.
+A sealed cast iron drum that holds Oil. A <ItemLink id="crowbar"/> pries its lid open. Blast it for Cast Iron Ingots. Mine it with a pickaxe to pick it up.
+
+<Recipe id="nautec:oil_barrel"/>
 
 ***
 

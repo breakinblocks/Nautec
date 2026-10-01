@@ -52,6 +52,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -368,8 +369,12 @@ public final class ReviewRegressionTests {
                 helper.succeed();
             });
         }
-        for (var bucket : List.of(Items.BUCKET, Items.LAVA_BUCKET)) {
-            tests.put(bucket == Items.BUCKET ? "empty_bucket_collects_ocean_saltwater" : "filled_bucket_not_replaced_by_saltwater", helper -> {
+        record SaltWaterCase(String name, Item bucket, boolean collect, boolean expectSaltWater) {
+        }
+        for (SaltWaterCase saltCase : List.of(
+                new SaltWaterCase("empty_bucket_collects_ocean_saltwater", Items.BUCKET, true, true),
+                new SaltWaterCase("filled_bucket_not_replaced_by_saltwater", Items.LAVA_BUCKET, true, false))) {
+            tests.put(saltCase.name(), helper -> {
                 helper.setBiome(Biomes.OCEAN);
                 BlockPos pos = new BlockPos(4, 1, 4);
                 helper.setBlock(pos.below(), Blocks.STONE);
@@ -377,14 +382,26 @@ public final class ReviewRegressionTests {
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
                 player.setPos(helper.absolutePos(pos).getCenter().add(0, 1, 0));
                 player.setXRot(90);
-                player.setItemInHand(InteractionHand.MAIN_HAND, bucket.getDefaultInstance());
-                var result = bucket.use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
+                player.setItemInHand(InteractionHand.MAIN_HAND, saltCase.bucket().getDefaultInstance());
+                boolean previous = NTConfig.collectSaltWater;
+                NTConfig.collectSaltWater = saltCase.collect();
+                InteractionResult result;
+                try {
+                    result = saltCase.bucket().use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
+                } finally {
+                    NTConfig.collectSaltWater = previous;
+                }
                 ItemStack transformed = result instanceof InteractionResult.Success success && success.heldItemTransformedTo() != null
                         ? success.heldItemTransformedTo() : player.getMainHandItem();
-                helper.assertTrue(transformed.is(NTFluids.SALT_WATER.getBucket()) == (bucket == Items.BUCKET), "only empty bucket collects saltwater");
+                helper.assertTrue(transformed.is(NTFluids.SALT_WATER.getBucket()) == saltCase.expectSaltWater(),
+                        "salt water collection with collectSaltWater=" + saltCase.collect());
                 helper.succeed();
             });
         }
+        tests.put("salt_water_collection_off_by_default", helper -> {
+            helper.assertFalse(NTConfig.COLLECT_SALT_WATER.getDefault(), "collectSaltWater should default to false");
+            helper.succeed();
+        });
         tests.put("infusion_consumes_source_without_destroying_floor", helper -> {
             BlockPos pos = new BlockPos(4, 1, 4);
             helper.setBlock(pos.below(), Blocks.STONE);

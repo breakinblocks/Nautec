@@ -5,7 +5,6 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.BioReactorPartBlockEntity;
-import com.breakinblocks.nautec.content.blocks.multiblock.controller.BioReactorBlock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -31,6 +30,7 @@ public class BioReactorPartBlock extends LaserBlock {
                 .setValue(Multiblock.FORMED, false)
                 .setValue(BioReactorMultiblock.TOP, false)
                 .setValue(BioReactorMultiblock.HATCH, false)
+                .setValue(BioReactorMultiblock.ACTIVE, false)
         );
     }
 
@@ -51,13 +51,14 @@ public class BioReactorPartBlock extends LaserBlock {
                 Multiblock.FORMED,
                 BioReactorMultiblock.BIO_REACTOR_PART,
                 BioReactorMultiblock.TOP,
-                BioReactorMultiblock.HATCH
+                BioReactorMultiblock.HATCH,
+                BioReactorMultiblock.ACTIVE
         ));
     }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
-        return simpleCodec(BioReactorBlock::new);
+        return simpleCodec(BioReactorPartBlock::new);
     }
 
     @Override

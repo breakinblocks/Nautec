@@ -52,6 +52,6 @@ It takes the Body slot, the same one as flight and the Dolphin Fin.
   ### <Color id="aqua">Vent Carapace</Color>
 </Row>
 
-Part: Chitin Plate, one to three from each Vent Crawler in the Hydrothermal Vents.
+Part: four Chitin Plates, one in each of the four extensions. Each Vent Crawler in the Hydrothermal Vents drops one to three. Every extension holding a plate needs its own Claw Robot Arm and its own 25 AP beam (see [Augmentation Station](augmentation_station.md)).
 
 Slot: Head or Body. Adds 4 armor and 50% knockback resistance, and fire burns you for half as long. Put it in the Head slot to keep the Body slot for something else. A second carapace in the other slot adds nothing.

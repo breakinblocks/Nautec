@@ -49,10 +49,10 @@ The beam goes in through a laser port. With the wrench, right-click the outer si
 
 Shift-right-click the drain with an empty hand to open it. It only opens while it has power. The valve turns, then the lid swings open over a few seconds. Shift-right-click again to close it.
 
-While open and powered it pumps 500 mB of Salt Water every second into a 128,000 mB tank (both configurable).
+While open and powered it pumps 500 mB of Salt Water every second into a 128,000 mB tank (both configurable). It is the steady source of Salt Water for the [Mixer](mixer.md), since ocean water in a Bucket stays plain water unless a pack has turned on `collectSaltWater` in `config/nautec-common.toml`.
 
 * Take Salt Water out with a pipe on the bottom of the centre block.
-* Or right-click any part of the drain with a Bucket or other fluid container.
+* Or right-click any part of the drain with a Bucket or other fluid container. A Bucket fills once the tank holds at least 1,000 mB.
 
 Look at a wall piece with the <ItemLink id="prism_monocle"/> to see how much fluid is stored.
 

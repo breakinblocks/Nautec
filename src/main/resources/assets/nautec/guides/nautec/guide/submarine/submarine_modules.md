@@ -35,7 +35,7 @@ While you pilot, the nine bay slots appear at the bottom of the screen in place 
 
 If a module cannot fire, the reason appears above the bar: "That module is still cycling", "Not enough power for that module", or a teleport message. A refused module costs nothing.
 
-Cooldowns belong to the slot and start when you fire. A hull picked up mid-cooldown keeps the time it had left, and the count carries on once you launch it again. Passive modules do not stack: a second Solar or Armour Module adds nothing.
+Cooldowns belong to the module type and start when you fire. Firing one copy of a module puts every copy of it in the bay on cooldown, so a second Booster does not give you a second boost. A hull picked up mid-cooldown keeps the time it had left, and the count carries on once you launch it again. Passive modules do not stack: a second Solar or Armour Module adds nothing.
 
 ***
 
@@ -43,7 +43,7 @@ Cooldowns belong to the slot and start when you fire. A hull picked up mid-coold
 
 | Module | Kind | Power | Cooldown |
 |---|---|---|---|
-| [Solar](solar_module.md) | Passive | Generates 10,000 every 5 s | None |
+| [Solar](solar_module.md) | Passive | Generates 2,000 every 5 s | None |
 | [Armour](armor_module.md) | Passive | None | None |
 | [Booster](booster_module.md) | 10 s of speed | 20,000 | 13 s |
 | [Stealth](stealth_module.md) | 2 min of stealth | 50,000 | 130 s |

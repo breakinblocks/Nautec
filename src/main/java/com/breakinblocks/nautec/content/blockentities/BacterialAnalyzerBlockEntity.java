@@ -23,12 +23,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
 
 public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements MenuProvider {
+    public static final Map<Direction, Pair<IOActions, int[]>> ITEM_SIDED_INTERACTIONS = Map.of(
+            Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{0}),
+            Direction.EAST, Pair.of(IOActions.INSERT, new int[]{0}),
+            Direction.WEST, Pair.of(IOActions.INSERT, new int[]{0}),
+            Direction.NORTH, Pair.of(IOActions.EXTRACT, new int[]{1})
+    );
     private boolean hasRecipe;
     private int progress;
 
@@ -113,7 +120,7 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return Map.of();
+        return capability == Capabilities.Item.BLOCK ? ITEM_SIDED_INTERACTIONS : Map.of();
     }
 
     @Override

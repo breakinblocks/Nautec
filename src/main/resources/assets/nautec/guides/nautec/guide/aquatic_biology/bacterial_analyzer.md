@@ -29,11 +29,13 @@ It needs a beam of at least 5 AP entering its bottom face from below. The power 
 
 Both the time (60 ticks) and the power (5 AP) are configurable.
 
+To automate it, feed dishes into the front, left or right face of the lower block and pull analyzed dishes out of the back. The bottom face stays free for the beam.
+
 ***
 
 ## <Color id="gold">Reading an Analyzed Dish</Color>
 
-The tooltip shows Size and Vitality. Hold Shift to see the item the strain produces and its four stats. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
+The tooltip shows Size, Vitality and, for a strain that makes something, its Strain Yield. Hold Shift to see the item the strain produces and its four stats. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
 
 ***
 

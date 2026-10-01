@@ -13,7 +13,7 @@ navigation:
   A powered laser beam turns items dropped into it into something else.
 </Column>
 
-Drop an item so it lies inside a powered beam, anywhere between the sending block and the receiver. If a transformation recipe matches the item and the beam's purity is high enough, the item changes after the recipe time. Nothing needs clicking, and the whole dropped stack changes at once, one output item for each input item.
+Drop an item so it lies inside a powered beam, anywhere between the sending block and the receiver. If a transformation recipe matches the item and the beam's purity is high enough, the item changes after the recipe time. Nothing needs clicking, and the whole dropped stack changes at once, with each input item giving the recipe's full output: 3 Prismarine Crystals give 6 Prismarine Crystal Shards.
 
 The item has to stay in the beam for the full time. If it is pushed out, or the beam loses power even for a moment, it starts over.
 
@@ -24,8 +24,11 @@ The item has to stay in the beam for the full time. If it is pushed out, or the 
 | Input | Output | Purity needed | Time |
 |---|---|---|---|
 | Aquarine Steel Compound | Aquarine Steel Ingot | any | 5 s |
+| Aquarine Steel Compound | 2 Aquarine Steel Ingots | 2.0 | 4 s |
 | <ItemLink id="burnt_coil"/> | Laser Channeling Coil | 1.5 | 10 s |
-| Prismarine Crystals | <ItemLink id="prismarine_crystal_shard"/> | 2.0 | 8 s |
+| Prismarine Crystals | 2 <ItemLink id="prismarine_crystal_shard"/>s | 2.0 | 8 s |
+
+When more than one recipe matches, the beam uses the one with the highest purity it meets, so a beam of 2.0 or more turns each compound into 2 ingots.
 
 JEI lists every transformation, including ones added by other mods or datapacks, under Item Transformation.
 
@@ -49,7 +52,7 @@ The Laser Channeling Coil and Prismarine Crystal Shards need more purity than a 
 * A <ItemLink id="bacterial_fuel_cell"/>, up to 2.5 depending on its colony.
 * A <ItemLink id="focusing_lens"/> in the beam's path, which adds 0.5 to the beam passing straight through it.
 
-An item is judged by the purity of the block that sends the beam it lies in. A lens's boost reaches the block after the lens, so send the lens's beam into a <ItemLink id="prismarine_laser_relay"/> and drop items in the relay's beam. A catalyst on Prismarine Crystal Shards, then a lens, then a relay gives 1.7 in the relay's beam, enough for the coil.
+An item is judged by the purity of the beam it lies in. In a beam leaving a lens, mirror or splitter, that is the purity after the optic has changed it. A catalyst on Prismarine Crystal Shards firing through one lens gives 1.7 in the lens's outgoing beam, enough for the coil.
 
 ***
 

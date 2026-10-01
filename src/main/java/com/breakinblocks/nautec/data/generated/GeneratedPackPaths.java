@@ -55,6 +55,10 @@ public final class GeneratedPackPaths {
         return recipeDir().resolve(name + "_mutation" + JSON_SUFFIX);
     }
 
+    public static Path feedingRecipeFile(String name) {
+        return recipeDir().resolve(name + "_feeding" + JSON_SUFFIX);
+    }
+
     public static Path obtainingFile() {
         return dataRoot().resolve(Nautec.MODID).resolve("data_maps").resolve("block").resolve("bacteria_obtaining" + JSON_SUFFIX);
     }

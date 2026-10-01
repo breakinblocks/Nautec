@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "active=false,formed=false": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=false,formed=true": {
+      "model": "nautec:block/industrial_bio_reactor_formed"
+    },
+    "active=true,formed=false": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=true,formed=true": {
+      "model": "nautec:block/industrial_bio_reactor_formed_active"
+    }
+  }
+}

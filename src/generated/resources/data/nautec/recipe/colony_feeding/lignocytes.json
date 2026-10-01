@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:lignocytes",
+  "ingredient": {
+    "ingredient": "minecraft:oak_log"
+  },
+  "vitality_ticks": 1200
+}

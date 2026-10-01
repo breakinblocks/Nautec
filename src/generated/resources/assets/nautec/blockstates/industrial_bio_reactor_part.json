@@ -1,0 +1,1204 @@
+{
+  "variants": {
+    "active=false,cell=0,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c0"
+    },
+    "active=false,cell=0,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c0"
+    },
+    "active=false,cell=0,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c0"
+    },
+    "active=false,cell=0,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c0"
+    },
+    "active=false,cell=0,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c0"
+    },
+    "active=false,cell=0,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c0"
+    },
+    "active=false,cell=0,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c0"
+    },
+    "active=false,cell=0,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c0"
+    },
+    "active=false,cell=1,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c1"
+    },
+    "active=false,cell=1,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c1"
+    },
+    "active=false,cell=1,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c1"
+    },
+    "active=false,cell=1,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c1"
+    },
+    "active=false,cell=1,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c1"
+    },
+    "active=false,cell=1,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c1"
+    },
+    "active=false,cell=1,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c1"
+    },
+    "active=false,cell=1,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c1_hatch"
+    },
+    "active=false,cell=10,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c10"
+    },
+    "active=false,cell=10,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c10"
+    },
+    "active=false,cell=10,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c10"
+    },
+    "active=false,cell=10,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c10"
+    },
+    "active=false,cell=10,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c10"
+    },
+    "active=false,cell=10,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c10"
+    },
+    "active=false,cell=10,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c10"
+    },
+    "active=false,cell=10,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c10_hatch"
+    },
+    "active=false,cell=11,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c11"
+    },
+    "active=false,cell=11,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=11,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=11,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c11"
+    },
+    "active=false,cell=11,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c11"
+    },
+    "active=false,cell=11,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=11,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=11,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c11_hatch"
+    },
+    "active=false,cell=12,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c12"
+    },
+    "active=false,cell=12,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=12,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=12,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c12"
+    },
+    "active=false,cell=12,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c12"
+    },
+    "active=false,cell=12,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=12,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=12,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c12_hatch"
+    },
+    "active=false,cell=13,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c13"
+    },
+    "active=false,cell=13,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=13,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=13,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c13"
+    },
+    "active=false,cell=13,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c13"
+    },
+    "active=false,cell=13,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=13,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=13,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c13_hatch"
+    },
+    "active=false,cell=14,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c14"
+    },
+    "active=false,cell=14,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c14"
+    },
+    "active=false,cell=14,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c14"
+    },
+    "active=false,cell=14,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c14"
+    },
+    "active=false,cell=14,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c14"
+    },
+    "active=false,cell=14,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c14"
+    },
+    "active=false,cell=14,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c14"
+    },
+    "active=false,cell=14,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c14_hatch"
+    },
+    "active=false,cell=15,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c15"
+    },
+    "active=false,cell=15,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c15"
+    },
+    "active=false,cell=15,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c15"
+    },
+    "active=false,cell=15,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c15"
+    },
+    "active=false,cell=15,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c15"
+    },
+    "active=false,cell=15,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c15"
+    },
+    "active=false,cell=15,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c15"
+    },
+    "active=false,cell=15,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c15_hatch"
+    },
+    "active=false,cell=16,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c16"
+    },
+    "active=false,cell=16,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=16,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=16,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c16"
+    },
+    "active=false,cell=16,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c16"
+    },
+    "active=false,cell=16,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=16,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=16,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c16_hatch"
+    },
+    "active=false,cell=17,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c17"
+    },
+    "active=false,cell=17,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=17,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=17,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c17"
+    },
+    "active=false,cell=17,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c17"
+    },
+    "active=false,cell=17,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=17,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=17,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c17_hatch"
+    },
+    "active=false,cell=18,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c18"
+    },
+    "active=false,cell=18,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=18,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=18,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c18"
+    },
+    "active=false,cell=18,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c18"
+    },
+    "active=false,cell=18,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=18,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=18,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c18_hatch"
+    },
+    "active=false,cell=19,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c19"
+    },
+    "active=false,cell=19,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c19"
+    },
+    "active=false,cell=19,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c19"
+    },
+    "active=false,cell=19,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c19"
+    },
+    "active=false,cell=19,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c19"
+    },
+    "active=false,cell=19,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c19"
+    },
+    "active=false,cell=19,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c19"
+    },
+    "active=false,cell=19,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c19_hatch"
+    },
+    "active=false,cell=2,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c2"
+    },
+    "active=false,cell=2,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=2,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c2"
+    },
+    "active=false,cell=2,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c2"
+    },
+    "active=false,cell=2,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c2"
+    },
+    "active=false,cell=2,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=2,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c2"
+    },
+    "active=false,cell=2,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c2_hatch"
+    },
+    "active=false,cell=20,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c20"
+    },
+    "active=false,cell=20,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c20"
+    },
+    "active=false,cell=20,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c20"
+    },
+    "active=false,cell=20,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c20"
+    },
+    "active=false,cell=20,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c20"
+    },
+    "active=false,cell=20,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c20"
+    },
+    "active=false,cell=20,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c20"
+    },
+    "active=false,cell=20,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c20"
+    },
+    "active=false,cell=21,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c21"
+    },
+    "active=false,cell=21,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c21"
+    },
+    "active=false,cell=21,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c21"
+    },
+    "active=false,cell=21,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c21"
+    },
+    "active=false,cell=21,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c21"
+    },
+    "active=false,cell=21,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c21"
+    },
+    "active=false,cell=21,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c21"
+    },
+    "active=false,cell=21,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c21_hatch"
+    },
+    "active=false,cell=22,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c22"
+    },
+    "active=false,cell=22,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c22"
+    },
+    "active=false,cell=22,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c22"
+    },
+    "active=false,cell=22,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c22"
+    },
+    "active=false,cell=22,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c22"
+    },
+    "active=false,cell=22,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c22"
+    },
+    "active=false,cell=22,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c22"
+    },
+    "active=false,cell=22,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c22_hatch"
+    },
+    "active=false,cell=23,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c23"
+    },
+    "active=false,cell=23,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c23"
+    },
+    "active=false,cell=23,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c23"
+    },
+    "active=false,cell=23,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c23"
+    },
+    "active=false,cell=23,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c23"
+    },
+    "active=false,cell=23,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c23"
+    },
+    "active=false,cell=23,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c23"
+    },
+    "active=false,cell=23,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c23_hatch"
+    },
+    "active=false,cell=24,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c24"
+    },
+    "active=false,cell=24,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c24"
+    },
+    "active=false,cell=24,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c24"
+    },
+    "active=false,cell=24,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c24"
+    },
+    "active=false,cell=24,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c24"
+    },
+    "active=false,cell=24,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c24"
+    },
+    "active=false,cell=24,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c24"
+    },
+    "active=false,cell=24,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c24"
+    },
+    "active=false,cell=3,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c3"
+    },
+    "active=false,cell=3,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c3"
+    },
+    "active=false,cell=3,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c3"
+    },
+    "active=false,cell=3,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c3"
+    },
+    "active=false,cell=3,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c3"
+    },
+    "active=false,cell=3,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c3"
+    },
+    "active=false,cell=3,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c3"
+    },
+    "active=false,cell=3,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c3_hatch"
+    },
+    "active=false,cell=4,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c4"
+    },
+    "active=false,cell=4,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c4"
+    },
+    "active=false,cell=4,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c4"
+    },
+    "active=false,cell=4,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c4"
+    },
+    "active=false,cell=4,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c4"
+    },
+    "active=false,cell=4,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c4"
+    },
+    "active=false,cell=4,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c4"
+    },
+    "active=false,cell=4,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c4"
+    },
+    "active=false,cell=5,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c5"
+    },
+    "active=false,cell=5,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c5"
+    },
+    "active=false,cell=5,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c5"
+    },
+    "active=false,cell=5,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c5"
+    },
+    "active=false,cell=5,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c5"
+    },
+    "active=false,cell=5,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c5"
+    },
+    "active=false,cell=5,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c5"
+    },
+    "active=false,cell=5,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c5_hatch"
+    },
+    "active=false,cell=6,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c6"
+    },
+    "active=false,cell=6,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=6,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=6,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c6"
+    },
+    "active=false,cell=6,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c6"
+    },
+    "active=false,cell=6,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=6,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=6,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c6_hatch"
+    },
+    "active=false,cell=7,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c7"
+    },
+    "active=false,cell=7,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=7,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=7,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c7"
+    },
+    "active=false,cell=7,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c7"
+    },
+    "active=false,cell=7,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=7,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=7,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c7_hatch"
+    },
+    "active=false,cell=8,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c8"
+    },
+    "active=false,cell=8,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=8,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=8,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c8"
+    },
+    "active=false,cell=8,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c8"
+    },
+    "active=false,cell=8,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=8,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=false,cell=8,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c8_hatch"
+    },
+    "active=false,cell=9,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c9"
+    },
+    "active=false,cell=9,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c9"
+    },
+    "active=false,cell=9,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c9"
+    },
+    "active=false,cell=9,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c9"
+    },
+    "active=false,cell=9,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c9"
+    },
+    "active=false,cell=9,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c9"
+    },
+    "active=false,cell=9,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c9"
+    },
+    "active=false,cell=9,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c9_hatch"
+    },
+    "active=true,cell=0,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c0_active"
+    },
+    "active=true,cell=0,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c0_active"
+    },
+    "active=true,cell=0,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c0_active"
+    },
+    "active=true,cell=0,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c0_active"
+    },
+    "active=true,cell=0,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c0_active"
+    },
+    "active=true,cell=0,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c0_active"
+    },
+    "active=true,cell=0,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c0_active"
+    },
+    "active=true,cell=0,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c0_active"
+    },
+    "active=true,cell=1,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c1_active"
+    },
+    "active=true,cell=1,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c1_active"
+    },
+    "active=true,cell=1,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c1_active"
+    },
+    "active=true,cell=1,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c1_active"
+    },
+    "active=true,cell=1,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c1_active"
+    },
+    "active=true,cell=1,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c1_active"
+    },
+    "active=true,cell=1,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c1_active"
+    },
+    "active=true,cell=1,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c1_hatch_active"
+    },
+    "active=true,cell=10,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c10_active"
+    },
+    "active=true,cell=10,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c10_active"
+    },
+    "active=true,cell=10,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c10_active"
+    },
+    "active=true,cell=10,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c10_active"
+    },
+    "active=true,cell=10,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c10_active"
+    },
+    "active=true,cell=10,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c10_active"
+    },
+    "active=true,cell=10,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c10_active"
+    },
+    "active=true,cell=10,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c10_hatch_active"
+    },
+    "active=true,cell=11,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c11_active"
+    },
+    "active=true,cell=11,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=11,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=11,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c11_active"
+    },
+    "active=true,cell=11,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c11_active"
+    },
+    "active=true,cell=11,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=11,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=11,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c11_hatch_active"
+    },
+    "active=true,cell=12,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c12_active"
+    },
+    "active=true,cell=12,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=12,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=12,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c12_active"
+    },
+    "active=true,cell=12,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c12_active"
+    },
+    "active=true,cell=12,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=12,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=12,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c12_hatch_active"
+    },
+    "active=true,cell=13,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c13_active"
+    },
+    "active=true,cell=13,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=13,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=13,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c13_active"
+    },
+    "active=true,cell=13,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c13_active"
+    },
+    "active=true,cell=13,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=13,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=13,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c13_hatch_active"
+    },
+    "active=true,cell=14,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c14_active"
+    },
+    "active=true,cell=14,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c14_active"
+    },
+    "active=true,cell=14,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c14_active"
+    },
+    "active=true,cell=14,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c14_active"
+    },
+    "active=true,cell=14,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c14_active"
+    },
+    "active=true,cell=14,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c14_active"
+    },
+    "active=true,cell=14,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c14_active"
+    },
+    "active=true,cell=14,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c14_hatch_active"
+    },
+    "active=true,cell=15,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c15_active"
+    },
+    "active=true,cell=15,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c15_active"
+    },
+    "active=true,cell=15,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c15_active"
+    },
+    "active=true,cell=15,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c15_active"
+    },
+    "active=true,cell=15,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c15_active"
+    },
+    "active=true,cell=15,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c15_active"
+    },
+    "active=true,cell=15,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c15_active"
+    },
+    "active=true,cell=15,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c15_hatch_active"
+    },
+    "active=true,cell=16,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c16_active"
+    },
+    "active=true,cell=16,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=16,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=16,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c16_active"
+    },
+    "active=true,cell=16,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c16_active"
+    },
+    "active=true,cell=16,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=16,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=16,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c16_hatch_active"
+    },
+    "active=true,cell=17,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c17_active"
+    },
+    "active=true,cell=17,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=17,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=17,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c17_active"
+    },
+    "active=true,cell=17,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c17_active"
+    },
+    "active=true,cell=17,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=17,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=17,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c17_hatch_active"
+    },
+    "active=true,cell=18,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c18_active"
+    },
+    "active=true,cell=18,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=18,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=18,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c18_active"
+    },
+    "active=true,cell=18,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c18_active"
+    },
+    "active=true,cell=18,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=18,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=18,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c18_hatch_active"
+    },
+    "active=true,cell=19,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c19_active"
+    },
+    "active=true,cell=19,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c19_active"
+    },
+    "active=true,cell=19,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c19_active"
+    },
+    "active=true,cell=19,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c19_active"
+    },
+    "active=true,cell=19,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c19_active"
+    },
+    "active=true,cell=19,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c19_active"
+    },
+    "active=true,cell=19,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c19_active"
+    },
+    "active=true,cell=19,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c19_hatch_active"
+    },
+    "active=true,cell=2,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c2_active"
+    },
+    "active=true,cell=2,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=2,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c2_active"
+    },
+    "active=true,cell=2,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c2_active"
+    },
+    "active=true,cell=2,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c2_active"
+    },
+    "active=true,cell=2,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=2,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c2_active"
+    },
+    "active=true,cell=2,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c2_hatch_active"
+    },
+    "active=true,cell=20,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c20_active"
+    },
+    "active=true,cell=20,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c20_active"
+    },
+    "active=true,cell=20,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c20_active"
+    },
+    "active=true,cell=20,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c20_active"
+    },
+    "active=true,cell=20,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c20_active"
+    },
+    "active=true,cell=20,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c20_active"
+    },
+    "active=true,cell=20,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c20_active"
+    },
+    "active=true,cell=20,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c20_active"
+    },
+    "active=true,cell=21,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c21_active"
+    },
+    "active=true,cell=21,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c21_active"
+    },
+    "active=true,cell=21,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c21_active"
+    },
+    "active=true,cell=21,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c21_active"
+    },
+    "active=true,cell=21,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c21_active"
+    },
+    "active=true,cell=21,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c21_active"
+    },
+    "active=true,cell=21,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c21_active"
+    },
+    "active=true,cell=21,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c21_hatch_active"
+    },
+    "active=true,cell=22,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c22_active"
+    },
+    "active=true,cell=22,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c22_active"
+    },
+    "active=true,cell=22,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c22_active"
+    },
+    "active=true,cell=22,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c22_active"
+    },
+    "active=true,cell=22,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c22_active"
+    },
+    "active=true,cell=22,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c22_active"
+    },
+    "active=true,cell=22,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c22_active"
+    },
+    "active=true,cell=22,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c22_hatch_active"
+    },
+    "active=true,cell=23,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c23_active"
+    },
+    "active=true,cell=23,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c23_active"
+    },
+    "active=true,cell=23,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c23_active"
+    },
+    "active=true,cell=23,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c23_active"
+    },
+    "active=true,cell=23,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c23_active"
+    },
+    "active=true,cell=23,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c23_active"
+    },
+    "active=true,cell=23,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c23_active"
+    },
+    "active=true,cell=23,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c23_hatch_active"
+    },
+    "active=true,cell=24,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c24_active"
+    },
+    "active=true,cell=24,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c24_active"
+    },
+    "active=true,cell=24,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c24_active"
+    },
+    "active=true,cell=24,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c24_active"
+    },
+    "active=true,cell=24,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c24_active"
+    },
+    "active=true,cell=24,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c24_active"
+    },
+    "active=true,cell=24,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c24_active"
+    },
+    "active=true,cell=24,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c24_active"
+    },
+    "active=true,cell=3,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c3_active"
+    },
+    "active=true,cell=3,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c3_active"
+    },
+    "active=true,cell=3,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c3_active"
+    },
+    "active=true,cell=3,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c3_active"
+    },
+    "active=true,cell=3,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c3_active"
+    },
+    "active=true,cell=3,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c3_active"
+    },
+    "active=true,cell=3,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c3_active"
+    },
+    "active=true,cell=3,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c3_hatch_active"
+    },
+    "active=true,cell=4,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c4_active"
+    },
+    "active=true,cell=4,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c4_active"
+    },
+    "active=true,cell=4,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c4_active"
+    },
+    "active=true,cell=4,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c4_active"
+    },
+    "active=true,cell=4,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c4_active"
+    },
+    "active=true,cell=4,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c4_active"
+    },
+    "active=true,cell=4,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c4_active"
+    },
+    "active=true,cell=4,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c4_active"
+    },
+    "active=true,cell=5,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c5_active"
+    },
+    "active=true,cell=5,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c5_active"
+    },
+    "active=true,cell=5,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c5_active"
+    },
+    "active=true,cell=5,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c5_active"
+    },
+    "active=true,cell=5,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c5_active"
+    },
+    "active=true,cell=5,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c5_active"
+    },
+    "active=true,cell=5,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c5_active"
+    },
+    "active=true,cell=5,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c5_hatch_active"
+    },
+    "active=true,cell=6,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c6_active"
+    },
+    "active=true,cell=6,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=6,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=6,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c6_active"
+    },
+    "active=true,cell=6,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c6_active"
+    },
+    "active=true,cell=6,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=6,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=6,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c6_hatch_active"
+    },
+    "active=true,cell=7,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c7_active"
+    },
+    "active=true,cell=7,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=7,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=7,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c7_active"
+    },
+    "active=true,cell=7,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c7_active"
+    },
+    "active=true,cell=7,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=7,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=7,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c7_hatch_active"
+    },
+    "active=true,cell=8,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c8_active"
+    },
+    "active=true,cell=8,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=8,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=8,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c8_active"
+    },
+    "active=true,cell=8,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c8_active"
+    },
+    "active=true,cell=8,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=8,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_invalid"
+    },
+    "active=true,cell=8,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c8_hatch_active"
+    },
+    "active=true,cell=9,hatch=false,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c9_active"
+    },
+    "active=true,cell=9,hatch=false,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c9_active"
+    },
+    "active=true,cell=9,hatch=false,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c9_active"
+    },
+    "active=true,cell=9,hatch=false,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c9_active"
+    },
+    "active=true,cell=9,hatch=true,layer=0": {
+      "model": "nautec:block/industrial_bio_reactor_part_l0_c9_active"
+    },
+    "active=true,cell=9,hatch=true,layer=1": {
+      "model": "nautec:block/industrial_bio_reactor_part_l1_c9_active"
+    },
+    "active=true,cell=9,hatch=true,layer=2": {
+      "model": "nautec:block/industrial_bio_reactor_part_l2_c9_active"
+    },
+    "active=true,cell=9,hatch=true,layer=3": {
+      "model": "nautec:block/industrial_bio_reactor_part_l3_c9_hatch_active"
+    }
+  }
+}

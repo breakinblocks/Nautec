@@ -8,6 +8,7 @@ import com.breakinblocks.nautec.content.menus.BioReactorMenu;
 import com.breakinblocks.nautec.content.menus.CrateMenu;
 import com.breakinblocks.nautec.content.menus.FishingStationMenu;
 import com.breakinblocks.nautec.content.menus.IncubatorMenu;
+import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.menus.MutatorMenu;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
@@ -29,6 +30,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<AugmentMenu>> AUGMENTS = registerMenuType(AugmentMenu::new, "augments");
     public static final Supplier<MenuType<AugmentationStationExtensionMenu>> AUGMENT_STATION_EXTENSION = registerMenuType(AugmentationStationExtensionMenu::new, "augment_station_extension");
     public static final Supplier<MenuType<BioReactorMenu>> BIO_REACTOR = registerMenuType(BioReactorMenu::new, "bio_reactor");
+    public static final Supplier<MenuType<IndustrialBioReactorMenu>> INDUSTRIAL_BIO_REACTOR = registerMenuType(IndustrialBioReactorMenu::new, "industrial_bio_reactor");
     public static final Supplier<MenuType<IncubatorMenu>> INCUBATOR = registerMenuType(IncubatorMenu::new, "incubator");
     public static final Supplier<MenuType<MutatorMenu>> MUTATOR = registerMenuType(MutatorMenu::new, "mutator");
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");

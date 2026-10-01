@@ -31,7 +31,7 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
             IRecipeType.create(UID, BioReactorRecipe.class);
 
     private static final int DRAWABLE_WIDTH = 96;
-    private static final int DRAWABLE_HEIGHT = 34;
+    private static final int DRAWABLE_HEIGHT = 44;
     private static final int ARROW_ROW_HEIGHT = 24;
 
     public BioReactorCategory(IGuiHelper helper) {
@@ -64,9 +64,9 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
     @Override
     public void createRecipeExtras(IRecipeExtrasBuilder builder, BioReactorRecipe recipe, IFocusGroup focuses) {
         Font font = Minecraft.getInstance().font;
-        Bacteria bacteria = BacteriaHelper.getBacteria(Minecraft.getInstance().level.registryAccess(), recipe.bacteria());
+        Bacteria bacteria = BacteriaHelper.findBacteria(Minecraft.getInstance().level.registryAccess(), recipe.bacteria());
 
-        if (!(bacteria.stats() instanceof SimpleBacteriaStats stats)) {
+        if (bacteria == null || !(bacteria.stats() instanceof SimpleBacteriaStats stats)) {
             return;
         }
 
@@ -75,6 +75,14 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
                 MathUtils.roundToPrecision(stats.productionRate().getMax(), 2));
 
         builder.addText(text, getWidth(), font.lineHeight)
+                .setPosition(0, getHeight() - font.lineHeight * 2 - 1)
+                .setTextAlignment(HorizontalAlignment.CENTER)
+                .setColor(0xFF808080)
+                .setShadow(false);
+
+        Component multiplier = Component.translatable("nautec.jei.production_multiplier",
+                BacteriaHelper.formatMultiplier(bacteria.productionMultiplier()));
+        builder.addText(multiplier, getWidth(), font.lineHeight)
                 .setPosition(0, getHeight() - font.lineHeight)
                 .setTextAlignment(HorizontalAlignment.CENTER)
                 .setColor(0xFF808080)

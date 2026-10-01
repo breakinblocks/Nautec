@@ -51,9 +51,9 @@ public final class NTConfig {
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
             .define("spawnBookInInventory", true);
-    private static final ModConfigSpec.BooleanValue COLLECT_SALT_WATER = BUILDER
+    public static final ModConfigSpec.BooleanValue COLLECT_SALT_WATER = BUILDER
             .comment("Determines whether the player should be able to collect salt water when picking up water in an ocean biome")
-            .define("collectSaltWater", true);
+            .define("collectSaltWater", false);
     private static final ModConfigSpec.BooleanValue COLLECT_AIR_WITH_BOTTLE = BUILDER
             .comment("Determines whether the player should be able to collect pressurized air bottles by right-clicking on a bubble column")
             .define("collectAirWithBottle", true);
@@ -140,9 +140,49 @@ public final class NTConfig {
             .comment("The extra amount of power the Bio Reactor requires for each colony it holds")
             .defineInRange("bioReactorPowerPerColony", 25, 0, Integer.MAX_VALUE);
 
-    private static final ModConfigSpec.DoubleValue BIO_REACTOR_DECAY_FRACTION = BUILDER
-            .comment("The fraction of a colony that dies off each production cycle once it has outlived its lifespan")
-            .defineInRange("bioReactorDecayFraction", 0.10, 0, 1);
+    private static final ModConfigSpec.DoubleValue BIO_REACTOR_DECAY_PER_SECOND = BUILDER
+            .comment("The fraction of a senescent, unfed colony that dies off for every 20 ticks it works in a reactor (at least 1 per 20 ticks). 0 turns decay off")
+            .defineInRange("bioReactorDecayPerSecond", 0.02, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue INDUSTRIAL_BIO_REACTOR_BASE_SPEED = BUILDER
+            .comment("The base amount of progress an Industrial Bio Reactor colony makes each tick, before production rate, colony size and strain multiplier scale it")
+            .defineInRange("industrialBioReactorBaseSpeed", 5.6, 0, 1000);
+
+    private static final ModConfigSpec.IntValue INDUSTRIAL_BIO_REACTOR_POWER_BASE = BUILDER
+            .comment("The amount of power the Industrial Bio Reactor requires before any colonies are counted")
+            .defineInRange("industrialBioReactorPowerBase", 100, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue INDUSTRIAL_BIO_REACTOR_POWER_PER_COLONY = BUILDER
+            .comment("The extra amount of power the Industrial Bio Reactor requires for each colony it holds")
+            .defineInRange("industrialBioReactorPowerPerColony", 50, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_SPEED_UPGRADE_BONUS = BUILDER
+            .comment("The production speed each Reactor Speed Upgrade adds, as a fraction of the base speed (0.5 means +50% per upgrade)")
+            .defineInRange("reactorSpeedUpgradeBonus", 0.5, 0, 100);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_SPEED_UPGRADE_POWER = BUILDER
+            .comment("The factor each Reactor Speed Upgrade multiplies the reactor power draw by")
+            .defineInRange("reactorSpeedUpgradePowerMultiplier", 1.6, 1, 100);
+
+    private static final ModConfigSpec.IntValue REACTOR_YIELD_UPGRADE_BONUS = BUILDER
+            .comment("The extra items each Reactor Yield Upgrade adds to every completed production cycle")
+            .defineInRange("reactorYieldUpgradeBonus", 1, 0, 64);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_YIELD_UPGRADE_POWER = BUILDER
+            .comment("The factor each Reactor Yield Upgrade multiplies the reactor power draw by")
+            .defineInRange("reactorYieldUpgradePowerMultiplier", 1.8, 1, 100);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_EFFICIENCY_UPGRADE_FACTOR = BUILDER
+            .comment("The factor each Reactor Efficiency Upgrade multiplies the nutrient vitality a colony spends per tick by (0.75 means 25% less per upgrade)")
+            .defineInRange("reactorEfficiencyUpgradeFactor", 0.75, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_EFFICIENCY_UPGRADE_FLOOR = BUILDER
+            .comment("The lowest fraction of vitality per tick that Reactor Efficiency Upgrades can bring a colony down to")
+            .defineInRange("reactorEfficiencyUpgradeFloor", 0.25, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue REACTOR_EFFICIENCY_UPGRADE_POWER = BUILDER
+            .comment("The factor each Reactor Efficiency Upgrade multiplies the reactor power draw by")
+            .defineInRange("reactorEfficiencyUpgradePowerMultiplier", 1.2, 1, 100);
 
     private static final ModConfigSpec.IntValue FUEL_CELL_POWER_BASE = BUILDER
             .comment("The base amount of power a Bacterial Fuel Cell emits each tick, before production rate scales it")
@@ -266,11 +306,11 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue RIFLE_BASE_DRAIN = BUILDER
             .comment("Power the Atlantean Rifle draws every two ticks when it first fires")
-            .defineInRange("rifleBaseDrain", 1_000, 0, Integer.MAX_VALUE);
+            .defineInRange("rifleBaseDrain", 125, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue RIFLE_MAX_DRAIN = BUILDER
             .comment("Power the Atlantean Rifle draws every two ticks once fully ramped")
-            .defineInRange("rifleMaxDrain", 5_000, 0, Integer.MAX_VALUE);
+            .defineInRange("rifleMaxDrain", 625, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.DoubleValue RIFLE_RANGE = BUILDER
             .comment("How far the Atlantean Rifle beam reaches, in blocks")
@@ -368,7 +408,7 @@ public final class NTConfig {
 
     private static final ModConfigSpec.DoubleValue SUBMARINE_SOLAR_PERCENT = BUILDER
             .comment("Percent of the submarine's power capacity the Solar Module collects every 5 seconds in open sunlit water")
-            .defineInRange("submarineSolarPercentPer5s", 1.0, 0.0, 100.0);
+            .defineInRange("submarineSolarPercentPer5s", 0.2, 0.0, 100.0);
     private static final ModConfigSpec.IntValue SUBMARINE_BOOST_POWER = BUILDER
             .comment("Power drawn by one activation of the Booster Module")
             .defineInRange("submarineBoostPowerCost", 20_000, 0, Integer.MAX_VALUE);
@@ -533,7 +573,17 @@ public final class NTConfig {
     public static double bioReactorBaseSpeed = 5.6;
     public static int bioReactorPowerBase = 25;
     public static int bioReactorPowerPerColony = 25;
-    public static double bioReactorDecayFraction = 0.10;
+    public static double bioReactorDecayPerSecond = 0.02;
+    public static double industrialBioReactorBaseSpeed = 5.6;
+    public static int industrialBioReactorPowerBase = 100;
+    public static int industrialBioReactorPowerPerColony = 50;
+    public static double reactorSpeedUpgradeBonus = 0.5;
+    public static double reactorSpeedUpgradePowerMultiplier = 1.6;
+    public static int reactorYieldUpgradeBonus = 1;
+    public static double reactorYieldUpgradePowerMultiplier = 1.8;
+    public static double reactorEfficiencyUpgradeFactor = 0.75;
+    public static double reactorEfficiencyUpgradeFloor = 0.25;
+    public static double reactorEfficiencyUpgradePowerMultiplier = 1.2;
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
@@ -560,8 +610,8 @@ public final class NTConfig {
     public static int rifleRampTicks = 200;
     public static double rifleBaseDamage = 4.0;
     public static double rifleMaxDamage = 20.0;
-    public static int rifleBaseDrain = 1_000;
-    public static int rifleMaxDrain = 5_000;
+    public static int rifleBaseDrain = 125;
+    public static int rifleMaxDrain = 625;
     public static double rifleRange = 128.0;
     public static double tridentShockwaveRadius = 5.0;
     public static double tridentShockwaveDamage = 14.0;
@@ -607,7 +657,7 @@ public final class NTConfig {
     public static String submarineRepairItem = "minecraft:diamond";
     public static double submarineRepairPercent = 0.20;
 
-    public static double submarineSolarPercentPer5s = 1.0;
+    public static double submarineSolarPercentPer5s = 0.2;
     public static int submarineBoostPowerCost = 20_000;
     public static int submarineBoostDurationTicks = 200;
     public static int submarineBoostCooldownTicks = 60;
@@ -704,7 +754,17 @@ public final class NTConfig {
         bioReactorBaseSpeed = value(BIO_REACTOR_BASE_SPEED);
         bioReactorPowerBase = value(BIO_REACTOR_POWER_BASE);
         bioReactorPowerPerColony = value(BIO_REACTOR_POWER_PER_COLONY);
-        bioReactorDecayFraction = value(BIO_REACTOR_DECAY_FRACTION);
+        bioReactorDecayPerSecond = value(BIO_REACTOR_DECAY_PER_SECOND);
+        industrialBioReactorBaseSpeed = value(INDUSTRIAL_BIO_REACTOR_BASE_SPEED);
+        industrialBioReactorPowerBase = value(INDUSTRIAL_BIO_REACTOR_POWER_BASE);
+        industrialBioReactorPowerPerColony = value(INDUSTRIAL_BIO_REACTOR_POWER_PER_COLONY);
+        reactorSpeedUpgradeBonus = value(REACTOR_SPEED_UPGRADE_BONUS);
+        reactorSpeedUpgradePowerMultiplier = value(REACTOR_SPEED_UPGRADE_POWER);
+        reactorYieldUpgradeBonus = value(REACTOR_YIELD_UPGRADE_BONUS);
+        reactorYieldUpgradePowerMultiplier = value(REACTOR_YIELD_UPGRADE_POWER);
+        reactorEfficiencyUpgradeFactor = value(REACTOR_EFFICIENCY_UPGRADE_FACTOR);
+        reactorEfficiencyUpgradeFloor = value(REACTOR_EFFICIENCY_UPGRADE_FLOOR);
+        reactorEfficiencyUpgradePowerMultiplier = value(REACTOR_EFFICIENCY_UPGRADE_POWER);
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
         fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
         fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);

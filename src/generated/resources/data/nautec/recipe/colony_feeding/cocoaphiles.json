@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:cocoaphiles",
+  "ingredient": {
+    "ingredient": "minecraft:cocoa_beans"
+  },
+  "vitality_ticks": 1200
+}

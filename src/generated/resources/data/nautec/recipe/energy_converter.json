@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:laser_channeling_coil",
+    "P": "nautec:polished_prismarine",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PRP",
+    "ACA",
+    "PRP"
+  ],
+  "result": {
+    "id": "nautec:energy_converter"
+  }
+}

@@ -1,0 +1,219 @@
+---
+navigation:
+  title: Industrial Bio Reactor
+  icon: nautec:industrial_bio_reactor
+  position: 10
+  parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:industrial_bio_reactor
+---
+
+# <Color id="light_purple">Industrial Bio Reactor</Color>
+
+<Column alignItems="center" fullWidth={true}>
+  <ItemImage id="industrial_bio_reactor" scale="2"/>
+  A 5 by 5 by 4 reactor that runs nine colonies with four upgrade slots.
+</Column>
+
+It works like the [Bio Reactor](bio_reactor.md): the same [production formula](production_rates.md) and base speed, the same [feeding](colony_feeding.md), aging and decay, and the same [upgrades](reactor_upgrades.md). What it adds is room: 9 colony slots with 9 output slots, 3 nutrient slots and 4 upgrade slots.
+
+***
+
+## <Color id="gold">Building It</Color>
+
+Four layers, each 5 by 5:
+
+* Layer 1 (bottom): Dark Prismarine Pillars in the four corners, Polished Prismarine everywhere else.
+* Layers 2 and 3: Dark Prismarine Pillars in the corners and Bacteria Containment Shields along the edges, with the 3 by 3 middle left empty. The Industrial Bio Reactor takes the place of the middle shield of the north wall in layer 2.
+* Layer 4 (roof): Dark Prismarine Pillars in the corners, Aquarine Steel Blocks everywhere else.
+
+<GameScene zoom="3" background="#333333" interactive={true}>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="0" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="1" z="0"/>
+  <Block id="nautec:industrial_bio_reactor" x="2" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="1" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="3"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="1" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="1" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="2" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="3"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="2" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="2" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="3" z="0"/>
+  <Block id="nautec:aquarine_steel_block" x="1" y="3" z="0"/>
+  <Block id="nautec:aquarine_steel_block" x="2" y="3" z="0"/>
+  <Block id="nautec:aquarine_steel_block" x="3" y="3" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="3" z="0"/>
+  <Block id="nautec:aquarine_steel_block" x="0" y="3" z="1"/>
+  <Block id="nautec:aquarine_steel_block" x="1" y="3" z="1"/>
+  <Block id="nautec:aquarine_steel_block" x="2" y="3" z="1"/>
+  <Block id="nautec:aquarine_steel_block" x="3" y="3" z="1"/>
+  <Block id="nautec:aquarine_steel_block" x="4" y="3" z="1"/>
+  <Block id="nautec:aquarine_steel_block" x="0" y="3" z="2"/>
+  <Block id="nautec:aquarine_steel_block" x="1" y="3" z="2"/>
+  <Block id="nautec:aquarine_steel_block" x="2" y="3" z="2"/>
+  <Block id="nautec:aquarine_steel_block" x="3" y="3" z="2"/>
+  <Block id="nautec:aquarine_steel_block" x="4" y="3" z="2"/>
+  <Block id="nautec:aquarine_steel_block" x="0" y="3" z="3"/>
+  <Block id="nautec:aquarine_steel_block" x="1" y="3" z="3"/>
+  <Block id="nautec:aquarine_steel_block" x="2" y="3" z="3"/>
+  <Block id="nautec:aquarine_steel_block" x="3" y="3" z="3"/>
+  <Block id="nautec:aquarine_steel_block" x="4" y="3" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="3" z="4"/>
+  <Block id="nautec:aquarine_steel_block" x="1" y="3" z="4"/>
+  <Block id="nautec:aquarine_steel_block" x="2" y="3" z="4"/>
+  <Block id="nautec:aquarine_steel_block" x="3" y="3" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="3" z="4"/>
+  <IsometricCamera yaw="225" pitch="30"/>
+</GameScene>
+
+The structure only forms facing one way: the Industrial Bio Reactor has to be in the middle of the north wall, as in the scene. The 3 by 3 by 2 chamber inside must be air, with no water and no blocks in it. Without the roof it looks like this:
+
+<GameScene zoom="3" background="#333333" interactive={true}>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="0" z="0"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="1"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="2"/>
+  <Block id="nautec:polished_prismarine" x="0" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="3"/>
+  <Block id="nautec:polished_prismarine" x="4" y="0" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="1" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="2" y="0" z="4"/>
+  <Block id="nautec:polished_prismarine" x="3" y="0" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="0" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="1" z="0"/>
+  <Block id="nautec:industrial_bio_reactor" x="2" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="1" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="1" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="1" z="3"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="1" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="1" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="1" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="1" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="2" z="0"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="2" z="0"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="1"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="2"/>
+  <Block id="nautec:bacterial_containment_shield" x="0" y="2" z="3"/>
+  <Block id="nautec:bacterial_containment_shield" x="4" y="2" z="3"/>
+  <Block id="nautec:dark_prismarine_pillar" x="0" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="1" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="2" y="2" z="4"/>
+  <Block id="nautec:bacterial_containment_shield" x="3" y="2" z="4"/>
+  <Block id="nautec:dark_prismarine_pillar" x="4" y="2" z="4"/>
+  <IsometricCamera yaw="225" pitch="30"/>
+</GameScene>
+
+Right-click the Industrial Bio Reactor with an <ItemLink id="aquarine_steel_wrench"/>, without sneaking, to form it. If a block is wrong, chat names its position, what is there and what should be. Breaking any block of the formed reactor takes it apart again.
+
+Once it is formed, right-click any of its blocks without the wrench in your hand to open it.
+
+***
+
+## <Color id="gold">Power</Color>
+
+It needs 100 AP plus 50 AP per filled colony slot: 150 AP for one colony and 550 AP for nine, before upgrades multiply it. Like the Bio Reactor, this is a threshold. Below it nothing runs and all progress resets.
+
+Power goes in through hatches in the roof. Right-click one of the Aquarine Steel Blocks of the formed roof with the wrench to turn it into a hatch, and again to turn it back. A hatch takes a beam pointing down into it from above, and a hatch on the roof's edge also takes one pointing into its outer side. You can open as many hatches as you like, and their power adds together. A beam into the front of the Industrial Bio Reactor block itself counts as well.
+
+That is far more than one catalyst gives. An [Energy Converter](nautec:laser_chemistry/energy_converter.md) sends 100 AP per tick, so six of them on six hatches cover nine colonies without upgrades. Beams can also be combined in a <ItemLink id="laser_junction"/> before they reach a hatch.
+
+***
+
+## <Color id="gold">The Screen</Color>
+
+* The 3 by 3 grid on the left holds the colonies. The thin bar to the right of each is its nutrient buffer and the bar under it is its progress.
+* The 3 by 3 grid on the right holds the output, one slot per colony in the same order.
+* The bottom row has the three nutrient slots on the left and the four upgrade slots on the right.
+* The arrow in the middle shows the average progress. Hover it to see the power arriving against the power needed, and what the upgrades are doing.
+
+Nine colonies need feeding from only three nutrient slots, so run no more than three different nutrients at once. [Colony Feeding](colony_feeding.md) has the details.
+
+***
+
+## <Color id="gold">Automation</Color>
+
+* Nutrients and upgrades go in through any outer face of any of its blocks: a hopper on the roof, a hopper pointing into a wall, or a pipe anywhere on the outside.
+* Output comes out of the underside of the floor, for example into hoppers under it, and out of the front of the Industrial Bio Reactor block with a pipe.
+
+Automation only puts items into the nutrient and upgrade slots and only takes them from the output slots. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
+
+A simple layout: a chest and hopper on one corner of the roof for nutrients, hatches with beams on the rest of the roof, and hoppers under the floor leading to storage. A capped colony can fill its output slot in under half a minute, so give the output more than one hopper once the colonies are strong.
+
+***
+
+## <Color id="gold">Recipe</Color>
+
+<RecipeFor id="industrial_bio_reactor"/>

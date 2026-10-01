@@ -60,7 +60,7 @@ F is its own key binding, Toggle Wave Jet Spotlight. While you hold the Wave Jet
 | Thrusting | 2 | 2.5 minutes |
 | Spotlight lit | 1 | 5 minutes |
 
-The cell holds 6,000. The bar under the item shows what is left, and the spotlight switches itself off when the cell is empty. Charge it in a <ItemLink id="charger"/>, where it fills from empty in about 75 seconds. Players in creative mode use no power.
+The cell holds 6,000. The bar under the item shows what is left, and the spotlight switches itself off when the cell is empty. Charge it in a <ItemLink id="charger"/>. It takes whatever the Charger's beam delivers, up to 128 AP per tick, so a 12 AP beam fills it from empty in about 25 seconds and a stronger one in a few. Players in creative mode use no power.
 
 ***
 

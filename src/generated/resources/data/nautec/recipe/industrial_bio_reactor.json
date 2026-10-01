@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "nautec:bio_reactor",
+    "D": "nautec:deep_steel_plating",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    "DRD",
+    "RBR",
+    "DRD"
+  ],
+  "result": {
+    "id": "nautec:industrial_bio_reactor"
+  }
+}

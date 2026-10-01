@@ -4,7 +4,15 @@
   "desc": "Armour plating that shrugs off knockback and burns out fast",
   "ingredients": [
     {
-      "count": 4,
+      "ingredient": "nautec:chitin_plate"
+    },
+    {
+      "ingredient": "nautec:chitin_plate"
+    },
+    {
+      "ingredient": "nautec:chitin_plate"
+    },
+    {
       "ingredient": "nautec:chitin_plate"
     }
   ],

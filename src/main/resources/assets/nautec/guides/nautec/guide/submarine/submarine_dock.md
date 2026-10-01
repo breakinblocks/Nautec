@@ -29,7 +29,7 @@ Park the hull over the pad. It counts as docked when it overlaps the 3 by 3 area
 
 ## <Color id="gold">What It Does</Color>
 
-* Charges the hull at 40 power per tick, about 21 minutes from empty to full. That is ten times faster than a Charger, and the hull does not have to be picked up. The rate is configurable.
+* Charges the hull at 40 power per tick, about 21 minutes from empty to full, without picking the hull up. The rate is configurable.
 * Holds an empty hull still, so what you leave on the pad is still there when you come back. A pilot always overrides the clamps and can drive straight off.
 * Keeps everyone aboard breathing on the dock's power, even with the hull's cell empty.
 

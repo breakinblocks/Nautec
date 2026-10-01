@@ -43,17 +43,17 @@ Rusty Crates hold better salvage than plain ones. Break one to carry it; it keep
 
 ## <Color id="gold">Etching</Color>
 
-Drop an item into Etching Acid and after about five seconds it comes out cleaned. The whole dropped stack converts at once.
+Drop an item into Etching Acid and it comes out cleaned after the recipe time, 8 to 10 seconds. The whole dropped stack converts at once.
 
-| Input | Output |
-|---|---|
-| Rusty Crate | Crate, loot kept |
-| <ItemLink id="rusty_gear"/> | <ItemLink id="gear"/> |
-| <ItemLink id="ancient_valve"/> | <ItemLink id="valve"/> |
+| Input | Output | Time |
+|---|---|---|
+| Rusty Crate | Crate, loot kept | 10 s |
+| <ItemLink id="rusty_gear"/> | <ItemLink id="gear"/> | 8 s |
+| <ItemLink id="ancient_valve"/> | <ItemLink id="valve"/> | 10 s |
 
 JEI lists these under Item Etching.
 
-One etching in three clears the block under the item, which is normally the acid it is floating in. A single acid source in a one block deep pit is enough, as long as you keep a spare bucket to refill it.
+One etching in three uses up the Etching Acid source block the item is in. Flowing acid is never used up, and neither is the block under the pool. A single acid source in a one block deep pit is enough, as long as you keep a spare bucket to refill it.
 
 ***
 

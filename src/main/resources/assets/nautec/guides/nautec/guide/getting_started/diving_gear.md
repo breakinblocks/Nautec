@@ -72,7 +72,7 @@ To fill the tank, craft the chestplate surrounded by eight bottles. That gives a
 
 <Recipe id="nautec:diving_chestplate_oxygen"/>
 
-You can also drink a bottle while wearing the chestplate. That adds 20 seconds of air when the tank holds less than 100 seconds, and makes you float upward for 10 seconds.
+You can also drink a bottle while wearing the chestplate. Each bottle adds 2 minutes of air whenever the tank is not full, up to the full 10 minutes, so five bottles fill an empty tank. Drinking also makes you float upward for 10 seconds.
 
 ***
 

@@ -51,7 +51,7 @@ public class ChargerBlockEntity extends LaserBlockEntity {
             if (itemHandler.getStackInSlot(0).getItem() instanceof IPowerItem powerItem) {
                 IPowerStorage powerStorage = itemHandler.getStackInSlot(0).getCapability(NTCapabilities.PowerStorage.ITEM);
                 if(powerStorage.getPowerStored() < powerStorage.getPowerCapacity()) {
-                    if (!level.isClientSide() && powerStorage.tryFillPower(4, false) > 0) {
+                    if (!level.isClientSide() && powerStorage.tryFillPower(getPower(), false) > 0) {
                         update();
                     }
                     if (level.isClientSide()) {

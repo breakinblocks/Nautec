@@ -54,15 +54,17 @@ public class AquarineShovelItem extends ShovelItem implements IPowerItem {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         if (miningEntity instanceof Player player) {
+            IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
+            if (powerStorage != null) {
+                powerStorage.tryDrainPower(1, false);
+            }
+
             BlockHitResult hitResult = (BlockHitResult) player.pick(20.0D, 0.0F, false);
             Direction hitFace = hitResult.getDirection();
 
-            for (BlockPos targetPos : get3x3MiningArea(pos, hitFace)) {
-                BlockState targetState = level.getBlockState(targetPos);
-
-                if (canMine(level, targetPos, targetState) && NTDataComponentsUtils.isAbilityEnabled(stack)) {
-                    level.destroyBlock(targetPos, true);
-                }
+            if (NTDataComponentsUtils.isAbilityEnabled(stack)) {
+                mine3x3(level, pos, stack, hitFace);
+                return true;
             }
         }
 
@@ -129,18 +131,15 @@ public class AquarineShovelItem extends ShovelItem implements IPowerItem {
         Tooltips.transInsert(tooltipComponents, "nautec.tool.power", powerStorage.getPowerStored() + "/" + powerStorage.getPowerCapacity(), ChatFormatting.DARK_AQUA);
     }
 
-    private void mine3x3(Level level, BlockPos pos, LivingEntity player, ItemStack stack) {
+    private void mine3x3(Level level, BlockPos pos, ItemStack stack, Direction hitFace) {
         IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
 
-        if (powerStorage.getPowerStored() > 0) {
+        if (powerStorage != null && powerStorage.getPowerStored() > 0) {
             int blocksToBreak = powerStorage.getPowerStored() / POWER_PER_BLOCK;
-            Direction faceDirection = player.getDirection();
 
-            Iterable<BlockPos> blocksToMine = get3x3MiningArea(pos, faceDirection);
-
-            for (BlockPos targetPos : blocksToMine) {
-                if (blocksToBreak > 0 && canMine(level,pos,level.getBlockState(targetPos))) {
-                    blocksToBreak = breakBlock(level, targetPos, stack, player, powerStorage, blocksToBreak);
+            for (BlockPos targetPos : get3x3MiningArea(pos, hitFace)) {
+                if (blocksToBreak > 0 && canMine(level, targetPos, level.getBlockState(targetPos))) {
+                    blocksToBreak = breakBlock(level, targetPos, powerStorage, blocksToBreak);
                 }
             }
         }
@@ -165,7 +164,7 @@ public class AquarineShovelItem extends ShovelItem implements IPowerItem {
         return state.is(BlockTags.MINEABLE_WITH_SHOVEL) && level.getBlockEntity(pos) == null;
     }
 
-    private int breakBlock(Level level, BlockPos pos, ItemStack stack, LivingEntity player, IPowerStorage powerStorage, int blocksToBreak) {
+    private int breakBlock(Level level, BlockPos pos, IPowerStorage powerStorage, int blocksToBreak) {
         BlockState state = level.getBlockState(pos);
 
         if (!canMine(level,pos,state) || blocksToBreak <= 0 || powerStorage.getPowerStored() < POWER_PER_BLOCK) {

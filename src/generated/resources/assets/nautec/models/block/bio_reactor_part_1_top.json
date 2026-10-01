@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "nautec:block/polished_prismarine",
-    "east": "nautec:block/multiblock/bio_reactor/side_top_1",
-    "north": "nautec:block/multiblock/bio_reactor/side_top_1",
-    "particle": "nautec:block/multiblock/bio_reactor/side_top_1",
-    "south": "nautec:block/multiblock/bio_reactor/side_top_1",
-    "up": "nautec:block/multiblock/bio_reactor/top_1",
-    "west": "nautec:block/multiblock/bio_reactor/side_top_1"
+    "east": "nautec:block/polished_prismarine",
+    "north": "nautec:block/multiblock/bio_reactor/side_c1_r0",
+    "particle": "nautec:block/multiblock/bio_reactor/side_c0_r1",
+    "south": "nautec:block/polished_prismarine",
+    "up": "nautec:block/multiblock/bio_reactor/top_c1_r0",
+    "west": "nautec:block/polished_prismarine"
   }
 }

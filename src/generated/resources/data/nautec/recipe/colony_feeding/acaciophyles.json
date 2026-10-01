@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:acaciophyles",
+  "ingredient": {
+    "ingredient": "minecraft:acacia_log"
+  },
+  "vitality_ticks": 1200
+}

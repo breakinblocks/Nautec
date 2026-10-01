@@ -10,6 +10,9 @@ public interface FishingHookAccessor {
     @Accessor("nibble")
     int nautec$getNibble();
 
+    @Accessor("nibble")
+    void nautec$setNibble(int nibble);
+
     @Mutable
     @Accessor("luck")
     void nautec$setLuck(int luck);

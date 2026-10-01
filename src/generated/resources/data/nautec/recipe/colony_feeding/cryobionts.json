@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:cryobionts",
+  "ingredient": {
+    "ingredient": "minecraft:packed_ice"
+  },
+  "vitality_ticks": 1200
+}

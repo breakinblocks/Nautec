@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:ferrophiles",
+  "ingredient": {
+    "ingredient": "#c:ores/iron"
+  },
+  "vitality_ticks": 1200
+}

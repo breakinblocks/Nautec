@@ -9,7 +9,10 @@ import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -93,6 +96,11 @@ public class GuardianEyeAugment extends Augment {
         Vec3 look = player.getLookAngle();
         Vec3 startPos = player.getEyePosition(1.0f);
         double maxDistance = 15.0;
+        BlockHitResult blockHit = player.level().clip(new ClipContext(startPos, startPos.add(look.scale(maxDistance)),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+        if (blockHit.getType() != HitResult.Type.MISS) {
+            maxDistance = blockHit.getLocation().distanceTo(startPos);
+        }
         double step = 0.1;
         for (double t = 0; t <= maxDistance; t += step) {
             Vec3 checkPos = startPos.add(look.scale(t));

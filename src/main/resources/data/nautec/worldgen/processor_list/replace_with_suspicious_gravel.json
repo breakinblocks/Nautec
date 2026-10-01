@@ -2,7 +2,6 @@
   "processors": [
     {
       "processor_type": "minecraft:rule",
-
       "rules": [
         {
           "input_predicate": {
@@ -10,17 +9,18 @@
             "probability": 0.5,
             "predicate_type": "minecraft:random_block_match"
           },
-
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-
           "output_state": {
             "Name": "minecraft:suspicious_gravel",
             "Properties": {
-              "dusted": 0,
-              "LootTable": "nautec:chests/ruins_rusty_crate"
+              "dusted": "0"
             }
+          },
+          "block_entity_modifier": {
+            "type": "minecraft:append_loot",
+            "loot_table": "nautec:chests/ruins_rusty_crate"
           }
         }
       ]

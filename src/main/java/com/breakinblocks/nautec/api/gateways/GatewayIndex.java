@@ -81,10 +81,7 @@ public class GatewayIndex extends SavedData {
             if (!entry.address().equals(address)) {
                 continue;
             }
-            if (!level.isLoaded(entry.pos())) {
-                continue;
-            }
-            if (!level.getBlockState(entry.pos()).is(NTBlocks.GATEWAY.get())) {
+            if (level.isLoaded(entry.pos()) && !level.getBlockState(entry.pos()).is(NTBlocks.GATEWAY.get())) {
                 stale.add(entry.pos());
                 continue;
             }

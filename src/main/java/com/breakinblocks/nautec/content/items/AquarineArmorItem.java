@@ -14,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -44,14 +45,17 @@ public class AquarineArmorItem extends Item implements IPowerItem {
         this.armorType = type;
     }
 
-    private static final AttributeModifier ENABLED_ARMOR_MODIFIER = modifier("armor", 10);
-    private static final AttributeModifier DISABLED_ARMOR_MODIFIER = modifier("armor", 0);
+    private static final Identifier LEGACY_ARMOR_ID = Nautec.rl("armor");
+    private static final Identifier LEGACY_TOUGHNESS_ID = Nautec.rl("toughness");
+    private static final double ARMOR_BONUS = 10;
+    private static final double TOUGHNESS_BONUS = 5;
 
-    private static final AttributeModifier ENABLED_TOUGHNESS_MODIFIER = modifier("toughness", 5);
-    private static final AttributeModifier DISABLED_TOUGHNESS_MODIFIER = modifier("toughness", 0);
+    public static Identifier armorModifierId(EquipmentSlot slot) {
+        return Nautec.rl("armor_" + slot.getName());
+    }
 
-    private static AttributeModifier modifier(String name, double value) {
-        return new AttributeModifier(Nautec.rl(name), value, AttributeModifier.Operation.ADD_VALUE);
+    public static Identifier toughnessModifierId(EquipmentSlot slot) {
+        return Nautec.rl("toughness_" + slot.getName());
     }
 
     @Override
@@ -59,10 +63,18 @@ public class AquarineArmorItem extends Item implements IPowerItem {
         IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         boolean hasEnergy = powerStorage != null && powerStorage.getPowerStored() > 0;
         EquipmentSlot slotType = this.armorType.getSlot();
-        ItemAttributeModifiers attributes = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
-        attributes = attributes.withModifierAdded(Attributes.ARMOR, hasEnergy ? ENABLED_ARMOR_MODIFIER : DISABLED_ARMOR_MODIFIER, EquipmentSlotGroup.bySlot(slotType));
-        attributes = attributes.withModifierAdded(Attributes.ARMOR_TOUGHNESS, hasEnergy ? ENABLED_TOUGHNESS_MODIFIER : DISABLED_TOUGHNESS_MODIFIER, EquipmentSlotGroup.bySlot(slotType));
-        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attributes);
+        EquipmentSlotGroup group = EquipmentSlotGroup.bySlot(slotType);
+        ItemAttributeModifiers current = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        ItemAttributeModifiers attributes = new ItemAttributeModifiers(current.modifiers().stream()
+                .filter(entry -> !entry.modifier().id().equals(LEGACY_ARMOR_ID) && !entry.modifier().id().equals(LEGACY_TOUGHNESS_ID))
+                .toList());
+        attributes = attributes.withModifierAdded(Attributes.ARMOR,
+                new AttributeModifier(armorModifierId(slotType), hasEnergy ? ARMOR_BONUS : 0, AttributeModifier.Operation.ADD_VALUE), group);
+        attributes = attributes.withModifierAdded(Attributes.ARMOR_TOUGHNESS,
+                new AttributeModifier(toughnessModifierId(slotType), hasEnergy ? TOUGHNESS_BONUS : 0, AttributeModifier.Operation.ADD_VALUE), group);
+        if (!attributes.equals(current)) {
+            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attributes);
+        }
     }
 
     @Override

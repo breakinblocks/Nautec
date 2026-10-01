@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.capabilities.item;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
@@ -13,6 +14,17 @@ public class ItemStackHandler extends ItemStacksResourceHandler {
 
     public int getSlots() {
         return size();
+    }
+
+    public void ensureSize(int slots) {
+        if (this.stacks.size() >= slots) {
+            return;
+        }
+        NonNullList<ItemStack> resized = NonNullList.withSize(slots, ItemStack.EMPTY);
+        for (int i = 0; i < this.stacks.size(); i++) {
+            resized.set(i, this.stacks.get(i));
+        }
+        setStacks(resized);
     }
 
     public @NotNull ItemStack getStackInSlot(int slot) {

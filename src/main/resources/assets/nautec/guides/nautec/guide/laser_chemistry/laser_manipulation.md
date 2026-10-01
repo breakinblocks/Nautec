@@ -21,7 +21,7 @@ item_ids:
 Every NauTec machine runs on Aquatic Power, carried by a laser beam. A beam is a rate, measured in AP per tick. Nothing along the way stores it, and machines do not use it up: a machine runs as long as enough AP per tick is arriving.
 
 * A beam travels in a straight line, up to 16 blocks (configurable).
-* The first block with a hitbox in its path stops it. Water does not.
+* The first block with a hitbox in its path stops it. Water does not. A low laser block such as the Charger catches a beam coming from the side, even though the beam runs over its top.
 * It only connects when the block at the far end accepts a beam on the face it hits. Connections are rechecked every half second.
 * A powered beam burns any mob or player standing in it.
 * An item dropped into a powered beam can be changed by [Item Transformation](nautec:getting_started/item_transformation.md).
@@ -38,7 +38,7 @@ Beams also carry purity, which some recipes need. See [Beam Optics](nautec:deep_
 |---|---|
 | [Mixer](mixer.md) | 10 or more |
 | [Deep Sea Drain](drain.md) | more than 20 |
-| [Charger](charger.md) | any amount (charges at 4 AP per tick) |
+| [Charger](charger.md) | any amount (the item takes what the beam delivers, up to its input limit) |
 | [Fishing Station](fishing_station.md) | 1 or more |
 
 An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Crystal Shards sends 12 AP per tick. Burning Prismarine Crystals it sends 6. The machine requirements above are configurable.
@@ -68,7 +68,7 @@ Merges beams and sends them where you choose. Each of its six faces can be an in
 * Right-click a face with an <ItemLink id="aquarine_steel_wrench"/> to make it an input. Do it again to close it.
 * Shift-right-click a face to make it an output. Do it again to close it.
 
-The power of every input is added together and sent out of each output. Purity is the average of every connected input, and a source that has gone idle counts as zero, so keep every input fed or it drags the purity down.
+The power of every input is added together and split evenly between the connected outputs, rounded down. Two outputs from a 25 AP input get 12 AP each. Purity is the average of every connected input, and a source that has gone idle counts as zero, so keep every input fed or it drags the purity down.
 
 Use one to add two weak sources together, for example two catalysts into a [Deep Sea Drain](drain.md).
 

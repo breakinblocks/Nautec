@@ -40,6 +40,10 @@ public interface Bacteria {
         return initialSize().getMax();
     }
 
+    default float productionMultiplier() {
+        return 1.0f;
+    }
+
     interface Resource {
         Resource EMPTY = new ItemResource(Items.AIR);
 

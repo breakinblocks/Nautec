@@ -18,7 +18,7 @@ item_ids:
 
 NauTec machines run on laser power, measured in AP per tick (AP/t). A beam carries two values: its power, and its purity. Machines use the power to run, and recipes check the purity before they start.
 
-A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, an optic), no more than 16 blocks away (`laserDistance` in `nautec-common.toml`), with no solid block in between. Beams pass through water.
+A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, an optic), no more than 16 blocks away (`laserDistance` in `config/nautec-common.toml`), with no solid block in between. Beams pass through water.
 
 ***
 

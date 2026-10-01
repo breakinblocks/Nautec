@@ -48,7 +48,7 @@ The hull itself cannot drown.
 | Source | Rate | Empty to full |
 |---|---|---|
 | [Sea Scout Dock](submarine_dock.md) | 40 per tick | about 21 minutes |
-| <ItemLink id="charger"/> (hull as an item) | 4 per tick | several hours |
-| [Solar Module](solar_module.md) | 10,000 every 5 seconds in daylight | about 8 minutes |
+| <ItemLink id="charger"/> (hull as an item) | what the beam delivers, up to 128 per tick | about 6 and a half minutes at 128 AP, longer with a weaker beam |
+| [Solar Module](solar_module.md) | 2,000 every 5 seconds in daylight (about 20 per tick) | about 42 minutes |
 
-The dock is the practical way to refill a hull: park it, leave it, come back. A Charger works, but pick the hull up first and expect to wait. A Solar Module keeps working whether or not anyone is aboard, so a hull parked in open water during the day refills itself.
+The dock is the practical way to refill a hull: park it, leave it, come back. A Charger needs the hull picked up first, and how fast it fills depends on the beam feeding it: a beam of 40 AP matches the dock, and anything stronger beats it. A Solar Module keeps working whether or not anyone is aboard, so a hull parked in open water during the day refills itself.

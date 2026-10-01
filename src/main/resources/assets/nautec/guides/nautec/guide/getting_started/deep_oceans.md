@@ -15,7 +15,7 @@ navigation:
 
 The four biomes are added alongside the vanilla oceans rather than replacing them. They only generate in chunks that have not been generated yet, so in an existing world you find them past the edge of explored ground.
 
-All four count as oceans. Salt water collection, the [Deep Sea Drain](nautec:laser_chemistry/drain.md), lucky fishing zones, NauTec structures, vanilla ocean ruins and shipwrecks all work in them.
+All four count as oceans. The [Deep Sea Drain](nautec:laser_chemistry/drain.md), lucky fishing zones, NauTec structures, vanilla ocean ruins and shipwrecks all work in them, and so does bucket Salt Water collection when a pack turns on `collectSaltWater` in `config/nautec-common.toml`.
 
 NauTec also makes oceans deeper than vanilla. With Tectonic installed, Tectonic decides ocean depth instead.
 
@@ -70,6 +70,6 @@ Bright, clear shallow water.
 
 ## <Color id="gold">For Pack Makers</Color>
 
-`enableBiomeInjection` in `nautec-worldgen.toml` turns the biomes off. Packs using a custom overworld preset should add it to `injectableWorldPresets`. With Lithostitched installed, placement comes from the biome injector files in `data/nautec/lithostitched/biome_injector` instead, which also covers Terralith and Tectonic.
+`enableBiomeInjection` in `config/nautec-worldgen.toml` turns the biomes off. Packs using a custom overworld preset should add it to `injectableWorldPresets`. With Lithostitched installed, placement comes from the biome injector files in `data/nautec/lithostitched/biome_injector` instead, which also covers Terralith and Tectonic.
 
 Plants and creatures are covered in [Life in the Deep](deep_life.md).

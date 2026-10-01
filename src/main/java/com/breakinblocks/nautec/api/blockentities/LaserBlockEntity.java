@@ -19,7 +19,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -207,20 +206,42 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
     }
 
-    private Optional<ItemTransformationRecipe> getCurrentRecipe(ItemStack itemStack) {
+    private Optional<ItemTransformationRecipe> getCurrentRecipe(ItemStack itemStack, float beamPurity) {
         if (!(this.level instanceof ServerLevel serverLevel)) {
             return Optional.empty();
         }
-        ItemTransformationRecipeInput recipeInput = new ItemTransformationRecipeInput(itemStack, getPurity());
-        return serverLevel.recipeAccess().getRecipeFor(ItemTransformationRecipe.Type.INSTANCE, recipeInput, level).map(RecipeHolder::value);
+        return ItemTransformationRecipe.findBest(serverLevel, new ItemTransformationRecipeInput(itemStack, beamPurity));
+    }
+
+    private void spawnTransformationResult(ItemEntity cookingItem, ItemTransformationRecipe recipe) {
+        ItemStack input = cookingItem.getItem();
+        int perCraft = Math.max(1, recipe.ingredient().count());
+        int crafts = input.getCount() / perCraft;
+        ItemStack result = recipe.result();
+        int remaining = result.getCount() * crafts;
+        int maxStack = Math.max(1, result.getMaxStackSize());
+        while (remaining > 0) {
+            int count = Math.min(remaining, maxStack);
+            ItemEntity resultEntity = new ItemEntity(level, cookingItem.getX(), cookingItem.getY(), cookingItem.getZ(), result.copyWithCount(count));
+            level.addFreshEntity(resultEntity);
+            remaining -= count;
+        }
+
+        int leftover = input.getCount() - crafts * perCraft;
+        if (leftover > 0) {
+            cookingItem.setItem(input.copyWithCount(leftover));
+        } else {
+            cookingItem.discard();
+        }
     }
 
     private void processItemCrafting(AABB box, Direction direction) {
         List<ItemEntity> itemEntities = level.getEntitiesOfClass(ItemEntity.class, box);
+        float beamPurity = outgoingPurity(direction);
 
         for (ItemEntity itemEntity : itemEntities) {
             if (!activeTransformations.containsKey(direction) || !activeTransformations.get(direction).containsKey(itemEntity)) {
-                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(itemEntity.getItem());
+                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(itemEntity.getItem(), beamPurity);
                 if (optionalRecipe.isPresent()) {
                     if (!activeTransformations.containsKey(direction)) {
                         activeTransformations.put(direction, new Object2IntArrayMap<>());
@@ -243,16 +264,10 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                     continue;
                 }
 
-                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(cookingItem.getItem());
+                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(cookingItem.getItem(), beamPurity);
                 if (optionalRecipe.isPresent()) {
                     if (cookTime >= optionalRecipe.get().duration()) {
-                        ItemStack resultStack = optionalRecipe.get().getResultItem(null).copy();
-                        resultStack.setCount(cookingItem.getItem().getCount());
-
-                        ItemEntity resultEntity = new ItemEntity(level, cookingItem.getX(), cookingItem.getY(), cookingItem.getZ(), resultStack);
-                        level.addFreshEntity(resultEntity);
-
-                        cookingItem.discard();
+                        spawnTransformationResult(cookingItem, optionalRecipe.get());
                         iterator.remove();
                     } else {
                         activeTransformation.put(cookingItem, cookTime + 1);
@@ -297,31 +312,20 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
             Vec3 from = worldPosition.relative(direction).getCenter();
             Vec3 to = worldPosition.relative(direction, maxLaserDistance).getCenter();
             BlockHitResult blockHitResult = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
-            BlockPos resultPos = blockHitResult.getBlockPos();
-            if (level.getBlockEntity(resultPos) instanceof LaserBlockEntity laserBlockEntity) {
-                if (laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
-                    Vec3i diffVec3 = worldPosition.subtract(resultPos);
-                    int diff = diffVec3.getX() + diffVec3.getY() + diffVec3.getZ();
-                    int prevDistance = this.laserDistances.getInt(direction);
-                    int newDistance = Math.abs(diff);
-                    if (prevDistance != newDistance) {
-                        this.laserDistances.put(direction, newDistance);
-                        onLaserDistancesChanged(direction, prevDistance);
-                    }
-                } else {
-                    int prevDistance = this.laserDistances.getInt(direction);
-                    if (prevDistance != 0) {
-                        this.laserDistances.put(direction, 0);
-                        onLaserDistancesChanged(direction, prevDistance);
-                    }
+            Vec3i diffVec3 = blockHitResult.getBlockPos().subtract(worldPosition);
+            int hitDistance = Math.min(maxLaserDistance, Math.abs(diffVec3.getX() + diffVec3.getY() + diffVec3.getZ()));
+            int newDistance = 0;
+            for (int i = 1; i <= hitDistance; i++) {
+                if (level.getBlockEntity(worldPosition.relative(direction, i)) instanceof LaserBlockEntity laserBlockEntity
+                        && laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
+                    newDistance = i;
+                    break;
                 }
-            } else {
-                int prevDistance = this.laserDistances.getInt(direction);
-                int newDistance = 0;
-                if (prevDistance != newDistance) {
-                    this.laserDistances.put(direction, 0);
-                    onLaserDistancesChanged(direction, prevDistance);
-                }
+            }
+            int prevDistance = this.laserDistances.getInt(direction);
+            if (prevDistance != newDistance) {
+                this.laserDistances.put(direction, newDistance);
+                onLaserDistancesChanged(direction, prevDistance);
             }
         }
     }

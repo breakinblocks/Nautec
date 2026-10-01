@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -66,8 +67,13 @@ public class DecorativePrismarineCrystalPartBlock extends Block implements Simpl
         int currentIndex = state.getValue(INDEX);
         BlockPos bottomPos = pos.below(currentIndex);
         BlockState bottomState = level.getBlockState(bottomPos);
-        if (bottomState.getBlock() instanceof DecorativePrismarineCrystalBlock) {
-            DecorativePrismarineCrystalBlock.removeCrystal(level, player, bottomPos);
+        if (!(bottomState.getBlock() instanceof DecorativePrismarineCrystalBlock)) {
+            return super.onDestroyedByPlayer(state, level, pos, player, tool, willHarvest, fluid);
+        }
+        BlockEntity bottomEntity = level.getBlockEntity(bottomPos);
+        DecorativePrismarineCrystalBlock.removeCrystal(level, player, bottomPos);
+        if (willHarvest && !player.preventsBlockDrops()) {
+            Block.dropResources(bottomState, level, pos, bottomEntity, player, tool);
         }
         return true;
     }

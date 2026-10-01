@@ -10,6 +10,8 @@ import com.breakinblocks.nautec.compat.jei.categories.BacteriaGraftingCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaIncubationCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaMutationsCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BioReactorCategory;
+import com.breakinblocks.nautec.compat.jei.categories.ColonyFeedingCategory;
+import com.breakinblocks.nautec.compat.jei.categories.EasInfusionCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemEtchingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemTransformationRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
@@ -19,6 +21,7 @@ import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
@@ -33,6 +36,7 @@ import com.breakinblocks.nautec.registries.NTItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -48,6 +52,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -73,7 +78,8 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE),
-            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE));
+            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE),
+            new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE));
     private IJeiRuntime runtime;
 
     public NTJeiPlugin() {
@@ -150,6 +156,9 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new MixingRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
+        registration.addRecipeCategories(new EasInfusionCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
         registration.addRecipeCategories(new AugmentationRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -160,6 +169,9 @@ public class NTJeiPlugin implements IModPlugin {
                 registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new BioReactorCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new ColonyFeedingCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new BacteriaGraftingCategory(
@@ -188,11 +200,17 @@ public class NTJeiPlugin implements IModPlugin {
                 .toList();
 
         registration.addRecipes(BioReactorCategory.RECIPE_TYPE, bioReactorRecipes);
+        registration.addRecipes(EasInfusionCategory.RECIPE_TYPE, EasInfusionCategory.recipes());
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
             registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
         }
+
+        registration.addIngredientInfo(new FluidStack(NTFluids.EAS.getStillFluid(), 1000), NeoForgeTypes.FLUID_STACK,
+                Component.translatable("nautec.jei.info.eas"));
+        registration.addIngredientInfo(List.of(new ItemStack(NTFluids.EAS.getBucket()), NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.toStack()), VanillaTypes.ITEM_STACK,
+                Component.translatable("nautec.jei.info.eas"));
 
         registration.addIngredientInfo(NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(), VanillaTypes.ITEM_STACK,
                 Component.translatable("nautec.jei.info.prismarine_crystal_shard"));
@@ -214,6 +232,8 @@ public class NTJeiPlugin implements IModPlugin {
                 new ItemStack(NTFluids.ETCHING_ACID.getBucket()));
         registration.addCraftingStation(MixingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MIXER.get()));
+        registration.addCraftingStation(EasInfusionCategory.RECIPE_TYPE,
+                new ItemStack(NTFluids.EAS.getBucket()));
         registration.addCraftingStation(AugmentationRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AUGMENTATION_STATION.get()));
         registration.addCraftingStation(BacteriaMutationsCategory.RECIPE_TYPE,
@@ -221,7 +241,11 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addCraftingStation(BacteriaIncubationCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.INCUBATOR.get()));
         registration.addCraftingStation(BioReactorCategory.RECIPE_TYPE,
-                new ItemStack(NTBlocks.BIO_REACTOR.get()));
+                new ItemStack(NTBlocks.BIO_REACTOR.get()),
+                new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
+        registration.addCraftingStation(ColonyFeedingCategory.RECIPE_TYPE,
+                new ItemStack(NTBlocks.BIO_REACTOR.get()),
+                new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
         registration.addCraftingStation(BacteriaGraftingCategory.RECIPE_TYPE,
                 new ItemStack(NTItems.GRAFTING_TOOL.get()),
                 new ItemStack(NTItems.PETRI_DISH.get()));

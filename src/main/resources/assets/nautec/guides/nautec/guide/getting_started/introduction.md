@@ -44,4 +44,4 @@ It is the easiest early supply of Prismarine Shards, which the Aquatic Catalyst 
 
 ## <Color id="gold">This Book</Color>
 
-You get the NauTec Guide the first time you join a world (turn this off with `spawnBookInInventory` in `nautec-common.toml`, which is in each world's `serverconfig` folder). Hold GuideMe's guide key while hovering a NauTec item to open its page.
+You get the NauTec Guide the first time you join a world (turn this off with `spawnBookInInventory` in `config/nautec-common.toml`). Hold GuideMe's guide key while hovering a NauTec item to open its page.

@@ -29,7 +29,7 @@ Each organ is installed at the [Augmentation Station](augmentation_station.md) a
 
 Slot: Eyes. Drops from Guardians, about one kill in forty.
 
-Hold L to fire a guardian beam at the first living thing along your line of sight, up to 15 blocks away. Blocks do not stop it. Each hit deals 3 magic damage (configurable, `guardianAugmentDamage`), and it keeps firing for as long as you hold the key, with no cooldown and no power cost.
+Hold L to fire a guardian beam at the first living thing along your line of sight, up to 15 blocks away. It stops at the first solid block, so you need a clear line to the target. Water does not stop it. Each hit deals 3 magic damage (configurable, `guardianAugmentDamage`), and it keeps firing for as long as you hold the key, with no cooldown and no power cost.
 
 It shares the Eyes slot with Abyssal Eyes.
 

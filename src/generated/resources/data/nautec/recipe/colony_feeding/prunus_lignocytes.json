@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:prunus_lignocytes",
+  "ingredient": {
+    "ingredient": "minecraft:cherry_log"
+  },
+  "vitality_ticks": 1200
+}

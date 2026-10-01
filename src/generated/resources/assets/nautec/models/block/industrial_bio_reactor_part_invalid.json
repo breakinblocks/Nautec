@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "nautec:block/multiblock/industrial_bio_reactor/interior"
+  }
+}

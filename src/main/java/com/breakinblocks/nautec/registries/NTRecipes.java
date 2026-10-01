@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
@@ -32,6 +33,7 @@ public final class NTRecipes {
         register(BacteriaIncubationRecipe.NAME, BacteriaIncubationRecipe.Serializer.INSTANCE, BacteriaIncubationRecipe.TYPE);
         register(ResonanceCraftingRecipe.NAME, ResonanceCraftingRecipe.Serializer.INSTANCE, ResonanceCraftingRecipe.Type.INSTANCE);
         register(PressureForgingRecipe.NAME, PressureForgingRecipe.Serializer.INSTANCE, PressureForgingRecipe.Type.INSTANCE);
+        register(ColonyFeedingRecipe.NAME, ColonyFeedingRecipe.Serializer.INSTANCE, ColonyFeedingRecipe.TYPE);
     }
 
     private static void register(String name, RecipeSerializer<?> serializer, RecipeType<?> type) {

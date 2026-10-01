@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:beta_phylobacteria",
+  "ingredient": {
+    "ingredient": "minecraft:beetroot"
+  },
+  "vitality_ticks": 1200
+}

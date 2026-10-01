@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#down"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#south"
+        },
+        "up": {
+          "texture": "#up"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
+    }
+  ],
+  "textures": {
+    "down": "nautec:block/multiblock/industrial_bio_reactor/bottom_c2_r0_active",
+    "particle": "nautec:block/multiblock/industrial_bio_reactor/side_c0_r1",
+    "south": "nautec:block/multiblock/industrial_bio_reactor/side_c2_r3_active",
+    "up": "nautec:block/multiblock/industrial_bio_reactor/interior"
+  }
+}

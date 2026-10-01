@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.content.recipes.inputs.ResonanceRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
-import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -17,11 +16,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -30,13 +31,27 @@ import java.util.Set;
 
 public class ResonanceChamberBlockEntity extends LaserBlockEntity {
     private static final int CHARGE_PERIOD = 30;
+    public static final int INPUT_SLOT = 0;
+    public static final int OUTPUT_SLOT = 1;
 
     private float charge;
     private int ventCooldown;
 
     public ResonanceChamberBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.RESONANCE_CHAMBER.get(), blockPos, blockState);
-        addItemHandler(2);
+        addItemHandler(2, (slot, stack) -> slot == INPUT_SLOT && isResonanceInput(level, stack));
+    }
+
+    public static boolean isResonanceInput(@Nullable Level level, ItemStack stack) {
+        if (stack.isEmpty() || !(level instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+        for (RecipeHolder<ResonanceCraftingRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(ResonanceCraftingRecipe.Type.INSTANCE)) {
+            if (holder.value().ingredient().test(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public float getCharge() {
@@ -64,6 +79,16 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         return ceiling <= 0 ? 0 : charge / ceiling;
     }
 
+    public static float chargeAfter(float charge, float gained, float ceiling) {
+        float next = charge + gained;
+        float windowLow = (float) (ceiling * NTConfig.resonanceCriticalLow);
+        if (charge >= windowLow) {
+            return next;
+        }
+        float landing = (float) (ceiling * (NTConfig.resonanceCriticalLow + NTConfig.resonanceCriticalHigh) / 2.0);
+        return Math.min(next, landing);
+    }
+
     public boolean isCritical() {
         float fraction = getChargeFraction();
         return fraction >= NTConfig.resonanceCriticalLow && fraction <= NTConfig.resonanceCriticalHigh;
@@ -84,7 +109,7 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
             return;
         }
 
-        this.charge += getPower();
+        this.charge = chargeAfter(this.charge, getPower(), getStabilityCeiling());
 
         if (level.isClientSide()) {
             return;
@@ -105,7 +130,7 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
     }
 
     private boolean tryCraft() {
-        ItemStack input = getItemStackHandler().getStackInSlot(0);
+        ItemStack input = getItemStackHandler().getStackInSlot(INPUT_SLOT);
         if (input.isEmpty()) {
             return false;
         }
@@ -116,13 +141,13 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         }
 
         ItemStack result = recipe.result();
-        ItemStack remainder = getItemStackHandler().insertItem(1, result, true);
+        ItemStack remainder = forceInsertItem(OUTPUT_SLOT, result, true);
         if (!remainder.isEmpty()) {
             return false;
         }
 
-        getItemStackHandler().extractItem(0, 1, false);
-        getItemStackHandler().insertItem(1, result, false);
+        getItemStackHandler().extractItem(INPUT_SLOT, 1, false);
+        forceInsertItem(OUTPUT_SLOT, result, false);
         return true;
     }
 
@@ -167,7 +192,16 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return SidedCapUtils.allInsert(0);
+        if (capability == Capabilities.Item.BLOCK) {
+            return Map.of(
+                    Direction.DOWN, Pair.of(IOActions.EXTRACT, new int[]{OUTPUT_SLOT}),
+                    Direction.UP, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
+                    Direction.NORTH, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
+                    Direction.EAST, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
+                    Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
+                    Direction.WEST, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}));
+        }
+        return Map.of();
     }
 
     @Override

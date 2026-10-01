@@ -232,8 +232,7 @@ public final class LuckyFishingZoneEvents {
                 .withLuck(player.getLuck())
                 .create(LootContextParamSets.FISHING);
         LootTable table = level.getServer().reloadableRegistries().getLootTable(NTLootTables.LUCKY_ZONE);
-        for (ItemStack stack : table.getRandomItems(params)) {
-            NautecFishingHook.dropTowards(level, player, stack, hook.getX(), hook.getY() + 1.2, hook.getZ());
-        }
+        NautecFishingHook.deliverCatch(level, player, hook, table.getRandomItems(params),
+                hook.getX(), hook.getY() + 1.2, hook.getZ());
     }
 }

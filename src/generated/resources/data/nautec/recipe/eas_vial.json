@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "nautec:eas_bucket",
+    "nautec:glass_vial",
+    "nautec:glass_vial",
+    "nautec:glass_vial"
+  ],
+  "result": {
+    "count": 3,
+    "id": "nautec:eas_vial"
+  }
+}

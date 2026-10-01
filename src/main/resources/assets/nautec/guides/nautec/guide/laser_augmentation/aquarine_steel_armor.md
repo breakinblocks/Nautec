@@ -26,7 +26,7 @@ Each piece stores up to 512 AP. The power bar on the item shows its charge, and 
 
 Uncharged, the set gives 3 armor for the helmet, 7 for the chestplate, 6 for the leggings and 3 for the boots, plus 1 armor toughness per piece.
 
-While its pieces hold power, the set adds 10 armor and 5 armor toughness on top of that. Keep every piece charged: an empty piece can cancel the bonus for the whole set.
+Each piece that holds power adds its own 10 armor and 5 armor toughness on top of that. Vanilla caps still apply (30 armor, 20 toughness), so a fully charged set sits at both caps. A piece that runs empty loses only its own bonus; the charged pieces keep theirs.
 
 ***
 

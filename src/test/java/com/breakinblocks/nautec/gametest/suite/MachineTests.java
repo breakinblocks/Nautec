@@ -120,8 +120,8 @@ public final class MachineTests {
             helper.runAfterDelay(100, () -> {
                 helper.assertValueEqual(100, charger.getPower(), "charger power while charging");
                 int delta = batteryPower(helper, charger.getItemStackHandler().getStackInSlot(0)) - baseline[0];
-                helper.assertTrue(delta >= 196 && delta <= 204,
-                        "Battery should charge 4 power per tick over 50 ticks, delta was " + delta);
+                helper.assertTrue(delta >= 4900 && delta <= 5100,
+                        "Battery should charge at the 100 AP beam over 50 ticks, delta was " + delta);
                 helper.succeed();
             });
         });

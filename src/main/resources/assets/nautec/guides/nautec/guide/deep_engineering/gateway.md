@@ -42,11 +42,11 @@ Breaking a Gateway keeps its address on the dropped item, so you can move it wit
 
 Step onto a Gateway and within half a second you are moved to the nearest other Gateway with the same address. Anything you are riding goes with you, along with anyone else riding it, so a <ItemLink id="submarine"/> arrives with its crew on board. Mobs and dropped items travel too.
 
-After arriving, you cannot use a Gateway for 5 seconds (`gatewayCooldown` in `nautec-common.toml`, 100 ticks). Step off the destination plate before that runs out, or it sends you straight back.
+After arriving, the destination plate does not send you anywhere until you step off it, so you can stand there as long as you like. Step off and back on to travel again. Any Gateway also waits 5 seconds after a trip before it will send you (`gatewayCooldown` in `config/nautec-common.toml`, 100 ticks).
 
 Things to check when a Gateway does not send you:
 
-* The destination has to be in the same dimension, and its chunk has to be loaded. Gateways in unloaded chunks are skipped, so you may be sent to a closer loaded one instead.
+* The destination has to be in the same dimension. It can be in an unloaded chunk: the Gateway loads it when you travel.
 * There has to be room for you (and your vehicle) on top of the destination.
 * The destination is always the nearest match. If several Gateways share one address, give each pair its own address so you arrive where you meant to.
 

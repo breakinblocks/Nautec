@@ -4,6 +4,8 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.item.DelegatingItemHandler;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
@@ -15,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -25,13 +29,15 @@ import java.util.Set;
 public class BioReactorPartBlockEntity extends LaserBlockEntity implements MultiblockPartEntity {
     private final Set<Direction> laserInputs;
     private final Set<Direction> laserOutputs = Collections.emptySet();
-    private final Map<Direction, Pair<IOActions, int[]>> sidedInteractions;
+    private final ResourceHandler<ItemResource> controllerItems = new DelegatingItemHandler(() -> {
+        BioReactorBlockEntity reactor = controller();
+        return reactor == null ? null : reactor.getItemHandler();
+    });
     private BlockPos controllerPos;
 
     public BioReactorPartBlockEntity(BlockPos pos, BlockState blockState) {
         super(NTBlockEntityTypes.BIO_REACTOR_PART.get(), pos, blockState);
         this.laserInputs = new HashSet<>();
-        this.sidedInteractions = Collections.emptyMap();
     }
 
     @Override
@@ -56,7 +62,33 @@ public class BioReactorPartBlockEntity extends LaserBlockEntity implements Multi
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return sidedInteractions;
+        return Map.of();
+    }
+
+    @Override
+    public ResourceHandler<ItemResource> getItemHandler() {
+        return this.controllerItems;
+    }
+
+    private @Nullable BioReactorBlockEntity controller() {
+        if (level == null || controllerPos == null) {
+            return null;
+        }
+        return level.getBlockEntity(controllerPos) instanceof BioReactorBlockEntity reactor ? reactor : null;
+    }
+
+    @Override
+    public ResourceHandler<ItemResource> getItemHandlerOnSide(Direction direction) {
+        if (direction == null) {
+            return getItemHandler();
+        }
+        if (direction != Direction.DOWN) {
+            return null;
+        }
+        return new DelegatingItemHandler(() -> {
+            BioReactorBlockEntity reactor = controller();
+            return reactor == null ? null : reactor.automationHandler(true);
+        });
     }
 
     public void setLaserInput(boolean hatch) {

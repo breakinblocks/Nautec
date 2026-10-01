@@ -29,10 +29,12 @@ import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntit
 import com.breakinblocks.nautec.content.blockentities.SubmarineDockBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.IndustrialBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.BioReactorPartBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.IndustrialBioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
@@ -110,6 +112,12 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<BioReactorPartBlockEntity>> BIO_REACTOR_PART = BLOCK_ENTITIES.register("bio_reactor_part",
             () -> new BlockEntityType<>(BioReactorPartBlockEntity::new,
                     NTBlocks.BIO_REACTOR_PART.get()));
+    public static final Supplier<BlockEntityType<IndustrialBioReactorBlockEntity>> INDUSTRIAL_BIO_REACTOR = BLOCK_ENTITIES.register("industrial_bio_reactor",
+            () -> new BlockEntityType<>(IndustrialBioReactorBlockEntity::new,
+                    NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
+    public static final Supplier<BlockEntityType<IndustrialBioReactorPartBlockEntity>> INDUSTRIAL_BIO_REACTOR_PART = BLOCK_ENTITIES.register("industrial_bio_reactor_part",
+            () -> new BlockEntityType<>(IndustrialBioReactorPartBlockEntity::new,
+                    NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get()));
     public static final Supplier<BlockEntityType<BacterialFuelCellBlockEntity>> BACTERIAL_FUEL_CELL = BLOCK_ENTITIES.register("bacterial_fuel_cell",
             () -> new BlockEntityType<>(BacterialFuelCellBlockEntity::new,
                     NTBlocks.BACTERIAL_FUEL_CELL.get()));

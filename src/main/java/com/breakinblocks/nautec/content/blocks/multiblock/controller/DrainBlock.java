@@ -10,7 +10,6 @@ import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.utils.ItemUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
@@ -113,14 +113,21 @@ public class DrainBlock extends ContainerBlock {
                                      ResourceHandler<FluidResource> fluidHandlerItem) {
         FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
         if (player.getItemInHand(interactionHand).is(Items.BUCKET)) {
+            if (fluidInTank.isEmpty() || fluidInTank.getAmount() < FluidType.BUCKET_VOLUME) {
+                return;
+            }
+            ItemStack filledBucket = fluidInTank.getFluid().getBucket().getDefaultInstance();
+            if (filledBucket.isEmpty()) {
+                return;
+            }
             player.getItemInHand(interactionHand).shrink(1);
-            ItemUtils.giveItemToPlayerNoSound(player, fluidInTank.getFluid().getBucket().getDefaultInstance());
+            ItemUtils.giveItemToPlayerNoSound(player, filledBucket);
             if (fluidInTank.is(Fluids.WATER)) {
                 level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 0.8F, 1.0F);
             } else if (fluidInTank.is(Fluids.LAVA)) {
                 level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(), SoundEvents.BUCKET_FILL_LAVA, SoundSource.PLAYERS, 0.8F, 1.0F);
             }
-            fluidHandler.drain(1000);
+            fluidHandler.drain(FluidType.BUCKET_VOLUME);
         } else {
             FluidStack fluidStack = fluidHandler.drain(fluidInTank.getAmount());
             int inserted;
@@ -132,12 +139,6 @@ public class DrainBlock extends ContainerBlock {
             remainder.setAmount(fluidStack.getAmount() - inserted);
             fluidHandler.setFluid(remainder);
         }
-    }
-
-    @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        level.removeBlock(pos.above(), false);
     }
 
 }

@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "hephaestus"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "tconstruct"
+        }
+      ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/rose_gold"
+      }
+    }
+  ],
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:chrysorosophiles",
+  "ingredient": {
+    "ingredient": "#c:ingots/rose_gold"
+  },
+  "vitality_ticks": 1200
+}

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.bacteria;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
@@ -10,10 +11,15 @@ import com.breakinblocks.nautec.utils.ranges.FloatRange;
 import com.breakinblocks.nautec.utils.ranges.IntRange;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 
-public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaStats<?> stats) implements Bacteria {
+public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaStats<?> stats, float productionMultiplier) implements Bacteria {
+    public SimpleBacteria(LongRange initialSize, Resource resource, BacteriaStats<?> stats) {
+        this(initialSize, resource, stats, 1.0f);
+    }
+
     public static Builder of() {
         return new Builder();
     }
@@ -33,7 +39,8 @@ public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaS
         public static final MapCodec<SimpleBacteria> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 LongRange.MAP_CODEC.fieldOf("initial_size").forGetter(SimpleBacteria::initialSize),
                 Resource.CODEC.fieldOf("bacteria").forGetter(SimpleBacteria::resource),
-                BacteriaStats.CODEC.fieldOf("stats").forGetter(SimpleBacteria::stats)
+                BacteriaStats.CODEC.fieldOf("stats").forGetter(SimpleBacteria::stats),
+                Codec.floatRange(0.0f, Float.MAX_VALUE).optionalFieldOf("production_multiplier", 1.0f).forGetter(SimpleBacteria::productionMultiplier)
         ).apply(instance, SimpleBacteria::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, SimpleBacteria> STREAM_CODEC = StreamCodec.composite(
                 LongRange.STREAM_CODEC,
@@ -42,6 +49,8 @@ public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaS
                 SimpleBacteria::resource,
                 BacteriaStats.STREAM_CODEC,
                 SimpleBacteria::stats,
+                ByteBufCodecs.FLOAT,
+                SimpleBacteria::productionMultiplier,
                 SimpleBacteria::new
         );
 
@@ -67,6 +76,7 @@ public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaS
         private FloatRange productionRate = FloatRange.of(0F, 0F);
         private IntRange lifespan = IntRange.of(0, 0);
         private int color;
+        private float productionMultiplier = 1.0f;
 
         public Builder initialSize(LongRange initialSize) {
             this.initialSize = initialSize;
@@ -108,8 +118,13 @@ public record SimpleBacteria(LongRange initialSize, Resource resource, BacteriaS
             return this;
         }
 
+        public Builder productionMultiplier(float productionMultiplier) {
+            this.productionMultiplier = productionMultiplier;
+            return this;
+        }
+
         public SimpleBacteria build() {
-            return new SimpleBacteria(initialSize, resource, new SimpleBacteriaStats(growthRate, mutationResistance, productionRate, lifespan, color));
+            return new SimpleBacteria(initialSize, resource, new SimpleBacteriaStats(growthRate, mutationResistance, productionRate, lifespan, color), productionMultiplier);
         }
     }
 }

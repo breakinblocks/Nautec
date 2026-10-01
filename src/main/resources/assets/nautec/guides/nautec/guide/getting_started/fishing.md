@@ -29,7 +29,7 @@ Patches of open water that form on the surface near you while you are on an ocea
 
 Cast your bobber into one. The bobber holds still inside the zone, fish bite twice as fast, and each catch gets an extra roll on the zone's loot on top of your normal catch. Any fishing rod works, including rods from other mods.
 
-All of these numbers are in `nautec-common.toml`, along with `luckyZonesEnabled` to turn zones off.
+All of these numbers are in `config/nautec-common.toml`, along with `luckyZonesEnabled` to turn zones off.
 
 ***
 
@@ -39,7 +39,7 @@ Each extra roll is an ordinary catch most of the time and a treasure catch about
 
 | Water | Catch | Treasure |
 |---|---|---|
-| Anywhere | cod, salmon, Silt Skippers, Salt, Prismarine Crystal Shards | Rusty Gears, Ancient Valves, Broken Whisks, Prismarine Lenses, Crates |
+| Anywhere | cod, salmon, Silt Skippers, Salt, Prismarine Crystal Shards | Rusty Gears, Ancient Valves, Broken Whisks, Prismarine Lenses, Crates filled with loot |
 | Rivers | clay, lily pads | |
 | Any ocean | tropical fish, kelp | Nautilus Shells, Atlantic Gold Nuggets |
 | Abyssal Trench | Abyssal Coral, Damaged Aquatic Chips, ink sacs | Abyssal Organs, Budding Prismarine, live squid |
@@ -74,7 +74,7 @@ Which bar you get is random, and it names itself at the top.
 
 The panel turns green while the marker is inside a window. "Hooked it" means you won. "It slipped the hook" means you missed, and the bar stays up in red until it runs out.
 
-When the bar closes, reel in straight away with right-click. The fish only stays on the line briefly.
+The fish stays on the line while the bar runs and for 2 seconds after it closes, whether you won or missed. Reel in with right-click once the bar is gone.
 
 ***
 

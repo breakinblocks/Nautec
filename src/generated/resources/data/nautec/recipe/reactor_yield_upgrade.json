@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquatic_chip",
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal"
+  },
+  "pattern": [
+    " F ",
+    "DAD",
+    " F "
+  ],
+  "result": {
+    "id": "nautec:reactor_yield_upgrade"
+  }
+}

@@ -58,13 +58,13 @@ Right-click a formed extension to open it. It has two slots, each holding one it
 * The top slot takes the <ItemLink id="claw_robot_arm"/>. Without it the extension is ignored.
 * The bottom slot takes the part you want installed.
 
-Load exactly one extension with a part. Every current augment uses a single part, and the station only recognises the recipe when the number of loaded extensions matches it, so a second loaded extension stops anything from being offered. Leave the others empty, or take their arms out.
+Load as many extensions as the augment has parts. Almost every augment uses a single part, so load exactly one extension and leave the others empty. The Vent Carapace is the exception: it takes a Chitin Plate in each of the four extensions. The station only recognises the recipe when the loaded extensions match it exactly, so an extra loaded extension stops anything from being offered.
 
 ***
 
 ## <Color id="gold">Powering It</Color>
 
-The extension holding the part needs a laser beam of at least 25 AP coming up into it from the block below. The power is only checked, not used up, but it has to stay at 25 AP or more for the whole install. Empty extensions need no beam.
+Every extension holding a part needs a laser beam of at least 25 AP coming up into it from the block below. The power is only checked, not used up, but it has to stay at 25 AP or more for the whole install. Empty extensions need no beam.
 
 Since the beam has to enter from underneath, put your catalyst or relay under the floor and fire it straight up. See [Laser Power](nautec:getting_started/laser_power.md) for getting a beam started.
 
@@ -78,7 +78,7 @@ Stand on the middle block. After half a second a screen opens showing the part a
 
 For the next four seconds you are held in place while the robot arms work. Stepping off, the beam dropping below 25 AP, or the part being taken out cancels the install and nothing is used. When it finishes, the part is used up, the Claw Robot Arm stays, and the augment is in your chosen slot.
 
-If the screen opens with no slots listed, the station does not recognise what is loaded. Check that the part sits in the bottom slot, that exactly one extension is loaded, and that its arm is in the top slot.
+If the screen opens with no slots listed, the station does not recognise what is loaded. Check that each part sits in a bottom slot, that the number of loaded extensions matches the augment, and that each loaded extension has its arm in the top slot.
 
 [Player Augmentation](augmentation.md) lists what each slot takes and how replacing an augment works.
 

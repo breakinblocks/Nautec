@@ -71,6 +71,11 @@ public class EnergyConverterBlockEntity extends LaserBlockEntity {
     }
 
     @Override
+    protected int outgoingPower(Direction direction) {
+        return getPowerToTransfer() / Math.max(1, connectedOutputs());
+    }
+
+    @Override
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         feBuffer.serialize(out.child(FE_BUFFER_KEY));

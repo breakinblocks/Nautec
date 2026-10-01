@@ -36,6 +36,7 @@
     "max": 275,
     "min": 150
   },
+  "production_multiplier": 0.4,
   "stats": {
     "type": "nautec:simple",
     "color": -11579949,

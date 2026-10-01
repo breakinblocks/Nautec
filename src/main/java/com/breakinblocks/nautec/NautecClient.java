@@ -5,6 +5,8 @@ import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemRenderer;
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
+import com.breakinblocks.nautec.client.render.BioReactorRenderer;
+import com.breakinblocks.nautec.client.render.IndustrialBioReactorRenderer;
 import com.breakinblocks.nautec.client.render.RifleArmPose;
 import com.breakinblocks.nautec.client.render.WaveJetClientExtensions;
 import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
@@ -52,6 +54,7 @@ import com.breakinblocks.nautec.client.renderer.robotArms.ClawRobotArmRenderer;
 import com.breakinblocks.nautec.client.screen.AugmentationStationExtensionScreen;
 import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
+import com.breakinblocks.nautec.client.screen.IndustrialBioReactorScreen;
 import com.breakinblocks.nautec.client.screen.CrateScreen;
 import com.breakinblocks.nautec.client.screen.FishingStationScreen;
 import com.breakinblocks.nautec.client.screen.IncubatorScreen;
@@ -146,6 +149,7 @@ public final class NautecClient {
         event.registerPipeline(NTRenderPipelines.SONAR_WAVE);
         event.registerPipeline(NTRenderPipelines.TELEPORT_BLUR);
         event.registerPipeline(NTRenderPipelines.TIDAL_SHOCKWAVE);
+        event.registerPipeline(NTRenderPipelines.REACTOR_GLOW);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -271,6 +275,8 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.ANCHOR.get(), AnchorBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.FISHING_STATION.get(), FishingStationBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.BIO_REACTOR.get(), BioReactorRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.INDUSTRIAL_BIO_REACTOR.get(), IndustrialBioReactorRenderer::new);
 
         AugmentLayerRenderer.registerRenderer(NTAugments.DOLPHIN_FIN.get(),
                 ctx -> new SimpleAugmentRenderer<>(DolphinFinModel::new, DolphinFinModel.LAYER_LOCATION, DolphinFinModel.RENDER_TYPE, true, ctx));
@@ -326,6 +332,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.INCUBATOR.get(), IncubatorScreen::new);
         event.register(NTMenuTypes.MUTATOR.get(), MutatorScreen::new);
         event.register(NTMenuTypes.BIO_REACTOR.get(), BioReactorScreen::new);
+        event.register(NTMenuTypes.INDUSTRIAL_BIO_REACTOR.get(), IndustrialBioReactorScreen::new);
         event.register(NTMenuTypes.MIXER.get(), MixerScreen::new);
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);

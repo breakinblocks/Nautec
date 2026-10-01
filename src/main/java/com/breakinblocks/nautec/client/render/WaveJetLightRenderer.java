@@ -26,15 +26,22 @@ import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class WaveJetLightRenderer {
-    private static final int SEGMENTS = 14;
+    private static final int SEGMENTS = 20;
+    private static final int SLICES = 10;
     private static final int CORE_COLOR = 0xBFE8FF;
 
-    private static final float NEAR_DISTANCE = 0.55F;
-    private static final float NEAR_RADIUS = 0.12F;
-    private static final float SPREAD = 0.22F;
+    private static final float LENS_RADIUS = 0.06F;
+    private static final float SPREAD = 0.24F;
+    private static final float FADE_IN_DISTANCE = 1.2F;
+    private static final float FALLOFF_POWER = 1.6F;
+    private static final float PEAK_ALPHA = 26.0F;
+    private static final float[] SHELL_SCALES = {0.3F, 0.55F, 0.8F, 1.0F};
+    private static final float[] SHELL_WEIGHTS = {1.0F, 0.6F, 0.35F, 0.18F};
 
-    private static final int NEAR_ALPHA = 70;
-    private static final int FAR_ALPHA = 0;
+    private static final double FIRST_PERSON_FORWARD = 0.75D;
+    private static final double FIRST_PERSON_DROP = 0.28D;
+    private static final double THIRD_PERSON_FORWARD = 0.6D;
+    private static final double THIRD_PERSON_DROP = 0.45D;
 
     private static @Nullable ByteBufferBuilder renderBuffer;
 
@@ -88,13 +95,7 @@ public final class WaveJetLightRenderer {
 
     private static void renderCone(ClientLevel level, Player player, PoseStack.Pose pose, VertexConsumer buffer,
                                    Vec3 cameraPos, float partialTick) {
-        Vec3 origin = muzzle(player, partialTick);
         Vec3 direction = player.getViewVector(partialTick);
-        float length = reach(level, player, origin, direction);
-        if (length <= NEAR_DISTANCE) {
-            return;
-        }
-
         Vec3 side = direction.cross(new Vec3(0.0D, 1.0D, 0.0D));
         if (side.lengthSqr() < 1.0E-4D) {
             side = direction.cross(new Vec3(1.0D, 0.0D, 0.0D));
@@ -102,27 +103,51 @@ public final class WaveJetLightRenderer {
         side = side.normalize();
         Vec3 up = side.cross(direction).normalize();
 
-        Vec3 nearCentre = origin.add(direction.scale(NEAR_DISTANCE)).subtract(cameraPos);
-        Vec3 farCentre = origin.add(direction.scale(length)).subtract(cameraPos);
-        float farRadius = NEAR_RADIUS + (length - NEAR_DISTANCE) * SPREAD;
-
-        int nearColor = ARGB.color(NEAR_ALPHA, CORE_COLOR);
-        int farColor = ARGB.color(FAR_ALPHA, CORE_COLOR);
-
-        for (int segment = 0; segment < SEGMENTS; segment++) {
-            float from = (float) (Math.PI * 2.0 * segment / SEGMENTS);
-            float to = (float) (Math.PI * 2.0 * (segment + 1) / SEGMENTS);
-
-            Vec3 nearFrom = ring(nearCentre, side, up, from, NEAR_RADIUS);
-            Vec3 nearTo = ring(nearCentre, side, up, to, NEAR_RADIUS);
-            Vec3 farFrom = ring(farCentre, side, up, from, farRadius);
-            Vec3 farTo = ring(farCentre, side, up, to, farRadius);
-
-            vertex(pose, buffer, nearFrom, nearColor);
-            vertex(pose, buffer, nearTo, nearColor);
-            vertex(pose, buffer, farTo, farColor);
-            vertex(pose, buffer, farFrom, farColor);
+        Vec3 origin = lens(player, direction, up, partialTick);
+        float length = reach(level, player, origin, direction);
+        if (length <= FADE_IN_DISTANCE * 0.25F) {
+            return;
         }
+
+        for (int shell = 0; shell < SHELL_SCALES.length; shell++) {
+            float scale = SHELL_SCALES[shell];
+            float peak = PEAK_ALPHA * SHELL_WEIGHTS[shell];
+            for (int slice = 0; slice < SLICES; slice++) {
+                float nearDistance = length * slice / SLICES;
+                float farDistance = length * (slice + 1) / SLICES;
+                Vec3 nearCentre = origin.add(direction.scale(nearDistance)).subtract(cameraPos);
+                Vec3 farCentre = origin.add(direction.scale(farDistance)).subtract(cameraPos);
+                float nearRadius = (LENS_RADIUS + nearDistance * SPREAD) * scale;
+                float farRadius = (LENS_RADIUS + farDistance * SPREAD) * scale;
+                int nearColor = ARGB.color(alpha(peak, nearDistance, length), CORE_COLOR);
+                int farColor = ARGB.color(alpha(peak, farDistance, length), CORE_COLOR);
+
+                for (int segment = 0; segment < SEGMENTS; segment++) {
+                    float from = (float) (Math.PI * 2.0 * segment / SEGMENTS);
+                    float to = (float) (Math.PI * 2.0 * (segment + 1) / SEGMENTS);
+
+                    vertex(pose, buffer, ring(nearCentre, side, up, from, nearRadius), nearColor);
+                    vertex(pose, buffer, ring(nearCentre, side, up, to, nearRadius), nearColor);
+                    vertex(pose, buffer, ring(farCentre, side, up, to, farRadius), farColor);
+                    vertex(pose, buffer, ring(farCentre, side, up, from, farRadius), farColor);
+                }
+            }
+        }
+    }
+
+    private static int alpha(float peak, float distance, float length) {
+        float fadeIn = Mth.clamp(distance / FADE_IN_DISTANCE, 0.0F, 1.0F);
+        float falloff = (float) Math.pow(1.0F - Mth.clamp(distance / length, 0.0F, 1.0F), FALLOFF_POWER);
+        return Mth.clamp(Math.round(peak * fadeIn * fadeIn * falloff), 0, 255);
+    }
+
+    private static Vec3 lens(Player player, Vec3 direction, Vec3 up, float partialTick) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Vec3 eyes = player.getEyePosition(partialTick);
+        if (player == minecraft.player && minecraft.options.getCameraType().isFirstPerson()) {
+            return eyes.add(direction.scale(FIRST_PERSON_FORWARD)).subtract(up.scale(FIRST_PERSON_DROP));
+        }
+        return eyes.add(direction.scale(THIRD_PERSON_FORWARD)).subtract(0.0D, THIRD_PERSON_DROP, 0.0D);
     }
 
     private static Vec3 ring(Vec3 centre, Vec3 side, Vec3 up, float angle, float radius) {
@@ -133,10 +158,6 @@ public final class WaveJetLightRenderer {
 
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, Vec3 position, int color) {
         buffer.addVertex(pose, (float) position.x, (float) position.y, (float) position.z).setColor(color);
-    }
-
-    private static Vec3 muzzle(Player player, float partialTick) {
-        return player.getEyePosition(partialTick).subtract(0.0D, 0.2D, 0.0D);
     }
 
     private static float reach(ClientLevel level, Player player, Vec3 origin, Vec3 direction) {

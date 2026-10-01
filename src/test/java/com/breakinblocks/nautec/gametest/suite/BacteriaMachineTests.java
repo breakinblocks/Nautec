@@ -92,8 +92,8 @@ public final class BacteriaMachineTests {
             helper.runAfterDelay(360, () -> {
                 int slow = reactor.getItemStackHandler().getStackInSlot(0).getCount() - baseline[0];
                 int fast = reactor.getItemStackHandler().getStackInSlot(1).getCount() - baseline[1];
-                helper.assertTrue(fast >= 30 && fast <= 36,
-                        "High rate colony should make about 33 items in 300 ticks, made " + fast);
+                helper.assertTrue(fast >= 18 && fast <= 22,
+                        "High rate Ferrophiles colony (multiplier 0.6) should make about 20 items in 300 ticks, made " + fast);
                 helper.assertTrue(slow >= 0 && slow <= 2,
                         "Low rate colony should make at most 2 items in 300 ticks, made " + slow);
                 helper.succeed();

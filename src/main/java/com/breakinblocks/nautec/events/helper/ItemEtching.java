@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.events.helper;
 
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTFluids;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -16,10 +17,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.FluidState;
 
 import java.util.Optional;
 
 public class ItemEtching {
+    public static final int ACID_CONSUME_CHANCE = 3;
+
     private static final Reference2IntMap<ItemEntity> activeEtching = new Reference2IntOpenHashMap<>();
 
     public static void onEntityLeave(ItemEntity itemEntity) {
@@ -27,28 +31,27 @@ public class ItemEtching {
     }
 
     public static void processItemEtching(ItemEntity itemEntity, Level level) {
-        ItemStack stack = itemEntity.getItem();
+        Optional<ItemEtchingRecipe> optionalRecipe = getEtchingRecipe(itemEntity.getItem(), level);
+        if (optionalRecipe.isEmpty()) {
+            activeEtching.removeInt(itemEntity);
+            return;
+        }
 
         if (!activeEtching.containsKey(itemEntity)) {
-            Optional<ItemEtchingRecipe> optionalRecipe = getEtchingRecipe(stack, level);
-            if (optionalRecipe.isPresent()) {
-                activeEtching.put(itemEntity, 0);
-            }
-        } else {
-            int etchingTime = activeEtching.getInt(itemEntity);
+            activeEtching.put(itemEntity, 0);
+            return;
+        }
 
-            if (etchingTime >= 100) {
-                Optional<ItemEtchingRecipe> optionalRecipe = getEtchingRecipe(stack, level);
-                if (optionalRecipe.isPresent()) {
-                    transformItem(itemEntity, optionalRecipe.get(), level);
-                }
-                activeEtching.removeInt(itemEntity);
-            } else {
-                activeEtching.put(itemEntity, etchingTime + 1);
-                if (level instanceof ServerLevel serverLevel && etchingTime % 5 == 0) {
-                    serverLevel.sendParticles(ParticleTypes.FLAME, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 20, 0.5, 0.5, 0.5, 0);
-                }
-            }
+        int etchingTime = activeEtching.getInt(itemEntity);
+        if (etchingTime >= optionalRecipe.get().duration()) {
+            activeEtching.removeInt(itemEntity);
+            transformItem(itemEntity, optionalRecipe.get(), level, level.getRandom().nextInt(ACID_CONSUME_CHANCE) == 0);
+            return;
+        }
+
+        activeEtching.put(itemEntity, etchingTime + 1);
+        if (level instanceof ServerLevel serverLevel && etchingTime % 5 == 0) {
+            serverLevel.sendParticles(ParticleTypes.FLAME, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 20, 0.5, 0.5, 0.5, 0);
         }
     }
 
@@ -61,28 +64,32 @@ public class ItemEtching {
         return Optional.empty();
     }
 
-    private static void transformItem(ItemEntity itemEntity, ItemEtchingRecipe recipe, Level level) {
-        BlockPos position = itemEntity.getOnPos();
+    public static void transformItem(ItemEntity itemEntity, ItemEtchingRecipe recipe, Level level, boolean consumeAcid) {
         ItemStack inputStack = itemEntity.getItem();
         ItemStack resultStack = recipe.getResultItem(level.registryAccess()).copy();
-        resultStack.setCount(itemEntity.getItem().getCount());
+        resultStack.setCount(inputStack.getCount());
 
         if (inputStack.is(NTBlocks.RUSTY_CRATE.asItem()) && resultStack.is(NTBlocks.CRATE.asItem())) {
-            ItemContainerContents value = itemEntity.getItem().copy().get(DataComponents.CONTAINER);
+            ItemContainerContents value = inputStack.copy().get(DataComponents.CONTAINER);
             resultStack.set(DataComponents.CONTAINER, value);
-            SeededContainerLoot value1 = itemEntity.getItem().copy().get(DataComponents.CONTAINER_LOOT);
+            SeededContainerLoot value1 = inputStack.copy().get(DataComponents.CONTAINER_LOOT);
             resultStack.set(DataComponents.CONTAINER_LOOT, value1);
         }
 
+        double x = itemEntity.getX();
+        double y = itemEntity.getY();
+        double z = itemEntity.getZ();
+        BlockPos acidPos = itemEntity.blockPosition();
         itemEntity.discard();
 
-        int rand = level.getRandom().nextInt(0, 3);
-        if (rand == 2) {
-            level.setBlock(itemEntity.getOnPos(), Blocks.AIR.defaultBlockState(), 11);
+        if (consumeAcid && isAcidSource(level.getFluidState(acidPos))) {
+            level.setBlock(acidPos, Blocks.AIR.defaultBlockState(), 11);
         }
 
-        ItemEntity newItemEntity = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), resultStack);
-        level.addFreshEntity(newItemEntity);
+        level.addFreshEntity(new ItemEntity(level, x, y, z, resultStack));
     }
 
+    private static boolean isAcidSource(FluidState state) {
+        return state.isSource() && state.is(NTFluids.ETCHING_ACID.getStillFluid());
+    }
 }

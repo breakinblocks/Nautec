@@ -131,11 +131,12 @@ public class BlockModelProvider extends ModelProvider {
         helper.augmentationStationExtension(NTBlocks.AUGMENTATION_STATION_EXTENSION.get());
 
         helper.bioReactorPart(NTBlocks.BIO_REACTOR_PART.get());
+        helper.bioReactorController(NTBlocks.BIO_REACTOR.get());
+        helper.industrialBioReactorPart(NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get());
+        helper.industrialBioReactorController(NTBlocks.INDUSTRIAL_BIO_REACTOR.get());
 
         simpleBlock(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get());
 
-        horizontalBlock(NTBlocks.BIO_REACTOR.get(), cubeTop(NTBlocks.BIO_REACTOR.get(),
-                blockTexture(NTBlocks.POLISHED_PRISMARINE.get()), blockTexture(NTBlocks.BIO_REACTOR.get(), "_top")));
         simpleBlock(NTBlocks.DRAIN_WALL.get());
         simpleBlock(NTBlocks.BROWN_POLYMER_BLOCK.get());
 

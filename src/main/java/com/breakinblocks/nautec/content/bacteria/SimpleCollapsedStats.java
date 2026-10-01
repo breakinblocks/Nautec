@@ -100,7 +100,7 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
     }
 
     public SimpleCollapsedStats rollProductionRate() {
-        float newPR = productionRate + RNGUtils.floatInRangeOf(productionRate) / 10 * (1 + mutationResistance);
+        float newPR = productionRate + RNGUtils.floatInRangeOf(productionRate) / (10 * (1 + mutationResistance));
         newPR = Math.max(newPR, 0);
 
         newPR = Math.min(newPR, bacteriaProductionRateCap);

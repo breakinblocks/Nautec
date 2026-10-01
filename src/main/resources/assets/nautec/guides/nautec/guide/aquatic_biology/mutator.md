@@ -17,7 +17,7 @@ item_ids:
 
 Put the colony in the left bacteria slot and the catalyst in the item slot. Every 12 seconds the Mutator makes one attempt, and keeps making attempts until one succeeds. The right bacteria slot must be empty before it starts, so take each new colony out as soon as it appears.
 
-The catalyst is not used up, so one item covers every attempt. JEI's Bacteria Mutations category lists the catalyst and base chance for every mutation.
+The catalyst is not used up, so one item covers every attempt. Hoppers and pipes can insert it from any side. JEI's Bacteria Mutations category lists the catalyst and base chance for every mutation.
 
 ***
 

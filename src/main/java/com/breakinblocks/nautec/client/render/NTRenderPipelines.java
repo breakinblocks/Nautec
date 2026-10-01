@@ -86,6 +86,16 @@ public final class NTRenderPipelines {
             .withCull(false)
             .build();
 
+    public static final RenderPipeline REACTOR_GLOW = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
+            .withLocation(Nautec.rl("pipeline/reactor_glow"))
+            .withVertexShader("core/rendertype_lightning")
+            .withFragmentShader("core/rendertype_lightning")
+            .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+            .withCull(false)
+            .build();
+
     public static final RenderPipeline LASER_BEAM = laser("laser_beam");
 
     public static final RenderPipeline LASER_FLARE = laser("laser_flare");

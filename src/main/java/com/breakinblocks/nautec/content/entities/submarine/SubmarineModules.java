@@ -68,6 +68,7 @@ public class SubmarineModules {
     private int boostTicks;
     private int stealthTicks;
     private int teleportTicks;
+    private int teleportRefund;
     private @Nullable TeleportAnchor teleportTarget;
 
     public SubmarineModules(SubmarineEntity submarine) {
@@ -113,6 +114,7 @@ public class SubmarineModules {
         boostTicks = state.boost();
         stealthTicks = state.stealth();
         teleportTicks = 0;
+        teleportRefund = 0;
         teleportTarget = null;
         submarine.setCharging(false);
         submarine.setLaserActive(false);
@@ -189,7 +191,7 @@ public class SubmarineModules {
             return;
         }
 
-        if (!isReady(slot)) {
+        if (!isTypeReady(type)) {
             refuse(pilot, "cooldown");
             return;
         }
@@ -203,7 +205,24 @@ public class SubmarineModules {
             return;
         }
 
-        startCooldown(slot, type.cooldownTicks(), type.activeTicks());
+        startTypeCooldown(type, type.cooldownTicks(), type.activeTicks());
+    }
+
+    public boolean isTypeReady(SubmarineModuleType type) {
+        for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
+            if (this.submarine.getModuleType(slot) == type && !isReady(slot)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void startTypeCooldown(SubmarineModuleType type, int cooldown, int active) {
+        for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
+            if (this.submarine.getModuleType(slot) == type) {
+                startCooldown(slot, cooldown, active);
+            }
+        }
     }
 
     public boolean hasPowerFor(SubmarineModuleType type, Player pilot) {
@@ -421,7 +440,9 @@ public class SubmarineModules {
             return false;
         }
 
+        int before = this.submarine.getPowerStored();
         drain(NTConfig.submarineTeleportPowerCost, pilot);
+        this.teleportRefund = before - this.submarine.getPowerStored();
         this.teleportTarget = anchor;
         this.teleportTicks = TELEPORT_CHARGE_TICKS;
         this.submarine.setCharging(true);
@@ -447,6 +468,7 @@ public class SubmarineModules {
         TeleportAnchor anchor = this.teleportTarget;
         this.teleportTarget = null;
         if (anchor == null) {
+            this.teleportRefund = 0;
             return;
         }
 
@@ -463,6 +485,7 @@ public class SubmarineModules {
             abortTeleport();
             return;
         }
+        this.teleportRefund = 0;
         if (teleported instanceof SubmarineEntity arrived) {
             arrived.setExiting(true);
         }
@@ -473,6 +496,10 @@ public class SubmarineModules {
     }
 
     private void abortTeleport() {
+        this.submarine.setPowerStored(this.submarine.getPowerStored() + this.teleportRefund);
+        this.teleportRefund = 0;
+        startTypeCooldown(SubmarineModuleType.TELEPORT, 0, 0);
+
         Vec3 position = this.submarine.position();
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.submarine, new TeleportFxPayload(
                 this.submarine.getId(), TeleportFxPayload.STAGE_ABORT,

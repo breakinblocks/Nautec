@@ -44,4 +44,6 @@ Small Prismarine Bud, Medium Prismarine Bud, Large Prismarine Bud, then Prismari
 
 Wait for the Prismarine Cluster. Breaking one drops two <ItemLink id="prismarine_crystal_shard"/>s, more with Fortune, and a new bud starts in its place later.
 
-Buds broken early drop nothing unless you use Silk Touch, which picks up the bud or cluster itself. Leave the Budding Prismarine block where it is and harvest only what grows on it.
+Buds broken early drop nothing unless you use Silk Touch, which picks up the bud or cluster itself. Harvest only what grows on the Budding Prismarine block.
+
+To move the block itself, mine it with a Silk Touch pickaxe. Mined with any other pickaxe it breaks into 4 to 6 Prismarine Crystal Shards and stops growing anything.

@@ -19,7 +19,7 @@ item_ids:
 
 A <ItemLink id="prismarine_laser_relay"/> passes a beam on in a straight line. The three optics on this page change where the beam goes, and each one changes its purity on the way through. Recipes check purity before they run, so plan your route around the purity the machine at the end needs.
 
-Each optic sends its beam up to 16 blocks, the same as any other laser (`laserDistance` in `nautec-common.toml`). All three can be placed under water.
+Each optic sends its beam up to 16 blocks, the same as any other laser (`laserDistance` in `config/nautec-common.toml`). All three can be placed under water.
 
 ***
 
@@ -78,8 +78,8 @@ Only sides with a laser block in range count as outputs. The power is divided ev
   ### <Color id="aqua">Focusing Lens</Color>
 </Row>
 
-Raises the purity of a beam that passes straight through it by 0.5 (`lensPurityBonus`). Place it while looking the way the beam travels: the face toward you takes the beam in, the far face sends it on. Power passes through unchanged.
+Raises the purity of a beam that passes straight through it by 0.5 (`lensPurityBonus`), up to a limit of 2.0. Place it while looking the way the beam travels: the face toward you takes the beam in, the far face sends it on. Power passes through unchanged.
 
-The lens only adds purity to a beam that already has some, so put it after a working source. Lenses in a row each add their 0.5. Use one after a mirror or splitter to win back what the turn cost, or after a Bacterial Fuel Cell at 2.5 to reach the 3.0 a Resonance Chamber needs.
+The lens only adds purity to a beam that already has some, so put it after a working source. A beam at 1.8 comes out at 2.0, and a beam already at 2.0 or higher passes through unchanged, so a row of lenses tops out at 2.0. Use one after a mirror or splitter to win back what the turn cost, or run two in a row to lift a Prismarine Crystal Shard catalyst (1.2) to the 2.0 the Pressure Forge needs for Flawless Prismarine Crystals. For 2.5 and 3.0, use a Bacterial Fuel Cell or a Prismarine Crystal as the source.
 
 <Recipe id="nautec:focusing_lens"/>

@@ -38,4 +38,4 @@ A shattered crystal is gone for good. If a crystal is powering a purity build, h
 
 ## <Color id="gold">From Prismarine Crystals</Color>
 
-Drop <ItemLink id="minecraft:prismarine_crystals"/> into a laser beam of purity 2.0 or higher and each one becomes a shard after 8 seconds. A catalyst's own beam tops out at 1.2, so fire it into a Prismarine Crystal and use the beam that comes out. See [Item Transformation](nautec:getting_started/item_transformation.md).
+Drop <ItemLink id="minecraft:prismarine_crystals"/> into a laser beam of purity 2.0 or higher and each one becomes two shards after 8 seconds. A catalyst's own beam tops out at 1.2, so fire it into a Prismarine Crystal and use the beam that comes out, or pass a shard-fuelled catalyst beam through two Focusing Lenses in a row. See [Item Transformation](nautec:getting_started/item_transformation.md).

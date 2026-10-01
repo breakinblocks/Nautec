@@ -61,7 +61,7 @@ A pillar that faces the way you place it, like a log. The [Bio Reactor](nautec:a
 
 A six block tall crystal that glows as brightly as a Sea Lantern. It is purely decorative.
 
-It builds upward from the block you place it in and fills the five blocks above, so clear that space first. To pick it back up, break its bottom block: that drops the crystal and removes the rest with it.
+It builds upward from the block you place it in and fills the five blocks above, so it only places where all six blocks are clear. Break any part of it to pick it up: the whole crystal comes down and drops as one item.
 
 <Recipe id="nautec:decorative_prismarine_crystal"/>
 

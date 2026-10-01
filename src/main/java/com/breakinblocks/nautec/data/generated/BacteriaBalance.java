@@ -1,10 +1,13 @@
 package com.breakinblocks.nautec.data.generated;
 
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.api.bacteria.BacteriaSelector;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteria;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
+import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.utils.ranges.FloatRange;
 import com.breakinblocks.nautec.utils.ranges.IntRange;
@@ -22,20 +25,22 @@ import java.util.Locale;
 import java.util.Optional;
 
 public final class BacteriaBalance {
+    public static final int DEFAULT_FEEDING_TICKS = 1200;
+
     private BacteriaBalance() {
     }
 
     public enum Rarity {
         COMMON(LongRange.of(350, 600), FloatRange.of(0.40f, 0.70f), FloatRange.of(0.60f, 1.20f),
-                FloatRange.of(0.00f, 0.05f), IntRange.of(1300, 2500), IntRange.of(10, 30), 0.05f, 10f, NTBacterias.LITHOPHILES),
+                FloatRange.of(0.00f, 0.05f), IntRange.of(1300, 2500), IntRange.of(10, 30), 0.05f, 10f, NTBacterias.LITHOPHILES, 1.0f),
         UNCOMMON(LongRange.of(300, 500), FloatRange.of(0.20f, 0.55f), FloatRange.of(0.50f, 1.10f),
-                FloatRange.of(0.00f, 0.08f), IntRange.of(1100, 2300), IntRange.of(10, 30), 0.07f, 10f, NTBacterias.METALLOPHILES),
+                FloatRange.of(0.00f, 0.08f), IntRange.of(1100, 2300), IntRange.of(10, 30), 0.07f, 10f, NTBacterias.METALLOPHILES, 0.8f),
         RARE(LongRange.of(225, 425), FloatRange.of(0.15f, 0.50f), FloatRange.of(0.45f, 1.00f),
-                FloatRange.of(0.00f, 0.10f), IntRange.of(1000, 2100), IntRange.of(8, 25), 0.10f, 5f, NTBacterias.FERROPHILES),
+                FloatRange.of(0.00f, 0.10f), IntRange.of(1000, 2100), IntRange.of(8, 25), 0.10f, 5f, NTBacterias.FERROPHILES, 0.6f),
         EPIC(LongRange.of(150, 275), FloatRange.of(0.10f, 0.40f), FloatRange.of(0.50f, 1.10f),
-                FloatRange.of(0.00f, 0.12f), IntRange.of(1100, 2300), IntRange.of(8, 25), 0.10f, 5f, NTBacterias.AURROPHILES),
+                FloatRange.of(0.00f, 0.12f), IntRange.of(1100, 2300), IntRange.of(8, 25), 0.10f, 5f, NTBacterias.AURROPHILES, 0.4f),
         LEGENDARY(LongRange.of(125, 150), FloatRange.of(0.08f, 0.12f), FloatRange.of(0.40f, 0.90f),
-                FloatRange.of(0.00f, 0.15f), IntRange.of(1000, 2000), IntRange.of(5, 15), 0.12f, 3f, NTBacterias.ADAMANTOPHILES);
+                FloatRange.of(0.00f, 0.15f), IntRange.of(1000, 2000), IntRange.of(5, 15), 0.12f, 3f, NTBacterias.ADAMANTOPHILES, 0.12f);
 
         private final LongRange initialSize;
         private final FloatRange productionRate;
@@ -46,10 +51,11 @@ public final class BacteriaBalance {
         private final float consumeChance;
         private final float mutationChance;
         private final ResourceKey<Bacteria> mutationParent;
+        private final float productionMultiplier;
 
         Rarity(LongRange initialSize, FloatRange productionRate, FloatRange growthRate, FloatRange mutationResistance,
                IntRange lifespan, IntRange incubationGrowth, float consumeChance, float mutationChance,
-               ResourceKey<Bacteria> mutationParent) {
+               ResourceKey<Bacteria> mutationParent, float productionMultiplier) {
             this.initialSize = initialSize;
             this.productionRate = productionRate;
             this.growthRate = growthRate;
@@ -59,6 +65,11 @@ public final class BacteriaBalance {
             this.consumeChance = consumeChance;
             this.mutationChance = mutationChance;
             this.mutationParent = mutationParent;
+            this.productionMultiplier = productionMultiplier;
+        }
+
+        public float productionMultiplier() {
+            return productionMultiplier;
         }
 
         public LongRange initialSize() {
@@ -138,11 +149,16 @@ public final class BacteriaBalance {
                 .mutationResistance(rarity.mutationResistance())
                 .lifespan(rarity.lifespan())
                 .color(colorFor(id))
+                .productionMultiplier(rarity.productionMultiplier())
                 .build();
     }
 
     public static BacteriaIncubationRecipe incubationRecipe(ResourceKey<Bacteria> bacteria, Ingredient nutrient, Rarity rarity) {
         return new BacteriaIncubationRecipe(bacteria, nutrient, rarity.incubationGrowth(), rarity.consumeChance());
+    }
+
+    public static ColonyFeedingRecipe feedingRecipe(ResourceKey<Bacteria> bacteria, Ingredient nutrient) {
+        return new ColonyFeedingRecipe(Optional.of(BacteriaSelector.of(bacteria)), new IngredientWithCount(nutrient, 1), DEFAULT_FEEDING_TICKS);
     }
 
     public static BacteriaMutationRecipe mutationRecipe(ResourceKey<Bacteria> bacteria, Ingredient catalyst, Rarity rarity) {

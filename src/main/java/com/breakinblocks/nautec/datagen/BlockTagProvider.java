@@ -58,9 +58,18 @@ public class BlockTagProvider extends BlockTagsProvider {
                 BACTERIAL_FUEL_CELL,
                 BIO_REACTOR,
                 BIO_REACTOR_PART,
+                INDUSTRIAL_BIO_REACTOR,
+                INDUSTRIAL_BIO_REACTOR_PART,
                 MUTATOR,
                 INCUBATOR,
-                FISHING_STATION);
+                FISHING_STATION,
+                BUDDING_PRISMARINE,
+                CAST_IRON_BLOCK,
+                ANCHOR,
+                OIL_BARREL,
+                CREATIVE_POWER_SOURCE,
+                CREATIVE_ENERGY_SOURCE,
+                ENERGY_CONVERTER);
     }
 
     private void tag(TagKey<Block> blockTagKey, Block... blocks) {

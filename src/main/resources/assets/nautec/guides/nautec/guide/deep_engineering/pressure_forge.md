@@ -29,7 +29,7 @@ All of these have to be true at the same time. If any one of them stops being tr
 * Purity: the beam must meet the recipe's purity.
 * Etching Acid: at least 250 mb in the tank. Each finished press uses 250 mb (`pressureForgeAcidUsage`). The tank holds 4,000 mb (`pressureForgeCapacity`).
 
-All of these values are in `nautec-common.toml`.
+All of these values are in `config/nautec-common.toml`.
 
 ***
 

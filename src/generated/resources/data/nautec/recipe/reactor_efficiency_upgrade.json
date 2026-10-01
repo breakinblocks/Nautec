@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquatic_chip",
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    " D ",
+    "RAF",
+    " D "
+  ],
+  "result": {
+    "id": "nautec:reactor_efficiency_upgrade"
+  }
+}

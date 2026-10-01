@@ -36,10 +36,12 @@ import com.breakinblocks.nautec.content.blocks.flora.DeepKelpPlantBlock;
 import com.breakinblocks.nautec.content.blocks.flora.UnderwaterPlantBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.AugmentationStationBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.BioReactorBlock;
+import com.breakinblocks.nautec.content.blocks.multiblock.controller.IndustrialBioReactorBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.DrainBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.AugmentationStationExtensionBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.AugmentationStationPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.BioReactorPartBlock;
+import com.breakinblocks.nautec.content.blocks.multiblock.part.IndustrialBioReactorPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
@@ -138,6 +140,10 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<BioReactorPartBlock> BIO_REACTOR_PART = BLOCKS.registerBlock("bio_reactor_part", BioReactorPartBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<IndustrialBioReactorBlock> INDUSTRIAL_BIO_REACTOR = bacteriaBlock(registerBlockAndItem("industrial_bio_reactor", IndustrialBioReactorBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredBlock<IndustrialBioReactorPartBlock> INDUSTRIAL_BIO_REACTOR_PART = BLOCKS.registerBlock("industrial_bio_reactor_part", IndustrialBioReactorPartBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
     public static final DeferredBlock<BacterialFuelCellBlock> BACTERIAL_FUEL_CELL = bacteriaBlock(registerBlockAndItem("bacterial_fuel_cell", BacterialFuelCellBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
     public static final DeferredBlock<BacterialAnalyzerBlock> BACTERIAL_ANALYZER = bacteriaBlock(registerBlockAndItem("bacterial_analyzer", BacterialAnalyzerBlock::new,
@@ -168,9 +174,9 @@ public final class NTBlocks {
     public static final DeferredBlock<CreativePowerSourceBlock> CREATIVE_POWER_SOURCE = registerBlockAndItem("creative_power_source", CreativePowerSourceBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), false, true);
     public static final DeferredBlock<CreativeEnergySourceBlock> CREATIVE_ENERGY_SOURCE = registerBlockAndItem("creative_energy_source", CreativeEnergySourceBlock::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), false, true);
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), true, true);
     public static final DeferredBlock<EnergyConverterBlock> ENERGY_CONVERTER = registerBlockAndItem("energy_converter", EnergyConverterBlock::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), false, true);
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), true, true);
 
     public static final DeferredBlock<BuddingPrismarineBlock> BUDDING_PRISMARINE = registerBlockAndItem("budding_prismarine", BuddingPrismarineBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).randomTicks().strength(1.5f).requiresCorrectToolForDrops());

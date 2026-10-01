@@ -15,7 +15,7 @@ item_ids:
   Passive charging from daylight.
 </Column>
 
-The Solar Module adds 10,000 power (1% of the cell) to the hull every 5 seconds while the sun is up and the hull can see the sky.
+The Solar Module adds 2,000 power (0.2% of the cell, about 20 per tick) to the hull every 5 seconds while the sun is up and the hull can see the sky.
 
 ***
 
@@ -23,7 +23,7 @@ The Solar Module adds 10,000 power (1% of the cell) to the hull every 5 seconds 
 
 It is passive and works from any slot. It sees the sky through water, so the hull can stay submerged, but any solid block between the hull and the sky stops it. It only works during the day, and not in dimensions without a day cycle such as the Nether and the End.
 
-It keeps charging with nobody aboard. A hull parked in open water through a day fills from empty in about 8 minutes of sunlight, which is faster than a [Sea Scout Dock](submarine_dock.md).
+It keeps charging with nobody aboard. A hull parked in open water fills from empty in about 42 minutes of sunlight. A [Sea Scout Dock](submarine_dock.md) is twice as fast.
 
 One module is all you need, since a second one adds nothing. The rate is configurable (`submarineSolarPercentPer5s`).
 

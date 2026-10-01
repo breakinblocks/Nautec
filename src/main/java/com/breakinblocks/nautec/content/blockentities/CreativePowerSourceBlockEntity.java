@@ -39,4 +39,9 @@ public class CreativePowerSourceBlockEntity extends LaserBlockEntity {
         super.commonTick();
         transmitPower(100);
     }
+
+    @Override
+    protected int outgoingPower(Direction direction) {
+        return getPowerToTransfer() / Math.max(1, connectedOutputs());
+    }
 }

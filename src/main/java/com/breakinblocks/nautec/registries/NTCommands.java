@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.content.commands.GetAugmentCooldownCommand;
 import com.breakinblocks.nautec.content.commands.RemoveAugmentCommand;
 import com.breakinblocks.nautec.content.commands.SetAugmentCommand;
 import com.breakinblocks.nautec.content.commands.SetAugmentCooldownCommand;
+import com.breakinblocks.nautec.content.commands.ShowcaseCommand;
 import net.minecraft.commands.CommandSourceStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,6 +28,7 @@ public final class NTCommands {
         GetAugmentCooldownCommand.register(dispatcher);
         SetAugmentCooldownCommand.register(dispatcher);
         BacteriaGenerateCommand.register(dispatcher, event.getBuildContext());
+        ShowcaseCommand.register(dispatcher);
         ConfigCommand.register(dispatcher);
     }
 }

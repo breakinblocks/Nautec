@@ -357,6 +357,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.1F))
                 .color(ARGB.color(210, 180, 140)));
         register(context, CARBOPHAGES, SimpleBacteria.of()
+                .productionMultiplier(0.8F)
                 .initialSize(LongRange.of(300, 500))
                 .resource(Items.COAL)
                 .productionRate(FloatRange.of(0.20F, 0.7F))
@@ -365,6 +366,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(45, 45, 45)));
         register(context, METALLOPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.8F)
                 .initialSize(LongRange.of(280, 480))
                 .resource(Items.COPPER_INGOT)
                 .productionRate(FloatRange.of(0.2F, 0.65F))
@@ -373,6 +375,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.1F))
                 .color(ARGB.color(184, 115, 51)));
         register(context, ACIDOPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.5F)
                 .initialSize(LongRange.of(250, 450))
                 .resource(Items.REDSTONE)
                 .productionRate(FloatRange.of(0.2F, 0.6F))
@@ -381,6 +384,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.2F))
                 .color(ARGB.color(255, 0, 128)));
         register(context, AZURITOPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.5F)
                 .initialSize(LongRange.of(250, 450))
                 .resource(Items.LAPIS_LAZULI)
                 .productionRate(FloatRange.of(0.2F, 0.6F))
@@ -389,6 +393,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(0, 0, 255)));
         register(context, FERROPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.6F)
                 .initialSize(LongRange.of(225, 425))
                 .resource(Items.IRON_INGOT)
                 .productionRate(FloatRange.of(0.18F, 0.58F))
@@ -397,6 +402,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.1F))
                 .color(ARGB.color(184, 115, 51)));
         register(context, AURROPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.4F)
                 .initialSize(LongRange.of(200, 400))
                 .resource(Items.GOLD_INGOT)
                 .productionRate(FloatRange.of(0.15F, 0.5F))
@@ -405,6 +411,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.1F))
                 .color(ARGB.color(184, 115, 51)));
         register(context, ADAMANTOPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.12F)
                 .initialSize(LongRange.of(150, 275))
                 .resource(Items.DIAMOND)
                 .productionRate(FloatRange.of(0.1F, 0.4F))
@@ -413,6 +420,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(0, 255, 255)));
         register(context, SMARAGDOPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.1F)
                 .initialSize(LongRange.of(125, 225))
                 .resource(Items.EMERALD)
                 .productionRate(FloatRange.of(0.1F, 0.4F))
@@ -430,6 +438,7 @@ public final class NTBacterias {
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(178, 67, 32)));
         register(context, SULFUROPHILES, SimpleBacteria.of()
+                .productionMultiplier(0.8F)
                 .initialSize(LongRange.of(250, 530))
                 .resource(Items.GUNPOWDER)
                 .productionRate(FloatRange.of(0.14F, 0.54F))

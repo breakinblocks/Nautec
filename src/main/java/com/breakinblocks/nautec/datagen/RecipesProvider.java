@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AquaticCatalystChannelingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AugmentationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.ColonyFeedingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.IncubationRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.ItemEtchingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.ItemTransformationRecipeBuilder;
@@ -96,6 +97,8 @@ public class RecipesProvider extends RecipeProvider {
         mutationRecipes(pRecipeOutput);
 
         incubationRecipes(pRecipeOutput);
+
+        bioReactorRecipes(pRecipeOutput);
 
         shaped(RecipeCategory.MISC, NTItems.GLASS_VIAL.asItem(), 3)
                 .pattern("G G")
@@ -335,6 +338,9 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("aquarine_steel_ingot"));
 
         nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.AQUARINE_STEEL_INGOT.get(), RecipeCategory.BUILDING_BLOCKS, NTBlocks.AQUARINE_STEEL_BLOCK.get());
+
+        nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_NUGGET, RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_INGOT,
+                Nautec.MODID + ":atlantic_gold_ingot_from_nuggets", null, Nautec.MODID + ":atlantic_gold_nuggets_from_ingot", null);
     }
 
     private void augmentationStationRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -512,6 +518,17 @@ public class RecipesProvider extends RecipeProvider {
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
                 .save(pRecipeOutput, key("bio_reactor"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.ENERGY_CONVERTER.asItem())
+                .pattern("PRP")
+                .pattern("ACA")
+                .pattern("PRP")
+                .define('P', NTBlocks.POLISHED_PRISMARINE)
+                .define('R', Items.REDSTONE)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('C', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
+                .save(pRecipeOutput, key("energy_converter"));
     }
 
     private void ancientItemsRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -796,6 +813,15 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.CAST_IRON_INGOT.asItem())
                 .unlockedBy("has_item", has(Items.DEEPSLATE))
                 .save(pRecipeOutput, key("cast_iron_rod"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.OIL_BARREL.asItem())
+                .pattern("CRC")
+                .pattern("C C")
+                .pattern("CRC")
+                .define('C', NTItems.CAST_IRON_INGOT)
+                .define('R', NTItems.CAST_IRON_ROD)
+                .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
+                .save(pRecipeOutput, key("oil_barrel"));
     }
 
     private void buildingBlockRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -1108,7 +1134,10 @@ public class RecipesProvider extends RecipeProvider {
 
         AugmentationRecipeBuilder.newRecipe(NTAugments.VENT_CARAPACE.get())
                 .augmentItem(NTItems.CHITIN_PLATE.get(), "Armour plating that shrugs off knockback and burns out fast")
-                .ingredients(IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get(), 4))
+                .ingredients(IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()),
+                        IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()),
+                        IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()),
+                        IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()))
                 .save(pRecipeOutput, key("vent_carapace"));
     }
 
@@ -1232,6 +1261,12 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL))
                 .save(pRecipeOutput, key("syringe_robot_arm"));
 
+        shapeless(RecipeCategory.MISC, NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.get(), 3)
+                .requires(NTFluids.EAS.getBucket())
+                .requires(NTItems.GLASS_VIAL.get(), 3)
+                .unlockedBy("has_item", has(NTFluids.EAS.getBucket()))
+                .save(pRecipeOutput, key("eas_vial"));
+
         shaped(RecipeCategory.MISC, NTItems.BUOYANCY_TANK.get())
                 .pattern("PBP")
                 .pattern("BHB")
@@ -1347,89 +1382,98 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void incubationRecipes(RecipeOutput output) {
-        new IncubationRecipeBuilder(NTBacterias.LIGNOCYTES, Ingredient.of(Items.OAK_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.DARK_LIGNOCYTES, Ingredient.of(Items.DARK_OAK_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.ACACIOPHYLES, Ingredient.of(Items.ACACIA_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.JUNGLOPHILES, Ingredient.of(Items.JUNGLE_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BOREOPHILES, Ingredient.of(Items.SPRUCE_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BETULOPHILES, Ingredient.of(Items.BIRCH_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CRIMSON_LIGNOCYTES, Ingredient.of(Items.CRIMSON_STEM), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.WARPED_LIGNOCYTES, Ingredient.of(Items.WARPED_STEM), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.RHIZOPHORA_LIGNOCYTES, Ingredient.of(Items.MANGROVE_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), IntRange.of(10, 30), 0.07f)
-                .save(output);
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.LIGNOCYTES, Ingredient.of(Items.OAK_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.DARK_LIGNOCYTES, Ingredient.of(Items.DARK_OAK_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.ACACIOPHYLES, Ingredient.of(Items.ACACIA_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.JUNGLOPHILES, Ingredient.of(Items.JUNGLE_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BOREOPHILES, Ingredient.of(Items.SPRUCE_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BETULOPHILES, Ingredient.of(Items.BIRCH_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CRIMSON_LIGNOCYTES, Ingredient.of(Items.CRIMSON_STEM), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.WARPED_LIGNOCYTES, Ingredient.of(Items.WARPED_STEM), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.RHIZOPHORA_LIGNOCYTES, Ingredient.of(Items.MANGROVE_LOG), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), IntRange.of(10, 30), 0.07f));
 
-        new IncubationRecipeBuilder(NTBacterias.SILICOPHILES, Ingredient.of(Items.SAND), IntRange.of(8, 25), 0.05f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), IntRange.of(8, 25), 0.05f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.METALLOPHILES, tag(Tags.Items.ORES_COPPER), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.FERROPHILES, tag(Tags.Items.ORES_IRON), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.AURROPHILES, tag(Tags.Items.ORES_GOLD), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.ACIDOPHILES, tag(Tags.Items.ORES_REDSTONE), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.ADAMANTOPHILES, tag(Tags.Items.ORES_DIAMOND), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.SMARAGDOPHILES, tag(Tags.Items.ORES_EMERALD), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.AZURITOPHILES, tag(Tags.Items.ORES_LAPIS), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CARBOPHAGES, tag(Tags.Items.ORES_COAL), IntRange.of(8, 25), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_BLOCK), IntRange.of(8, 25), 0.1f)
-                .save(output);
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.SILICOPHILES, Ingredient.of(Items.SAND), IntRange.of(8, 25), 0.05f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), IntRange.of(8, 25), 0.05f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.METALLOPHILES, tag(Tags.Items.ORES_COPPER), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.FERROPHILES, tag(Tags.Items.ORES_IRON), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.AURROPHILES, tag(Tags.Items.ORES_GOLD), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.ACIDOPHILES, tag(Tags.Items.ORES_REDSTONE), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.ADAMANTOPHILES, tag(Tags.Items.ORES_DIAMOND), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.SMARAGDOPHILES, tag(Tags.Items.ORES_EMERALD), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.AZURITOPHILES, tag(Tags.Items.ORES_LAPIS), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CARBOPHAGES, tag(Tags.Items.ORES_COAL), IntRange.of(8, 25), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_BLOCK), IntRange.of(8, 25), 0.1f));
 
-        new IncubationRecipeBuilder(NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.BROWN_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.HALOTROPHS, Ingredient.of(Items.SAND), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BRYOPHYTOPHILES, Ingredient.of(Items.MOSS_BLOCK), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.ALGAEFORMERS, Ingredient.of(Items.KELP), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.SOLANOPHILES, Ingredient.of(Items.POTATO), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BAMBOOPHAGES, Ingredient.of(Items.BAMBOO), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CACTOPHYLES, Ingredient.of(Items.CACTUS), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CAROTOPHYLES, Ingredient.of(Items.CARROT), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CUCURBITOPHILES, Ingredient.of(Items.PUMPKIN), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.BETA_PHYLOBACTERIA, Ingredient.of(Items.BEETROOT), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.MELOPHAGES, Ingredient.of(Items.MELON_SLICE), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_NYLIUM), IntRange.of(10, 30), 0.07f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_NYLIUM), IntRange.of(10, 30), 0.07f)
-                .save(output);
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.BROWN_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.HALOTROPHS, Ingredient.of(Items.SAND), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BRYOPHYTOPHILES, Ingredient.of(Items.MOSS_BLOCK), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.ALGAEFORMERS, Ingredient.of(Items.KELP), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.SOLANOPHILES, Ingredient.of(Items.POTATO), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BAMBOOPHAGES, Ingredient.of(Items.BAMBOO), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CACTOPHYLES, Ingredient.of(Items.CACTUS), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CAROTOPHYLES, Ingredient.of(Items.CARROT), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CUCURBITOPHILES, Ingredient.of(Items.PUMPKIN), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.BETA_PHYLOBACTERIA, Ingredient.of(Items.BEETROOT), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.COCOAPHILES, Ingredient.of(Items.COCOA_BEANS), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.MELOPHAGES, Ingredient.of(Items.MELON_SLICE), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_NYLIUM), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_NYLIUM), IntRange.of(10, 30), 0.07f));
 
-        new IncubationRecipeBuilder(NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), IntRange.of(5, 15), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CRYOBIONTS, Ingredient.of(Items.PACKED_ICE), IntRange.of(5, 15), 0.1f)
-                .save(output);
-        new IncubationRecipeBuilder(NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), IntRange.of(5, 15), 0.1f)
-                .save(output);
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), IntRange.of(5, 15), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CRYOBIONTS, Ingredient.of(Items.PACKED_ICE), IntRange.of(5, 15), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), IntRange.of(5, 15), 0.1f));
+    }
+
+    private void incubation(RecipeOutput output, IncubationRecipeBuilder incubation) {
+        incubation.save(output);
+        new ColonyFeedingRecipeBuilder(incubation.bacteria(), incubation.nutrient()).save(output);
+    }
+
+    private void bioReactorRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.MISC, NTItems.REACTOR_SPEED_UPGRADE.get())
+                .pattern(" R ")
+                .pattern("DAD")
+                .pattern(" R ")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("reactor_speed_upgrade"));
+
+        shaped(RecipeCategory.MISC, NTItems.REACTOR_YIELD_UPGRADE.get())
+                .pattern(" F ")
+                .pattern("DAD")
+                .pattern(" F ")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("reactor_yield_upgrade"));
+
+        shaped(RecipeCategory.MISC, NTItems.REACTOR_EFFICIENCY_UPGRADE.get())
+                .pattern(" D ")
+                .pattern("RAF")
+                .pattern(" D ")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
+                .save(pRecipeOutput, key("reactor_efficiency_upgrade"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.INDUSTRIAL_BIO_REACTOR.asItem())
+                .pattern("DRD")
+                .pattern("RBR")
+                .pattern("DRD")
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('B', NTBlocks.BIO_REACTOR)
+                .unlockedBy("has_item", has(NTBlocks.BIO_REACTOR))
+                .save(pRecipeOutput, key("industrial_bio_reactor"));
     }
 
     private static @NotNull IngredientWithCount iwcFromItemLike(Item item, int count) {

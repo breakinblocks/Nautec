@@ -155,36 +155,29 @@ public class BacteriaMaterialProvider implements DataProvider {
                         BacteriaBalance.incubationRecipe(key, PLACEHOLDER, entry.rarity()), provider);
                 JsonElement mutation = BacteriaJsonWriter.encodeRecipe(
                         BacteriaBalance.mutationRecipe(key, PLACEHOLDER, entry.rarity()), provider);
+                JsonElement feeding = BacteriaJsonWriter.encodeRecipe(
+                        BacteriaBalance.feedingRecipe(key, PLACEHOLDER), provider);
 
                 incubation.getAsJsonObject().addProperty("nutrient", resource.asString());
                 mutation.getAsJsonObject().addProperty("catalyst", resource.asString());
+                feeding.getAsJsonObject().getAsJsonObject("ingredient").addProperty("ingredient", resource.asString());
 
-                futures.add(save(cache, bacteria.json(id), bacteriaJson, entry));
-                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_incubation/" + entry.name())), incubation, entry));
-                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_mutation/" + entry.name())), mutation, entry));
+                String materialTag = resource.asString().substring(1);
+                futures.add(save(cache, bacteria.json(id), bacteriaJson, entry, materialTag));
+                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_incubation/" + entry.name())), incubation, entry, materialTag));
+                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_mutation/" + entry.name())), mutation, entry, materialTag));
+                futures.add(save(cache, recipes.json(Nautec.rl("colony_feeding/" + entry.name())), feeding, entry, materialTag));
             }
 
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
         });
     }
 
-    private static CompletableFuture<?> save(CachedOutput cache, Path path, JsonElement json, Entry entry) {
+    private static CompletableFuture<?> save(CachedOutput cache, Path path, JsonElement json, Entry entry, String materialTag) {
         JsonObject object = json.getAsJsonObject();
-        object.add("neoforge:conditions", conditions(entry, materialTag(object)));
+        boolean recipe = object.has("nutrient") || object.has("catalyst") || object.has("vitality_ticks");
+        object.add("neoforge:conditions", conditions(entry, recipe ? materialTag : null));
         return DataProvider.saveStable(cache, object, path);
-    }
-
-    private static String materialTag(JsonObject recipe) {
-        for (String key : new String[]{"nutrient", "catalyst"}) {
-            JsonElement element = recipe.get(key);
-            if (element != null && element.isJsonPrimitive()) {
-                String value = element.getAsString();
-                if (value.startsWith("#")) {
-                    return value.substring(1);
-                }
-            }
-        }
-        return null;
     }
 
     private static JsonArray conditions(Entry entry, String materialTag) {

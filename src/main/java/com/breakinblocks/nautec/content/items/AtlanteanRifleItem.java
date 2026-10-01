@@ -23,6 +23,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -61,6 +62,11 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
         super(properties.stacksTo(1).enchantable(BOW_ENCHANTABILITY)
                 .component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(NTConfig.riflePowerCapacity))
                 .component(DataComponents.USE_EFFECTS, new UseEffects(true, UseEffects.DEFAULT.interactVibrations(), 1.0F)));
+    }
+
+    @Override
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+        return (enchantment.is(Enchantments.INFINITY) || enchantment.is(EnchantmentTags.CURSE)) && super.supportsEnchantment(stack, enchantment);
     }
 
     @Override

@@ -2,7 +2,7 @@
 navigation:
   title: Bacterial Fuel Cell
   icon: nautec:bacterial_fuel_cell
-  position: 7
+  position: 11
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:bacterial_fuel_cell

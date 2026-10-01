@@ -38,7 +38,11 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     private final NumberFormat nf = NumberFormat.getIntegerInstance();
 
     public NTMachineScreen(NTMachineMenu<T> menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, 176, 174);
+        this(menu, playerInventory, title, 176, 174);
+    }
+
+    public NTMachineScreen(NTMachineMenu<T> menu, Inventory playerInventory, Component title, int imageWidth, int imageHeight) {
+        super(menu, playerInventory, title, imageWidth, imageHeight);
 
         this.titleLabelY = 4;
     }

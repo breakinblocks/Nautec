@@ -40,7 +40,7 @@ The first thing a thrown trident hits, a creature or a block, releases a tidal s
 * It does not hit you, your tamed pets, your teammates, or players in creative or spectator mode.
 * After a shockwave, the trident needs 3 seconds before it can release another. You can keep throwing it during that time; those throws just hit without a shockwave. The trident's inventory slot shows the time left.
 
-Radius, damage, the per-level bonuses and the cooldown are in `nautec-common.toml` (`tridentShockwaveRadius`, `tridentShockwaveDamage`, `tridentShockwaveDamagePerSharpness`, `tridentShockwaveKnockback`, `tridentShockwaveKnockbackPerLevel`, `tridentShockwaveCooldown`).
+Radius, damage, the per-level bonuses and the cooldown are in `config/nautec-common.toml` (`tridentShockwaveRadius`, `tridentShockwaveDamage`, `tridentShockwaveDamagePerSharpness`, `tridentShockwaveKnockback`, `tridentShockwaveKnockbackPerLevel`, `tridentShockwaveCooldown`).
 
 ***
 

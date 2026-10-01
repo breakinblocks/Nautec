@@ -17,7 +17,7 @@ item_ids:
 
 Hold the Grafting Tool in your main hand and an empty <ItemLink id="petri_dish"/> in your off hand, then right-click a graftable block in the biome it needs. Each try costs one point of durability and has a chance to put a new colony in the dish. Keep clicking until one takes.
 
-<Color id="gold">Tip</Color>: a successful graft replaces whatever colony was already in the off-hand dish, so always graft into an empty one.
+<Color id="gold">Tip</Color>: graft into an empty dish. If the off-hand dish already holds a colony, the tool shows "This Petri Dish already holds a colony" and does nothing, with no durability used.
 
 ***
 

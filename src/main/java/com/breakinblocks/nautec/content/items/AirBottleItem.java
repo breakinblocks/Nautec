@@ -21,6 +21,9 @@ import net.minecraft.world.level.Level;
 import java.util.function.Consumer;
 
 public class AirBottleItem extends Item {
+    public static final int TANK_SECONDS = 600;
+    public static final int SECONDS_PER_BOTTLE = TANK_SECONDS / 5;
+
     public AirBottleItem(Properties properties) {
         super(properties
                 .food(new FoodProperties.Builder().alwaysEdible().build(), Consumables.HONEY_BOTTLE)
@@ -31,16 +34,22 @@ public class AirBottleItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (!level.isClientSide()) {
             entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 200, 0));
-            stack.shrink(1);
             if (entity instanceof Player player) {
                 player.addItem(new ItemStack(Items.GLASS_BOTTLE));
-                int currentLevel = NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST));
-                if (player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof DivingSuitArmorItem && currentLevel < 100) {
-                    NTDataComponentsUtils.setOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST), currentLevel + 20);
-                }
+                refillTank(player.getItemBySlot(EquipmentSlot.CHEST));
             }
         }
         return super.finishUsingItem(stack, level, entity);
+    }
+
+    public static void refillTank(ItemStack chestplate) {
+        if (!(chestplate.getItem() instanceof DivingSuitArmorItem)) {
+            return;
+        }
+        int currentLevel = NTDataComponentsUtils.getOxygenLevels(chestplate);
+        if (currentLevel < TANK_SECONDS) {
+            NTDataComponentsUtils.setOxygenLevels(chestplate, Math.min(TANK_SECONDS, currentLevel + SECONDS_PER_BOTTLE));
+        }
     }
 
     @Override

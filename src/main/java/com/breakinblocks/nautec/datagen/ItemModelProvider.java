@@ -74,6 +74,9 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.RESONANT_SHARD.get());
         basicItem(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get());
         basicItem(NTItems.DEEP_STEEL_PLATING.get());
+        basicItem(NTItems.REACTOR_SPEED_UPGRADE.get());
+        basicItem(NTItems.REACTOR_YIELD_UPGRADE.get());
+        basicItem(NTItems.REACTOR_EFFICIENCY_UPGRADE.get());
         basicItem(NTItems.PRISMARINE_LENS.get());
         basicItem(NTItems.AQUARINE_STEEL_COMPOUND.get());
         basicItem(NTItems.CAST_IRON_COMPOUND.get());

@@ -66,7 +66,7 @@ Breaking one log fells every log connected to it, at 2 AP a log, until the tree 
   ### <Color id="aqua">Shovel</Color>
 </Row>
 
-Digs a 3x3 square of dirt, sand, gravel and anything else a shovel mines, on the face you break.
+Each block it mines costs 1 AP. With the ability on it digs a 3x3 square of dirt, sand, gravel and anything else a shovel mines, on the face you break, at 2 AP for each extra block. It skips blocks that hold a block entity.
 
 <RecipeFor id="aquarine_steel_shovel"/>
 

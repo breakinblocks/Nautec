@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,12 +64,21 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
             builder.addSlot(RecipeIngredientRole.INPUT, 88, 0)
                     .add(recipe.fluidIngredient().getFluid(), recipe.fluidIngredient().getAmount())
                     .setFluidRenderer(recipe.fluidIngredient().getAmount(), true, 16, 16);
+            addBucket(builder, RecipeIngredientRole.INPUT, recipe.fluidIngredient().getFluid());
         }
 
         if (recipe.fluidResult().getFluid() != Fluids.EMPTY) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 48)
                     .add(recipe.fluidResult().getFluid(), recipe.fluidResult().getAmount())
                     .setFluidRenderer(recipe.fluidResult().getAmount(), true, 16, 16);
+            addBucket(builder, RecipeIngredientRole.OUTPUT, recipe.fluidResult().getFluid());
+        }
+    }
+
+    private static void addBucket(IRecipeLayoutBuilder builder, RecipeIngredientRole role, Fluid fluid) {
+        ItemStack bucket = new ItemStack(fluid.getBucket());
+        if (!bucket.isEmpty()) {
+            builder.addInvisibleIngredients(role).add(bucket);
         }
     }
 

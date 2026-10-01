@@ -236,6 +236,9 @@ public class EnUsProvider extends LanguageProvider {
         addItem(GEAR, "Gear");
         addItem(ANCIENT_VALVE, "Ancient Valve");
         addItem(PETRI_DISH, "Petri Dish");
+        addItem(REACTOR_SPEED_UPGRADE, "Reactor Speed Upgrade");
+        addItem(REACTOR_YIELD_UPGRADE, "Reactor Yield Upgrade");
+        addItem(REACTOR_EFFICIENCY_UPGRADE, "Reactor Efficiency Upgrade");
 
         addItem("drowned_lungs", "Drowned Lungs");
         addItem("diving_helmet", "Diving Helmet");
@@ -274,7 +277,6 @@ public class EnUsProvider extends LanguageProvider {
         addItem(VOLLEY_TRIDENT_ARM, "Volley Trident Arm");
         addItem(BUOYANCY_TANK, "Buoyancy Tank");
         addItem(AUXILIARY_VENTRICLE, "Auxiliary Ventricle");
-        addItem("deepslate_rod", "Deepslate Rod");
         addItem("brown_polymer", "Brown Polymer");
         addItem("cast_iron_ingot", "Cast Iron Ingot");
         addItem("cast_iron_rod", "Cast Iron Rod");
@@ -338,6 +340,8 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.MUTATOR, "Mutator");
         addBlock(NTBlocks.INCUBATOR, "Incubator");
         addBlock(NTBlocks.BIO_REACTOR, "Bio Reactor");
+        addBlock(NTBlocks.INDUSTRIAL_BIO_REACTOR, "Industrial Bio Reactor");
+        addBlock(NTBlocks.INDUSTRIAL_BIO_REACTOR_PART, "Industrial Bio Reactor");
         addBlock(NTBlocks.BACTERIAL_ANALYZER, "Bacterial Analyzer");
         addBlock(NTBlocks.BACTERIAL_FUEL_CELL, "Bacterial Fuel Cell");
         addBlock(NTBlocks.FISHING_STATION, "Fishing Station");
@@ -391,6 +395,16 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bacteria.senescent", "Senescent");
         add("nautec.bacteria.percent", "%s%%");
         add("nautec.bacteria.resource", "  Resource: ");
+        add("nautec.bacteria.production_multiplier", "Strain Yield: ");
+        add("nautec.bacteria.multiplier_value", "x%s");
+        add("nautec.bio_reactor.vitality", "Nutrients: %s seconds left");
+        add("nautec.bio_reactor.starving", "No nutrients: the colony is aging");
+        add("nautec.bio_reactor.power", "Power: %s / %s AP");
+        add("nautec.bio_reactor.upgrades", "Speed x%s, %s items per cycle, %s%% nutrient use");
+        add("nautec.reactor_upgrade.speed.effect", "+%s%% production speed per upgrade");
+        add("nautec.reactor_upgrade.yield.effect", "+%s item per completed cycle per upgrade");
+        add("nautec.reactor_upgrade.efficiency.effect", "-%s%% nutrients used per upgrade (down to %s%%)");
+        add("nautec.reactor_upgrade.power", "Multiplies reactor AP draw by %s");
         add("nautec.bacteria.hint.shift", "Shift");
         add("nautec.bacteria.hint.control", "Control");
         add("nautec.bacteria.hint.and", " and ");
@@ -438,6 +452,11 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.only_in", "Only In: %s");
         add("nautec.jei.growth", "Growth: %s");
         add("nautec.jei.production", "Production: %s - %s");
+        add("nautec.jei.production_multiplier", "Strain Yield: x%s");
+        add("nautec.jei.colony_feeding.vitality", "+%s vitality ticks (%ss)");
+        add("nautec.jei.colony_feeding.any", "Any strain");
+        add("nautec.jei.colony_feeding.tag", "Strains in %s");
+        add("nautec.jei.colony_feeding.strain", "Strain %s");
         add("nautec.jei.info.prismarine_crystal_shard", "Prismarine Crystal Shards are pristine crystals, capable of channeling power like no other material. They can be obtained by breaking a prismarine crystal using an Aquarine Steel Pickaxe with its ability enabled.");
         add("nautec.jei.info.machine_parts", "These ancient machine components can be found in chests and are dropped by underwater mobs");
 
@@ -485,9 +504,23 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.category.bacteria_incubation", "Bacteria Incubation");
         add("nautec.jei.category.bacteria_mutations", "Bacteria Mutations");
         add("nautec.jei.category.bio_reactor", "Bio Reactor");
+        add("nautec.jei.category.colony_feeding", "Colony Feeding");
         add("nautec.jei.category.item_etching", "Item Etching");
         add("nautec.jei.category.item_transformation", "Item Transformation");
         add("nautec.jei.category.mixing", "Mixing");
+        add("nautec.jei.category.eas_infusion", "EAS Infusion");
+        add("nautec.jei.eas_infusion.hint", "Leave in an EAS source for %ss");
+        add("nautec.jei.info.eas", "EAS is made in the Mixer from Salt Water. Leave an Aquarine Steel tool in an EAS source block for 7.5 seconds to infuse it and unlock its ability; this uses up the source block. An EAS Bucket and three Glass Vials craft into three EAS Vials.");
+        add("nautec.grafting_tool.dish_occupied", "This Petri Dish already holds a colony");
+        add("nautec.showcase.sign.blocks", "Blocks");
+        add("nautec.showcase.sign.multiblocks", "Multiblocks");
+        add("nautec.showcase.sign.items", "Items");
+        add("nautec.showcase.sign.laser", "Laser Power");
+        add("nautec.showcase.sign.iron", "Iron Production");
+        add("nautec.showcase.sign.ap", "%s AP");
+        add("nautec.showcase.done", "Built the NauTec showcase: %s blocks and %s items over %s by %s blocks");
+        add("nautec.showcase.failed", "Could not build the showcase: %s");
+        add("nautec.showcase.height", "There is not enough build height here for the showcase");
 
         for (ResourceKey<?> key : bacterias()) {
             addDirectBacteria(key);

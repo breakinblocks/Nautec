@@ -2,8 +2,10 @@ package com.breakinblocks.nautec.datagen.loot;
 
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
+import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTMultiblocks;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
@@ -74,6 +76,13 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.AUGMENTATION_STATION.get());
         dropSelf(NTBlocks.DRAIN.get());
         dropSelf(NTBlocks.DRAIN_WALL.get());
+        dropSelf(NTBlocks.BROWN_POLYMER_BLOCK.get());
+        dropSelf(NTBlocks.CAST_IRON_BLOCK.get());
+        dropSelf(NTBlocks.ANCHOR.get());
+        dropSelf(NTBlocks.OIL_BARREL.get());
+        dropSelf(NTBlocks.CREATIVE_POWER_SOURCE.get());
+        dropSelf(NTBlocks.CREATIVE_ENERGY_SOURCE.get());
+        dropSelf(NTBlocks.ENERGY_CONVERTER.get());
         add(NTBlocks.AUGMENTATION_STATION_PART.get(), multiblockPartDrop(NTBlocks.AUGMENTATION_STATION_PART.get(), AugmentationStationMultiblock.AS_PART, Map.of(
                 0, NTBlocks.AQUARINE_STEEL_BLOCK.get(),
                 1, NTBlocks.POLISHED_PRISMARINE.get(),
@@ -102,6 +111,8 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
                 7, NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get(),
                 8, NTBlocks.DARK_PRISMARINE_PILLAR.get()
         )));
+        dropSelf(NTBlocks.INDUSTRIAL_BIO_REACTOR.get());
+        add(NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get(), industrialBioReactorPartDrop(NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get()));
         dropSelf(NTBlocks.BACTERIAL_ANALYZER.get());
         dropSelf(NTBlocks.FISHING_STATION.get());
         dropSelf(NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get());
@@ -126,6 +137,25 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         add(NTBlocks.VENT_TUBEWORM.get(), this::createShearsOnlyDrop);
         add(NTBlocks.ABYSSAL_CORAL.get(), this::createShearsOnlyDrop);
         add(NTBlocks.GLOW_POLYP.get(), this::createShearsOnlyDrop);
+    }
+
+    protected LootTable.Builder industrialBioReactorPartDrop(Block block) {
+        Map<Integer, Block> definition = NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get().getDefinition();
+        LootPool.Builder builder = LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F));
+        for (int layer = 0; layer < IndustrialBioReactorMultiblock.HEIGHT; layer++) {
+            for (int cell = 0; cell < IndustrialBioReactorMultiblock.SIZE * IndustrialBioReactorMultiblock.SIZE; cell++) {
+                int key = IndustrialBioReactorMultiblock.keyAt(layer, cell);
+                if (key == IndustrialBioReactorMultiblock.CHAMBER || key == IndustrialBioReactorMultiblock.CONTROLLER) {
+                    continue;
+                }
+                builder.add(LootItem.lootTableItem(definition.get(key))
+                        .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                .setProperties(StatePropertiesPredicate.Builder.properties()
+                                        .hasProperty(IndustrialBioReactorMultiblock.LAYER, layer)
+                                        .hasProperty(IndustrialBioReactorMultiblock.CELL, cell))));
+            }
+        }
+        return LootTable.lootTable().withPool(this.applyExplosionCondition(block, builder));
     }
 
     protected LootTable.Builder createStateDrop(

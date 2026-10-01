@@ -52,4 +52,4 @@ Made in an [Abyssal Pressure Forge](pressure_forge.md) from an Aquarine Steel In
 
 Used in the [Atlantean Rifle](atlantean_rifle.md) and [Neptune's Trident](neptunes_trident.md).
 
-It also repairs a <ItemLink id="submarine"/> on an anvil. Put the picked-up Sea Scout in the left slot and plating in the right. Each plate restores 20% of the hull and costs 2 levels. The repair item and the amount per item are `submarineRepairItem` and `submarineRepairPercent` in `nautec-common.toml`.
+It also repairs a <ItemLink id="submarine"/> on an anvil. Put the picked-up Sea Scout in the left slot and plating in the right. Each plate restores 20% of the hull and costs 2 levels. The repair item and the amount per item are `submarineRepairItem` and `submarineRepairPercent` in `config/nautec-common.toml`.

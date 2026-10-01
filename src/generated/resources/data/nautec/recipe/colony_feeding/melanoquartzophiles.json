@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "actuallyadditions"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "occultism"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "quark"
+        }
+      ]
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:gems/black_quartz"
+      }
+    }
+  ],
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:melanoquartzophiles",
+  "ingredient": {
+    "ingredient": "#c:gems/black_quartz"
+  },
+  "vitality_ticks": 1200
+}

@@ -293,7 +293,6 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
                 MultiblockEntity.UNFORMING.set(false);
             }
         }
-        level.removeBlock(pos.above(), false);
         super.preRemoveSideEffects(pos, state);
     }
 

@@ -19,10 +19,10 @@ public class PrismarineCrystalItem extends BlockItem {
 
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
-        BlockPos firstPos = context.getClickedPos().above(6);
+        BlockPos firstPos = context.getClickedPos().above(2);
         for (int i = 0; i < 6; i++) {
             BlockPos curPos = firstPos.below(i);
-            if (!context.getLevel().getBlockState(curPos).canBeReplaced()) {
+            if (context.getLevel().isOutsideBuildHeight(curPos) || !context.getLevel().getBlockState(curPos).canBeReplaced()) {
                 return false;
             }
         }

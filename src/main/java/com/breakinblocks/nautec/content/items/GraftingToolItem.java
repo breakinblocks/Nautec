@@ -6,7 +6,9 @@ import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTItems;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -36,8 +38,17 @@ public class GraftingToolItem extends Item {
             ItemStack offhandItem = player.getOffhandItem();
             if (offhandItem.is(NTItems.PETRI_DISH.get())) {
                 IBacteriaStorage bacteriaStorage = offhandItem.getCapability(NTCapabilities.BacteriaStorage.ITEM);
+                if (bacteriaStorage == null) {
+                    return super.useOn(context);
+                }
+                if (!canGraftInto(bacteriaStorage)) {
+                    if (!level.isClientSide()) {
+                        player.sendOverlayMessage(Component.translatable("nautec.grafting_tool.dish_occupied").withStyle(ChatFormatting.RED));
+                    }
+                    return InteractionResult.FAIL;
+                }
                 if (level.getRandom().nextFloat() <= data.chance()) {
-                    bacteriaStorage.setBacteria(0, BacteriaInstance.roll(data.bacteria(), level.registryAccess()));
+                    graftInto(bacteriaStorage, BacteriaInstance.roll(data.bacteria(), level.registryAccess()));
                 }
                 ItemStack itemInHand = context.getItemInHand();
                 itemInHand.hurtAndBreak(1, player, player.getEquipmentSlotForItem(itemInHand));
@@ -46,5 +57,17 @@ public class GraftingToolItem extends Item {
             }
         }
         return super.useOn(context);
+    }
+
+    public static boolean canGraftInto(IBacteriaStorage dish) {
+        return dish.getBacteria(0).isEmpty();
+    }
+
+    public static boolean graftInto(IBacteriaStorage dish, BacteriaInstance colony) {
+        if (!canGraftInto(dish)) {
+            return false;
+        }
+        dish.setBacteria(0, colony);
+        return true;
     }
 }

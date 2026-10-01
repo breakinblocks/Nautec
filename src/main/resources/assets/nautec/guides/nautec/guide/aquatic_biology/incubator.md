@@ -17,7 +17,7 @@ item_ids:
 
 Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain.
 
-Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first.
+Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first. Cocoaphiles has no nutrient either, so it cannot be grown here or fed in a reactor.
 
 ***
 
@@ -31,7 +31,7 @@ A cycle takes 5 seconds. At the end of it:
 
 Lithophiles on stone, for example, grows 8 to 25 per cycle with a 5% consume chance. A colony with a Growth Rate of 1 gains about 16 every 5 seconds and eats about one stone every 20 cycles. At Growth Rate 5 it gains five times as much from the same stone.
 
-Growth stops exactly at the size cap of 40,000 (configurable).
+Growth stops exactly at the size cap of 40,000 (configurable). A colony at the cap still runs: each cycle leaves its size at the cap and resets its age.
 
 ***
 
@@ -41,11 +41,13 @@ It needs a beam of at least 20 AP entering its top or bottom face, and beams int
 
 ***
 
-## <Color id="gold">Feeding a Working Colony</Color>
+## <Color id="gold">Incubator or Reactor</Color>
 
-The Incubator is the only way to reset a colony's age. Swap colonies between the [Bio Reactor](bio_reactor.md) and the Incubator before their Vitality runs out. One completed cycle is enough.
+You do not need to carry a working colony back here. A [Bio Reactor](bio_reactor.md) keeps its colonies from aging by feeding them from its nutrient slots, and by default each strain eats the same nutrient there as it does in the Incubator. [Colony Feeding](colony_feeding.md) covers it.
 
-<Color id="gold">Tip</Color>: the Incubator only runs a colony that is below the size cap. A colony at exactly 40,000 cannot be fed, so take a colony out a little before it fills up if you plan to keep refreshing it.
+The Incubator is still the place to grow a colony, and the only way to reset its age. A colony that went Senescent before you started feeding it stays Senescent in a reactor, and one completed cycle here brings its Vitality back to 100%.
+
+Hoppers and pipes can insert the nutrient from any side, so a chest feeding the Incubator keeps a long growing run going.
 
 ***
 

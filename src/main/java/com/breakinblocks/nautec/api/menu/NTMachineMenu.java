@@ -13,10 +13,14 @@ public abstract class NTMachineMenu<T extends ContainerBlockEntity> extends NTAb
     private final NonNullList<SlotBacteriaStorage> bacteriaStorageSlots;
 
     public NTMachineMenu(MenuType<?> menuType, int containerId, @NotNull Inventory inv, @NotNull T blockEntity) {
+        this(menuType, containerId, inv, blockEntity, 92);
+    }
+
+    public NTMachineMenu(MenuType<?> menuType, int containerId, @NotNull Inventory inv, @NotNull T blockEntity, int inventoryY) {
         super(menuType, containerId, inv, blockEntity);
 
-        addPlayerInventory(inv, 92);
-        addPlayerHotbar(inv, 150);
+        addPlayerInventory(inv, inventoryY);
+        addPlayerHotbar(inv, inventoryY + 58);
 
         this.fluidTankSlots = NonNullList.create();
         this.bacteriaStorageSlots = NonNullList.create();

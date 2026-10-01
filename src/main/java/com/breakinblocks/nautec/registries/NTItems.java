@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.content.items.GraftingToolItem;
 import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
+import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.items.RobotArmItem;
 import com.breakinblocks.nautec.content.items.SubmarineItem;
 import com.breakinblocks.nautec.content.items.WaveJetItem;
@@ -201,6 +202,13 @@ public final class NTItems {
     public static final DeferredItem<PetriDishItem> PETRI_DISH = bacteriaItem(registerItem("petri_dish", PetriDishItem::new, () -> new Item.Properties()
             .stacksTo(1)
             .component(NTDataComponents.BACTERIA, ComponentBacteriaStorage.EMPTY)));
+
+    public static final DeferredItem<ReactorUpgradeItem> REACTOR_SPEED_UPGRADE = bacteriaItem(registerItem("reactor_speed_upgrade",
+            props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.SPEED), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ReactorUpgradeItem> REACTOR_YIELD_UPGRADE = bacteriaItem(registerItem("reactor_yield_upgrade",
+            props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.YIELD), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ReactorUpgradeItem> REACTOR_EFFICIENCY_UPGRADE = bacteriaItem(registerItem("reactor_efficiency_upgrade",
+            props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.EFFICIENCY), () -> new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<BatteryItem> PRISMATIC_BATTERY = registerItem("prismatic_battery",
             BatteryItem::new, new Item.Properties().stacksTo(1));

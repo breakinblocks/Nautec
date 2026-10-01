@@ -186,6 +186,10 @@ public final class BacteriaInstance {
             if (isAnalyzed()) {
                 tooltipComponents.add(Component.translatable("nautec.bacteria.size", this.size));
                 tooltipComponents.add(vitalityTooltip());
+                Bacteria definition = BacteriaHelper.findBacteria(lookup, bacteria);
+                if (definition != null && !definition.resource().isEmpty()) {
+                    tooltipComponents.add(BacteriaHelper.productionMultiplierTooltip(definition.productionMultiplier()));
+                }
                 if (!hasShiftDown) {
                     statsCaption
                             .append(Component.literal("<").withStyle(ChatFormatting.WHITE))

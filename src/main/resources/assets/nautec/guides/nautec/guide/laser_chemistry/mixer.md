@@ -21,7 +21,7 @@ The Mixer takes a laser beam into any face and runs while at least 10 AP per tic
 
 Right-click it with an empty hand to open it. It has four ingredient slots, one output slot, an input tank and an output tank, each tank holding 1,000 mB (configurable).
 
-* Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank.
+* Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank. Salt Water comes from the [Deep Sea Drain](drain.md).
 * Right-click with an empty Bucket to take fluid out of the output tank.
 * Hoppers and pipes on any of the four sides can insert ingredients, fill the input tank and drain the output tank. The top and bottom take nothing.
 * Take item results out of the output slot by hand.
