@@ -1,14 +1,9 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "E": "minecraft:ender_pearl",
-    "P": "minecraft:prismarine"
-  },
-  "pattern": [
-    " P ",
-    "PEP",
-    " P "
+  "ingredients": [
+    "minecraft:prismarine_shard",
+    "minecraft:ender_pearl"
   ],
   "result": {
     "id": "nautec:eye_of_the_sea"

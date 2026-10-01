@@ -51,7 +51,7 @@ Every throw that finds a target also stirs up the water around you. For the next
 
 ## <Color id="gold">Crafting</Color>
 
-An Ender Pearl with a Prismarine block on each side.
+An Ender Pearl and a Prismarine Shard, crafted together in any arrangement.
 
 <Recipe id="nautec:eye_of_the_sea"/>
 

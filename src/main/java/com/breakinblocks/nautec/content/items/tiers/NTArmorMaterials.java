@@ -57,14 +57,14 @@ public final class NTArmorMaterials {
             Util.make(new EnumMap<>(ArmorType.class), map -> {
                 map.put(ArmorType.BOOTS, 3);
                 map.put(ArmorType.LEGGINGS, 6);
-                map.put(ArmorType.CHESTPLATE, 7);
+                map.put(ArmorType.CHESTPLATE, 8);
                 map.put(ArmorType.HELMET, 3);
-                map.put(ArmorType.BODY, 4);
+                map.put(ArmorType.BODY, 11);
             }),
             10,
             SoundEvents.ARMOR_EQUIP_IRON,
-            1,
-            0.05f,
+            3,
+            0.1f,
             NTTags.Items.REPAIRS_AQUARINE_ARMOR,
             AQUARINE_STEEL_ASSET
     );
