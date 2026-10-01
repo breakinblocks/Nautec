@@ -165,7 +165,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
     private static InteractionResult useWrench(Level level, GatewayBlockEntity gateway, Player player) {
         if (player.isShiftKeyDown()) {
             if (!gateway.isFormed()) {
-                return InteractionResult.FAIL;
+                return forceBuild(level, gateway, player);
             }
             if (!level.isClientSide()) {
                 ItemStack packed = gateway.pack();
@@ -179,7 +179,11 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (!level.isClientSide()) {
-            MultiblockHelper.form(NTMultiblocks.GATEWAY.get(), gateway.getBlockPos(), level, player);
+            if (gateway.isWaitingToBuild() || gateway.needsSelfHeal()) {
+                gateway.retryBuild(player);
+            } else {
+                MultiblockHelper.form(NTMultiblocks.GATEWAY.get(), gateway.getBlockPos(), level, player);
+            }
         }
         return InteractionResult.SUCCESS;
     }
@@ -199,7 +203,20 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
         if (!(level.getBlockEntity(pos) instanceof GatewayBlockEntity gateway)) {
             return InteractionResult.PASS;
         }
+        if (player.isShiftKeyDown() && player.isCreative() && !gateway.isFormed()) {
+            return forceBuild(level, gateway, player);
+        }
         return openScreen(player, gateway);
+    }
+
+    private static InteractionResult forceBuild(Level level, GatewayBlockEntity gateway, Player player) {
+        if (!player.isCreative()) {
+            return InteractionResult.FAIL;
+        }
+        if (!level.isClientSide() && gateway.forceBuild(player) && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(Component.translatable("nautec.gateway.force_built").withStyle(ChatFormatting.AQUA), true);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     public static InteractionResult openScreen(Player player, GatewayBlockEntity gateway) {
@@ -287,8 +304,12 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
         if (!gateway.isLinked()) {
             return Component.translatable("nautec.gateway.status.unlinked").withStyle(ChatFormatting.GRAY);
         }
-        if (gateway.needsPower() && gateway.getEnergy() < GatewayBlockEntity.ENERGY_PER_TICK) {
+        if (gateway.needsPower() && gateway.getEnergy() == 0) {
             return Component.translatable("nautec.gateway.status.no_power").withStyle(ChatFormatting.GOLD);
+        }
+        if (gateway.needsPower() && gateway.getEnergy() < GatewayBlockEntity.ENERGY_TO_OPEN) {
+            return Component.translatable("nautec.gateway.status.charging", GatewayBlockEntity.ENERGY_TO_OPEN,
+                    GatewayBlockEntity.ENERGY_PER_TICK).withStyle(ChatFormatting.GOLD);
         }
         return Component.translatable("nautec.gateway.status.ready").withStyle(ChatFormatting.WHITE);
     }

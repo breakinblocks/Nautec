@@ -23,7 +23,7 @@ Right-click to throw the eye. It rises and flies toward the nearest matching str
 
 If nothing matching is within about 1,600 blocks, the eye stays in your hand and a message says so.
 
-Crystal Geodes are buried under the ocean floor, so when the eye starts circling or dropping, the geode is under you. Dig down from there.
+Crystal Geodes are buried under the ocean floor, so when the eye starts circling or dropping, the middle of the geode is under you. Dig straight down from there.
 
 ***
 

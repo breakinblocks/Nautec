@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.structures.NTJigsawStructure;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -25,7 +27,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
 import java.io.InputStream;
@@ -33,6 +38,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.augments.AugmentType;
 import com.breakinblocks.nautec.content.augments.VentCarapaceAugment;
@@ -40,6 +46,7 @@ import com.breakinblocks.nautec.registries.NTAugmentSlots;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 
 public final class ContentIntegrityTests {
@@ -167,6 +174,39 @@ public final class ContentIntegrityTests {
             if (pools.get(ResourceKey.create(Registries.TEMPLATE_POOL, Nautec.rl("underwater_gateway"))).isEmpty()) {
                 helper.fail("The underwater gateway template pool did not load");
             }
+            helper.succeed();
+        });
+
+        r.add("content/geodes_generate_late_and_locate_at_their_centre", 5, helper -> {
+            HolderLookup.RegistryLookup<Structure> structures =
+                    helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
+            for (String name : List.of("stone_crystal_geode", "deepslate_crystal_geode")) {
+                Structure structure = structures.getOrThrow(ResourceKey.create(Registries.STRUCTURE, Nautec.rl(name))).value();
+                helper.assertValueEqual(GenerationStep.Decoration.VEGETAL_DECORATION, structure.step(), name + " generation step");
+            }
+
+            StructureSet geodes = helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE_SET)
+                    .getOrThrow(ResourceKey.create(Registries.STRUCTURE_SET, Nautec.rl("crystal_geodes"))).value();
+            helper.assertValueEqual(new BlockPos(8, 0, 8), geodes.placement().getLocatePos(new ChunkPos(0, 0)), "geode locate position");
+            helper.succeed();
+        });
+
+        r.add("content/jigsaw_offset_centres_and_buries", 5, helper -> {
+            Optional<Integer> cover = Optional.of(4);
+            for (BoundingBox box : List.of(new BoundingBox(0, -40, 0, 19, -23, 19), new BoundingBox(-19, -40, -19, 0, -23, 0))) {
+                Vec3i deepFloor = NTJigsawStructure.placementOffset(box, 8, 8, true, cover, (x, z) -> 40);
+                BlockPos centre = box.getCenter().offset(deepFloor);
+                helper.assertValueEqual(8, centre.getX(), "centred x for " + box);
+                helper.assertValueEqual(8, centre.getZ(), "centred z for " + box);
+                helper.assertValueEqual(0, deepFloor.getY(), "a geode already under the floor stays put");
+
+                Vec3i shallowFloor = NTJigsawStructure.placementOffset(box, 8, 8, true, cover, (x, z) -> -30);
+                helper.assertValueEqual(-30 - 4, box.maxY() + shallowFloor.getY(), "top of the geode under a low seabed");
+            }
+
+            BoundingBox box = new BoundingBox(0, 10, 0, 4, 12, 4);
+            helper.assertValueEqual(Vec3i.ZERO, NTJigsawStructure.placementOffset(box, 8, 8, false, Optional.empty(), (x, z) -> 0),
+                    "structures without the new fields are left alone");
             helper.succeed();
         });
 

@@ -24,9 +24,11 @@ public class DeepslateCrystalGeode extends NTJigsawStructure {
                   Optional<Heightmap.Types> projectStartToHeightmap,
                   int maxDistanceFromCenter,
                   DimensionPadding dimensionPadding,
-                  LiquidSettings liquidSettings) {
+                  LiquidSettings liquidSettings,
+                  boolean centerInChunk,
+                  Optional<Integer> minCover) {
         super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap,
-                maxDistanceFromCenter, dimensionPadding, liquidSettings);
+                maxDistanceFromCenter, dimensionPadding, liquidSettings, centerInChunk, minCover);
     }
 
     @Override

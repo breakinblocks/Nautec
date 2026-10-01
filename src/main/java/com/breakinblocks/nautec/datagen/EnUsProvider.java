@@ -156,11 +156,14 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.gateway.status.ready", "Ready: opens when a player or submarine comes within 12 blocks");
         add("nautec.gateway.status.unlinked", "Idle: no other ring has this address");
         add("nautec.gateway.status.no_power", "No power: aim a laser at the Gateway");
+        add("nautec.gateway.force_built", "Ring built: blocks in the way were cleared");
+        add("nautec.gateway.status.charging", "Charging: opens once it holds %s AP, then uses %s AP/t while open");
         add("nautec.gateway.status.redstone", "Held shut by a redstone signal");
         add("nautec.gateway.status.wild", "Wild ring: builds its far end on the first trip if it has none");
         add("nautec.gateway.status.building", "Building its ring");
         add("nautec.gateway.status.unformed", "No ring: build Gateway Ring Segments around it and use a wrench");
         add("nautec.gateway.status.blocked", "Ring blocked at %s %s %s: clear that block and it finishes building itself");
+        add("nautec.gateway.blocked", "The ring has no room to build: a block is in the way at %s %s %s. The ring needs a space 13 wide and 13 tall. Wear a Prism Monocle and look at the Gateway to see every block in the way highlighted in red");
         add("nautec.gateway.power", "Power: %s / %s AP, uses %s AP/t while open");
         add("nautec.gateway.packed", "Packed ring: place it to rebuild the whole ring facing you");
         add("nautec.gateway.packed_wild", "Wild ring: still builds its far end on the first trip if it has none");

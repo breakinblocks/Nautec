@@ -491,6 +491,27 @@ public final class GatewayTests {
                     .thenSucceed();
         });
 
+        r.add("gateway/low_power_ring_stays_shut_instead_of_flickering", ARENA, 120, 0, helper -> {
+            GatewayAddress code = unique(28);
+            GatewayBlockEntity a = ring(helper, CORE_A, code);
+            ring(helper, CORE_B, code);
+            helper.onEachTick(() -> a.wake(20));
+            helper.startSequence()
+                    .thenWaitUntil(() -> helper.assertTrue(a.isLinked(), "Waiting for the rings to link"))
+                    .thenExecute(() -> a.setEnergy(GatewayBlockEntity.ENERGY_PER_TICK * 3))
+                    .thenIdle(10)
+                    .thenExecute(() -> helper.assertFalse(a.isOpen(), "A ring with only a few ticks of power should stay shut"))
+                    .thenExecute(() -> a.setEnergy(GatewayBlockEntity.ENERGY_TO_OPEN))
+                    .thenWaitUntil(() -> helper.assertTrue(a.isOpen(), "A ring holding enough to open should open"))
+                    .thenIdle(GatewayBlockEntity.ENERGY_TO_OPEN / GatewayBlockEntity.ENERGY_PER_TICK - 2)
+                    .thenExecute(() -> helper.assertTrue(a.isOpen(), "An open ring should stay open until its buffer runs out"))
+                    .thenWaitUntil(() -> helper.assertFalse(a.isOpen(), "The ring should close once its buffer runs out"))
+                    .thenExecute(() -> a.setEnergy(GatewayBlockEntity.ENERGY_PER_TICK * 3))
+                    .thenIdle(10)
+                    .thenExecute(() -> helper.assertFalse(a.isOpen(), "A drained ring should wait for a proper charge before reopening"))
+                    .thenSucceed();
+        });
+
         r.add("gateway/laser_charges_the_core", ARENA, 80, 0, helper -> {
             GatewayBlockEntity a = ring(helper, CORE_A, unique(23));
             BlockPos source = CORE_A.relative(a.getFront(), 3);
@@ -574,6 +595,57 @@ public final class GatewayTests {
                 helper.assertTrue(gateway.isFormed(), "Clearing the block should let the ring finish");
                 helper.assertValueEqual(HorizontalDirection.NORTH, gateway.getMultiblockData().direction(), "It should still face the placer");
             });
+        });
+
+        r.add("gateway/wrench_retries_a_blocked_packed_gateway", ARENA, 40, 0, helper -> {
+            ItemStack packed = new ItemStack(NTBlocks.GATEWAY.asItem());
+            packed.set(NTDataComponents.GATEWAY_PACKED.get(), PackedGateway.CRAFTED);
+            BlockPos core = helper.absolutePos(CORE_A);
+            BlockPos blocker = GatewayRing.cellPos(core, HorizontalDirection.NORTH, GatewayRing.CENTRE, 12);
+            helper.getLevel().setBlockAndUpdate(blocker, Blocks.STONE.defaultBlockState());
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.setYRot(0F);
+            player.setItemInHand(InteractionHand.MAIN_HAND, packed);
+            helper.placeAt(player, packed, CORE_A.below(), Direction.UP);
+            GatewayBlockEntity gateway = helper.getBlockEntity(CORE_A, GatewayBlockEntity.class);
+
+            gateway.retryBuild(player);
+            helper.assertFalse(gateway.isFormed(), "A retry while blocked should leave a bare core");
+            helper.assertValueEqual(blocker, gateway.getBlockedAt(), "the reported blocking block");
+            helper.assertValueEqual(List.of(blocker), gateway.blockingCells(), "the blocks the monocle highlights");
+
+            helper.getLevel().setBlockAndUpdate(blocker, Blocks.AIR.defaultBlockState());
+            gateway.retryBuild(player);
+            helper.assertTrue(gateway.isFormed(), "A retry after clearing should form the ring at once");
+            helper.assertTrue(gateway.blockingCells().isEmpty(), "A formed ring should highlight nothing");
+            helper.assertValueEqual(HorizontalDirection.NORTH, gateway.getMultiblockData().direction(), "It should still face the placer");
+            helper.succeed();
+        });
+
+        r.add("gateway/creative_force_build_clears_the_way", ARENA, 40, 0, helper -> {
+            ItemStack packed = new ItemStack(NTBlocks.GATEWAY.asItem());
+            packed.set(NTDataComponents.GATEWAY_PACKED.get(), PackedGateway.CRAFTED);
+            BlockPos core = helper.absolutePos(CORE_A);
+            List<BlockPos> blockers = List.of(
+                    GatewayRing.cellPos(core, HorizontalDirection.NORTH, GatewayRing.CENTRE, 12),
+                    GatewayRing.cellPos(core, HorizontalDirection.NORTH, 1, GatewayRing.CENTRE));
+            for (BlockPos blocker : blockers) {
+                helper.getLevel().setBlockAndUpdate(blocker, Blocks.STONE.defaultBlockState());
+            }
+            Player player = helper.makeMockPlayer(GameType.CREATIVE);
+            player.setYRot(0F);
+            player.setItemInHand(InteractionHand.MAIN_HAND, packed);
+            helper.placeAt(player, packed, CORE_A.below(), Direction.UP);
+            GatewayBlockEntity gateway = helper.getBlockEntity(CORE_A, GatewayBlockEntity.class);
+            helper.assertFalse(gateway.isFormed(), "The blocked ring should wait before forcing");
+
+            helper.assertTrue(gateway.forceBuild(player), "Forcing should report a built ring");
+            helper.assertTrue(gateway.isFormed(), "Forcing should form the ring");
+            helper.assertValueEqual(HorizontalDirection.NORTH, gateway.getMultiblockData().direction(), "It should face the player");
+            for (BlockPos blocker : blockers) {
+                helper.assertFalse(helper.getLevel().getBlockState(blocker).is(Blocks.STONE), "Forcing should clear " + blocker);
+            }
+            helper.succeed();
         });
 
         r.add("gateway/formed_ring_mines_like_obsidian_and_drops_nothing", ARENA, 40, 0, helper -> {

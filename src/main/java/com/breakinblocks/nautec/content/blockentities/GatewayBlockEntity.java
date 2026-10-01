@@ -29,9 +29,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerRotationPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,6 +65,7 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
     public static final int RING_VERSION = 1;
     public static final int ENERGY_CAPACITY = 5000;
     public static final int ENERGY_PER_TICK = 100;
+    public static final int ENERGY_TO_OPEN = 2000;
     public static final double OPEN_RADIUS = 12.0;
     public static final double STAY_RADIUS = 16.0;
 
@@ -192,6 +195,21 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
         setChanged();
         if (level instanceof ServerLevel serverLevel) {
             build(serverLevel);
+            reportBlocked(placer);
+        }
+    }
+
+    public void retryBuild(@Nullable Player player) {
+        if (level instanceof ServerLevel serverLevel && !isFormed()) {
+            build(serverLevel);
+            reportBlocked(player);
+        }
+    }
+
+    private void reportBlocked(@Nullable Player player) {
+        if (blockedAt != null && !isFormed() && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(Component.translatable("nautec.gateway.blocked",
+                    blockedAt.getX(), blockedAt.getY(), blockedAt.getZ()).withStyle(ChatFormatting.GOLD));
         }
     }
 
@@ -398,7 +416,7 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
             refreshLink(serverLevel);
         }
 
-        boolean powered = !needsPower || energy >= ENERGY_PER_TICK;
+        boolean powered = !needsPower || energy >= (open ? ENERGY_PER_TICK : ENERGY_TO_OPEN);
         setOpen(serverLevel, linked && now < awakeUntil && powered && !isRedstoneLocked());
 
         if (open) {
@@ -622,7 +640,31 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
         return null;
     }
 
+    public boolean forceBuild(Player player) {
+        if (!(level instanceof ServerLevel serverLevel) || isFormed()) {
+            return false;
+        }
+        Direction facing = player.getDirection();
+        HorizontalDirection direction = facing.getAxis() == Direction.Axis.Z ? HorizontalDirection.NORTH : HorizontalDirection.EAST;
+        List<BlockPos> cells = GatewayRing.ringCells(worldPosition, direction);
+        for (BlockPos cell : cells) {
+            if (!serverLevel.isLoaded(cell)) {
+                return false;
+            }
+        }
+        for (BlockPos cell : cells) {
+            serverLevel.setBlock(cell, NTBlocks.GATEWAY_RING.get().defaultBlockState(), 3);
+        }
+        this.preferredFront = facing.getOpposite();
+        build(serverLevel, new HorizontalDirection[]{direction});
+        return isFormed();
+    }
+
     private void build(ServerLevel level) {
+        build(level, buildDirections());
+    }
+
+    private void build(ServerLevel level, HorizontalDirection[] directions) {
         if (needsSelfHeal() && !pendingBuild && !wild && !needsPower) {
             if (address.equals(GatewayAddress.DEFAULT)) {
                 wild = true;
@@ -631,9 +673,6 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
                 needsPower = true;
             }
         }
-        HorizontalDirection[] directions = pendingBuild && preferredDirection != null
-                ? new HorizontalDirection[]{preferredDirection}
-                : new HorizontalDirection[]{HorizontalDirection.NORTH, HorizontalDirection.EAST};
         BlockPos firstBlocked = null;
         for (HorizontalDirection direction : directions) {
             List<BlockPos> cells = GatewayRing.ringCells(worldPosition, direction);
@@ -662,6 +701,33 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
         }
         blockedAt = firstBlocked;
         update();
+    }
+
+    private HorizontalDirection[] buildDirections() {
+        return pendingBuild && preferredDirection != null
+                ? new HorizontalDirection[]{preferredDirection}
+                : new HorizontalDirection[]{HorizontalDirection.NORTH, HorizontalDirection.EAST};
+    }
+
+    public List<BlockPos> blockingCells() {
+        if (level == null || isFormed() || !(isWaitingToBuild() || needsSelfHeal())) {
+            return List.of();
+        }
+        List<BlockPos> fewest = List.of();
+        boolean first = true;
+        for (HorizontalDirection direction : buildDirections()) {
+            List<BlockPos> blocked = new ArrayList<>();
+            for (BlockPos cell : GatewayRing.ringCells(worldPosition, direction)) {
+                if (level.isLoaded(cell) && !clearable(level.getBlockState(cell))) {
+                    blocked.add(cell);
+                }
+            }
+            if (first || blocked.size() < fewest.size()) {
+                fewest = blocked;
+                first = false;
+            }
+        }
+        return fewest;
     }
 
     private static GatewayAddress wildAddress(ServerLevel level) {

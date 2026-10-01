@@ -33,7 +33,7 @@ What to take:
 
 ## <Color id="gold">Crystal Geodes</Color>
 
-Hollow rooms buried under the ocean floor. There are two kinds: a stone geode 10 to 25 blocks below the floor, and a deepslate geode 25 to 59 blocks below it. Nothing marks them on the surface.
+Hollow rooms buried under the ocean floor. There are two kinds: a stone geode with its floor between y -10 and 30, and a deepslate geode with its floor between y -59 and -25. Both always have at least 4 blocks of rock above them, so under a deep seabed they sit lower. Nothing marks them on the surface. `/locate` and the [Eye of the Sea](eye_of_the_sea.md) point at the middle of the room.
 
 In the middle stands a <ItemLink id="prismarine_crystal"/> inside scaffolding. It is the only natural source of a purity 3.0 beam, and it stays where it generated, so the geode is where you do [high purity Item Transformation](item_transformation.md) until you have other options. The crystal already has the one block gap under it that the setup needs.
 

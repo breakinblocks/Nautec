@@ -40,7 +40,7 @@ A crafted Gateway comes packed, with its whole ring inside it. Place it and the 
 
 Sneak and right-click any part of a formed ring with a wrench (the <ItemLink id="aquarine_steel_wrench"/> or any other mod's wrench) to pack it up again. You get one packed Gateway back, keeping its address, so you can carry a wild Gateway home and keep its route.
 
-A packed Gateway only builds into air, water, kelp, seagrass, coral and other blocks you could place over. If something solid is in the way, it waits as a bare Gateway and the <ItemLink id="prism_monocle"/> names the block. Clear it and the ring finishes itself.
+The ring stands on the Gateway block and needs a space 13 blocks wide and 13 blocks tall. It builds into air, water, kelp, seagrass, coral and other blocks you could place over. If something solid is in the way, it waits as a bare Gateway and tells you where. Wear a <ItemLink id="prism_monocle"/> and look at the Gateway to see every block in the way highlighted in red. Clear it and the ring finishes itself within a few seconds, or right-click the Gateway with a wrench to try again straight away.
 
 A formed ring cannot be mined for anything. Breaking a part takes as long as breaking obsidian by hand, drops nothing, and turns the rest of the ring back into plain <ItemLink id="gateway_ring"/>. Use a wrench instead.
 
@@ -121,7 +121,7 @@ To repair a broken ring, put segments back in the circle below and right-click t
 
 ## <Color id="gold">Power</Color>
 
-A wild Gateway that has never been moved needs no power. Any Gateway that was crafted or moved needs AP: point a laser at the Gateway block at the bottom of the ring (see [Laser Power](nautec:getting_started/laser_power.md)). It holds 5,000 AP and uses 100 AP every tick while it is open. With less than that stored, it will not open.
+A wild Gateway that has never been moved needs no power. Any Gateway that was crafted or moved needs AP: point a laser at the Gateway block at the bottom of the ring (see [Laser Power](nautec:getting_started/laser_power.md)). It holds 5,000 AP and uses 100 AP every tick while it is open. It opens once it has 2,000 AP stored and stays open until the buffer runs dry, so a laser supplying at least 100 AP/t keeps it open for as long as someone is near. With a weaker laser it opens for a few seconds at a time, then shuts while it charges back up to 2,000.
 
 ***
 
