@@ -1,0 +1,29 @@
+{
+  "parent": "nautec:first_culture",
+  "criteria": {
+    "mutated": {
+      "trigger": "nautec:bacteria_mutated"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.bacteria_mutation.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:mutator"
+    },
+    "title": {
+      "translate": "advancements.nautec.bacteria_mutation.title"
+    }
+  },
+  "requirements": [
+    [
+      "mutated"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

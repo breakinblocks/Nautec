@@ -1,0 +1,42 @@
+{
+  "parent": "nautec:gateway_travel",
+  "criteria": {
+    "piloted": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "vehicle": {
+                "type": "nautec:submarine"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "nautec:gateway_travel"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.sea_lane.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "nautec:submarine"
+    },
+    "title": {
+      "translate": "advancements.nautec.sea_lane.title"
+    }
+  },
+  "requirements": [
+    [
+      "piloted"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

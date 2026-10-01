@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:bacteria_mutation",
+  "criteria": {
+    "reactor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:industrial_bio_reactor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.industrial_bio_reactor.description"
+    },
+    "icon": {
+      "id": "nautec:industrial_bio_reactor"
+    },
+    "title": {
+      "translate": "advancements.nautec.industrial_bio_reactor.title"
+    }
+  },
+  "requirements": [
+    [
+      "reactor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

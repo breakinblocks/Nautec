@@ -4,15 +4,12 @@ import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.ContainerBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -62,13 +59,13 @@ public class OilBarrelBlock extends ContainerBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (stack.is(NTItems.CROWBAR) && !state.getValue(OPEN)) {
-            level.setBlockAndUpdate(pos, state.setValue(OPEN, true));
-            level.playSound(null, pos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS);
-            return InteractionResult.SUCCESS;
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        boolean open = !state.getValue(OPEN);
+        if (!level.isClientSide()) {
+            level.setBlockAndUpdate(pos, state.setValue(OPEN, open));
+            level.playSound(null, pos, open ? SoundEvents.BARREL_OPEN : SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0f, 0.8f);
         }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

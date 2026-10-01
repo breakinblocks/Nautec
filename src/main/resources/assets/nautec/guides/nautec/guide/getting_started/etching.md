@@ -14,7 +14,7 @@ item_ids:
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="rusty_crate" scale="2"/>
-  Pry Crates open with a Crowbar, and clean rusty salvage in Etching Acid.
+  Open Crates like a chest, and clean rusty ones in Etching Acid first.
 </Column>
 
 ***
@@ -24,7 +24,7 @@ item_ids:
   ### <Color id="aqua">Crate</Color>
 </Row>
 
-A locked 27 slot container found in geodes and in vanilla shipwreck and ruin loot. Right-click it with a <ItemLink id="crowbar"/> to pry it open. After that it stays open and works like a barrel: right-click to use it, and hoppers can move items in and out once it is open.
+A 27 slot container found in geodes and in vanilla shipwreck and ruin loot. Right-click it to open it like a chest. Hoppers can move items in and out of it too.
 
 Breaking a crate drops the crate itself with its contents still inside, opened or not, so you can carry a find home before opening it.
 
@@ -35,7 +35,7 @@ Breaking a crate drops the crate itself with its contents still inside, opened o
   ### <Color id="aqua">Rusty Crate</Color>
 </Row>
 
-A corroded crate from ruins and geodes. The Crowbar only works on a clean Crate, so etch a Rusty Crate first. It turns into an ordinary Crate with the same loot, which you then pry open.
+A crate rusted shut, found in ruins. It will not open, and hoppers cannot reach its contents, until you etch it: drop it in Etching Acid and it turns into an ordinary Crate with the same loot. Its tooltip and the message you get when you try to open it say the same, and JEI shows the conversion under Item Etching.
 
 Rusty Crates hold better salvage than plain ones. Break one to carry it; it keeps its loot the same way a Crate does.
 

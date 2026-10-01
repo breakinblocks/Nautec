@@ -56,6 +56,16 @@ public class LootModifierProvider extends GlobalLootModifierProvider {
                         LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_big")).or(LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_small"))).build(),
                         LootItemRandomChanceCondition.randomChance(0.66f).build()}
                         , 0, crate));
+        add("ocean_ruins_small_loot",
+                new AddTableLootModifier(new LootItemCondition[]{
+                        LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_small")).build(),
+                        LootItemRandomChanceCondition.randomChance(0.25f).build()},
+                        0, NTLootTables.OCEAN_RUINS_SMALL));
+        add("ocean_ruins_big_loot",
+                new AddTableLootModifier(new LootItemCondition[]{
+                        LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_big")).build(),
+                        LootItemRandomChanceCondition.randomChance(0.25f).build()},
+                        0, NTLootTables.OCEAN_RUINS_BIG));
         add("suspicious_ruins_sand_modifier",
                 new AddItemModifier(new LootItemCondition[]{
                         LootTableIdCondition.builder(Identifier.parse("archaeology/ocean_ruin_warm")).build(),

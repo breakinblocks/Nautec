@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:pressing_the_deep",
+  "criteria": {
+    "trident": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:neptunes_trident"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.neptunes_trident.description"
+    },
+    "icon": {
+      "id": "nautec:neptunes_trident"
+    },
+    "title": {
+      "translate": "advancements.nautec.neptunes_trident.title"
+    }
+  },
+  "requirements": [
+    [
+      "trident"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

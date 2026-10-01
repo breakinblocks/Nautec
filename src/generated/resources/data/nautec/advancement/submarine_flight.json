@@ -1,0 +1,29 @@
+{
+  "parent": "nautec:sea_scout",
+  "criteria": {
+    "flying": {
+      "trigger": "nautec:submarine_flight"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.submarine_flight.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:flight_module"
+    },
+    "title": {
+      "translate": "advancements.nautec.submarine_flight.title"
+    }
+  },
+  "requirements": [
+    [
+      "flying"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

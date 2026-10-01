@@ -1,0 +1,39 @@
+{
+  "parent": "nautec:diving_suit",
+  "criteria": {
+    "trench": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "nautec:abyssal_trench"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.abyssal_trench.description"
+    },
+    "icon": {
+      "id": "nautec:abyssal_coral"
+    },
+    "title": {
+      "translate": "advancements.nautec.abyssal_trench.title"
+    }
+  },
+  "requirements": [
+    [
+      "trench"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

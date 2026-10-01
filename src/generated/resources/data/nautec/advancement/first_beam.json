@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "relay": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:prismarine_laser_relay"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.first_beam.description"
+    },
+    "icon": {
+      "id": "nautec:prismarine_laser_relay"
+    },
+    "title": {
+      "translate": "advancements.nautec.first_beam.title"
+    }
+  },
+  "requirements": [
+    [
+      "relay"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

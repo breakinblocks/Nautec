@@ -42,7 +42,7 @@ Around it you will find:
 * Rusty Crates, about half of all the crates, holding better salvage: Ancient Valves, Rusty Gears, Burnt Coils, Atlantic Gold Nuggets, Aquarine Steel Ingots and sometimes a Heart of the Sea.
 * A crafting table, a lectern, decorated pots and a small pool of salt water.
 
-The closed crates need a <ItemLink id="crowbar"/>, and the rusty ones need etching first. See [Crates and Etching](etching.md).
+Crates open like a chest, but the rusty ones need etching first. See [Crates and Etching](etching.md).
 
 <Color id="gold">Tip</Color>: an Aquarine Steel Pickaxe with its ability on can chip [Prismarine Crystal Shards](nautec:laser_chemistry/crystal_shards.md) off the crystal, but every hit has a one in four chance to shatter it for good. Set up your transformations before you start chipping.
 

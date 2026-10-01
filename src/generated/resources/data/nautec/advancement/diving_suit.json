@@ -1,0 +1,42 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "suit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:diving_helmet"
+          },
+          {
+            "items": "nautec:diving_chestplate"
+          },
+          {
+            "items": "nautec:diving_leggings"
+          },
+          {
+            "items": "nautec:diving_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.diving_suit.description"
+    },
+    "icon": {
+      "id": "nautec:diving_helmet"
+    },
+    "title": {
+      "translate": "advancements.nautec.diving_suit.title"
+    }
+  },
+  "requirements": [
+    [
+      "suit"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

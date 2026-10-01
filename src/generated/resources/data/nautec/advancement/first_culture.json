@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "grafted": {
+      "trigger": "nautec:bacteria_grafted"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.first_culture.description"
+    },
+    "icon": {
+      "id": "nautec:grafting_tool"
+    },
+    "title": {
+      "translate": "advancements.nautec.first_culture.title"
+    }
+  },
+  "requirements": [
+    [
+      "grafted"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

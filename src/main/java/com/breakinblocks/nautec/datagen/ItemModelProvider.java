@@ -166,7 +166,6 @@ public class ItemModelProvider extends ModelProvider {
 
         itemModels.generateFishingRod(NTItems.NAUTEC_FISHING_ROD.get());
         handHeldItem(NTItems.AQUARINE_WRENCH.get());
-        handHeldItem(NTItems.CROWBAR.get());
         handHeldItem(NTItems.GRAFTING_TOOL.get());
 
         for (NTFluid fluid : NTFluids.HELPER.getFluids()) {

@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "found": {
+      "trigger": "nautec:gateway_found"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.gateway_found.description"
+    },
+    "icon": {
+      "id": "nautec:gateway"
+    },
+    "title": {
+      "translate": "advancements.nautec.gateway_found.title"
+    }
+  },
+  "requirements": [
+    [
+      "found"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

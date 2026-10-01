@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.content.menus.CrateMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -32,11 +33,13 @@ public class CrateBlockEntity extends RandomizableContainerBlockEntity {
         @Override
         protected void onOpen(Level p_155062_, BlockPos p_155063_, BlockState p_155064_) {
             CrateBlockEntity.this.playSound(p_155064_, SoundEvents.BARREL_OPEN);
+            CrateBlockEntity.this.setLidOpen(p_155064_, true);
         }
 
         @Override
         protected void onClose(Level p_155072_, BlockPos p_155073_, BlockState p_155074_) {
             CrateBlockEntity.this.playSound(p_155074_, SoundEvents.BARREL_CLOSE);
+            CrateBlockEntity.this.setLidOpen(p_155074_, false);
         }
 
         @Override
@@ -130,14 +133,24 @@ public class CrateBlockEntity extends RandomizableContainerBlockEntity {
         }
     }
 
+    public boolean isRustedShut() {
+        return getBlockState().is(NTBlocks.RUSTY_CRATE.get());
+    }
+
+    private void setLidOpen(BlockState state, boolean open) {
+        if (this.level != null && !isRustedShut() && state.hasProperty(BlockStateProperties.OPEN)) {
+            this.level.setBlock(getBlockPos(), state.setValue(BlockStateProperties.OPEN, open), 3);
+        }
+    }
+
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return getBlockState().getValue(BlockStateProperties.OPEN) && super.canPlaceItem(slot, stack);
+        return !isRustedShut() && super.canPlaceItem(slot, stack);
     }
 
     @Override
     public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-        return getBlockState().getValue(BlockStateProperties.OPEN) && super.canTakeItem(target, slot, stack);
+        return !isRustedShut() && super.canTakeItem(target, slot, stack);
     }
 
     public void playSound(BlockState state, SoundEvent sound) {

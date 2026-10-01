@@ -25,7 +25,7 @@ NauTec machines are powered by laser power (AP) fired as a beam from one block i
 * Build an <ItemLink id="aquatic_catalyst"/> and fire your first beam: [Laser Power](laser_power.md).
 * Drop Aquarine Steel Compound into that beam to make Aquarine Steel, the metal most recipes use: [Item Transformation](item_transformation.md).
 * Explore the ocean floor for [Structures](structures.md) and [Salvage](salvage.md), and make a [Diving Suit](diving_gear.md) so you can stay down long enough to loot them.
-* Make a <ItemLink id="crowbar"/> to open the crates you find, and Etching Acid to clean the rusty ones: [Crates and Etching](etching.md).
+* Make Etching Acid to clean the rusted shut crates you find: [Crates and Etching](etching.md).
 
 From there the guide splits into [Laser Chemistry](nautec:laser_chemistry/laser_chemistry-index.md) for fluids, tools and more beam blocks, [Aquatic Biology](nautec:aquatic_biology/aquatic_biology-index.md) for bacteria, [Deep Engineering](nautec:deep_engineering/deep_engineering-index.md) for high purity work, [Laser Augmentation](nautec:laser_augmentation/laser_augmentation-index.md) for body augments, and [Naval](nautec:submarine/submarine-index.md) for the Sea Scout and Wave Jet.
 

@@ -1,0 +1,39 @@
+{
+  "parent": "nautec:atlantean_rifle",
+  "criteria": {
+    "killed": {
+      "conditions": {
+        "killing_blow": {
+          "tags": [
+            {
+              "expected": true,
+              "id": "nautec:atlantean_rifle"
+            }
+          ]
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.particles_accelerated.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "nautec:atlantean_rifle"
+    },
+    "title": {
+      "translate": "advancements.nautec.particles_accelerated.title"
+    }
+  },
+  "requirements": [
+    [
+      "killed"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

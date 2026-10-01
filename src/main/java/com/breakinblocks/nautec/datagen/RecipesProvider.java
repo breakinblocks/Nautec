@@ -646,14 +646,6 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("prismatic_battery"));
 
-        shaped(RecipeCategory.MISC, NTItems.CROWBAR.get(), 1)
-                .pattern(" LR")
-                .pattern("LRL")
-                .pattern("RL ")
-                .define('R', NTItems.CAST_IRON_ROD.get())
-                .define('L', Tags.Items.DYES_BLUE)
-                .unlockedBy("has_item", has(NTItems.CAST_IRON_ROD))
-                .save(pRecipeOutput, key("crowbar"));
 
         shaped(RecipeCategory.MISC, NTItems.SUBMARINE.get(), 1)
                 .pattern("ACA")

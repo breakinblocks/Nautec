@@ -3,10 +3,15 @@ package com.breakinblocks.nautec.tags;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public final class NTTags {
+    public static final class DamageTypes {
+        public static final TagKey<DamageType> ATLANTEAN_RIFLE = TagKey.create(Registries.DAMAGE_TYPE, Nautec.rl("atlantean_rifle"));
+    }
+
     public static final class Blocks {
         public static final TagKey<Block> GATEWAY_RING_CLEARABLE = ntTag("gateway_ring_clearable");
 

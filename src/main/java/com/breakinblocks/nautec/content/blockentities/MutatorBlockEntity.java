@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.content.menus.MutatorMenu;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -140,6 +141,9 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
             BacteriaInstance result = buildResult(recipe.resultBacteria(), inputBacteria);
             getBacteriaStorage().extractBacteria(0, inputBacteria.getSize(), false);
             getBacteriaStorage().insertBacteria(1, result, false);
+            if (level instanceof ServerLevel serverLevel) {
+                NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.BACTERIA_MUTATED.get(), serverLevel, worldPosition, 16.0);
+            }
         } else {
             getBacteriaStorage().extractBacteria(0, computeFailureShrink(inputBacteria), false);
         }

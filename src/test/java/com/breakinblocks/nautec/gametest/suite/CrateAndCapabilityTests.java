@@ -37,6 +37,24 @@ public final class CrateAndCapabilityTests {
     private static final BlockPos TARGET = new BlockPos(4, 1, 4);
 
     public static void register(NTTestRegistrar r) {
+        r.add("crate/plain_crate_needs_no_tool", 20, helper -> {
+            BlockPos pos = new BlockPos(2, 1, 2);
+            helper.setBlock(pos, NTBlocks.CRATE.get().defaultBlockState());
+            CrateBlockEntity crate = helper.getBlockEntity(pos, CrateBlockEntity.class);
+            helper.assertFalse(crate.isRustedShut(), "A plain crate should not be rusted shut");
+            helper.assertTrue(crate.canPlaceItem(0, new ItemStack(Items.IRON_INGOT)), "A closed plain crate should still take items");
+            helper.succeed();
+        });
+
+        r.add("crate/rusty_crate_stays_sealed", 20, helper -> {
+            BlockPos pos = new BlockPos(2, 1, 2);
+            helper.setBlock(pos, NTBlocks.RUSTY_CRATE.get().defaultBlockState());
+            CrateBlockEntity crate = helper.getBlockEntity(pos, CrateBlockEntity.class);
+            helper.assertTrue(crate.isRustedShut(), "A rusty crate should be rusted shut");
+            helper.assertFalse(crate.canPlaceItem(0, new ItemStack(Items.IRON_INGOT)), "A rusty crate should refuse items until it is etched");
+            helper.succeed();
+        });
+
         r.add("crate/break_keeps_items_in_drop", 60, helper -> {
             helper.setBlock(TARGET, NTBlocks.CRATE.get());
             helper.runAfterDelay(1, () -> {

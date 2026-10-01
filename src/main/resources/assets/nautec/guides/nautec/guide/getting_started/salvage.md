@@ -28,7 +28,7 @@ Many NauTec recipes need parts that you find and repair rather than craft. This 
 | Ocean Ruins (NauTec) | an Aquatic Catalyst, a Rusty Crate, Suspicious Gravel |
 | Crystal Geodes | barrels, Crates and Rusty Crates full of parts and materials |
 | Shipwreck treasure chests | a Crate two times in three |
-| Vanilla ocean ruin chests | a Crate two times in three |
+| Vanilla ocean ruin chests | a Crate two times in three, and one time in four some loose salvage: Prismarine Crystal Shards, Atlantic Gold Nuggets, Rusty Gears, Burnt Coils, Ancient Valves, Damaged Aquatic Chips, Broken Whisks, Deep Kelp, and now and then a Prismarine Lens. The big ruins add a chance at Aquarine Steel Ingots, a Resonant Shard or a Diving Helmet |
 | Warm ocean ruin Suspicious Sand | occasionally a Crate |
 | Buried treasure | Damaged Aquatic Chips a little under half the time |
 

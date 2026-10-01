@@ -30,6 +30,7 @@ import com.breakinblocks.nautec.registries.NTBacteriaStatsSerializers;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTCreativeTabs;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -103,6 +104,7 @@ public final class Nautec {
         NTItems.ITEMS.register(modEventBus);
         NTBlocks.BLOCKS.register(modEventBus);
         NTParticles.PARTICLE_TYPES.register(modEventBus);
+        NTCriteriaTriggers.TRIGGERS.register(modEventBus);
         NTRecipes.SERIALIZERS.register(modEventBus);
         NTRecipes.TYPES.register(modEventBus);
         NTDataAttachments.ATTACHMENTS.register(modEventBus);

@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:first_beam",
+  "criteria": {
+    "monocle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:prism_monocle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.prism_monocle.description"
+    },
+    "icon": {
+      "id": "nautec:prism_monocle"
+    },
+    "title": {
+      "translate": "advancements.nautec.prism_monocle.title"
+    }
+  },
+  "requirements": [
+    [
+      "monocle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

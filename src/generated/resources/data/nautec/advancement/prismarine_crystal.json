@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:first_beam",
+  "criteria": {
+    "found": {
+      "trigger": "nautec:crystal_found"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.prismarine_crystal.description"
+    },
+    "icon": {
+      "id": "nautec:prismarine_crystal"
+    },
+    "title": {
+      "translate": "advancements.nautec.prismarine_crystal.title"
+    }
+  },
+  "requirements": [
+    [
+      "found"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

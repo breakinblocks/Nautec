@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
@@ -128,6 +129,27 @@ public final class ContentIntegrityTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("content/advancement_tab_loads", 5, helper -> {
+            var advancements = helper.getLevel().getServer().getAdvancements();
+            List<String> ids = List.of("root", "first_beam", "prism_monocle", "augmentation_station", "prismarine_crystal",
+                    "resonant_shard", "pressing_the_deep", "atlantean_rifle", "particles_accelerated", "neptunes_trident",
+                    "diving_suit", "abyssal_trench", "deep_survey", "abyssal_maw", "prismatic_angler", "sea_scout",
+                    "submarine_flight", "gateway_found", "gateway_travel", "sea_lane", "ring_maker", "first_culture",
+                    "bacteria_mutation", "industrial_bio_reactor");
+            for (String id : ids) {
+                var holder = advancements.get(Nautec.rl(id));
+                if (holder == null || holder.value().display().isEmpty()) {
+                    helper.fail("Advancement nautec:" + id + " did not load with a display");
+                    return;
+                }
+            }
+            for (String id : List.of("particles_accelerated", "sea_lane", "deep_survey")) {
+                helper.assertValueEqual(AdvancementType.CHALLENGE, advancements.get(Nautec.rl(id)).value().display().orElseThrow().getType(),
+                        "frame of nautec:" + id);
+            }
+            helper.succeed();
+        });
+
         r.add("content/every_structure_still_parses", 5, helper -> {
             HolderLookup.RegistryLookup<Structure> structures =
                     helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);

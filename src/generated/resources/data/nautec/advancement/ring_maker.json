@@ -1,0 +1,36 @@
+{
+  "parent": "nautec:gateway_travel",
+  "criteria": {
+    "gateway": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:gateway"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.ring_maker.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:gateway"
+    },
+    "title": {
+      "translate": "advancements.nautec.ring_maker.title"
+    }
+  },
+  "requirements": [
+    [
+      "gateway"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

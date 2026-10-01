@@ -3,10 +3,12 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.semi;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +47,10 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
         super.commonTick();
 
         setPurity(3f);
+
+        if (level instanceof ServerLevel serverLevel && serverLevel.getGameTime() % 40 == 0) {
+            NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.CRYSTAL_FOUND.get(), serverLevel, worldPosition, 10.0);
+        }
 
         if (duration > 0 && isBreaking()) {
             duration--;

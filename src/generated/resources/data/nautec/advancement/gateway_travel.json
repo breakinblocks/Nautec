@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:gateway_found",
+  "criteria": {
+    "travelled": {
+      "trigger": "nautec:gateway_travel"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.gateway_travel.description"
+    },
+    "icon": {
+      "id": "nautec:gateway_ring"
+    },
+    "title": {
+      "translate": "advancements.nautec.gateway_travel.title"
+    }
+  },
+  "requirements": [
+    [
+      "travelled"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

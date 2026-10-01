@@ -1,0 +1,31 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "hooked": {
+      "conditions": {
+        "rod": {
+          "items": "nautec:nautec_fishing_rod"
+        }
+      },
+      "trigger": "minecraft:fishing_rod_hooked"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.prismatic_angler.description"
+    },
+    "icon": {
+      "id": "nautec:nautec_fishing_rod"
+    },
+    "title": {
+      "translate": "advancements.nautec.prismatic_angler.title"
+    }
+  },
+  "requirements": [
+    [
+      "hooked"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

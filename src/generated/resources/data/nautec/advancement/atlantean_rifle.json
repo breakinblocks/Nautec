@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:pressing_the_deep",
+  "criteria": {
+    "rifle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:atlantean_rifle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.atlantean_rifle.description"
+    },
+    "icon": {
+      "id": "nautec:atlantean_rifle"
+    },
+    "title": {
+      "translate": "advancements.nautec.atlantean_rifle.title"
+    }
+  },
+  "requirements": [
+    [
+      "rifle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

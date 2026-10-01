@@ -3,13 +3,13 @@ package com.breakinblocks.nautec.content.blocks;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
-import com.breakinblocks.nautec.registries.NTItems;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
@@ -54,37 +54,19 @@ public class CrateBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-
-        if (!(level.getBlockEntity(pos) instanceof CrateBlockEntity be)
-                || !stack.is(NTItems.CROWBAR)
-                || state.getValue(BlockStateProperties.OPEN)
-                || !state.is(NTBlocks.CRATE.get()))
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-
-        if (player.getCooldowns().isOnCooldown(stack)) return InteractionResult.FAIL;
-
-        level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.OPEN, true));
-        player.getCooldowns().addCooldown(stack, 30);
-        be.playSound(state, SoundEvents.ANVIL_USE);
-
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else if (player.isSpectator()) {
             return InteractionResult.CONSUME;
         } else if (level.getBlockEntity(pos) instanceof CrateBlockEntity be) {
-            if (state.getValue(BlockStateProperties.OPEN)) {
+            if (be.isRustedShut()) {
+                be.playSound(state, SoundEvents.CHEST_LOCKED);
+                player.sendOverlayMessage(Component.translatable("nautec.crate.rusted_shut").withStyle(ChatFormatting.GOLD));
+            } else {
                 player.openMenu(be);
                 player.awardStat(Stats.OPEN_BARREL);
                 PiglinAi.angerNearbyPiglins((ServerLevel) level, player, true);
-            } else {
-                be.playSound(state, SoundEvents.CHEST_LOCKED);
             }
             return InteractionResult.CONSUME;
         } else {

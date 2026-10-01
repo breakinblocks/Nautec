@@ -1,0 +1,67 @@
+{
+  "criteria": {
+    "catalyst": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:aquatic_catalyst"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "diving_helmet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:diving_helmet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "guide": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:nautec_guide"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "relay": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:prismarine_laser_relay"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "nautec:block/polished_prismarine",
+    "description": {
+      "translate": "advancements.nautec.root.description"
+    },
+    "icon": {
+      "id": "nautec:aquatic_catalyst"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.nautec.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "catalyst",
+      "guide",
+      "diving_helmet",
+      "relay"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

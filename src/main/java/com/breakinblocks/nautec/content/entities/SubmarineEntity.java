@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.SubmarineModuleState;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTParticles;
 import com.geckolib.animatable.GeoEntity;
@@ -624,6 +625,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private void tickServer() {
         autorepair();
         this.modules.tickServer();
+
+        if (this.tickCount % 20 == 0 && isFlying() && getControllingPassenger() instanceof ServerPlayer pilot) {
+            NTCriteriaTriggers.SUBMARINE_FLIGHT.get().trigger(pilot);
+        }
 
         if (getPassengers().isEmpty()) {
             return;

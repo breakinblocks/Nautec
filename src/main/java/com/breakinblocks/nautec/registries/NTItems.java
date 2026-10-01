@@ -259,8 +259,6 @@ public final class NTItems {
 
     public static final DeferredItem<AquarineWrenchItem> AQUARINE_WRENCH = registerItem("aquarine_steel_wrench",
             AquarineWrenchItem::new, new Item.Properties());
-    public static final DeferredItem<Item> CROWBAR = registerItem("crowbar",
-            Item::new, new Item.Properties().stacksTo(1));
 
     private static DeferredItem<SubmarineModuleItem> moduleItem(SubmarineModuleType type) {
         return registerItem(type.itemId(), properties -> new SubmarineModuleItem(type, properties), new Item.Properties());

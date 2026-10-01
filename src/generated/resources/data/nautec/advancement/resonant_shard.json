@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:prismarine_crystal",
+  "criteria": {
+    "shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:resonant_shard"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.resonant_shard.description"
+    },
+    "icon": {
+      "id": "nautec:resonant_shard"
+    },
+    "title": {
+      "translate": "advancements.nautec.resonant_shard.title"
+    }
+  },
+  "requirements": [
+    [
+      "shard"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

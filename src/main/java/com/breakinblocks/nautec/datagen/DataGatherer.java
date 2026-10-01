@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.datagen.loot.LootModifierProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,6 +49,7 @@ public class DataGatherer {
         DatapackRegistryProvider datapackRegistries = generator.addProvider(true, new DatapackRegistryProvider(output, lookupProvider));
         generator.addProvider(true, new BiomeTagProvider(output, datapackRegistries.getRegistryProvider()));
         generator.addProvider(true, new DamageTypeTagProvider(output, datapackRegistries.getRegistryProvider()));
+        generator.addProvider(true, new AdvancementProvider(output, datapackRegistries.getRegistryProvider(), List.of(new NTAdvancements())));
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
         generator.addProvider(true, new BacteriaMaterialProvider(output, lookupProvider));
         generator.addProvider(true, new LithostitchedInjectorProvider(output));

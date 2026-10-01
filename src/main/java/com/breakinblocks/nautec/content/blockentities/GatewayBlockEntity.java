@@ -17,6 +17,7 @@ import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.tags.NTTags;
@@ -428,12 +429,16 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
         Vec3 centre = GatewayRing.centre(worldPosition);
         AABB box = new AABB(centre, centre).inflate(radius);
         double radiusSqr = radius * radius;
+        boolean near = false;
         for (Entity entity : level.getEntitiesOfClass(Entity.class, box, GatewayBlockEntity::wakesGateway)) {
             if (entity.getBoundingBox().getCenter().distanceToSqr(centre) <= radiusSqr) {
-                return true;
+                near = true;
+                if (entity instanceof ServerPlayer player) {
+                    NTCriteriaTriggers.GATEWAY_FOUND.get().trigger(player);
+                }
             }
         }
-        return false;
+        return near;
     }
 
     private void setOpen(ServerLevel level, boolean nowOpen) {
@@ -563,6 +568,9 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
 
             for (Entity part : root.getSelfAndPassengers().toList()) {
                 part.setPortalCooldown(NTConfig.gatewayCooldown);
+                if (part instanceof ServerPlayer player) {
+                    NTCriteriaTriggers.GATEWAY_TRAVEL.get().trigger(player);
+                }
             }
             return true;
         }

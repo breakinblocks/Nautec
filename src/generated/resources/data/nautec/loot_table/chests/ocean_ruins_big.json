@@ -1,0 +1,140 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:prismarine_crystal_shard",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:atlantic_gold_nugget",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:rusty_gear",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:burnt_coil",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:ancient_valve",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:damaged_aquatic_chip",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:broken_whisk",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:deep_kelp",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:prismarine_lens",
+          "weight": 2
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 2.0
+      }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:aquarine_steel_ingot",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:resonant_shard",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "nautec:diving_helmet"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nautec:chests/ocean_ruins_big"
+}

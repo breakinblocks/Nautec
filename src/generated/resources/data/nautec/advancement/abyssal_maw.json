@@ -1,0 +1,40 @@
+{
+  "parent": "nautec:abyssal_trench",
+  "criteria": {
+    "maw": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "nautec:abyssal_maw"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.abyssal_maw.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:abyssal_organ"
+    },
+    "title": {
+      "translate": "advancements.nautec.abyssal_maw.title"
+    }
+  },
+  "requirements": [
+    [
+      "maw"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

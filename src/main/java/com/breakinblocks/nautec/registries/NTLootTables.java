@@ -9,6 +9,8 @@ public final class NTLootTables {
 
     public static final ResourceKey<LootTable> CRATE = register("chests/crate");
     public static final ResourceKey<LootTable> BURIED_TREASURE = register("chests/buried_treasure");
+    public static final ResourceKey<LootTable> OCEAN_RUINS_SMALL = register("chests/ocean_ruins_small");
+    public static final ResourceKey<LootTable> OCEAN_RUINS_BIG = register("chests/ocean_ruins_big");
     public static final ResourceKey<LootTable> GUARDIAN = register("entities/guardian");
     public static final ResourceKey<LootTable> ELDER_GUARDIAN = register("entities/elder_guardian");
     public static final ResourceKey<LootTable> DROWNED = register("entities/drowned");

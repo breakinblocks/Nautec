@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:first_beam",
+  "criteria": {
+    "station": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:augmentation_station"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.augmentation_station.description"
+    },
+    "icon": {
+      "id": "nautec:augmentation_station"
+    },
+    "title": {
+      "translate": "advancements.nautec.augmentation_station.title"
+    }
+  },
+  "requirements": [
+    [
+      "station"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

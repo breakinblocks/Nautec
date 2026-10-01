@@ -1,0 +1,99 @@
+{
+  "parent": "nautec:abyssal_trench",
+  "criteria": {
+    "abyssal_trench": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "nautec:abyssal_trench"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "bioluminescent_grove": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "nautec:bioluminescent_grove"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "hydrothermal_vents": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "nautec:hydrothermal_vents"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "prismarine_reef": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "nautec:prismarine_reef"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.deep_survey.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "nautec:prismarine_frond"
+    },
+    "title": {
+      "translate": "advancements.nautec.deep_survey.title"
+    }
+  },
+  "requirements": [
+    [
+      "abyssal_trench"
+    ],
+    [
+      "bioluminescent_grove"
+    ],
+    [
+      "hydrothermal_vents"
+    ],
+    [
+      "prismarine_reef"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

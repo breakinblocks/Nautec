@@ -5,10 +5,12 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -49,6 +51,9 @@ public class GraftingToolItem extends Item {
                 }
                 if (level.getRandom().nextFloat() <= data.chance()) {
                     graftInto(bacteriaStorage, BacteriaInstance.roll(data.bacteria(), level.registryAccess()));
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        NTCriteriaTriggers.BACTERIA_GRAFTED.get().trigger(serverPlayer);
+                    }
                 }
                 ItemStack itemInHand = context.getItemInHand();
                 itemInHand.hurtAndBreak(1, player, player.getEquipmentSlotForItem(itemInHand));
