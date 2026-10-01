@@ -285,6 +285,16 @@ public class EnUsProvider extends LanguageProvider {
         addFluidType(NTFluids.OIL.getFluidType(), "Oil");
 
         addItem(PRISM_MONOCLE, "Prism Monocle");
+        addItem(EYE_OF_THE_SEA, "Eye of the Sea");
+        add("nautec.eye_of_the_sea.seeking", "Seeking: %s");
+        add("nautec.eye_of_the_sea.cycle_hint", "Sneak right-click to change what it seeks");
+        add("nautec.eye_of_the_sea.not_found", "No %s within range");
+        add("nautec.eye_of_the_sea.target.crystal_geodes", "Crystal Geodes");
+        add("nautec.eye_of_the_sea.target.nautec_ruins", "NauTec Ruins");
+        add("nautec.eye_of_the_sea.target.gateways", "Gateways");
+        add("nautec.eye_of_the_sea.target.ocean_ruins", "Ocean Ruins");
+        add("nautec.eye_of_the_sea.target.ocean_monuments", "Ocean Monuments");
+        add("entity.nautec.eye_of_the_sea", "Eye of the Sea");
         addItem(AQUARINE_STEEL_INGOT, "Aquarine Steel Ingot");
         addItem(ATLANTIC_GOLD_INGOT, "Atlantic Gold Ingot");
         addItem(ATLANTIC_GOLD_NUGGET, "Atlantic Gold Nugget");

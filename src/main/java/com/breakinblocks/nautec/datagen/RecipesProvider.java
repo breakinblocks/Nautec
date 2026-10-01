@@ -126,6 +126,15 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
                 .save(pRecipeOutput, key("prism_monocle"));
 
+        shaped(RecipeCategory.MISC, NTItems.EYE_OF_THE_SEA.get(), 1)
+                .pattern(" P ")
+                .pattern("PEP")
+                .pattern(" P ")
+                .define('P', Items.PRISMARINE)
+                .define('E', Items.ENDER_PEARL)
+                .unlockedBy("has_item", has(Items.ENDER_PEARL))
+                .save(pRecipeOutput, key("eye_of_the_sea"));
+
         brownPolymerRecipes(pRecipeOutput);
 
         shapeless(RecipeCategory.MISC, NTItems.NAUTEC_GUIDE.get(), 1)

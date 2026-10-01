@@ -15,6 +15,8 @@ navigation:
 
 All three generate in any ocean biome, including the four NauTec oceans, only where the ground is below sea level. None of them generate near an ocean monument.
 
+An <ItemLink id="eye_of_the_sea"/> points the way to the nearest one of each kind, and to vanilla ocean ruins and monuments. See [Eye of the Sea](eye_of_the_sea.md).
+
 ***
 
 ## <Color id="gold">Ocean Ruins</Color>

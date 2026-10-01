@@ -522,6 +522,19 @@ public final class NTConfig {
             .comment("How many times faster fish bite while the bobber floats in a lucky fishing zone")
             .defineInRange("luckyZoneBiteSpeed", 2, 1, 10);
 
+    private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_SEARCH_RADIUS = BUILDER
+            .comment("How many chunks around the player the Eye of the Sea searches for its target structure. The Eye of Ender uses 100")
+            .defineInRange("eyeOfTheSeaSearchRadius", 100, 1, 256);
+    private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_COOLDOWN = BUILDER
+            .comment("Ticks before the Eye of the Sea can be thrown again")
+            .defineInRange("eyeOfTheSeaCooldownTicks", 40, 0, 72000);
+    private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_LUCKY_BOOST = BUILDER
+            .comment("Seconds after throwing an Eye of the Sea during which lucky fishing zones form more often near the thrower")
+            .defineInRange("eyeOfTheSeaLuckyBoostSeconds", 300, 0, 36000);
+    private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_LUCKY_MULTIPLIER = BUILDER
+            .comment("How many times more often lucky fishing zones form near a player during the Eye of the Sea boost")
+            .defineInRange("eyeOfTheSeaLuckyZoneMultiplier", 2, 1, 10);
+
     private static final ModConfigSpec.BooleanValue ENABLE_BIOME_INJECTION = WORLDGEN_BUILDER
             .comment("Determines whether Nautec's ocean biomes are added to the world's biome layout. Turning this off leaves vanilla oceans untouched",
                     "This only applies when Lithostitched is absent. With Lithostitched installed, placement comes from the biome injectors in data/nautec/lithostitched/biome_injector, which a datapack can override or empty out")
@@ -643,6 +656,10 @@ public final class NTConfig {
     public static int luckyZoneMaxRadius;
     public static boolean luckyZoneConsumedOnCatch;
     public static int luckyZoneBiteSpeed;
+    public static int eyeOfTheSeaSearchRadius = 100;
+    public static int eyeOfTheSeaCooldownTicks = 40;
+    public static int eyeOfTheSeaLuckyBoostSeconds = 300;
+    public static int eyeOfTheSeaLuckyZoneMultiplier = 2;
 
     public static int abyssalEyesDepth;
     public static double photophoreSkinRadius;
@@ -826,6 +843,10 @@ public final class NTConfig {
         luckyZoneMaxRadius = Math.max(value(LUCKY_ZONE_MIN_RADIUS), value(LUCKY_ZONE_MAX_RADIUS));
         luckyZoneConsumedOnCatch = value(LUCKY_ZONE_CONSUMED);
         luckyZoneBiteSpeed = value(LUCKY_ZONE_BITE_SPEED);
+        eyeOfTheSeaSearchRadius = value(EYE_OF_THE_SEA_SEARCH_RADIUS);
+        eyeOfTheSeaCooldownTicks = value(EYE_OF_THE_SEA_COOLDOWN);
+        eyeOfTheSeaLuckyBoostSeconds = value(EYE_OF_THE_SEA_LUCKY_BOOST);
+        eyeOfTheSeaLuckyZoneMultiplier = value(EYE_OF_THE_SEA_LUCKY_MULTIPLIER);
 
         abyssalEyesDepth = value(ABYSSAL_EYES_DEPTH);
         photophoreSkinRadius = value(PHOTOPHORE_SKIN_RADIUS);

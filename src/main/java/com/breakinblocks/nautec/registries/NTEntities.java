@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.entities.EyeOfTheSeaEntity;
 import com.breakinblocks.nautec.content.entities.ThrownBouncingTrident;
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
@@ -38,6 +39,11 @@ public final class NTEntities {
             () -> EntityType.Builder.<NautecFishingHook>of(NautecFishingHook::new, MobCategory.MISC)
                     .noSave().noSummon().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(5)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("nautec_fishing_hook"))));
+
+    public static final Supplier<EntityType<EyeOfTheSeaEntity>> EYE_OF_THE_SEA = ENTITIES.register("eye_of_the_sea",
+            () -> EntityType.Builder.<EyeOfTheSeaEntity>of(EyeOfTheSeaEntity::new, MobCategory.MISC)
+                    .noSave().noSummon().noLootTable().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(4)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("eye_of_the_sea"))));
 
     public static final Supplier<EntityType<SubmarineEntity>> SUBMARINE = ENTITIES.register("submarine",
             () -> EntityType.Builder.<SubmarineEntity>of(SubmarineEntity::new, MobCategory.MISC)

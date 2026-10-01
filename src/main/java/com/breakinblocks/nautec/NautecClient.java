@@ -77,6 +77,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.entity.ThrownTridentRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.fog.FogData;
@@ -263,6 +264,7 @@ public final class NautecClient {
         event.registerEntityRenderer(NTEntities.NEPTUNES_TRIDENT.get(), NeptunesTridentRenderer::new);
         event.registerEntityRenderer(NTEntities.NAUTEC_FISHING_HOOK.get(), FishingHookRenderer::new);
         event.registerEntityRenderer(NTEntities.SUBMARINE.get(), SubmarineRenderer::new);
+        event.registerEntityRenderer(NTEntities.EYE_OF_THE_SEA.get(), context -> new ThrownItemRenderer<>(context, 1.0F, true));
         event.registerEntityRenderer(NTEntities.SILT_SKIPPER.get(), NTMobRenderers.SiltSkipperRenderer::new);
         event.registerEntityRenderer(NTEntities.LANTERN_JELLY.get(), NTMobRenderers.LanternJellyRenderer::new);
         event.registerEntityRenderer(NTEntities.VENT_CRAWLER.get(), NTMobRenderers.VentCrawlerRenderer::new);

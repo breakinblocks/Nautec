@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": "minecraft:ender_pearl",
+    "P": "minecraft:prismarine"
+  },
+  "pattern": [
+    " P ",
+    "PEP",
+    " P "
+  ],
+  "result": {
+    "id": "nautec:eye_of_the_sea"
+  }
+}

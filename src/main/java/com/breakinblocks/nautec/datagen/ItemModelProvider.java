@@ -133,6 +133,7 @@ public class ItemModelProvider extends ModelProvider {
         petriDishItem(NTItems.PETRI_DISH.get());
 
         basicItem(NTItems.PRISM_MONOCLE.get());
+        basicItem(NTItems.EYE_OF_THE_SEA.get());
 
         basicItem(NTItems.DIVING_HELMET.get());
         basicItem(NTItems.DIVING_CHESTPLATE.get());

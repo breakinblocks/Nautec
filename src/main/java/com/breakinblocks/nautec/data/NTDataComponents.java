@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.PackedGateway;
+import com.breakinblocks.nautec.content.items.SeaEyeTarget;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.data.components.ShockwaveCooldown;
@@ -63,6 +64,9 @@ public final class NTDataComponents {
             () -> builder -> builder
                     .persistent(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
                     .networkSynchronized(ByteBufCodecs.registry(Registries.ENTITY_TYPE)));
+
+    public static final Supplier<DataComponentType<SeaEyeTarget>> SEA_EYE_TARGET = registerDataComponentType("sea_eye_target",
+            () -> builder -> builder.persistent(SeaEyeTarget.CODEC).networkSynchronized(SeaEyeTarget.STREAM_CODEC));
 
     public static <T> Supplier<DataComponentType<T>> registerDataComponentType(
             String name, Supplier<UnaryOperator<DataComponentType.Builder<T>>> builderOperator) {

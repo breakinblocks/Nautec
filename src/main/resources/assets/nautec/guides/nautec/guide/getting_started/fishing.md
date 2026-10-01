@@ -29,6 +29,8 @@ Patches of open water that form on the surface near you while you are on an ocea
 
 Cast your bobber into one. The bobber holds still inside the zone, fish bite twice as fast, and each catch gets an extra roll on the zone's loot on top of your normal catch. Any fishing rod works, including rods from other mods.
 
+Throwing an <ItemLink id="eye_of_the_sea"/> makes zones form near you twice as often for the next 5 minutes. See [Eye of the Sea](eye_of_the_sea.md).
+
 All of these numbers are in `config/nautec-common.toml`, along with `luckyZonesEnabled` to turn zones off.
 
 ***

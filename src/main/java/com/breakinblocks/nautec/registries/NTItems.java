@@ -7,12 +7,14 @@ import com.breakinblocks.nautec.content.items.AquarineArmorItem;
 import com.breakinblocks.nautec.content.items.NautecGuideItem;
 import com.breakinblocks.nautec.content.items.BatteryItem;
 import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
+import com.breakinblocks.nautec.content.items.EyeOfTheSeaItem;
 import com.breakinblocks.nautec.content.items.GraftingToolItem;
 import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.items.RobotArmItem;
+import com.breakinblocks.nautec.content.items.SeaEyeTarget;
 import com.breakinblocks.nautec.content.items.SubmarineItem;
 import com.breakinblocks.nautec.content.items.WaveJetItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
@@ -214,6 +216,9 @@ public final class NTItems {
             BatteryItem::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<PrismMonocleItem> PRISM_MONOCLE = registerItem("prism_monocle",
             PrismMonocleItem::new, new Item.Properties().stacksTo(1));
+    public static final DeferredItem<EyeOfTheSeaItem> EYE_OF_THE_SEA = registerItem("eye_of_the_sea",
+            EyeOfTheSeaItem::new, () -> new Item.Properties().stacksTo(1)
+                    .component(NTDataComponents.SEA_EYE_TARGET, SeaEyeTarget.CRYSTAL_GEODES));
 
     public static final DeferredItem<DivingSuitArmorItem> DIVING_HELMET = registerItem("diving_helmet", props -> new DivingSuitArmorItem(ArmorType.HELMET, props), new Item.Properties());
     public static final DeferredItem<DivingSuitArmorItem> DIVING_CHESTPLATE = registerItem("diving_chestplate", props -> new DivingSuitArmorItem(ArmorType.CHESTPLATE, props), () -> new Item.Properties().component(NTDataComponents.OXYGEN, 0));

@@ -40,6 +40,7 @@ import java.util.UUID;
 @EventBusSubscriber(modid = Nautec.MODID)
 public final class LuckyFishingZoneEvents {
     private static final Map<UUID, Integer> COOLDOWNS = new HashMap<>();
+    private static final Map<UUID, Long> BOOSTS = new HashMap<>();
     private static final RandomSource RANDOM = RandomSource.create();
 
     @SubscribeEvent
@@ -50,7 +51,7 @@ public final class LuckyFishingZoneEvents {
 
         int cooldown = COOLDOWNS.getOrDefault(player.getUUID(), 0);
         if (cooldown > 0) {
-            COOLDOWNS.put(player.getUUID(), cooldown - 1);
+            COOLDOWNS.put(player.getUUID(), cooldown - zoneRateMultiplier(player));
             return;
         }
 
@@ -62,6 +63,25 @@ public final class LuckyFishingZoneEvents {
             return;
         }
         COOLDOWNS.put(player.getUUID(), NTConfig.luckyZoneIntervalSeconds * 20);
+    }
+
+    public static void boost(Player player, int ticks) {
+        if (ticks <= 0) {
+            return;
+        }
+        BOOSTS.merge(player.getUUID(), player.level().getGameTime() + ticks, Math::max);
+    }
+
+    public static int zoneRateMultiplier(Player player) {
+        Long until = BOOSTS.get(player.getUUID());
+        if (until == null) {
+            return 1;
+        }
+        if (player.level().getGameTime() >= until) {
+            BOOSTS.remove(player.getUUID());
+            return 1;
+        }
+        return Math.max(1, NTConfig.eyeOfTheSeaLuckyZoneMultiplier);
     }
 
     private static boolean trySpawn(ServerLevel level, ServerPlayer player) {
@@ -156,6 +176,7 @@ public final class LuckyFishingZoneEvents {
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         COOLDOWNS.clear();
+        BOOSTS.clear();
     }
 
     @SubscribeEvent
