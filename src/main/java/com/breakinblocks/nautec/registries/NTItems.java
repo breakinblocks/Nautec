@@ -221,7 +221,7 @@ public final class NTItems {
                     .component(NTDataComponents.SEA_EYE_TARGET, SeaEyeTarget.CRYSTAL_GEODES));
 
     public static final DeferredItem<DivingSuitArmorItem> DIVING_HELMET = registerItem("diving_helmet", props -> new DivingSuitArmorItem(ArmorType.HELMET, props), new Item.Properties());
-    public static final DeferredItem<DivingSuitArmorItem> DIVING_CHESTPLATE = registerItem("diving_chestplate", props -> new DivingSuitArmorItem(ArmorType.CHESTPLATE, props), () -> new Item.Properties().component(NTDataComponents.OXYGEN, 0));
+    public static final DeferredItem<DivingSuitArmorItem> DIVING_CHESTPLATE = registerItem("diving_chestplate", props -> new DivingSuitArmorItem(ArmorType.CHESTPLATE, props), () -> new Item.Properties().component(NTDataComponents.OXYGEN, AirBottleItem.TANK_SECONDS));
     public static final DeferredItem<DivingSuitArmorItem> DIVING_LEGGINGS = registerItem("diving_leggings", props -> new DivingSuitArmorItem(ArmorType.LEGGINGS, props), new Item.Properties());
     public static final DeferredItem<DivingSuitArmorItem> DIVING_BOOTS = registerItem("diving_boots", props -> new DivingSuitArmorItem(ArmorType.BOOTS, props), new Item.Properties());
 

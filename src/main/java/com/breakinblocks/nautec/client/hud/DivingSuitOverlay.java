@@ -36,12 +36,22 @@ public final class DivingSuitOverlay {
         if (player == null) return;
 
         int oxygenLevels = NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST));
-        if (!player.isUnderWater() || !isWearingFullDivingSuit(player) || oxygenLevels <= 0) {
+        if (!player.isUnderWater() || !isWearingFullDivingSuit(player)) {
             return;
         }
 
         int xBase = guiGraphics.guiWidth() / 2 + 91;
         int yBase = guiGraphics.guiHeight() - rightOffset;
+
+        if (oxygenLevels <= 0) {
+            for (int i = 0; i < 10; i++) {
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, OXYGEN_EMPTY_SPRITE,
+                        xBase - i * spriteSize - spriteSize,
+                        yBase, spriteSize, spriteSize);
+            }
+            return;
+        }
+
         int visibleOxygen = Math.min(oxygenLevels, maxOxygen);
         int fullBubbles = Mth.ceil((double) (visibleOxygen - 2) * 10.0 / maxOxygen);
         int burstingBubbles = Mth.ceil((double) visibleOxygen * 10.0 / maxOxygen) - fullBubbles;

@@ -14,6 +14,7 @@ import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
+import com.breakinblocks.nautec.content.items.AirBottleItem;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTBacterias;
@@ -244,7 +245,7 @@ public final class PersistenceTests {
         r.add("persistence/diving_chestplate_oxygen_component", 40, helper -> helper.runAfterDelay(1, () -> {
             RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, helper.getLevel().registryAccess());
             ItemStack stack = new ItemStack(NTItems.DIVING_CHESTPLATE.get());
-            helper.assertValueEqual(0, stack.getOrDefault(NTDataComponents.OXYGEN, -1), "default oxygen");
+            helper.assertValueEqual(AirBottleItem.TANK_SECONDS, stack.getOrDefault(NTDataComponents.OXYGEN, -1), "default oxygen");
             stack.set(NTDataComponents.OXYGEN, 450);
             Tag encoded = ItemStack.CODEC.encodeStart(ops, stack).getOrThrow();
             ItemStack decoded = ItemStack.CODEC.parse(ops, encoded).getOrThrow();
