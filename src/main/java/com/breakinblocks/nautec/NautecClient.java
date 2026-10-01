@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.client.render.BioReactorRenderer;
 import com.breakinblocks.nautec.client.render.IndustrialBioReactorRenderer;
+import com.breakinblocks.nautec.client.render.JsonMesh;
 import com.breakinblocks.nautec.client.render.RifleArmPose;
 import com.breakinblocks.nautec.client.render.WaveJetClientExtensions;
 import com.breakinblocks.nautec.client.teleport.TeleportFadeRenderer;
@@ -26,7 +27,6 @@ import com.breakinblocks.nautec.client.model.augment.GuardianEyeModel;
 import com.breakinblocks.nautec.client.model.block.AnchorModel;
 import com.breakinblocks.nautec.client.model.block.DrainTopModel;
 import com.breakinblocks.nautec.client.model.block.FishingNetModel;
-import com.breakinblocks.nautec.client.model.block.PrismarineCrystalModel;
 import com.breakinblocks.nautec.client.model.block.RobotArmModel;
 import com.breakinblocks.nautec.client.model.block.WhiskModel;
 import com.breakinblocks.nautec.client.model.entity.AbyssalMawModel;
@@ -45,6 +45,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.AugmentStationExte
 import com.breakinblocks.nautec.client.renderer.blockentities.BacterialAnalyzerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ChargerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.FishingStationBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.LongDistanceLaserBERenderer;
@@ -150,6 +151,11 @@ public final class NautecClient {
         event.registerPipeline(NTRenderPipelines.TELEPORT_BLUR);
         event.registerPipeline(NTRenderPipelines.TIDAL_SHOCKWAVE);
         event.registerPipeline(NTRenderPipelines.REACTOR_GLOW);
+        event.registerPipeline(NTRenderPipelines.CRYSTAL_SHELL);
+        event.registerPipeline(NTRenderPipelines.CRYSTAL_CORE);
+        event.registerPipeline(NTRenderPipelines.CRYSTAL_HALO);
+        event.registerPipeline(NTRenderPipelines.GATEWAY_GLOW);
+        event.registerPipeline(NTRenderPipelines.GATEWAY_HORIZON);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -161,6 +167,8 @@ public final class NautecClient {
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.72F, 0.92F, 0.98F, 0.02F, 0.12F, 14, 26));
         event.registerSpriteSet(NTParticles.BOOST_TRAIL.get(),
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.24F, 0.99F, 1.0F, 0.01F, 0.16F, 10, 20));
+        event.registerSpriteSet(NTParticles.CRYSTAL_MOTE.get(),
+                sprites -> new DriftingMoteParticle.Provider(sprites, 0.45F, 0.93F, 1.0F, 0.018F, 0.06F, 50, 90));
         event.registerSpriteSet(NTParticles.SONAR_MOTE.get(),
                 sprites -> new DriftingMoteParticle.Provider(sprites, 0.38F, 1.0F, 0.75F, 0.015F, 0.08F, 40, 70));
         event.registerSpriteSet(NTParticles.SHIELD_RING.get(),
@@ -267,6 +275,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_CRYSTAL.get(), PrismarineCrystalBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_CRYSTAL_PART.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DECORATIVE_PRISMARINE_CRYSTAL.get(), DecorativePrismarineCrystalBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.GATEWAY.get(), GatewayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DRAIN.get(), DrainBERenderer::new);
@@ -297,11 +306,11 @@ public final class NautecClient {
             AugmentLayerRenderer.createRenderers();
             AugmentStationExtensionBERenderer.createRenderers();
         });
+        event.addListener(Nautec.rl("meshes"), (ResourceManagerReloadListener) JsonMesh::reloadAll);
     }
 
     private void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(DrainTopModel.LAYER_LOCATION, DrainTopModel::createBodyLayer);
-        event.registerLayerDefinition(PrismarineCrystalModel.LAYER_LOCATION, PrismarineCrystalModel::createBodyLayer);
         event.registerLayerDefinition(AnchorModel.LAYER_LOCATION, AnchorModel::createBodyLayer);
         event.registerLayerDefinition(FishingNetModel.LAYER_LOCATION, FishingNetModel::createBodyLayer);
         event.registerLayerDefinition(WhiskModel.LAYER_LOCATION, WhiskModel::createBodyLayer);

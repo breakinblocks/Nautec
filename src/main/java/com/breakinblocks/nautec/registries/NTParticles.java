@@ -29,6 +29,8 @@ public final class NTParticles {
             () -> new SimpleParticleType(true));
     public static final Supplier<SimpleParticleType> TELEPORT_SWIRL = PARTICLE_TYPES.register("teleport_swirl",
             () -> new SimpleParticleType(true));
+    public static final Supplier<SimpleParticleType> CRYSTAL_MOTE = PARTICLE_TYPES.register("crystal_mote",
+            () -> new SimpleParticleType(false));
     public static final Supplier<SimpleParticleType> LASER_SPARK = PARTICLE_TYPES.register("laser_spark",
             () -> new SimpleParticleType(false));
 

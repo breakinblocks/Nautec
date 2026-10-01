@@ -39,7 +39,7 @@ Used in the [Gateway](gateway.md), the [Abyssal Pressure Forge](pressure_forge.m
 
 Made in an [Abyssal Pressure Forge](pressure_forge.md) from a Resonant Shard. Needs purity 2.0, the Forge at Y -20 or lower, and 10 seconds per crystal.
 
-Used in the [Atlantean Rifle](atlantean_rifle.md) and [Neptune's Trident](neptunes_trident.md).
+Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md) and the [Gateway](gateway.md).
 
 ***
 
@@ -50,6 +50,6 @@ Used in the [Atlantean Rifle](atlantean_rifle.md) and [Neptune's Trident](neptun
 
 Made in an [Abyssal Pressure Forge](pressure_forge.md) from an Aquarine Steel Ingot. Needs purity 2.5, the Forge at Y -40 or lower, and 15 seconds per plate.
 
-Used in the [Atlantean Rifle](atlantean_rifle.md) and [Neptune's Trident](neptunes_trident.md).
+Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md) and the [Gateway](gateway.md).
 
 It also repairs a <ItemLink id="submarine"/> on an anvil. Put the picked-up Sea Scout in the left slot and plating in the right. Each plate restores 20% of the hull and costs 2 levels. The repair item and the amount per item are `submarineRepairItem` and `submarineRepairPercent` in `config/nautec-common.toml`.

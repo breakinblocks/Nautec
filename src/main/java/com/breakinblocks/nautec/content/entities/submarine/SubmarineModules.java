@@ -262,7 +262,7 @@ public class SubmarineModules {
                 yield true;
             }
             case TELEPORT -> beginTeleport(slot, pilot);
-            case SOLAR, ARMOR -> false;
+            case SOLAR, ARMOR, FLIGHT -> false;
         };
     }
 

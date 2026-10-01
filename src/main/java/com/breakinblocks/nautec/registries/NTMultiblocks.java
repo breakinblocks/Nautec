@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
+import com.breakinblocks.nautec.content.multiblocks.GatewayMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -22,4 +23,6 @@ public final class NTMultiblocks {
             BioReactorMultiblock::new);
     public static final Supplier<IndustrialBioReactorMultiblock> INDUSTRIAL_BIO_REACTOR = MULTIBLOCKS.register("industrial_bio_reactor",
             IndustrialBioReactorMultiblock::new);
+    public static final Supplier<GatewayMultiblock> GATEWAY = MULTIBLOCKS.register("gateway",
+            GatewayMultiblock::new);
 }

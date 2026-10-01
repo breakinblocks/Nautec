@@ -26,6 +26,7 @@ The hull only draws power while someone is aboard. An empty hull, parked or drif
 | Sitting still | 1 |
 | Moving | 6 more |
 | Keeping the crew breathing | 2 more |
+| Flying, with a [Flight Module](flight_module.md) | 4 more |
 
 A crewed hull under way uses 9 per tick, so a full cell gives about an hour and a half of travel. Modules draw on the same cell and cost far more per use, so a busy dive empties it much sooner (see [Modules](submarine_modules.md)).
 

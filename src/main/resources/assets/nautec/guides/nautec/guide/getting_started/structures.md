@@ -50,9 +50,9 @@ The closed crates need a <ItemLink id="crowbar"/>, and the rusty ones need etchi
 
 ## <Color id="gold">Underwater Gateways</Color>
 
-A small pad of Polished Prismarine with a Dark Prismarine Pillar at each corner and a <ItemLink id="gateway"/> in the middle. They are much rarer than ruins and geodes.
+A small platform of Polished Prismarine with a Dark Prismarine Pillar at each corner and a <ItemLink id="gateway"/> in the middle. The Gateway grows its full ring the first time the chunk loads. They are much rarer than ruins and geodes.
 
-Every gateway that generates starts with the same address, so the ones you find already form a network. See [Gateway](nautec:deep_engineering/gateway.md) for how travel works.
+Each one is half of a pair with its own address. The first trip through it builds the other half about 1,500 blocks away in another ocean. See [Gateway](nautec:deep_engineering/gateway.md) for how travel works.
 
 ***
 

@@ -61,6 +61,8 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.SUBMARINE_DOCK.get());
         dropSelf(NTBlocks.PRESSURE_FORGE.get());
         dropSelf(NTBlocks.GATEWAY.get());
+        dropSelf(NTBlocks.GATEWAY_RING.get());
+        add(NTBlocks.GATEWAY_RING_PART.get(), noDrop());
         dropSelf(NTBlocks.RESONANCE_CHAMBER.get());
         dropSelf(NTBlocks.PRISMATIC_MIRROR.get());
         dropSelf(NTBlocks.BEAM_SPLITTER.get());

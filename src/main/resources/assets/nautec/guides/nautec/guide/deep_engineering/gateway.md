@@ -6,54 +6,163 @@ navigation:
   parent: deep_engineering/deep_engineering-index.md
 item_ids:
   - nautec:gateway
+  - nautec:gateway_ring
 ---
 
 # <Color id="light_purple">Gateway</Color>
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="gateway" scale="2"/>
-  Teleports whatever stands on it to the nearest other Gateway with the same address.
+  A standing ring 13 blocks across. Anything that passes through its event horizon comes out of another ring with the same address.
 </Column>
 
-A Gateway is a flat plate. It needs no power, no beam and no fuel. Place two with the same address and anything that steps onto one is sent to the other.
+The opening is 9 blocks wide, so a <ItemLink id="submarine"/> fits through with about three blocks to spare on every side.
 
-Gateways also generate on the ocean floor as small prismarine pads. Every generated Gateway has the default address, four Cyan fins, and so does every Gateway you craft. A new Gateway on the default address joins that network straight away.
+The bottom of the ring is two blocks thick, so the opening starts two blocks above the ground the ring stands on. Underwater you can swim or steer straight in. On land, build a step or a ramp up to it.
+
+***
+
+## <Color id="gold">Wild Gateways</Color>
+
+Gateways stand on the ocean floor on small prismarine platforms. Each one is half of a pair with its own address, and needs no power.
+
+The first time anything goes through a wild Gateway, the far half of its pair is built in another ocean about 1,500 blocks away, and you arrive there. From then on the two rings are a fixed route. Nothing has to be explored or loaded beforehand.
+
+Wild Gateways from before this change, which all started on Cyan, take their own pair address when their ring builds.
+
+You can retune a wild Gateway like any other. Give it the address of a ring you built and it links there instead of to its far half. Give it an address no other ring has and its next trip builds a new far half for that address.
+
+***
+
+## <Color id="gold">Crafting and moving a Gateway</Color>
+
+A crafted Gateway comes packed, with its whole ring inside it. Place it and the full ring builds at once, standing across the direction you are facing, with its front towards you.
+
+Sneak and right-click any part of a formed ring with a wrench (the <ItemLink id="aquarine_steel_wrench"/> or any other mod's wrench) to pack it up again. You get one packed Gateway back, keeping its address, so you can carry a wild Gateway home and keep its route.
+
+A packed Gateway only builds into air, water, kelp, seagrass, coral and other blocks you could place over. If something solid is in the way, it waits as a bare Gateway and the <ItemLink id="prism_monocle"/> names the block. Clear it and the ring finishes itself.
+
+A formed ring cannot be mined for anything. Breaking a part takes as long as breaking obsidian by hand, drops nothing, and turns the rest of the ring back into plain <ItemLink id="gateway_ring"/>. Use a wrench instead.
+
+To repair a broken ring, put segments back in the circle below and right-click the Gateway with a wrench.
+
+<GameScene zoom="2" background="#333333" interactive={true}>
+  <Block id="nautec:gateway_ring" x="4" y="0" z="0"/>
+  <Block id="nautec:gateway_ring" x="5" y="0" z="0"/>
+  <Block id="nautec:gateway" x="6" y="0" z="0"/>
+  <Block id="nautec:gateway_ring" x="7" y="0" z="0"/>
+  <Block id="nautec:gateway_ring" x="8" y="0" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="3" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="4" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="5" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="6" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="7" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="8" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="9" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="1" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="3" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="9" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="2" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="3" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="3" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="3" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="3" z="0"/>
+  <Block id="nautec:gateway_ring" x="0" y="4" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="4" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="4" z="0"/>
+  <Block id="nautec:gateway_ring" x="12" y="4" z="0"/>
+  <Block id="nautec:gateway_ring" x="0" y="5" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="5" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="5" z="0"/>
+  <Block id="nautec:gateway_ring" x="12" y="5" z="0"/>
+  <Block id="nautec:gateway_ring" x="0" y="6" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="6" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="6" z="0"/>
+  <Block id="nautec:gateway_ring" x="12" y="6" z="0"/>
+  <Block id="nautec:gateway_ring" x="0" y="7" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="7" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="7" z="0"/>
+  <Block id="nautec:gateway_ring" x="12" y="7" z="0"/>
+  <Block id="nautec:gateway_ring" x="0" y="8" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="8" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="8" z="0"/>
+  <Block id="nautec:gateway_ring" x="12" y="8" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="9" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="9" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="9" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="9" z="0"/>
+  <Block id="nautec:gateway_ring" x="1" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="3" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="9" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="11" y="10" z="0"/>
+  <Block id="nautec:gateway_ring" x="2" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="3" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="4" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="5" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="6" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="7" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="8" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="9" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="10" y="11" z="0"/>
+  <Block id="nautec:gateway_ring" x="4" y="12" z="0"/>
+  <Block id="nautec:gateway_ring" x="5" y="12" z="0"/>
+  <Block id="nautec:gateway_ring" x="6" y="12" z="0"/>
+  <Block id="nautec:gateway_ring" x="7" y="12" z="0"/>
+  <Block id="nautec:gateway_ring" x="8" y="12" z="0"/>
+</GameScene>
+
+***
+
+## <Color id="gold">Power</Color>
+
+A wild Gateway that has never been moved needs no power. Any Gateway that was crafted or moved needs AP: point a laser at the Gateway block at the bottom of the ring (see [Laser Power](nautec:getting_started/laser_power.md)). It holds 5,000 AP and uses 100 AP every tick while it is open. With less than that stored, it will not open.
+
+***
+
+## <Color id="gold">Opening</Color>
+
+A ring with a match opens when a player or a submarine comes within about 12 blocks, so you can steer straight in. It dials first: the glyph track spins, the address chevrons light up in their colours, and the event horizon bursts open. It closes again a few seconds after everyone has gone.
+
+A redstone signal into the Gateway block holds the ring shut.
 
 ***
 
 ## <Color id="gold">Addresses</Color>
 
-A Gateway has four coloured fins, one on each corner of its top. The four colours together are its address. Each fin can be one of eight colours, giving 4,096 addresses:
+Four of the nine chevrons hold the address: upper left, upper right, lower left and lower right, as seen from the front. Each can be one of eight colours, giving 4,096 addresses:
 
 White, Light Blue, Cyan, Blue, Purple, Magenta, Lime and Black.
 
-Setting a fin costs one dye of the new colour. There are two ways to do it:
+Changing the address is free. There are two ways to do it:
 
-* Right-click a corner of the top face with one of those dyes. That corner's fin changes and one dye is used.
-* Right-click the Gateway with an empty hand to open the address screen. Rows 1 to 4 are the north-west, north-east, south-west and south-east fins. Pick a colour for each, check the cost line, and press Set. It takes one dye from your inventory for each fin you changed.
+* Right-click the ring near an address chevron while holding one of those dyes. The nearest chevron takes that colour, and the dye is not used up.
+* Right-click the ring with an empty hand to open the address screen. Rows 1 to 4 are the upper left, upper right, lower left and lower right chevrons. Pick a colour for each and press Set.
 
-Look at a Gateway through a <ItemLink id="prism_monocle"/> to read its address.
-
-Breaking a Gateway keeps its address on the dropped item, so you can move it without dyeing it again.
+Look at any part of the ring through a <ItemLink id="prism_monocle"/> to read its address, whether it is open, and its stored power.
 
 ***
 
 ## <Color id="gold">Travelling</Color>
 
-Step onto a Gateway and within half a second you are moved to the nearest other Gateway with the same address. Anything you are riding goes with you, along with anyone else riding it, so a <ItemLink id="submarine"/> arrives with its crew on board. Mobs and dropped items travel too.
+Pass through the horizon from either side and you come out of the matching ring's front, still moving at the same speed and at the same spot across the opening, facing away from it. Anything you are riding goes with you, along with anyone else riding it, so a submarine arrives with its crew on board. Mobs and dropped items travel too.
 
-After arriving, the destination plate does not send you anywhere until you step off it, so you can stand there as long as you like. Step off and back on to travel again. Any Gateway also waits 5 seconds after a trip before it will send you (`gatewayCooldown` in `config/nautec-common.toml`, 100 ticks).
+* If the front of the far ring is blocked, you come out of its back instead. If both sides are blocked, nothing happens and you pass through as if the ring were closed.
+* After a trip, nothing can go through a Gateway again for 5 seconds (`gatewayCooldown` in `config/nautec-common.toml`, 100 ticks), so you do not bounce straight back.
+* The far ring can be in an unloaded chunk. The Gateway loads it when you travel.
+* You always arrive at the nearest matching ring. If several rings share one address, give each pair its own address so you arrive where you meant to.
 
-Things to check when a Gateway does not send you:
-
-* The destination has to be in the same dimension. It can be in an unloaded chunk: the Gateway loads it when you travel.
-* There has to be room for you (and your vehicle) on top of the destination.
-* The destination is always the nearest match. If several Gateways share one address, give each pair its own address so you arrive where you meant to.
-
-A Gateway with no match makes a low sound and puffs particles when something stands on it.
+A ring with no match stays dark and lets everything pass straight through.
 
 ***
 
-### <Color id="aqua">Gateway Recipe</Color>
+### <Color id="aqua">Recipes</Color>
 
 <Recipe id="nautec:gateway"/>
+
+<Recipe id="nautec:gateway_ring"/>

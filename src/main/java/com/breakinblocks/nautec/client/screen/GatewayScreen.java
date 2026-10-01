@@ -13,9 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GatewayScreen extends Screen {
     private static final int SWATCH = 18;
@@ -31,8 +29,7 @@ public class GatewayScreen extends Screen {
     private static final int BORDER = ArtPalette.CASING;
     private static final int ROW_BACKDROP = ArtPalette.ROW_PANEL;
     private static final int SELECTED = 0xFFFFFFFF;
-    private static final int AFFORDABLE = 0x60000000;
-    private static final int UNAFFORDABLE = 0xC0101010;
+    private static final int UNSELECTED = 0x60000000;
 
     private final BlockPos pos;
     private final GatewayAddress original;
@@ -88,41 +85,8 @@ public class GatewayScreen extends Screen {
 
     private void refreshApply() {
         if (this.applyButton != null) {
-            this.applyButton.active = !this.selected.equals(this.original) && affordable();
+            this.applyButton.active = !this.selected.equals(this.original);
         }
-    }
-
-    private Map<DyeColor, Integer> cost() {
-        Map<DyeColor, Integer> cost = new HashMap<>();
-        for (DyeColor colour : SetGatewayAddressPayload.costOf(this.original, this.selected)) {
-            cost.merge(colour, 1, Integer::sum);
-        }
-        return cost;
-    }
-
-    private boolean affordable() {
-        if (this.minecraft == null || this.minecraft.player == null) {
-            return false;
-        }
-        if (this.minecraft.player.getAbilities().instabuild) {
-            return true;
-        }
-        for (Map.Entry<DyeColor, Integer> entry : cost().entrySet()) {
-            if (held(entry.getKey()) < entry.getValue()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private int held(DyeColor colour) {
-        if (this.minecraft == null || this.minecraft.player == null) {
-            return 0;
-        }
-        if (this.minecraft.player.getAbilities().instabuild) {
-            return Integer.MAX_VALUE;
-        }
-        return SetGatewayAddressPayload.count(this.minecraft.player.getInventory(), GatewayAddress.dyeItem(colour));
     }
 
     private void apply() {
@@ -154,41 +118,21 @@ public class GatewayScreen extends Screen {
                 DyeColor dye = palette.get(colour);
                 int sx = swatchX(colour);
                 boolean chosen = this.selected.slots().get(slot) == dye;
-                boolean canPay = chosen || this.original.slots().get(slot) == dye || held(dye) > 0;
 
                 if (chosen) {
                     guiGraphics.fill(sx - 2, rowY - 2, sx + SWATCH + 2, rowY + SWATCH + 2, SELECTED);
                 }
                 guiGraphics.fill(sx, rowY, sx + SWATCH, rowY + SWATCH, 0xFF000000 | dye.getTextColor());
-                if (!canPay) {
-                    guiGraphics.fill(sx, rowY, sx + SWATCH, rowY + SWATCH, UNAFFORDABLE);
-                } else if (!chosen) {
-                    guiGraphics.fill(sx, rowY, sx + SWATCH, rowY + SWATCH, AFFORDABLE);
+                if (!chosen) {
+                    guiGraphics.fill(sx, rowY, sx + SWATCH, rowY + SWATCH, UNSELECTED);
                 }
             }
         }
 
-        guiGraphics.centeredText(this.font, costText(), x + PANEL_W / 2, y + PANEL_H - FOOTER_H + 6,
-                affordable() ? 0xFFB9CCCF : 0xFFFF6B6B);
+        guiGraphics.centeredText(this.font, Component.translatable(this.selected.equals(this.original) ? "nautec.gateway.no_change" : "nautec.gateway.free"),
+                x + PANEL_W / 2, y + PANEL_H - FOOTER_H + 6, 0xFFB9CCCF);
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
-    }
-
-    private Component costText() {
-        Map<DyeColor, Integer> cost = cost();
-        if (cost.isEmpty()) {
-            return Component.translatable("nautec.gateway.no_change");
-        }
-
-        Component text = Component.translatable("nautec.gateway.cost");
-        for (Map.Entry<DyeColor, Integer> entry : cost.entrySet()) {
-            DyeColor dye = entry.getKey();
-            text = Component.empty().append(text).append(Component.literal(" "))
-                    .append(Component.translatable("nautec.gateway.cost_entry",
-                                    entry.getValue(), Component.translatable(GatewayAddress.dyeItem(dye).getDescriptionId()))
-                            .withStyle(style -> style.withColor(dye.getTextColor())));
-        }
-        return text;
     }
 
     @Override

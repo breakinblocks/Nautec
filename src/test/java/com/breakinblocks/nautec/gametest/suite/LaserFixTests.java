@@ -25,6 +25,8 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -416,6 +418,60 @@ public final class LaserFixTests {
             }
             helper.assertBlockPresent(Blocks.STONE, aboveOldRange);
             helper.assertValueEqual(1, player.getMainHandItem().getCount(), "item consumed once the crystal is placed");
+            helper.succeed();
+        });
+
+        r.add("laserfix/prismarine_crystal_placed_underwater_stays_waterlogged", 40, helper -> {
+            BlockPos floorClick = new BlockPos(4, 0, 4);
+            BlockPos core = new BlockPos(4, 4, 4);
+            BlockPos top = core.above(2);
+            for (int i = 0; i < 6; i++) {
+                helper.setBlock(top.below(i), Blocks.WATER.defaultBlockState());
+            }
+            ItemStack stack = new ItemStack(NTBlocks.PRISMARINE_CRYSTAL.asItem());
+            Player player = player(helper, GameType.SURVIVAL, stack);
+
+            helper.placeAt(player, stack, floorClick, Direction.UP);
+
+            helper.assertBlockPresent(NTBlocks.PRISMARINE_CRYSTAL.get(), core);
+            for (int i = 0; i < 6; i++) {
+                BlockPos pos = top.below(i);
+                helper.assertTrue(helper.getBlockState(pos).getValue(BlockStateProperties.WATERLOGGED), "crystal block at " + pos + " lost its water");
+                helper.assertTrue(helper.getBlockState(pos).getFluidState().is(Fluids.WATER), "no water reported at " + pos);
+            }
+            helper.succeed();
+        });
+
+        r.add("laserfix/prismarine_crystal_placed_in_air_stays_dry", 40, helper -> {
+            BlockPos floorClick = new BlockPos(4, 0, 4);
+            BlockPos top = new BlockPos(4, 6, 4);
+            ItemStack stack = new ItemStack(NTBlocks.PRISMARINE_CRYSTAL.asItem());
+            Player player = player(helper, GameType.SURVIVAL, stack);
+
+            helper.placeAt(player, stack, floorClick, Direction.UP);
+
+            for (int i = 0; i < 6; i++) {
+                BlockPos pos = top.below(i);
+                helper.assertFalse(helper.getBlockState(pos).getValue(BlockStateProperties.WATERLOGGED), "crystal block at " + pos + " became waterlogged in air");
+            }
+            helper.succeed();
+        });
+
+        r.add("laserfix/decorative_crystal_placed_underwater_stays_waterlogged", 40, helper -> {
+            BlockPos bottom = new BlockPos(4, 1, 4);
+            for (int i = 0; i < 6; i++) {
+                helper.setBlock(bottom.above(i), Blocks.WATER.defaultBlockState());
+            }
+            ItemStack stack = new ItemStack(NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem());
+            Player player = player(helper, GameType.SURVIVAL, stack);
+
+            helper.placeAt(player, stack, bottom.below(), Direction.UP);
+
+            helper.assertBlockPresent(NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get(), bottom);
+            for (int i = 0; i < 6; i++) {
+                BlockPos pos = bottom.above(i);
+                helper.assertTrue(helper.getBlockState(pos).getValue(BlockStateProperties.WATERLOGGED), "decorative block at " + pos + " lost its water");
+            }
             helper.succeed();
         });
     }

@@ -90,6 +90,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(SHIELD_MODULE, "Shield Module");
         addItem(IMPULSE_LASER_MODULE, "Impulse Laser Module");
         addItem(TELEPORT_MODULE, "Teleport Module");
+        addItem(FLIGHT_MODULE, "Flight Module");
 
         add("nautec.submarine.ability.cooldown", "That module is still cycling");
         add("nautec.submarine.ability.no_power", "Not enough power for that module");
@@ -100,10 +101,20 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.gateway.title", "Gateway Address");
         add("nautec.gateway.apply", "Set");
         add("nautec.gateway.cancel", "Cancel");
-        add("nautec.gateway.cost", "Costs");
-        add("nautec.gateway.cost_entry", "%sx %s");
-        add("nautec.gateway.no_change", "Pick a colour for each of the four fins");
-        add("nautec.gateway.missing_dye", "You do not have the dye for that address");
+        add("nautec.gateway.no_change", "Pick a colour for each of the four address chevrons");
+        add("nautec.gateway.free", "Changing the address is free");
+        add("nautec.gateway.status.open", "Open");
+        add("nautec.gateway.status.ready", "Ready: opens when a player or submarine comes within 12 blocks");
+        add("nautec.gateway.status.unlinked", "Idle: no other ring has this address");
+        add("nautec.gateway.status.no_power", "No power: aim a laser at the Gateway");
+        add("nautec.gateway.status.redstone", "Held shut by a redstone signal");
+        add("nautec.gateway.status.wild", "Wild ring: builds its far end on the first trip if it has none");
+        add("nautec.gateway.status.building", "Building its ring");
+        add("nautec.gateway.status.unformed", "No ring: build Gateway Ring Segments around it and use a wrench");
+        add("nautec.gateway.status.blocked", "Ring blocked at %s %s %s: clear that block and it finishes building itself");
+        add("nautec.gateway.power", "Power: %s / %s AP, uses %s AP/t while open");
+        add("nautec.gateway.packed", "Packed ring: place it to rebuild the whole ring facing you");
+        add("nautec.gateway.packed_wild", "Wild ring: still builds its far end on the first trip if it has none");
 
         add("subtitles.nautec.submarine.engine", "Sea Scout thrusters churn");
         add("subtitles.nautec.submarine.ambient", "Sea Scout hull hums");
@@ -184,6 +195,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.submarine.module.impulse_laser", "Impulse Laser Module");
         add("nautec.submarine.module.impulse_laser.desc", "Twin prismatic beams that cut whatever the nose is pointed at");
         add("nautec.submarine.module.teleport", "Teleport Module");
+        add("nautec.submarine.module.flight", "Flight Module");
+        add("nautec.submarine.module.flight.desc", "Lifts the hull out of the water so it flies, half again as fast as it swims");
         add("nautec.submarine.module.teleport.desc", "Folds the water around the hull and drops it at a bound anchor");
         add("nautec.submarine.module.teleport.unbound", "No anchor bound");
         add("nautec.submarine.module.teleport.bound", "Anchor bound to %s");
@@ -325,6 +338,8 @@ public class EnUsProvider extends LanguageProvider {
         addItem(FLAWLESS_PRISMARINE_CRYSTAL, "Flawless Prismarine Crystal");
         addItem(DEEP_STEEL_PLATING, "Deep Steel Plating");
         addBlock(NTBlocks.GATEWAY, "Gateway");
+        addBlock(NTBlocks.GATEWAY_RING, "Gateway Ring Segment");
+        addBlock(NTBlocks.GATEWAY_RING_PART, "Gateway Ring");
         addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
         addItem(RESONANT_SHARD, "Resonant Shard");
         addBlock(NTBlocks.PRISMATIC_MIRROR, "Prismatic Mirror");

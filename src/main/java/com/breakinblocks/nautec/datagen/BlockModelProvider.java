@@ -103,6 +103,9 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.PRESSURE_FORGE.get(), artModel(NTBlocks.PRESSURE_FORGE.get()));
 
         simpleBlock(NTBlocks.GATEWAY.get(), artModel(NTBlocks.GATEWAY.get()));
+        simpleBlock(NTBlocks.GATEWAY_RING.get());
+        simpleBlock(NTBlocks.GATEWAY_RING_PART.get(), ModelTemplates.PARTICLE_ONLY.create(NTBlocks.GATEWAY_RING_PART.get(),
+                TextureMapping.particle(blockTexture(NTBlocks.GATEWAY_RING.get())), blockModels.modelOutput));
 
         simpleBlock(NTBlocks.RESONANCE_CHAMBER.get(), artModel(NTBlocks.RESONANCE_CHAMBER.get()));
 

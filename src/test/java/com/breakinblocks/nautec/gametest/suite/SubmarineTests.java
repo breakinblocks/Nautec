@@ -755,6 +755,64 @@ public final class SubmarineTests {
             });
         });
 
+        r.add("submarine/flight_module_is_passive", 20, helper -> {
+            helper.assertTrue(SubmarineModuleType.FLIGHT.isPassive(), "the flight module should work from any slot");
+            helper.assertValueEqual(0, SubmarineModuleType.FLIGHT.powerCost(), "flight has no per-use cost");
+            helper.assertValueEqual(SubmarineEntity.maxSpeed(false) * NTConfig.submarineFlightSpeedMultiplier, SubmarineEntity.maxSpeed(true),
+                    "flying top speed against the swimming top speed");
+            helper.assertTrue(SubmarineEntity.maxSpeed(true) <= 1.5D, "flying top speed must stay under the server movement check");
+            helper.succeed();
+        });
+
+        r.add("submarine/flight_module_holds_the_hull_up", 80, helper -> {
+            BlockPos high = new BlockPos(4, 30, 4);
+            SubmarineEntity flyer = helper.spawn(NTEntities.SUBMARINE.get(), high);
+            SubmarineEntity faller = helper.spawn(NTEntities.SUBMARINE.get(), high.offset(12, 0, 0));
+            flyer.setPowerStored(NTConfig.submarinePowerCapacity);
+            faller.setPowerStored(NTConfig.submarinePowerCapacity);
+            flyer.setModule(0, new ItemStack(NTItems.FLIGHT_MODULE.get()));
+            double startFlyer = flyer.getY();
+            double startFaller = faller.getY();
+            helper.runAfterDelay(20, () -> {
+                double flyerDrop = startFlyer - flyer.getY();
+                double fallerDrop = startFaller - faller.getY();
+                helper.assertTrue(flyer.isFlying(), "a powered hull with a flight module in the air should be flying");
+                helper.assertFalse(faller.isFlying(), "a hull without the module should not be flying");
+                helper.assertTrue(flyerDrop < 3.0D, "an unpiloted flying hull should only settle slowly, but dropped " + flyerDrop);
+                helper.assertTrue(fallerDrop > flyerDrop + 2.0D, "a hull without the module should fall much faster, dropped " + fallerDrop + " against " + flyerDrop);
+                flyer.discard();
+                faller.discard();
+                helper.succeed();
+            });
+        });
+
+        r.add("submarine/flight_needs_power", 20, helper -> {
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 30, 4));
+            submarine.setModule(0, new ItemStack(NTItems.FLIGHT_MODULE.get()));
+            submarine.setPowerStored(0);
+            helper.assertFalse(submarine.canFly(), "a flat hull cannot fly");
+            submarine.setPowerStored(100);
+            helper.assertTrue(submarine.canFly(), "a charged hull with the module can fly");
+            submarine.discard();
+            helper.succeed();
+        });
+
+        r.add("submarine/flying_draws_extra_power", 60, helper -> {
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 30, 4));
+            submarine.setModule(0, new ItemStack(NTItems.FLIGHT_MODULE.get()));
+            submarine.setPowerStored(10_000);
+            LivingEntity rider = helper.spawn(EntityType.PIG, new BlockPos(4, 30, 4));
+            rider.startRiding(submarine);
+            helper.runAfterDelay(20, () -> {
+                int perTick = NTConfig.submarineIdlePowerUsage + NTConfig.submarineOxygenPowerUsage + NTConfig.submarineFlightPowerUsage;
+                helper.assertTrue(10_000 - submarine.getPowerStored() >= perTick * 15,
+                        "a flying hull should draw its flight upkeep, drew " + (10_000 - submarine.getPowerStored()) + " in 20 ticks");
+                rider.discard();
+                submarine.discard();
+                helper.succeed();
+            });
+        });
+
         r.add("submarine/oxygen_and_drain", 60, helper -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
             submarine.setPowerStored(5_000);

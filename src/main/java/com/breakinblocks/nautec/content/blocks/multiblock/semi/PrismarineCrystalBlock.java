@@ -9,9 +9,11 @@ import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +23,9 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +36,7 @@ public class PrismarineCrystalBlock extends LaserBlock {
 
     @Override
     public boolean waterloggable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -56,13 +60,30 @@ public class PrismarineCrystalBlock extends LaserBlock {
         BlockPos firstPos = pos.above(2);
         for (int i = 0; i < 6; i++) {
             BlockPos curPos = firstPos.below(i);
+            boolean water = level.getFluidState(curPos).getType() == Fluids.WATER;
             if (i == 2) {
-                level.setBlockAndUpdate(curPos, NTBlocks.PRISMARINE_CRYSTAL.get().defaultBlockState());
+                level.setBlockAndUpdate(curPos, NTBlocks.PRISMARINE_CRYSTAL.get().defaultBlockState()
+                        .setValue(BlockStateProperties.WATERLOGGED, water));
             } else {
                 level.setBlockAndUpdate(curPos, NTBlocks.PRISMARINE_CRYSTAL_PART.get().defaultBlockState()
-                        .setValue(PrismarineCrystalPartBlock.INDEX, i));
+                        .setValue(PrismarineCrystalPartBlock.INDEX, i)
+                        .setValue(BlockStateProperties.WATERLOGGED, water));
             }
         }
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (random.nextInt(3) != 0) {
+            return;
+        }
+        double angle = random.nextDouble() * Math.PI * 2.0;
+        double distance = 0.5 + random.nextDouble() * 0.9;
+        level.addParticle(NTParticles.CRYSTAL_MOTE.get(),
+                pos.getX() + 0.5 + Math.cos(angle) * distance,
+                pos.getY() - 2.7 + random.nextDouble() * 4.5,
+                pos.getZ() + 0.5 + Math.sin(angle) * distance,
+                0.0, 0.0, 0.0);
     }
 
     @Override

@@ -1,13 +1,21 @@
 package com.breakinblocks.nautec.api.utils;
 
 import net.minecraft.core.Direction;
+import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.Nullable;
 
-public enum HorizontalDirection {
+import java.util.Locale;
+
+public enum HorizontalDirection implements StringRepresentable {
     NORTH,
     EAST,
     SOUTH,
     WEST;
+
+    @Override
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
+    }
 
     public Direction toRegularDirection() {
         return switch (this) {

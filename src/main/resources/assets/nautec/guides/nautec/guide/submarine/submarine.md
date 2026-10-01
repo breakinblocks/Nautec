@@ -52,6 +52,7 @@ In creative mode, hitting the hull picks it up straight away.
 * [Hull and Repair](submarine_hull.md): damage, breaching and Deep Steel Plating.
 * [Modules](submarine_modules.md): the module bay and what each module does.
 * [Sea Scout Dock](submarine_dock.md): a pad that holds and charges a parked hull.
+* [Gateway](nautec:deep_engineering/gateway.md): a ring wide enough to steer straight through, crew and all. It opens as you approach.
 
 ***
 

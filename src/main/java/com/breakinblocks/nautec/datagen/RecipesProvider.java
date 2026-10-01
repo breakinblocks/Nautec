@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AquaticCatalystChannelingRecipeBuilder;
@@ -287,15 +288,28 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void gatewayRecipes(@NotNull RecipeOutput pRecipeOutput) {
-        shaped(RecipeCategory.DECORATIONS, NTBlocks.GATEWAY.asItem())
-                .pattern("DRD")
-                .pattern("RSR")
-                .pattern("DRD")
-                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+        ItemStackTemplate packedGateway = new ItemStackTemplate(NTBlocks.GATEWAY.asItem(), 1,
+                DataComponentPatch.builder().set(NTDataComponents.GATEWAY_PACKED.get(), PackedGateway.CRAFTED).build());
+        shaped(RecipeCategory.DECORATIONS, packedGateway)
+                .pattern("FDF")
+                .pattern("RNR")
+                .pattern("FDF")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
                 .define('R', NTItems.RESONANT_SHARD)
-                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
-                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .define('N', Items.NETHER_STAR)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
                 .save(pRecipeOutput, key("gateway"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.GATEWAY_RING.asItem(), 8)
+                .pattern("PIP")
+                .pattern("PSP")
+                .pattern("PIP")
+                .define('P', NTBlocks.POLISHED_PRISMARINE)
+                .define('I', NTItems.AQUARINE_STEEL_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTBlocks.GATEWAY))
+                .save(pRecipeOutput, key("gateway_ring"));
     }
 
     private void beamOpticsRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -761,6 +775,19 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.AQUATIC_CHIP.get())
                 .unlockedBy("has_item", has(NTItems.ELDRITCH_HEART))
                 .save(pRecipeOutput, key("teleport_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.FLIGHT_MODULE.get(), 1)
+                .pattern("MFM")
+                .pattern("DPD")
+                .pattern("CRC")
+                .define('M', Items.PHANTOM_MEMBRANE)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get())
+                .define('D', Items.DIAMOND)
+                .define('P', NTItems.DEEP_STEEL_PLATING.get())
+                .define('C', Items.CHORUS_FRUIT)
+                .define('R', NTItems.RESONANT_SHARD.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("flight_module"));
     }
 
     private void miscItemsRecipes(@NotNull RecipeOutput pRecipeOutput) {

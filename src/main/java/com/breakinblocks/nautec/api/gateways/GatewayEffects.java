@@ -7,38 +7,23 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
 public final class GatewayEffects {
-    private static final int SWEEP_PERIOD = 90;
-    private static final double SWEEP_RADIUS = 0.85;
-
     private GatewayEffects() {
     }
 
-    public static void sweep(ServerLevel level, BlockPos pos) {
-        Vec3 centre = Vec3.atCenterOf(pos).add(0.0, 0.2, 0.0);
-        double phase = (double) Math.floorMod(level.getGameTime() + pos.asLong(), SWEEP_PERIOD) / SWEEP_PERIOD;
-        double angle = phase * Math.PI * 2.0;
-
-        level.sendParticles(NTParticles.GLOW_SPORE.get(),
-                centre.x + Math.cos(angle) * SWEEP_RADIUS,
-                centre.y,
-                centre.z + Math.sin(angle) * SWEEP_RADIUS,
-                1, 0.0, 0.02, 0.0, 0.0);
-    }
-
-    public static void travel(ServerLevel level, BlockPos pos) {
-        Vec3 centre = Vec3.atCenterOf(pos.above());
-        level.sendParticles(ParticleTypes.PORTAL, centre.x, centre.y, centre.z,
-                48, 0.4, 0.7, 0.4, 0.45);
-        level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, centre.x, centre.y - 0.4, centre.z,
-                24, 0.4, 0.1, 0.4, 0.06);
-        level.sendParticles(NTParticles.GLOW_SPORE.get(), centre.x, centre.y, centre.z,
+    public static void travel(ServerLevel level, Vec3 point) {
+        level.sendParticles(NTParticles.CRYSTAL_MOTE.get(), point.x, point.y, point.z,
+                40, 0.6, 0.6, 0.6, 0.04);
+        level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, point.x, point.y - 0.4, point.z,
+                24, 0.5, 0.3, 0.5, 0.06);
+        level.sendParticles(NTParticles.GLOW_SPORE.get(), point.x, point.y, point.z,
                 12, 0.5, 0.5, 0.5, 0.02);
     }
 
-    public static void unlinked(ServerLevel level, BlockPos pos) {
-        Vec3 centre = Vec3.atCenterOf(pos.above());
-        level.sendParticles(ParticleTypes.SMOKE, centre.x, centre.y, centre.z,
-                6, 0.3, 0.1, 0.3, 0.01);
+    public static void opened(ServerLevel level, Vec3 centre) {
+        level.sendParticles(NTParticles.CRYSTAL_MOTE.get(), centre.x, centre.y, centre.z,
+                80, 2.4, 2.4, 2.4, 0.05);
+        level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, centre.x, centre.y - 2.0, centre.z,
+                40, 2.0, 1.0, 2.0, 0.08);
     }
 
     public static void recoded(ServerLevel level, BlockPos pos) {

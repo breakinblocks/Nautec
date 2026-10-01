@@ -2,16 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "nautec:dark_prismarine_pillar",
-    "R": "nautec:resonant_shard",
-    "S": "nautec:prismarine_crystal_shard"
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal",
+    "N": "minecraft:nether_star",
+    "R": "nautec:resonant_shard"
   },
   "pattern": [
-    "DRD",
-    "RSR",
-    "DRD"
+    "FDF",
+    "RNR",
+    "FDF"
   ],
   "result": {
+    "components": {
+      "nautec:gateway_packed": {}
+    },
     "id": "nautec:gateway"
   }
 }

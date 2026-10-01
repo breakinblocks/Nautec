@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "nautec:aquarine_steel_ingot",
+    "P": "nautec:polished_prismarine",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "PIP",
+    "PSP",
+    "PIP"
+  ],
+  "result": {
+    "count": 8,
+    "id": "nautec:gateway_ring"
+  }
+}

@@ -4,8 +4,17 @@ import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public final class NTTags {
+    public static final class Blocks {
+        public static final TagKey<Block> GATEWAY_RING_CLEARABLE = ntTag("gateway_ring_clearable");
+
+        private static TagKey<Block> ntTag(String name) {
+            return TagKey.create(Registries.BLOCK, Nautec.rl(name));
+        }
+    }
+
     public static final class Items {
         public static final TagKey<Item> AQUATIC_CATALYST = ntTag("aquatic_catalyst");
         public static final TagKey<Item> AQUARINE_STEEL = ntTag("aquarine_steel");

@@ -5,7 +5,6 @@ import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.augments.GuardianEyeAugment;
-import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
@@ -56,16 +55,6 @@ public final class MachineFixTests {
             throw helper.assertionException("Expected ResonanceChamberBlockEntity at " + pos);
         }
         return chamber;
-    }
-
-    private static GatewayBlockEntity placeGateway(GameTestHelper helper, BlockPos pos, GatewayAddress address) {
-        helper.setBlock(pos, NTBlocks.GATEWAY.get().defaultBlockState());
-        GatewayBlockEntity gateway = helper.getBlockEntity(pos, GatewayBlockEntity.class);
-        if (gateway == null) {
-            throw helper.assertionException("Expected GatewayBlockEntity at " + pos);
-        }
-        gateway.setAddress(address);
-        return gateway;
     }
 
     private static GatewayAddress address(DyeColor a, DyeColor b, DyeColor c, DyeColor d) {
@@ -238,99 +227,6 @@ public final class MachineFixTests {
             helper.assertValueEqual(far, found, "nearest partner for an address whose only match is unloaded");
             helper.assertFalse(level.isLoaded(far), "Searching the index should not load the partner's chunk");
             helper.succeed();
-        });
-
-        r.add("machinefix/gateway_travels_to_unloaded_partner", 900, helper -> {
-            ServerLevel level = helper.getLevel();
-            BlockPos from = new BlockPos(2, 1, 4);
-            BlockPos far = helper.absolutePos(from).offset(1024, 0, 0);
-            GatewayAddress code = address(DyeColor.BLACK, DyeColor.WHITE, DyeColor.LIME, DyeColor.MAGENTA);
-            placeGateway(helper, from, code);
-            Cow[] cow = new Cow[1];
-
-            helper.startSequence()
-                    .thenExecute(() -> {
-                        level.setBlockAndUpdate(far, NTBlocks.GATEWAY.get().defaultBlockState());
-                        level.setBlockAndUpdate(far.above(), Blocks.AIR.defaultBlockState());
-                        level.setBlockAndUpdate(far.above(2), Blocks.AIR.defaultBlockState());
-                        if (!(level.getBlockEntity(far) instanceof GatewayBlockEntity partner)) {
-                            throw helper.assertionException("Expected a gateway at the far position " + far);
-                        }
-                        partner.setAddress(code);
-                    })
-                    .thenWaitUntil(() -> helper.assertFalse(level.isLoaded(far), "Waiting for the far gateway's chunk to unload"))
-                    .thenExecute(() -> {
-                        helper.assertTrue(code.equals(GatewayIndex.get(level).addressAt(far)),
-                                "The unloaded gateway should still be in the index");
-                        cow[0] = helper.spawn(EntityType.COW, from.above());
-                        cow[0].setNoAi(true);
-                    })
-                    .thenWaitUntil(() -> helper.assertTrue(cow[0].blockPosition().closerThan(far, 2.0),
-                            "The cow should have travelled to the unloaded gateway at " + far + ", but was at " + cow[0].blockPosition()))
-                    .thenExecute(() -> {
-                        cow[0].discard();
-                        level.setBlockAndUpdate(far, Blocks.AIR.defaultBlockState());
-                    })
-                    .thenSucceed();
-        });
-
-        r.add("machinefix/gateway_forgets_missing_unloaded_partner", 80, helper -> {
-            ServerLevel level = helper.getLevel();
-            BlockPos from = new BlockPos(2, 1, 4);
-            BlockPos far = helper.absolutePos(from).offset(0, 0, 2048);
-            helper.assertFalse(level.isLoaded(far), "The far position should start unloaded");
-            GatewayAddress code = address(DyeColor.MAGENTA, DyeColor.BLACK, DyeColor.CYAN, DyeColor.WHITE);
-            placeGateway(helper, from, code);
-            GatewayIndex.get(level).put(far, code);
-
-            Cow cow = helper.spawn(EntityType.COW, from.above());
-            cow.setNoAi(true);
-
-            helper.runAfterDelay(40, () -> {
-                helper.assertTrue(GatewayIndex.get(level).addressAt(far) == null,
-                        "An index entry with no gateway behind it should be dropped once its chunk is checked");
-                helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(from), 2.0),
-                        "The cow should not have gone anywhere");
-                helper.assertFalse(cow.isOnPortalCooldown(), "Failed travel must not apply cooldown");
-                helper.succeed();
-            });
-        });
-
-        r.add("machinefix/gateway_needs_step_off_before_return", 400, helper -> {
-            BlockPos from = new BlockPos(1, 1, 4);
-            BlockPos to = new BlockPos(7, 1, 4);
-            GatewayAddress code = address(DyeColor.CYAN, DyeColor.PURPLE, DyeColor.WHITE, DyeColor.BLUE);
-            placeGateway(helper, from, code);
-            GatewayBlockEntity arrival = placeGateway(helper, to, code);
-            helper.setBlock(new BlockPos(7, 0, 7), Blocks.STONE.defaultBlockState());
-
-            Cow cow = helper.spawn(EntityType.COW, from.above());
-            cow.setNoAi(true);
-
-            helper.startSequence()
-                    .thenWaitUntil(() -> helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(to), 2.0),
-                            "The cow should first travel to the far gateway"))
-                    .thenExecute(() -> {
-                        helper.assertTrue(arrival.isWaitingForStepOff(cow), "The arrival pad should wait for the cow to step off");
-                        cow.setPortalCooldown(0);
-                    })
-                    .thenIdle(40)
-                    .thenExecute(() -> helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(to), 2.0),
-                            "With its cooldown over, a cow still standing on the arrival pad was sent straight back"))
-                    .thenExecute(() -> {
-                        Vec3 off = helper.absoluteVec(new Vec3(7.5, 1.0, 7.5));
-                        cow.teleportTo(off.x, off.y, off.z);
-                    })
-                    .thenIdle(25)
-                    .thenExecute(() -> {
-                        helper.assertFalse(arrival.isWaitingForStepOff(cow), "Stepping off should clear the arrival mark");
-                        cow.setPortalCooldown(0);
-                        Vec3 pad = helper.absoluteVec(Vec3.atBottomCenterOf(to.above()));
-                        cow.teleportTo(pad.x, pad.y, pad.z);
-                    })
-                    .thenWaitUntil(() -> helper.assertTrue(cow.blockPosition().closerThan(helper.absolutePos(from), 2.0),
-                            "After stepping off and back on, the pad should send the cow again"))
-                    .thenSucceed();
         });
 
         r.add("machinefix/guardian_eye_beam_stops_at_blocks", 40, helper -> {

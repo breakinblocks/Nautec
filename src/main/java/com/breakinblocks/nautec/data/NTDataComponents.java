@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.data;
 import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
+import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.data.components.ShockwaveCooldown;
@@ -48,6 +49,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<GatewayAddress>> GATEWAY_ADDRESS = registerDataComponentType("gateway_address",
             () -> builder -> builder.persistent(GatewayAddress.CODEC).networkSynchronized(GatewayAddress.STREAM_CODEC));
+
+    public static final Supplier<DataComponentType<PackedGateway>> GATEWAY_PACKED = registerDataComponentType("gateway_packed",
+            () -> builder -> builder.persistent(PackedGateway.CODEC).networkSynchronized(PackedGateway.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<ShockwaveCooldown>> SHOCKWAVE_COOLDOWN = registerDataComponentType("shockwave_cooldown",
             () -> builder -> builder.persistent(ShockwaveCooldown.CODEC).networkSynchronized(ShockwaveCooldown.STREAM_CODEC));

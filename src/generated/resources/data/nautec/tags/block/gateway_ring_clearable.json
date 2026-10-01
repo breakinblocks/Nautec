@@ -1,0 +1,18 @@
+{
+  "values": [
+    "minecraft:kelp",
+    "minecraft:kelp_plant",
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:sea_pickle",
+    "#minecraft:corals",
+    "#minecraft:wall_corals",
+    "nautec:deep_kelp",
+    "nautec:deep_kelp_plant",
+    "nautec:luminescent_algae",
+    "nautec:prismarine_frond",
+    "nautec:vent_tubeworm",
+    "nautec:abyssal_coral",
+    "nautec:glow_polyp"
+  ]
+}

@@ -2,12 +2,14 @@ package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.tags.NTTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagAppender;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -37,6 +39,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 SUBMARINE_DOCK,
                 PRESSURE_FORGE,
                 GATEWAY,
+                GATEWAY_RING,
                 RESONANCE_CHAMBER,
                 PRISMATIC_MIRROR,
                 BEAM_SPLITTER,
@@ -70,6 +73,12 @@ public class BlockTagProvider extends BlockTagsProvider {
                 CREATIVE_POWER_SOURCE,
                 CREATIVE_ENERGY_SOURCE,
                 ENERGY_CONVERTER);
+        tag(NTTags.Blocks.GATEWAY_RING_CLEARABLE)
+                .add(Blocks.KELP, Blocks.KELP_PLANT, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE)
+                .addTag(BlockTags.CORALS)
+                .addTag(BlockTags.WALL_CORALS)
+                .add(DEEP_KELP.get(), DEEP_KELP_PLANT.get(), LUMINESCENT_ALGAE.get(), PRISMARINE_FROND.get(),
+                        VENT_TUBEWORM.get(), ABYSSAL_CORAL.get(), GLOW_POLYP.get());
     }
 
     private void tag(TagKey<Block> blockTagKey, Block... blocks) {

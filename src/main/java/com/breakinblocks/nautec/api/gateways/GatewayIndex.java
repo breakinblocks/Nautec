@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.api.gateways;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class GatewayIndex extends SavedData {
     public record Entry(BlockPos pos, GatewayAddress address) {
@@ -64,9 +66,22 @@ public class GatewayIndex extends SavedData {
         return gateways.size();
     }
 
+    public boolean isAddressUsed(GatewayAddress address) {
+        for (Entry entry : gateways.values()) {
+            if (entry.address().equals(address)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public @Nullable GatewayAddress addressAt(BlockPos pos) {
         Entry entry = gateways.get(pos);
         return entry == null ? null : entry.address();
+    }
+
+    private static boolean isFormedGateway(BlockState state) {
+        return state.is(NTBlocks.GATEWAY.get()) && state.getValue(Multiblock.FORMED);
     }
 
     public @Nullable BlockPos findNearest(ServerLevel level, BlockPos from, GatewayAddress address) {
@@ -81,7 +96,7 @@ public class GatewayIndex extends SavedData {
             if (!entry.address().equals(address)) {
                 continue;
             }
-            if (level.isLoaded(entry.pos()) && !level.getBlockState(entry.pos()).is(NTBlocks.GATEWAY.get())) {
+            if (level.isLoaded(entry.pos()) && !isFormedGateway(level.getBlockState(entry.pos()))) {
                 stale.add(entry.pos());
                 continue;
             }

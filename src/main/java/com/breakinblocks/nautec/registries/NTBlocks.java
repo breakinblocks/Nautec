@@ -18,6 +18,7 @@ import com.breakinblocks.nautec.content.blocks.EnergyConverterBlock;
 import com.breakinblocks.nautec.content.blocks.FishingStationBlock;
 import com.breakinblocks.nautec.content.blocks.FocusingLensBlock;
 import com.breakinblocks.nautec.content.blocks.GatewayBlock;
+import com.breakinblocks.nautec.content.blocks.GatewayRingPartBlock;
 import com.breakinblocks.nautec.content.blocks.IncubatorBlock;
 import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
@@ -121,6 +122,10 @@ public final class NTBlocks {
 
     public static final DeferredBlock<GatewayBlock> GATEWAY = registerBlockAndItem("gateway", GatewayBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(4.0f).noOcclusion());
+    public static final DeferredBlock<Block> GATEWAY_RING = registerBlockAndItem("gateway_ring", Block::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(4.0f));
+    public static final DeferredBlock<GatewayRingPartBlock> GATEWAY_RING_PART = BLOCKS.registerBlock("gateway_ring_part", GatewayRingPartBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(50.0f, 1200.0f).requiresCorrectToolForDrops().noOcclusion());
 
     public static final DeferredBlock<ResonanceChamberBlock> RESONANCE_CHAMBER = registerBlockAndItem("resonance_chamber", ResonanceChamberBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(3.0f).noOcclusion());

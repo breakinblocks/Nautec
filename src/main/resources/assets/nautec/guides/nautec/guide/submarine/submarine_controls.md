@@ -45,6 +45,8 @@ The hull only turns if it has room to. Look into rock and it holds its heading r
 
 On the surface the hull stays level and the thrusters work at about a third of their strength, with rising and diving weaker too. Get under water before you expect speed.
 
+With a [Flight Module](flight_module.md) installed, the hull flies instead: out of the water it steers and pitches just as it does under water, Space and C rise and dive at full strength, and it moves half again as fast.
+
 Thrust needs power. With the cell empty the hull drifts.
 
 The third person camera sits 10 blocks back while you ride, so you can see the whole hull. The distance is configurable (`submarineCameraDistance`).

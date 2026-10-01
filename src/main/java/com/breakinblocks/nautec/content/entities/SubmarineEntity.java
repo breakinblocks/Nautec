@@ -147,6 +147,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private @Nullable Vec3 portalTarget;
     private int chargeAge;
     private int exitAge;
+    private static final double FLIGHT_DRAG = 0.86D;
+    private static final double FLIGHT_SETTLE = 0.01D;
+    private static final double FLIGHT_SETTLE_SPEED = 0.12D;
+    private static final double MAX_SAFE_SPEED = 1.5D;
     private boolean descending;
     private float lastDriverYaw;
     private float lastDriverPitch;
@@ -418,6 +422,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             tickServer();
         } else if (this.underWay && isInWater()) {
             spawnWake();
+        } else if (isFlying()) {
+            spawnLiftJets();
         }
     }
 
@@ -455,19 +461,34 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         }
     }
 
+    public static double maxSpeed(boolean flying) {
+        return flying
+                ? Math.min(MAX_SAFE_SPEED, NTConfig.submarineMaxSpeed * NTConfig.submarineFlightSpeedMultiplier)
+                : NTConfig.submarineMaxSpeed;
+    }
+
+    public boolean canFly() {
+        return hasModule(SubmarineModuleType.FLIGHT) && getPowerStored() > 0;
+    }
+
+    public boolean isFlying() {
+        return !isInWater() && !onGround() && canFly();
+    }
+
     private void pilot() {
         LivingEntity driver = getControllingPassenger();
         boolean submerged = isInWater();
+        boolean flying = !submerged && canFly();
         Vec3 motion = getDeltaMovement();
 
         boolean charging = isCharging();
         if (driver != null) {
             boolean steering = !this.freeLook && !charging;
             if (steering) {
-                aimSteer(driver, submerged);
+                aimSteer(driver, submerged || flying);
             }
             this.steeringLast = steering;
-            if (!submerged && !charging) {
+            if (!submerged && !flying && !charging) {
                 levelOut();
             }
             setYHeadRot(getYRot());
@@ -497,18 +518,21 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
             if (throttle != 0F) {
                 double speed = NTConfig.submarineSpeed * getSpeedMultiplier() * (controls.sprint() ? 1.6D : 1D);
-                if (!submerged) {
+                if (flying) {
+                    speed *= NTConfig.submarineFlightSpeedMultiplier;
+                } else if (!submerged) {
                     speed *= 0.35D;
                 }
                 motion = motion.add(getForward().scale(throttle * speed));
             }
 
+            double climb = submerged || flying ? NTConfig.submarineSpeed : NTConfig.submarineSpeed * 0.4D;
             if (controls.jump()) {
-                motion = motion.add(0D, submerged ? NTConfig.submarineSpeed : NTConfig.submarineSpeed * 0.4D, 0D);
+                motion = motion.add(0D, climb, 0D);
             }
 
             if (this.descending) {
-                motion = motion.add(0D, submerged ? -NTConfig.submarineSpeed : -NTConfig.submarineSpeed * 0.4D, 0D);
+                motion = motion.add(0D, -climb, 0D);
             }
         }
 
@@ -516,6 +540,11 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             motion = motion.scale(0.86D);
             double buoyancy = isUnderWater() ? 0.002D : -0.01D;
             motion = motion.add(0D, buoyancy, 0D);
+        } else if (flying) {
+            motion = motion.scale(FLIGHT_DRAG);
+            if (driver == null) {
+                motion = new Vec3(motion.x, Math.max(motion.y - FLIGHT_SETTLE, -FLIGHT_SETTLE_SPEED), motion.z);
+            }
         } else {
             motion = motion.multiply(0.94D, 0.98D, 0.94D);
             if (!onGround()) {
@@ -523,7 +552,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             }
         }
 
-        double maxSpeed = NTConfig.submarineMaxSpeed;
+        double maxSpeed = maxSpeed(flying);
         if (motion.lengthSqr() > maxSpeed * maxSpeed) {
             motion = motion.normalize().scale(maxSpeed);
         }
@@ -606,6 +635,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         if (this.underWay) {
             drain += NTConfig.submarineMovePowerUsage;
         }
+        if (isFlying()) {
+            drain += NTConfig.submarineFlightPowerUsage;
+        }
 
         if (isSealed()) {
             drain += NTConfig.submarineOxygenPowerUsage;
@@ -633,6 +665,19 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         }
 
         setHealth(health + (float) (getMaxHealth() * NTConfig.submarineAutorepairPercent));
+    }
+
+    private void spawnLiftJets() {
+        if (this.random.nextInt(2) != 0) {
+            return;
+        }
+        Vec3 forward = getForward();
+        Vec3 side = new Vec3(-forward.z, 0D, forward.x).normalize().scale(1.6D);
+        for (Vec3 offset : new Vec3[]{side, side.reverse()}) {
+            Vec3 at = position().add(offset).add(forward.scale(-1.5D)).add(0D, 0.2D, 0D);
+            level().addParticle(NTParticles.BOOST_TRAIL.get(), at.x, at.y, at.z,
+                    this.random.nextGaussian() * 0.01D, -0.18D, this.random.nextGaussian() * 0.01D);
+        }
     }
 
     private void spawnWake() {

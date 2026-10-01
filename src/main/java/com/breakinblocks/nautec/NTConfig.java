@@ -378,6 +378,12 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue SUBMARINE_MAX_SPEED = BUILDER
             .comment("Maximum speed of the submarine in blocks per tick. Values above 1.5 risk tripping server movement checks")
             .defineInRange("submarineMaxSpeed", 0.81, 0.05, 1.5);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_FLIGHT_SPEED_MULTIPLIER = BUILDER
+            .comment("How much faster a submarine with a Flight Module moves through the air than through water, as a multiplier. The flying top speed is submarineMaxSpeed times this, capped at 1.5")
+            .defineInRange("submarineFlightSpeedMultiplier", 1.5, 1.0, 3.0);
+    private static final ModConfigSpec.IntValue SUBMARINE_FLIGHT_POWER_USAGE = BUILDER
+            .comment("The extra amount of power a submarine with a Flight Module uses each tick while it is out of the water and holding itself up")
+            .defineInRange("submarineFlightPowerUsage", 4, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.DoubleValue SUBMARINE_CAMERA_DISTANCE = BUILDER
             .comment("Third person camera distance while riding the submarine, in blocks. Vanilla default is 4")
             .defineInRange("submarineCameraDistance", 10.0, 4.0, 32.0);
@@ -647,6 +653,8 @@ public final class NTConfig {
     public static int submarineOxygenPowerUsage = 2;
     public static double submarineSpeed = 0.056;
     public static double submarineMaxSpeed = 0.81;
+    public static double submarineFlightSpeedMultiplier = 1.5;
+    public static int submarineFlightPowerUsage = 4;
     public static double submarineCameraDistance = 10.0;
     public static double submarineMaxHealth = 80.0;
     public static double submarineArmor = 20.0;
@@ -828,6 +836,8 @@ public final class NTConfig {
         submarineOxygenPowerUsage = value(SUBMARINE_OXYGEN_POWER_USAGE);
         submarineSpeed = value(SUBMARINE_SPEED);
         submarineMaxSpeed = value(SUBMARINE_MAX_SPEED);
+        submarineFlightSpeedMultiplier = value(SUBMARINE_FLIGHT_SPEED_MULTIPLIER);
+        submarineFlightPowerUsage = value(SUBMARINE_FLIGHT_POWER_USAGE);
         submarineCameraDistance = value(SUBMARINE_CAMERA_DISTANCE);
         submarineMaxHealth = value(SUBMARINE_MAX_HEALTH);
         submarineArmor = value(SUBMARINE_ARMOR);

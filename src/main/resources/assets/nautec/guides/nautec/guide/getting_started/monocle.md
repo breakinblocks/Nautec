@@ -30,7 +30,7 @@ Wear the monocle in your helmet slot or in its own Monocle curio slot. While it 
 | <ItemLink id="bacterial_fuel_cell"/> | Output (AP per tick), Purity and Fuel, or No colony |
 | <ItemLink id="pressure_forge"/> | Under pressure, Acid (mb) and Purity, or what depth and water it still needs |
 | <ItemLink id="resonance_chamber"/> | Charge, Ceiling and Purity, or Cracked while it cools down |
-| <ItemLink id="gateway"/> | Its Address |
+| <ItemLink id="gateway"/> and its ring | Its Address; whether it is open, ready, idle, out of power, held shut by redstone or blocked; whether it is a wild ring; and its stored power |
 | <ItemLink id="submarine_dock"/> | Whether a Sea Scout is docked |
 | Deep Sea Drain wall | Power and Fluid Stored |
 
