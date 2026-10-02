@@ -291,6 +291,8 @@ public class EnUsProvider extends LanguageProvider {
         addItem(EYE_OF_THE_SEA, "Eye of the Sea");
         add("nautec.eye_of_the_sea.seeking", "Seeking: %s");
         add("nautec.eye_of_the_sea.cycle_hint", "Sneak right-click to change what it seeks");
+        add("nautec.eye_of_the_sea.searching", "The eye hums, searching for %s...");
+        add("nautec.eye_of_the_sea.busy", "The eye is still searching");
         add("nautec.eye_of_the_sea.not_found", "No %s within range");
         add("nautec.eye_of_the_sea.target.crystal_geodes", "Crystal Geodes");
         add("nautec.eye_of_the_sea.target.nautec_ruins", "NauTec Ruins");

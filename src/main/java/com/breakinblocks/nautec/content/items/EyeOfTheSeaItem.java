@@ -43,7 +43,7 @@ public class EyeOfTheSeaItem extends Item {
     }
 
     public static @Nullable BlockPos locate(ServerLevel level, BlockPos from, SeaEyeTarget target) {
-        return level.findNearestMapStructure(target.structures(), from, NTConfig.eyeOfTheSeaSearchRadius, false);
+        return SeaEyeSearch.searchNow(level, from, target.structures(), NTConfig.eyeOfTheSeaSearchRadius);
     }
 
     @Override
@@ -65,18 +65,33 @@ public class EyeOfTheSeaItem extends Item {
         }
 
         SeaEyeTarget target = targetOf(stack);
-        BlockPos found = locate(serverLevel, player.blockPosition(), target);
+        if (SeaEyeSearch.isSearching(player.getUUID())) {
+            player.sendOverlayMessage(Component.translatable("nautec.eye_of_the_sea.busy").withStyle(ChatFormatting.GRAY));
+            return InteractionResult.FAIL;
+        }
+        ItemStack thrown = stack.copyWithCount(1);
         player.getCooldowns().addCooldown(stack, NTConfig.eyeOfTheSeaCooldownTicks);
+        SeaEyeSearch.start(serverLevel, player.getUUID(), player.blockPosition(), target.structures(), NTConfig.eyeOfTheSeaSearchRadius,
+                found -> finishThrow(serverLevel, player, thrown, target, found.orElse(null)));
+        player.sendOverlayMessage(Component.translatable("nautec.eye_of_the_sea.searching", target.displayName())
+                .withStyle(ChatFormatting.AQUA));
+        return InteractionResult.SUCCESS_SERVER;
+    }
+
+    private void finishThrow(ServerLevel level, Player player, ItemStack thrown, SeaEyeTarget target, @Nullable BlockPos found) {
+        if (player.isRemoved() || player.level() != level) {
+            return;
+        }
         if (found == null) {
             player.sendOverlayMessage(Component.translatable("nautec.eye_of_the_sea.not_found", target.displayName())
                     .withStyle(ChatFormatting.RED));
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.CONDUIT_DEACTIVATE, SoundSource.PLAYERS, 0.6F, 1.4F);
-            return InteractionResult.FAIL;
+            return;
         }
 
         EyeOfTheSeaEntity eye = new EyeOfTheSeaEntity(level, player.getX(), player.getY(0.5), player.getZ());
-        eye.setItem(stack);
+        eye.setItem(thrown);
         eye.signalTo(Vec3.atLowerCornerOf(found));
         level.gameEvent(GameEvent.PROJECTILE_SHOOT, eye.position(), GameEvent.Context.of(player));
         level.addFreshEntity(eye);
@@ -86,7 +101,6 @@ public class EyeOfTheSeaItem extends Item {
                 SoundEvents.ENDER_EYE_LAUNCH, SoundSource.NEUTRAL, 1.0F, pitch);
         LuckyFishingZoneEvents.boost(player, NTConfig.eyeOfTheSeaLuckyBoostSeconds * 20);
         player.awardStat(Stats.ITEM_USED.get(this));
-        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.entities.EyeOfTheSeaEntity;
 import com.breakinblocks.nautec.content.items.EyeOfTheSeaItem;
+import com.breakinblocks.nautec.content.items.SeaEyeSearch;
 import com.breakinblocks.nautec.content.items.SeaEyeTarget;
 import com.breakinblocks.nautec.events.LuckyFishingZoneEvents;
 import com.breakinblocks.nautec.registries.NTEntities;
@@ -64,7 +65,7 @@ public final class EyeOfTheSeaTests {
             helper.succeed();
         });
 
-        r.add("eye_of_the_sea/nothing_found_keeps_the_eye", 20, helper -> {
+        r.add("eye_of_the_sea/nothing_found_keeps_the_eye", 200, helper -> {
             ServerLevel level = helper.getLevel();
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             ItemStack stack = new ItemStack(NTItems.EYE_OF_THE_SEA.get());
@@ -74,20 +75,20 @@ public final class EyeOfTheSeaTests {
                 return;
             }
             InteractionResult result = stack.getItem().use(level, player, InteractionHand.MAIN_HAND);
-            if (result != InteractionResult.FAIL) {
-                helper.fail("Using the eye with nothing in range should fail, got " + result);
+            if (!result.consumesAction()) {
+                helper.fail("Using the eye should start a search, got " + result);
                 return;
             }
-            if (player.getMainHandItem().getCount() != 1) {
-                helper.fail("A failed throw must not use up the eye");
+            if (!SeaEyeSearch.isSearching(player.getUUID())) {
+                helper.fail("The search should run in the background after the throw");
                 return;
             }
-            AABB around = new AABB(player.blockPosition()).inflate(8);
-            if (!level.getEntitiesOfClass(EyeOfTheSeaEntity.class, around).isEmpty()) {
-                helper.fail("A failed throw spawned an eye entity");
-                return;
-            }
-            helper.succeed();
+            helper.succeedWhen(() -> {
+                helper.assertTrue(!SeaEyeSearch.isSearching(player.getUUID()), "the background search finishes");
+                helper.assertValueEqual(1, player.getMainHandItem().getCount(), "a failed throw keeps the eye");
+                AABB around = new AABB(player.blockPosition()).inflate(8);
+                helper.assertTrue(level.getEntitiesOfClass(EyeOfTheSeaEntity.class, around).isEmpty(), "a failed throw spawns no eye");
+            });
         });
 
         r.add("eye_of_the_sea/thrown_eye_vanishes_without_a_drop", EyeOfTheSeaEntity.LIFETIME + 40, helper -> {
