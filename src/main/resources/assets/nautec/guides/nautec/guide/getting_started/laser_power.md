@@ -62,7 +62,7 @@ Higher purity comes from a <ItemLink id="prismarine_crystal"/> (3.0), a <ItemLin
   ### <Color id="aqua">Prismarine Crystal</Color>
 </Row>
 
-A six block tall crystal found standing inside Crystal Geodes under the ocean floor (see [Structures](structures.md)). It turns any beam into a purity 3.0 beam.
+A six block tall crystal found standing inside Crystal Geodes under the ocean floor (see [Structures](structures.md)). It turns any beam into a purity 3.0 beam. Wild crystals are rooted in place, but you can grow one you can move: see [Crystal Cultivation](nautec:deep_engineering/crystal_cultivation.md).
 
 Fire a beam into the crystal's core from the side: the core is the fourth block up from the bottom, and it takes a beam on any of its four sides. The top block then fires straight up and the bottom block fires straight down, both with the full incoming power and a purity of 3.0. These two beams run until they reach a receiver or a solid block, so they work into an empty floor or ceiling as well.
 

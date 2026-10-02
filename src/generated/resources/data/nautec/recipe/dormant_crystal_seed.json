@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "nautec:flawless_prismarine_crystal",
+    "R": "nautec:resonant_shard",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "RSR",
+    "SFS",
+    "RSR"
+  ],
+  "result": {
+    "id": "nautec:dormant_crystal_seed"
+  }
+}

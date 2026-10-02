@@ -48,6 +48,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 MIXER,
                 CHARGER,
                 CONFINED_SPAWNER,
+                CRYSTAL_CRADLE,
                 LONG_DISTANCE_LASER,
                 LASER_JUNCTION,
                 DRAIN,

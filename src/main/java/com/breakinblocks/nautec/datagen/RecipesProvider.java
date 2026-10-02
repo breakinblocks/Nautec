@@ -197,6 +197,32 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
                 .save(pRecipeOutput, key("resonance_chamber"));
 
+        shaped(RecipeCategory.MISC, NTItems.DORMANT_CRYSTAL_SEED.get())
+                .pattern("RSR")
+                .pattern("SFS")
+                .pattern("RSR")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("dormant_crystal_seed"));
+
+        ResonanceCraftingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SEED.get(), 1))
+                .ingredient(NTItems.DORMANT_CRYSTAL_SEED.get())
+                .purity(3.0f)
+                .save(pRecipeOutput, key("prismarine_crystal_seed"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.CRYSTAL_CRADLE.asItem())
+                .pattern("GFG")
+                .pattern("DCD")
+                .pattern("DDD")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('C', NTItems.LASER_CHANNELING_COIL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
+                .save(pRecipeOutput, key("crystal_cradle"));
+
         ResonanceCraftingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.RESONANT_SHARD.get(), 1))
                 .ingredient(NTItems.PRISMARINE_CRYSTAL_SHARD.get())
                 .purity(3.0f)

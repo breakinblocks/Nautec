@@ -39,6 +39,15 @@ public final class NTDataComponents {
     public static final Supplier<DataComponentType<Boolean>> IS_INFUSED = registerDataComponentType("is_infused",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
+    public static final Supplier<DataComponentType<Boolean>> CULTIVATED = registerDataComponentType("cultivated",
+            () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final Supplier<DataComponentType<Long>> CRADLE_GROWTH = registerDataComponentType("cradle_growth",
+            () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final Supplier<DataComponentType<Boolean>> CRADLE_SEEDED = registerDataComponentType("cradle_seeded",
+            () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     public static final Supplier<DataComponentType<SubmarineModuleState>> SUBMARINE_MODULE_STATE = registerDataComponentType("submarine_module_state",
             () -> builder -> builder.persistent(SubmarineModuleState.CODEC).networkSynchronized(ByteBufCodecs.fromCodec(SubmarineModuleState.CODEC)));
 

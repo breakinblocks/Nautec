@@ -75,6 +75,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.MIXER.get());
         dropSelf(NTBlocks.CHARGER.get());
         dropOther(NTBlocks.CONFINED_SPAWNER.get(), NTItems.SPAWNER_CONFINEMENT_MATRIX.get());
+        dropSelf(NTBlocks.CRYSTAL_CRADLE.get());
         dropSelf(NTBlocks.AUGMENTATION_STATION_EXTENSION.get());
         dropSelf(NTBlocks.AUGMENTATION_STATION.get());
         dropSelf(NTBlocks.DRAIN.get());

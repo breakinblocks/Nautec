@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.content.items.GraftingToolItem;
 import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
+import com.breakinblocks.nautec.content.items.CrystalSeedItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.content.items.RobotArmItem;
@@ -212,6 +213,10 @@ public final class NTItems {
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.YIELD), () -> new Item.Properties().stacksTo(1)));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_EFFICIENCY_UPGRADE = bacteriaItem(registerItem("reactor_efficiency_upgrade",
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.EFFICIENCY), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<CrystalSeedItem> DORMANT_CRYSTAL_SEED = registerItem("dormant_crystal_seed",
+            props -> new CrystalSeedItem(props, false), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<CrystalSeedItem> PRISMARINE_CRYSTAL_SEED = registerItem("prismarine_crystal_seed",
+            props -> new CrystalSeedItem(props, true), () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<SpawnerConfinementMatrixItem> SPAWNER_CONFINEMENT_MATRIX = registerItem("spawner_confinement_matrix",
             SpawnerConfinementMatrixItem::new, () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_FUSION_UPGRADE = bacteriaItem(registerItem("reactor_fusion_upgrade",

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.compat.jei;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
@@ -65,7 +66,9 @@ import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @JeiPlugin
@@ -182,6 +185,11 @@ public class NTJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        Component seedInfo = Component.translatable("nautec.jei.crystal_seed");
+        registration.addIngredientInfo(NTItems.DORMANT_CRYSTAL_SEED.get(), seedInfo);
+        registration.addIngredientInfo(NTItems.PRISMARINE_CRYSTAL_SEED.get(), seedInfo);
+        registration.addIngredientInfo(NTBlocks.CRYSTAL_CRADLE.get(), Component.translatable("nautec.jei.crystal_cradle",
+                NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.crystalGrowthPower)));
         for (RecipeBinding<?, ?> binding : recipeBindings) {
             binding.register(registration, ClientRecipes.get());
         }

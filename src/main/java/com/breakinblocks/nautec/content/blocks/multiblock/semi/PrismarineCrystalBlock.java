@@ -5,6 +5,8 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -57,7 +59,11 @@ public class PrismarineCrystalBlock extends LaserBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        BlockPos firstPos = pos.above(2);
+        build(level, pos, Boolean.TRUE.equals(stack.get(NTDataComponents.CULTIVATED)));
+    }
+
+    public static void build(Level level, BlockPos core, boolean cultivated) {
+        BlockPos firstPos = core.above(2);
         for (int i = 0; i < 6; i++) {
             BlockPos curPos = firstPos.below(i);
             boolean water = level.getFluidState(curPos).getType() == Fluids.WATER;
@@ -70,6 +76,49 @@ public class PrismarineCrystalBlock extends LaserBlock {
                         .setValue(BlockStateProperties.WATERLOGGED, water));
             }
         }
+        if (level.getBlockEntity(core) instanceof PrismarineCrystalBlockEntity crystal) {
+            crystal.setCultivated(cultivated);
+        }
+    }
+
+    public static boolean canBuild(Level level, BlockPos core) {
+        BlockPos firstPos = core.above(2);
+        for (int i = 0; i < 6; i++) {
+            BlockPos curPos = firstPos.below(i);
+            if (level.isOutsideBuildHeight(curPos) || !level.getBlockState(curPos).canBeReplaced()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static @Nullable PrismarineCrystalBlockEntity findCrystal(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof PrismarineCrystalBlockEntity crystal) {
+            return crystal;
+        }
+        if (level.getBlockEntity(pos) instanceof PrismarineCrystalPartBlockEntity part
+                && level.getBlockEntity(part.getCrystalPos()) instanceof PrismarineCrystalBlockEntity crystal) {
+            return crystal;
+        }
+        return null;
+    }
+
+    public static ItemStack cultivatedItem() {
+        ItemStack stack = new ItemStack(NTBlocks.PRISMARINE_CRYSTAL.get());
+        stack.set(NTDataComponents.CULTIVATED, true);
+        return stack;
+    }
+
+    public static ItemStack pickUp(Level level, PrismarineCrystalBlockEntity crystal) {
+        if (!crystal.isCultivated()) {
+            return ItemStack.EMPTY;
+        }
+        BlockPos topPos = crystal.getBlockPos().above(2);
+        for (int i = 0; i < 6; i++) {
+            level.removeBlock(topPos.below(i), false);
+        }
+        level.playSound(null, crystal.getBlockPos(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.BLOCKS, 1.5F, 0.7F);
+        return cultivatedItem();
     }
 
     @Override

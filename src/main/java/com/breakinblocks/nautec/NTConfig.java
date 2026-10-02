@@ -196,6 +196,14 @@ public final class NTConfig {
             .comment("The factor each Reactor Fusion Upgrade multiplies the reactor power draw by. It counts as one Speed, one Yield and one Efficiency Upgrade, but only this multiplier applies")
             .defineInRange("reactorFusionUpgradePowerMultiplier", 4.0, 1, 1000);
 
+    private static final ModConfigSpec.LongValue CRYSTAL_GROWTH_POWER = BUILDER
+            .comment("The total AP a Crystal Cradle must take in to grow a Prismarine Crystal Seed into a full Cultivated Prismarine Crystal")
+            .defineInRange("crystalGrowthPower", 10_000_000L, 1L, Long.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue CRYSTAL_GROWTH_PURITY = BUILDER
+            .comment("The lowest beam purity a Crystal Cradle grows its seed with. Weaker beams add nothing")
+            .defineInRange("crystalGrowthPurity", 2.0, 0, 10);
+
     private static final ModConfigSpec.IntValue CONFINED_SPAWNER_POWER_PER_TICK = BUILDER
             .comment("The AP a Confined Spawner spends from its buffer each tick while it runs")
             .defineInRange("confinedSpawnerPowerPerTick", 50, 0, 30000);
@@ -636,6 +644,8 @@ public final class NTConfig {
     public static double reactorEfficiencyUpgradeFloor = 0.25;
     public static double reactorEfficiencyUpgradePowerMultiplier = 1.2;
     public static double reactorFusionUpgradePowerMultiplier = 4.0;
+    public static long crystalGrowthPower = 10_000_000L;
+    public static double crystalGrowthPurity = 2.0;
     public static int confinedSpawnerPowerPerTick = 50;
     public static int confinedSpawnerPowerBuffer = 500;
     public static int fuelCellPowerBase = 24;
@@ -831,6 +841,8 @@ public final class NTConfig {
         reactorEfficiencyUpgradeFloor = value(REACTOR_EFFICIENCY_UPGRADE_FLOOR);
         reactorEfficiencyUpgradePowerMultiplier = value(REACTOR_EFFICIENCY_UPGRADE_POWER);
         reactorFusionUpgradePowerMultiplier = value(REACTOR_FUSION_UPGRADE_POWER);
+        crystalGrowthPower = value(CRYSTAL_GROWTH_POWER);
+        crystalGrowthPurity = value(CRYSTAL_GROWTH_PURITY);
         confinedSpawnerPowerPerTick = value(CONFINED_SPAWNER_POWER_PER_TICK);
         confinedSpawnerPowerBuffer = value(CONFINED_SPAWNER_POWER_BUFFER);
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);

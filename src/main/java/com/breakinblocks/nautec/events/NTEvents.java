@@ -20,6 +20,7 @@ import com.breakinblocks.nautec.registries.NTAttachmentTypes;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.AugmentHelper;
+import com.breakinblocks.nautec.utils.ItemUtils;
 import com.breakinblocks.nautec.utils.ParticleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -27,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -44,7 +47,6 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.Map;
-import com.breakinblocks.nautec.utils.ItemUtils;
 
 public final class NTEvents {
     @EventBusSubscriber(modid = Nautec.MODID)
@@ -104,7 +106,7 @@ public final class NTEvents {
                     be = blockEntity1;
                 }
 
-                if (be != null && !be.isBreaking()) {
+                if (be != null && !be.isBreaking() && !be.isCultivated()) {
                     be.playBreakAnimation();
                     ItemUtils.giveItemToPlayer(player, NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(level.getRandom().nextInt(1, 3)));
                     if (level.getRandom().nextInt(0, 4) == 0) {
@@ -118,6 +120,33 @@ public final class NTEvents {
                     }
                 }
             }
+        }
+
+        @SubscribeEvent
+        public static void onWrenchCrystal(PlayerInteractEvent.RightClickBlock event) {
+            Player player = event.getEntity();
+            ItemStack stack = event.getItemStack();
+            if (!player.isSecondaryUseActive() || !stack.is(Tags.Items.TOOLS_WRENCH)) {
+                return;
+            }
+            Level level = event.getLevel();
+            PrismarineCrystalBlockEntity crystal = PrismarineCrystalBlock.findCrystal(level, event.getPos());
+            if (crystal == null) {
+                return;
+            }
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            if (level.isClientSide()) {
+                return;
+            }
+            if (!crystal.isCultivated()) {
+                player.sendOverlayMessage(Component.translatable("nautec.cultivated_crystal.natural").withStyle(ChatFormatting.GOLD));
+                return;
+            }
+            if (!level.mayInteract(player, crystal.getBlockPos())) {
+                return;
+            }
+            ItemUtils.giveItemToPlayer(player, PrismarineCrystalBlock.pickUp(level, crystal));
         }
 
         @SubscribeEvent

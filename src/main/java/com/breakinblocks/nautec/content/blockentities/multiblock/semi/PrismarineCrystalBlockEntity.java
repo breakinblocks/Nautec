@@ -10,6 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +20,7 @@ import java.util.Set;
 
 public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     private boolean breaking;
+    private boolean cultivated;
     private long startTick;
     private int duration;
 
@@ -58,6 +61,27 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
                 this.breaking = false;
             }
         }
+    }
+
+    public boolean isCultivated() {
+        return cultivated;
+    }
+
+    public void setCultivated(boolean cultivated) {
+        this.cultivated = cultivated;
+        setChanged();
+    }
+
+    @Override
+    protected void saveData(ValueOutput out) {
+        super.saveData(out);
+        out.putBoolean("cultivated", cultivated);
+    }
+
+    @Override
+    protected void loadData(ValueInput in) {
+        super.loadData(in);
+        this.cultivated = in.getBooleanOr("cultivated", false);
     }
 
     public boolean isBreaking() {

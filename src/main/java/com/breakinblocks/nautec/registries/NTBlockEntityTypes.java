@@ -8,6 +8,7 @@ import com.breakinblocks.nautec.content.blockentities.BacterialFuelCellBlockEnti
 import com.breakinblocks.nautec.content.blockentities.BeamSplitterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.CrystalCradleBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativeEnergySourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
@@ -138,6 +139,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ChargerBlockEntity>> CHARGER = BLOCK_ENTITIES.register("charger",
             () -> new BlockEntityType<>(ChargerBlockEntity::new,
                     NTBlocks.CHARGER.get()));
+    public static final Supplier<BlockEntityType<CrystalCradleBlockEntity>> CRYSTAL_CRADLE = BLOCK_ENTITIES.register("crystal_cradle",
+            () -> new BlockEntityType<>(CrystalCradleBlockEntity::new,
+                    NTBlocks.CRYSTAL_CRADLE.get()));
     public static final Supplier<BlockEntityType<ConfinedSpawnerBlockEntity>> CONFINED_SPAWNER = BLOCK_ENTITIES.register("confined_spawner",
             () -> new BlockEntityType<>(ConfinedSpawnerBlockEntity::new,
                     NTBlocks.CONFINED_SPAWNER.get()));

@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.content.blocks.AnchorBlock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.blocks.ConfinedSpawnerBlock;
+import com.breakinblocks.nautec.content.blocks.CrystalCradleBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerTopBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialFuelCellBlock;
 import com.breakinblocks.nautec.content.blocks.BeamSplitterBlock;
@@ -47,6 +48,7 @@ import com.breakinblocks.nautec.content.blocks.multiblock.part.IndustrialBioReac
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
+import com.breakinblocks.nautec.content.items.blocks.CrystalCradleItem;
 import com.breakinblocks.nautec.content.items.blocks.PrismarineCrystalItem;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -64,6 +66,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import net.minecraft.world.level.material.MapColor;
 
 public final class NTBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Nautec.MODID);
@@ -114,6 +117,8 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
     public static final DeferredBlock<ConfinedSpawnerBlock> CONFINED_SPAWNER = BLOCKS.registerBlock("confined_spawner", ConfinedSpawnerBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER));
+    public static final DeferredBlock<CrystalCradleBlock> CRYSTAL_CRADLE = registerBlockAndItem("crystal_cradle", CrystalCradleBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0f, 1200.0f).sound(SoundType.METAL).noOcclusion(), CrystalCradleItem::new);
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 

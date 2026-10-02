@@ -45,6 +45,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.AugmentStationExte
 import com.breakinblocks.nautec.client.renderer.blockentities.BacterialAnalyzerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ChargerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ConfinedSpawnerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.CrystalCradleBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
@@ -283,6 +284,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.CRYSTAL_CRADLE.get(), CrystalCradleBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DRAIN.get(), DrainBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DRAIN_PART.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.AUGMENTATION_STATION_EXTENSION.get(), AugmentStationExtensionBERenderer::new);
