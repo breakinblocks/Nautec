@@ -90,9 +90,9 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     public static void submitLaser(PoseStack poseStack, SubmitNodeCollector collector, Direction direction, float length, boolean impact) {
         Vector3f from = new Vector3f(0.5F);
         Vector3f to = new Vector3f(direction.getUnitVec3f()).mul(length).add(0.5F, 0.5F, 0.5F);
-        LaserBeamRenderer.submitBeam(poseStack, collector, from, to, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN);
+        LaserBeamRenderer.submitBeam(poseStack, collector, from, to, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN, true);
         if (impact) {
-            LaserBeamRenderer.submitFlare(poseStack, collector, to, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN);
+            LaserBeamRenderer.submitFlare(poseStack, collector, to, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN, true);
         }
     }
 

@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.client.renderer.blockentities;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
+import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -63,7 +64,7 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
             SpawnerRenderer.submitEntityInSpawner(poseStack, collector, state.displayEntity, this.context.entityRenderer(), state.spin, state.scale, camera);
         }
         int color = ((int) (state.energy * 255.0F) << 24) | BAND_RGB;
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.gatewayGlow(RUNES), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.gatewayGlow(RUNES), (pose, buffer) -> {
             float low = -OUTSET;
             float high = 1.0F + OUTSET;
             side(buffer, pose, 1, low, 0, low, 0.0F, 0.0F, -1.0F, color, 0);

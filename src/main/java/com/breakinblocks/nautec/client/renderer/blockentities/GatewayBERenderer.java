@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.GatewayRing;
 import com.breakinblocks.nautec.client.render.JsonMesh;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
+import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -89,12 +90,12 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         int glowColor = ((int) (Mth.clamp(energy, 0F, 1F) * 255F) << 24) | 0x52E8FF;
 
         JsonMesh.submitLit(poseStack, collector, mesh.part("frame"), RenderTypes.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("frame"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor);
+        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("frame"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(trackAngle(state)));
         JsonMesh.submitLit(poseStack, collector, mesh.part("track"), RenderTypes.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("track"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor);
+        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("track"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
         poseStack.popPose();
 
         for (int chevron = 0; chevron < GatewayRing.CHEVRONS; chevron++) {
@@ -154,10 +155,10 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
 
         int glassAlpha = (int) Mth.lerp(lit, 140F, 255F);
         int glass = (glassAlpha << 24) | (slot >= 0 ? scale(dye, 0.55F + 0.45F * lit) : scale(IDLE_CHEVRON, 0.5F + 0.5F * lit)) & 0xFFFFFF;
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalShell(TEXTURE), glass);
+        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalShell(TEXTURE), glass, true);
         if (lit > 0F) {
             int glow = 0xFF000000 | scale(slot >= 0 ? dye : 0xFFC8FAFF, lit) & 0xFFFFFF;
-            JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalCore(TEXTURE), glow);
+            JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalCore(TEXTURE), glow, true);
         }
         poseStack.popPose();
     }
@@ -176,7 +177,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
     private static void submitHorizon(PoseStack poseStack, SubmitNodeCollector collector, float open) {
         float r = (float) GatewayRing.OPENING_RADIUS;
         int color = ((int) (open * 255F) << 24) | 0xFFFFFF;
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.gatewayHorizon(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.gatewayHorizon(), (pose, buffer) -> {
             quadVertex(buffer, pose, -r, -r, 0F, 0F, 1F, color);
             quadVertex(buffer, pose, r, -r, 0F, 1F, 1F, color);
             quadVertex(buffer, pose, r, r, 0F, 1F, 0F, color);
@@ -188,7 +189,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         float life = Mth.clamp(age / RIPPLE_TICKS, 0F, 1F);
         float size = 0.6F + life * 3.2F;
         int color = ((int) ((1F - life) * 220F) << 24) | 0x9AF4FF;
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
             quadVertex(buffer, pose, x - size, y - size, 0.02F, 0F, 0F, color);
             quadVertex(buffer, pose, x + size, y - size, 0.02F, 1F, 0F, color);
             quadVertex(buffer, pose, x + size, y + size, 0.02F, 1F, 1F, color);

@@ -65,10 +65,14 @@ public final class JsonMesh {
     }
 
     public static void submitTranslucent(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color) {
+        submitTranslucent(poseStack, collector, part, renderType, color, false);
+    }
+
+    public static void submitTranslucent(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color, boolean world) {
         if (part.triangles() == 0) {
             return;
         }
-        collector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+        SubmitNodeCollector.CustomGeometryRenderer renderer = (pose, buffer) -> {
             for (int t = 0; t < part.triangles(); t++) {
                 for (int corner : Part.QUAD_CORNERS) {
                     int o = t * Part.FLOATS_PER_TRIANGLE + corner * 5;
@@ -78,7 +82,12 @@ public final class JsonMesh {
                             .setNormal(pose, part.normals[t * 3], part.normals[t * 3 + 1], part.normals[t * 3 + 2]);
                 }
             }
-        });
+        };
+        if (world) {
+            ShaderPackOverlay.submit(poseStack, collector, renderType, renderer);
+        } else {
+            collector.submitCustomGeometry(poseStack, renderType, renderer);
+        }
     }
 
     public static void submitLit(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color, int light, int overlay) {

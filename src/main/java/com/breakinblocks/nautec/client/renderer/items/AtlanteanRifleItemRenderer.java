@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.client.renderer.items;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.render.AtlanteanRifleBeamRenderer;
+import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleBeam;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.geckolib.cache.model.GeoBone;
@@ -92,15 +93,23 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         }
 
         AtlanteanRifleBeam.Hit hit = AtlanteanRifleBeam.trace(level, holder, NTConfig.rifleRange, partialTick);
+        boolean impactHit = hit.entity() != null || hit.length() < NTConfig.rifleRange - 0.01D;
+        if (ShaderPackOverlay.shaderPackActive()) {
+            ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
+            if (perspective.firstPerson()) {
+                Vec3 muzzleWorld = cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z);
+                AtlanteanRifleBeamRenderer.submitWorldBeam(cameraPos, tasks, muzzleWorld, hit.end(), firing, impactHit);
+                return;
+            }
+        }
         Vec3 hitRelative = hit.end().subtract(cameraPos);
         Vector3f hitRoot = worldToRoot.transformPosition(new Vector3f((float) hitRelative.x, (float) hitRelative.y, (float) hitRelative.z));
         Vector3f hitLocal = new Matrix4f(pose).invert().transformPosition(hitRoot);
-        boolean impact = hit.entity() != null || hit.length() < NTConfig.rifleRange - 0.01D;
 
         AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks,
                 new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z),
                 new Vec3(hitLocal.x, hitLocal.y, hitLocal.z),
-                firing, impact);
+                firing, impactHit, true);
     }
 
     private static Matrix4f worldToRoot(RenderPassInfo<GeoRenderState> pass) {

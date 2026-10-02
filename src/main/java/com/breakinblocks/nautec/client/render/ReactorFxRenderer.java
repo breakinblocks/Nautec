@@ -61,7 +61,7 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (state.visible && state.tracker != null) {
-            collector.submitCustomGeometry(poseStack, NTRenderTypes.reactorGlow(), state);
+            ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.reactorGlow(), state);
         }
     }
 

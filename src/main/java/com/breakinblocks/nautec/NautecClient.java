@@ -126,6 +126,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import com.breakinblocks.nautec.client.render.NTRenderPipelines;
+import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
@@ -156,6 +158,7 @@ public final class NautecClient {
         modEventBus.addListener(this::registerRenderPipelines);
         modEventBus.addListener(this::registerItemDecorations);
         modEventBus.addListener(this::addPackFinders);
+        modEventBus.addListener(FMLClientSetupEvent.class, event -> event.enqueueWork(ShaderPackOverlay::init));
     }
 
     private void addPackFinders(AddPackFindersEvent event) {

@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.client.renderer.blockentities;
 
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
+import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionStructure;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -87,7 +88,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     }
 
     private static void cylinder(PoseStack poseStack, SubmitNodeCollector collector, float radius, float bottom, float top, int color) {
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
             for (int i = 0; i < SEGMENTS; i++) {
                 float u0 = i / (float) SEGMENTS;
                 float u1 = (i + 1) / (float) SEGMENTS;
@@ -104,7 +105,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     }
 
     private static void disk(PoseStack poseStack, SubmitNodeCollector collector, float inner, float outer, float y, int color) {
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
             for (int i = 0; i < SEGMENTS; i++) {
                 float u0 = i / (float) SEGMENTS;
                 float u1 = (i + 1) / (float) SEGMENTS;
@@ -123,7 +124,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     private static void field(PoseStack poseStack, SubmitNodeCollector collector, float half, float bottom, float top, int color) {
         float width = half * 2F;
         float height = top - bottom;
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.fusionField(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionField(), (pose, buffer) -> {
             vertex(buffer, pose, -half, bottom, -half, 0F, 0F, color);
             vertex(buffer, pose, half, bottom, -half, width, 0F, color);
             vertex(buffer, pose, half, top, -half, width, height, color);

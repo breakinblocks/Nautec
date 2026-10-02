@@ -62,6 +62,15 @@ public final class AtlanteanRifleBeamRenderer {
 
     public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
                                   float firing, boolean impact) {
+        submitBeam(poseStack, collector, from, to, firing, impact, false);
+    }
+
+    public static void submitWorldBeam(Vec3 camera, SubmitNodeCollector collector, Vec3 from, Vec3 to, float firing, boolean impact) {
+        ShaderPackOverlay.anchored(camera, () -> submitBeam(new PoseStack(), collector, from.subtract(camera), to.subtract(camera), firing, impact, true));
+    }
+
+    public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
+                                  float firing, boolean impact, boolean world) {
         if (to.distanceTo(from) < MIN_LENGTH) {
             return;
         }
@@ -71,10 +80,10 @@ public final class AtlanteanRifleBeamRenderer {
         Vector3f start = from.toVector3f();
         Vector3f end = to.toVector3f();
 
-        LaserBeamRenderer.submitBeam(poseStack, collector, start, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color);
-        LaserBeamRenderer.submitFlare(poseStack, collector, start, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color);
+        LaserBeamRenderer.submitBeam(poseStack, collector, start, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, world);
+        LaserBeamRenderer.submitFlare(poseStack, collector, start, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, world);
         if (impact) {
-            LaserBeamRenderer.submitFlare(poseStack, collector, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color);
+            LaserBeamRenderer.submitFlare(poseStack, collector, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color, world);
         }
     }
 }

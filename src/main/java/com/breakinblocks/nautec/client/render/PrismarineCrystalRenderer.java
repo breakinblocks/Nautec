@@ -52,7 +52,7 @@ public final class PrismarineCrystalRenderer {
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(shellYaw));
-        JsonMesh.submitTranslucent(poseStack, collector, JsonMesh.PRISMARINE_CRYSTAL.part("shell"), NTRenderTypes.crystalShell(TEXTURE), shellColor);
+        JsonMesh.submitTranslucent(poseStack, collector, JsonMesh.PRISMARINE_CRYSTAL.part("shell"), NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
         poseStack.popPose();
 
         JsonMesh.Part core = JsonMesh.PRISMARINE_CRYSTAL.part("core");
@@ -61,7 +61,7 @@ public final class PrismarineCrystalRenderer {
         poseStack.mulPose(Axis.YP.rotationDegrees(-ticks * 1.1F - phase * Mth.RAD_TO_DEG));
         float pulse = 1F + Mth.sin(ticks * 0.11F + phase) * 0.04F;
         poseStack.scale(pulse, 1F, pulse);
-        JsonMesh.submitTranslucent(poseStack, collector, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash));
+        JsonMesh.submitTranslucent(poseStack, collector, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash), world);
         poseStack.popPose();
 
         JsonMesh.Part shard = JsonMesh.PRISMARINE_CRYSTAL.part("shard");
@@ -72,7 +72,7 @@ public final class PrismarineCrystalRenderer {
             poseStack.mulPose(Axis.YP.rotation(ticks * 0.04F * s.spin));
             poseStack.mulPose(Axis.ZP.rotation(s.tilt));
             poseStack.scale(s.scale, s.scale, s.scale);
-            JsonMesh.submitTranslucent(poseStack, collector, shard, NTRenderTypes.crystalShell(TEXTURE), shellColor);
+            JsonMesh.submitTranslucent(poseStack, collector, shard, NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
             poseStack.popPose();
         }
 
@@ -106,7 +106,7 @@ public final class PrismarineCrystalRenderer {
     private static void submitHalo(PoseStack poseStack, SubmitNodeCollector collector, float ticks, float phase) {
         float strength = 0.8F + 0.2F * Mth.sin(ticks * 0.11F + phase);
         int color = ((int) (((HALO_COLOR >>> 24) & 0xFF) * strength) << 24) | (HALO_COLOR & 0xFFFFFF);
-        collector.submitCustomGeometry(poseStack, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
             glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, -HALO_RADIUS, 0F, 0F, color);
             glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 0F, 1F, color);
             glowVertex(buffer, pose, HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 1F, 1F, color);
