@@ -33,7 +33,7 @@ Lay a flat 3x3: the Deep Sea Drain in the middle and eight Deep Sea Drain Walls 
   <IsometricCamera yaw="225" pitch="30"/>
 </GameScene>
 
-It pumps in an ocean biome with all nine blocks directly above it water. Building it on the sea floor covers both. The biome counts if either the drain or the top of the water above it is in an ocean, so a sea floor that a worldgen mod gives a cave or trench biome still works.
+It pumps in an ocean-like biome with all nine blocks directly above it water. Building it on the sea floor covers both. Any biome tagged as an ocean or sea counts, including modded ones, and it is enough for either the drain or the top of the water above it to be in one, so a sea floor that a worldgen mod gives a cave or trench biome still works.
 
 ***
 

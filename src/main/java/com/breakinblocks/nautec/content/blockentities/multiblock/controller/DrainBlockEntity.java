@@ -22,8 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BubbleColumnBlock;
@@ -32,12 +32,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEntity {
     private static final int DRAIN_INTERVAL_TICKS = 20;
@@ -50,6 +50,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     private static final int VALVE_TO_LID_DELAY = 60;
     private static final int LID_TO_VALVE_DELAY = 30;
     private static final int WATER_COLUMN_SCAN = 64;
+    private static final Pattern WORD_SPLIT = Pattern.compile("[/_.-]");
 
     private MultiblockData multiblockData;
 
@@ -184,8 +185,29 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         return isOcean(level.getBiome(cursor));
     }
 
-    private static boolean isOcean(Holder<Biome> biome) {
-        return biome.is(BiomeTags.IS_OCEAN) || biome.is(Tags.Biomes.IS_OCEAN);
+    public static boolean isOcean(Holder<Biome> biome) {
+        return biome.tags().anyMatch(DrainBlockEntity::isOceanTag);
+    }
+
+    private static boolean isOceanTag(TagKey<Biome> tag) {
+        String path = tag.location().getPath();
+        String name = path.substring(path.lastIndexOf('/') + 1);
+        if (isOceanWord(name)) {
+            return true;
+        }
+        if (!name.startsWith("is_")) {
+            return false;
+        }
+        for (String word : WORD_SPLIT.split(name)) {
+            if (isOceanWord(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isOceanWord(String word) {
+        return word.equals("ocean") || word.equals("oceans") || word.equals("sea") || word.equals("seas");
     }
 
     @Override

@@ -48,7 +48,7 @@ public final class NTConfig {
             .comment("The fluid capacity of the Deep Sea Drain")
             .defineInRange("drainCapacity", 128_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.BooleanValue DRAIN_REQUIRES_OCEAN = BUILDER
-            .comment("Whether the Deep Sea Drain only pumps in an ocean biome. The biome is checked at the drain and at the top of the water above it, and both minecraft:is_ocean and c:is_ocean count")
+            .comment("Whether the Deep Sea Drain only pumps in an ocean-like biome: one with a biome tag named ocean or sea, or an is_ tag with ocean or sea in its name, such as minecraft:is_ocean, c:is_deep_ocean or a mod's own ocean tag. The biome is checked at the drain and at the top of the water above it")
             .define("drainRequiresOcean", true);
 
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER

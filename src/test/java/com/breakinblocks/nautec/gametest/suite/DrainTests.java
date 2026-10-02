@@ -9,17 +9,23 @@ import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public final class DrainTests {
     private static final BlockPos DRAIN_C = new BlockPos(4, 1, 4);
@@ -138,6 +144,17 @@ public final class DrainTests {
             helper.runAfterDelay(5, () -> helper.assertTrue(drain(helper).open() != null, "opening without water above warns"));
             helper.runAfterDelay(5 + OPEN_TICKS, () -> helper.succeedWhen(() ->
                     helper.assertValueEqual(DrainBlockEntity.Status.NO_WATER, drain(helper).getStatus(), "status without water")));
+        });
+
+        r.add("drain/ocean_like_biome_tags_count", 20, helper -> {
+            Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+            for (ResourceKey<Biome> ocean : List.of(Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.WARM_OCEAN, Biomes.FROZEN_OCEAN, Biomes.DEEP_COLD_OCEAN)) {
+                helper.assertTrue(DrainBlockEntity.isOcean(biomes.getOrThrow(ocean)), ocean.identifier() + " should count as an ocean");
+            }
+            for (ResourceKey<Biome> land : List.of(Biomes.PLAINS, Biomes.RIVER, Biomes.DESERT, Biomes.DEEP_DARK)) {
+                helper.assertTrue(!DrainBlockEntity.isOcean(biomes.getOrThrow(land)), land.identifier() + " should not count as an ocean, tags " + biomes.getOrThrow(land).tags().map(tag -> tag.location().toString()).toList());
+            }
+            helper.succeed();
         });
 
         r.add("drain/animation_state_reaches_clients", 60, helper -> {
