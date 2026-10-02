@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.client.ClientRecipes;
+import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
 import com.breakinblocks.nautec.compat.jei.categories.AquaticCatalystChannelingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.AugmentationRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaGraftingCategory;
@@ -39,6 +40,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -220,6 +222,13 @@ public class NTJeiPlugin implements IModPlugin {
 
     private static <I extends RecipeInput, R extends Recipe<I>> List<R> recipesFor(RecipeType<R> type) {
         return ClientRecipes.get().byType(type).stream().map(RecipeHolder::value).toList();
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        ConfinedSpawnerGhostHandler handler = new ConfinedSpawnerGhostHandler();
+        registration.addGhostIngredientHandler(ConfinedSpawnerScreen.class, handler);
+        registration.addGuiContainerHandler(ConfinedSpawnerScreen.class, handler);
     }
 
     @Override

@@ -47,6 +47,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 PRISMARINE_RELAY,
                 MIXER,
                 CHARGER,
+                CONFINED_SPAWNER,
                 LONG_DISTANCE_LASER,
                 LASER_JUNCTION,
                 DRAIN,

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "E": "minecraft:ender_pearl",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    "ARA",
+    "CEC",
+    "ARA"
+  ],
+  "result": {
+    "id": "nautec:spawner_confinement_matrix"
+  }
+}

@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEnti
 import com.breakinblocks.nautec.content.blockentities.BacterialFuelCellBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.BeamSplitterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativeEnergySourceBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
@@ -137,6 +138,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ChargerBlockEntity>> CHARGER = BLOCK_ENTITIES.register("charger",
             () -> new BlockEntityType<>(ChargerBlockEntity::new,
                     NTBlocks.CHARGER.get()));
+    public static final Supplier<BlockEntityType<ConfinedSpawnerBlockEntity>> CONFINED_SPAWNER = BLOCK_ENTITIES.register("confined_spawner",
+            () -> new BlockEntityType<>(ConfinedSpawnerBlockEntity::new,
+                    NTBlocks.CONFINED_SPAWNER.get()));
 
     public static final Supplier<BlockEntityType<DrainBlockEntity>> DRAIN = BLOCK_ENTITIES.register("drain",
             () -> new BlockEntityType<>(DrainBlockEntity::new,

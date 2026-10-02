@@ -473,6 +473,17 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
                 .save(pRecipeOutput, key("fishing_station"));
 
+        shaped(RecipeCategory.MISC, NTItems.SPAWNER_CONFINEMENT_MATRIX.get())
+                .pattern("ARA")
+                .pattern("CEC")
+                .pattern("ARA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('E', Items.ENDER_PEARL)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("spawner_confinement_matrix"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.CHARGER.asItem())
                 .pattern("PAP")
                 .pattern("DCD")

@@ -17,6 +17,11 @@ public class NetworkEvents {
                 OpenAugmentationScreenPayload::handle
         );
         registrar.playToServer(
+                SetSpawnerFilterPayload.TYPE,
+                SetSpawnerFilterPayload.STREAM_CODEC,
+                SetSpawnerFilterPayload::handle
+        );
+        registrar.playToServer(
                 KeyPressedPayload.TYPE,
                 KeyPressedPayload.STREAM_CODEC,
                 KeyPressedPayload::keyPressedAction

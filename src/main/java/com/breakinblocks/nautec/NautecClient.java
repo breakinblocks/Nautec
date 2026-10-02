@@ -44,6 +44,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.AnchorBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.AugmentStationExtensionBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.BacterialAnalyzerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ChargerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.ConfinedSpawnerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
@@ -56,6 +57,7 @@ import com.breakinblocks.nautec.client.screen.AugmentationStationExtensionScreen
 import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
 import com.breakinblocks.nautec.client.screen.IndustrialBioReactorScreen;
+import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
 import com.breakinblocks.nautec.client.screen.CrateScreen;
 import com.breakinblocks.nautec.client.screen.FishingStationScreen;
 import com.breakinblocks.nautec.client.screen.IncubatorScreen;
@@ -280,6 +282,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.GATEWAY.get(), GatewayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DRAIN.get(), DrainBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DRAIN_PART.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.AUGMENTATION_STATION_EXTENSION.get(), AugmentStationExtensionBERenderer::new);
@@ -347,6 +350,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.MIXER.get(), MixerScreen::new);
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
+        event.register(NTMenuTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerScreen::new);
     }
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {

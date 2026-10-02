@@ -117,6 +117,7 @@ public class BlockModelProvider extends ModelProvider {
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         simpleBlock(NTBlocks.CHARGER.get(), existingModelFile(NTBlocks.CHARGER.get()));
+        simpleBlock(NTBlocks.CONFINED_SPAWNER.get(), existingModelFile(NTBlocks.CONFINED_SPAWNER.get()));
         simpleBlock(NTBlocks.FISHING_STATION.get(), existingModelFile(NTBlocks.FISHING_STATION.get()));
         crateBlock(NTBlocks.CRATE.get());
         rustyCrateBlock(NTBlocks.RUSTY_CRATE.get());

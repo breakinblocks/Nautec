@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.content.menus.AugmentMenu;
 import com.breakinblocks.nautec.content.menus.AugmentationStationExtensionMenu;
 import com.breakinblocks.nautec.content.menus.BacterialAnalyzerMenu;
 import com.breakinblocks.nautec.content.menus.BioReactorMenu;
+import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.menus.CrateMenu;
 import com.breakinblocks.nautec.content.menus.FishingStationMenu;
 import com.breakinblocks.nautec.content.menus.IncubatorMenu;
@@ -35,6 +36,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<MutatorMenu>> MUTATOR = registerMenuType(MutatorMenu::new, "mutator");
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");
     public static final Supplier<MenuType<SubmarineModuleMenu>> SUBMARINE_MODULES = registerMenuType(SubmarineModuleMenu::new, "submarine_modules");
+    public static final Supplier<MenuType<ConfinedSpawnerMenu>> CONFINED_SPAWNER = registerMenuType(ConfinedSpawnerMenu::new, "confined_spawner");
 
 
     private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {

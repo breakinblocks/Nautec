@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blocks.AnchorBlock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
+import com.breakinblocks.nautec.content.blocks.ConfinedSpawnerBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerTopBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialFuelCellBlock;
 import com.breakinblocks.nautec.content.blocks.BeamSplitterBlock;
@@ -111,6 +112,8 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).sound(SoundType.ANVIL).noOcclusion());
     public static final DeferredBlock<ChargerBlock> CHARGER = registerBlockAndItem("charger", ChargerBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
+    public static final DeferredBlock<ConfinedSpawnerBlock> CONFINED_SPAWNER = BLOCKS.registerBlock("confined_spawner", ConfinedSpawnerBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER));
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
 

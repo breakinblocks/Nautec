@@ -193,6 +193,14 @@ public final class NTConfig {
             .comment("The factor each Reactor Fusion Upgrade multiplies the reactor power draw by. It counts as one Speed, one Yield and one Efficiency Upgrade, but only this multiplier applies")
             .defineInRange("reactorFusionUpgradePowerMultiplier", 4.0, 1, 1000);
 
+    private static final ModConfigSpec.IntValue CONFINED_SPAWNER_POWER_PER_TICK = BUILDER
+            .comment("The AP a Confined Spawner spends from its buffer each tick while it runs")
+            .defineInRange("confinedSpawnerPowerPerTick", 50, 0, 30000);
+
+    private static final ModConfigSpec.IntValue CONFINED_SPAWNER_POWER_BUFFER = BUILDER
+            .comment("The most AP a Confined Spawner can hold in its buffer")
+            .defineInRange("confinedSpawnerPowerBuffer", 500, 1, 30000);
+
     private static final ModConfigSpec.IntValue FUEL_CELL_POWER_BASE = BUILDER
             .comment("The base amount of power a Bacterial Fuel Cell emits each tick, before production rate scales it")
             .defineInRange("fuelCellPowerBase", 24, 0, Integer.MAX_VALUE);
@@ -624,6 +632,8 @@ public final class NTConfig {
     public static double reactorEfficiencyUpgradeFloor = 0.25;
     public static double reactorEfficiencyUpgradePowerMultiplier = 1.2;
     public static double reactorFusionUpgradePowerMultiplier = 4.0;
+    public static int confinedSpawnerPowerPerTick = 50;
+    public static int confinedSpawnerPowerBuffer = 500;
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
@@ -816,6 +826,8 @@ public final class NTConfig {
         reactorEfficiencyUpgradeFloor = value(REACTOR_EFFICIENCY_UPGRADE_FLOOR);
         reactorEfficiencyUpgradePowerMultiplier = value(REACTOR_EFFICIENCY_UPGRADE_POWER);
         reactorFusionUpgradePowerMultiplier = value(REACTOR_FUSION_UPGRADE_POWER);
+        confinedSpawnerPowerPerTick = value(CONFINED_SPAWNER_POWER_PER_TICK);
+        confinedSpawnerPowerBuffer = value(CONFINED_SPAWNER_POWER_BUFFER);
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
         fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
         fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);

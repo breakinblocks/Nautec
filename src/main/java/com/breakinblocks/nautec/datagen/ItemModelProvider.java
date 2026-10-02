@@ -78,6 +78,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.REACTOR_YIELD_UPGRADE.get());
         basicItem(NTItems.REACTOR_EFFICIENCY_UPGRADE.get());
         basicItem(NTItems.REACTOR_FUSION_UPGRADE.get());
+        basicItem(NTItems.SPAWNER_CONFINEMENT_MATRIX.get());
         basicItem(NTItems.PRISMARINE_LENS.get());
         basicItem(NTItems.AQUARINE_STEEL_COMPOUND.get());
         basicItem(NTItems.CAST_IRON_COMPOUND.get());
