@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "nautec:reactor_speed_upgrade",
+    "nautec:reactor_yield_upgrade",
+    "nautec:reactor_efficiency_upgrade"
+  ],
+  "result": {
+    "id": "nautec:reactor_fusion_upgrade"
+  }
+}

@@ -185,6 +185,23 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         return count;
     }
 
+    public int getEffectiveUpgradeCount(ReactorUpgradeItem.Type type) {
+        int count = getUpgradeCount(type);
+        if (ReactorUpgradeItem.Type.BASIC.contains(type)) {
+            count += getUpgradeCount(ReactorUpgradeItem.Type.FUSION);
+        }
+        return count;
+    }
+
+    public boolean hasUpgrades() {
+        for (ReactorUpgradeItem.Type type : ReactorUpgradeItem.Type.values()) {
+            if (getUpgradeCount(type) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public double getPowerMultiplier() {
         double multiplier = 1.0;
         for (ReactorUpgradeItem.Type type : ReactorUpgradeItem.Type.values()) {
@@ -199,15 +216,15 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     }
 
     public float getSpeedMultiplier() {
-        return (float) (1.0 + NTConfig.reactorSpeedUpgradeBonus * getUpgradeCount(ReactorUpgradeItem.Type.SPEED));
+        return (float) (1.0 + NTConfig.reactorSpeedUpgradeBonus * getEffectiveUpgradeCount(ReactorUpgradeItem.Type.SPEED));
     }
 
     public int getItemsPerCycle() {
-        return 1 + NTConfig.reactorYieldUpgradeBonus * getUpgradeCount(ReactorUpgradeItem.Type.YIELD);
+        return 1 + NTConfig.reactorYieldUpgradeBonus * getEffectiveUpgradeCount(ReactorUpgradeItem.Type.YIELD);
     }
 
     public float getVitalityCost() {
-        int upgrades = getUpgradeCount(ReactorUpgradeItem.Type.EFFICIENCY);
+        int upgrades = getEffectiveUpgradeCount(ReactorUpgradeItem.Type.EFFICIENCY);
         if (upgrades <= 0) {
             return 1.0f;
         }

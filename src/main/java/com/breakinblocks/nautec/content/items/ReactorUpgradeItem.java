@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -26,15 +27,26 @@ public class ReactorUpgradeItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
-        Component effect = switch (type) {
+        if (type == Type.FUSION) {
+            tooltipComponents.accept(effect(type).copy().withStyle(ChatFormatting.GOLD));
+            for (Type part : Type.BASIC) {
+                tooltipComponents.accept(effect(part).copy().withStyle(ChatFormatting.AQUA));
+            }
+        } else {
+            tooltipComponents.accept(effect(type).copy().withStyle(ChatFormatting.AQUA));
+        }
+        tooltipComponents.accept(Component.translatable("nautec.reactor_upgrade.power", format(type.powerMultiplier()))
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    private static Component effect(Type type) {
+        return switch (type) {
             case SPEED -> Component.translatable("nautec.reactor_upgrade.speed.effect", percent(NTConfig.reactorSpeedUpgradeBonus));
             case YIELD -> Component.translatable("nautec.reactor_upgrade.yield.effect", NTConfig.reactorYieldUpgradeBonus);
             case EFFICIENCY -> Component.translatable("nautec.reactor_upgrade.efficiency.effect",
                     percent(1 - NTConfig.reactorEfficiencyUpgradeFactor), percent(NTConfig.reactorEfficiencyUpgradeFloor));
+            case FUSION -> Component.translatable("nautec.reactor_upgrade.fusion.effect");
         };
-        tooltipComponents.accept(effect.copy().withStyle(ChatFormatting.AQUA));
-        tooltipComponents.accept(Component.translatable("nautec.reactor_upgrade.power", format(type.powerMultiplier()))
-                .withStyle(ChatFormatting.GRAY));
     }
 
     private static String percent(double fraction) {
@@ -48,13 +60,17 @@ public class ReactorUpgradeItem extends Item {
     public enum Type {
         SPEED,
         YIELD,
-        EFFICIENCY;
+        EFFICIENCY,
+        FUSION;
+
+        public static final List<Type> BASIC = List.of(SPEED, YIELD, EFFICIENCY);
 
         public double powerMultiplier() {
             return switch (this) {
                 case SPEED -> NTConfig.reactorSpeedUpgradePowerMultiplier;
                 case YIELD -> NTConfig.reactorYieldUpgradePowerMultiplier;
                 case EFFICIENCY -> NTConfig.reactorEfficiencyUpgradePowerMultiplier;
+                case FUSION -> NTConfig.reactorFusionUpgradePowerMultiplier;
             };
         }
     }

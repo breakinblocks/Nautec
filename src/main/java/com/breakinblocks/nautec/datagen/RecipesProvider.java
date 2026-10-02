@@ -1490,6 +1490,13 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
                 .save(pRecipeOutput, key("reactor_efficiency_upgrade"));
 
+        shapeless(RecipeCategory.MISC, NTItems.REACTOR_FUSION_UPGRADE.get())
+                .requires(NTItems.REACTOR_SPEED_UPGRADE)
+                .requires(NTItems.REACTOR_YIELD_UPGRADE)
+                .requires(NTItems.REACTOR_EFFICIENCY_UPGRADE)
+                .unlockedBy("has_item", has(NTItems.REACTOR_SPEED_UPGRADE))
+                .save(pRecipeOutput, key("reactor_fusion_upgrade"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.INDUSTRIAL_BIO_REACTOR.asItem())
                 .pattern("DRD")
                 .pattern("RBR")

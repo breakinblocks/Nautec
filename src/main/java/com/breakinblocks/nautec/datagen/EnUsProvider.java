@@ -313,6 +313,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(REACTOR_SPEED_UPGRADE, "Reactor Speed Upgrade");
         addItem(REACTOR_YIELD_UPGRADE, "Reactor Yield Upgrade");
         addItem(REACTOR_EFFICIENCY_UPGRADE, "Reactor Efficiency Upgrade");
+        addItem(REACTOR_FUSION_UPGRADE, "Reactor Fusion Upgrade");
 
         addItem("drowned_lungs", "Drowned Lungs");
         addItem("diving_helmet", "Diving Helmet");
@@ -480,6 +481,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.reactor_upgrade.speed.effect", "+%s%% production speed per upgrade");
         add("nautec.reactor_upgrade.yield.effect", "+%s item per completed cycle per upgrade");
         add("nautec.reactor_upgrade.efficiency.effect", "-%s%% nutrients used per upgrade (down to %s%%)");
+        add("nautec.reactor_upgrade.fusion.effect", "Counts as one Speed, one Yield and one Efficiency Upgrade in a single slot");
         add("nautec.reactor_upgrade.power", "Multiplies reactor AP draw by %s");
         add("nautec.bacteria.hint.shift", "Shift");
         add("nautec.bacteria.hint.control", "Control");

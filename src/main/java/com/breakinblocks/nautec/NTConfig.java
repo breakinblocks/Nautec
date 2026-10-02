@@ -189,6 +189,10 @@ public final class NTConfig {
             .comment("The factor each Reactor Efficiency Upgrade multiplies the reactor power draw by")
             .defineInRange("reactorEfficiencyUpgradePowerMultiplier", 1.2, 1, 100);
 
+    private static final ModConfigSpec.DoubleValue REACTOR_FUSION_UPGRADE_POWER = BUILDER
+            .comment("The factor each Reactor Fusion Upgrade multiplies the reactor power draw by. It counts as one Speed, one Yield and one Efficiency Upgrade, but only this multiplier applies")
+            .defineInRange("reactorFusionUpgradePowerMultiplier", 4.0, 1, 1000);
+
     private static final ModConfigSpec.IntValue FUEL_CELL_POWER_BASE = BUILDER
             .comment("The base amount of power a Bacterial Fuel Cell emits each tick, before production rate scales it")
             .defineInRange("fuelCellPowerBase", 24, 0, Integer.MAX_VALUE);
@@ -619,6 +623,7 @@ public final class NTConfig {
     public static double reactorEfficiencyUpgradeFactor = 0.75;
     public static double reactorEfficiencyUpgradeFloor = 0.25;
     public static double reactorEfficiencyUpgradePowerMultiplier = 1.2;
+    public static double reactorFusionUpgradePowerMultiplier = 4.0;
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
@@ -810,6 +815,7 @@ public final class NTConfig {
         reactorEfficiencyUpgradeFactor = value(REACTOR_EFFICIENCY_UPGRADE_FACTOR);
         reactorEfficiencyUpgradeFloor = value(REACTOR_EFFICIENCY_UPGRADE_FLOOR);
         reactorEfficiencyUpgradePowerMultiplier = value(REACTOR_EFFICIENCY_UPGRADE_POWER);
+        reactorFusionUpgradePowerMultiplier = value(REACTOR_FUSION_UPGRADE_POWER);
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
         fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
         fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);

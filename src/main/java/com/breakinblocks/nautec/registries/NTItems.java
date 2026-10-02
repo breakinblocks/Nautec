@@ -211,6 +211,8 @@ public final class NTItems {
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.YIELD), () -> new Item.Properties().stacksTo(1)));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_EFFICIENCY_UPGRADE = bacteriaItem(registerItem("reactor_efficiency_upgrade",
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.EFFICIENCY), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ReactorUpgradeItem> REACTOR_FUSION_UPGRADE = bacteriaItem(registerItem("reactor_fusion_upgrade",
+            props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.FUSION), () -> new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<BatteryItem> PRISMATIC_BATTERY = registerItem("prismatic_battery",
             BatteryItem::new, new Item.Properties().stacksTo(1));

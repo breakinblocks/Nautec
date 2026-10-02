@@ -6,7 +6,6 @@ import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotBacteriaStorage;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
-import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.menus.BioReactorLayout;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -191,9 +190,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         List<Component> lines = new ArrayList<>();
         ChatFormatting powerColor = reactor.getPower() >= reactor.getRequiredPower() ? ChatFormatting.GREEN : ChatFormatting.RED;
         lines.add(Component.translatable("nautec.bio_reactor.power", reactor.getPower(), reactor.getRequiredPower()).withStyle(powerColor));
-        if (reactor.getUpgradeCount(ReactorUpgradeItem.Type.SPEED) > 0
-                || reactor.getUpgradeCount(ReactorUpgradeItem.Type.YIELD) > 0
-                || reactor.getUpgradeCount(ReactorUpgradeItem.Type.EFFICIENCY) > 0) {
+        if (reactor.hasUpgrades()) {
             lines.add(Component.translatable("nautec.bio_reactor.upgrades",
                     String.format(Locale.ROOT, "%.2f", reactor.getSpeedMultiplier()),
                     reactor.getItemsPerCycle(),

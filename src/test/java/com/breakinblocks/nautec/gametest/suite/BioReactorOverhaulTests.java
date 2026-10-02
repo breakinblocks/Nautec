@@ -324,6 +324,37 @@ public final class BioReactorOverhaulTests {
             helper.succeed();
         });
 
+        r.add("bio_overhaul/fusion_upgrade_counts_as_all_three", 40, helper -> {
+            BlockPos controller = new BlockPos(4, 1, 4);
+            helper.setBlock(controller, NTBlocks.INDUSTRIAL_BIO_REACTOR.get().defaultBlockState());
+            IndustrialBioReactorBlockEntity reactor = helper.getBlockEntity(controller, IndustrialBioReactorBlockEntity.class);
+            for (int slot = 0; slot < IndustrialBioReactorBlockEntity.COLONIES; slot++) {
+                reactor.getBacteriaStorage().setBacteria(slot, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, 400,
+                        stats(1.0f, NTConfig.bacteriaLifespanCap), 0));
+            }
+            helper.assertTrue(!reactor.hasUpgrades(), "no upgrades before inserting the fusion upgrade");
+
+            reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(0), new ItemStack(NTItems.REACTOR_FUSION_UPGRADE.get()));
+            helper.assertTrue(reactor.hasUpgrades(), "fusion counts as an upgrade");
+            helper.assertValueEqual(2200, reactor.getRequiredPower(), "550 x 4 for one fusion upgrade");
+            helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 1.5f) < EPSILON, "speed with one fusion upgrade");
+            helper.assertValueEqual(2, reactor.getItemsPerCycle(), "items per cycle with one fusion upgrade");
+            helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.75f) < EPSILON, "vitality per tick with one fusion upgrade");
+
+            reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(1), new ItemStack(NTItems.REACTOR_SPEED_UPGRADE.get()));
+            helper.assertValueEqual(3520, reactor.getRequiredPower(), "550 x 4 x 1.6 for a fusion upgrade and a speed upgrade");
+            helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 2.0f) < EPSILON, "speed with a fusion upgrade and a speed upgrade");
+
+            for (int slot = 0; slot < IndustrialBioReactorBlockEntity.UPGRADE_SLOTS; slot++) {
+                reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(slot), new ItemStack(NTItems.REACTOR_FUSION_UPGRADE.get()));
+            }
+            helper.assertValueEqual(140800, reactor.getRequiredPower(), "550 x 4^4 for four fusion upgrades");
+            helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 3.0f) < EPSILON, "speed with four fusion upgrades");
+            helper.assertValueEqual(5, reactor.getItemsPerCycle(), "items per cycle with four fusion upgrades");
+            helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.31640625f) < EPSILON, "vitality per tick with four fusion upgrades");
+            helper.succeed();
+        });
+
         r.add("bio_overhaul/industrial_forms_from_exact_shape", 60, helper -> {
             BlockPos origin = new BlockPos(2, 1, 2);
             buildIndustrial(helper, origin);
