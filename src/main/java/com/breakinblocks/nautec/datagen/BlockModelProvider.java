@@ -2,6 +2,8 @@ package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
+import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.CrateBlock;
@@ -94,6 +96,8 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.CREATIVE_ENERGY_SOURCE.get(), cubeAll(name(NTBlocks.CREATIVE_ENERGY_SOURCE.get()),
                 blockTexture(NTBlocks.CREATIVE_POWER_SOURCE.get())));
         simpleBlock(NTBlocks.ENERGY_CONVERTER.get(), artModel(NTBlocks.ENERGY_CONVERTER.get()));
+        fusionPlant();
+        generators();
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
@@ -157,6 +161,44 @@ public class BlockModelProvider extends ModelProvider {
 
         horizontalBlock(NTBlocks.BACTERIAL_ANALYZER.get(), existingModelFile(NTBlocks.BACTERIAL_ANALYZER.get()));
         horizontalBlock(NTBlocks.BACTERIAL_ANALYZER_TOP.get(), existingModelFile(NTBlocks.BACTERIAL_ANALYZER_TOP.get()));
+    }
+
+    private void generators() {
+        simpleBlock(NTBlocks.TIDAL_ROTOR.get(), cubeBottomTop("tidal_rotor", blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_side"),
+                blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_bottom"), blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_top")));
+        Block tap = NTBlocks.THERMAL_VENT_TAP.get();
+        Identifier idle = cubeBottomTop("thermal_vent_tap", blockTexture(tap, "_side"), blockTexture(tap, "_bottom"), blockTexture(tap, "_top"));
+        Identifier lit = cubeBottomTop("thermal_vent_tap_lit", blockTexture(tap, "_side_lit"), blockTexture(tap, "_bottom"), blockTexture(tap, "_top_lit"));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(tap)
+                .with(BlockModelGenerators.createBooleanModelDispatch(ThermalVentTapBlock.LIT,
+                        BlockModelGenerators.plainVariant(lit), BlockModelGenerators.plainVariant(idle))));
+    }
+
+    private void fusionPlant() {
+        Material casing = blockTexture(NTBlocks.FUSION_CASING.get());
+        simpleBlock(NTBlocks.FUSION_CASING.get(), cubeAll("fusion_casing", casing));
+        simpleBlock(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get(), cubeAll("aquamarine_structural_glass", blockTexture(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get())));
+        simpleBlock(NTBlocks.CONTAINMENT_COIL.get(), cubeBottomTop("containment_coil", blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_side"),
+                blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_end"), blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_end")));
+        simpleBlock(NTBlocks.FUSION_PORT.get(), cubeAll("fusion_port", blockTexture(NTBlocks.FUSION_PORT.get())));
+        simpleBlock(NTBlocks.FUSION_COLLECTOR.get(), cubeBottomTop("fusion_collector", blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_side"),
+                blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_lens"), blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_lens")));
+        facingBlock(NTBlocks.LASER_INJECTOR.get(), cubeBottomTop("laser_injector", blockTexture(NTBlocks.LASER_INJECTOR.get(), "_side"),
+                blockTexture(NTBlocks.LASER_INJECTOR.get(), "_back"), blockTexture(NTBlocks.LASER_INJECTOR.get(), "_front")));
+
+        Block controller = NTBlocks.FUSION_CONTROLLER.get();
+        Identifier idle = createdModels.computeIfAbsent(Nautec.rl("block/fusion_controller"), key -> ModelTemplates.CUBE_ORIENTABLE.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(controller, "_front"))
+                .put(TextureSlot.SIDE, casing)
+                .put(TextureSlot.TOP, casing), blockModels.modelOutput));
+        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/fusion_controller_active"), key -> ModelTemplates.CUBE_ORIENTABLE.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(controller, "_front_active"))
+                .put(TextureSlot.SIDE, casing)
+                .put(TextureSlot.TOP, casing), blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(controller)
+                .with(BlockModelGenerators.createBooleanModelDispatch(FusionControllerBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
     }
 
     public BlockModelGenerators blockModels() {

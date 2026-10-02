@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nautec:block/laser_injector",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "nautec:block/laser_injector",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nautec:block/laser_injector",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "nautec:block/laser_injector",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nautec:block/laser_injector"
+    },
+    "facing=west": {
+      "model": "nautec:block/laser_injector",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

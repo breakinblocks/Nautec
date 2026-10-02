@@ -17,6 +17,12 @@ import com.breakinblocks.nautec.content.blocks.MixerBlock;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
+import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
+import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
+import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.generators.TidalRotorBlockEntity;
+import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
+import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
 import snownee.jade.api.WailaPlugin;
 
 @WailaPlugin
@@ -29,6 +35,9 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(DrainComponentProvider.INSTANCE, DrainBlockEntity.class);
         registration.registerBlockDataProvider(CrystalCradleComponentProvider.INSTANCE, CrystalCradleBlockEntity.class);
         registration.registerBlockDataProvider(DrainComponentProvider.INSTANCE, DrainPartBlockEntity.class);
+        registration.registerBlockDataProvider(FusionControllerComponentProvider.INSTANCE, FusionControllerBlockEntity.class);
+        registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, TidalRotorBlockEntity.class);
+        registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, ThermalVentTapBlockEntity.class);
     }
 
     @Override
@@ -42,5 +51,8 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PrismarineCrystalComponentProvider.INSTANCE, PrismarineCrystalBlock.class);
         registration.registerBlockComponent(PrismarineCrystalComponentProvider.INSTANCE, PrismarineCrystalPartBlock.class);
         registration.registerBlockComponent(DrainComponentProvider.Client.INSTANCE, DrainPartBlock.class);
+        registration.registerBlockComponent(FusionControllerComponentProvider.Client.INSTANCE, FusionControllerBlock.class);
+        registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, TidalRotorBlock.class);
+        registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, ThermalVentTapBlock.class);
     }
 }

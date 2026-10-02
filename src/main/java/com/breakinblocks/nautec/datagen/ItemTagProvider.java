@@ -27,6 +27,8 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
     protected void addTags(HolderLookup.Provider provider) {
         tag(NTTags.Items.AQUATIC_CATALYST, Items.HEART_OF_THE_SEA);
         tag(NTTags.Items.AQUARINE_STEEL, NTItems.AQUARINE_STEEL_INGOT);
+        tag(NTTags.Items.DUSTS_SALT, NTItems.SALT);
+        tag(Tags.Items.DUSTS, NTTags.Items.DUSTS_SALT);
         tag(ItemTags.AXES, NTItems.AQUARINE_AXE);
         tag(ItemTags.PICKAXES, NTItems.AQUARINE_PICKAXE);
         tag(ItemTags.SWORDS, NTItems.AQUARINE_SWORD);

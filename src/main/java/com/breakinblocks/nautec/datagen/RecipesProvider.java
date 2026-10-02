@@ -19,6 +19,7 @@ import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.tags.NTTags;
 import com.breakinblocks.nautec.utils.ranges.IntRange;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
@@ -65,6 +67,7 @@ public class RecipesProvider extends RecipeProvider {
 
         ancientItemsRecipes(pRecipeOutput);
         guaranteedPartRecipes(pRecipeOutput);
+        fusionPlantRecipes(pRecipeOutput);
 
         chemistryRecipes(pRecipeOutput);
 
@@ -1102,6 +1105,116 @@ public class RecipesProvider extends RecipeProvider {
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
                 .fluidResult(null)
                 .save(pRecipeOutput, key("aquarine_steel_compound_mixing"));
+
+        MixingRecipeBuilder.newRecipe()
+                .ingredients(new IngredientWithCount(tag(NTTags.Items.DUSTS_SALT), 1))
+                .duration(100)
+                .fluidIngredient(new FluidStackTemplate(Fluids.WATER, 1000))
+                .fluidResult(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .save(pRecipeOutput, key("saltwater_mixing"));
+    }
+
+    private void fusionPlantRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.MISC, NTBlocks.TIDAL_ROTOR.asItem())
+                .pattern("RIR")
+                .pattern("ICI")
+                .pattern("RXR")
+                .define('R', NTItems.CAST_IRON_ROD)
+                .define('I', NTItems.CAST_IRON_INGOT)
+                .define('C', Items.COPPER_BLOCK)
+                .define('X', Items.REDSTONE)
+                .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
+                .save(pRecipeOutput, key("tidal_rotor"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.THERMAL_VENT_TAP.asItem())
+                .pattern("AVA")
+                .pattern("MCM")
+                .pattern("AHA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('V', NTItems.VALVE)
+                .define('M', Items.MAGMA_BLOCK)
+                .define('C', NTBlocks.CAST_IRON_BLOCK)
+                .define('H', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
+                .save(pRecipeOutput, key("thermal_vent_tap"));
+
+        shaped(RecipeCategory.BUILDING_BLOCKS, NTBlocks.FUSION_CASING.asItem(), 8)
+                .pattern("DAD")
+                .pattern("AGA")
+                .pattern("DAD")
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
+                .save(pRecipeOutput, key("fusion_casing"));
+
+        shaped(RecipeCategory.BUILDING_BLOCKS, NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.asItem(), 6)
+                .pattern("GAG")
+                .pattern("GSG")
+                .pattern("GAG")
+                .define('G', Tags.Items.GLASS_BLOCKS)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("aquamarine_structural_glass"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.CONTAINMENT_COIL.asItem())
+                .pattern("ELE")
+                .pattern("GCG")
+                .pattern("ELE")
+                .define('E', Items.ENDER_PEARL)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
+                .save(pRecipeOutput, key("containment_coil"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.LASER_INJECTOR.asItem())
+                .pattern("PRP")
+                .pattern("ELE")
+                .pattern("PFP")
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('E', Items.ENDER_PEARL)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('F', NTBlocks.FOCUSING_LENS)
+                .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
+                .save(pRecipeOutput, key("laser_injector"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.FUSION_COLLECTOR.asItem())
+                .pattern("PLP")
+                .pattern("ECE")
+                .pattern("PGP")
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('E', Items.ENDER_PEARL)
+                .define('C', NTItems.LASER_CHANNELING_COIL)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
+                .save(pRecipeOutput, key("fusion_collector"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.FUSION_PORT.asItem())
+                .pattern(" A ")
+                .pattern("VCV")
+                .pattern(" A ")
+                .define('A', NTItems.AQUATIC_CHIP)
+                .define('V', NTItems.VALVE)
+                .define('C', NTBlocks.FUSION_CASING)
+                .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
+                .save(pRecipeOutput, key("fusion_port"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.FUSION_CONTROLLER.asItem())
+                .pattern("FNF")
+                .pattern("ECE")
+                .pattern("PAP")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('N', Items.NETHER_STAR)
+                .define('E', Items.ENDER_PEARL)
+                .define('C', NTBlocks.FUSION_CASING)
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
+                .save(pRecipeOutput, key("fusion_controller"));
     }
 
     private void guaranteedPartRecipes(@NotNull RecipeOutput pRecipeOutput) {

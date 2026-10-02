@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "nautec:laser_channeling_coil",
+    "E": "minecraft:ender_pearl",
+    "G": "nautec:atlantic_gold_ingot",
+    "L": "nautec:prismarine_lens",
+    "P": "nautec:deep_steel_plating"
+  },
+  "pattern": [
+    "PLP",
+    "ECE",
+    "PGP"
+  ],
+  "result": {
+    "id": "nautec:fusion_collector"
+  }
+}

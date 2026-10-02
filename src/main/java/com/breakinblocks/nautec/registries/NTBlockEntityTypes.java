@@ -40,6 +40,12 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.part.Industrial
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.fusion.FusionCollectorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.generators.TidalRotorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.fusion.FusionPortBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.fusion.LaserInjectorBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -142,6 +148,25 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<CrystalCradleBlockEntity>> CRYSTAL_CRADLE = BLOCK_ENTITIES.register("crystal_cradle",
             () -> new BlockEntityType<>(CrystalCradleBlockEntity::new,
                     NTBlocks.CRYSTAL_CRADLE.get()));
+    public static final Supplier<BlockEntityType<TidalRotorBlockEntity>> TIDAL_ROTOR = BLOCK_ENTITIES.register("tidal_rotor",
+            () -> new BlockEntityType<>(TidalRotorBlockEntity::new,
+                    NTBlocks.TIDAL_ROTOR.get()));
+    public static final Supplier<BlockEntityType<ThermalVentTapBlockEntity>> THERMAL_VENT_TAP = BLOCK_ENTITIES.register("thermal_vent_tap",
+            () -> new BlockEntityType<>(ThermalVentTapBlockEntity::new,
+                    NTBlocks.THERMAL_VENT_TAP.get()));
+    public static final Supplier<BlockEntityType<FusionControllerBlockEntity>> FUSION_CONTROLLER = BLOCK_ENTITIES.register("fusion_controller",
+            () -> new BlockEntityType<>(FusionControllerBlockEntity::new,
+                    NTBlocks.FUSION_CONTROLLER.get()));
+    public static final Supplier<BlockEntityType<LaserInjectorBlockEntity>> LASER_INJECTOR = BLOCK_ENTITIES.register("laser_injector",
+            () -> new BlockEntityType<>(LaserInjectorBlockEntity::new,
+                    NTBlocks.LASER_INJECTOR.get()));
+    public static final Supplier<BlockEntityType<FusionCollectorBlockEntity>> FUSION_COLLECTOR = BLOCK_ENTITIES.register("fusion_collector",
+            () -> new BlockEntityType<>(FusionCollectorBlockEntity::new,
+                    NTBlocks.FUSION_COLLECTOR.get()));
+    public static final Supplier<BlockEntityType<FusionPortBlockEntity>> FUSION_PORT = BLOCK_ENTITIES.register("fusion_port",
+            () -> new BlockEntityType<>(FusionPortBlockEntity::new,
+                    NTBlocks.FUSION_PORT.get()));
+
     public static final Supplier<BlockEntityType<ConfinedSpawnerBlockEntity>> CONFINED_SPAWNER = BLOCK_ENTITIES.register("confined_spawner",
             () -> new BlockEntityType<>(ConfinedSpawnerBlockEntity::new,
                     NTBlocks.CONFINED_SPAWNER.get()));

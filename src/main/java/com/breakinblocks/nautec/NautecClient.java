@@ -47,6 +47,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.ChargerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ConfinedSpawnerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.CrystalCradleBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.FusionControllerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.FishingStationBERenderer;
@@ -59,6 +60,7 @@ import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
 import com.breakinblocks.nautec.client.screen.IndustrialBioReactorScreen;
 import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
+import com.breakinblocks.nautec.client.screen.FusionControllerScreen;
 import com.breakinblocks.nautec.client.screen.CrateScreen;
 import com.breakinblocks.nautec.client.screen.FishingStationScreen;
 import com.breakinblocks.nautec.client.screen.IncubatorScreen;
@@ -124,6 +126,12 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import com.breakinblocks.nautec.client.render.NTRenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 @Mod(value = NautecClient.MODID, dist = Dist.CLIENT)
 public final class NautecClient {
@@ -147,6 +155,14 @@ public final class NautecClient {
         modEventBus.addListener(this::registerParticleProviders);
         modEventBus.addListener(this::registerRenderPipelines);
         modEventBus.addListener(this::registerItemDecorations);
+        modEventBus.addListener(this::addPackFinders);
+    }
+
+    private void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES && ModList.get().isLoaded("fusion")) {
+            event.addPackFinders(Nautec.rl("resourcepacks/fusion_connected"), PackType.CLIENT_RESOURCES,
+                    Component.literal("NauTec Connected Textures"), PackSource.BUILT_IN, true, Pack.Position.TOP);
+        }
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
@@ -160,6 +176,8 @@ public final class NautecClient {
         event.registerPipeline(NTRenderPipelines.CRYSTAL_HALO);
         event.registerPipeline(NTRenderPipelines.GATEWAY_GLOW);
         event.registerPipeline(NTRenderPipelines.GATEWAY_HORIZON);
+        event.registerPipeline(NTRenderPipelines.FUSION_PLASMA);
+        event.registerPipeline(NTRenderPipelines.FUSION_FIELD);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -281,6 +299,8 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_CRYSTAL_PART.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DECORATIVE_PRISMARINE_CRYSTAL.get(), DecorativePrismarineCrystalBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.GATEWAY.get(), GatewayBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.FUSION_CONTROLLER.get(), FusionControllerBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_INJECTOR.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
@@ -353,6 +373,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
         event.register(NTMenuTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerScreen::new);
+        event.register(NTMenuTypes.FUSION_CONTROLLER.get(), FusionControllerScreen::new);
     }
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {

@@ -74,7 +74,27 @@ public class BlockTagProvider extends BlockTagsProvider {
                 OIL_BARREL,
                 CREATIVE_POWER_SOURCE,
                 CREATIVE_ENERGY_SOURCE,
-                ENERGY_CONVERTER);
+                ENERGY_CONVERTER,
+                TIDAL_ROTOR,
+                THERMAL_VENT_TAP,
+                FUSION_CASING,
+                AQUAMARINE_STRUCTURAL_GLASS,
+                CONTAINMENT_COIL,
+                FUSION_CONTROLLER,
+                LASER_INJECTOR,
+                FUSION_COLLECTOR,
+                FUSION_PORT);
+        tag(BlockTags.NEEDS_IRON_TOOL,
+                THERMAL_VENT_TAP);
+        tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA);
+        tag(BlockTags.NEEDS_DIAMOND_TOOL,
+                FUSION_CASING,
+                AQUAMARINE_STRUCTURAL_GLASS,
+                CONTAINMENT_COIL,
+                FUSION_CONTROLLER,
+                LASER_INJECTOR,
+                FUSION_COLLECTOR,
+                FUSION_PORT);
         tag(NTTags.Blocks.GATEWAY_RING_CLEARABLE)
                 .add(Blocks.KELP, Blocks.KELP_PLANT, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.SEA_PICKLE)
                 .addTag(BlockTags.CORALS)

@@ -221,6 +221,20 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getFeBuffer());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CREATIVE_ENERGY_SOURCE.get(),
                 (blockEntity, dir) -> blockEntity);
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
+                (blockEntity, dir) -> blockEntity.getEnergyOutput());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
+                (blockEntity, dir) -> blockEntity.getEnergyOutput());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
+                (blockEntity, dir) -> blockEntity.getFuelInput());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
+                (blockEntity, dir) -> blockEntity.getEnergyOutput());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
+                (blockEntity, dir) -> blockEntity.getFuelInput());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
+                (blockEntity, dir) -> blockEntity.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
+                (blockEntity, dir) -> blockEntity.getFuel());
 
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : NTBlockEntityTypes.BLOCK_ENTITIES.getEntries()) {
             Block validBlock = be.get().getValidBlocks().stream().iterator().next();

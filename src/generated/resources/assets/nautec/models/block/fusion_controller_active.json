@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "nautec:block/fusion_controller_front_active",
+    "side": "nautec:block/fusion_casing",
+    "top": "nautec:block/fusion_casing"
+  }
+}

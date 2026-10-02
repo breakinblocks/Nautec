@@ -93,3 +93,5 @@ At ten million AP the seed becomes a full Cultivated Prismarine Crystal standing
 **To move it**, sneak and right-click any part of it with a wrench. Any mod's wrench works, as long as it is in the `c:tools/wrench` tag, including the <ItemLink id="aquarine_steel_wrench"/>. You get the crystal back as an item, and placing it needs six free blocks of height again.
 
 Wild crystals stay rooted, and the Aquarine Steel Pickaxe's shattering ability only works on wild crystals, so a cultivated one never breaks by accident. Jade marks every crystal as Cultivated or Natural.
+
+A cultivated crystal is also the heart of a [Fusion Plant](fusion_plant.md), NauTec's largest generator.

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquatic_chip",
+    "C": "nautec:fusion_casing",
+    "V": "nautec:valve"
+  },
+  "pattern": [
+    " A ",
+    "VCV",
+    " A "
+  ],
+  "result": {
+    "id": "nautec:fusion_port"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "nautec:block/thermal_vent_tap"
+    },
+    "lit=true": {
+      "model": "nautec:block/thermal_vent_tap_lit"
+    }
+  }
+}

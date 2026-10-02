@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nautec:block/containment_coil_end",
+    "side": "nautec:block/containment_coil_side",
+    "top": "nautec:block/containment_coil_end"
+  }
+}

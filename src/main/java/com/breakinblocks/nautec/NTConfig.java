@@ -212,6 +212,58 @@ public final class NTConfig {
             .comment("The most AP a Confined Spawner can hold in its buffer")
             .defineInRange("confinedSpawnerPowerBuffer", 500, 1, 30000);
 
+    private static final ModConfigSpec.IntValue TIDAL_ROTOR_MIN_OUTPUT = BUILDER
+            .comment("The FE per tick a Tidal Rotor makes in the shallowest, most enclosed ocean water it still runs in")
+            .defineInRange("tidalRotorMinOutput", 40, 0, 1_000_000);
+
+    private static final ModConfigSpec.IntValue TIDAL_ROTOR_MAX_OUTPUT = BUILDER
+            .comment("The FE per tick a Tidal Rotor makes in open water at least 24 blocks deep")
+            .defineInRange("tidalRotorMaxOutput", 80, 0, 1_000_000);
+
+    private static final ModConfigSpec.IntValue VENT_TAP_MIN_OUTPUT = BUILDER
+            .comment("The FE per tick a Thermal Vent Tap makes over a single heat source")
+            .defineInRange("ventTapMinOutput", 350, 0, 10_000_000);
+
+    private static final ModConfigSpec.IntValue VENT_TAP_MAX_OUTPUT = BUILDER
+            .comment("The FE per tick a Thermal Vent Tap makes with all nine blocks below it hot")
+            .defineInRange("ventTapMaxOutput", 1_250, 0, 10_000_000);
+
+    private static final ModConfigSpec.IntValue VENT_TAP_SALT_WATER_PER_TICK = BUILDER
+            .comment("The mB of Salt Water a Thermal Vent Tap boils each tick while it runs")
+            .defineInRange("ventTapSaltWaterPerTick", 10, 1, 100_000);
+
+    private static final ModConfigSpec.IntValue VENT_TAP_SALT_WATER_PER_SALT = BUILDER
+            .comment("The mB of Salt Water a Thermal Vent Tap boils for each Salt it leaves behind")
+            .defineInRange("ventTapSaltWaterPerSalt", 1_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.LongValue FUSION_IGNITION_ENERGY = BUILDER
+            .comment("The AP a cold Fusion Plant must take in through its Laser Injectors before it ignites")
+            .defineInRange("fusionIgnitionEnergy", 5_000_000L, 1L, Long.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue FUSION_FE_PER_AP = BUILDER
+            .comment("The FE a running Fusion Plant makes for each AP of injected beam at purity 3.0. Lower purity scales it down")
+            .defineInRange("fusionFePerAp", 50, 1, 100_000);
+
+    private static final ModConfigSpec.IntValue FUSION_MAX_OUTPUT = BUILDER
+            .comment("The most FE per tick a Fusion Plant can make, however large its chamber and however many Containment Coils it has")
+            .defineInRange("fusionMaxOutput", 300_000, 1, Integer.MAX_VALUE / 2);
+
+    private static final ModConfigSpec.IntValue FUSION_COIL_CONTAINMENT = BUILDER
+            .comment("The FE per tick each Containment Coil in the shell adds to a Fusion Plant's output ceiling")
+            .defineInRange("fusionCoilContainment", 4_000, 0, Integer.MAX_VALUE / 2);
+
+    private static final ModConfigSpec.DoubleValue FUSION_MIN_PURITY = BUILDER
+            .comment("The lowest purity a beam entering a Laser Injector must have to count toward a Fusion Plant")
+            .defineInRange("fusionMinPurity", 2.0, 0, 10);
+
+    private static final ModConfigSpec.IntValue FUSION_FE_PER_MB = BUILDER
+            .comment("The FE a Fusion Plant makes from each mB of Salt Water it burns")
+            .defineInRange("fusionFePerMb", 2_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue FUSION_ENERGY_BUFFER = BUILDER
+            .comment("The FE a Fusion Plant controller holds before it throttles down")
+            .defineInRange("fusionEnergyBuffer", 4_000_000, 1, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue FUEL_CELL_POWER_BASE = BUILDER
             .comment("The base amount of power a Bacterial Fuel Cell emits each tick, before production rate scales it")
             .defineInRange("fuelCellPowerBase", 24, 0, Integer.MAX_VALUE);
@@ -648,6 +700,19 @@ public final class NTConfig {
     public static double crystalGrowthPurity = 2.0;
     public static int confinedSpawnerPowerPerTick = 50;
     public static int confinedSpawnerPowerBuffer = 500;
+    public static int tidalRotorMinOutput = 40;
+    public static int tidalRotorMaxOutput = 80;
+    public static int ventTapMinOutput = 350;
+    public static int ventTapMaxOutput = 1_250;
+    public static int ventTapSaltWaterPerTick = 10;
+    public static int ventTapSaltWaterPerSalt = 1_000;
+    public static long fusionIgnitionEnergy = 5_000_000L;
+    public static int fusionFePerAp = 50;
+    public static int fusionMaxOutput = 300_000;
+    public static int fusionCoilContainment = 4_000;
+    public static double fusionMinPurity = 2.0;
+    public static int fusionFePerMb = 2_000;
+    public static int fusionEnergyBuffer = 4_000_000;
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
@@ -845,6 +910,19 @@ public final class NTConfig {
         crystalGrowthPurity = value(CRYSTAL_GROWTH_PURITY);
         confinedSpawnerPowerPerTick = value(CONFINED_SPAWNER_POWER_PER_TICK);
         confinedSpawnerPowerBuffer = value(CONFINED_SPAWNER_POWER_BUFFER);
+        tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
+        tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
+        ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);
+        ventTapMaxOutput = value(VENT_TAP_MAX_OUTPUT);
+        ventTapSaltWaterPerTick = value(VENT_TAP_SALT_WATER_PER_TICK);
+        ventTapSaltWaterPerSalt = value(VENT_TAP_SALT_WATER_PER_SALT);
+        fusionIgnitionEnergy = value(FUSION_IGNITION_ENERGY);
+        fusionFePerAp = value(FUSION_FE_PER_AP);
+        fusionMaxOutput = value(FUSION_MAX_OUTPUT);
+        fusionCoilContainment = value(FUSION_COIL_CONTAINMENT);
+        fusionMinPurity = value(FUSION_MIN_PURITY);
+        fusionFePerMb = value(FUSION_FE_PER_MB);
+        fusionEnergyBuffer = value(FUSION_ENERGY_BUFFER);
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
         fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
         fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);

@@ -20,6 +20,7 @@ public final class NTTags {
 
     public static final class Blocks {
         public static final TagKey<Block> GATEWAY_RING_CLEARABLE = ntTag("gateway_ring_clearable");
+        public static final TagKey<Block> VENT_HEAT_SOURCES = ntTag("vent_heat_sources");
 
         private static TagKey<Block> ntTag(String name) {
             return TagKey.create(Registries.BLOCK, Nautec.rl(name));
@@ -35,6 +36,7 @@ public final class NTTags {
         public static final TagKey<Item> REPAIRS_DIVING_SUIT = ntTag("repairs_diving_suit");
         public static final TagKey<Item> REPAIRS_PRISMARINE_ARMOR = ntTag("repairs_prismarine_armor");
         public static final TagKey<Item> SUBMARINE_MODULE = ntTag("submarine_module");
+        public static final TagKey<Item> DUSTS_SALT = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/salt"));
 
         private static TagKey<Item> ntTag(String name) {
             return TagKey.create(Registries.ITEM, Nautec.rl(name));

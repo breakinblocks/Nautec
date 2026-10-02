@@ -35,6 +35,12 @@ import com.breakinblocks.nautec.content.blocks.PrismaticMirrorBlock;
 import com.breakinblocks.nautec.content.blocks.ResonanceChamberBlock;
 import com.breakinblocks.nautec.content.blocks.SubmarineDockBlock;
 import com.breakinblocks.nautec.content.blocks.flora.DeepKelpBlock;
+import com.breakinblocks.nautec.content.blocks.fusion.FusionCollectorBlock;
+import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
+import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
+import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
+import com.breakinblocks.nautec.content.blocks.fusion.FusionPortBlock;
+import com.breakinblocks.nautec.content.blocks.fusion.LaserInjectorBlock;
 import com.breakinblocks.nautec.content.blocks.flora.DeepKelpPlantBlock;
 import com.breakinblocks.nautec.content.blocks.flora.UnderwaterPlantBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.AugmentationStationBlock;
@@ -59,6 +65,7 @@ import net.minecraft.world.level.block.GlowLichenBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -191,6 +198,27 @@ public final class NTBlocks {
     public static final DeferredBlock<EnergyConverterBlock> ENERGY_CONVERTER = registerBlockAndItem("energy_converter", EnergyConverterBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), true, true);
 
+    public static final DeferredBlock<TidalRotorBlock> TIDAL_ROTOR = registerBlockAndItem("tidal_rotor", TidalRotorBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+    public static final DeferredBlock<ThermalVentTapBlock> THERMAL_VENT_TAP = registerBlockAndItem("thermal_vent_tap", ThermalVentTapBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(4.5f, 12.0f).sound(SoundType.METAL).requiresCorrectToolForDrops()
+                    .lightLevel(state -> state.getValue(ThermalVentTapBlock.LIT) ? 9 : 0));
+
+    public static final DeferredBlock<Block> FUSION_CASING = registerBlockAndItem("fusion_casing", Block::new,
+            fusionProperties());
+    public static final DeferredBlock<TransparentBlock> AQUAMARINE_STRUCTURAL_GLASS = registerBlockAndItem("aquamarine_structural_glass", TransparentBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS).mapColor(MapColor.COLOR_CYAN).strength(4.0f, 1200.0f).requiresCorrectToolForDrops());
+    public static final DeferredBlock<Block> CONTAINMENT_COIL = registerBlockAndItem("containment_coil", Block::new,
+            fusionProperties().sound(SoundType.COPPER).lightLevel(state -> 6));
+    public static final DeferredBlock<FusionControllerBlock> FUSION_CONTROLLER = registerBlockAndItem("fusion_controller", FusionControllerBlock::new,
+            fusionProperties().lightLevel(state -> state.getValue(FusionControllerBlock.ACTIVE) ? 13 : 3));
+    public static final DeferredBlock<LaserInjectorBlock> LASER_INJECTOR = registerBlockAndItem("laser_injector", LaserInjectorBlock::new,
+            fusionProperties());
+    public static final DeferredBlock<FusionCollectorBlock> FUSION_COLLECTOR = registerBlockAndItem("fusion_collector", FusionCollectorBlock::new,
+            fusionProperties());
+    public static final DeferredBlock<FusionPortBlock> FUSION_PORT = registerBlockAndItem("fusion_port", FusionPortBlock::new,
+            fusionProperties());
+
     public static final DeferredBlock<BuddingPrismarineBlock> BUDDING_PRISMARINE = registerBlockAndItem("budding_prismarine", BuddingPrismarineBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).randomTicks().strength(1.5f).requiresCorrectToolForDrops());
     public static final DeferredBlock<AmethystClusterBlock> SMALL_PRISMARINE_BUD = registerBlockAndItem("small_prismarine_bud",
@@ -222,6 +250,10 @@ public final class NTBlocks {
 
     private static BlockBehaviour.Properties prismarineBudProperties(int light) {
         return BlockBehaviour.Properties.ofFullCopy(Blocks.SMALL_AMETHYST_BUD).lightLevel(state -> light);
+    }
+
+    private static BlockBehaviour.Properties fusionProperties() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
     }
 
     private static <T extends Block> DeferredBlock<T> registerBlockAndItem(String name, Function<BlockBehaviour.Properties, T> blockConstructor, BlockBehaviour.Properties properties) {

@@ -118,6 +118,22 @@ public final class NTRenderPipelines {
             .withCull(false)
             .build();
 
+    public static final RenderPipeline FUSION_PLASMA = glow("fusion_plasma");
+
+    public static final RenderPipeline FUSION_FIELD = glow("fusion_field");
+
+    private static RenderPipeline glow(String name) {
+        return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+                .withLocation(Nautec.rl("pipeline/" + name))
+                .withVertexShader("core/position_tex_color")
+                .withFragmentShader(Nautec.rl("core/" + name))
+                .withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
+                .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
+                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                .withCull(false)
+                .build();
+    }
+
     private static RenderPipeline laser(String name) {
         return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(Nautec.rl("pipeline/" + name))

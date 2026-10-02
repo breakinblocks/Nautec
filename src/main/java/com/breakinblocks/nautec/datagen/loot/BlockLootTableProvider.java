@@ -56,6 +56,15 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         prismarineSand(NTBlocks.PRISMARINE_SAND.get());
         dropSelf(NTBlocks.AQUATIC_CATALYST.get());
+        dropSelf(NTBlocks.TIDAL_ROTOR.get());
+        dropSelf(NTBlocks.THERMAL_VENT_TAP.get());
+        dropSelf(NTBlocks.FUSION_CASING.get());
+        dropSelf(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get());
+        dropSelf(NTBlocks.CONTAINMENT_COIL.get());
+        dropSelf(NTBlocks.FUSION_CONTROLLER.get());
+        dropSelf(NTBlocks.LASER_INJECTOR.get());
+        dropSelf(NTBlocks.FUSION_COLLECTOR.get());
+        dropSelf(NTBlocks.FUSION_PORT.get());
         dropSelf(NTBlocks.PRISMARINE_RELAY.get());
         dropSelf(NTBlocks.LASER_JUNCTION.get());
         dropSelf(NTBlocks.SUBMARINE_DOCK.get());

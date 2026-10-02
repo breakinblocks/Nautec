@@ -1,0 +1,11 @@
+{
+  "values": [
+    "nautec:fusion_casing",
+    "nautec:aquamarine_structural_glass",
+    "nautec:containment_coil",
+    "nautec:fusion_controller",
+    "nautec:laser_injector",
+    "nautec:fusion_collector",
+    "nautec:fusion_port"
+  ]
+}

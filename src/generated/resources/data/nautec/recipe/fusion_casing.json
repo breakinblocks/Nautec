@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "D": "nautec:deep_steel_plating",
+    "G": "nautec:atlantic_gold_ingot"
+  },
+  "pattern": [
+    "DAD",
+    "AGA",
+    "DAD"
+  ],
+  "result": {
+    "count": 8,
+    "id": "nautec:fusion_casing"
+  }
+}

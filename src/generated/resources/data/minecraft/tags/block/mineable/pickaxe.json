@@ -45,6 +45,15 @@
     "nautec:oil_barrel",
     "nautec:creative_power_source",
     "nautec:creative_energy_source",
-    "nautec:energy_converter"
+    "nautec:energy_converter",
+    "nautec:tidal_rotor",
+    "nautec:thermal_vent_tap",
+    "nautec:fusion_casing",
+    "nautec:aquamarine_structural_glass",
+    "nautec:containment_coil",
+    "nautec:fusion_controller",
+    "nautec:laser_injector",
+    "nautec:fusion_collector",
+    "nautec:fusion_port"
   ]
 }

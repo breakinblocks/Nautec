@@ -39,6 +39,20 @@ public final class NTRenderTypes {
     private static final RenderType GATEWAY_HORIZON = RenderType.create("nautec_gateway_horizon",
             RenderSetup.builder(NTRenderPipelines.GATEWAY_HORIZON).sortOnUpload().createRenderSetup());
 
+    private static final RenderType FUSION_PLASMA = RenderType.create("nautec_fusion_plasma",
+            RenderSetup.builder(NTRenderPipelines.FUSION_PLASMA).createRenderSetup());
+
+    private static final RenderType FUSION_FIELD = RenderType.create("nautec_fusion_field",
+            RenderSetup.builder(NTRenderPipelines.FUSION_FIELD).createRenderSetup());
+
+    public static RenderType fusionPlasma() {
+        return FUSION_PLASMA;
+    }
+
+    public static RenderType fusionField() {
+        return FUSION_FIELD;
+    }
+
     public static RenderType gatewayGlow(Identifier texture) {
         return GATEWAY_GLOW.apply(texture);
     }
