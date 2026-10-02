@@ -100,6 +100,11 @@ public final class NTConfig {
             .comment("The maximum lifespan of a bacteria colony")
             .defineInRange("bacteriaLifespanCap", 24000, 0, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> PREFERRED_TAG_NAMESPACES = BUILDER
+            .comment("Mod namespaces to prefer, in order, when a bacteria's product is an item tag. Packs with a unification mod should list its namespace first",
+                    "An item from an earlier namespace wins; tag members from unlisted namespaces fall back to alphabetical order")
+            .defineList("preferredTagNamespaces", List.of("minecraft"), () -> "minecraft", entry -> entry instanceof String);
+
     private static final ModConfigSpec.IntValue BACTERIA_ANALYZER_CRAFTING_SPEED = BUILDER
             .comment("The amount of ticks it takes for the Bacterial Analyzer to analyze a Petri Dish")
             .defineInRange("bacteriaAnalyzerCraftingSpeed", 60, 0, Integer.MAX_VALUE);
@@ -588,6 +593,7 @@ public final class NTConfig {
     public static float bacteriaMutationResistanceCap;
     public static long bacteriaColonySizeCap;
     public static int bacteriaLifespanCap;
+    public static List<String> preferredTagNamespaces;
 
     public static int bacteriaAnalyzerCraftingSpeed;
     public static int bacteriaAnalyzerPowerUsage;
@@ -778,6 +784,7 @@ public final class NTConfig {
         bacteriaMutationResistanceCap = value(BACTERIA_MUTATION_RESISTANCE_CAP).floatValue();
         bacteriaColonySizeCap = value(BACTERIA_COLONY_SIZE_CAP);
         bacteriaLifespanCap = value(BACTERIA_LIFESPAN_CAP);
+        preferredTagNamespaces = List.copyOf(value(PREFERRED_TAG_NAMESPACES));
 
         bacteriaAnalyzerCraftingSpeed = value(BACTERIA_ANALYZER_CRAFTING_SPEED);
         bacteriaAnalyzerPowerUsage = value(BACTERIA_ANALYZER_POWER_USAGE);

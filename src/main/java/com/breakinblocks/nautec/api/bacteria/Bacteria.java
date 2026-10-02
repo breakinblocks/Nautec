@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.api.bacteria;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
 import io.netty.buffer.ByteBuf;
@@ -87,7 +88,8 @@ public interface Bacteria {
                         .map(holders -> holders.stream()
                                 .map(Holder::value)
                                 .filter(item -> item != Items.AIR)
-                                .min(Comparator.comparing(item -> BuiltInRegistries.ITEM.getKey(item).toString()))
+                                .min(Comparator.comparingInt(ItemTagResource::namespaceRank)
+                                        .thenComparing(item -> BuiltInRegistries.ITEM.getKey(item).toString()))
                                 .orElse(Items.AIR))
                         .orElse(Items.AIR);
             }
@@ -95,6 +97,11 @@ public interface Bacteria {
             @Override
             public String asString() {
                 return "#" + tag.location();
+            }
+
+            private static int namespaceRank(Item item) {
+                int rank = NTConfig.preferredTagNamespaces.indexOf(BuiltInRegistries.ITEM.getKey(item).getNamespace());
+                return rank < 0 ? NTConfig.preferredTagNamespaces.size() : rank;
             }
         }
     }
