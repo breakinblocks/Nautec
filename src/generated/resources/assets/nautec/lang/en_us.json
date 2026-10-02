@@ -550,6 +550,7 @@
   "nautec.jei.pressure_depth": "Y ≤ %s, under source water",
   "nautec.jei.pressure_requirements": "%s water blocks, %s AP",
   "nautec.jei.production": "Production: %s - %s",
+  "nautec.jei.production_inherited": "Production: inherited from parent strain",
   "nautec.jei.production_multiplier": "Strain Yield: x%s",
   "nautec.jei.purity": "Purity: %s",
   "nautec.jei.purity_value": "%s purity",

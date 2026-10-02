@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.compat.jei.categories;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
+import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
 import com.breakinblocks.nautec.utils.MathUtils;
@@ -17,6 +18,7 @@ import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -70,9 +72,13 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
             return;
         }
 
-        Component text = Component.translatable("nautec.jei.production",
-                MathUtils.roundToPrecision(stats.productionRate().getMin(), 2),
-                MathUtils.roundToPrecision(stats.productionRate().getMax(), 2));
+        boolean graftable = BuiltInRegistries.BLOCK.getDataMap(NTDataMaps.BACTERIA_OBTAINING).values().stream()
+                .anyMatch(value -> value.bacteria().equals(recipe.bacteria()));
+        Component text = graftable
+                ? Component.translatable("nautec.jei.production",
+                        MathUtils.roundToPrecision(stats.productionRate().getMin(), 2),
+                        MathUtils.roundToPrecision(stats.productionRate().getMax(), 2))
+                : Component.translatable("nautec.jei.production_inherited");
 
         builder.addText(text, getWidth(), font.lineHeight)
                 .setPosition(0, getHeight() - font.lineHeight * 2 - 1)

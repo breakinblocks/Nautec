@@ -559,6 +559,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.only_in", "Only In: %s");
         add("nautec.jei.growth", "Growth: %s");
         add("nautec.jei.production", "Production: %s - %s");
+        add("nautec.jei.production_inherited", "Production: inherited from parent strain");
         add("nautec.jei.production_multiplier", "Strain Yield: x%s");
         add("nautec.jei.colony_feeding.vitality", "+%s vitality ticks (%ss)");
         add("nautec.jei.colony_feeding.any", "Any strain");
