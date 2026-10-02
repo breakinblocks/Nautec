@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.api.blockentities.multiblock.SavesControllerPosB
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
-import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -36,13 +35,6 @@ public class DrainPartBlockEntity extends LaserBlockEntity implements FakeBlockE
 
     public boolean hasLaserPort() {
         return laserPort != null;
-    }
-
-    public void open() {
-        BlockPos actualBlockEntityPos = getActualBlockEntityPos();
-        if (actualBlockEntityPos != null && level.getBlockEntity(actualBlockEntityPos) instanceof DrainBlockEntity drainBlockEntity) {
-            drainBlockEntity.open();
-        }
     }
 
     @Override

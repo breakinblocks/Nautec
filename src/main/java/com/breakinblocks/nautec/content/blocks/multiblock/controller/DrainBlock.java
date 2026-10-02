@@ -9,7 +9,9 @@ import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.multiblocks.DrainMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.utils.ItemUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -71,11 +73,18 @@ public class DrainBlock extends ContainerBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState p_60503_, Level level, BlockPos pos, Player player, BlockHitResult p_60508_) {
         if (level.getBlockEntity(pos) instanceof DrainBlockEntity drainBlockEntity) {
-            if (player.isShiftKeyDown() && !drainBlockEntity.isMoving()) {
-                if (p_60503_.getValue(DrainPartBlock.OPEN)) {
-                    drainBlockEntity.close();
-                } else {
-                    drainBlockEntity.open();
+            if (player.isShiftKeyDown()) {
+                if (!level.isClientSide()) {
+                    if (drainBlockEntity.isMoving()) {
+                        player.sendOverlayMessage(Component.translatable("nautec.drain.message.moving").withStyle(ChatFormatting.YELLOW));
+                    } else if (p_60503_.getValue(DrainPartBlock.OPEN)) {
+                        drainBlockEntity.close();
+                    } else {
+                        Component message = drainBlockEntity.open();
+                        if (message != null) {
+                            player.sendOverlayMessage(message.copy().withStyle(ChatFormatting.GOLD));
+                        }
+                    }
                 }
                 return InteractionResult.SUCCESS;
             }

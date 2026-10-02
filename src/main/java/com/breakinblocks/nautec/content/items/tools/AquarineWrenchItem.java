@@ -97,6 +97,9 @@ public class AquarineWrenchItem extends Item {
         if (!useOnContext.getPlayer().isCrouching()) {
             for (Multiblock multiblock : NTRegistries.MULTIBLOCK) {
                 if (controllerState.is(multiblock.getUnformedController())) {
+                    if (controllerState.hasProperty(Multiblock.FORMED) && controllerState.getValue(Multiblock.FORMED)) {
+                        break;
+                    }
                     try {
                         if (MultiblockHelper.form(multiblock, pos, level, useOnContext.getPlayer())) {
                             return InteractionResult.SUCCESS;

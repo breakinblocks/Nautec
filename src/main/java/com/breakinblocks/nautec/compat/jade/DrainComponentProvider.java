@@ -1,0 +1,89 @@
+package com.breakinblocks.nautec.compat.jade;
+
+import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartBlockEntity;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.StreamServerDataProvider;
+import snownee.jade.api.config.IPluginConfig;
+
+public enum DrainComponentProvider implements StreamServerDataProvider<BlockAccessor, DrainComponentProvider.Data> {
+    INSTANCE;
+
+    private static final Identifier UID = Nautec.rl("drain");
+
+    public record Data(int status, int power) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, Data::status,
+                ByteBufCodecs.VAR_INT, Data::power,
+                Data::new
+        );
+    }
+
+    @Override
+    public @Nullable Data streamData(BlockAccessor accessor) {
+        DrainBlockEntity drain = controller(accessor);
+        if (drain == null) {
+            return null;
+        }
+        return new Data(drain.getStatus().ordinal(), drain.getPower());
+    }
+
+    private static @Nullable DrainBlockEntity controller(BlockAccessor accessor) {
+        BlockEntity blockEntity = accessor.getBlockEntity();
+        if (blockEntity instanceof DrainBlockEntity drain) {
+            return drain;
+        }
+        if (blockEntity instanceof DrainPartBlockEntity part) {
+            BlockPos controllerPos = part.getActualBlockEntityPos();
+            if (controllerPos != null && accessor.getLevel().getBlockEntity(controllerPos) instanceof DrainBlockEntity drain) {
+                return drain;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, Data> streamCodec() {
+        return Data.STREAM_CODEC;
+    }
+
+    @Override
+    public Identifier getUid() {
+        return UID;
+    }
+
+    public enum Client implements IBlockComponentProvider {
+        INSTANCE;
+
+        @Override
+        public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+            DrainComponentProvider.INSTANCE.decodeFromData(accessor).ifPresent(data -> {
+                DrainBlockEntity.Status status = DrainBlockEntity.Status.byId(data.status());
+                tooltip.add(Component.translatable(status.translationKey()).withStyle(status.isGood() ? ChatFormatting.GREEN : ChatFormatting.YELLOW));
+                if (!status.isGood()) {
+                    tooltip.add(Component.translatable(status.translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
+                }
+                tooltip.add(Component.translatable("nautec.jade.drain.power", data.power(), NTConfig.drainPower)
+                        .withStyle(data.power() > NTConfig.drainPower ? ChatFormatting.WHITE : ChatFormatting.RED));
+            });
+        }
+
+        @Override
+        public Identifier getUid() {
+            return UID;
+        }
+    }
+}

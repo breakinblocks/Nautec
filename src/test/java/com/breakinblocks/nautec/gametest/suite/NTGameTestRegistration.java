@@ -49,8 +49,9 @@ public final class NTGameTestRegistration {
         CatalystFeedbackTests.register(r);
         EyeOfTheSeaTests.register(r);
         ConfinedSpawnerTests.register(r);
-        if (r.registeredCount() != 441) {
-            throw new IllegalStateException("Expected 441 Nautec suite tests, registered " + r.registeredCount());
+        DrainTests.register(r);
+        if (r.registeredCount() != 447) {
+            throw new IllegalStateException("Expected 447 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

@@ -47,6 +47,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue DRAIN_CAPACITY = BUILDER
             .comment("The fluid capacity of the Deep Sea Drain")
             .defineInRange("drainCapacity", 128_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.BooleanValue DRAIN_REQUIRES_OCEAN = BUILDER
+            .comment("Whether the Deep Sea Drain only pumps in an ocean biome. The biome is checked at the drain and at the top of the water above it, and both minecraft:is_ocean and c:is_ocean count")
+            .define("drainRequiresOcean", true);
 
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
@@ -591,6 +594,7 @@ public final class NTConfig {
 
     public static int drainSaltWaterAmount;
     public static int drainCapacity;
+    public static boolean drainRequiresOcean;
 
     public static int guardianAugmentDamage;
     public static boolean allowAugmentRendering;
@@ -785,6 +789,7 @@ public final class NTConfig {
 
         drainSaltWaterAmount = value(DRAIN_SALT_WATER_AMOUNT);
         drainCapacity = value(DRAIN_CAPACITY);
+        drainRequiresOcean = value(DRAIN_REQUIRES_OCEAN);
 
         guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
         allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);

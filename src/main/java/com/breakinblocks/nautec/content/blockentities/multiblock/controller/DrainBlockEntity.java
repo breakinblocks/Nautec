@@ -17,11 +17,14 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,9 +32,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.Set;
 
 public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEntity {
@@ -44,6 +49,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     private static final int LID_CLOSE_SPEED = -6;
     private static final int VALVE_TO_LID_DELAY = 60;
     private static final int LID_TO_VALVE_DELAY = 30;
+    private static final int WATER_COLUMN_SCAN = 64;
 
     private MultiblockData multiblockData;
 
@@ -63,39 +69,83 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         return getPower() > NTConfig.drainPower;
     }
 
-    public void open() {
+    public @Nullable Component open() {
+        if (!isFormed()) {
+            return Component.translatable("nautec.drain.message.not_formed");
+        }
         if (!hasOperatingPower()) {
-            return;
+            return Component.translatable("nautec.drain.message.no_power", NTConfig.drainPower, getPower());
         }
 
+        this.closing = false;
         this.valve.start(VALVE_TRAVEL_TICKS, VALVE_SPEED);
         level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 1, 1f);
-
         setOpen(true);
-    }
+        update();
 
-    @Override
-    public void onPowerChanged() {
-        super.onPowerChanged();
-
-        updatePowerAndBubbles();
-
+        Status blocker = pumpBlocker();
+        return blocker != null ? Component.translatable("nautec.drain.message.opened_idle", Component.translatable(blocker.translationKey())) : null;
     }
 
     public void close() {
         this.lid.start(LID_CLOSE_TRAVEL_TICKS, LID_CLOSE_SPEED);
         this.closing = true;
+        this.valveLidInterval = 0;
+        update();
     }
 
     public boolean isMoving() {
-        return lid.isMoving() || valve.isMoving();
+        return lid.isMoving() || valve.isMoving() || valveLidInterval > 0;
     }
 
     public boolean isClosing() {
         return closing;
     }
 
+    public boolean isFormed() {
+        BlockState state = getBlockState();
+        return state.hasProperty(DrainMultiblock.FORMED) && state.getValue(DrainMultiblock.FORMED);
+    }
+
+    public boolean isOpen() {
+        BlockState state = getBlockState();
+        return state.hasProperty(DrainPartBlock.OPEN) && state.getValue(DrainPartBlock.OPEN);
+    }
+
+    public Status getStatus() {
+        if (!isFormed()) {
+            return Status.NOT_FORMED;
+        }
+        if (!isOpen()) {
+            return hasOperatingPower() ? Status.CLOSED : Status.NO_POWER;
+        }
+        if (isMoving()) {
+            return closing ? Status.CLOSING : Status.OPENING;
+        }
+        if (!hasOperatingPower()) {
+            return Status.NO_POWER;
+        }
+        Status blocker = pumpBlocker();
+        return blocker != null ? blocker : Status.PUMPING;
+    }
+
+    private @Nullable Status pumpBlocker() {
+        if (!hasWater()) {
+            return Status.NO_WATER;
+        }
+        if (!isOceanBiome()) {
+            return Status.NOT_OCEAN;
+        }
+        if (getFluidTank().getFluidAmount() >= getFluidTank().getCapacity()) {
+            return Status.FULL;
+        }
+        return null;
+    }
+
     private void setOpen(boolean value) {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
         BlockPos selfPos = worldPosition;
         BlockPos[] aroundSelf = BlockUtils.getBlocksAroundSelf3x3(selfPos);
         for (BlockPos blockPos : aroundSelf) {
@@ -120,9 +170,27 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         return level.getBlockState(selfPos).getFluidState().is(FluidTags.WATER);
     }
 
+    private boolean isOceanBiome() {
+        if (!NTConfig.drainRequiresOcean) {
+            return true;
+        }
+        if (isOcean(level.getBiome(worldPosition))) {
+            return true;
+        }
+        BlockPos.MutableBlockPos cursor = worldPosition.above().mutable();
+        for (int i = 0; i < WATER_COLUMN_SCAN && level.getBlockState(cursor.above()).getFluidState().is(FluidTags.WATER); i++) {
+            cursor.move(Direction.UP);
+        }
+        return isOcean(level.getBiome(cursor));
+    }
+
+    private static boolean isOcean(Holder<Biome> biome) {
+        return biome.is(BiomeTags.IS_OCEAN) || biome.is(Tags.Biomes.IS_OCEAN);
+    }
+
     @Override
     public Set<Direction> getLaserInputs() {
-        if (getBlockState().getValue(DrainMultiblock.FORMED)) {
+        if (isFormed()) {
             return ObjectSet.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
         }
         return ObjectSet.of();
@@ -137,58 +205,51 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     public void commonTick() {
         super.commonTick();
 
-        if (getPower() == 0 && getBlockState().getValue(DrainPartBlock.HAS_POWER)) {
-            updatePowerAndBubbles();
+        if (!level.isClientSide()) {
+            refreshPowerState();
         }
 
         performRotation();
 
         performDraining();
-
     }
 
-    private void updatePowerAndBubbles() {
-        BlockPos[] aroundSelf = BlockUtils.getBlocksAroundSelfHorizontal(worldPosition);
-        boolean hasPower = getPower() > 15;
-        for (BlockPos pos : aroundSelf) {
+    private void refreshPowerState() {
+        boolean hasPower = hasOperatingPower();
+        BlockState selfState = getBlockState();
+        if (!selfState.hasProperty(DrainPartBlock.HAS_POWER) || selfState.getValue(DrainPartBlock.HAS_POWER) == hasPower) {
+            return;
+        }
+        for (BlockPos pos : BlockUtils.getBlocksAroundSelfHorizontal(worldPosition)) {
             BlockState state = level.getBlockState(pos);
             if (state.hasProperty(DrainPartBlock.HAS_POWER)) {
                 level.setBlockAndUpdate(pos, state.setValue(DrainPartBlock.HAS_POWER, hasPower));
             }
         }
-        BlockState selfState = getBlockState();
-        if (selfState.hasProperty(DrainPartBlock.HAS_POWER)) {
-            level.setBlockAndUpdate(worldPosition, selfState.setValue(DrainPartBlock.HAS_POWER, hasPower));
-        }
-
+        level.setBlockAndUpdate(worldPosition, selfState.setValue(DrainPartBlock.HAS_POWER, hasPower));
         updateBubbleColumns();
     }
 
-    private boolean openAndFormed() {
-        BlockState blockState = getBlockState();
-        return blockState.hasProperty(DrainPartBlock.OPEN) && blockState.getValue(DrainPartBlock.OPEN) && blockState.getValue(DrainMultiblock.FORMED);
-    }
-
     private void performDraining() {
-        if (level.getGameTime() % DRAIN_INTERVAL_TICKS == 0 && !lid.isMoving() && hasOperatingPower()) {
-            if (hasWater()) {
-                if (openAndFormed()) {
-                    if (level.getBiome(worldPosition).is(BiomeTags.IS_OCEAN)) {
-                        getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.drainSaltWaterAmount));
-                    }
-                }
-            }
+        if (level.isClientSide() || level.getGameTime() % DRAIN_INTERVAL_TICKS != 0) {
+            return;
+        }
+        if (isFormed() && isOpen() && !isMoving() && hasOperatingPower() && pumpBlocker() == null) {
+            getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.drainSaltWaterAmount));
         }
     }
 
     private void performRotation() {
+        boolean server = !level.isClientSide();
         if (valve.tick()) {
             if (!closing) {
                 this.valveLidInterval = VALVE_TO_LID_DELAY;
             } else {
                 this.closing = false;
-
                 setOpen(false);
+            }
+            if (server) {
+                update();
             }
         }
 
@@ -201,28 +262,33 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
                 } else {
                     valve.start(VALVE_TRAVEL_TICKS, -VALVE_SPEED);
                 }
+                if (server) {
+                    update();
+                }
             }
         }
 
         if (lid.tick()) {
             if (closing) {
                 this.valveLidInterval = LID_TO_VALVE_DELAY;
-            } else {
+            } else if (server) {
                 updateBubbleColumns();
+            }
+            if (server) {
+                update();
             }
         }
     }
 
     private void updateBubbleColumns() {
-        if (getPower() > 15) {
-            BlockPos selfPos = worldPosition;
-            BlockPos[] aroundSelf = BlockUtils.getBlocksAroundSelfHorizontal(selfPos);
-            for (BlockPos blockPos : aroundSelf) {
-                BlockState blockState = level.getBlockState(blockPos);
-                BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, blockPos.above(), blockState);
-            }
-            BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, selfPos.above(), level.getBlockState(selfPos));
+        if (level == null || level.isClientSide()) {
+            return;
         }
+        BlockPos selfPos = worldPosition;
+        for (BlockPos blockPos : BlockUtils.getBlocksAroundSelfHorizontal(selfPos)) {
+            BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, blockPos.above(), level.getBlockState(blockPos));
+        }
+        BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, selfPos.above(), level.getBlockState(selfPos));
     }
 
     public float getValveIndependentAngle(float partialTicks) {
@@ -261,6 +327,20 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
 
         float renderAngle(float partialTicks) {
             return (independentAngle + partialTicks * chasingVelocity) / 360;
+        }
+
+        void save(ValueOutput out) {
+            out.putFloat("angle", independentAngle);
+            out.putFloat("velocity", chasingVelocity);
+            out.putInt("ticks", ticksRemaining);
+            out.putInt("speed", speed);
+        }
+
+        void load(ValueInput in) {
+            independentAngle = in.getFloatOr("angle", independentAngle);
+            chasingVelocity = in.getFloatOr("velocity", 0);
+            ticksRemaining = in.getIntOr("ticks", 0);
+            speed = in.getIntOr("speed", 0);
         }
     }
 
@@ -301,6 +381,10 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         super.saveData(out);
         out.store("multiblockData", CompoundTag.CODEC, saveMBData());
         out.putFloat("angle", this.lid.independentAngle);
+        lid.save(out.child("lid"));
+        valve.save(out.child("valve"));
+        out.putBoolean("closing", closing);
+        out.putInt("valveLidInterval", valveLidInterval);
     }
 
     @Override
@@ -308,5 +392,40 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         super.loadData(in);
         this.multiblockData = loadMBData(in.read("multiblockData", CompoundTag.CODEC).orElseGet(CompoundTag::new));
         this.lid.independentAngle = in.getFloatOr("angle", 0);
+        in.child("lid").ifPresent(lid::load);
+        in.child("valve").ifPresent(valve::load);
+        this.closing = in.getBooleanOr("closing", false);
+        this.valveLidInterval = in.getIntOr("valveLidInterval", 0);
+    }
+
+    public enum Status {
+        NOT_FORMED(false),
+        NO_POWER(false),
+        CLOSED(false),
+        OPENING(true),
+        CLOSING(false),
+        NO_WATER(false),
+        NOT_OCEAN(false),
+        FULL(false),
+        PUMPING(true);
+
+        private final boolean good;
+
+        Status(boolean good) {
+            this.good = good;
+        }
+
+        public boolean isGood() {
+            return good;
+        }
+
+        public static Status byId(int id) {
+            Status[] values = values();
+            return id >= 0 && id < values.length ? values[id] : NOT_FORMED;
+        }
+
+        public String translationKey() {
+            return "nautec.drain.status." + name().toLowerCase(Locale.ROOT);
+        }
     }
 }
