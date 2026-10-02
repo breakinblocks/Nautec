@@ -658,7 +658,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.colony_feeding.tag", "Strains in %s");
         add("nautec.jei.colony_feeding.strain", "Strain %s");
         add("nautec.jei.info.prismarine_crystal_shard", "Prismarine Crystal Shards are pristine crystals, capable of channeling power like no other material. They can be obtained by breaking a prismarine crystal using an Aquarine Steel Pickaxe with its ability enabled.");
-        add("nautec.jei.info.machine_parts", "These ancient machine components can be found in chests and are dropped by underwater mobs");
+        add("nautec.jei.info.machine_parts", "These ancient machine components can be found in chests and are dropped by underwater mobs. Once you reach a Crystal Geode you can make them yourself: Gears from a Cast Iron Block in a purity 2.5 beam, Valves and Whisks at the crafting table, and Burnt Coils and Aquatic Chips in the Mixer.");
 
         add("nautec.augmentation_station.apply", "Apply");
         add("nautec.augment.empty_slot", "No Augment in slot");

@@ -21,7 +21,7 @@ item_ids:
   Broken parts from the sea floor that you repair before a recipe will take them.
 </Column>
 
-Gears, valves, coils, chips and whisks come from the sea floor already damaged, and each kind is repaired in its own way. [Salvage](salvage.md) lists where they turn up.
+Gears, valves, coils, chips and whisks come from the sea floor already damaged, and each kind is repaired in its own way. [Salvage](salvage.md) lists where they turn up. Once you reach a Crystal Geode you can also make every one of them yourself, so you never have to wait on a lucky find: see Making Them Yourself at the bottom of this page.
 
 | Found | Repaired | How |
 |---|---|---|
@@ -76,3 +76,21 @@ Craft a Damaged Aquatic Chip with Prismarine Shards. Aquatic Chips go into the I
 Craft a Broken Whisk with Cast Iron Nuggets. The Whisk is needed for the [Mixer](nautec:laser_chemistry/mixer.md). Broken Whisks come from Drowned and lucky zone treasure.
 
 <Recipe id="nautec:whisk"/>
+
+***
+
+## <Color id="gold">Making Them Yourself</Color>
+
+Every part has a guaranteed route that opens up as you progress. Each one leads into the next:
+
+1. **Gears**: hold a Cast Iron Block in a beam of purity 2.5 or higher for 8 seconds and it becomes four Gears. Only a <ItemLink id="prismarine_crystal"/> or a <ItemLink id="bacterial_fuel_cell"/> reaches 2.5; see [Item Transformation](item_transformation.md).
+2. **Valves and Whisks**: craft them from Cast Iron, a Gear or Aquarine Steel, and a Prismarine Crystal Shard.
+3. With a Valve and a Whisk you can build the [Deep Sea Drain](nautec:laser_chemistry/drain.md) and the [Mixer](nautec:laser_chemistry/mixer.md).
+4. **Burnt Coils**: in the Mixer, 4 Copper Ingots, 2 Redstone, an Aquarine Steel Ingot and a Prismarine Crystal Shard with 1,000 mB of Salt Water make a Burnt Coil. Repair it in a purity 1.5 beam as above.
+5. **Aquatic Chips**: in the Mixer, 2 Gold Ingots, 4 Redstone, 2 Prismarine Crystal Shards and a Laser Channeling Coil with 1,000 mB of Salt Water make two finished Aquatic Chips.
+
+JEI shows the Mixer and beam recipes.
+
+<Recipe id="nautec:valve_from_cast_iron"/>
+
+<Recipe id="nautec:whisk_from_cast_iron"/>

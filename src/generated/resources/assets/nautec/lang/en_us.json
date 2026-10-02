@@ -631,7 +631,7 @@
   "nautec.jei.eas_infusion.hint": "Leave in an EAS source for %ss",
   "nautec.jei.growth": "Growth: %s",
   "nautec.jei.info.eas": "EAS is made in the Mixer from Salt Water. Leave an Aquarine Steel tool in an EAS source block for 7.5 seconds to infuse it and unlock its ability; this uses up the source block. An EAS Bucket and three Glass Vials craft into three EAS Vials.",
-  "nautec.jei.info.machine_parts": "These ancient machine components can be found in chests and are dropped by underwater mobs",
+  "nautec.jei.info.machine_parts": "These ancient machine components can be found in chests and are dropped by underwater mobs. Once you reach a Crystal Geode you can make them yourself: Gears from a Cast Iron Block in a purity 2.5 beam, Valves and Whisks at the crafting table, and Burnt Coils and Aquatic Chips in the Mixer.",
   "nautec.jei.info.prismarine_crystal_shard": "Prismarine Crystal Shards are pristine crystals, capable of channeling power like no other material. They can be obtained by breaking a prismarine crystal using an Aquarine Steel Pickaxe with its ability enabled.",
   "nautec.jei.only_in": "Only In: %s",
   "nautec.jei.power_per_tick": "Power per tick: %s AP/t",

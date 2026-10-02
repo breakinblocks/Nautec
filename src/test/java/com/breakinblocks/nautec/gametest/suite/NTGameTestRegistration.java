@@ -51,8 +51,9 @@ public final class NTGameTestRegistration {
         ConfinedSpawnerTests.register(r);
         DrainTests.register(r);
         CrystalCultivationTests.register(r);
-        if (r.registeredCount() != 456) {
-            throw new IllegalStateException("Expected 456 Nautec suite tests, registered " + r.registeredCount());
+        GuaranteedPartTests.register(r);
+        if (r.registeredCount() != 460) {
+            throw new IllegalStateException("Expected 460 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

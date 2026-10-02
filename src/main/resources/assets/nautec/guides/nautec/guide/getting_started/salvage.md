@@ -60,7 +60,7 @@ Lucky fishing zones and the Prismatic Fishing Rod roll extra loot that includes 
   ### <Color id="aqua">Atlantic Gold</Color>
 </Row>
 
-<ItemLink id="atlantic_gold_nugget"/>s turn up in Crates, Rusty Crates and lucky zone treasure in any ocean. Nine nuggets craft an <ItemLink id="atlantic_gold_ingot"/>, and an ingot crafts back into nine nuggets.
+<ItemLink id="atlantic_gold_nugget"/>s turn up in Crates, Rusty Crates and lucky zone treasure in any ocean. Nine nuggets craft an <ItemLink id="atlantic_gold_ingot"/>, and an ingot crafts back into nine nuggets. Later on you can make it reliably: an [Abyssal Pressure Forge](nautec:deep_engineering/pressure_forge.md) at Y -20 or lower presses a Block of Gold into two Atlantic Gold Ingots on a beam of purity 2.0, in 15 seconds.
 
 <Recipe id="nautec:atlantic_gold_ingot_from_nuggets"/>
 

@@ -1,0 +1,12 @@
+{
+  "type": "nautec:item_transformation",
+  "duration": 160,
+  "ingredient": {
+    "ingredient": "nautec:cast_iron_block"
+  },
+  "purity": 2.5,
+  "result": {
+    "count": 4,
+    "id": "nautec:gear"
+  }
+}

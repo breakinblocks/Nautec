@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "R": "nautec:cast_iron_rod",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    "R R",
+    "RSR",
+    " A "
+  ],
+  "result": {
+    "id": "nautec:whisk"
+  }
+}

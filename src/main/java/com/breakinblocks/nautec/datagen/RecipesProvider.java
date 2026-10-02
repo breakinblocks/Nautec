@@ -64,6 +64,7 @@ public class RecipesProvider extends RecipeProvider {
         aquarineSteelRecipes(pRecipeOutput);
 
         ancientItemsRecipes(pRecipeOutput);
+        guaranteedPartRecipes(pRecipeOutput);
 
         chemistryRecipes(pRecipeOutput);
 
@@ -1101,6 +1102,62 @@ public class RecipesProvider extends RecipeProvider {
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
                 .fluidResult(null)
                 .save(pRecipeOutput, key("aquarine_steel_compound_mixing"));
+    }
+
+    private void guaranteedPartRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        ItemTransformationRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.GEAR.get(), 4))
+                .ingredient(NTBlocks.CAST_IRON_BLOCK.get())
+                .purity(2.5f)
+                .duration(160)
+                .save(pRecipeOutput, key("gear_from_cast_iron_block"));
+
+        shaped(RecipeCategory.MISC, NTItems.VALVE.get())
+                .pattern(" R ")
+                .pattern("CGC")
+                .pattern(" S ")
+                .define('R', NTItems.CAST_IRON_ROD)
+                .define('C', NTItems.CAST_IRON_INGOT)
+                .define('G', NTItems.GEAR)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.GEAR))
+                .save(pRecipeOutput, key("valve_from_cast_iron"));
+
+        shaped(RecipeCategory.MISC, NTItems.WHISK.get())
+                .pattern("R R")
+                .pattern("RSR")
+                .pattern(" A ")
+                .define('R', NTItems.CAST_IRON_ROD)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("whisk_from_cast_iron"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.BURNT_COIL.get(), 1))
+                .ingredients(iwcFromItemLike(Items.COPPER_INGOT, 4),
+                        iwcFromItemLike(Items.REDSTONE, 2),
+                        iwcFromItemLike(NTItems.AQUARINE_STEEL_INGOT.get(), 1),
+                        iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("burnt_coil_mixing"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUATIC_CHIP.get(), 2))
+                .ingredients(iwcFromItemLike(Items.GOLD_INGOT, 2),
+                        iwcFromItemLike(Items.REDSTONE, 4),
+                        iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2),
+                        iwcFromItemLike(NTItems.LASER_CHANNELING_COIL.get(), 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("aquatic_chip_mixing"));
+
+        PressureForgingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.ATLANTIC_GOLD_INGOT.get(), 2))
+                .ingredient(Items.GOLD_BLOCK)
+                .minDepth(-20)
+                .purity(2.0f)
+                .duration(300)
+                .save(pRecipeOutput, key("atlantic_gold_ingot_forging"));
     }
 
     private void augmentationRecipes(@NotNull RecipeOutput pRecipeOutput) {
