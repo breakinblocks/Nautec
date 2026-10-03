@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.bubble.HeldWaterBlock;
+import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.content.distributor.DistributorBlock;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blocks.AnchorBlock;
@@ -162,6 +164,10 @@ public final class NTBlocks {
 
     public static final DeferredBlock<MutatorBlock> MUTATOR = bacteriaBlock(registerBlockAndItem("mutator", MutatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredBlock<BubbleAnchorBlock> BUBBLE_ANCHOR = registerBlockAndItem("bubble_anchor", BubbleAnchorBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).lightLevel(state -> state.getValue(BubbleAnchorBlock.ACTIVE) ? 12 : 4));
+    public static final DeferredBlock<HeldWaterBlock> HELD_WATER = BLOCKS.registerBlock("held_water", HeldWaterBlock::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3_600_000.0F));
     public static final DeferredBlock<DistributorBlock> DISTRIBUTOR = registerBlockAndItem("nautechnical_distributor", DistributorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));
     public static final DeferredBlock<AdvancedBacterialAnalyzerBlock> ADVANCED_BACTERIAL_ANALYZER = bacteriaBlock(registerBlockAndItem("advanced_bacterial_analyzer",

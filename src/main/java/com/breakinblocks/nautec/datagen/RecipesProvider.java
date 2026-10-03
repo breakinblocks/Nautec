@@ -547,6 +547,17 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD))
                 .save(pRecipeOutput, key("mutator"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.BUBBLE_ANCHOR.asItem())
+                .pattern("PGP")
+                .pattern("GKG")
+                .pattern("PCP")
+                .define('P', Items.PRISMARINE_SHARD)
+                .define('G', Items.GLASS)
+                .define('K', Items.DRIED_KELP_BLOCK)
+                .define('C', Items.COPPER_INGOT)
+                .unlockedBy("has_item", has(Items.PRISMARINE_SHARD))
+                .save(pRecipeOutput, key("bubble_anchor"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.DISTRIBUTOR.asItem())
                 .pattern("ACA")
                 .pattern("HEH")

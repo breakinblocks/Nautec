@@ -118,6 +118,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.MUTATOR.get());
         dropSelf(NTBlocks.GRAFTING_STATION.get());
         dropSelf(NTBlocks.DISTRIBUTOR.get());
+        dropSelf(NTBlocks.BUBBLE_ANCHOR.get());
         dropSelf(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         dropSelf(NTBlocks.BACTERIAL_FUEL_CELL.get());
         dropSelf(NTBlocks.BIO_REACTOR.get());

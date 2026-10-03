@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.client.screen.BubbleAnchorScreen;
 import com.breakinblocks.nautec.client.screen.DistributorScreen;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserBlockEntityRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
@@ -388,6 +389,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.GRAFTING_STATION.get(), GraftingStationScreen::new);
         event.register(NTMenuTypes.ADVANCED_BACTERIAL_ANALYZER.get(), AdvancedBacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.DISTRIBUTOR.get(), DistributorScreen::new);
+        event.register(NTMenuTypes.BUBBLE_ANCHOR.get(), BubbleAnchorScreen::new);
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
         event.register(NTMenuTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerScreen::new);
         event.register(NTMenuTypes.FUSION_CONTROLLER.get(), FusionControllerScreen::new);

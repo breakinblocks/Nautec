@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nautec:block/bubble_anchor_bottom",
+    "side": "nautec:block/bubble_anchor_side",
+    "top": "nautec:block/bubble_anchor_top"
+  }
+}

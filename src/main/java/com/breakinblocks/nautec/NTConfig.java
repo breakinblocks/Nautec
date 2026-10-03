@@ -260,6 +260,26 @@ public final class NTConfig {
             .comment("The fraction of AP lost relaying through a Prism Satellite from Uplink Arrays to Downlink Arrays")
             .defineInRange("satelliteLoss", 0.10, 0.0, 0.99);
 
+    private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_RADIUS = BUILDER
+            .comment("How far a Bubble Anchor's field reaches from its centre on fuel. 7 gives a 15x15x15 cube")
+            .defineInRange("bubbleAnchorRadius", 7, 1, 32);
+
+    private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_MAX_RADIUS = BUILDER
+            .comment("The largest radius a Bubble Anchor reaches on a high purity laser beam")
+            .defineInRange("bubbleAnchorMaxRadius", 12, 1, 32);
+
+    private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_LASER_POWER = BUILDER
+            .comment("The beam power in AP that runs a Bubble Anchor without fuel")
+            .defineInRange("bubbleAnchorLaserPower", 20, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue BUBBLE_ANCHOR_FUEL_MULTIPLIER = BUILDER
+            .comment("Scales how long each fuel item keeps a Bubble Anchor running. 1.0 gives 2 minutes per Dried Kelp Block")
+            .defineInRange("bubbleAnchorFuelMultiplier", 1.0, 0.01, 100.0);
+
+    private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_BLOCKS_PER_TICK = BUILDER
+            .comment("How many blocks a Bubble Anchor checks each tick while clearing or refilling")
+            .defineInRange("bubbleAnchorBlocksPerTick", 1024, 16, 65536);
+
     private static final ModConfigSpec.IntValue DISTRIBUTOR_RANGE = BUILDER
             .comment("How far in blocks a Nautechnical Distributor can link to a block")
             .defineInRange("distributorRange", 256, 1, 4096);
@@ -839,6 +859,11 @@ public final class NTConfig {
     public static int emitterBuffer = 100_000;
     public static int emitterMaxLinks = 16;
     public static double satelliteLoss = 0.10;
+    public static int bubbleAnchorRadius = 7;
+    public static int bubbleAnchorMaxRadius = 12;
+    public static int bubbleAnchorLaserPower = 20;
+    public static double bubbleAnchorFuelMultiplier = 1.0;
+    public static int bubbleAnchorBlocksPerTick = 1024;
     public static int distributorRange = 256;
     public static int distributorMaxLinks = 64;
     public static int distributorInterval = 4;
@@ -1084,6 +1109,11 @@ public final class NTConfig {
         emitterBuffer = value(EMITTER_BUFFER);
         emitterMaxLinks = value(EMITTER_MAX_LINKS);
         satelliteLoss = value(SATELLITE_LOSS);
+        bubbleAnchorRadius = value(BUBBLE_ANCHOR_RADIUS);
+        bubbleAnchorMaxRadius = value(BUBBLE_ANCHOR_MAX_RADIUS);
+        bubbleAnchorLaserPower = value(BUBBLE_ANCHOR_LASER_POWER);
+        bubbleAnchorFuelMultiplier = value(BUBBLE_ANCHOR_FUEL_MULTIPLIER);
+        bubbleAnchorBlocksPerTick = value(BUBBLE_ANCHOR_BLOCKS_PER_TICK);
         distributorRange = value(DISTRIBUTOR_RANGE);
         distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
         distributorInterval = value(DISTRIBUTOR_INTERVAL);

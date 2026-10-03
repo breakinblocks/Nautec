@@ -68,6 +68,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 MUTATOR,
                 GRAFTING_STATION,
                 DISTRIBUTOR,
+                BUBBLE_ANCHOR,
                 ADVANCED_BACTERIAL_ANALYZER,
                 INCUBATOR,
                 FISHING_STATION,
@@ -101,6 +102,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 DOWNLINK_ARRAY,
                 SATELLITE_ARRAY_TOP);
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA);
+        tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
         tag(BlockTags.NEEDS_DIAMOND_TOOL,
                 ABYSSAL_PYLON,
                 FUSION_CASING,
