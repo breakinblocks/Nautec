@@ -19,12 +19,12 @@ item_ids:
 
 The Mixer takes a laser beam into any face and runs while at least 10 AP per tick arrives (configurable). One <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Crystal Shards is enough. One burning Prismarine Crystals is not; add a second source through a [Laser Junction](laser_manipulation.md).
 
-Right-click it with an empty hand to open it. It has four ingredient slots, one output slot, an input tank and an output tank, each tank holding 1,000 mB (configurable).
+Right-click it with an empty hand to open it. It has four ingredient slots, one output slot, an input tank and an output tank, each tank holding 32,000 mB (32 buckets, configurable).
 
 * Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank. Salt Water comes from the [Deep Sea Drain](drain.md).
 * Right-click with an empty Bucket to take fluid out of the output tank.
-* Hoppers and pipes on any of the four sides can insert ingredients, fill the input tank and drain the output tank. The top and bottom take nothing.
-* Take item results out of the output slot by hand.
+* Hoppers and pipes on any of the four sides can insert ingredients, fill the input tank and drain the output tank.
+* Item results can be pulled out of the output slot from any face, top and bottom included. Nothing can be inserted through the top or bottom.
 
 The whisk spins while it works. The <ItemLink id="prism_monocle"/> shows the power arriving, and Jade also shows its tanks and mixing progress.
 

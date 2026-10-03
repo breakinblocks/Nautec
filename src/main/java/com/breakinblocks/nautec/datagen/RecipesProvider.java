@@ -1112,6 +1112,23 @@ public class RecipesProvider extends RecipeProvider {
                 .fluidIngredient(new FluidStackTemplate(Fluids.WATER, 1000))
                 .fluidResult(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
                 .save(pRecipeOutput, key("saltwater_mixing"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRESSURE_SYNTHESIZER.get(), 1))
+                .ingredients(iwcFromItemLike(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get(), 1))
+                .duration(400)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 8000))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("pressure_synthesizer_mixing"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.ATLANTEAN_PRESSURE_SYNTHESIZER.get(), 1))
+                .ingredients(iwcFromItemLike(NTItems.PRESSURE_SYNTHESIZER.get(), 1),
+                        iwcFromItemLike(Items.HEART_OF_THE_SEA, 1),
+                        iwcFromItemLike(Items.NETHER_STAR, 1),
+                        iwcFromItemLike(Items.ENDER_PEARL, 4))
+                .duration(600)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 8000))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("atlantean_pressure_synthesizer_mixing"));
     }
 
     private void fusionPlantRecipes(@NotNull RecipeOutput pRecipeOutput) {

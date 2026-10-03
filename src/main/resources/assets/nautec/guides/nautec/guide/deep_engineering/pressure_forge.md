@@ -6,6 +6,8 @@ navigation:
   parent: deep_engineering/deep_engineering-index.md
 item_ids:
   - nautec:pressure_forge
+  - nautec:pressure_synthesizer
+  - nautec:atlantean_pressure_synthesizer
 ---
 
 # <Color id="light_purple">Abyssal Pressure Forge</Color>
@@ -24,7 +26,7 @@ The Abyssal Pressure Forge makes Flawless Prismarine Crystals and Deep Steel Pla
 All of these have to be true at the same time. If any one of them stops being true, the current press starts again from zero.
 
 * Depth: the Forge must be at Y 0 or lower (`pressureForgeDepth`). Each recipe also has its own maximum Y, listed below.
-* Water: the 8 blocks directly above the Forge must all be water source blocks (`pressureForgeWaterColumn`). Depth alone is not enough; a dry shaft does not count.
+* Water: the 8 blocks directly above the Forge must all be water source blocks (`pressureForgeWaterColumn`). Depth alone is not enough; a dry shaft does not count. A Pressure Synthesizer replaces this, see below.
 * Power: a beam of at least 40 AP per tick (`pressureForgePowerUsage`). The Forge takes beams on its four sides and its top.
 * Purity: the beam must meet the recipe's purity.
 * Etching Acid: at least 250 mb in the tank. Each finished press uses 250 mb (`pressureForgeAcidUsage`). The tank holds 4,000 mb (`pressureForgeCapacity`).
@@ -48,9 +50,23 @@ The recipes are also shown in JEI. See [Deep Materials](materials.md) for what t
 
 Right-click with an item to put it in, and with an <ItemLink id="etching_acid_bucket"/> to fill the tank. Right-click with an empty hand to take the output, or the input when the output slot is empty.
 
-For automation, items go in from the top and the four sides, finished items come out of the bottom, and Etching Acid can be piped in from any side. Since the top has to stay under water, feed it from the sides. The Forge presses one item at a time and only finishes a press when there is room in the output slot.
+For automation, items go in from the top and the four sides, finished items can be pulled out of any face, and Etching Acid can be piped in from any side. Since the top has to stay under water, feed it from the sides. The Forge presses one item at a time and only finishes a press when there is room in the output slot.
 
 Look at it through a <ItemLink id="prism_monocle"/> to check it. It shows "Under pressure" with the acid level and beam purity when it is set up correctly, or the depth and water it still needs when it is not.
+
+## <Color id="gold">Pressure Synthesizers</Color>
+
+A synthesizer fitted to the Forge stands in for the deep water, so you can build the Forge somewhere that looks the way you want. Right-click the Forge with one to fit it. Sneak and right-click with an empty hand to take it off. Fitting a different one swaps them and hands the old one back, and breaking the Forge drops whatever is fitted. A <ItemLink id="prism_monocle"/> shows which one is fitted.
+
+<Row>
+  <ItemImage id="pressure_synthesizer"/>
+  <ItemImage id="atlantean_pressure_synthesizer"/>
+</Row>
+
+* <ItemLink id="pressure_synthesizer"/>: replaces the column of water above the Forge. The Forge still has to be at Y 0 or lower, and each recipe's own maximum Y still applies. Made in the [Mixer](nautec:laser_chemistry/mixer.md) from 1 Flawless Prismarine Crystal and 8,000 mB of Salt Water.
+* <ItemLink id="atlantean_pressure_synthesizer"/>: the Forge runs anywhere, at any height, with no water above it, and recipes ignore their maximum Y. Made in the Mixer from 1 Pressure Synthesizer, 1 Heart of the Sea, 1 Nether Star and 4 Ender Pearls with 8,000 mB of Salt Water.
+
+You need a working Forge under real water first, since the Flawless Prismarine Crystal comes out of one.
 
 <Color id="gold">Tip</Color>: Laser beams pass through water. A <ItemLink id="bacterial_fuel_cell"/> at full purity (2.5) covers both recipes, and so does a <ItemLink id="prismarine_crystal"/> behind one [Prismatic Mirror](beam_optics.md) (3.0 x 0.9 = 2.7).
 

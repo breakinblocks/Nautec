@@ -38,6 +38,7 @@ import java.util.Set;
 public class FishingStationBlockEntity extends LaserBlockEntity implements MenuProvider {
     private static final int RUN_CHECK_INTERVAL_TICKS = 100;
 
+    private static final int[] OUTPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
     private boolean running;
     private int progress;
 
@@ -58,6 +59,11 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
     @Override
     public Set<Direction> getLaserOutputs() {
         return ObjectSet.of();
+    }
+
+    @Override
+    public int[] getItemOutputSlots() {
+        return OUTPUT_SLOTS;
     }
 
     @Override

@@ -26,14 +26,7 @@ public class SatelliteArrayScreen extends ResonanceNetworkScreen<SatelliteArrayM
     }
 
     private String statusKey() {
-        return switch (this.menu.getStatus()) {
-            case SatelliteArrayBlockEntity.STATUS_ONLINE -> "nautec.satellite.status.online";
-            case SatelliteArrayBlockEntity.STATUS_NO_SATELLITE -> "nautec.satellite.status.no_satellite";
-            case SatelliteArrayBlockEntity.STATUS_SKY_BLOCKED -> "nautec.satellite.status.sky";
-            case SatelliteArrayBlockEntity.STATUS_NO_UPLINK -> "nautec.satellite.status.no_uplink";
-            case SatelliteArrayBlockEntity.STATUS_NO_DOWNLINK -> "nautec.satellite.status.no_downlink";
-            default -> "nautec.satellite.status.no_network";
-        };
+        return SatelliteArrayBlockEntity.statusKey(this.menu.getStatus());
     }
 
     @Override

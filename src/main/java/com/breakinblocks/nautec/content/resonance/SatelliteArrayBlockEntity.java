@@ -126,6 +126,17 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         return status;
     }
 
+    public static String statusKey(int status) {
+        return switch (status) {
+            case STATUS_ONLINE -> "nautec.satellite.status.online";
+            case STATUS_NO_SATELLITE -> "nautec.satellite.status.no_satellite";
+            case STATUS_SKY_BLOCKED -> "nautec.satellite.status.sky";
+            case STATUS_NO_UPLINK -> "nautec.satellite.status.no_uplink";
+            case STATUS_NO_DOWNLINK -> "nautec.satellite.status.no_downlink";
+            default -> "nautec.satellite.status.no_network";
+        };
+    }
+
     public int getRelay() {
         return relay;
     }

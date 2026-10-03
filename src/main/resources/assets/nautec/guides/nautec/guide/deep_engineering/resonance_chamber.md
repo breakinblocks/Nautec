@@ -39,7 +39,7 @@ At a purity of 3.0, critical runs from 7,200 to 8,800 charge. A 40 AP beam gets 
 
 Put the Prismarine Crystal Shards in before the charge reaches critical. Each time it goes critical, the Chamber uses one shard, puts a Resonant Shard in its output and starts charging again from zero, so a full stack works through on its own.
 
-Right-click with a shard to load it. It only takes items it can craft with, by hand or by automation. Right-click with an empty hand to take the output, or the input when the output is empty. Hoppers and pipes insert shards through the top and the four sides, and a hopper underneath pulls the Resonant Shards out.
+Right-click with a shard to load it. It only takes items it can craft with, by hand or by automation. Right-click with an empty hand to take the output, or the input when the output is empty. Hoppers and pipes insert shards through the top and the four sides, and Resonant Shards can be pulled out of any face, for example with a hopper underneath.
 
 Look at it through a <ItemLink id="prism_monocle"/> to see the charge as a percentage of the ceiling, the ceiling itself and the beam purity. The charge turns gold while it is critical.
 

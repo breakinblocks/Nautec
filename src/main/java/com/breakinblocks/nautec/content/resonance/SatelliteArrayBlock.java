@@ -34,6 +34,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SatelliteArrayBlock extends LaserBlock {
     private static final VoxelShape SHAPE = Shapes.or(Block.box(1, 0, 1, 15, 3, 15), Block.box(3, 3, 3, 13, 13, 13),
             Block.box(2, 13, 2, 14, 15, 14), Block.box(6, 15, 6, 10, 16, 10));
@@ -164,6 +167,19 @@ public class SatelliteArrayBlock extends LaserBlock {
             ResonanceSync.send(serverPlayer, array);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public List<Component> displayText(Level level, BlockPos blockPos, Player player) {
+        List<Component> lines = new ArrayList<>(super.displayText(level, blockPos, player));
+        if (level.getBlockEntity(blockPos) instanceof SatelliteArrayBlockEntity array) {
+            boolean online = array.getStatus() == SatelliteArrayBlockEntity.STATUS_ONLINE;
+            lines.add(Component.translatable("nautec.monocle.satellite",
+                    Component.translatable(uplink ? "nautec.satellite.kind.uplink" : "nautec.satellite.kind.downlink"),
+                    Component.translatable(SatelliteArrayBlockEntity.statusKey(array.getStatus())))
+                    .withStyle(online ? ChatFormatting.AQUA : ChatFormatting.RED));
+        }
+        return lines;
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.breakinblocks.nautec.api.blocks.DisplayBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +28,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBlock {
+import java.util.List;
+
+public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBlock, DisplayBlock {
     private static final VoxelShape SHAPE = Shapes.or(Block.box(6, 0, 6, 10, 8, 10), Block.box(0, 8, 0, 16, 12, 16));
 
     public SatelliteArrayTopBlock(Properties properties) {
@@ -87,6 +91,18 @@ public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBl
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         return SatelliteArrayBlock.open(level, pos.below(), player);
+    }
+
+    @Override
+    public boolean display(Level level, BlockPos blockPos, Player player) {
+        BlockPos below = blockPos.below();
+        return level.getBlockState(below).getBlock() instanceof SatelliteArrayBlock base && base.display(level, below, player);
+    }
+
+    @Override
+    public List<Component> displayText(Level level, BlockPos blockPos, Player player) {
+        BlockPos below = blockPos.below();
+        return level.getBlockState(below).getBlock() instanceof SatelliteArrayBlock base ? base.displayText(level, below, player) : List.of();
     }
 
     @Override

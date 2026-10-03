@@ -191,6 +191,11 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
     }
 
     @Override
+    public int[] getItemOutputSlots() {
+        return new int[]{OUTPUT_SLOT};
+    }
+
+    @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
         if (capability == Capabilities.Item.BLOCK) {
             return Map.of(

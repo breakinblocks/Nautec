@@ -58,8 +58,9 @@ public final class NTGameTestRegistration {
         PrismaticEmitterTests.register(r);
         ResonanceCharmTests.register(r);
         SatelliteTests.register(r);
-        if (r.registeredCount() != 496) {
-            throw new IllegalStateException("Expected 496 Nautec suite tests, registered " + r.registeredCount());
+        PressureSynthesizerTests.register(r);
+        if (r.registeredCount() != 501) {
+            throw new IllegalStateException("Expected 501 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

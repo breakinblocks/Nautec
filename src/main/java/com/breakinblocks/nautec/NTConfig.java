@@ -36,10 +36,10 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue MIXER_INPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Input Tank")
-            .defineInRange("mixerInputCapacity", 1_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerInputCapacity", 32_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue MIXER_OUTPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Output Tank")
-            .defineInRange("mixerOutputCapacity", 1_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerOutputCapacity", 32_000, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue DRAIN_SALT_WATER_AMOUNT = BUILDER
             .comment("The amount of salt water collected by the Deep Sea Drain each second (mb)")

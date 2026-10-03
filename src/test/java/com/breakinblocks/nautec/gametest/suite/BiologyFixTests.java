@@ -244,7 +244,9 @@ public final class BiologyFixTests {
                 ResourceHandler<ItemResource> leftSide = itemsOn(helper, analyzerPos, front.getClockWise());
                 ResourceHandler<ItemResource> backSide = itemsOn(helper, analyzerPos, back);
                 helper.assertTrue(frontSide != null && leftSide != null && backSide != null, "Analyzer should expose its front, sides and back");
-                helper.assertTrue(itemsOn(helper, analyzerPos, Direction.DOWN) == null, "Analyzer bottom is its laser input");
+                ResourceHandler<ItemResource> bottom = itemsOn(helper, analyzerPos, Direction.DOWN);
+                helper.assertTrue(bottom != null, "Analyzer bottom should still let the result out");
+                helper.assertValueEqual(0, insert(bottom, 0, dish.copy()), "inserted through the bottom");
 
                 helper.assertValueEqual(0, insert(backSide, 0, dish.copy()), "inserted through the output side");
                 helper.assertValueEqual(1, insert(leftSide, 0, dish.copy()), "dish inserted through a side");
@@ -253,7 +255,9 @@ public final class BiologyFixTests {
                 helper.assertValueEqual(0, extract(backSide, 0, dish.copy()), "extracted the input through the output side");
 
                 analyzer.getItemStackHandler().setStackInSlot(1, dish.copy());
-                helper.assertValueEqual(0, extract(frontSide, 1, dish.copy()), "extracted the result through an input side");
+                helper.assertValueEqual(1, extract(frontSide, 1, dish.copy()), "extracted the result through an input side");
+                helper.assertTrue(analyzer.getItemStackHandler().getStackInSlot(1).isEmpty(), "Result slot should be empty after a side extraction");
+                analyzer.getItemStackHandler().setStackInSlot(1, dish.copy());
                 helper.assertValueEqual(1, extract(backSide, 1, dish.copy()), "extracted the result through the back");
                 helper.assertTrue(analyzer.getItemStackHandler().getStackInSlot(1).isEmpty(), "Result slot should be empty after extraction");
                 helper.succeed();

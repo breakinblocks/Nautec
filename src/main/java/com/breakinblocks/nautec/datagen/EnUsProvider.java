@@ -450,6 +450,8 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.GATEWAY_RING_PART, "Gateway Ring");
         addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
         addItem(RESONANT_SHARD, "Resonant Shard");
+        addItem(PRESSURE_SYNTHESIZER, "Pressure Synthesizer");
+        addItem(ATLANTEAN_PRESSURE_SYNTHESIZER, "Atlantean Pressure Synthesizer");
         addBlock(NTBlocks.PRISMATIC_MIRROR, "Prismatic Mirror");
         addBlock(NTBlocks.BEAM_SPLITTER, "Beam Splitter");
         addBlock(NTBlocks.FOCUSING_LENS, "Focusing Lens");
@@ -777,6 +779,7 @@ public class EnUsProvider extends LanguageProvider {
 
         add("nautec.monocle.power", "Power: %s");
         add("nautec.monocle.purity", "Purity: %s");
+        add("nautec.monocle.satellite", "%s: %s");
         add("nautec.monocle.duration", "Duration: %s");
         add("nautec.monocle.no_colony", "No colony");
         add("nautec.monocle.output", "Output: %s AP/t");
@@ -785,6 +788,13 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.monocle.fluid_stored", "Fluid Stored: %s");
         add("nautec.monocle.not_pressurised", "Not under pressure: needs y %s or lower with %s blocks of water above");
         add("nautec.monocle.pressurised", "Under pressure");
+        add("nautec.monocle.not_pressurised.depth", "Not under pressure: needs y %s or lower");
+        add("nautec.monocle.synthesizer", "%s fitted");
+        add("nautec.pressure_synthesizer.tooltip.basic", "Stands in for the water column above an Abyssal Pressure Forge. The Forge still has to be deep enough.");
+        add("nautec.pressure_synthesizer.tooltip.atlantean", "Lets an Abyssal Pressure Forge run anywhere, at any height, with no water above it.");
+        add("nautec.pressure_synthesizer.tooltip.fit", "Right-click a Forge to fit it. Sneak and right-click with an empty hand to take it off.");
+        add("nautec.pressure_synthesizer.fitted", "%s fitted");
+        add("nautec.pressure_synthesizer.already_fitted", "This Forge already has that synthesizer fitted.");
         add("nautec.monocle.acid", "Acid: %s mb");
         add("nautec.monocle.cracked", "Cracked, cooling down");
         add("nautec.monocle.charge", "Charge: %s%%");

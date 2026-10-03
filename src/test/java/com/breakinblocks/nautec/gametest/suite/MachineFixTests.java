@@ -159,7 +159,8 @@ public final class MachineFixTests {
                 ResourceHandler<ItemResource> north = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.NORTH);
                 helper.assertTrue(north != null, "The chamber should expose an item handler on its side");
                 try (Transaction tx = Transaction.openRoot()) {
-                    helper.assertValueEqual(0, north.extract(1, shard, 1, tx), "output pulled from the side");
+                    helper.assertValueEqual(1, north.extract(1, shard, 1, tx), "output pulled from the side");
+                    helper.assertValueEqual(0, north.extract(0, shard, 1, tx), "input pulled from the side");
                 }
 
                 ResourceHandler<ItemResource> down = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.DOWN);

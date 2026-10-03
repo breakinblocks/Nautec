@@ -31,7 +31,7 @@ Aim a beam into its top or bottom. Any amount of power runs it (1 AP per tick, c
 
 ## <Color id="gold">Output</Color>
 
-It rolls ordinary fishing loot once every two seconds (configurable) and stores the catch in 15 slots. Right-click it to open them and take the catch out. Once the slots are full, extra catch drops out of the station as items.
+It rolls ordinary fishing loot once every two seconds (configurable) and stores the catch in 15 slots. Right-click it to open them and take the catch out, or pull it out of any face with a hopper or pipe. Once the slots are full, extra catch drops out of the station as items.
 
 ***
 

@@ -182,14 +182,15 @@ public final class ShowcaseTests {
         r.add("showcase/item_wall_frames_every_item", ARENA, 40, 0, helper -> {
             ServerLevel level = helper.getLevel();
             ShowcaseFrame frame = frame(helper, 1, 4);
-            ShowcaseParts.prepareArea(level, frame, -1, -2, 17, 2, 10);
+            int height = ShowcaseItemWall.rows(17) + 2;
+            ShowcaseParts.prepareArea(level, frame, -1, -2, 17, 2, height);
             List<ItemFrame> frames = ShowcaseItemWall.build(level, frame, 17);
 
             Set<Item> expected = nautecItems();
             helper.assertValueEqual(expected.size(), frames.size(), "frames spawned");
 
             helper.runAfterDelay(5, () -> {
-                AABB area = frame.aabb(-1, 0, -2, 17, 10, 2);
+                AABB area = frame.aabb(-1, 0, -2, 17, height, 2);
                 Set<Item> framed = new HashSet<>();
                 int alive = 0;
                 for (ItemFrame itemFrame : level.getEntitiesOfClass(ItemFrame.class, area)) {

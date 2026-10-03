@@ -1,17 +1,20 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -129,7 +132,29 @@ public final class CrateAndCapabilityTests {
                     helper.assertValueEqual(0, north.extract(0, cobble, 4, tx), "extract via insert-only north side");
                 }
                 ResourceHandler<ItemResource> up = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.UP);
-                helper.assertTrue(up == null, "Mixer should not expose an item handler on top");
+                helper.assertTrue(up != null, "Mixer should expose its output slot on top");
+                try (Transaction tx = Transaction.openRoot()) {
+                    helper.assertValueEqual(0, up.insert(0, cobble, 4, tx), "insert via output-only top side");
+                }
+                helper.succeed();
+            });
+        });
+
+        r.add("capability/machine_outputs_extract_from_every_side", 60, helper -> {
+            BlockPos forgePos = new BlockPos(1, 1, 1);
+            BlockPos mixerPos = new BlockPos(4, 1, 1);
+            BlockPos chamberPos = new BlockPos(1, 1, 4);
+            BlockPos fishingPos = new BlockPos(4, 1, 4);
+            helper.setBlock(forgePos, NTBlocks.PRESSURE_FORGE.get());
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get());
+            helper.setBlock(chamberPos, NTBlocks.RESONANCE_CHAMBER.get());
+            helper.setBlock(fishingPos, NTBlocks.FISHING_STATION.get());
+            helper.runAfterDelay(2, () -> {
+                ItemResource diamond = ItemResource.of(new ItemStack(Items.DIAMOND));
+                checkOutputs(helper, forgePos, 1, 0, diamond);
+                checkOutputs(helper, mixerPos, MixerBlockEntity.OUTPUT_SLOT, 0, diamond);
+                checkOutputs(helper, chamberPos, ResonanceChamberBlockEntity.OUTPUT_SLOT, -1, diamond);
+                checkOutputs(helper, fishingPos, 7, -1, diamond);
                 helper.succeed();
             });
         });
@@ -300,5 +325,25 @@ public final class CrateAndCapabilityTests {
             }
             helper.succeed();
         });
+    }
+
+    private static void checkOutputs(GameTestHelper helper, BlockPos pos, int outputSlot, int inputSlot, ItemResource resource) {
+        ContainerBlockEntity machine = helper.getBlockEntity(pos, ContainerBlockEntity.class);
+        String name = machine.getBlockState().getBlock().getName().getString();
+        for (Direction side : Direction.values()) {
+            machine.getItemStackHandler().setStackInSlot(outputSlot, new ItemStack(Items.DIAMOND, 4));
+            if (inputSlot >= 0) {
+                machine.getItemStackHandler().setStackInSlot(inputSlot, new ItemStack(Items.DIAMOND, 4));
+            }
+            ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
+            helper.assertTrue(handler != null, name + " should expose an item handler on " + side);
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(4, handler.extract(outputSlot, resource, 4, tx), name + " output extracted via " + side);
+                helper.assertValueEqual(0, handler.insert(outputSlot, resource, 1, tx), name + " output insert via " + side);
+                if (inputSlot >= 0) {
+                    helper.assertValueEqual(0, handler.extract(inputSlot, resource, 4, tx), name + " input extracted via " + side);
+                }
+            }
+        }
     }
 }

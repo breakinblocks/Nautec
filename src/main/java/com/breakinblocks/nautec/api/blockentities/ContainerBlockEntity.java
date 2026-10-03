@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.capabilities.fluid.SidedFluidHandler;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
+import com.breakinblocks.nautec.capabilities.item.OutputSlotsItemHandler;
 import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.PowerStorage;
@@ -391,12 +392,21 @@ public abstract class ContainerBlockEntity extends BlockEntity {
     }
 
     public ResourceHandler<ItemResource> getItemHandlerOnSide(Direction direction) {
-        return getHandlerOnSide(
+        ResourceHandler<ItemResource> sided = getHandlerOnSide(
                 Capabilities.Item.BLOCK,
                 SidedItemHandler::new,
                 direction,
                 getItemHandler()
         );
+        int[] outputs = getItemOutputSlots();
+        if (direction == null || outputs.length == 0) {
+            return sided;
+        }
+        return new OutputSlotsItemHandler(getItemHandler(), sided, outputs);
+    }
+
+    public int[] getItemOutputSlots() {
+        return new int[0];
     }
 
     public ResourceHandler<FluidResource> getFluidHandlerOnSide(Direction direction) {

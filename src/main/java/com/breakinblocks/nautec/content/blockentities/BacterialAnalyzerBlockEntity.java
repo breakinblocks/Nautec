@@ -119,6 +119,11 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
     }
 
     @Override
+    public int[] getItemOutputSlots() {
+        return new int[]{1};
+    }
+
+    @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
         return capability == Capabilities.Item.BLOCK ? ITEM_SIDED_INTERACTIONS : Map.of();
     }

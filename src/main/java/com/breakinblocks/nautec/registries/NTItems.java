@@ -14,6 +14,7 @@ import com.breakinblocks.nautec.content.items.EyeOfTheSeaItem;
 import com.breakinblocks.nautec.content.items.GraftingToolItem;
 import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
+import com.breakinblocks.nautec.content.items.PressureSynthesizerItem;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
 import com.breakinblocks.nautec.content.items.CrystalSeedItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
@@ -32,10 +33,12 @@ import com.breakinblocks.nautec.content.items.tools.AquarineShovelItem;
 import com.breakinblocks.nautec.content.items.tools.AquarineSwordItem;
 import com.breakinblocks.nautec.content.items.tools.AquarineWrenchItem;
 import com.breakinblocks.nautec.content.items.tools.NautecFishingRodItem;
+import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
@@ -224,6 +227,12 @@ public final class NTItems {
             ResonanceCharmItem::new, () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<PrismSatelliteItem> PRISM_SATELLITE = registerItem("prism_satellite",
             PrismSatelliteItem::new, () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<PressureSynthesizerItem> PRESSURE_SYNTHESIZER = registerItem("pressure_synthesizer",
+            properties -> new PressureSynthesizerItem(properties, PressureForgeBlockEntity.Synthesizer.BASIC),
+            () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<PressureSynthesizerItem> ATLANTEAN_PRESSURE_SYNTHESIZER = registerItem("atlantean_pressure_synthesizer",
+            properties -> new PressureSynthesizerItem(properties, PressureForgeBlockEntity.Synthesizer.ATLANTEAN),
+            () -> new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
     public static final DeferredItem<TuningForkItem> TUNING_FORK = registerItem("tuning_fork",
             TuningForkItem::new, () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<SpawnerConfinementMatrixItem> SPAWNER_CONFINEMENT_MATRIX = registerItem("spawner_confinement_matrix",

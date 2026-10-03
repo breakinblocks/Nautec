@@ -1,11 +1,14 @@
 package com.breakinblocks.nautec.content.blocks.multiblock.semi;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.ChatFormatting;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +24,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class PrismarineCrystalPartBlock extends LaserBlock {
     public static final IntegerProperty INDEX = IntegerProperty.create("index", 0, 5);
@@ -55,6 +60,17 @@ public class PrismarineCrystalPartBlock extends LaserBlock {
     @Override
     public @NotNull RenderShape getRenderShape(BlockState p_49232_) {
         return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    public List<Component> displayText(Level level, BlockPos blockPos, Player player) {
+        if (level.getBlockEntity(blockPos) instanceof PrismarineCrystalPartBlockEntity part && part.getCrystalBE() != null) {
+            return List.of(
+                    Component.translatable("nautec.monocle.power", part.getCrystalBE().getPower()).withStyle(ChatFormatting.WHITE),
+                    Component.translatable("nautec.monocle.purity", part.getPurity()).withStyle(ChatFormatting.WHITE)
+            );
+        }
+        return super.displayText(level, blockPos, player);
     }
 
     @Override
