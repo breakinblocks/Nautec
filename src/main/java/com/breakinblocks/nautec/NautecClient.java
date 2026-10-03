@@ -307,6 +307,11 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_LASER_RELAY.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CREATIVE_POWER_SOURCE.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_JUNCTION.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.ENERGY_CONVERTER.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.BACTERIAL_FUEL_CELL.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMATIC_MIRROR.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.BEAM_SPLITTER.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.FOCUSING_LENS.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LONG_DISTANCE_LASER.get(), LongDistanceLaserBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_CRYSTAL.get(), PrismarineCrystalBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_CRYSTAL_PART.get(), LaserBlockEntityRenderer::new);

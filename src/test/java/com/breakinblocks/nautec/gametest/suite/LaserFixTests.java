@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
@@ -288,6 +289,11 @@ public final class LaserFixTests {
             helper.runAfterDelay(80, () -> {
                 helper.assertValueEqual(50, mixer(helper, eastMixer).getPower(), "east converter output");
                 helper.assertValueEqual(50, mixer(helper, southMixer).getPower(), "south converter output");
+                EnergyConverterBlockEntity converter = helper.getBlockEntity(converterPos, EnergyConverterBlockEntity.class);
+                helper.assertValueEqual(100, converter.getSending(), "the converter reports what it sends");
+                helper.assertValueEqual(2, converter.getBeams(), "the converter reports its beams");
+                helper.assertTrue(converter.getUpdateTag(helper.getLevel().registryAccess()).getIntOr("sending", 0) == 100,
+                        "the amount sent reaches the client so the beam can draw");
                 helper.succeed();
             });
         });

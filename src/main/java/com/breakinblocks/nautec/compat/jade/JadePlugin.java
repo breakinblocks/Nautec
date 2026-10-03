@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.compat.jade;
 
+import com.breakinblocks.nautec.content.blocks.EnergyConverterBlock;
+import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CrystalCradleBlockEntity;
@@ -38,6 +40,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(FusionControllerComponentProvider.INSTANCE, FusionControllerBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, TidalRotorBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, ThermalVentTapBlockEntity.class);
+        registration.registerBlockDataProvider(EnergyConverterComponentProvider.INSTANCE, EnergyConverterBlockEntity.class);
     }
 
     @Override
@@ -54,5 +57,6 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(FusionControllerComponentProvider.Client.INSTANCE, FusionControllerBlock.class);
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, TidalRotorBlock.class);
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, ThermalVentTapBlock.class);
+        registration.registerBlockComponent(EnergyConverterComponentProvider.Client.INSTANCE, EnergyConverterBlock.class);
     }
 }

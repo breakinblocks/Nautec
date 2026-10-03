@@ -986,6 +986,11 @@ public class EnUsProvider extends LanguageProvider {
 
         add("nautec.monocle.power", "Power: %s");
         add("nautec.monocle.purity", "Purity: %s");
+        add("nautec.energy_converter.sending", "Sending %s AP");
+        add("nautec.energy_converter.beams", "Across %s beams, %s AP each");
+        add("nautec.energy_converter.no_target", "No laser block in line with any face");
+        add("nautec.energy_converter.no_fe", "Out of FE");
+        add("nautec.energy_converter.fe", "FE: %s / %s");
         add("nautec.monocle.satellite", "%s: %s");
         add("nautec.monocle.duration", "Duration: %s");
         add("nautec.monocle.no_colony", "No colony");
