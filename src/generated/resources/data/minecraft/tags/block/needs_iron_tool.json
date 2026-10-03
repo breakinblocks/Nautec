@@ -1,5 +1,6 @@
 {
   "values": [
-    "nautec:thermal_vent_tap"
+    "nautec:thermal_vent_tap",
+    "nautec:resonance_pylon"
   ]
 }

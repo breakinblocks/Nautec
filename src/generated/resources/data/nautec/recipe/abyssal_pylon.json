@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "nautec:deep_steel_plating",
+    "E": "minecraft:ender_pearl",
+    "F": "nautec:flawless_prismarine_crystal",
+    "G": "nautec:atlantic_gold_ingot",
+    "N": "minecraft:nether_star",
+    "P": "nautec:resonance_pylon"
+  },
+  "pattern": [
+    "FNF",
+    "EPE",
+    "DGD"
+  ],
+  "result": {
+    "id": "nautec:abyssal_pylon"
+  }
+}

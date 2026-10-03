@@ -48,6 +48,8 @@
     "nautec:energy_converter",
     "nautec:tidal_rotor",
     "nautec:thermal_vent_tap",
+    "nautec:resonance_pylon",
+    "nautec:abyssal_pylon",
     "nautec:fusion_casing",
     "nautec:aquamarine_structural_glass",
     "nautec:containment_coil",

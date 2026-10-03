@@ -97,6 +97,8 @@ public class BlockModelProvider extends ModelProvider {
                 blockTexture(NTBlocks.CREATIVE_POWER_SOURCE.get())));
         simpleBlock(NTBlocks.ENERGY_CONVERTER.get(), artModel(NTBlocks.ENERGY_CONVERTER.get()));
         fusionPlant();
+        simpleBlock(NTBlocks.RESONANCE_PYLON.get(), existingModelFile(NTBlocks.RESONANCE_PYLON.get()));
+        simpleBlock(NTBlocks.ABYSSAL_PYLON.get(), existingModelFile(NTBlocks.ABYSSAL_PYLON.get()));
         generators();
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 

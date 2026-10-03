@@ -212,6 +212,28 @@ public final class NTConfig {
             .comment("The most AP a Confined Spawner can hold in its buffer")
             .defineInRange("confinedSpawnerPowerBuffer", 500, 1, 30000);
 
+    private static final ModConfigSpec.IntValue RESONANCE_PYLON_THROUGHPUT = BUILDER
+            .comment("The most FE per tick a Resonance Pylon sends or receives over its network")
+            .defineInRange("resonancePylonThroughput", 20_000, 1, Integer.MAX_VALUE / 2);
+    private static final ModConfigSpec.IntValue RESONANCE_PYLON_BUFFER = BUILDER
+            .comment("The FE a Resonance Pylon holds")
+            .defineInRange("resonancePylonBuffer", 200_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue ABYSSAL_PYLON_THROUGHPUT = BUILDER
+            .comment("The most FE per tick an Abyssal Pylon sends or receives over its network")
+            .defineInRange("abyssalPylonThroughput", 50_000, 1, Integer.MAX_VALUE / 2);
+    private static final ModConfigSpec.IntValue ABYSSAL_PYLON_BUFFER = BUILDER
+            .comment("The FE an Abyssal Pylon holds")
+            .defineInRange("abyssalPylonBuffer", 500_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue RESONANCE_SAME_DIMENSION_LOSS = BUILDER
+            .comment("The fraction of FE lost moving between pylons in the same dimension")
+            .defineInRange("resonanceSameDimensionLoss", 0.05, 0.0, 0.99);
+    private static final ModConfigSpec.DoubleValue RESONANCE_CROSS_DIMENSION_LOSS = BUILDER
+            .comment("The fraction of FE lost moving between Abyssal Pylons in different dimensions")
+            .defineInRange("resonanceCrossDimensionLoss", 0.15, 0.0, 0.99);
+    private static final ModConfigSpec.IntValue RESONANCE_MAX_NETWORKS = BUILDER
+            .comment("The most Resonance Networks one player can own")
+            .defineInRange("resonanceMaxNetworksPerPlayer", 16, 1, 1024);
+
     private static final ModConfigSpec.IntValue TIDAL_ROTOR_MIN_OUTPUT = BUILDER
             .comment("The FE per tick a Tidal Rotor makes in the shallowest, most enclosed ocean water it still runs in")
             .defineInRange("tidalRotorMinOutput", 40, 0, 1_000_000);
@@ -712,6 +734,13 @@ public final class NTConfig {
     public static double crystalGrowthPurity = 2.0;
     public static int confinedSpawnerPowerPerTick = 50;
     public static int confinedSpawnerPowerBuffer = 500;
+    public static int resonancePylonThroughput = 20_000;
+    public static int resonancePylonBuffer = 200_000;
+    public static int abyssalPylonThroughput = 50_000;
+    public static int abyssalPylonBuffer = 500_000;
+    public static double resonanceSameDimensionLoss = 0.05;
+    public static double resonanceCrossDimensionLoss = 0.15;
+    public static int resonanceMaxNetworksPerPlayer = 16;
     public static int tidalRotorMinOutput = 40;
     public static int tidalRotorMaxOutput = 80;
     public static int ventTapMinOutput = 350;
@@ -926,6 +955,13 @@ public final class NTConfig {
         crystalGrowthPurity = value(CRYSTAL_GROWTH_PURITY);
         confinedSpawnerPowerPerTick = value(CONFINED_SPAWNER_POWER_PER_TICK);
         confinedSpawnerPowerBuffer = value(CONFINED_SPAWNER_POWER_BUFFER);
+        resonancePylonThroughput = value(RESONANCE_PYLON_THROUGHPUT);
+        resonancePylonBuffer = value(RESONANCE_PYLON_BUFFER);
+        abyssalPylonThroughput = value(ABYSSAL_PYLON_THROUGHPUT);
+        abyssalPylonBuffer = value(ABYSSAL_PYLON_BUFFER);
+        resonanceSameDimensionLoss = value(RESONANCE_SAME_DIMENSION_LOSS);
+        resonanceCrossDimensionLoss = value(RESONANCE_CROSS_DIMENSION_LOSS);
+        resonanceMaxNetworksPerPlayer = value(RESONANCE_MAX_NETWORKS);
         tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
         tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
         ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);

@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.menus.CrateMenu;
 import com.breakinblocks.nautec.content.menus.FishingStationMenu;
 import com.breakinblocks.nautec.content.menus.FusionControllerMenu;
+import com.breakinblocks.nautec.content.menus.ResonancePylonMenu;
 import com.breakinblocks.nautec.content.menus.IncubatorMenu;
 import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
@@ -39,6 +40,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<SubmarineModuleMenu>> SUBMARINE_MODULES = registerMenuType(SubmarineModuleMenu::new, "submarine_modules");
     public static final Supplier<MenuType<ConfinedSpawnerMenu>> CONFINED_SPAWNER = registerMenuType(ConfinedSpawnerMenu::new, "confined_spawner");
     public static final Supplier<MenuType<FusionControllerMenu>> FUSION_CONTROLLER = registerMenuType(FusionControllerMenu::new, "fusion_controller");
+    public static final Supplier<MenuType<ResonancePylonMenu>> RESONANCE_PYLON = registerMenuType(ResonancePylonMenu::new, "resonance_pylon");
 
 
     private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {

@@ -1,0 +1,60 @@
+---
+navigation:
+  title: Resonance Network
+  icon: nautec:resonance_pylon
+  position: 9
+  parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:resonance_pylon
+  - nautec:abyssal_pylon
+---
+
+# <Color id="light_purple">Resonance Network</Color>
+
+<Column alignItems="center" fullWidth={true}>
+  <Row>
+    <ItemImage id="resonance_pylon" scale="2"/>
+    <ItemImage id="abyssal_pylon" scale="2"/>
+  </Row>
+  Crystal pylons that carry Forge Energy (FE) between your bases without cables.
+</Column>
+
+A Resonance Network is a named grid of pylons. Every pylon on the same network shares FE with the others, however far apart they are, with no cables and no line of sight.
+
+***
+
+## <Color id="gold">Setting Up</Color>
+
+1. Place a <ItemLink id="resonance_pylon"/> and right-click it with an empty hand.
+2. Type a name in the box and press **Create**. The network is yours, and the pylon joins it.
+3. Place another pylon at the other site, open it, and use the arrows to pick the same network.
+4. Set each pylon to **Sending** or **Receiving** with the button at the top right.
+
+A sending pylon takes FE from cables or machines on any side and sends it into the network. A receiving pylon takes FE from the network and pushes it into anything touching it. A network can have many of each.
+
+***
+
+## <Color id="gold">Range and Loss</Color>
+
+| | Carries | Holds | Reaches |
+|---|---|---|---|
+| <ItemLink id="resonance_pylon"/> | 20,000 FE/t | 200,000 FE | Any pylon in the same dimension, losing 5% |
+| <ItemLink id="abyssal_pylon"/> | 50,000 FE/t | 500,000 FE | The same, plus other Abyssal Pylons in any dimension, losing 15% |
+
+FE only crosses dimensions between two Abyssal Pylons, one at each end. A receiver takes from senders in its own dimension first, since that loses less.
+
+Pylons only work while their chunk is loaded, so keep both ends of a long link chunk loaded if it has to run while you are away.
+
+***
+
+## <Color id="gold">Who Can Use It</Color>
+
+Only the owner and the players they trust can link a pylon to a network or open a pylon that is already on it. Anyone else gets a message naming the network and its owner.
+
+The owner manages access from any pylon on the network:
+
+* **Trust**: type the name of an online player and press Trust. They can now link pylons to the network. Remove them with the red x beside their name.
+* **Team**: with FTB Teams installed, turning this on lets everyone in the owner's team use the network without trusting each of them.
+* **Delete**: removes the network and unlinks every pylon on it. Click it twice.
+
+Each player can own up to 16 networks.

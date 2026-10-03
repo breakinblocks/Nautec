@@ -77,6 +77,8 @@ public class BlockTagProvider extends BlockTagsProvider {
                 ENERGY_CONVERTER,
                 TIDAL_ROTOR,
                 THERMAL_VENT_TAP,
+                RESONANCE_PYLON,
+                ABYSSAL_PYLON,
                 FUSION_CASING,
                 AQUAMARINE_STRUCTURAL_GLASS,
                 CONTAINMENT_COIL,
@@ -85,9 +87,11 @@ public class BlockTagProvider extends BlockTagsProvider {
                 FUSION_COLLECTOR,
                 FUSION_PORT);
         tag(BlockTags.NEEDS_IRON_TOOL,
-                THERMAL_VENT_TAP);
+                THERMAL_VENT_TAP,
+                RESONANCE_PYLON);
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA);
         tag(BlockTags.NEEDS_DIAMOND_TOOL,
+                ABYSSAL_PYLON,
                 FUSION_CASING,
                 AQUAMARINE_STRUCTURAL_GLASS,
                 CONTAINMENT_COIL,

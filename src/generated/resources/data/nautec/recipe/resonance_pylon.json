@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "E": "minecraft:ender_pearl",
+    "L": "nautec:laser_channeling_coil",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    " R ",
+    "CEC",
+    "ALA"
+  ],
+  "result": {
+    "id": "nautec:resonance_pylon"
+  }
+}

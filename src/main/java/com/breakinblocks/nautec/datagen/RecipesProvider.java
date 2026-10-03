@@ -1115,6 +1115,31 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void fusionPlantRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.MISC, NTBlocks.RESONANCE_PYLON.asItem())
+                .pattern(" R ")
+                .pattern("CEC")
+                .pattern("ALA")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('E', Items.ENDER_PEARL)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("resonance_pylon"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ABYSSAL_PYLON.asItem())
+                .pattern("FNF")
+                .pattern("EPE")
+                .pattern("DGD")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('N', Items.NETHER_STAR)
+                .define('E', Items.ENDER_PEARL)
+                .define('P', NTBlocks.RESONANCE_PYLON)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
+                .save(pRecipeOutput, key("abyssal_pylon"));
+
         shaped(RecipeCategory.MISC, NTBlocks.TIDAL_ROTOR.asItem())
                 .pattern("RIR")
                 .pattern("ICI")

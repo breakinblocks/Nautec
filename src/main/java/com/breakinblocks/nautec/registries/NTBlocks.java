@@ -37,6 +37,7 @@ import com.breakinblocks.nautec.content.blocks.SubmarineDockBlock;
 import com.breakinblocks.nautec.content.blocks.flora.DeepKelpBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionCollectorBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
+import com.breakinblocks.nautec.content.resonance.ResonancePylonBlock;
 import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionPortBlock;
@@ -197,6 +198,15 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), true, true);
     public static final DeferredBlock<EnergyConverterBlock> ENERGY_CONVERTER = registerBlockAndItem("energy_converter", EnergyConverterBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK), true, true);
+
+    public static final DeferredBlock<ResonancePylonBlock> RESONANCE_PYLON = registerBlockAndItem("resonance_pylon",
+            properties -> new ResonancePylonBlock(properties, false),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().lightLevel(state -> 6));
+    public static final DeferredBlock<ResonancePylonBlock> ABYSSAL_PYLON = registerBlockAndItem("abyssal_pylon",
+            properties -> new ResonancePylonBlock(properties, true),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK).noOcclusion()
+                    .requiresCorrectToolForDrops().lightLevel(state -> 9));
 
     public static final DeferredBlock<TidalRotorBlock> TIDAL_ROTOR = registerBlockAndItem("tidal_rotor", TidalRotorBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
