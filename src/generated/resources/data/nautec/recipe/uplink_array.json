@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "G": "nautec:atlantic_gold_ingot",
+    "J": "nautec:laser_junction",
+    "L": "nautec:prismarine_lens",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    "GLG",
+    "CRC",
+    "AJA"
+  ],
+  "result": {
+    "id": "nautec:uplink_array"
+  }
+}

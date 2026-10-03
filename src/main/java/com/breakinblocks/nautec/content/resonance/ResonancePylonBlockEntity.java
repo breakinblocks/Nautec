@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ResonancePylonBlockEntity extends ContainerBlockEntity implements MenuProvider, ResonanceEndpoint {
+public class ResonancePylonBlockEntity extends ContainerBlockEntity implements MenuProvider, ResonanceEndpoint, ResonanceTunable {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_CAPACITY = 2;
     public static final int DATA_FLOW = 4;
@@ -127,6 +127,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         return energy;
     }
 
+    @Override
     public @Nullable UUID getNetworkId() {
         return networkId;
     }
@@ -147,6 +148,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         return flow;
     }
 
+    @Override
     public @Nullable ResonanceNetwork getNetwork() {
         if (networkId == null || !(level instanceof ServerLevel serverLevel)) {
             return null;
@@ -154,6 +156,14 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         return ResonanceNetworks.get(serverLevel.getServer()).get(networkId);
     }
 
+    @Override
+    public int members(ResonanceNetwork network) {
+        List<ResonancePylonBlockEntity> members = ResonanceGrid.members(network.id());
+        boolean pending = network.id().equals(networkId) && !members.contains(this);
+        return members.size() + (pending ? 1 : 0);
+    }
+
+    @Override
     public void setNetwork(@Nullable ResonanceNetwork network) {
         UUID id = network == null ? null : network.id();
         if (joined != null && !joined.equals(id)) {

@@ -57,6 +57,8 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         prismarineSand(NTBlocks.PRISMARINE_SAND.get());
         dropSelf(NTBlocks.AQUATIC_CATALYST.get());
         dropSelf(NTBlocks.RESONANCE_PYLON.get());
+        dropSelf(NTBlocks.UPLINK_ARRAY.get());
+        dropSelf(NTBlocks.DOWNLINK_ARRAY.get());
         dropSelf(NTBlocks.ABYSSAL_PYLON.get());
         dropSelf(NTBlocks.PRISMATIC_EMITTER.get());
         dropSelf(NTBlocks.TIDAL_ROTOR.get());

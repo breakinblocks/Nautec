@@ -1,0 +1,546 @@
+{
+  "texture_size": [
+    32,
+    32
+  ],
+  "gui_light": "side",
+  "textures": {
+    "sat": "nautec:item/prism_satellite",
+    "particle": "nautec:item/prism_satellite"
+  },
+  "elements": [
+    {
+      "name": "core",
+      "from": [
+        6,
+        6,
+        6
+      ],
+      "to": [
+        10,
+        10,
+        10
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ],
+          "texture": "#sat"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ],
+          "texture": "#sat"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            2.0
+          ],
+          "texture": "#sat"
+        },
+        "up": {
+          "uv": [
+            2.0,
+            0.0,
+            4.0,
+            2.0
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            2.0,
+            0.0,
+            4.0,
+            2.0
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "wing_west",
+      "from": [
+        0,
+        7.5,
+        5
+      ],
+      "to": [
+        5,
+        8.5,
+        11
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.0,
+            4.0,
+            2.5,
+            7.0
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            2.5,
+            4.0,
+            5.0,
+            7.0
+          ],
+          "texture": "#sat"
+        },
+        "north": {
+          "uv": [
+            0.0,
+            7.0,
+            2.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            0.0,
+            7.0,
+            2.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "east": {
+          "uv": [
+            2.5,
+            7.0,
+            5.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "west": {
+          "uv": [
+            2.5,
+            7.0,
+            5.5,
+            7.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "wing_east",
+      "from": [
+        11,
+        7.5,
+        5
+      ],
+      "to": [
+        16,
+        8.5,
+        11
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0.0,
+            4.0,
+            2.5,
+            7.0
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            2.5,
+            4.0,
+            5.0,
+            7.0
+          ],
+          "texture": "#sat"
+        },
+        "north": {
+          "uv": [
+            0.0,
+            7.0,
+            2.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            0.0,
+            7.0,
+            2.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "east": {
+          "uv": [
+            2.5,
+            7.0,
+            5.5,
+            7.5
+          ],
+          "texture": "#sat"
+        },
+        "west": {
+          "uv": [
+            2.5,
+            7.0,
+            5.5,
+            7.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "strut_west",
+      "from": [
+        5,
+        7.5,
+        7.5
+      ],
+      "to": [
+        6,
+        8.5,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "up": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "strut_east",
+      "from": [
+        10,
+        7.5,
+        7.5
+      ],
+      "to": [
+        11,
+        8.5,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "up": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            4.0,
+            0.0,
+            4.5,
+            0.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "antenna",
+      "from": [
+        7.5,
+        10,
+        7.5
+      ],
+      "to": [
+        8.5,
+        13,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4.5,
+            0.0,
+            5.0,
+            1.5
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            4.5,
+            0.0,
+            5.0,
+            1.5
+          ],
+          "texture": "#sat"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            0.0,
+            5.0,
+            1.5
+          ],
+          "texture": "#sat"
+        },
+        "west": {
+          "uv": [
+            4.5,
+            0.0,
+            5.0,
+            1.5
+          ],
+          "texture": "#sat"
+        },
+        "up": {
+          "uv": [
+            5.0,
+            0.0,
+            5.5,
+            0.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    },
+    {
+      "name": "lens",
+      "from": [
+        6.5,
+        4,
+        6.5
+      ],
+      "to": [
+        9.5,
+        6,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6.0,
+            0.0,
+            7.5,
+            1.0
+          ],
+          "texture": "#sat"
+        },
+        "south": {
+          "uv": [
+            6.0,
+            0.0,
+            7.5,
+            1.0
+          ],
+          "texture": "#sat"
+        },
+        "east": {
+          "uv": [
+            6.0,
+            0.0,
+            7.5,
+            1.0
+          ],
+          "texture": "#sat"
+        },
+        "west": {
+          "uv": [
+            6.0,
+            0.0,
+            7.5,
+            1.0
+          ],
+          "texture": "#sat"
+        },
+        "down": {
+          "uv": [
+            6.0,
+            1.0,
+            7.5,
+            2.5
+          ],
+          "texture": "#sat"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        25,
+        35,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
+    }
+  }
+}

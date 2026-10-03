@@ -14,7 +14,7 @@ public final class ResonanceActions {
     }
 
     public static void apply(ServerPlayer player, ResonanceActionPayload payload) {
-        if (!(player.level().getBlockEntity(payload.pos()) instanceof ResonancePylonBlockEntity pylon)
+        if (!(player.level().getBlockEntity(payload.pos()) instanceof ResonanceTunable pylon)
                 || player.distanceToSqr(payload.pos().getCenter()) > REACH * REACH) {
             return;
         }
@@ -35,7 +35,9 @@ public final class ResonanceActions {
                 yield result.error();
             }
             case ResonanceActionPayload.MODE -> {
-                pylon.setSendMode(!pylon.isSendMode());
+                if (pylon instanceof ResonancePylonBlockEntity sender) {
+                    sender.setSendMode(!sender.isSendMode());
+                }
                 yield null;
             }
             case ResonanceActionPayload.TRUST -> current == null ? "nautec.resonance.error.no_network" : trust(player, networks, current, payload.text());
@@ -63,7 +65,7 @@ public final class ResonanceActions {
         ResonanceSync.send(player, pylon);
     }
 
-    private static String select(ServerPlayer player, ResonancePylonBlockEntity pylon, ResonanceNetworks networks, UUID id) {
+    private static String select(ServerPlayer player, ResonanceTunable pylon, ResonanceNetworks networks, UUID id) {
         if (id == null) {
             pylon.setNetwork(null);
             return null;

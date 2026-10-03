@@ -39,6 +39,8 @@ import com.breakinblocks.nautec.content.blocks.fusion.FusionCollectorBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlock;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlock;
+import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlock;
+import com.breakinblocks.nautec.content.resonance.SatelliteArrayTopBlock;
 import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionPortBlock;
@@ -76,6 +78,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 public final class NTBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Nautec.MODID);
@@ -208,6 +211,18 @@ public final class NTBlocks {
             properties -> new ResonancePylonBlock(properties, true),
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> 9));
+
+    public static final DeferredBlock<SatelliteArrayBlock> UPLINK_ARRAY = registerBlockAndItem("uplink_array",
+            properties -> new SatelliteArrayBlock(properties, true),
+            BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(5.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 6));
+    public static final DeferredBlock<SatelliteArrayBlock> DOWNLINK_ARRAY = registerBlockAndItem("downlink_array",
+            properties -> new SatelliteArrayBlock(properties, false),
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(5.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 6));
+    public static final DeferredBlock<SatelliteArrayTopBlock> SATELLITE_ARRAY_TOP = BLOCKS.registerBlock("satellite_array_top", SatelliteArrayTopBlock::new,
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().noLootTable());
 
     public static final DeferredBlock<PrismaticEmitterBlock> PRISMATIC_EMITTER = registerBlockAndItem("prismatic_emitter", PrismaticEmitterBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0f, 12.0f).sound(SoundType.METAL).noOcclusion()

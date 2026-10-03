@@ -242,6 +242,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue EMITTER_BUFFER = BUILDER
             .comment("The FE a Prismatic Emitter holds")
             .defineInRange("emitterBuffer", 100_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SATELLITE_LOSS = BUILDER
+            .comment("The fraction of AP lost relaying through a Prism Satellite from Uplink Arrays to Downlink Arrays")
+            .defineInRange("satelliteLoss", 0.10, 0.0, 0.99);
     private static final ModConfigSpec.IntValue EMITTER_MAX_LINKS = BUILDER
             .comment("The most machines one Prismatic Emitter can be linked to")
             .defineInRange("emitterMaxLinks", 16, 1, 256);
@@ -761,6 +764,7 @@ public final class NTConfig {
     public static int emitterThroughput = 10_000;
     public static int emitterBuffer = 100_000;
     public static int emitterMaxLinks = 16;
+    public static double satelliteLoss = 0.10;
     public static int tidalRotorMinOutput = 40;
     public static int tidalRotorMaxOutput = 80;
     public static int ventTapMinOutput = 350;
@@ -987,6 +991,7 @@ public final class NTConfig {
         emitterThroughput = value(EMITTER_THROUGHPUT);
         emitterBuffer = value(EMITTER_BUFFER);
         emitterMaxLinks = value(EMITTER_MAX_LINKS);
+        satelliteLoss = value(SATELLITE_LOSS);
         tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
         tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
         ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);

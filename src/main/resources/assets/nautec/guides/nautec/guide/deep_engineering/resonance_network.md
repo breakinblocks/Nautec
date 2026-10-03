@@ -90,3 +90,5 @@ Right-click a pylon with the charm to bind it to that pylon's network; you need 
 Its crystal also does the work of a <ItemLink id="prism_monocle"/>: while it is equipped you see power and purity readouts on laser blocks and the clearer underwater view without wearing a monocle.
 
 It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Sneak-right-click the air with it to unbind it.
+
+The same networks connect Uplink and Downlink Arrays, which carry laser power instead of FE. See <ItemLink id="prism_satellite"/>.

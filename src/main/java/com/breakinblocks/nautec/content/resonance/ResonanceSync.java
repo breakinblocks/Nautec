@@ -14,13 +14,7 @@ public final class ResonanceSync {
     private ResonanceSync() {
     }
 
-    private static int pylonCount(ResonanceNetwork network, ResonancePylonBlockEntity pylon) {
-        List<ResonancePylonBlockEntity> members = ResonanceGrid.members(network.id());
-        boolean pending = network.id().equals(pylon.getNetworkId()) && !members.contains(pylon);
-        return members.size() + (pending ? 1 : 0);
-    }
-
-    public static void send(ServerPlayer player, ResonancePylonBlockEntity pylon) {
+    public static void send(ServerPlayer player, ResonanceTunable pylon) {
         ResonanceNetworks networks = ResonanceNetworks.get(player.level().getServer());
         networks.refreshOwnerName(player);
         List<ResonanceNetwork> visible = new ArrayList<>(networks.accessibleTo(player.getUUID()));
@@ -36,7 +30,7 @@ public final class ResonanceSync {
             }
             views.add(new ResonanceSyncPayload.NetworkView(network.id(), network.name(), network.ownerName(),
                     network.isOwner(player.getUUID()), ResonanceNetworks.canManage(player, network), trusted,
-                    network.teamAccess(), pylonCount(network, pylon)));
+                    network.teamAccess(), pylon.members(network)));
         }
         PacketDistributor.sendToPlayer(player, new ResonanceSyncPayload(pylon.getBlockPos(),
                 Optional.ofNullable(pylon.getNetworkId()), views, TeamAccess.available()));

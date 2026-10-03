@@ -1150,6 +1150,44 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
                 .save(pRecipeOutput, key("resonance_charm"));
 
+        shaped(RecipeCategory.MISC, NTItems.PRISM_SATELLITE.get())
+                .pattern(" A ")
+                .pattern("CFC")
+                .pattern("GLG")
+                .define('A', Items.LIGHTNING_ROD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .unlockedBy("has_item", has(NTBlocks.UPLINK_ARRAY))
+                .save(pRecipeOutput, key("prism_satellite"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.UPLINK_ARRAY.asItem())
+                .pattern("GLG")
+                .pattern("CRC")
+                .pattern("AJA")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('J', NTBlocks.LASER_JUNCTION)
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
+                .save(pRecipeOutput, key("uplink_array"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.DOWNLINK_ARRAY.asItem())
+                .pattern("SLS")
+                .pattern("CRC")
+                .pattern("AJA")
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('J', NTBlocks.LASER_JUNCTION)
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
+                .save(pRecipeOutput, key("downlink_array"));
+
         shaped(RecipeCategory.TOOLS, NTItems.TUNING_FORK.get())
                 .pattern("A A")
                 .pattern(" A ")

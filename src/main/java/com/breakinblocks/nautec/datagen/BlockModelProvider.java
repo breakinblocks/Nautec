@@ -100,6 +100,9 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.RESONANCE_PYLON.get(), existingModelFile(NTBlocks.RESONANCE_PYLON.get()));
         simpleBlock(NTBlocks.ABYSSAL_PYLON.get(), existingModelFile(NTBlocks.ABYSSAL_PYLON.get()));
         simpleBlock(NTBlocks.PRISMATIC_EMITTER.get(), existingModelFile(NTBlocks.PRISMATIC_EMITTER.get()));
+        simpleBlock(NTBlocks.UPLINK_ARRAY.get(), existingModelFile(NTBlocks.UPLINK_ARRAY.get()));
+        simpleBlock(NTBlocks.DOWNLINK_ARRAY.get(), existingModelFile(NTBlocks.DOWNLINK_ARRAY.get()));
+        simpleBlock(NTBlocks.SATELLITE_ARRAY_TOP.get(), existingModelFile(NTBlocks.SATELLITE_ARRAY_TOP.get()));
         generators();
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
 

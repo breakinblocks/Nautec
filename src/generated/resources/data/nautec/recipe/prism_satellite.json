@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:lightning_rod",
+    "C": "nautec:aquatic_chip",
+    "F": "nautec:flawless_prismarine_crystal",
+    "G": "nautec:atlantic_gold_ingot",
+    "L": "nautec:prismarine_lens"
+  },
+  "pattern": [
+    " A ",
+    "CFC",
+    "GLG"
+  ],
+  "result": {
+    "id": "nautec:prism_satellite"
+  }
+}

@@ -44,6 +44,7 @@ import com.breakinblocks.nautec.content.blockentities.fusion.FusionCollectorBloc
 import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
 import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
+import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.TidalRotorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionPortBlockEntity;
@@ -153,6 +154,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonancePylonBlockEntity>> RESONANCE_PYLON = BLOCK_ENTITIES.register("resonance_pylon",
             () -> new BlockEntityType<>(ResonancePylonBlockEntity::new,
                     NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()));
+    public static final Supplier<BlockEntityType<SatelliteArrayBlockEntity>> SATELLITE_ARRAY = BLOCK_ENTITIES.register("satellite_array",
+            () -> new BlockEntityType<>(SatelliteArrayBlockEntity::new,
+                    NTBlocks.UPLINK_ARRAY.get(), NTBlocks.DOWNLINK_ARRAY.get()));
     public static final Supplier<BlockEntityType<PrismaticEmitterBlockEntity>> PRISMATIC_EMITTER = BLOCK_ENTITIES.register("prismatic_emitter",
             () -> new BlockEntityType<>(PrismaticEmitterBlockEntity::new,
                     NTBlocks.PRISMATIC_EMITTER.get()));

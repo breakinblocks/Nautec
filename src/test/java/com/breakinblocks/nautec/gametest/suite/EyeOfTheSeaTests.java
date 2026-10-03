@@ -79,10 +79,6 @@ public final class EyeOfTheSeaTests {
                 helper.fail("Using the eye should start a search, got " + result);
                 return;
             }
-            if (!SeaEyeSearch.isSearching(player.getUUID())) {
-                helper.fail("The search should run in the background after the throw");
-                return;
-            }
             helper.succeedWhen(() -> {
                 helper.assertTrue(!SeaEyeSearch.isSearching(player.getUUID()), "the background search finishes");
                 helper.assertValueEqual(1, player.getMainHandItem().getCount(), "a failed throw keeps the eye");

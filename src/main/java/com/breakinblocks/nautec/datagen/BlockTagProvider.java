@@ -80,6 +80,9 @@ public class BlockTagProvider extends BlockTagsProvider {
                 RESONANCE_PYLON,
                 ABYSSAL_PYLON,
                 PRISMATIC_EMITTER,
+                UPLINK_ARRAY,
+                DOWNLINK_ARRAY,
+                SATELLITE_ARRAY_TOP,
                 FUSION_CASING,
                 AQUAMARINE_STRUCTURAL_GLASS,
                 CONTAINMENT_COIL,
@@ -90,7 +93,10 @@ public class BlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.NEEDS_IRON_TOOL,
                 THERMAL_VENT_TAP,
                 RESONANCE_PYLON,
-                PRISMATIC_EMITTER);
+                PRISMATIC_EMITTER,
+                UPLINK_ARRAY,
+                DOWNLINK_ARRAY,
+                SATELLITE_ARRAY_TOP);
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA);
         tag(BlockTags.NEEDS_DIAMOND_TOOL,
                 ABYSSAL_PYLON,
