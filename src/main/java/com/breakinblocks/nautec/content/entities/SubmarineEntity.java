@@ -76,6 +76,7 @@ import java.util.List;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class SubmarineEntity extends LivingEntity implements GeoEntity {
+    private boolean laserHeld;
     private static final double SHOVE_STRENGTH = 2.5;
     public static final int MAX_PASSENGERS = 2;
     public static final float MODEL_Y_OFFSET = 3F / 16F;
@@ -109,8 +110,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_EXITING =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_LASER_ACTIVE =
-            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_LASER_TICKS =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> DATA_LASER_LEFT =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_LASER_RIGHT =
@@ -195,7 +196,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         entityData.define(DATA_STEALTHED, false);
         entityData.define(DATA_CHARGING, false);
         entityData.define(DATA_EXITING, false);
-        entityData.define(DATA_LASER_ACTIVE, false);
+        entityData.define(DATA_LASER_TICKS, -1);
         entityData.define(DATA_LASER_LEFT, 0F);
         entityData.define(DATA_LASER_RIGHT, 0F);
         for (EntityDataAccessor<ItemStack> accessor : DATA_MODULES) {
@@ -247,15 +248,49 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         this.portalTarget = target;
     }
 
-    public boolean isLaserActive() {
-        return this.entityData.get(DATA_LASER_ACTIVE);
+    public int getLaserTicks() {
+        return this.entityData.get(DATA_LASER_TICKS);
     }
 
-    public void setLaserActive(boolean active) {
-        this.entityData.set(DATA_LASER_ACTIVE, active);
-        if (!active) {
-            setLaserLengths(0F, 0F);
+    public void setLaserTicks(int ticks) {
+        this.entityData.set(DATA_LASER_TICKS, ticks);
+    }
+
+    public boolean isLaserEngaged() {
+        return getLaserTicks() >= 0;
+    }
+
+    public boolean isLaserCharging() {
+        int ticks = getLaserTicks();
+        return ticks >= 0 && ticks < NTConfig.submarineLaserChargeTicks;
+    }
+
+    public boolean isLaserActive() {
+        return getLaserTicks() >= NTConfig.submarineLaserChargeTicks;
+    }
+
+    public float getLaserFiringTicks(float partialTick) {
+        return isLaserEngaged() ? getLaserTicks() + partialTick - NTConfig.submarineLaserChargeTicks : Float.NEGATIVE_INFINITY;
+    }
+
+    public static float laserRamp(float firingTicks) {
+        return Mth.clamp(firingTicks / Math.max(1, NTConfig.submarineLaserRampTicks), 0F, 1F);
+    }
+
+    public boolean isLaserHeld() {
+        return this.laserHeld;
+    }
+
+    public void setLaserHeld(boolean held) {
+        this.laserHeld = held;
+    }
+
+    public void stopLaser() {
+        this.laserHeld = false;
+        if (getLaserTicks() != -1) {
+            setLaserTicks(-1);
         }
+        setLaserLengths(0F, 0F);
     }
 
     public float getLaserLength(boolean left) {

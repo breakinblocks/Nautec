@@ -77,6 +77,11 @@ public class NetworkEvents {
                 SubmarineAbilityPayload::handle
         );
         registrar.playToServer(
+                SubmarineLaserPayload.TYPE,
+                SubmarineLaserPayload.STREAM_CODEC,
+                SubmarineLaserPayload::handle
+        );
+        registrar.playToServer(
                 ToggleWaveJetLightPayload.TYPE,
                 ToggleWaveJetLightPayload.STREAM_CODEC,
                 ToggleWaveJetLightPayload::handle

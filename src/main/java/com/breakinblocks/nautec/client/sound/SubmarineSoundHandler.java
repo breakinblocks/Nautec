@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.sound;
 
+import net.minecraft.world.level.Level;
+import net.minecraft.core.particles.ParticleTypes;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
@@ -24,6 +26,10 @@ import net.minecraft.util.RandomSource;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineSoundHandler {
+    private static final int IMPACT_SPARKS_HOT = 4;
+    private static final double SPARK_SPREAD = 0.16D;
+    private static final float MUZZLE_SPARK_CHANCE = 0.6F;
+    private static final float CRACKLE_CHANCE = 0.12F;
     private static final float LOW_POWER_FRACTION = 0.1F;
     private static final int BEEP_GAP = 5;
 
@@ -83,6 +89,7 @@ public final class SubmarineSoundHandler {
         private final SubmarineEntity submarine;
         private boolean deployed;
         private boolean laserActive;
+        private boolean laserEngaged;
         private boolean lowPower;
         private float health;
         private int beepIn = -1;
@@ -91,6 +98,7 @@ public final class SubmarineSoundHandler {
             this.submarine = submarine;
             this.deployed = submarine.isDeployed();
             this.laserActive = submarine.isLaserActive();
+            this.laserEngaged = submarine.isLaserEngaged();
             this.health = submarine.getHealth();
             this.lowPower = powerFraction() < LOW_POWER_FRACTION;
         }
@@ -106,6 +114,12 @@ public final class SubmarineSoundHandler {
                 play(this.submarine, deployedNow ? NTSounds.SUBMARINE_DEPLOY.get() : NTSounds.SUBMARINE_STOW.get(), 0.8F, 1F);
                 this.deployed = deployedNow;
             }
+
+            boolean engagedNow = this.submarine.isLaserEngaged();
+            if (engagedNow && !this.laserEngaged) {
+                Minecraft.getInstance().getSoundManager().play(new SubmarineLaserChargeSound(this.submarine));
+            }
+            this.laserEngaged = engagedNow;
 
             boolean laserNow = this.submarine.isLaserActive();
             if (laserNow && !this.laserActive) {
@@ -139,10 +153,9 @@ public final class SubmarineSoundHandler {
         }
 
         private void spawnLaserSparks() {
-            if (this.submarine.getRandom().nextInt(2) != 0) {
-                return;
-            }
-
+            Level level = this.submarine.level();
+            RandomSource random = this.submarine.getRandom();
+            float ramp = SubmarineEntity.laserRamp(this.submarine.getLaserFiringTicks(0F));
             Vec3 forward = this.submarine.getForward();
             for (int beam = 0; beam < 2; beam++) {
                 float length = this.submarine.getLaserLength(beam == 0);
@@ -152,8 +165,22 @@ public final class SubmarineSoundHandler {
 
                 Vec3 muzzle = SubmarineModules.laserMuzzle(this.submarine.position(), forward, beam == 0);
                 Vec3 impact = muzzle.add(forward.scale(length));
-                this.submarine.level().addParticle(NTParticles.LASER_SPARK.get(), impact.x, impact.y, impact.z,
-                        -forward.x * 0.08D, 0.02D, -forward.z * 0.08D);
+                int sparks = random.nextFloat() < 0.5F + 0.5F * ramp ? 1 + Math.round(ramp * IMPACT_SPARKS_HOT) : 0;
+                for (int i = 0; i < sparks; i++) {
+                    level.addParticle(NTParticles.LASER_SPARK.get(), impact.x, impact.y, impact.z,
+                            -forward.x * 0.08D + (random.nextDouble() - 0.5D) * SPARK_SPREAD * (1D + ramp),
+                            0.02D + random.nextDouble() * SPARK_SPREAD,
+                            -forward.z * 0.08D + (random.nextDouble() - 0.5D) * SPARK_SPREAD * (1D + ramp));
+                }
+                if (random.nextFloat() < ramp * MUZZLE_SPARK_CHANCE) {
+                    level.addParticle(random.nextBoolean() ? NTParticles.LASER_SPARK.get() : ParticleTypes.ELECTRIC_SPARK,
+                            muzzle.x, muzzle.y, muzzle.z,
+                            (random.nextDouble() - 0.5D) * SPARK_SPREAD, random.nextDouble() * SPARK_SPREAD * 0.5D, (random.nextDouble() - 0.5D) * SPARK_SPREAD);
+                }
+            }
+            if (random.nextFloat() < ramp * CRACKLE_CHANCE) {
+                level.playLocalSound(this.submarine.getX(), this.submarine.getY(), this.submarine.getZ(), NTSounds.ATLANTEAN_RIFLE_SPARK.get(),
+                        SoundSource.PLAYERS, 0.6F + 0.4F * ramp, 0.8F + random.nextFloat() * 0.3F, false);
             }
         }
     }

@@ -528,24 +528,77 @@ public final class SubmarineTests {
             helper.succeed();
         }));
 
-        r.add("submarine/laser_toggles_off_without_module", 40, helper -> helper.runAfterDelay(1, () -> {
+        r.add("submarine/laser_charges_then_fires_while_held", 80, helper -> helper.runAfterDelay(1, () -> {
             SubmarineEntity submarine = spawnSubmarine(helper);
             submarine.setPowerStored(NTConfig.submarinePowerCapacity);
             submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
-            LivingEntity rider = helper.spawn(EntityType.PIG, SUB_POS);
-            rider.startRiding(submarine);
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
 
-            SubmarineModules modules = submarine.getModules();
-            modules.activate(0, helper.makeMockPlayer(GameType.SURVIVAL));
-            helper.assertTrue(submarine.isLaserActive(), "firing the laser module should switch the beams on");
+            submarine.getModules().activate(0, pilot);
+            helper.assertFalse(submarine.isLaserEngaged(), "tapping the laser module should not fire it");
 
-            modules.activate(0, helper.makeMockPlayer(GameType.SURVIVAL));
-            helper.assertFalse(submarine.isLaserActive(), "firing it again should switch the beams off");
+            int charge = NTConfig.submarineLaserChargeTicks;
+            int full = submarine.getPowerStored();
+            submarine.setLaserHeld(true);
+            helper.runAfterDelay(Math.max(1, charge - 3), () -> {
+                helper.assertTrue(submarine.isLaserCharging(), "holding fire should charge the laser first");
+                helper.assertTrue(full - submarine.getPowerStored() < NTConfig.submarineLaserMinDrain,
+                        "charging should draw no laser power, drew " + (full - submarine.getPowerStored()));
+                helper.assertValueEqual(0F, submarine.getLaserLength(true), "no beam should show while charging");
+            });
+            helper.runAfterDelay(charge + 20, () -> {
+                helper.assertTrue(submarine.isLaserActive(), "the beams should fire once the charge is done");
+                helper.assertTrue(submarine.getPowerStored() < full, "firing should draw power");
+                helper.assertTrue(submarine.getLaserLength(true) > 0F && submarine.getLaserLength(false) > 0F, "both beams should be out");
+                submarine.setLaserHeld(false);
+            });
+            helper.runAfterDelay(charge + 22, () -> {
+                helper.assertFalse(submarine.isLaserEngaged(), "releasing fire should stop the laser");
+                helper.assertValueEqual(0F, submarine.getLaserLength(true), "the beams should be gone");
+                helper.succeed();
+            });
+        }));
 
-            modules.activate(0, helper.makeMockPlayer(GameType.SURVIVAL));
-            submarine.setModule(0, ItemStack.EMPTY);
-            helper.runAfterDelay(3, () -> {
-                helper.assertFalse(submarine.isLaserActive(), "pulling the module should switch the beams off");
+        r.add("submarine/laser_drain_ramps_up", 200, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+            submarine.setPowerStored(NTConfig.submarinePowerCapacity);
+            submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+            submarine.setLaserHeld(true);
+
+            int early = NTConfig.submarineLaserChargeTicks + 2;
+            int late = NTConfig.submarineLaserChargeTicks + NTConfig.submarineLaserRampTicks + 10;
+            int[] samples = new int[4];
+            helper.runAfterDelay(early, () -> samples[0] = submarine.getPowerStored());
+            helper.runAfterDelay(early + 1, () -> samples[1] = submarine.getPowerStored());
+            helper.runAfterDelay(late, () -> samples[2] = submarine.getPowerStored());
+            helper.runAfterDelay(late + 1, () -> {
+                samples[3] = submarine.getPowerStored();
+                int earlyDrain = samples[0] - samples[1];
+                int lateDrain = samples[2] - samples[3];
+                helper.assertTrue(earlyDrain < NTConfig.submarineLaserMaxDrain / 2, "the laser should start near its minimum draw, drew " + earlyDrain);
+                helper.assertTrue(lateDrain >= NTConfig.submarineLaserMaxDrain && lateDrain < NTConfig.submarineLaserMaxDrain + 20,
+                        "a fully ramped laser should draw its maximum each tick, drew " + lateDrain);
+                helper.succeed();
+            });
+        }));
+
+        r.add("submarine/laser_stops_without_module", 40, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+            submarine.setPowerStored(NTConfig.submarinePowerCapacity);
+            submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+            submarine.setLaserHeld(true);
+
+            helper.runAfterDelay(NTConfig.submarineLaserChargeTicks + 5, () -> {
+                helper.assertTrue(submarine.isLaserActive(), "the laser should be firing");
+                submarine.setModule(0, ItemStack.EMPTY);
+            });
+            helper.runAfterDelay(NTConfig.submarineLaserChargeTicks + 8, () -> {
+                helper.assertFalse(submarine.isLaserEngaged(), "pulling the module should stop the laser");
                 helper.succeed();
             });
         }));

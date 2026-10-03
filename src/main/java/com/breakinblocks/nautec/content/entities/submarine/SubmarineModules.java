@@ -50,7 +50,7 @@ public class SubmarineModules {
     public static final int TELEPORT_CHARGE_TICKS = 50;
 
     private static final int SOLAR_INTERVAL = 100;
-    private static final int LASER_DAMAGE_INTERVAL = 10;
+    private static final int LASER_DAMAGE_INTERVAL = 5;
     private static final double MUZZLE_SIDE = 1.0D;
     private static final double MUZZLE_FORWARD = 2.0D;
     private static final double MUZZLE_UP = 0.3D;
@@ -117,7 +117,7 @@ public class SubmarineModules {
         teleportRefund = 0;
         teleportTarget = null;
         submarine.setCharging(false);
-        submarine.setLaserActive(false);
+        submarine.stopLaser();
         submarine.setStealthed(stealthTicks > 0);
         updateSpeedMultiplier();
     }
@@ -182,8 +182,7 @@ public class SubmarineModules {
             return;
         }
 
-        if (type == SubmarineModuleType.IMPULSE_LASER && this.submarine.isLaserActive()) {
-            this.submarine.setLaserActive(false);
+        if (type == SubmarineModuleType.IMPULSE_LASER) {
             return;
         }
 
@@ -257,10 +256,7 @@ public class SubmarineModules {
                 shieldDischarge(pilot);
                 yield true;
             }
-            case IMPULSE_LASER -> {
-                this.submarine.setLaserActive(true);
-                yield true;
-            }
+            case IMPULSE_LASER -> false;
             case TELEPORT -> beginTeleport(slot, pilot);
             case SOLAR, ARMOR, FLIGHT -> false;
         };
@@ -352,34 +348,42 @@ public class SubmarineModules {
     }
 
     private void laserTick() {
-        if (!this.submarine.isLaserActive()) {
+        if (!this.submarine.isLaserHeld()) {
+            if (this.submarine.isLaserEngaged()) {
+                this.submarine.stopLaser();
+            }
             return;
         }
 
-        if (!this.submarine.hasModule(SubmarineModuleType.IMPULSE_LASER) || this.submarine.getPassengers().isEmpty()) {
-            this.submarine.setLaserActive(false);
+        if (!this.submarine.hasModule(SubmarineModuleType.IMPULSE_LASER) || !(this.submarine.getControllingPassenger() instanceof Player pilot)) {
+            this.submarine.stopLaser();
+            return;
+        }
+
+        int ticks = this.submarine.getLaserTicks() + 1;
+        int firing = ticks - NTConfig.submarineLaserChargeTicks;
+        float ramp = SubmarineEntity.laserRamp(firing);
+        if (firing >= 0 && !drainForLaser(pilot, Math.round(Mth.lerp(ramp, NTConfig.submarineLaserMinDrain, NTConfig.submarineLaserMaxDrain)))) {
+            this.submarine.stopLaser();
+            refuse(pilot, "no_power");
+            return;
+        }
+        this.submarine.setLaserTicks(ticks);
+        if (firing < 0) {
             return;
         }
 
         Vec3 forward = this.submarine.getForward();
-        boolean damageTick = this.submarine.tickCount % LASER_DAMAGE_INTERVAL == 0;
-
-        if (damageTick && !drainForLaser()) {
-            this.submarine.setLaserActive(false);
-            return;
-        }
-
-        float leftLength = fireBeam(forward, true, damageTick);
-        float rightLength = fireBeam(forward, false, damageTick);
+        boolean damageTick = firing % LASER_DAMAGE_INTERVAL == 0;
+        float leftLength = fireBeam(forward, true, damageTick, ramp);
+        float rightLength = fireBeam(forward, false, damageTick, ramp);
         this.submarine.setLaserLengths(leftLength, rightLength);
     }
 
-    private boolean drainForLaser() {
-        if (this.submarine.getControllingPassenger() instanceof Player pilot && pilot.gameMode().isCreative()) {
+    private boolean drainForLaser(Player pilot, int cost) {
+        if (pilot.gameMode().isCreative()) {
             return true;
         }
-
-        int cost = NTConfig.submarineLaserPowerCost;
         if (this.submarine.getPowerStored() < cost) {
             return false;
         }
@@ -395,7 +399,7 @@ public class SubmarineModules {
                 .add(0D, MUZZLE_UP, 0D);
     }
 
-    private float fireBeam(Vec3 forward, boolean left, boolean damageTick) {
+    private float fireBeam(Vec3 forward, boolean left, boolean damageTick, float ramp) {
         Vec3 origin = laserMuzzle(this.submarine.position(), forward, left);
         double range = NTConfig.submarineLaserRange;
         Vec3 end = origin.add(forward.scale(range));
@@ -412,8 +416,8 @@ public class SubmarineModules {
 
         Vec3 hit = entityHit != null ? entityHit.getLocation() : end;
         if (damageTick && entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
-            float damage = (float) (NTConfig.submarineLaserDamage
-                    + target.getMaxHealth() * NTConfig.submarineLaserHealthPercent);
+            float damage = (float) (Mth.lerp(ramp, NTConfig.submarineLaserMinDamage, NTConfig.submarineLaserMaxDamage)
+                    + target.getMaxHealth() * NTConfig.submarineLaserMaxHealthPercent * Mth.lerp(ramp, 1F / 3F, 1F));
             Player pilot = this.submarine.getControllingPassenger() instanceof Player player ? player : null;
             target.hurt(this.submarine.damageSources().indirectMagic(this.submarine, pilot), damage);
         }

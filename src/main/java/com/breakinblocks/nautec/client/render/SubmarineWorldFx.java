@@ -35,7 +35,7 @@ public final class SubmarineWorldFx {
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
 
         for (Entity entity : level.entitiesForRendering()) {
-            if (entity instanceof SubmarineEntity submarine && submarine.isLaserActive()) {
+            if (entity instanceof SubmarineEntity submarine && submarine.isLaserEngaged()) {
                 SubmarineLaserRenderer.render(submarine, poseStack, collector, cameraPos, partialTick);
             }
         }

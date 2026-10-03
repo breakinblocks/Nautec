@@ -50,7 +50,7 @@ public enum SubmarineModuleType implements StringRepresentable {
             case STEALTH -> NTConfig.submarineStealthPowerCost;
             case SONAR -> NTConfig.submarineSonarPowerCost;
             case SHIELD -> NTConfig.submarineShieldPowerCost;
-            case IMPULSE_LASER -> NTConfig.submarineLaserPowerCost;
+            case IMPULSE_LASER -> NTConfig.submarineLaserMinDrain;
             case TELEPORT -> NTConfig.submarineTeleportPowerCost;
             case SOLAR, ARMOR, FLIGHT -> 0;
         };

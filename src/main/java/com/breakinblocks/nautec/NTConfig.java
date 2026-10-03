@@ -546,18 +546,30 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue SUBMARINE_SHIELD_POWER_PER_HEART = BUILDER
             .comment("Power an installed Shield Module burns to absorb one heart of incoming damage")
             .defineInRange("submarineShieldPowerPerHeart", 10_000, 1, Integer.MAX_VALUE);
-    private static final ModConfigSpec.IntValue SUBMARINE_LASER_POWER = BUILDER
-            .comment("Power drawn by each Impulse Laser damage cycle")
-            .defineInRange("submarineLaserPowerCost", 10_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_LASER_CHARGE_TICKS = BUILDER
+            .comment("Ticks the Impulse Laser charges after the fire key is pressed before its beams appear")
+            .defineInRange("submarineLaserChargeTicks", 10, 0, 200);
+    private static final ModConfigSpec.IntValue SUBMARINE_LASER_RAMP_TICKS = BUILDER
+            .comment("Ticks of continuous fire the Impulse Laser takes to reach full width, damage and power draw")
+            .defineInRange("submarineLaserRampTicks", 100, 1, 2400);
+    private static final ModConfigSpec.IntValue SUBMARINE_LASER_MIN_DRAIN = BUILDER
+            .comment("Power the Impulse Laser draws each tick when it starts firing")
+            .defineInRange("submarineLaserMinDrain", 400, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue SUBMARINE_LASER_MAX_DRAIN = BUILDER
+            .comment("Power the Impulse Laser draws each tick once fully ramped")
+            .defineInRange("submarineLaserMaxDrain", 1_400, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_RANGE = BUILDER
             .comment("Range in blocks of the Impulse Laser beams")
             .defineInRange("submarineLaserRange", 64.0, 1.0, 128.0);
-    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_DAMAGE = BUILDER
-            .comment("Flat damage each Impulse Laser cycle deals")
-            .defineInRange("submarineLaserDamage", 10.0, 0.0, 1024.0);
-    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_HEALTH_PERCENT = BUILDER
-            .comment("Extra Impulse Laser damage per cycle, as a fraction of the target's maximum health")
-            .defineInRange("submarineLaserHealthPercent", 0.025, 0.0, 1.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_MIN_DAMAGE = BUILDER
+            .comment("Damage each Impulse Laser beam deals per hit when it starts firing. A beam hits every 5 ticks")
+            .defineInRange("submarineLaserMinDamage", 2.0, 0.0, 1024.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_MAX_DAMAGE = BUILDER
+            .comment("Damage each Impulse Laser beam deals per hit once fully ramped")
+            .defineInRange("submarineLaserMaxDamage", 6.0, 0.0, 1024.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_LASER_MAX_HEALTH_PERCENT = BUILDER
+            .comment("Extra Impulse Laser damage per hit once fully ramped, as a fraction of the target's maximum health. It starts at a third of this")
+            .defineInRange("submarineLaserMaxHealthPercent", 0.0125, 0.0, 1.0);
     private static final ModConfigSpec.IntValue SUBMARINE_TELEPORT_POWER = BUILDER
             .comment("Power drawn by one Teleport Module jump")
             .defineInRange("submarineTeleportPowerCost", 200_000, 0, Integer.MAX_VALUE);
@@ -813,10 +825,14 @@ public final class NTConfig {
     public static double submarineShieldDamage = 10.0;
     public static double submarineShieldRadius = 5.0;
     public static int submarineShieldPowerPerHeart = 10_000;
-    public static int submarineLaserPowerCost = 10_000;
+    public static int submarineLaserChargeTicks = 10;
+    public static int submarineLaserRampTicks = 100;
+    public static int submarineLaserMinDrain = 400;
+    public static int submarineLaserMaxDrain = 1_400;
     public static double submarineLaserRange = 64.0;
-    public static double submarineLaserDamage = 10.0;
-    public static double submarineLaserHealthPercent = 0.025;
+    public static double submarineLaserMinDamage = 2.0;
+    public static double submarineLaserMaxDamage = 6.0;
+    public static double submarineLaserMaxHealthPercent = 0.0125;
     public static int submarineTeleportPowerCost = 200_000;
     public static double submarineTeleportMinPowerPercent = 0.20;
     public static int submarineTeleportCooldownTicks = 600;
@@ -1023,10 +1039,14 @@ public final class NTConfig {
         submarineShieldDamage = value(SUBMARINE_SHIELD_DAMAGE);
         submarineShieldRadius = value(SUBMARINE_SHIELD_RADIUS);
         submarineShieldPowerPerHeart = value(SUBMARINE_SHIELD_POWER_PER_HEART);
-        submarineLaserPowerCost = value(SUBMARINE_LASER_POWER);
+        submarineLaserChargeTicks = value(SUBMARINE_LASER_CHARGE_TICKS);
+        submarineLaserRampTicks = value(SUBMARINE_LASER_RAMP_TICKS);
+        submarineLaserMinDrain = value(SUBMARINE_LASER_MIN_DRAIN);
+        submarineLaserMaxDrain = value(SUBMARINE_LASER_MAX_DRAIN);
         submarineLaserRange = value(SUBMARINE_LASER_RANGE);
-        submarineLaserDamage = value(SUBMARINE_LASER_DAMAGE);
-        submarineLaserHealthPercent = value(SUBMARINE_LASER_HEALTH_PERCENT);
+        submarineLaserMinDamage = value(SUBMARINE_LASER_MIN_DAMAGE);
+        submarineLaserMaxDamage = value(SUBMARINE_LASER_MAX_DAMAGE);
+        submarineLaserMaxHealthPercent = value(SUBMARINE_LASER_MAX_HEALTH_PERCENT);
         submarineTeleportPowerCost = value(SUBMARINE_TELEPORT_POWER);
         submarineTeleportMinPowerPercent = value(SUBMARINE_TELEPORT_MIN_POWER);
         submarineTeleportCooldownTicks = value(SUBMARINE_TELEPORT_COOLDOWN);

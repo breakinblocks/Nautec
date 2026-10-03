@@ -5,7 +5,9 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarState;
 import com.breakinblocks.nautec.client.screen.SubmarineHudPositionScreen;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
 import com.breakinblocks.nautec.network.SubmarineAbilityPayload;
+import com.breakinblocks.nautec.network.SubmarineLaserPayload;
 import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -28,6 +30,9 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineClientEvents {
+    private static int laserSubmarine = -1;
+    private static boolean laserHeld;
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -44,6 +49,8 @@ public final class SubmarineClientEvents {
 
         if (!(player.getControlledVehicle() instanceof SubmarineEntity submarine)) {
             SubmarineAbilityBarState.clear();
+            laserSubmarine = -1;
+            laserHeld = false;
             return;
         }
 
@@ -52,6 +59,10 @@ public final class SubmarineClientEvents {
         submarine.setDescending(NTKeybinds.SUBMARINE_DESCEND_KEYBIND.get().isDown());
 
         SubmarineAbilityBarState.follow(submarine.getId());
+
+        boolean laserSelected = laserSelected(submarine);
+        sendLaserHeld(submarine, laserSelected && minecraft.screen == null
+                && (minecraft.options.keyAttack.isDown() || NTKeybinds.SUBMARINE_ABILITY_KEYBIND.get().isDown()));
 
         if (minecraft.screen != null) {
             return;
@@ -68,8 +79,23 @@ public final class SubmarineClientEvents {
         drain(minecraft.options.keySwapOffhand);
 
         while (NTKeybinds.SUBMARINE_ABILITY_KEYBIND.get().consumeClick()) {
-            fireSelected(submarine);
+            if (!laserSelected(submarine)) {
+                fireSelected(submarine);
+            }
         }
+    }
+
+    private static boolean laserSelected(SubmarineEntity submarine) {
+        return submarine.getModuleType(SubmarineAbilityBarState.selected()) == SubmarineModuleType.IMPULSE_LASER;
+    }
+
+    private static void sendLaserHeld(SubmarineEntity submarine, boolean held) {
+        if (submarine.getId() == laserSubmarine && held == laserHeld) {
+            return;
+        }
+        laserSubmarine = submarine.getId();
+        laserHeld = held;
+        ClientPacketDistributor.sendToServer(new SubmarineLaserPayload(submarine.getId(), held));
     }
 
     private static void drain(KeyMapping mapping) {
@@ -107,7 +133,9 @@ public final class SubmarineClientEvents {
         if (event.isAttack()) {
             event.setSwingHand(false);
             event.setCanceled(true);
-            fireSelected(submarine);
+            if (!laserSelected(submarine)) {
+                fireSelected(submarine);
+            }
         }
     }
 
