@@ -1,5 +1,11 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import com.breakinblocks.nautec.registries.NTFluids;
 import java.util.Optional;
 import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
@@ -116,10 +122,37 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     };
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[0], SlotRoles.range(0, SLOTS));
+    private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[0], new int[]{0});
 
     public ConfinedSpawnerBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.CONFINED_SPAWNER.get(), pos, state);
         addItemHandler(SLOTS, (slot, stack) -> false);
+        addFluidTank(NTConfig.confinedSpawnerXpCapacity);
+    }
+
+    public static Fluid experienceFluid() {
+        for (String id : NTConfig.confinedSpawnerXpFluids) {
+            Identifier key = Identifier.tryParse(id);
+            if (key != null) {
+                Optional<Fluid> fluid = BuiltInRegistries.FLUID.getOptional(key);
+                if (fluid.isPresent() && fluid.get() != Fluids.EMPTY) {
+                    return fluid.get();
+                }
+            }
+        }
+        return NTFluids.EXPERIENCE_ALGAE.getStillFluid();
+    }
+
+    private void storeExperience(int points) {
+        int amount = points * NTConfig.confinedSpawnerXpRatio;
+        if (amount > 0) {
+            getFluidTank().fill(new FluidStack(experienceFluid(), amount));
+        }
+    }
+
+    @Override
+    public SlotRoles fluidRoles() {
+        return FLUID_ROLES;
     }
 
     @Override
@@ -249,7 +282,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
             for (int i = 0; i < settings.spawnCount(); i++) {
                 SpawnData data = settings.pick(random);
                 if (data != null) {
-                    simulator.roll(serverLevel, worldPosition, data, this::store);
+                    simulator.roll(serverLevel, worldPosition, data, this::store, this::storeExperience);
                 }
             }
         } finally {

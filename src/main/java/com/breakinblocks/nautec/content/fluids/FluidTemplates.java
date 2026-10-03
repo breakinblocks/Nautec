@@ -17,6 +17,9 @@ public enum FluidTemplates implements FluidTemplate {
     ETCHING_ACID(modFluidTexture("etching_acid"),
             modFluidTexture("etching_acid"),
             Identifier.withDefaultNamespace("block/water_overlay")),
+    EXPERIENCE_ALGAE(modFluidTexture("experience_algae"),
+            modFluidTexture("experience_algae"),
+            Identifier.withDefaultNamespace("block/water_overlay")),
     WATER(Identifier.parse("block/water_still"),
             Identifier.parse("block/water_flow"),
             Identifier.withDefaultNamespace("block/water_overlay"));

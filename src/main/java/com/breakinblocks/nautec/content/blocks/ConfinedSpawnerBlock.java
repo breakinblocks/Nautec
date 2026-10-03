@@ -1,5 +1,14 @@
 package com.breakinblocks.nautec.content.blocks;
 
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraft.world.InteractionHand;
+import it.unimi.dsi.fastutil.ints.IntSets;
+import com.breakinblocks.nautec.capabilities.fluid.TankList;
+import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
@@ -61,6 +70,24 @@ public class ConfinedSpawnerBlock extends LaserBlock {
             }
         }
         return drops;
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+                                          InteractionHand hand, BlockHitResult hitResult) {
+        if (!(level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined) || confined.getFluidTank().getFluidAmount() <= 0) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        }
+        ResourceHandler<FluidResource> drainOnly = new RoleResourceHandler<>(new TankList(confined.fluidTanks()), IntSets.EMPTY_SET,
+                IntSets.singleton(0), FluidResource.EMPTY);
+        if (level.isClientSide()) {
+            return stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, hand)) != null
+                    ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+        }
+        if (FluidUtil.interactWithFluidHandler(player, hand, pos, drainOnly, null)) {
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

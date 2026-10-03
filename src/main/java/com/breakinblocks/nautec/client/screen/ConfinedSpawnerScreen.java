@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.screen;
 
+import net.neoforged.neoforge.fluids.FluidStack;
+import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
@@ -59,7 +61,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     private static final int MODE_BUTTON_HEIGHT = 14;
     private static final int FILTER_GRID_Y = 38;
 
-    private static final int TAB_OUT = 22;
+    private static final int TAB_OUT = 30;
     private static final int TAB_OVERLAP = 4;
     private static final int TAB_Y = 18;
     private static final int TAB_HEIGHT = 92;
@@ -67,6 +69,10 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     private static final int POWER_BAR_WIDTH = 7;
     private static final int CYCLE_BAR_X = 14;
     private static final int CYCLE_BAR_WIDTH = 4;
+    private static final int XP_BAR_X = 21;
+    private static final int XP_BAR_WIDTH = 5;
+    private static final int XP_FILL = 0xFF8FE85B;
+    private static final int XP_SHINE = 0xFFD7F7A0;
     private static final int BAR_TOP = 8;
     private static final int BAR_HEIGHT = 76;
 
@@ -224,6 +230,16 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         if (cycle > 0) {
             graphics.fill(cycleX, barBottom - cycle, cycleX + CYCLE_BAR_WIDTH, barBottom, CYCLE_FILL);
         }
+
+        int xpX = x + XP_BAR_X;
+        graphics.fill(xpX - 1, barTop - 1, xpX + XP_BAR_WIDTH + 1, barBottom + 1, OUTLINE);
+        graphics.fill(xpX, barTop, xpX + XP_BAR_WIDTH, barBottom, SLOT_EDGE);
+        FluidTank tank = this.menu.getBlockEntity().getFluidTank();
+        int xp = Math.round(BAR_HEIGHT * Math.min(1.0F, tank.getFluidAmount() / (float) Math.max(1, tank.getCapacity())));
+        if (xp > 0) {
+            graphics.fill(xpX, barBottom - xp, xpX + XP_BAR_WIDTH, barBottom, XP_FILL);
+            graphics.fill(xpX + 1, barBottom - xp, xpX + 2, barBottom, XP_SHINE);
+        }
     }
 
     @Override
@@ -281,6 +297,16 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
             lines.add(Component.translatable("nautec.confined_spawner.power", this.menu.getBufferedPower(), NTConfig.confinedSpawnerPowerBuffer));
             lines.add(Component.translatable("nautec.confined_spawner.power_use", NTConfig.confinedSpawnerPowerPerTick).withStyle(ChatFormatting.GRAY));
             lines.add(Component.translatable("nautec.confined_spawner.power_source").withStyle(ChatFormatting.DARK_GRAY));
+            return lines;
+        }
+        if (inside(mouseX, mouseY, tabX() + XP_BAR_X - 1, barTop - 1, XP_BAR_WIDTH + 2, BAR_HEIGHT + 2)) {
+            FluidTank tank = this.menu.getBlockEntity().getFluidTank();
+            Component fluid = tank.getFluid().isEmpty()
+                    ? new FluidStack(ConfinedSpawnerBlockEntity.experienceFluid(), 1).getHoverName()
+                    : tank.getFluid().getHoverName();
+            lines.add(Component.translatable("nautec.confined_spawner.xp", fluid, tank.getFluidAmount(), tank.getCapacity()));
+            lines.add(Component.translatable("nautec.confined_spawner.xp.desc", NTConfig.confinedSpawnerXpRatio).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("nautec.confined_spawner.xp.drain").withStyle(ChatFormatting.DARK_GRAY));
             return lines;
         }
         if (inside(mouseX, mouseY, tabX() + CYCLE_BAR_X - 1, barTop - 1, CYCLE_BAR_WIDTH + 2, BAR_HEIGHT + 2)) {

@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.fluids.FluidStack;
+import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
@@ -156,6 +159,45 @@ public final class ConfinedSpawnerTests {
                 helper.assertTrue(helper.getLevel().getEntitiesOfClass(Chicken.class,
                         new AABB(helper.absolutePos(SPAWNER)).inflate(6)).isEmpty(), "no chicken is ever spawned into the world");
             });
+        });
+
+        r.add("confined_spawner/kills_fill_the_experience_tank", 200, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
+            power(helper);
+            helper.succeedWhen(() -> {
+                FluidStack stored = confined.getFluidTank().getFluid();
+                helper.assertTrue(stored.getAmount() > 0, "simulated kills should make liquid experience");
+                helper.assertTrue(stored.is(NTFluids.EXPERIENCE_ALGAE.getStillFluid()), "the default experience fluid is Experience Algae");
+                helper.assertValueEqual(0, stored.getAmount() % NTConfig.confinedSpawnerXpRatio, "whole experience points only");
+            });
+        });
+
+        r.add("confined_spawner/experience_fluid_follows_the_config_order", 20, helper -> {
+            List<String> old = NTConfig.confinedSpawnerXpFluids;
+            try {
+                NTConfig.confinedSpawnerXpFluids = List.of("missingmod:experience", "nautec:saltwater", "nautec:experience_algae");
+                helper.assertTrue(ConfinedSpawnerBlockEntity.experienceFluid() == NTFluids.SALT_WATER.getStillFluid(), "the first fluid that exists wins");
+                NTConfig.confinedSpawnerXpFluids = List.of("missingmod:experience", "not a valid id");
+                helper.assertTrue(ConfinedSpawnerBlockEntity.experienceFluid() == NTFluids.EXPERIENCE_ALGAE.getStillFluid(), "Experience Algae is the fallback");
+            } finally {
+                NTConfig.confinedSpawnerXpFluids = old;
+            }
+            helper.succeed();
+        });
+
+        r.add("confined_spawner/experience_tank_drains_but_never_fills", 40, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
+            confined.getFluidTank().setFluid(new FluidStack(NTFluids.EXPERIENCE_ALGAE.getStillFluid(), 500));
+            ResourceHandler<FluidResource> side = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, helper.absolutePos(SPAWNER), Direction.NORTH);
+            helper.assertTrue(side != null, "the tank should be reachable by pipes");
+            FluidResource algae = FluidResource.of(NTFluids.EXPERIENCE_ALGAE.getStillFluid());
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(0, side.insert(0, algae, 100, tx), "pipes cannot fill it");
+                helper.assertValueEqual(300, side.extract(0, algae, 300, tx), "pipes can drain it");
+                tx.commit();
+            }
+            helper.assertValueEqual(200, confined.getFluidTank().getFluidAmount(), "left in the tank");
+            helper.succeed();
         });
 
         r.add("confined_spawner/no_power_no_drops", 80, helper -> {

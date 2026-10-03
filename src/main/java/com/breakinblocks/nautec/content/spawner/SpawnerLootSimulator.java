@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.spawner;
 
+import java.util.function.IntConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -30,12 +31,17 @@ public final class SpawnerLootSimulator {
         mobs.clear();
     }
 
-    public void roll(ServerLevel level, BlockPos pos, SpawnData data, Consumer<ItemStack> output) {
+    public void roll(ServerLevel level, BlockPos pos, SpawnData data, Consumer<ItemStack> output, IntConsumer experience) {
         Optional<LivingEntity> mob = mobs.computeIfAbsent(data, key -> Optional.ofNullable(create(level, pos, key)));
         if (mob.isEmpty()) {
             return;
         }
         LivingEntity living = mob.get();
+        FakePlayer killer = FakePlayerFactory.getMinecraft(level);
+        int xp = living.getExperienceReward(level, killer);
+        if (xp > 0) {
+            experience.accept(xp);
+        }
         Optional<ResourceKey<LootTable>> key = living.getLootTable();
         if (key.isEmpty()) {
             return;
@@ -44,7 +50,6 @@ public final class SpawnerLootSimulator {
         if (table == LootTable.EMPTY) {
             return;
         }
-        FakePlayer killer = FakePlayerFactory.getMinecraft(level);
         DamageSource source = level.damageSources().playerAttack(killer);
         LootParams params = new LootParams.Builder(level)
                 .withParameter(LootContextParams.THIS_ENTITY, living)

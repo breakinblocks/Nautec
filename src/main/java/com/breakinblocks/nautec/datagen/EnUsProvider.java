@@ -305,6 +305,10 @@ public class EnUsProvider extends LanguageProvider {
         addFluidType(NTFluids.SALT_WATER.getFluidType(), "Salt Water");
         addFluidType(NTFluids.EAS.getFluidType(), "Electrolyte Algae Serum");
         addFluidType(NTFluids.ETCHING_ACID.getFluidType(), "Etching Acid");
+        addFluidType(NTFluids.EXPERIENCE_ALGAE.getFluidType(), "Experience Algae");
+        add("nautec.confined_spawner.xp", "%s: %s / %s mB");
+        add("nautec.confined_spawner.xp.desc", "Each experience point the mobs would drop becomes %s mB. Experience made while the tank is full is lost.");
+        add("nautec.confined_spawner.xp.drain", "Pipe it out, or right-click the spawner with an empty bucket.");
         addFluidType(NTFluids.OIL.getFluidType(), "Oil");
 
         addItem(PRISM_MONOCLE, "Prism Monocle");
@@ -348,6 +352,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem("diving_boots", "Diving Boots");
         addItem("aquarine_steel_wrench", "Aquarine Steel Wrench");
         addItem("etching_acid_bucket", "Etching Acid Bucket");
+        addItem("experience_algae_bucket", "Experience Algae Bucket");
         addItem("aquarine_steel_sword", "Aquarine Steel Sword");
         addItem("aquarine_steel_pickaxe", "Aquarine Steel Pickaxe");
         addItem("aquarine_steel_axe", "Aquarine Steel Axe");
@@ -578,6 +583,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock("saltwater_fluid", "Salt Water");
         addBlock("eas_fluid", "Electrolyte Algae Serum");
         addBlock("etching_acid_fluid", "Etching Acid");
+        addBlock("experience_algae_fluid", "Experience Algae");
 
         add("nautec.air_bottle.fill","Right click a glass bottle on a bubble column to fill with pressurized air");
         add("nautec.air_bottle.craft_msg","Either Craft with Chestplate or drink while wearing chestplate to increase oxygen level");

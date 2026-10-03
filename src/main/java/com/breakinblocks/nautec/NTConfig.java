@@ -212,6 +212,20 @@ public final class NTConfig {
             .comment("The most AP a Confined Spawner can hold in its buffer")
             .defineInRange("confinedSpawnerPowerBuffer", 500, 1, 30000);
 
+    private static final ModConfigSpec.IntValue CONFINED_SPAWNER_XP_CAPACITY = BUILDER
+            .comment("The liquid experience a Confined Spawner's tank holds, in mb. Experience made while it is full is lost")
+            .defineInRange("confinedSpawnerXpCapacity", 16_000, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue CONFINED_SPAWNER_XP_RATIO = BUILDER
+            .comment("How many mb of liquid experience a Confined Spawner makes for each experience point. 20 matches most mods")
+            .defineInRange("confinedSpawnerXpRatio", 20, 0, 1000);
+
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> CONFINED_SPAWNER_XP_FLUIDS = BUILDER
+            .comment("The liquid experience a Confined Spawner makes, as fluid ids in order of preference. The first one that exists is used,",
+                    "so another mod's liquid experience can come first, for example \"create_enchantment_industry:experience\".",
+                    "Experience Algae (nautec:experience_algae) is used when none of them exist")
+            .defineList("confinedSpawnerXpFluids", List.of("nautec:experience_algae"), () -> "nautec:experience_algae", entry -> entry instanceof String);
+
     private static final ModConfigSpec.IntValue RESONANCE_PYLON_THROUGHPUT = BUILDER
             .comment("The most FE per tick a Resonance Pylon sends or receives over its network")
             .defineInRange("resonancePylonThroughput", 20_000, 1, Integer.MAX_VALUE / 2);
@@ -784,6 +798,9 @@ public final class NTConfig {
     public static double crystalGrowthPurity = 2.0;
     public static int confinedSpawnerPowerPerTick = 50;
     public static int confinedSpawnerPowerBuffer = 500;
+    public static int confinedSpawnerXpCapacity = 16_000;
+    public static int confinedSpawnerXpRatio = 20;
+    public static List<String> confinedSpawnerXpFluids = List.of("nautec:experience_algae");
     public static int resonancePylonThroughput = 20_000;
     public static int resonancePylonBuffer = 200_000;
     public static int abyssalPylonThroughput = 50_000;
@@ -1020,6 +1037,9 @@ public final class NTConfig {
         crystalGrowthPurity = value(CRYSTAL_GROWTH_PURITY);
         confinedSpawnerPowerPerTick = value(CONFINED_SPAWNER_POWER_PER_TICK);
         confinedSpawnerPowerBuffer = value(CONFINED_SPAWNER_POWER_BUFFER);
+        confinedSpawnerXpCapacity = value(CONFINED_SPAWNER_XP_CAPACITY);
+        confinedSpawnerXpRatio = value(CONFINED_SPAWNER_XP_RATIO);
+        confinedSpawnerXpFluids = List.copyOf(value(CONFINED_SPAWNER_XP_FLUIDS));
         resonancePylonThroughput = value(RESONANCE_PYLON_THROUGHPUT);
         resonancePylonBuffer = value(RESONANCE_PYLON_BUFFER);
         abyssalPylonThroughput = value(ABYSSAL_PYLON_THROUGHPUT);

@@ -38,9 +38,17 @@ When every slot is taken, the spawner pauses and keeps its buffer full until a s
 
 Hoppers and pipes pull drops out, from any face by default ([Side Configuration](nautec:getting_started/utilities.md)). Only the spawner puts items in.
 
+## <Color id="gold">Experience</Color>
+
+The spawner also keeps the experience its mobs would drop, as liquid experience in a tank of 16,000 mB. Each experience point becomes 20 mB, the rate most mods use for liquid experience. Once the tank is full, new experience is lost; the spawner keeps running.
+
+By default the liquid is Experience Algae, a glowing green fluid. If your pack has another mod's liquid experience, list its fluid id first in `confinedSpawnerXpFluids` in `config/nautec-common.toml` and the spawner makes that instead. Experience Algae is in the `c:experience` fluid tag, so mods that accept liquid experience by tag take it too.
+
+Pipe the experience out of any face (fluids follow [Side Configuration](nautec:getting_started/utilities.md) separately from items), or right-click the spawner with an empty bucket. Pipes can only drain the tank. The third bar on the screen's left tab shows how full it is. Breaking the spawner keeps the experience in the dropped item.
+
 ## <Color id="gold">The Screen</Color>
 
-Right-click the spawner to see its storage and take items out. The bar in the corner shows stored AP, with the progress of the current cycle underneath. The status beside the title says why it is stopped when it is not running.
+Right-click the spawner to see its storage and take items out. The tab on the left has three bars: stored AP, the progress of the current cycle, and liquid experience. Hover over a bar for its numbers. The status beside the title says why it is stopped when it is not running.
 
 ## <Color id="gold">Filtering Drops</Color>
 
