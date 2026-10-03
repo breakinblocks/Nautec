@@ -2,7 +2,7 @@
 navigation:
   title: Eye of the Sea
   icon: nautec:eye_of_the_sea
-  position: 14
+  position: 15
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:eye_of_the_sea

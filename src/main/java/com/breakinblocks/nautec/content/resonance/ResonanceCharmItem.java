@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import net.neoforged.neoforge.network.PacketDistributor;
+import com.breakinblocks.nautec.network.OpenCharmScreenPayload;
+import top.theillusivec4.curios.api.SlotResult;
+import java.util.function.IntUnaryOperator;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.api.items.ICurioItem;
@@ -52,7 +56,7 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        if (!(level.getBlockEntity(context.getClickedPos()) instanceof ResonancePylonBlockEntity pylon)) {
+        if (!(level.getBlockEntity(context.getClickedPos()) instanceof ResonanceTunable pylon)) {
             return InteractionResult.PASS;
         }
         if (level.isClientSide()) {
@@ -86,42 +90,117 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
             }
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new OpenCharmScreenPayload(hand.ordinal(), info(serverPlayer, charm)));
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public void curioTick(ItemStack stack, SlotContext slotContext) {
-        if (slotContext.entity() instanceof ServerPlayer player && player.tickCount % INTERVAL == 0 && charge(player, stack) > 0) {
-            NTCriteriaTriggers.CHARM_CHARGED.get().trigger(player);
+        ResonanceBinding binding = stack.get(NTDataComponents.RESONANCE_BINDING.get());
+        if (binding != null && slotContext.entity() instanceof ServerPlayer player) {
+            SatelliteGrid.charm(player, binding.network());
         }
     }
 
-    public static int charge(ServerPlayer player, ItemStack charm) {
+    public static OpenCharmScreenPayload.Info info(ServerPlayer player, ItemStack charm) {
+        ResonanceBinding binding = charm.get(NTDataComponents.RESONANCE_BINDING.get());
+        int priority = priority(charm);
+        if (binding == null) {
+            return new OpenCharmScreenPayload.Info(false, "", "", false, 0, 0, 0, 0, priority);
+        }
+        ResonanceNetwork network = ResonanceNetworks.get(player.level().getServer()).get(binding.network());
+        if (network == null) {
+            return new OpenCharmScreenPayload.Info(true, binding.name(), "?", false, 0, 0, 0, 0, priority);
+        }
+        if (!ResonanceNetworks.canUse(player, network)) {
+            return new OpenCharmScreenPayload.Info(true, network.name(), network.ownerName(), false, 0, 0, 0, 0, priority);
+        }
+        int uplinks = 0;
+        int downlinks = 0;
+        long stored = 0;
+        for (SatelliteArrayBlockEntity array : SatelliteGrid.members(network.id())) {
+            if (array.isRemoved() || !array.dimension().equals(player.level().dimension())) {
+                continue;
+            }
+            if (array.transmitting()) {
+                uplinks++;
+                stored += array.getEnergy().getAmountAsInt();
+            } else if (array.receiving()) {
+                downlinks++;
+            }
+        }
+        int pylons = 0;
+        for (ResonancePylonBlockEntity pylon : ResonanceGrid.members(network.id())) {
+            if (pylon.sending() && !pylon.isRemoved()) {
+                pylons++;
+            }
+        }
+        return new OpenCharmScreenPayload.Info(true, network.name(), network.ownerName(), true, uplinks, downlinks,
+                (int) Math.min(Integer.MAX_VALUE, stored), pylons, priority);
+    }
+
+    public static int priority(ItemStack charm) {
+        return charm.getOrDefault(NTDataComponents.RESONANCE_PRIORITY.get(), 0);
+    }
+
+    public static ItemStack equipped(ServerPlayer player) {
+        return CuriosApi.getCuriosInventory(player)
+                .flatMap(handler -> handler.findFirstCurio(stack -> stack.getItem() instanceof ResonanceCharmItem
+                        && stack.has(NTDataComponents.RESONANCE_BINDING.get())))
+                .map(SlotResult::stack)
+                .orElse(ItemStack.EMPTY);
+    }
+
+    public static @Nullable ResonanceNetwork network(ServerPlayer player, ItemStack charm) {
         ResonanceBinding binding = charm.get(NTDataComponents.RESONANCE_BINDING.get());
         if (binding == null) {
-            return 0;
+            return null;
         }
-        ServerLevel level = player.level();
-        ResonanceNetwork network = ResonanceNetworks.get(level.getServer()).get(binding.network());
-        if (network == null || !ResonanceNetworks.canUse(player, network)) {
+        ResonanceNetwork network = ResonanceNetworks.get(player.level().getServer()).get(binding.network());
+        return network != null && ResonanceNetworks.canUse(player, network) ? network : null;
+    }
+
+    public static int demand(ServerPlayer player, ItemStack charm, int cap) {
+        int total = 0;
+        for (ItemStack target : targets(player, charm)) {
+            if (total >= cap) {
+                break;
+            }
+            total += fill(target, cap - total, amount -> amount, true);
+        }
+        return total;
+    }
+
+    public static int deliver(ServerPlayer player, ItemStack charm, int amount) {
+        return charge(player, charm, amount, available -> available);
+    }
+
+    public static int chargeFromPylons(ServerPlayer player, ItemStack charm, int budget) {
+        ResonanceNetwork network = network(player, charm);
+        if (network == null) {
             return 0;
         }
         List<Source> sources = sources(player, network);
         if (sources.isEmpty()) {
             return 0;
         }
+        return charge(player, charm, budget, demand -> draw(sources, demand));
+    }
 
-        int budget = NTConfig.charmTransferRate * INTERVAL;
+    public static void charged(ServerPlayer player) {
+        player.getInventory().setChanged();
+        player.level().sendParticles(NTParticles.CRYSTAL_MOTE.get(), player.getX(), player.getY() + 1.0, player.getZ(), 3, 0.35, 0.5, 0.35, 0.0);
+    }
+
+    private static int charge(ServerPlayer player, ItemStack charm, int budget, IntUnaryOperator source) {
         int delivered = 0;
         for (ItemStack target : targets(player, charm)) {
             if (budget - delivered <= 0) {
                 break;
             }
-            delivered += fill(target, sources, budget - delivered);
-        }
-        if (delivered > 0) {
-            player.getInventory().setChanged();
-            level.sendParticles(NTParticles.CRYSTAL_MOTE.get(), player.getX(), player.getY() + 1.0, player.getZ(), 3, 0.35, 0.5, 0.35, 0.0);
+            delivered += fill(target, budget - delivered, source, false);
         }
         return delivered;
     }
@@ -169,14 +248,17 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         return targets;
     }
 
-    private static int fill(ItemStack target, List<Source> sources, int limit) {
+    private static int fill(ItemStack target, int limit, IntUnaryOperator source, boolean simulate) {
         EnergyHandler energy = target.getCount() == 1 ? ItemAccess.forStack(target).getCapability(Capabilities.Energy.ITEM) : null;
         if (energy != null) {
             int demand;
             try (Transaction simulation = Transaction.openRoot()) {
                 demand = energy.insert(limit, simulation);
             }
-            int drawn = draw(sources, demand);
+            if (simulate || demand <= 0) {
+                return demand;
+            }
+            int drawn = source.applyAsInt(demand);
             if (drawn > 0) {
                 try (Transaction tx = Transaction.openRoot()) {
                     energy.insert(drawn, tx);
@@ -188,7 +270,10 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         IPowerStorage power = power(target);
         if (power != null) {
             int demand = power.tryFillPower(limit, true);
-            int drawn = draw(sources, demand);
+            if (simulate || demand <= 0) {
+                return demand;
+            }
+            int drawn = source.applyAsInt(demand);
             if (drawn > 0) {
                 power.tryFillPower(drawn, false);
             }
@@ -228,6 +313,7 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         } else {
             tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.unbound").withStyle(ChatFormatting.GRAY));
         }
+        tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.priority", priority(stack)).withStyle(ChatFormatting.GRAY));
         tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.monocle").withStyle(ChatFormatting.GRAY));
         tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
     }

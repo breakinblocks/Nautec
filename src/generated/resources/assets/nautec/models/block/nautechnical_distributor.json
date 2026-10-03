@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nautec:block/nautechnical_distributor_bottom",
+    "side": "nautec:block/nautechnical_distributor_side",
+    "top": "nautec:block/nautechnical_distributor_top"
+  }
+}

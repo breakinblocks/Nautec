@@ -484,6 +484,11 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         }
     }
 
+    @Override
+    public int[] ghostSlots() {
+        return inputSlots.toIntArray();
+    }
+
     public ResourceHandler<ItemResource> automationHandler(boolean allowExtract) {
         return new ReactorSidedItemHandler(getItemHandler(), this.inputSlots, allowExtract ? this.outputSlots : IntSets.EMPTY_SET);
     }

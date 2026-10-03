@@ -259,6 +259,31 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue SATELLITE_LOSS = BUILDER
             .comment("The fraction of AP lost relaying through a Prism Satellite from Uplink Arrays to Downlink Arrays")
             .defineInRange("satelliteLoss", 0.10, 0.0, 0.99);
+
+    private static final ModConfigSpec.IntValue DISTRIBUTOR_RANGE = BUILDER
+            .comment("How far in blocks a Nautechnical Distributor can link to a block")
+            .defineInRange("distributorRange", 256, 1, 4096);
+
+    private static final ModConfigSpec.IntValue DISTRIBUTOR_MAX_LINKS = BUILDER
+            .comment("The most blocks one Nautechnical Distributor can link to")
+            .defineInRange("distributorMaxLinks", 64, 1, 1024);
+
+    private static final ModConfigSpec.IntValue DISTRIBUTOR_INTERVAL = BUILDER
+            .comment("How many ticks a Nautechnical Distributor waits between moves. Each move has no amount limit")
+            .defineInRange("distributorInterval", 4, 1, 200);
+
+    private static final ModConfigSpec.IntValue SATELLITE_AP_BUFFER = BUILDER
+            .comment("The AP each Uplink and Downlink Array stores")
+            .defineInRange("satelliteApBuffer", 5_000_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue SATELLITE_FE_BUFFER = BUILDER
+            .comment("The FE each Uplink and Downlink Array stores")
+            .defineInRange("satelliteFeBuffer", 5_000_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue SATELLITE_TRANSFER_LIMIT = BUILDER
+            .comment("The most AP, and separately the most FE, a Downlink Array takes from its network each tick.",
+                    "Each downlink can be set lower in its screen")
+            .defineInRange("satelliteTransferLimit", 100_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue EMITTER_MAX_LINKS = BUILDER
             .comment("The most machines one Prismatic Emitter can be linked to")
             .defineInRange("emitterMaxLinks", 16, 1, 256);
@@ -814,6 +839,12 @@ public final class NTConfig {
     public static int emitterBuffer = 100_000;
     public static int emitterMaxLinks = 16;
     public static double satelliteLoss = 0.10;
+    public static int distributorRange = 256;
+    public static int distributorMaxLinks = 64;
+    public static int distributorInterval = 4;
+    public static int satelliteApBuffer = 5_000_000;
+    public static int satelliteFeBuffer = 5_000_000;
+    public static int satelliteTransferLimit = 100_000;
     public static int tidalRotorMinOutput = 40;
     public static int tidalRotorMaxOutput = 80;
     public static int ventTapMinOutput = 350;
@@ -1053,6 +1084,12 @@ public final class NTConfig {
         emitterBuffer = value(EMITTER_BUFFER);
         emitterMaxLinks = value(EMITTER_MAX_LINKS);
         satelliteLoss = value(SATELLITE_LOSS);
+        distributorRange = value(DISTRIBUTOR_RANGE);
+        distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
+        distributorInterval = value(DISTRIBUTOR_INTERVAL);
+        satelliteApBuffer = value(SATELLITE_AP_BUFFER);
+        satelliteFeBuffer = value(SATELLITE_FE_BUFFER);
+        satelliteTransferLimit = value(SATELLITE_TRANSFER_LIMIT);
         tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
         tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
         ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);

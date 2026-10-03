@@ -51,6 +51,9 @@ public final class NTDataComponents {
     public static final Supplier<DataComponentType<MachineSettings>> MACHINE_SETTINGS = registerDataComponentType("machine_settings",
             () -> builder -> builder.persistent(MachineSettings.CODEC).networkSynchronized(MachineSettings.STREAM_CODEC));
 
+    public static final Supplier<DataComponentType<Integer>> RESONANCE_PRIORITY = registerDataComponentType("resonance_priority",
+            () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
     public static final Supplier<DataComponentType<GlobalPos>> TUNED_EMITTER = registerDataComponentType("tuned_emitter",
             () -> builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC));
 

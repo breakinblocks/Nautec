@@ -2,7 +2,7 @@
 navigation:
   title: The Deep Oceans
   icon: nautec:luminescent_algae
-  position: 10
+  position: 11
   parent: getting_started/getting_started-index.md
 ---
 

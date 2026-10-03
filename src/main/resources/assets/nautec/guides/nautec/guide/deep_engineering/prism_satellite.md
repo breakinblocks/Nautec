@@ -18,7 +18,7 @@ item_ids:
     <ItemImage id="prism_satellite" scale="2"/>
     <ItemImage id="downlink_array" scale="2"/>
   </Row>
-  Carries laser power (AP) across a whole dimension with no relay chain.
+  Carries laser power (AP) and FE across a whole dimension with no relay chain.
 </Column>
 
 An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a satellite in orbit above it. The satellite beams it back down to every <ItemLink id="downlink_array"/> on the same network, however far away they are, and each downlink fires it into the laser blocks around it.
@@ -39,8 +39,32 @@ An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a 
 
 * **Sky:** both arrays need open sky above the dish. Water counts as open, so arrays on the sea floor work.
 * **Dimension:** AP stays in the dimension it was sent from. Build an uplink with its own satellite in every dimension that needs one.
-* **Sharing:** the downlinks split what the uplinks send equally, less 10%. Purity carries through unchanged.
+* **Sharing:** downlinks with the highest priority are filled first, and downlinks with the same priority split evenly. 10% is lost on the way. Purity carries through unchanged.
 * **Several uplinks:** every uplink on a network in the same dimension adds to the same pool.
 * **Loaded chunks:** both ends only work while their chunks are loaded.
 
-The screen shows whether the array is online and, if not, what it is waiting for.
+The screen shows whether the array is online and, if not, what it is waiting for, along with how much AP and FE it holds.
+
+***
+
+## <Color id="gold">Buffers and FE</Color>
+
+Each array holds up to 5,000,000 AP and 5,000,000 FE (`satelliteApBuffer` and `satelliteFeBuffer`).
+
+An uplink stores the AP beamed into it, along with its purity, and also takes FE from any cable or machine that pushes into it. It keeps both until downlinks on the network want them, so an uplink can fill up before its downlinks are built.
+
+A downlink stores what it takes from the network. It fires its AP into the laser blocks around it and pushes its FE into anything next to it that takes FE, so it keeps supplying power through a short break in the uplinks.
+
+***
+
+## <Color id="gold">Priority and Limits</Color>
+
+The two small controls at the top of a downlink's screen set its priority and its limit.
+
+Priority runs from -100 to 100. Each tick the network fills the highest priority first, as far as each downlink's limit and free space allow, and only then moves on to the next priority. Downlinks that share a priority split what is left evenly. Click the number to reset it to 0.
+
+The limit is the most AP, and separately the most FE, the downlink takes each tick. It steps through set values up to the server's maximum (`satelliteTransferLimit`, 100,000 by default). Click the number to reset it to that maximum.
+
+Resonance Charms bound to the network take part in the same priority order, so a charm can be set to charge before or after your machines. See [Resonance Network](resonance_network.md).
+
+A <ItemLink id="configuration_card"/> copies a downlink's network, priority and limit onto another downlink.

@@ -2,7 +2,7 @@
 navigation:
   title: Prism Monocle
   icon: nautec:prism_monocle
-  position: 8
+  position: 9
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:prism_monocle

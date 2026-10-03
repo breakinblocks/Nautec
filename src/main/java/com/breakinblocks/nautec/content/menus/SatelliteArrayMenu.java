@@ -63,4 +63,20 @@ public class SatelliteArrayMenu extends NTAbstractContainerMenu<SatelliteArrayBl
     public boolean isUplink() {
         return data.get(SatelliteArrayBlockEntity.DATA_KIND) == 1;
     }
+
+    public int getAp() {
+        return ResonancePylonBlockEntity.join(data.get(SatelliteArrayBlockEntity.DATA_AP), data.get(SatelliteArrayBlockEntity.DATA_AP + 1));
+    }
+
+    public int getFe() {
+        return ResonancePylonBlockEntity.join(data.get(SatelliteArrayBlockEntity.DATA_FE), data.get(SatelliteArrayBlockEntity.DATA_FE + 1));
+    }
+
+    public int getPriority() {
+        return (short) data.get(SatelliteArrayBlockEntity.DATA_PRIORITY);
+    }
+
+    public int getLimit() {
+        return ResonancePylonBlockEntity.join(data.get(SatelliteArrayBlockEntity.DATA_LIMIT), data.get(SatelliteArrayBlockEntity.DATA_LIMIT + 1));
+    }
 }

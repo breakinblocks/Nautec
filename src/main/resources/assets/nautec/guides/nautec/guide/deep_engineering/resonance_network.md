@@ -85,10 +85,10 @@ An emitter reaches machines up to 16 blocks away and can feed 16 of them. Only t
 
 Charges the items you carry from a network, wherever you are.
 
-Right-click a pylon with the charm to bind it to that pylon's network; you need access to the network. Then wear it in a charm slot. Every half second it draws from the network's sending pylons and charges the FE items in your inventory, armour and curio slots, along with NauTec items that run on laser power, such as the <ItemLink id="atlantean_rifle"/> and the <ItemLink id="prismatic_battery"/>. It moves up to 2,000 FE/t.
+Right-click a pylon, Uplink Array or Downlink Array with the charm to bind it to that network; you need access to the network. Then wear it in a charm slot. Every half second it draws from the network's [Uplink Arrays](prism_satellite.md) in your dimension, then from its sending pylons for whatever the uplinks could not cover, and charges the FE items in your inventory, armour and curio slots, along with NauTec items that run on laser power, such as the <ItemLink id="atlantean_rifle"/> and the <ItemLink id="prismatic_battery"/>. It moves up to 2,000 FE/t.
 
 Its crystal also does the work of a <ItemLink id="prism_monocle"/>: while it is equipped you see power and purity readouts on laser blocks and the clearer underwater view without wearing a monocle.
 
-It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Sneak-right-click the air with it to unbind it.
+It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Right-click the air with it to open its screen. The screen shows the network it is bound to, its owner, how many uplinks and downlinks the network has in your dimension, how much FE the uplinks hold, and how many sending pylons it has. It also sets the charm's priority: on the uplinks, a charm with a higher priority charges before downlinks and charms with a lower one. Sneak-right-click the air with it to unbind it.
 
 The same networks connect Uplink and Downlink Arrays, which carry laser power instead of FE. See <ItemLink id="prism_satellite"/>.

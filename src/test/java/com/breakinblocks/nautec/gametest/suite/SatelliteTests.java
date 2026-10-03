@@ -1,5 +1,13 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.minecraft.world.item.ItemStack;
+import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
+import com.breakinblocks.nautec.content.items.MachineSettings;
+import com.breakinblocks.nautec.content.items.ConfigurationCardItem;
+import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.LongDistanceLaserBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
@@ -47,7 +55,7 @@ public final class SatelliteTests {
         }
     }
 
-    private static SatelliteArrayBlockEntity array(GameTestHelper helper, BlockPos relative, boolean uplink, ResonanceNetwork network) {
+    private static SatelliteArrayBlockEntity array(GameTestHelper helper, BlockPos relative, boolean uplink, @Nullable ResonanceNetwork network) {
         BlockPos pos = helper.absolutePos(relative);
         Block block = uplink ? NTBlocks.UPLINK_ARRAY.get() : NTBlocks.DOWNLINK_ARRAY.get();
         helper.getLevel().setBlock(pos, block.defaultBlockState(), Block.UPDATE_ALL);
@@ -177,6 +185,87 @@ public final class SatelliteTests {
                 helper.assertValueEqual(nether.share(), 0, "no AP reaches the Nether");
                 networks.delete(owner, network.id());
             });
+        });
+
+        r.add("satellite/uplinks_buffer_ap_and_fe", 80, helper -> {
+            ServerPlayer owner = player(helper, "SatBuffer");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Sat buffer").network();
+            SatelliteArrayBlockEntity uplink = array(helper, new BlockPos(1, 1, 1), true, network);
+            SatelliteArrayBlockEntity downlink = array(helper, new BlockPos(6, 1, 6), false, network);
+            downlink.setNetwork(null);
+            uplink.launch();
+            feed(helper, uplink);
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(uplink.getPort().insert(40_000, tx), 40_000, "an uplink takes FE from cables");
+                helper.assertValueEqual(downlink.getPort().insert(40_000, tx), 0, "a downlink takes no FE from cables");
+                tx.commit();
+            }
+            helper.runAfterDelay(20, () -> {
+                helper.assertTrue(uplink.getApStored() >= FEED * 10, "an uplink with no downlink stores its beam, has " + uplink.getApStored());
+                helper.assertTrue(Math.abs(uplink.getApPurity() - FEED_PURITY) < 0.001F, "the stored AP keeps its purity");
+                helper.assertValueEqual(uplink.getEnergy().getAmountAsInt(), 40_000, "the FE stays until a downlink wants it");
+                networks.delete(owner, network.id());
+                helper.succeed();
+            });
+        });
+
+        r.add("satellite/priority_fills_higher_downlinks_first", 80, helper -> {
+            ServerPlayer owner = player(helper, "SatPriority");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Sat priority").network();
+            SatelliteArrayBlockEntity uplink = array(helper, new BlockPos(1, 1, 1), true, network);
+            SatelliteArrayBlockEntity first = array(helper, new BlockPos(6, 1, 1), false, network);
+            SatelliteArrayBlockEntity second = array(helper, new BlockPos(6, 1, 6), false, network);
+            SatelliteArrayBlockEntity third = array(helper, new BlockPos(1, 1, 6), false, network);
+            uplink.launch();
+            first.setPriority(5);
+            first.setLimit(3_000);
+            helper.runAfterDelay(5, () -> uplink.getEnergy().set(5_000));
+            helper.runAfterDelay(15, () -> {
+                int deliverable = (int) Math.floor(5_000 * (1.0 - NTConfig.satelliteLoss));
+                int rest = (deliverable - 3_000) / 2;
+                helper.assertValueEqual(first.getEnergy().getAmountAsInt(), 3_000, "the higher priority downlink fills to its limit first");
+                helper.assertValueEqual(second.getEnergy().getAmountAsInt(), rest, "equal priorities share what is left");
+                helper.assertValueEqual(third.getEnergy().getAmountAsInt(), rest, "equal priorities share what is left");
+                helper.assertTrue(uplink.getEnergy().getAmountAsInt() <= 1, "the uplink paid for it, has " + uplink.getEnergy().getAmountAsInt());
+                networks.delete(owner, network.id());
+                helper.succeed();
+            });
+        });
+
+        r.add("satellite/downlink_settings_copy_and_clamp", 20, helper -> {
+            ServerPlayer owner = player(helper, "SatCopy");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Sat copy").network();
+            SatelliteArrayBlockEntity source = array(helper, new BlockPos(1, 1, 1), false, network);
+            SatelliteArrayBlockEntity target = array(helper, new BlockPos(6, 1, 6), false, null);
+            source.setPriority(500);
+            helper.assertValueEqual(source.getPriority(), SatelliteArrayBlockEntity.MAX_PRIORITY, "priority clamps");
+            source.setLimit(Integer.MAX_VALUE);
+            helper.assertValueEqual(source.getLimit(), NTConfig.satelliteTransferLimit, "the limit clamps to the config");
+            source.setLimit(2_500);
+            MachineSettings card = ConfigurationCardItem.copy(source, helper.getLevel());
+            helper.assertTrue(ConfigurationCardItem.paste(card, target, owner), "the card pastes onto another downlink");
+            helper.assertValueEqual(target.getPriority(), SatelliteArrayBlockEntity.MAX_PRIORITY, "pasted priority");
+            helper.assertValueEqual(target.getLimit(), 2_500, "pasted limit");
+            helper.assertValueEqual(target.getNetworkId(), network.id(), "pasted network");
+            networks.delete(owner, network.id());
+            helper.succeed();
+        });
+
+        r.add("satellite/charm_demand_and_delivery", 20, helper -> {
+            ServerPlayer owner = player(helper, "SatCharm");
+            ItemStack battery = new ItemStack(NTItems.PRISMATIC_BATTERY.get());
+            owner.getInventory().setItem(0, battery);
+            ItemStack charm = new ItemStack(NTItems.RESONANCE_CHARM.get());
+            int demand = ResonanceCharmItem.demand(owner, charm, 5_000);
+            helper.assertTrue(demand > 0 && demand <= 5_000, "an empty battery wants power, wants " + demand);
+            int used = ResonanceCharmItem.deliver(owner, charm, demand);
+            helper.assertValueEqual(used, demand, "everything offered is used");
+            IPowerStorage power = owner.getInventory().getItem(0).getCapability(NTCapabilities.PowerStorage.ITEM);
+            helper.assertValueEqual(power.getPowerStored(), used, "the battery holds what was delivered");
+            helper.succeed();
         });
 
         r.add("satellite/breaking_the_uplink_returns_the_satellite", 60, helper -> {

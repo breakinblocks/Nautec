@@ -2,7 +2,7 @@
 navigation:
   title: Fishing
   icon: nautec:nautec_fishing_rod
-  position: 12
+  position: 13
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:nautec_fishing_rod

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import com.breakinblocks.nautec.client.screen.GhostSlots;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.renderer.Rect2i;
@@ -42,6 +43,8 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        GhostSlots.extract(guiGraphics, this.menu, this.menu.blockEntity, this.leftPos, this.topPos);
+        GhostSlots.tooltip(guiGraphics, font, this.menu.blockEntity, this.hoveredSlot, mouseX, mouseY);
         if (sidePanel != null) {
             sidePanel.extract(guiGraphics, font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
         }
@@ -50,6 +53,9 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+            return true;
+        }
+        if (GhostSlots.click(event, this.menu, this.menu.blockEntity, this.hoveredSlot)) {
             return true;
         }
         return super.mouseClicked(event, doubleClick);

@@ -41,6 +41,18 @@ public final class ResonanceActions {
                 }
                 yield result.error();
             }
+            case ResonanceActionPayload.PRIORITY -> {
+                if (pylon instanceof SatelliteArrayBlockEntity array && !array.isUplink()) {
+                    array.setPriority(parse(payload.text(), array.getPriority()));
+                }
+                yield null;
+            }
+            case ResonanceActionPayload.LIMIT -> {
+                if (pylon instanceof SatelliteArrayBlockEntity array && !array.isUplink()) {
+                    array.setLimit(parse(payload.text(), array.getLimit()));
+                }
+                yield null;
+            }
             case ResonanceActionPayload.MODE -> {
                 if (pylon instanceof ResonancePylonBlockEntity sender) {
                     sender.setSendMode(!sender.isSendMode());
@@ -70,6 +82,14 @@ public final class ResonanceActions {
             fail(player, error);
         }
         ResonanceSync.send(player, pylon);
+    }
+
+    private static int parse(String text, int fallback) {
+        try {
+            return Integer.parseInt(text.trim());
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
     }
 
     public static void copyNetwork(@Nullable UUID network, ValueOutput out) {

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.resonance.ResonanceBinding;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.block.Block;
 import java.util.UUID;
 
 public final class ResonanceCharmTests {
+    private static final int BUDGET = NTConfig.charmTransferRate * ResonanceCharmItem.INTERVAL;
+
     private ResonanceCharmTests() {
     }
 
@@ -55,7 +58,7 @@ public final class ResonanceCharmTests {
             ItemStack charm = charm(network);
 
             helper.runAfterDelay(2, () -> {
-                int delivered = ResonanceCharmItem.charge(owner, charm);
+                int delivered = ResonanceCharmItem.chargeFromPylons(owner, charm, BUDGET);
                 IPowerStorage power = owner.getInventory().getItem(0).getCapability(NTCapabilities.PowerStorage.ITEM);
                 helper.assertTrue(delivered > 0, "the charm delivered power");
                 helper.assertValueEqual(power.getPowerStored(), delivered, "the battery holds what was delivered");
@@ -75,9 +78,9 @@ public final class ResonanceCharmTests {
             thief.getInventory().setItem(0, new ItemStack(NTItems.PRISMATIC_BATTERY.get()));
 
             helper.runAfterDelay(2, () -> {
-                helper.assertValueEqual(ResonanceCharmItem.charge(thief, charm(network)), 0, "a charm bound by someone without access gives nothing");
+                helper.assertValueEqual(ResonanceCharmItem.chargeFromPylons(thief, charm(network), BUDGET), 0, "a charm bound by someone without access gives nothing");
                 helper.assertValueEqual(pylon.getEnergyStorage().getAmountAsInt(), 50_000, "the pylon kept its power");
-                helper.assertValueEqual(ResonanceCharmItem.charge(owner, new ItemStack(NTItems.RESONANCE_CHARM.get())), 0, "an unbound charm gives nothing");
+                helper.assertValueEqual(ResonanceCharmItem.chargeFromPylons(owner, new ItemStack(NTItems.RESONANCE_CHARM.get()), BUDGET), 0, "an unbound charm gives nothing");
                 networks.delete(owner, network.id());
                 helper.succeed();
             });

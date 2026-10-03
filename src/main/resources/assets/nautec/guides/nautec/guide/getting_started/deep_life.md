@@ -2,7 +2,7 @@
 navigation:
   title: Life in the Deep
   icon: nautec:luminous_membrane
-  position: 11
+  position: 12
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:deep_kelp

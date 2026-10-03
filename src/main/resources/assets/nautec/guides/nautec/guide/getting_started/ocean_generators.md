@@ -2,7 +2,7 @@
 navigation:
   title: Ocean Generators
   icon: nautec:tidal_rotor
-  position: 15
+  position: 16
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:tidal_rotor

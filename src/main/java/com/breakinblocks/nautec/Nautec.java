@@ -225,6 +225,8 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getPort());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_PYLON.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.SATELLITE_ARRAY.get(),
+                (blockEntity, dir) -> blockEntity.getPort());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),

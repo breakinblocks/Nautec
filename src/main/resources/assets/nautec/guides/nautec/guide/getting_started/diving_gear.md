@@ -2,7 +2,7 @@
 navigation:
   title: Diving Suit and Oxygen
   icon: nautec:diving_helmet
-  position: 9
+  position: 10
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:brown_polymer

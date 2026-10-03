@@ -2,7 +2,7 @@
 navigation:
   title: Building Blocks
   icon: nautec:chiseled_dark_prismarine
-  position: 13
+  position: 14
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:polished_prismarine

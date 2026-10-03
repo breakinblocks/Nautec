@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.api.blockentities;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.api.sides.SideConfig;
 import com.breakinblocks.nautec.api.sides.SideKind;
@@ -56,6 +60,14 @@ import java.util.function.UnaryOperator;
 public abstract class ContainerBlockEntity extends BlockEntity {
     private @Nullable ItemStackHandler itemHandler;
     private final SideConfig sideConfig = new SideConfig();
+    private final Int2ObjectMap<ItemStack> ghostInputs = new Int2ObjectOpenHashMap<>();
+
+    private record GhostEntry(int slot, ItemStack stack) {
+        private static final Codec<GhostEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("slot").forGetter(GhostEntry::slot),
+                ItemStack.CODEC.fieldOf("stack").forGetter(GhostEntry::stack)
+        ).apply(instance, GhostEntry::new));
+    }
     private @Nullable FluidTank fluidTank;
     private @Nullable FluidTank secondaryFluidTank;
     private @Nullable PowerStorage powerStorage;
@@ -125,6 +137,8 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             sideConfig.reset();
             in.child("side_config").ifPresent(sideConfig::load);
         }
+        ghostInputs.clear();
+        in.read("ghost_inputs", GhostEntry.CODEC.listOf()).ifPresent(list -> list.forEach(entry -> ghostInputs.put(entry.slot(), entry.stack())));
         loadData(in);
     }
 
@@ -143,6 +157,11 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             getBacteriaStorageImpl().serialize(out.child("bacteria_storage"));
         if (hasSideConfig())
             sideConfig.save(out.child("side_config"));
+        if (!ghostInputs.isEmpty()) {
+            List<GhostEntry> ghosts = new ArrayList<>();
+            ghostInputs.int2ObjectEntrySet().forEach(entry -> ghosts.add(new GhostEntry(entry.getIntKey(), entry.getValue())));
+            out.store("ghost_inputs", GhostEntry.CODEC.listOf(), ghosts);
+        }
         saveData(out);
     }
 
@@ -183,7 +202,8 @@ public abstract class ContainerBlockEntity extends BlockEntity {
 
             @Override
             public boolean isValid(int slot, @NotNull ItemResource resource) {
-                return validation.test(slot, resource.toStack());
+                ItemStack ghost = ghostInputs.get(slot);
+                return (ghost == null || resource.is(ghost.getItem())) && validation.test(slot, resource.toStack());
             }
 
             @Override
@@ -421,6 +441,47 @@ public abstract class ContainerBlockEntity extends BlockEntity {
 
     public boolean hasSideConfig(SideKind kind) {
         return (kind == SideKind.ITEMS ? itemRoles() : fluidRoles()) != null;
+    }
+
+    public int[] ghostSlots() {
+        SlotRoles roles = itemRoles();
+        return roles == null ? new int[0] : roles.inputs().toIntArray();
+    }
+
+    public boolean isGhostSlot(int slot) {
+        for (int candidate : ghostSlots()) {
+            if (candidate == slot) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ItemStack getGhost(int slot) {
+        ItemStack ghost = ghostInputs.get(slot);
+        return ghost == null ? ItemStack.EMPTY : ghost;
+    }
+
+    public Int2ObjectMap<ItemStack> ghosts() {
+        return ghostInputs;
+    }
+
+    public boolean setGhost(int slot, ItemStack stack) {
+        if (itemHandler == null || !isGhostSlot(slot) || slot < 0 || slot >= itemHandler.size()) {
+            return false;
+        }
+        ItemStack previous = ghostInputs.remove(slot);
+        if (!stack.isEmpty()) {
+            if (!itemHandler.isValid(slot, ItemResource.of(stack))) {
+                if (previous != null) {
+                    ghostInputs.put(slot, previous);
+                }
+                return false;
+            }
+            ghostInputs.put(slot, stack.copyWithCount(1));
+        }
+        update();
+        return true;
     }
 
     public SideConfig getSideConfig() {

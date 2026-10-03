@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.compat.jei;
 
+import com.breakinblocks.nautec.client.screen.DistributorScreen;
+import com.breakinblocks.nautec.api.client.screen.NTAbstractContainerScreen;
+import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
@@ -233,10 +236,18 @@ public class NTJeiPlugin implements IModPlugin {
         return ClientRecipes.get().byType(type).stream().map(RecipeHolder::value).toList();
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void registerGhostInputs(IGuiHandlerRegistration registration, Class screenClass) {
+        registration.addGhostIngredientHandler(screenClass, new GhostInputJeiHandler());
+    }
+
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         ConfinedSpawnerGhostHandler handler = new ConfinedSpawnerGhostHandler();
         registration.addGhostIngredientHandler(ConfinedSpawnerScreen.class, handler);
+        registration.addGhostIngredientHandler(DistributorScreen.class, new DistributorJeiHandler());
+        registerGhostInputs(registration, NTMachineScreen.class);
+        registerGhostInputs(registration, NTAbstractContainerScreen.class);
         registration.addGuiContainerHandler(ConfinedSpawnerScreen.class, handler);
         registration.addGenericGuiContainerHandler(AbstractContainerScreen.class, new SideConfigJeiHandler());
     }

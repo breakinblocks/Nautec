@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import com.breakinblocks.nautec.client.screen.GhostSlots;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.renderer.Rect2i;
 import com.breakinblocks.nautec.client.screen.SideConfigPanel;
@@ -158,6 +159,9 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
             fSlot.getRenderer().render(guiGraphics, this.leftPos + fSlot.getX(), this.topPos + fSlot.getY(), fSlot.getFluidStack());
         }
 
+        GhostSlots.extract(guiGraphics, this.menu, this.menu.blockEntity, this.leftPos, this.topPos);
+        GhostSlots.tooltip(guiGraphics, font, this.menu.blockEntity, this.hoveredSlot, mouseX, mouseY);
+
         if (sidePanel != null) {
             sidePanel.extract(guiGraphics, font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
         }
@@ -225,6 +229,9 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+            return true;
+        }
+        if (GhostSlots.click(event, this.menu, this.menu.blockEntity, this.hoveredSlot)) {
             return true;
         }
         ItemStack carried = menu.getCarried();

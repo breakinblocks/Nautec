@@ -210,6 +210,8 @@ public class BlockModelProvider extends ModelProvider {
 
         graftingStation(NTBlocks.GRAFTING_STATION.get());
         advancedAnalyzer(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
+        simpleBlock(NTBlocks.DISTRIBUTOR.get(), cubeBottomTop("nautechnical_distributor", blockTexture(NTBlocks.DISTRIBUTOR.get(), "_side"),
+                blockTexture(NTBlocks.DISTRIBUTOR.get(), "_bottom"), blockTexture(NTBlocks.DISTRIBUTOR.get(), "_top")));
     }
 
     private void advancedAnalyzer(Block block) {
