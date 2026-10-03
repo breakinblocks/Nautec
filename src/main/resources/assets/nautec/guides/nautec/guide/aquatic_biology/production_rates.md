@@ -25,7 +25,7 @@ progress per tick = Production Rate x size factor x base speed x Strain Yield x 
 
 * Production Rate is the colony's stat, up to 2 ([Bacteria Stats](bacteria_stats.md)).
 * The size factor is 0.5 + 0.5 x size / 40,000, so 0.5 for a tiny colony and 1 at the size cap.
-* The base speed is 5.6 in both reactors, configurable for each.
+* The base speed is 16.8 in both reactors, configurable for each.
 * Strain Yield belongs to the strain, see the table below.
 * The speed bonus is 1, plus 0.5 for each [Reactor Speed Upgrade](reactor_upgrades.md).
 
@@ -59,19 +59,19 @@ A colony at the stat caps (Production Rate 2, size 40,000) with no upgrades:
 
 | Strain Yield | Progress per tick | Time per item | Items per minute |
 |---|---|---|---|
-| 1 (stone) | 11.2 | 0.45 seconds | about 134 |
-| 0.8 (coal, copper) | 8.96 | 0.56 seconds | about 108 |
-| 0.6 (iron) | 6.72 | 0.74 seconds | about 81 |
-| 0.5 (redstone, lapis) | 5.6 | 0.89 seconds | about 67 |
-| 0.4 (gold) | 4.48 | 1.1 seconds | about 54 |
-| 0.12 (diamond) | 1.34 | 3.7 seconds | about 16 |
-| 0.1 (emerald) | 1.12 | 4.5 seconds | about 13 |
+| 1 (stone) | 33.6 | 0.15 seconds | about 403 |
+| 0.8 (coal, copper) | 26.9 | 0.19 seconds | about 323 |
+| 0.6 (iron) | 20.2 | 0.25 seconds | about 242 |
+| 0.5 (redstone, lapis) | 16.8 | 0.3 seconds | about 202 |
+| 0.4 (gold) | 13.4 | 0.37 seconds | about 161 |
+| 0.12 (diamond) | 4.03 | 1.2 seconds | about 48 |
+| 0.1 (emerald) | 3.36 | 1.5 seconds | about 40 |
 
-A fresh colony is far slower. Ferrophiles with a Production Rate of 0.4 at size 400 makes 0.4 x 0.505 x 5.6 x 0.6 = 0.68 progress per tick: one iron ingot every 7.4 seconds, about 8 a minute.
+A fresh colony is far slower. Ferrophiles with a Production Rate of 0.4 at size 400 makes 0.4 x 0.505 x 16.8 x 0.6 = 2.04 progress per tick: one iron ingot every 2.5 seconds, about 24 a minute.
 
-Upgrades multiply these. The capped diamond colony makes about 32 diamonds a minute with two Reactor Speed Upgrades, or about 48 with two Reactor Yield Upgrades, since every cycle then gives 3.
+Upgrades multiply these. The capped diamond colony makes about 97 diamonds a minute with two Reactor Speed Upgrades, or about 145 with two Reactor Yield Upgrades, since every cycle then gives 3.
 
-A capped stone colony fills its 64-item output slot in under half a minute, and a full slot pauses that colony, so keep the output moving.
+A capped stone colony fills its 64-item output slot in about ten seconds, and a full slot pauses that colony, so keep the output moving.
 
 ***
 

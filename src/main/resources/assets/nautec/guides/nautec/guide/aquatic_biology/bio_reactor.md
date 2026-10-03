@@ -88,9 +88,9 @@ Speed is Production Rate times a size factor that runs from 0.5 for a tiny colon
 
 | Colony | Time per item |
 |---|---|
-| Production Rate 0.3, size 400 | about 6 seconds |
-| Production Rate 1, size 20,000 | about 1.2 seconds |
-| Production Rate 2, size 40,000 | under half a second |
+| Production Rate 0.3, size 400 | about 2 seconds |
+| Production Rate 1, size 20,000 | about 0.4 seconds |
+| Production Rate 2, size 40,000 | about 0.15 seconds |
 
 Valuable strains are slower: a diamond colony takes a little over eight times as long. [Production Rates](production_rates.md) has the full formula and every strain's Strain Yield.
 

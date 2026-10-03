@@ -147,6 +147,10 @@ public final class BioReactorOverhaulTests {
         }
     }
 
+    private static int window() {
+        return (int) Math.round(300 * 5.6 / NTConfig.bioReactorBaseSpeed);
+    }
+
     public static void register(NTTestRegistrar r) {
         r.add("bio_overhaul/feeding_stops_aging_and_pulls_nutrients", 200, helper -> {
             BioReactorBlockEntity reactor = loneReactor(helper, REACTOR, SOURCE);
@@ -202,6 +206,7 @@ public final class BioReactorOverhaulTests {
         });
 
         r.add("bio_overhaul/multiplier_slows_gems", 420, helper -> {
+            int window = window();
             BioReactorBlockEntity reactor = loneReactor(helper, REACTOR, SOURCE);
             reactor.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, NTConfig.bacteriaColonySizeCap,
                     stats(2.0f, NTConfig.bacteriaLifespanCap), 0));
@@ -219,16 +224,49 @@ public final class BioReactorOverhaulTests {
                 baseline[0] = count(reactor, Items.STONE);
                 baseline[1] = count(reactor, Items.DIAMOND);
             });
-            helper.runAfterDelay(360, () -> {
+            helper.runAfterDelay(60 + window, () -> {
                 int stone = count(reactor, Items.STONE) - baseline[0];
                 int diamonds = count(reactor, Items.DIAMOND) - baseline[1];
-                helper.assertTrue(stone >= 30 && stone <= 36, "Stone strain should make about 33 items in 300 ticks, made " + stone);
-                helper.assertTrue(diamonds >= 3 && diamonds <= 5, "Diamond strain at x0.12 should make about 4 items in 300 ticks, made " + diamonds);
+                helper.assertTrue(stone >= 30 && stone <= 36, "Stone strain should make about 33 items, made " + stone);
+                helper.assertTrue(diamonds >= 3 && diamonds <= 5, "Diamond strain at x0.12 should make about 4 items, made " + diamonds);
+                helper.succeed();
+            });
+        });
+
+        r.add("bio_overhaul/fast_colony_finishes_several_cycles_a_tick", 120, helper -> {
+            BioReactorBlockEntity reactor = loneReactor(helper, REACTOR, SOURCE);
+            reactor.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, NTConfig.bacteriaColonySizeCap,
+                    stats(2.0f, NTConfig.bacteriaLifespanCap), 0));
+            helper.runAfterDelay(60, () -> {
+                double speed = NTConfig.bioReactorBaseSpeed;
+                int before = count(reactor, Items.STONE);
+                try {
+                    NTConfig.bioReactorBaseSpeed = 250.0;
+                    reactor.commonTick();
+                } finally {
+                    NTConfig.bioReactorBaseSpeed = speed;
+                }
+                int made = count(reactor, Items.STONE) - before;
+                helper.assertTrue(made >= 5 && made <= 6, "500 progress in one tick should finish five cycles, made " + made);
+            });
+            helper.runAfterDelay(70, () -> {
+                double speed = NTConfig.bioReactorBaseSpeed;
+                reactor.getItemStackHandler().setStackInSlot(reactor.outputSlot(0), new ItemStack(Items.STONE, 63));
+                try {
+                    NTConfig.bioReactorBaseSpeed = 250.0;
+                    reactor.commonTick();
+                } finally {
+                    NTConfig.bioReactorBaseSpeed = speed;
+                }
+                helper.assertValueEqual(64, reactor.getItemStackHandler().getStackInSlot(reactor.outputSlot(0)).getCount(),
+                        "a full output stops the extra cycles");
+                helper.assertTrue(reactor.getProgress(0) <= 100.0f, "progress does not pile up behind a full output");
                 helper.succeed();
             });
         });
 
         r.add("bio_overhaul/speed_upgrade_power_and_rate", 420, helper -> {
+            int window = window();
             BioReactorBlockEntity fast = loneReactor(helper, new BlockPos(2, 1, 4), new BlockPos(2, 1, 6));
             BioReactorBlockEntity slow = loneReactor(helper, new BlockPos(6, 1, 4), new BlockPos(6, 1, 6));
             for (BioReactorBlockEntity reactor : List.of(fast, slow)) {
@@ -246,7 +284,7 @@ public final class BioReactorOverhaulTests {
                 baseline[0] = count(fast, Items.STONE);
                 baseline[1] = count(slow, Items.STONE);
             });
-            helper.runAfterDelay(360, () -> {
+            helper.runAfterDelay(60 + window, () -> {
                 int boosted = count(fast, Items.STONE) - baseline[0];
                 int plain = count(slow, Items.STONE) - baseline[1];
                 helper.assertTrue(boosted >= 11 && boosted <= 14, "Speed upgraded colony should make about 12.7 items, made " + boosted);

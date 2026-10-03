@@ -212,7 +212,7 @@ Colonies load and unload through the Dish Port, the two slots between the colony
 
 Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
 
-A simple layout: a chest and hopper on one corner of the roof for nutrients, hatches with beams on the rest of the roof, and hoppers under the floor leading to storage. A capped colony can fill its output slot in under half a minute, so give the output more than one hopper once the colonies are strong.
+A simple layout: a chest and hopper on one corner of the roof for nutrients, hatches with beams on the rest of the roof, and hoppers under the floor leading to storage. A capped colony can fill its output slot in about ten seconds, so give the output more than one hopper once the colonies are strong.
 
 ***
 

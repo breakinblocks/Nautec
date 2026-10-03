@@ -64,8 +64,13 @@ public final class BacteriaMachineTests {
         throw helper.assertionException("No incubation recipe for " + bacteria.identifier());
     }
 
+    private static int window() {
+        return (int) Math.round(300 * 5.6 / NTConfig.bioReactorBaseSpeed);
+    }
+
     public static void register(NTTestRegistrar r) {
         r.add("bacteria/bio_reactor_production_scales_with_rate", 420, helper -> {
+            int window = window();
             BlockPos reactorPos = new BlockPos(4, 1, 4);
             BlockPos sourcePos = new BlockPos(4, 1, 6);
             helper.setBlock(reactorPos, NTBlocks.BIO_REACTOR.get().defaultBlockState());
@@ -89,13 +94,13 @@ public final class BacteriaMachineTests {
                 baseline[1] = reactor.getItemStackHandler().getStackInSlot(1).getCount();
             });
 
-            helper.runAfterDelay(360, () -> {
+            helper.runAfterDelay(60 + window, () -> {
                 int slow = reactor.getItemStackHandler().getStackInSlot(0).getCount() - baseline[0];
                 int fast = reactor.getItemStackHandler().getStackInSlot(1).getCount() - baseline[1];
                 helper.assertTrue(fast >= 18 && fast <= 22,
-                        "High rate Ferrophiles colony (multiplier 0.6) should make about 20 items in 300 ticks, made " + fast);
+                        "High rate Ferrophiles colony (multiplier 0.6) should make about 20 items, made " + fast);
                 helper.assertTrue(slow >= 0 && slow <= 2,
-                        "Low rate colony should make at most 2 items in 300 ticks, made " + slow);
+                        "Low rate colony should make at most 2 items, made " + slow);
                 helper.succeed();
             });
         });

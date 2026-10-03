@@ -324,11 +324,15 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
                     }
                 }
 
-                if (this.progress[i] >= 100) {
-                    this.progress[i] -= 100;
+                while (this.progress[i] >= 100) {
                     if (server && !product.isEmpty()) {
+                        if (!canOutput(i, product)) {
+                            this.progress[i] = 100;
+                            break;
+                        }
                         forceInsertItem(outputSlot(i), product, false);
                     }
+                    this.progress[i] -= 100;
                 }
             }
         } else {

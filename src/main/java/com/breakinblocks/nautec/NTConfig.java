@@ -138,7 +138,7 @@ public final class NTConfig {
 
     private static final ModConfigSpec.DoubleValue BIO_REACTOR_BASE_SPEED = BUILDER
             .comment("The base amount of progress a Bio Reactor colony makes each tick, before production rate and colony size scale it")
-            .defineInRange("bioReactorBaseSpeed", 5.6, 0, 1000);
+            .defineInRange("bioReactorBaseSpeed", 16.8, 0, 1000);
 
     private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_BASE = BUILDER
             .comment("The amount of power the Bio Reactor requires before any colonies are counted")
@@ -154,7 +154,7 @@ public final class NTConfig {
 
     private static final ModConfigSpec.DoubleValue INDUSTRIAL_BIO_REACTOR_BASE_SPEED = BUILDER
             .comment("The base amount of progress an Industrial Bio Reactor colony makes each tick, before production rate, colony size and strain multiplier scale it")
-            .defineInRange("industrialBioReactorBaseSpeed", 5.6, 0, 1000);
+            .defineInRange("industrialBioReactorBaseSpeed", 16.8, 0, 1000);
 
     private static final ModConfigSpec.IntValue INDUSTRIAL_BIO_REACTOR_POWER_BASE = BUILDER
             .comment("The amount of power the Industrial Bio Reactor requires before any colonies are counted")
@@ -853,11 +853,11 @@ public final class NTConfig {
     public static int incubatorCraftingSpeed = 100;
     public static int incubatorPowerUsage = 20;
 
-    public static double bioReactorBaseSpeed = 5.6;
+    public static double bioReactorBaseSpeed = 16.8;
     public static int bioReactorPowerBase = 25;
     public static int bioReactorPowerPerColony = 25;
     public static double bioReactorDecayPerSecond = 0.02;
-    public static double industrialBioReactorBaseSpeed = 5.6;
+    public static double industrialBioReactorBaseSpeed = 16.8;
     public static int industrialBioReactorPowerBase = 100;
     public static int industrialBioReactorPowerPerColony = 50;
     public static double reactorSpeedUpgradeBonus = 0.5;

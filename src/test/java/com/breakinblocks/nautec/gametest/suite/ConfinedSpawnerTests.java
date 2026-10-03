@@ -36,6 +36,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -81,6 +82,12 @@ public final class ConfinedSpawnerTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("confined_spawner/experience_algae_is_in_the_experience_tag", 20, helper -> {
+            helper.assertTrue(NTFluids.EXPERIENCE_ALGAE.getStillFluid().defaultFluidState().is(Tags.Fluids.EXPERIENCE), "still experience algae is c:experience");
+            helper.assertTrue(NTFluids.EXPERIENCE_ALGAE.getFlowingFluid().defaultFluidState().is(Tags.Fluids.EXPERIENCE), "flowing experience algae is c:experience");
+            helper.succeed();
+        });
+
         r.add("confined_spawner/confine_and_release_round_trip", 40, helper -> {
             ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 7, 30);
             helper.assertTrue(helper.getBlockState(SPAWNER).is(NTBlocks.CONFINED_SPAWNER.get()), "spawner should become a confined spawner");
