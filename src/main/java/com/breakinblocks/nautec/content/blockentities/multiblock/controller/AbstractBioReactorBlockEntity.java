@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.api.multiblocks.MultiblockData;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.capabilities.item.ReactorSidedItemHandler;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
@@ -88,10 +89,12 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         for (int i = 0; i < nutrientSlots + upgradeSlots; i++) {
             inputs.add(colonies + i);
         }
+        inputs.add(dishInSlot());
         IntSet outputs = new IntOpenHashSet();
         for (int i = 0; i < colonies; i++) {
             outputs.add(i);
         }
+        outputs.add(dishOutSlot());
         this.inputSlots = IntSets.unmodifiable(inputs);
         this.outputSlots = IntSets.unmodifiable(outputs);
 
@@ -126,7 +129,15 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     }
 
     public int totalItemSlots() {
+        return colonies + nutrientSlots + upgradeSlots + 2;
+    }
+
+    public int dishInSlot() {
         return colonies + nutrientSlots + upgradeSlots;
+    }
+
+    public int dishOutSlot() {
+        return dishInSlot() + 1;
     }
 
     public int outputSlot(int colony) {
@@ -150,7 +161,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     }
 
     public boolean isUpgradeSlot(int slot) {
-        return slot >= colonies + nutrientSlots && slot < totalItemSlots();
+        return slot >= colonies + nutrientSlots && slot < dishInSlot();
     }
 
     protected boolean isItemValid(int slot, ItemStack stack) {
@@ -160,7 +171,33 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         if (isNutrientSlot(slot)) {
             return !(stack.getItem() instanceof ReactorUpgradeItem) && ColonyFeedingRecipe.isNutrient(level, stack);
         }
-        return false;
+        return slot == dishInSlot() && DishPort.isDish(stack);
+    }
+
+    private int[] colonySlots() {
+        int[] slots = new int[colonies];
+        for (int i = 0; i < colonies; i++) {
+            slots[i] = i;
+        }
+        return slots;
+    }
+
+    private int weakestColony() {
+        IBacteriaStorage storage = getBacteriaStorage();
+        int weakest = -1;
+        for (int i = 0; i < colonies; i++) {
+            if (!storage.getBacteria(i).isEmpty() && (weakest < 0 || this.vitality[i] < this.vitality[weakest])) {
+                weakest = i;
+            }
+        }
+        return weakest;
+    }
+
+    private void clearColony(int slot) {
+        this.vitality[slot] = 0;
+        this.vitalityCapacity[slot] = 0;
+        this.progress[slot] = 0;
+        this.workTicks[slot] = 0;
     }
 
     public int getActiveColonies() {
@@ -243,6 +280,9 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         this.forwardedPower = 0;
 
         boolean server = !level.isClientSide();
+        if (server && level.getGameTime() % DishPort.INTERVAL == 0) {
+            DishPort.tick(this, dishInSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony);
+        }
         if (level instanceof ServerLevel serverLevel && recipeRevision.changed(serverLevel)) {
             Arrays.fill(this.productCache, null);
             Arrays.fill(this.nextFeedCheck, 0);

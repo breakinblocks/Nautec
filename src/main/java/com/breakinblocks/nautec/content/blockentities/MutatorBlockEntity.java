@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.menus.MutatorMenu;
@@ -39,6 +40,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider {
+    public static final int DISH_IN = 1;
+    public static final int DISH_OUT = 2;
+
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private BacteriaMutationRecipe recipe;
     private boolean active;
@@ -47,7 +51,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     public MutatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.MUTATOR.get(), blockPos, blockState);
         addBacteriaStorage(2);
-        addItemHandler(1);
+        addItemHandler(3, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
     }
 
     @Override
@@ -115,6 +119,12 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
             checkRecipe();
         }
 
+        if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
+            DishPort.tick(this, DISH_IN, DISH_OUT, new int[]{0},
+                    () -> getBacteriaStorage().getBacteria(1).isEmpty() ? -1 : 1, slot -> {
+                    });
+        }
+
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
 
         if (canRun) {
@@ -166,6 +176,11 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         return BacteriaInstance.roll(resultBacteria, level.registryAccess());
     }
 
+    @Override
+    public int[] getItemOutputSlots() {
+        return new int[]{DISH_OUT};
+    }
+
     public int getProgress() {
         return progress;
     }
@@ -186,7 +201,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
+        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0, DISH_IN) : Map.of();
     }
 
     @Override
@@ -202,6 +217,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
+        getItemStackHandler().ensureSize(3);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
     }

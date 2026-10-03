@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.utils.SidedCapUtils;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.content.menus.IncubatorMenu;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
@@ -35,6 +36,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvider {
+    public static final int DISH_IN = 1;
+    public static final int DISH_OUT = 2;
+
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private BacteriaIncubationRecipe recipe;
     private boolean active;
@@ -42,7 +46,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     public IncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.INCUBATOR.get(), blockPos, blockState);
-        addItemHandler(1, 1);
+        addItemHandler(3, 1, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
         addBacteriaStorage(1);
     }
 
@@ -87,6 +91,10 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
             checkRecipe();
         }
 
+        if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
+            DishPort.tick(this, DISH_IN, DISH_OUT, new int[]{0}, this::finishedColony, slot -> progress = 0);
+        }
+
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
 
         if (canRun) {
@@ -122,6 +130,16 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         getBacteriaStorage().onBacteriaChanged(0);
     }
 
+    private int finishedColony() {
+        BacteriaInstance colony = getBacteriaStorage().getBacteria(0);
+        return !colony.isEmpty() && colony.getSize() >= NTConfig.bacteriaColonySizeCap ? 0 : -1;
+    }
+
+    @Override
+    public int[] getItemOutputSlots() {
+        return new int[]{DISH_OUT};
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -142,7 +160,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
+        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0, DISH_IN) : Map.of();
     }
 
     @Override
@@ -158,6 +176,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
+        getItemStackHandler().ensureSize(3);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
     }

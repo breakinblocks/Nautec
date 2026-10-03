@@ -102,8 +102,9 @@ Each colony has its own output slot. When a slot is full, that colony pauses unt
 
 * Pull output from the underside of the base, for example with a hopper under the reactor, or from the Bio Reactor block with a pipe.
 * Insert nutrients and upgrades through the top of the Bio Reactor block, for example with a hopper sitting on it, or with a pipe into the underside of the base.
+* Load and unload colonies through the Dish Port, the two slots at the bottom left of the screen. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the empty dish comes out of the second slot. An empty dish takes out the colony with the least Vitality left. Automation reaches the port wherever it reaches the other slots.
 
-Automation only puts items into the nutrient and upgrade slots and only takes them from the output slots. With nutrients coming in and output going out, the reactor runs indefinitely.
+Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. With nutrients coming in and output going out, the reactor runs indefinitely.
 
 ***
 

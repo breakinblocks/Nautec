@@ -21,10 +21,12 @@ public class MutatorMenu extends NTMachineMenu<MutatorBlockEntity> {
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 1, 126, 33));
 
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 79, 61));
+
+        addDishPort(MutatorBlockEntity.DISH_IN, 24, 61, MutatorBlockEntity.DISH_OUT, 46, 61);
     }
 
     @Override
     protected int getMergeableSlotCount() {
-        return 1;
+        return 2;
     }
 }

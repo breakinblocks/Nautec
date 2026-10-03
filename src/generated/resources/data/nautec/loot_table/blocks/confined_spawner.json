@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "nautec:spawner_confinement_matrix"
+          "name": "nautec:confined_spawner"
         }
       ],
       "rolls": 1.0

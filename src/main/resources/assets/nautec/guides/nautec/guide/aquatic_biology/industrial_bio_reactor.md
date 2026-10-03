@@ -208,7 +208,9 @@ Nine colonies need feeding from only three nutrient slots, so run no more than t
 * Nutrients and upgrades go in through any outer face of any of its blocks: a hopper on the roof, a hopper pointing into a wall, or a pipe anywhere on the outside.
 * Output comes out of the underside of the floor, for example into hoppers under it, and out of the front of the Industrial Bio Reactor block with a pipe.
 
-Automation only puts items into the nutrient and upgrade slots and only takes them from the output slots. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
+Colonies load and unload through the Dish Port, the two slots between the colony grid and the outputs. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the empty dish comes out of the lower slot. An empty dish takes out the colony with the least Vitality left. Automation reaches the port wherever it reaches the other slots.
+
+Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
 
 A simple layout: a chest and hopper on one corner of the roof for nutrients, hatches with beams on the rest of the roof, and hoppers under the floor leading to storage. A capped colony can fill its output slot in under half a minute, so give the output more than one hopper once the colonies are strong.
 

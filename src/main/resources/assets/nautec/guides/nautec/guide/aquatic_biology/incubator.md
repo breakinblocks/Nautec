@@ -49,6 +49,8 @@ The Incubator is still the place to grow a colony, and the only way to reset its
 
 Hoppers and pipes can insert the nutrient from any side, so a chest feeding the Incubator keeps a long growing run going.
 
+The two slots at the bottom left are the Dish Port. A Petri Dish holding a colony put into the left slot loads its colony, as long as the bacteria slot is empty or holds the same strain with room to spare, and the empty dish comes out on the right. An empty dish in the left slot takes the colony out once it reaches the size cap. Hoppers and pipes can fill the port from any side and pull dishes out of any face.
+
 ***
 
 ## <Color id="gold">Recipe</Color>

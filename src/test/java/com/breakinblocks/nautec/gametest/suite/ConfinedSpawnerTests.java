@@ -9,26 +9,35 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
+import java.util.List;
 import java.util.Optional;
 
 public final class ConfinedSpawnerTests {
@@ -88,6 +97,39 @@ public final class ConfinedSpawnerTests {
             boolean matrixReturned = helper.getLevel().getEntitiesOfClass(ItemEntity.class, around).stream()
                     .anyMatch(item -> item.getItem().is(NTItems.SPAWNER_CONFINEMENT_MATRIX.get()));
             helper.assertTrue(matrixReturned, "the matrix should come back when no player takes it");
+            helper.succeed();
+        });
+
+        r.add("confined_spawner/breaks_into_itself_and_places_back", 40, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 6, 25);
+            confined.toggleWhitelist();
+            confined.setFilterEntry(3, SpawnerFilterEntry.of(new ItemStack(Items.FEATHER)));
+            confined.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.FEATHER, 5));
+            ServerLevel level = helper.getLevel();
+            List<ItemStack> drops = Block.getDrops(helper.getBlockState(SPAWNER), level, helper.absolutePos(SPAWNER), confined, null,
+                    new ItemStack(Items.IRON_PICKAXE));
+            helper.assertValueEqual(1, drops.size(), "drop count without silk touch");
+            ItemStack dropped = drops.getFirst();
+            helper.assertTrue(dropped.is(NTBlocks.CONFINED_SPAWNER.get().asItem()), "The confined spawner should drop itself");
+            helper.assertTrue(dropped.has(DataComponents.BLOCK_ENTITY_DATA), "The dropped spawner should carry its data");
+
+            BlockPos target = new BlockPos(2, 1, 2);
+            helper.setBlock(target.below(), Blocks.STONE.defaultBlockState());
+            BlockPos below = helper.absolutePos(target.below());
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.setItemInHand(InteractionHand.MAIN_HAND, dropped.copy());
+            player.getMainHandItem().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND,
+                    new BlockHitResult(below.getCenter().add(0, 0.5, 0), Direction.UP, below, false)));
+
+            ConfinedSpawnerBlockEntity placed = helper.getBlockEntity(target, ConfinedSpawnerBlockEntity.class);
+            helper.assertValueEqual(6, placed.getSettings().spawnCount(), "spawn count after placing");
+            helper.assertTrue(placed.getFilter().isWhitelist(), "filter mode after placing");
+            helper.assertTrue(placed.getFilter().get(3) != null && placed.getFilter().get(3).matches(new ItemStack(Items.FEATHER)), "filter entry after placing");
+            helper.assertValueEqual(0, count(placed, Items.FEATHER), "stored items do not travel with the item");
+            helper.assertTrue(SpawnerConfinementMatrixItem.release(level, helper.absolutePos(target), placed, null), "the placed spawner can still be released");
+            SpawnerBlockEntity restored = helper.getBlockEntity(target, SpawnerBlockEntity.class);
+            helper.assertValueEqual("minecraft:chicken", restored.saveWithoutMetadata(level.registryAccess())
+                    .getCompoundOrEmpty("SpawnData").getCompoundOrEmpty("entity").getStringOr("id", ""), "mob after release");
             helper.succeed();
         });
 

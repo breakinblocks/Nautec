@@ -34,7 +34,9 @@ public abstract class AbstractBioReactorMenu<T extends AbstractBioReactorBlockEn
             addSlot(new ResourceHandlerSlot(handler, handler::set, blockEntity.upgradeSlot(i), layout.upgrades()[i][0], layout.upgrades()[i][1]));
             added++;
         }
-        this.machineSlots = added;
+        addDishPort(blockEntity.dishInSlot(), layout.dishIn()[0], layout.dishIn()[1],
+                blockEntity.dishOutSlot(), layout.dishOut()[0], layout.dishOut()[1]);
+        this.machineSlots = added + 1;
     }
 
     public BioReactorLayout getLayout() {

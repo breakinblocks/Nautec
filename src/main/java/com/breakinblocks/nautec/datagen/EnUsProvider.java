@@ -465,6 +465,10 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.MUTATOR, "Mutator");
         addBlock(NTBlocks.GRAFTING_STATION, "Grafting Station");
         add("nautec.grafting_station.status.running", "Grafting");
+        add("nautec.dish_port.title", "Dish Port");
+        add("nautec.dish_port.load", "A dish holding a colony loads it into the machine.");
+        add("nautec.dish_port.unload", "An empty dish takes a finished colony back out.");
+        add("nautec.dish_port.automation", "Hoppers and pipes can feed it and empty it.");
         add("nautec.grafting_station.status.no_dish", "Needs an empty Petri Dish");
         add("nautec.grafting_station.status.no_sample", "Needs a graftable block");
         add("nautec.grafting_station.status.no_water", "Needs more Salt Water");

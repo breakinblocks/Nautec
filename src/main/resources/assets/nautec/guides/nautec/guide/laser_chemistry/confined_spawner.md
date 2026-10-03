@@ -21,7 +21,7 @@ Use a Spawner Confinement Matrix on a spawner. The cage gains a band of glowing 
 
 Sneak and use the Confined Spawner with an empty hand, or with a Matrix, to release it. The spawner goes back exactly as it was and the Matrix returns to your inventory. Anything still in the storage drops on the ground.
 
-Breaking a Confined Spawner with a pickaxe gives back the Matrix and the stored items. The spawner itself is lost, just as when breaking a normal spawner, so release it first if you want to keep it.
+Breaking a Confined Spawner with a pickaxe drops the Confined Spawner itself, with or without Silk Touch. It keeps the mob, the spawner's settings and upgrades, and the filter, so you can move it and place it back exactly as it was. Anything still in the storage drops on the ground. To get a plain spawner back instead, release it first.
 
 ## <Color id="gold">Power</Color>
 

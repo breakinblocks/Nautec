@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.content.menus;
 public record BioReactorLayout(int imageWidth, int imageHeight, int inventoryY,
                                int[][] colonies, int[][] outputs, int[][] nutrients, int[][] upgrades,
                                int[][] vitalityBars, int[][] progressArrows, int[][] progressBars,
-                               int[] summaryArrow) {
+                               int[] summaryArrow, int[] dishIn, int[] dishOut) {
     public static final int ARROW_WIDTH = 24;
     public static final int ARROW_HEIGHT = 10;
 
@@ -15,7 +15,9 @@ public record BioReactorLayout(int imageWidth, int imageHeight, int inventoryY,
             new int[][]{{47, 12, 3, 16}, {47, 34, 3, 16}, {47, 56, 3, 16}},
             new int[][]{{76, 16}, {76, 38}, {76, 60}},
             null,
-            null);
+            null,
+            new int[]{7, 69},
+            new int[]{27, 69});
 
     public static final BioReactorLayout INDUSTRIAL = industrial();
 
@@ -43,6 +45,7 @@ public record BioReactorLayout(int imageWidth, int imageHeight, int inventoryY,
         for (int i = 0; i < 4; i++) {
             upgrades[i] = new int[]{98 + i * 18, 96};
         }
-        return new BioReactorLayout(176, 208, 126, colonies, outputs, nutrients, upgrades, vitality, null, bars, new int[]{86, 45});
+        return new BioReactorLayout(176, 208, 126, colonies, outputs, nutrients, upgrades, vitality, null, bars, new int[]{86, 45},
+                new int[]{90, 22}, new int[]{90, 62});
     }
 }

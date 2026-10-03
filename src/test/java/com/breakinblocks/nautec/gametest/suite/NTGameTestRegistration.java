@@ -60,8 +60,9 @@ public final class NTGameTestRegistration {
         SatelliteTests.register(r);
         PressureSynthesizerTests.register(r);
         GraftingStationTests.register(r);
-        if (r.registeredCount() != 504) {
-            throw new IllegalStateException("Expected 504 Nautec suite tests, registered " + r.registeredCount());
+        DishPortTests.register(r);
+        if (r.registeredCount() != 509) {
+            throw new IllegalStateException("Expected 509 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

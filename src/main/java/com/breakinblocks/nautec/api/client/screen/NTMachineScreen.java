@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -31,6 +32,11 @@ import java.util.List;
 
 public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTMachineMenu<T>> {
     private static final Identifier BACTERIA_OVERLAY_TEXTURE = Nautec.rl("textures/item/petri_dish_overlay.png");
+    private static final Identifier DISH_TEXTURE = Nautec.rl("textures/item/petri_dish.png");
+    private static final int SLOT_DARK = 0xFF1E2221;
+    private static final int SLOT_FILL = 0xFF45504A;
+    private static final int SLOT_LIGHT = 0xFFE7E7D6;
+    private static final int DISH_GHOST = 0x66FFFFFF;
 
     private SlotFluidHandler hoveredFluidHandlerSlot;
     private SlotBacteriaStorage hoveredBacteriaStorageSlot;
@@ -51,6 +57,48 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getBackgroundTexture(), leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+        extractDishPort(guiGraphics);
+    }
+
+    protected void extractDishPort(GuiGraphicsExtractor guiGraphics) {
+        Slot in = this.menu.getDishIn();
+        Slot out = this.menu.getDishOut();
+        if (in == null || out == null) {
+            return;
+        }
+        extractSlotFrame(guiGraphics, in.x, in.y);
+        extractSlotFrame(guiGraphics, out.x, out.y);
+        if (!in.hasItem()) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DISH_TEXTURE, leftPos + in.x, topPos + in.y, 0F, 0F, 16, 16, 16, 16, DISH_GHOST);
+        }
+    }
+
+    protected void extractSlotFrame(GuiGraphicsExtractor guiGraphics, int slotX, int slotY) {
+        int x = leftPos + slotX - 1;
+        int y = topPos + slotY - 1;
+        guiGraphics.fill(x, y, x + 18, y + 18, SLOT_FILL);
+        guiGraphics.fill(x, y, x + 17, y + 1, SLOT_DARK);
+        guiGraphics.fill(x, y, x + 1, y + 17, SLOT_DARK);
+        guiGraphics.fill(x + 1, y + 17, x + 18, y + 18, SLOT_LIGHT);
+        guiGraphics.fill(x + 17, y + 1, x + 18, y + 18, SLOT_LIGHT);
+    }
+
+    private void dishPortTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        Slot in = this.menu.getDishIn();
+        Slot out = this.menu.getDishOut();
+        if (in == null || out == null) {
+            return;
+        }
+        boolean overIn = !in.hasItem() && isHovering(in.x, in.y, 16, 16, mouseX, mouseY);
+        boolean overOut = !out.hasItem() && isHovering(out.x, out.y, 16, 16, mouseX, mouseY);
+        if (overIn || overOut) {
+            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+                    Component.translatable("nautec.dish_port.title"),
+                    Component.translatable("nautec.dish_port.load").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("nautec.dish_port.unload").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("nautec.dish_port.automation").withStyle(ChatFormatting.DARK_GRAY)
+            ), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -59,6 +107,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
 
         hoverFluidSlot(mouseX, mouseY);
         hoverBacteriaSlot(mouseX, mouseY);
+        dishPortTooltip(guiGraphics, mouseX, mouseY);
 
         Font font = minecraft.font;
         SlotBacteriaStorage slot = this.hoveredBacteriaStorageSlot;

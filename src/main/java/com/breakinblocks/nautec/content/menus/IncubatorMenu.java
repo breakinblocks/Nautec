@@ -20,10 +20,12 @@ public class IncubatorMenu extends NTMachineMenu<IncubatorBlockEntity> {
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 80, 49));
 
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 0, 79, 26));
+
+        addDishPort(IncubatorBlockEntity.DISH_IN, 24, 61, IncubatorBlockEntity.DISH_OUT, 46, 61);
     }
 
     @Override
     protected int getMergeableSlotCount() {
-        return 1;
+        return 2;
     }
 }

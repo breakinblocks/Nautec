@@ -128,8 +128,8 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).sound(SoundType.ANVIL).noOcclusion());
     public static final DeferredBlock<ChargerBlock> CHARGER = registerBlockAndItem("charger", ChargerBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion());
-    public static final DeferredBlock<ConfinedSpawnerBlock> CONFINED_SPAWNER = BLOCKS.registerBlock("confined_spawner", ConfinedSpawnerBlock::new,
-            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER));
+    public static final DeferredBlock<ConfinedSpawnerBlock> CONFINED_SPAWNER = registerBlockAndItem("confined_spawner", ConfinedSpawnerBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER), false, true);
     public static final DeferredBlock<CrystalCradleBlock> CRYSTAL_CRADLE = registerBlockAndItem("crystal_cradle", CrystalCradleBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0f, 1200.0f).sound(SoundType.METAL).noOcclusion(), CrystalCradleItem::new);
     public static final DeferredBlock<FishingStationBlock> FISHING_STATION = registerBlockAndItem("fishing_station", FishingStationBlock::new,
