@@ -42,6 +42,7 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.semi.Prismarine
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionCollectorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
+import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.TidalRotorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
@@ -152,6 +153,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonancePylonBlockEntity>> RESONANCE_PYLON = BLOCK_ENTITIES.register("resonance_pylon",
             () -> new BlockEntityType<>(ResonancePylonBlockEntity::new,
                     NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()));
+    public static final Supplier<BlockEntityType<PrismaticEmitterBlockEntity>> PRISMATIC_EMITTER = BLOCK_ENTITIES.register("prismatic_emitter",
+            () -> new BlockEntityType<>(PrismaticEmitterBlockEntity::new,
+                    NTBlocks.PRISMATIC_EMITTER.get()));
     public static final Supplier<BlockEntityType<TidalRotorBlockEntity>> TIDAL_ROTOR = BLOCK_ENTITIES.register("tidal_rotor",
             () -> new BlockEntityType<>(TidalRotorBlockEntity::new,
                     NTBlocks.TIDAL_ROTOR.get()));

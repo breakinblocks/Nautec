@@ -37,6 +37,7 @@ import com.breakinblocks.nautec.content.blocks.SubmarineDockBlock;
 import com.breakinblocks.nautec.content.blocks.flora.DeepKelpBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionCollectorBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
+import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlock;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlock;
 import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
@@ -207,6 +208,10 @@ public final class NTBlocks {
             properties -> new ResonancePylonBlock(properties, true),
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> 9));
+
+    public static final DeferredBlock<PrismaticEmitterBlock> PRISMATIC_EMITTER = registerBlockAndItem("prismatic_emitter", PrismaticEmitterBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(4.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().lightLevel(state -> 5));
 
     public static final DeferredBlock<TidalRotorBlock> TIDAL_ROTOR = registerBlockAndItem("tidal_rotor", TidalRotorBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());

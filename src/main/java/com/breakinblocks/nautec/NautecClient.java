@@ -48,6 +48,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.ConfinedSpawnerBER
 import com.breakinblocks.nautec.client.renderer.blockentities.CrystalCradleBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DecorativePrismarineCrystalBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.FusionControllerBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.PrismaticEmitterBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonancePylonBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
@@ -306,6 +307,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.GATEWAY.get(), GatewayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.FUSION_CONTROLLER.get(), FusionControllerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANCE_PYLON.get(), ResonancePylonBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMATIC_EMITTER.get(), PrismaticEmitterBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_INJECTOR.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);

@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "nautec:block/prismatic_emitter_side",
+    "side": "nautec:block/prismatic_emitter_side",
+    "top": "nautec:block/prismatic_emitter_top",
+    "bottom": "nautec:block/prismatic_emitter_bottom"
+  },
+  "elements": [
+    {
+      "from": [1, 0, 1],
+      "to": [15, 12, 15],
+      "faces": {
+        "north": {"uv": [1, 4, 15, 16], "texture": "#side"},
+        "south": {"uv": [1, 4, 15, 16], "texture": "#side"},
+        "east": {"uv": [1, 4, 15, 16], "texture": "#side"},
+        "west": {"uv": [1, 4, 15, 16], "texture": "#side"},
+        "up": {"uv": [1, 1, 15, 15], "texture": "#top"},
+        "down": {"uv": [1, 1, 15, 15], "texture": "#bottom", "cullface": "down"}
+      }
+    }
+  ]
+}

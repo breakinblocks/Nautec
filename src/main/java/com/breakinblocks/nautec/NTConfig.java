@@ -230,6 +230,18 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue RESONANCE_CROSS_DIMENSION_LOSS = BUILDER
             .comment("The fraction of FE lost moving between Abyssal Pylons in different dimensions")
             .defineInRange("resonanceCrossDimensionLoss", 0.15, 0.0, 0.99);
+    private static final ModConfigSpec.IntValue EMITTER_RANGE = BUILDER
+            .comment("How far in blocks a Prismatic Emitter can reach the machines linked to it")
+            .defineInRange("emitterRange", 16, 1, 64);
+    private static final ModConfigSpec.IntValue EMITTER_THROUGHPUT = BUILDER
+            .comment("The most FE per tick a Prismatic Emitter sends out, shared between its linked machines")
+            .defineInRange("emitterThroughput", 10_000, 1, Integer.MAX_VALUE / 2);
+    private static final ModConfigSpec.IntValue EMITTER_BUFFER = BUILDER
+            .comment("The FE a Prismatic Emitter holds")
+            .defineInRange("emitterBuffer", 100_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue EMITTER_MAX_LINKS = BUILDER
+            .comment("The most machines one Prismatic Emitter can be linked to")
+            .defineInRange("emitterMaxLinks", 16, 1, 256);
     private static final ModConfigSpec.IntValue RESONANCE_MAX_NETWORKS = BUILDER
             .comment("The most Resonance Networks one player can own")
             .defineInRange("resonanceMaxNetworksPerPlayer", 16, 1, 1024);
@@ -741,6 +753,10 @@ public final class NTConfig {
     public static double resonanceSameDimensionLoss = 0.05;
     public static double resonanceCrossDimensionLoss = 0.15;
     public static int resonanceMaxNetworksPerPlayer = 16;
+    public static int emitterRange = 16;
+    public static int emitterThroughput = 10_000;
+    public static int emitterBuffer = 100_000;
+    public static int emitterMaxLinks = 16;
     public static int tidalRotorMinOutput = 40;
     public static int tidalRotorMaxOutput = 80;
     public static int ventTapMinOutput = 350;
@@ -962,6 +978,10 @@ public final class NTConfig {
         resonanceSameDimensionLoss = value(RESONANCE_SAME_DIMENSION_LOSS);
         resonanceCrossDimensionLoss = value(RESONANCE_CROSS_DIMENSION_LOSS);
         resonanceMaxNetworksPerPlayer = value(RESONANCE_MAX_NETWORKS);
+        emitterRange = value(EMITTER_RANGE);
+        emitterThroughput = value(EMITTER_THROUGHPUT);
+        emitterBuffer = value(EMITTER_BUFFER);
+        emitterMaxLinks = value(EMITTER_MAX_LINKS);
         tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
         tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
         ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);

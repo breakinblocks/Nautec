@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "L": "nautec:prismarine_lens",
+    "R": "minecraft:redstone_block",
+    "S": "nautec:prismarine_crystal_shard"
+  },
+  "pattern": [
+    " S ",
+    "CLC",
+    "ARA"
+  ],
+  "result": {
+    "id": "nautec:prismatic_emitter"
+  }
+}

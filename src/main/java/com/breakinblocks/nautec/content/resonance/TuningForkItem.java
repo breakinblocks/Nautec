@@ -1,0 +1,120 @@
+package com.breakinblocks.nautec.content.resonance;
+
+import com.breakinblocks.nautec.data.NTDataComponents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+
+import java.util.Locale;
+import java.util.function.Consumer;
+
+public class TuningForkItem extends Item {
+    public TuningForkItem(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        if (!(context.getPlayer() instanceof Player player)) {
+            return InteractionResult.PASS;
+        }
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+        if (!(player instanceof ServerPlayer serverPlayer) || !(level instanceof ServerLevel serverLevel)) {
+            return InteractionResult.PASS;
+        }
+        ItemStack fork = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+
+        if (serverLevel.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity emitter) {
+            if (!emitter.canTune(serverPlayer)) {
+                message(serverPlayer, Component.translatable("nautec.tuning_fork.not_yours", emitter.getOwnerName()).withStyle(ChatFormatting.RED));
+                return InteractionResult.FAIL;
+            }
+            if (serverPlayer.isSecondaryUseActive()) {
+                emitter.clearLinks();
+                message(serverPlayer, Component.translatable("nautec.tuning_fork.cleared"));
+                return InteractionResult.SUCCESS;
+            }
+            fork.set(NTDataComponents.TUNED_EMITTER.get(), GlobalPos.of(serverLevel.dimension(), pos.immutable()));
+            message(serverPlayer, Component.translatable("nautec.tuning_fork.tuned", emitter.getLinks().size()));
+            ring(serverLevel, pos, 1.6F);
+            return InteractionResult.SUCCESS;
+        }
+
+        GlobalPos tuned = fork.get(NTDataComponents.TUNED_EMITTER.get());
+        if (tuned == null) {
+            return InteractionResult.PASS;
+        }
+        if (!tuned.dimension().equals(serverLevel.dimension()) || !serverLevel.isLoaded(tuned.pos())
+                || !(serverLevel.getBlockEntity(tuned.pos()) instanceof PrismaticEmitterBlockEntity emitter)) {
+            message(serverPlayer, Component.translatable("nautec.tuning_fork.lost").withStyle(ChatFormatting.RED));
+            return InteractionResult.FAIL;
+        }
+        if (!emitter.canTune(serverPlayer)) {
+            message(serverPlayer, Component.translatable("nautec.tuning_fork.not_yours", emitter.getOwnerName()).withStyle(ChatFormatting.RED));
+            return InteractionResult.FAIL;
+        }
+        PrismaticEmitterBlockEntity.LinkResult result = emitter.toggle(pos, context.getClickedFace());
+        ChatFormatting color = result == PrismaticEmitterBlockEntity.LinkResult.LINKED || result == PrismaticEmitterBlockEntity.LinkResult.UNLINKED
+                ? ChatFormatting.AQUA : ChatFormatting.RED;
+        message(serverPlayer, Component.translatable("nautec.tuning_fork." + result.name().toLowerCase(Locale.ROOT),
+                serverLevel.getBlockState(pos).getBlock().getName(), emitter.getLinks().size()).withStyle(color));
+        if (result == PrismaticEmitterBlockEntity.LinkResult.LINKED) {
+            ring(serverLevel, pos, 2.0F);
+        } else if (result == PrismaticEmitterBlockEntity.LinkResult.UNLINKED) {
+            ring(serverLevel, pos, 1.2F);
+        }
+        return result == PrismaticEmitterBlockEntity.LinkResult.LINKED || result == PrismaticEmitterBlockEntity.LinkResult.UNLINKED
+                ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+    }
+
+    @Override
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        ItemStack fork = player.getItemInHand(hand);
+        if (player.isSecondaryUseActive() && fork.has(NTDataComponents.TUNED_EMITTER.get())) {
+            if (!level.isClientSide()) {
+                fork.remove(NTDataComponents.TUNED_EMITTER.get());
+                player.sendOverlayMessage(Component.translatable("nautec.tuning_fork.reset"));
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
+    }
+
+    private static void message(ServerPlayer player, Component text) {
+        player.sendOverlayMessage(text);
+    }
+
+    private static void ring(ServerLevel level, BlockPos pos, float pitch) {
+        level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 0.8F, pitch);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        GlobalPos tuned = stack.get(NTDataComponents.TUNED_EMITTER.get());
+        if (tuned != null) {
+            tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.tuned", tuned.pos().getX(), tuned.pos().getY(), tuned.pos().getZ())
+                    .withStyle(ChatFormatting.AQUA));
+        } else {
+            tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.untuned").withStyle(ChatFormatting.GRAY));
+        }
+        tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
+    }
+}

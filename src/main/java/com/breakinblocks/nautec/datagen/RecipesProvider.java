@@ -1127,6 +1127,27 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
                 .save(pRecipeOutput, key("resonance_pylon"));
 
+        shaped(RecipeCategory.MISC, NTBlocks.PRISMATIC_EMITTER.asItem())
+                .pattern(" S ")
+                .pattern("CLC")
+                .pattern("ARA")
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('R', Items.REDSTONE_BLOCK)
+                .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
+                .save(pRecipeOutput, key("prismatic_emitter"));
+
+        shaped(RecipeCategory.TOOLS, NTItems.TUNING_FORK.get())
+                .pattern("A A")
+                .pattern(" A ")
+                .pattern(" S ")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
+                .save(pRecipeOutput, key("tuning_fork"));
+
         shaped(RecipeCategory.MISC, NTBlocks.ABYSSAL_PYLON.asItem())
                 .pattern("FNF")
                 .pattern("EPE")

@@ -7,6 +7,8 @@ navigation:
 item_ids:
   - nautec:resonance_pylon
   - nautec:abyssal_pylon
+  - nautec:prismatic_emitter
+  - nautec:tuning_fork
 ---
 
 # <Color id="light_purple">Resonance Network</Color>
@@ -58,3 +60,17 @@ The owner manages access from any pylon on the network:
 * **Delete**: removes the network and unlinks every pylon on it. Click it twice.
 
 Each player can own up to 16 networks.
+
+***
+
+<Row>
+  <ItemImage id="prismatic_emitter"/>
+  ### <Color id="aqua">Prismatic Emitter</Color>
+</Row>
+
+Powers nearby machines without cables. Feed it FE from a cable or a receiving pylon placed against it, then link the machines it should power. It fires a crystal tether to each one and shares up to 10,000 FE/t between them, with nothing lost on the way.
+
+1. Hold a <ItemLink id="tuning_fork"/> and right-click the emitter to tune the fork to it.
+2. Right-click each machine to link it. Right-click a linked machine again to unlink it.
+
+An emitter reaches machines up to 16 blocks away and can feed 16 of them. Only the player who placed it can tune a fork to it. Sneak-right-click the emitter with the fork to unlink everything, or sneak-right-click the air to clear the fork.

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.resonance.TuningForkItem;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.items.AirBottleItem;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
@@ -217,6 +218,8 @@ public final class NTItems {
             props -> new CrystalSeedItem(props, false), () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<CrystalSeedItem> PRISMARINE_CRYSTAL_SEED = registerItem("prismarine_crystal_seed",
             props -> new CrystalSeedItem(props, true), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<TuningForkItem> TUNING_FORK = registerItem("tuning_fork",
+            TuningForkItem::new, () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<SpawnerConfinementMatrixItem> SPAWNER_CONFINEMENT_MATRIX = registerItem("spawner_confinement_matrix",
             SpawnerConfinementMatrixItem::new, () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_FUSION_UPGRADE = bacteriaItem(registerItem("reactor_fusion_upgrade",
