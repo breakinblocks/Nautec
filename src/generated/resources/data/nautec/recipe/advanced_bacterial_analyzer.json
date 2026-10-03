@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "nautec:bacterial_analyzer",
+    "C": "nautec:aquatic_chip",
+    "D": "nautec:deep_steel_plating",
+    "L": "nautec:laser_channeling_coil"
+  },
+  "pattern": [
+    "ACA",
+    "LBL",
+    "ADA"
+  ],
+  "result": {
+    "id": "nautec:advanced_bacterial_analyzer"
+  }
+}

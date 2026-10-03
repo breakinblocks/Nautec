@@ -59,6 +59,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.MixerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.PrismarineCrystalBERenderer;
 import com.breakinblocks.nautec.client.renderer.robotArms.ClawRobotArmRenderer;
 import com.breakinblocks.nautec.client.screen.AugmentationStationExtensionScreen;
+import com.breakinblocks.nautec.client.screen.AdvancedBacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.GraftingStationScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
@@ -384,6 +385,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.MIXER.get(), MixerScreen::new);
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.GRAFTING_STATION.get(), GraftingStationScreen::new);
+        event.register(NTMenuTypes.ADVANCED_BACTERIAL_ANALYZER.get(), AdvancedBacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
         event.register(NTMenuTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerScreen::new);
         event.register(NTMenuTypes.FUSION_CONTROLLER.get(), FusionControllerScreen::new);

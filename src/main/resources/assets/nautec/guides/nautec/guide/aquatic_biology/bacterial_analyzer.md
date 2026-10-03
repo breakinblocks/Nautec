@@ -6,6 +6,7 @@ navigation:
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:bacterial_analyzer
+  - nautec:advanced_bacterial_analyzer
 ---
 
 # <Color id="light_purple">Bacterial Analyzer</Color>
@@ -42,3 +43,21 @@ The tooltip shows Size, Vitality and, for a strain that makes something, its Str
 ## <Color id="gold">Recipe</Color>
 
 <Recipe id="nautec:bacterial_analyzer"/>
+
+***
+
+## <Color id="gold">Advanced Bacterial Analyzer</Color>
+
+<Row>
+  <ItemImage id="advanced_bacterial_analyzer" scale="2"/>
+</Row>
+
+Analyzes nine dishes at once. It has nine input slots and nine output slots, and every dish in the inputs works through its own 60 tick analysis at the same time, so a full load finishes as fast as a single dish does in the basic Analyzer. Each input slot fills from the bottom as its dish progresses.
+
+* Power: a beam of at least 40 AP at purity 2.1 or higher, into any face except the front. Below either, it pauses and keeps its progress. A [Prismarine Crystal](nautec:getting_started/laser_power.md) beam (3.0) or a full purity <ItemLink id="bacterial_fuel_cell"/> (2.5) covers the purity.
+* Only dishes holding an unanalyzed colony go in, so a pipe feeding it never clogs it with finished or empty dishes.
+* When all nine output slots are full, finished dishes wait in their input slot until one frees up.
+
+Hover over the arrow to see what it is waiting for, or look at it through a <ItemLink id="prism_monocle"/>. Hoppers and pipes can feed it and empty it through any face by default ([Side Configuration](nautec:getting_started/utilities.md)). Its time, power and purity are in `config/nautec-common.toml`.
+
+<Recipe id="nautec:advanced_bacterial_analyzer"/>

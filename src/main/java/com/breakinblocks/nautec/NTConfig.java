@@ -376,6 +376,18 @@ public final class NTConfig {
             .comment("The Etching Acid capacity of an Abyssal Pressure Forge")
             .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.IntValue ADVANCED_ANALYZER_POWER_USAGE = BUILDER
+            .comment("The beam power in AP an Advanced Bacterial Analyzer needs to run")
+            .defineInRange("advancedAnalyzerPowerUsage", 40, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue ADVANCED_ANALYZER_PURITY = BUILDER
+            .comment("The lowest beam purity an Advanced Bacterial Analyzer runs with")
+            .defineInRange("advancedAnalyzerPurity", 2.1, 0, 10);
+
+    private static final ModConfigSpec.IntValue ADVANCED_ANALYZER_CRAFTING_SPEED = BUILDER
+            .comment("How many ticks an Advanced Bacterial Analyzer takes per dish. All nine dishes run at the same time")
+            .defineInRange("advancedAnalyzerCraftingSpeed", 60, 1, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue GRAFTING_STATION_POWER_USAGE = BUILDER
             .comment("The beam power in AP a Grafting Station needs to run")
             .defineInRange("graftingStationPowerUsage", 100, 0, Integer.MAX_VALUE);
@@ -841,6 +853,9 @@ public final class NTConfig {
     public static int pressureForgeAcidUsage = 250;
     public static int pressureForgeCapacity = 4_000;
 
+    public static int advancedAnalyzerPowerUsage = 40;
+    public static double advancedAnalyzerPurity = 2.1;
+    public static int advancedAnalyzerCraftingSpeed = 60;
     public static int graftingStationPowerUsage = 100;
     public static double graftingStationPurity = 2.8;
     public static int graftingStationDuration = 1_200;
@@ -1074,6 +1089,9 @@ public final class NTConfig {
         pressureForgeAcidUsage = value(PRESSURE_FORGE_ACID_USAGE);
         pressureForgeCapacity = value(PRESSURE_FORGE_CAPACITY);
 
+        advancedAnalyzerPowerUsage = value(ADVANCED_ANALYZER_POWER_USAGE);
+        advancedAnalyzerPurity = value(ADVANCED_ANALYZER_PURITY);
+        advancedAnalyzerCraftingSpeed = value(ADVANCED_ANALYZER_CRAFTING_SPEED);
         graftingStationPowerUsage = value(GRAFTING_STATION_POWER_USAGE);
         graftingStationPurity = value(GRAFTING_STATION_PURITY);
         graftingStationDuration = value(GRAFTING_STATION_DURATION);

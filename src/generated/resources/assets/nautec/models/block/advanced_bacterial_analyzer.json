@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nautec:block/advanced_bacterial_analyzer_bottom",
+    "front": "nautec:block/advanced_bacterial_analyzer_front",
+    "side": "nautec:block/advanced_bacterial_analyzer_side",
+    "top": "nautec:block/advanced_bacterial_analyzer_top"
+  }
+}

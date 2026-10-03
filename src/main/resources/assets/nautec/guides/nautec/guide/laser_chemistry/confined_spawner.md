@@ -6,6 +6,7 @@ navigation:
   parent: laser_chemistry/laser_chemistry-index.md
 item_ids:
   - nautec:spawner_confinement_matrix
+  - nautec:confined_spawner
 ---
 
 # <Color id="light_purple">Confined Spawner</Color>

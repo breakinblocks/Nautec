@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.registries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.AnchorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.AdvancedBacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.GraftingStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.BacterialFuelCellBlockEntity;
@@ -136,6 +137,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<BacterialAnalyzerBlockEntity>> BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("bacterial_analyzer",
             () -> new BlockEntityType<>(BacterialAnalyzerBlockEntity::new,
                     NTBlocks.BACTERIAL_ANALYZER.get()));
+    public static final Supplier<BlockEntityType<AdvancedBacterialAnalyzerBlockEntity>> ADVANCED_BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("advanced_bacterial_analyzer",
+            () -> new BlockEntityType<>(AdvancedBacterialAnalyzerBlockEntity::new,
+                    NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get()));
     public static final Supplier<BlockEntityType<GraftingStationBlockEntity>> GRAFTING_STATION = BLOCK_ENTITIES.register("grafting_station",
             () -> new BlockEntityType<>(GraftingStationBlockEntity::new,
                     NTBlocks.GRAFTING_STATION.get()));

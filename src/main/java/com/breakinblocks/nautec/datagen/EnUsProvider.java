@@ -513,6 +513,13 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.DRAIN_PART, "Deep Sea Drain");
         addBlock(NTBlocks.MUTATOR, "Mutator");
         addBlock(NTBlocks.GRAFTING_STATION, "Grafting Station");
+        addBlock(NTBlocks.ADVANCED_BACTERIAL_ANALYZER, "Advanced Bacterial Analyzer");
+        add("nautec.advanced_analyzer.status.running", "Analyzing");
+        add("nautec.advanced_analyzer.status.idle", "Needs dishes with unanalyzed colonies");
+        add("nautec.advanced_analyzer.status.output_full", "Output slots are full");
+        add("nautec.advanced_analyzer.status.low_power", "Beam too weak");
+        add("nautec.advanced_analyzer.status.low_purity", "Beam purity too low");
+        add("nautec.advanced_analyzer.requirements", "Needs a beam of %s AP at purity %s or higher. All nine dishes analyze at once.");
         add("nautec.grafting_station.status.running", "Grafting");
         add("nautec.dish_port.title", "Dish Port");
         add("nautec.dish_port.load", "A dish holding a colony loads it into the machine.");

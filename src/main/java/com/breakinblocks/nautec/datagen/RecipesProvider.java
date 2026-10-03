@@ -547,6 +547,18 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD))
                 .save(pRecipeOutput, key("mutator"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.ADVANCED_BACTERIAL_ANALYZER.asItem())
+                .pattern("ACA")
+                .pattern("LBL")
+                .pattern("ADA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('B', NTBlocks.BACTERIAL_ANALYZER)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .unlockedBy("has_item", has(NTBlocks.BACTERIAL_ANALYZER))
+                .save(pRecipeOutput, key("advanced_bacterial_analyzer"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.GRAFTING_STATION.asItem())
                 .pattern("DGD")
                 .pattern("PSP")
