@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
+import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
+import com.breakinblocks.nautec.content.blocks.HydrothermalVentBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.bubble.HeldWaterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
@@ -167,6 +170,10 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
     public static final DeferredBlock<ColonyReplicatorBlock> COLONY_REPLICATOR = bacteriaBlock(registerBlockAndItem("colony_replicator",
             ColonyReplicatorBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<OxygenDiffuserBlock> OXYGEN_DIFFUSER = registerBlockAndItem("oxygen_diffuser", OxygenDiffuserBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).noOcclusion().lightLevel(state -> state.getValue(OxygenDiffuserBlock.ACTIVE) ? 8 : 0));
+    public static final DeferredBlock<PressureHatchBlock> PRESSURE_HATCH = registerBlockAndItem("pressure_hatch", PressureHatchBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR).strength(5.0F, 1200.0F).noOcclusion());
     public static final DeferredBlock<BubbleAnchorBlock> BUBBLE_ANCHOR = registerBlockAndItem("bubble_anchor", BubbleAnchorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).lightLevel(state -> state.getValue(BubbleAnchorBlock.ACTIVE) ? 12 : 4));
     public static final DeferredBlock<HeldWaterBlock> HELD_WATER = BLOCKS.registerBlock("held_water", HeldWaterBlock::new,
@@ -290,6 +297,9 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEAGRASS).lightLevel(state -> 3));
     public static final DeferredBlock<UnderwaterPlantBlock> ABYSSAL_CORAL = registerBlockAndItem("abyssal_coral", UnderwaterPlantBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEAGRASS));
+    public static final DeferredBlock<HydrothermalVentBlock> HYDROTHERMAL_VENT = registerBlockAndItem("hydrothermal_vent", HydrothermalVentBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.BASALT).lightLevel(state -> 6).isValidSpawn((state, level, pos, type) -> false)
+                    .emissiveRendering((state, level, pos) -> true));
     public static final DeferredBlock<GlowLichenBlock> GLOW_POLYP = registerBlockAndItem("glow_polyp", GlowLichenBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.GLOW_LICHEN).lightLevel(GlowLichenBlock.emission(7)));
 

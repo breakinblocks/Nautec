@@ -70,6 +70,9 @@ public class BlockTagProvider extends BlockTagsProvider {
                 DISTRIBUTOR,
                 BUBBLE_ANCHOR,
                 COLONY_REPLICATOR,
+                HYDROTHERMAL_VENT,
+                PRESSURE_HATCH,
+                OXYGEN_DIFFUSER,
                 ADVANCED_BACTERIAL_ANALYZER,
                 INCUBATOR,
                 FISHING_STATION,
@@ -102,8 +105,9 @@ public class BlockTagProvider extends BlockTagsProvider {
                 UPLINK_ARRAY,
                 DOWNLINK_ARRAY,
                 SATELLITE_ARRAY_TOP);
-        tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA);
+        tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA, HYDROTHERMAL_VENT.get());
         tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
+        tag(BlockTags.DOORS, PRESSURE_HATCH);
         tag(BlockTags.NEEDS_DIAMOND_TOOL,
                 ABYSSAL_PYLON,
                 FUSION_CASING,

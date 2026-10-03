@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.generators;
 
+import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -37,6 +38,7 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
     public static final int FUEL_CAPACITY = 8_000;
     public static final int HEAT_SPOTS = 9;
     public static final int VENT_BIOME_HEAT = 3;
+    public static final int VENT_BLOCK_HEAT = 3;
     private static final int SCAN_INTERVAL = 40;
 
     private final FluidTank fuel = new FluidTank(FUEL_CAPACITY) {
@@ -139,14 +141,17 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
             for (int z = -1; z <= 1; z++) {
                 cursor.setWithOffset(worldPosition, x, -1, z);
                 BlockState state = level.getBlockState(cursor);
-                if (state.is(NTTags.Blocks.VENT_HEAT_SOURCES) || state.getFluidState().is(FluidTags.LAVA)) {
+                if (state.is(NTBlocks.HYDROTHERMAL_VENT.get())) {
+                    found += VENT_BLOCK_HEAT;
+                } else if (state.is(NTTags.Blocks.VENT_HEAT_SOURCES) || state.getFluidState().is(FluidTags.LAVA)) {
                     found++;
                 }
             }
         }
         if (found > 0 && level.getBiome(worldPosition).is(NTBiomeKeys.HYDROTHERMAL_VENTS)) {
-            found = Math.min(HEAT_SPOTS, found + VENT_BIOME_HEAT);
+            found = found + VENT_BIOME_HEAT;
         }
+        found = Math.min(HEAT_SPOTS, found);
         this.heat = found;
     }
 

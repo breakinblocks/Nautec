@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "nautec:research_outpost",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 1870451327,
+    "spacing": 28,
+    "separation": 12,
+    "exclusion_zone": {
+      "chunk_count": 10,
+      "other_set": "minecraft:ocean_monuments"
+    }
+  }
+}

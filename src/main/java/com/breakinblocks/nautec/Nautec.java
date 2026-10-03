@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.registries.NTFeatures;
 import com.mojang.logging.LogUtils;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
@@ -121,6 +122,8 @@ public final class Nautec {
         NTMobEffects.MOB_EFFECTS.register(modEventBus);
         NTSounds.SOUNDS.register(modEventBus);
         NTStructures.STRUCTURES.register(modEventBus);
+        NTStructures.STRUCTURE_PIECES.register(modEventBus);
+        NTFeatures.FEATURES.register(modEventBus);
         NTLootModifier.LOOT_MODIFIERS.register(modEventBus);
         NTLootConditions.LOOT_CONDITIONS.register(modEventBus);
         NTLootFunctions.LOOT_FUNCTIONS.register(modEventBus);

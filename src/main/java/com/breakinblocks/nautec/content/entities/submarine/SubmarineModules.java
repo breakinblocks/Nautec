@@ -259,6 +259,12 @@ public class SubmarineModules {
             }
             case IMPULSE_LASER -> false;
             case TELEPORT -> beginTeleport(slot, pilot);
+            case CARGO -> {
+                if (pilot instanceof ServerPlayer serverPlayer) {
+                    this.submarine.openCargo(serverPlayer);
+                }
+                yield false;
+            }
             case SOLAR, ARMOR, FLIGHT -> false;
         };
     }

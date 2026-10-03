@@ -35,6 +35,7 @@ Sneak and right-click to switch what the eye seeks. The tooltip and a message ab
 |---|---|
 | Crystal Geodes | the stone and deepslate geodes holding a <ItemLink id="prismarine_crystal"/> |
 | NauTec Ruins | the dark prismarine arches with an <ItemLink id="aquatic_catalyst"/> |
+| Research Outposts | the sunken research stations, see [Structures](structures.md) |
 | Gateways | the Underwater Gateway platforms, see [Gateway](nautec:deep_engineering/gateway.md) |
 | Ocean Ruins | vanilla cold and warm ocean ruins |
 | Ocean Monuments | vanilla ocean monuments |

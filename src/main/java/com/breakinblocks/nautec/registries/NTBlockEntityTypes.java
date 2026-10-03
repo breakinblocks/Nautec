@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.blockentities.OxygenDiffuserBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ColonyReplicatorBlockEntity;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
@@ -140,6 +141,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<BacterialAnalyzerBlockEntity>> BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("bacterial_analyzer",
             () -> new BlockEntityType<>(BacterialAnalyzerBlockEntity::new,
                     NTBlocks.BACTERIAL_ANALYZER.get()));
+    public static final Supplier<BlockEntityType<OxygenDiffuserBlockEntity>> OXYGEN_DIFFUSER = BLOCK_ENTITIES.register("oxygen_diffuser",
+            () -> new BlockEntityType<>(OxygenDiffuserBlockEntity::new,
+                    NTBlocks.OXYGEN_DIFFUSER.get()));
     public static final Supplier<BlockEntityType<ColonyReplicatorBlockEntity>> COLONY_REPLICATOR = BLOCK_ENTITIES.register("colony_replicator",
             () -> new BlockEntityType<>(ColonyReplicatorBlockEntity::new,
                     NTBlocks.COLONY_REPLICATOR.get()));

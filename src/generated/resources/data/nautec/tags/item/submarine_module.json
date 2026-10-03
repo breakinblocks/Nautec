@@ -8,6 +8,7 @@
     "nautec:shield_module",
     "nautec:impulse_laser_module",
     "nautec:teleport_module",
-    "nautec:flight_module"
+    "nautec:flight_module",
+    "nautec:cargo_module"
   ]
 }

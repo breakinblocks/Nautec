@@ -52,5 +52,6 @@ Cooldowns belong to the module type and start when you fire. Firing one copy of 
 | [Impulse Laser](impulse_laser_module.md) | Toggle | 10,000 every half second | None |
 | [Teleport](teleport_module.md) | Jump to an anchor | 200,000 | 30 s |
 | [Flight](flight_module.md) | Passive | 4 per tick while airborne | None |
+| [Cargo Hold](cargo_module.md) | Opens the hold | None | None |
 
 For the Booster and Stealth Modules the cooldown includes the time the effect runs. Each module's tooltip shows its power per use and its cooldown, and every figure here is configurable.

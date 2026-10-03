@@ -288,10 +288,11 @@ public final class NTItems {
             SubmarineModuleType.TELEPORT.itemId(), TeleportModuleItem::new, new Item.Properties());
 
     public static final DeferredItem<SubmarineModuleItem> FLIGHT_MODULE = moduleItem(SubmarineModuleType.FLIGHT);
+    public static final DeferredItem<SubmarineModuleItem> CARGO_MODULE = moduleItem(SubmarineModuleType.CARGO);
 
     public static final List<DeferredItem<? extends SubmarineModuleItem>> SUBMARINE_MODULES = List.of(
             SOLAR_MODULE, BOOSTER_MODULE, STEALTH_MODULE, ARMOR_MODULE,
-            SONAR_MODULE, SHIELD_MODULE, IMPULSE_LASER_MODULE, TELEPORT_MODULE, FLIGHT_MODULE);
+            SONAR_MODULE, SHIELD_MODULE, IMPULSE_LASER_MODULE, TELEPORT_MODULE, FLIGHT_MODULE, CARGO_MODULE);
 
     public static final DeferredItem<AquarineWrenchItem> AQUARINE_WRENCH = registerItem("aquarine_steel_wrench",
             AquarineWrenchItem::new, new Item.Properties());

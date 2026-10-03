@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.tags.NTTags;
@@ -29,6 +30,7 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(NTTags.Items.AQUARINE_STEEL, NTItems.AQUARINE_STEEL_INGOT);
         tag(NTTags.Items.DUSTS_SALT, NTItems.SALT);
         tag(Tags.Items.DUSTS, NTTags.Items.DUSTS_SALT);
+        tag(ItemTags.DOORS, NTBlocks.PRESSURE_HATCH.asItem());
         tag(ItemTags.AXES, NTItems.AQUARINE_AXE);
         tag(ItemTags.PICKAXES, NTItems.AQUARINE_PICKAXE);
         tag(ItemTags.SWORDS, NTItems.AQUARINE_SWORD);

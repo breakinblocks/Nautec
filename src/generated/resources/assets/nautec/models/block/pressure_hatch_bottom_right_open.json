@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_right_open",
+  "textures": {
+    "bottom": "nautec:block/pressure_hatch_bottom",
+    "top": "nautec:block/pressure_hatch_top"
+  }
+}

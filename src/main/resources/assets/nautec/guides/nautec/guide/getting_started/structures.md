@@ -10,10 +10,10 @@ navigation:
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="prismarine_crystal" scale="2"/>
-  Three NauTec structures generate in the oceans, each worth a visit early on.
+  Four NauTec structures generate in the oceans, each worth a visit early on.
 </Column>
 
-All three generate in any ocean biome, including the four NauTec oceans, only where the ground is below sea level. None of them generate near an ocean monument.
+All four generate in any ocean biome, including the four NauTec oceans, only where the ground is below sea level. None of them generate near an ocean monument.
 
 An <ItemLink id="eye_of_the_sea"/> points the way to the nearest one of each kind, and to vanilla ocean ruins and monuments. See [Eye of the Sea](eye_of_the_sea.md).
 
@@ -55,6 +55,21 @@ Crates open like a chest, but the rusty ones need etching first. See [Crates and
 A small platform of Polished Prismarine with a Dark Prismarine Pillar at each corner and a <ItemLink id="gateway"/> in the middle. The Gateway grows its full ring the first time the chunk loads. They are much rarer than ruins and geodes.
 
 Each one is half of a pair with its own address. The first trip through it builds the other half about 1,500 blocks away in another ocean. See [Gateway](nautec:deep_engineering/gateway.md) for how travel works.
+
+***
+
+## <Color id="gold">Sunken Research Outposts</Color>
+
+An abandoned research station on the floor of deep water, at least twelve blocks down. A domed hub of copper and cast iron with a skylight, joined by short corridors to three modules: a lab, a storage room and a power room. The whole station is flooded, the walls are holed, and seagrass has grown through the floor. Drowned spawn inside.
+
+What to take:
+
+* A Research Log on the lectern in the hub. There are four, each a few pages from the crew about the vents, the glowing caves, the trench and the gateways.
+* Chests and a barrel with lab supplies: Petri Dishes, Glass Vials, Air Bottles, Aquarine Steel Compound, salvage parts, and now and then a submarine module, a <ItemLink id="diving_helmet"/> or a Heart of the Sea.
+* Rusty Crates in the hub and the storage room.
+* The <ItemLink id="pressure_hatch"/> in the hub's doorway. Mine it with a pickaxe and it is yours, see [Underwater Bases](underwater_bases.md).
+
+They are rarer than the ruins, and they only generate where the sea floor is fairly flat.
 
 ***
 

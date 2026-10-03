@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "minecraft:barrel",
+    "C": "minecraft:chest",
+    "P": "nautec:deep_steel_plating",
+    "V": "nautec:valve"
+  },
+  "pattern": [
+    "ABA",
+    "CPC",
+    "AVA"
+  ],
+  "result": {
+    "id": "nautec:cargo_module"
+  }
+}

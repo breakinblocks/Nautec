@@ -120,6 +120,9 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.DISTRIBUTOR.get());
         dropSelf(NTBlocks.BUBBLE_ANCHOR.get());
         dropSelf(NTBlocks.COLONY_REPLICATOR.get());
+        dropSelf(NTBlocks.HYDROTHERMAL_VENT.get());
+        dropSelf(NTBlocks.OXYGEN_DIFFUSER.get());
+        add(NTBlocks.PRESSURE_HATCH.get(), createDoorTable(NTBlocks.PRESSURE_HATCH.get()));
         dropSelf(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         dropSelf(NTBlocks.BACTERIAL_FUEL_CELL.get());
         dropSelf(NTBlocks.BIO_REACTOR.get());

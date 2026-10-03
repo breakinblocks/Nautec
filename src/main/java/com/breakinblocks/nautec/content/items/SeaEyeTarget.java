@@ -17,6 +17,7 @@ import java.util.function.IntFunction;
 public enum SeaEyeTarget implements StringRepresentable {
     CRYSTAL_GEODES("crystal_geodes"),
     NAUTEC_RUINS("nautec_ruins"),
+    RESEARCH_OUTPOSTS("research_outposts"),
     GATEWAYS("gateways"),
     OCEAN_RUINS("ocean_ruins"),
     OCEAN_MONUMENTS("ocean_monuments");

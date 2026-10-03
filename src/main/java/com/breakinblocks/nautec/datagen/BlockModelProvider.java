@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.NTRegistries;
@@ -214,6 +215,10 @@ public class BlockModelProvider extends ModelProvider {
         advancedAnalyzer(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         bubbleAnchor(NTBlocks.BUBBLE_ANCHOR.get());
         replicator(NTBlocks.COLONY_REPLICATOR.get());
+        blockModels.createDoor(NTBlocks.PRESSURE_HATCH.get());
+        oxygenDiffuser(NTBlocks.OXYGEN_DIFFUSER.get());
+        simpleBlock(NTBlocks.HYDROTHERMAL_VENT.get(), cubeBottomTop("hydrothermal_vent", blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_side"),
+                blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_bottom"), blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_top")));
         simpleBlock(NTBlocks.DISTRIBUTOR.get(), cubeBottomTop("nautechnical_distributor", blockTexture(NTBlocks.DISTRIBUTOR.get(), "_side"),
                 blockTexture(NTBlocks.DISTRIBUTOR.get(), "_bottom"), blockTexture(NTBlocks.DISTRIBUTOR.get(), "_top")));
     }
@@ -233,6 +238,15 @@ public class BlockModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.createBooleanModelDispatch(ColonyReplicatorBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+    }
+
+    private void oxygenDiffuser(Block block) {
+        Identifier idle = cubeBottomTop("oxygen_diffuser", blockTexture(block, "_side"), blockTexture(block, "_bottom"), blockTexture(block, "_top"));
+        Identifier active = cubeBottomTop("oxygen_diffuser_active", blockTexture(block, "_side_active"), blockTexture(block, "_bottom"),
+                blockTexture(block, "_top_active"));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(BlockModelGenerators.createBooleanModelDispatch(OxygenDiffuserBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle))));
     }
 
     private void bubbleAnchor(Block block) {

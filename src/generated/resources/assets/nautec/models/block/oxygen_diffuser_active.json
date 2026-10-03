@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "nautec:block/oxygen_diffuser_bottom",
+    "side": "nautec:block/oxygen_diffuser_side_active",
+    "top": "nautec:block/oxygen_diffuser_top_active"
+  }
+}

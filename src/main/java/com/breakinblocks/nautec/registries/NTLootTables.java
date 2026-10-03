@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 public final class NTLootTables {
 
     public static final ResourceKey<LootTable> CRATE = register("chests/crate");
+    public static final ResourceKey<LootTable> RESEARCH_OUTPOST = register("chests/research_outpost");
     public static final ResourceKey<LootTable> BURIED_TREASURE = register("chests/buried_treasure");
     public static final ResourceKey<LootTable> OCEAN_RUINS_SMALL = register("chests/ocean_ruins_small");
     public static final ResourceKey<LootTable> OCEAN_RUINS_BIG = register("chests/ocean_ruins_big");

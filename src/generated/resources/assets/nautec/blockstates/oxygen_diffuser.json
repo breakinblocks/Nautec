@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "nautec:block/oxygen_diffuser"
+    },
+    "active=true": {
+      "model": "nautec:block/oxygen_diffuser_active"
+    }
+  }
+}

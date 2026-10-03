@@ -4,6 +4,8 @@ navigation:
   icon: nautec:luminescent_algae
   position: 11
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:hydrothermal_vent
 ---
 
 # <Color id="light_purple">The Deep Oceans</Color>
@@ -47,6 +49,14 @@ Clear teal water with glowing spores drifting through it.
 * Lantern Jellies, Silt Skippers and extra glow squid.
 * Budding Prismarine forms rarely in the rock under the floor, as in the Trench.
 
+### Glow Grottos
+
+Flooded caves hollowed out under the grove floor, reached by a narrow shaft down from the sea bed. Glow Polyp covers the walls and Luminescent Algae and sea pickles light the floor, so they are bright enough to find from the shaft.
+
+* Each grotto holds one <ItemLink id="budding_prismarine"/> in its floor, often with Prismarine Clusters already grown.
+* About one in three has a <ItemLink id="rusty_crate"/> on the floor with salvage inside.
+* They never open into dry caves, so a grotto is always full of water.
+
 ***
 
 ## <Color id="gold">Hydrothermal Vents</Color>
@@ -56,6 +66,14 @@ Murky brown water over a floor patched with basalt and magma, with bubbles risin
 * Vent Tubeworms grow on the floor.
 * Vent Crawlers walk the floor and drop Chitin Plate.
 * Magma exposed on the floor makes bubble columns, which fill Glass Bottles with pressurized air for the [Diving Suit](diving_gear.md).
+
+### Vent Fields
+
+Clusters of two to five black chimneys of basalt and blackstone rising from the floor, the tallest up to nine blocks. Each is capped with a <ItemLink id="hydrothermal_vent"/> pouring out smoke and bubbles, with magma inside and under it and Vent Tubeworms crowded around the base.
+
+* The chimney walls are studded with copper, iron and gold ore.
+* A Hydrothermal Vent burns anything that stands on it, like magma. Sneak to cross it safely.
+* Mine it with a pickaxe to take it home. A [Thermal Vent Tap](nautec:getting_started/ocean_generators.md) sitting over it counts it as three heat sources, as much as three magma blocks.
 
 ***
 

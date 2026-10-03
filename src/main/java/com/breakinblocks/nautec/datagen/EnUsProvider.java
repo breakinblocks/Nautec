@@ -91,6 +91,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(IMPULSE_LASER_MODULE, "Impulse Laser Module");
         addItem(TELEPORT_MODULE, "Teleport Module");
         addItem(FLIGHT_MODULE, "Flight Module");
+        addItem(CARGO_MODULE, "Cargo Hold Module");
 
         add("nautec.submarine.ability.cooldown", "That module is still cycling");
         add("nautec.submarine.ability.no_power", "Not enough power for that module");
@@ -268,6 +269,9 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.submarine.module.impulse_laser.desc", "Twin prismatic beams that cut whatever the nose is pointed at");
         add("nautec.submarine.module.teleport", "Teleport Module");
         add("nautec.submarine.module.flight", "Flight Module");
+        add("nautec.submarine.module.cargo", "Cargo Hold Module");
+        add("nautec.submarine.module.cargo.desc", "Gives the hull a 27 slot hold, 54 with two. Fire it while piloting, or right-click the hull from behind, to open it");
+        add("nautec.submarine.cargo", "Cargo Hold");
         add("nautec.submarine.module.flight.desc", "Lifts the hull out of the water so it flies, half again as fast as it swims");
         add("nautec.submarine.module.teleport.desc", "Folds the water around the hull and drops it at a bound anchor");
         add("nautec.submarine.module.teleport.unbound", "No anchor bound");
@@ -320,6 +324,19 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.eye_of_the_sea.not_found", "No %s within range");
         add("nautec.eye_of_the_sea.target.crystal_geodes", "Crystal Geodes");
         add("nautec.eye_of_the_sea.target.nautec_ruins", "NauTec Ruins");
+        add("nautec.eye_of_the_sea.target.research_outposts", "Research Outposts");
+        add("nautec.research_log.1.page.1", "Day 12. The vent field east of the outpost is putting out more heat than any magma we have charted. A tap set over one of the chimney caps boiled salt water three times faster than the test rig on plain magma.");
+        add("nautec.research_log.1.page.2", "The chimney walls are full of ore. Copper mostly, some iron, a little gold. The tubeworms grow thickest where the water is hottest. Do not stand on a vent cap. Marcus learned that one the hard way.");
+        add("nautec.research_log.1.page.3", "Requesting a second Thermal Vent Tap and more Salt Water from the drains. If the readings hold, one good vent could power the whole outpost.");
+        add("nautec.research_log.2.page.1", "Survey of the glowing grove. The light is not only the algae. There are flooded caves under the sea bed, reached by narrow shafts, lined with polyps that glow from every wall.");
+        add("nautec.research_log.2.page.2", "Every cave we have entered holds a seam of budding prismarine in its floor. Clusters grow from it on their own. Someone has been down here before us: we found an old crate in the third cave.");
+        add("nautec.research_log.2.page.3", "Recommend we harvest crystal from the caves rather than the reef. The caves never open into dry tunnels, so they stay full of water and the crystal keeps growing.");
+        add("nautec.research_log.3.page.1", "The trench sounding came back at a depth we did not think possible. The pressure down there is enough to forge crystal. We have started drawings for a forge that uses the weight of the water itself.");
+        add("nautec.research_log.3.page.2", "Something lives in the dark below the trench rim. Large. It avoids the lights. The divers have stopped going past the second marker and I do not blame them.");
+        add("nautec.research_log.3.page.3", "Keep a Pressure Hatch on every module. If the hull breaches again, close it and it pumps out what came in. It saved the lab twice this month.");
+        add("nautec.research_log.4.page.1", "The ring structure the dive team found is not natural. It is built from prismarine and something older, and it answers to resonance. Our tuning fork made it hum.");
+        add("nautec.research_log.4.page.2", "If the theory is right, two rings tuned to each other could carry a diver between them in an instant. We need more power than the outpost can make to test it.");
+        add("nautec.research_log.4.page.3", "Final entry before the supply run. Hold is packed, modules stowed. If you are reading this and we are not back, take what you need. The sea keeps everything it is given.");
         add("nautec.eye_of_the_sea.target.gateways", "Gateways");
         add("nautec.eye_of_the_sea.target.ocean_ruins", "Ocean Ruins");
         add("nautec.eye_of_the_sea.target.ocean_monuments", "Ocean Monuments");
@@ -521,6 +538,11 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.DISTRIBUTOR, "Nautechnical Distributor");
         addBlock(NTBlocks.BUBBLE_ANCHOR, "Bubble Anchor");
         addBlock(NTBlocks.COLONY_REPLICATOR, "Colony Replicator");
+        addBlock(NTBlocks.HYDROTHERMAL_VENT, "Hydrothermal Vent");
+        addBlock(NTBlocks.PRESSURE_HATCH, "Pressure Hatch");
+        addBlock(NTBlocks.OXYGEN_DIFFUSER, "Oxygen Diffuser");
+        add("nautec.oxygen_diffuser.running", "Giving water breathing within %s blocks");
+        add("nautec.oxygen_diffuser.no_power", "Needs a laser beam of %s AP");
         add("nautec.replicator.status.running", "Working");
         add("nautec.replicator.status.no_template", "Needs a template colony");
         add("nautec.replicator.status.not_analyzed", "Analyze the template first");

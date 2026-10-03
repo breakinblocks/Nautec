@@ -13,7 +13,8 @@ public enum SubmarineModuleType implements StringRepresentable {
     SHIELD("shield", false),
     IMPULSE_LASER("impulse_laser", false),
     TELEPORT("teleport", false),
-    FLIGHT("flight", true);
+    FLIGHT("flight", true),
+    CARGO("cargo", false);
 
     private final String name;
     private final boolean passive;
@@ -52,7 +53,7 @@ public enum SubmarineModuleType implements StringRepresentable {
             case SHIELD -> NTConfig.submarineShieldPowerCost;
             case IMPULSE_LASER -> NTConfig.submarineLaserMinDrain;
             case TELEPORT -> NTConfig.submarineTeleportPowerCost;
-            case SOLAR, ARMOR, FLIGHT -> 0;
+            case SOLAR, ARMOR, FLIGHT, CARGO -> 0;
         };
     }
 
@@ -71,7 +72,7 @@ public enum SubmarineModuleType implements StringRepresentable {
             case SONAR -> NTConfig.submarineSonarCooldownTicks;
             case SHIELD -> NTConfig.submarineShieldCooldownTicks;
             case TELEPORT -> NTConfig.submarineTeleportCooldownTicks;
-            case IMPULSE_LASER, SOLAR, ARMOR, FLIGHT -> 0;
+            case IMPULSE_LASER, SOLAR, ARMOR, FLIGHT, CARGO -> 0;
         };
     }
 }

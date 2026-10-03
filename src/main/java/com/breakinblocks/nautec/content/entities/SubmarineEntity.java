@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.entities;
 
+import net.minecraft.world.inventory.ChestMenu;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineCargoContainer;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -98,6 +100,11 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final int STOW_TRANSITION_TICKS = 20;
 
     public static final int MODULE_SLOTS = 9;
+    public static final int CARGO_ROWS_PER_MODULE = 3;
+    public static final int CARGO_MAX_MODULES = 2;
+    public static final int CARGO_CAPACITY = CARGO_ROWS_PER_MODULE * 9 * CARGO_MAX_MODULES;
+    private static final double CARGO_HATCH_DEPTH = 1.0D;
+    private static final double CARGO_HATCH_CONE = 0.5D;
 
     private static final EntityDataAccessor<Integer> DATA_POWER =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.INT);
@@ -140,6 +147,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
     private final AnimatableInstanceCache animatableCache = new InstancedAnimatableInstanceCache(this);
     private final SubmarineModules modules = new SubmarineModules(this);
+    private final NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO_CAPACITY, ItemStack.EMPTY);
     private final IPowerStorage powerStorage = new EntityPowerStorage(this::getPowerStored, this::setPowerStored,
             NTConfig.submarinePowerCapacity, 200, 0);
 
@@ -307,6 +315,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         super.addAdditionalSaveData(output);
         output.putInt("power", getPowerStored());
         output.store("modules", ItemContainerContents.CODEC, ItemContainerContents.fromItems(getModuleStacks()));
+        output.store("cargo", ItemContainerContents.CODEC, ItemContainerContents.fromItems(cargo));
         this.modules.save(output);
     }
 
@@ -315,6 +324,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         super.readAdditionalSaveData(input);
         setPowerStored(input.getIntOr("power", 0));
         setModules(input.read("modules", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
+        setCargo(input.read("cargo", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
         this.modules.load(input);
     }
 
@@ -364,6 +374,50 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         for (int slot = 0; slot < MODULE_SLOTS; slot++) {
             setModule(slot, stacks.get(slot));
         }
+    }
+
+    public int getCargoSlots() {
+        int modules = 0;
+        for (int slot = 0; slot < MODULE_SLOTS; slot++) {
+            if (getModuleType(slot) == SubmarineModuleType.CARGO) {
+                modules++;
+            }
+        }
+        return Math.min(CARGO_MAX_MODULES, modules) * CARGO_ROWS_PER_MODULE * 9;
+    }
+
+    public NonNullList<ItemStack> getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(ItemContainerContents contents) {
+        for (int slot = 0; slot < CARGO_CAPACITY; slot++) {
+            cargo.set(slot, ItemStack.EMPTY);
+        }
+        contents.copyInto(cargo);
+    }
+
+    public static boolean canStoreInCargo(ItemStack stack) {
+        return !stack.is(NTItems.SUBMARINE.get());
+    }
+
+    public boolean openCargo(ServerPlayer player) {
+        int slots = getCargoSlots();
+        if (slots <= 0) {
+            return false;
+        }
+        SubmarineCargoContainer container = new SubmarineCargoContainer(this, cargo, slots);
+        player.openMenu(new SimpleMenuProvider((containerId, inventory, opener) -> slots > CARGO_ROWS_PER_MODULE * 9
+                ? ChestMenu.sixRows(containerId, inventory, container)
+                : ChestMenu.threeRows(containerId, inventory, container),
+                Component.translatable("nautec.submarine.cargo")));
+        return true;
+    }
+
+    public boolean isBehind(Vec3 offset) {
+        Vec3 forward = Vec3.directionFromRotation(0F, getYRot());
+        double flat = Math.sqrt(offset.x * offset.x + offset.z * offset.z);
+        return flat > CARGO_HATCH_DEPTH && offset.x * forward.x + offset.z * forward.z < -flat * CARGO_HATCH_CONE;
     }
 
     public SubmarineModules getModules() {
@@ -766,6 +820,13 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             return InteractionResult.SUCCESS;
         }
 
+        if (getCargoSlots() > 0 && isBehind(player.position().subtract(position()))) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                openCargo(serverPlayer);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         if (level().isClientSide()) {
             return InteractionResult.SUCCESS;
         }
@@ -1013,6 +1074,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         stack.set(NTDataComponents.SUBMARINE_HEALTH, getHealth());
         stack.set(NTDataComponents.SUBMARINE_MODULE_STATE, modules.snapshot());
         stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(getModuleStacks()));
+        boolean anyCargo = cargo.stream().anyMatch(item -> !item.isEmpty());
+        if (anyCargo) {
+            stack.set(NTDataComponents.SUBMARINE_CARGO, ItemContainerContents.fromItems(cargo));
+        }
         stack.set(DataComponents.CUSTOM_NAME, getCustomName());
         return stack;
     }
@@ -1027,6 +1092,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         setHealth(health == null ? getMaxHealth() : Math.max(1F, health));
 
         setModules(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
+        setCargo(stack.getOrDefault(NTDataComponents.SUBMARINE_CARGO, ItemContainerContents.EMPTY));
         modules.restore(stack.getOrDefault(NTDataComponents.SUBMARINE_MODULE_STATE, SubmarineModuleState.EMPTY));
     }
 

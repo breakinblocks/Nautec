@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.datagen;
 
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.breakinblocks.nautec.registries.NTFeatures;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTBacterias;
@@ -85,6 +87,11 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<ConfiguredFeature<?, ?>> BUDDING_PRISMARINE_KEY = registerConfigKey("budding_prismarine");
     public static final ResourceKey<PlacedFeature> BUDDING_PRISMARINE_PLACE_KEY = registerPlaceKey("budding_prismarine");
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> VENT_FIELD_KEY = registerConfigKey("vent_field");
+    public static final ResourceKey<PlacedFeature> VENT_FIELD_PLACE_KEY = registerPlaceKey("vent_field");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> GLOW_GROTTO_KEY = registerConfigKey("glow_grotto");
+    public static final ResourceKey<PlacedFeature> GLOW_GROTTO_PLACE_KEY = registerPlaceKey("glow_grotto");
+
     private static final RuleTest SAND_REPLACEABLES = new BlockMatchTest(Blocks.SAND);
     private static final RuleTest OCEAN_FLOOR_REPLACEABLES = new TagMatchTest(BlockTags.BASE_STONE_OVERWORLD);
     private static final RuleTest GRAVEL_REPLACEABLES = new BlockMatchTest(Blocks.GRAVEL);
@@ -119,6 +126,8 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                 );
                 context.register(REEF_PRISMARINE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(reef_prismarine_config, 24)));
 
+                context.register(VENT_FIELD_KEY, new ConfiguredFeature<>(NTFeatures.VENT_FIELD.get(), NoneFeatureConfiguration.INSTANCE));
+                context.register(GLOW_GROTTO_KEY, new ConfiguredFeature<>(NTFeatures.GLOW_GROTTO.get(), NoneFeatureConfiguration.INSTANCE));
                 context.register(DEEP_KELP_KEY, simpleBlockFeature(NTBlocks.DEEP_KELP.get()));
                 context.register(LUMINESCENT_ALGAE_KEY, simpleBlockFeature(NTBlocks.LUMINESCENT_ALGAE.get()));
                 context.register(PRISMARINE_FROND_KEY, simpleBlockFeature(NTBlocks.PRISMARINE_FROND.get()));
@@ -181,6 +190,23 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
                                 RandomOffsetPlacement.vertical(UniformInt.of(-16, -4)),
+                                BiomeFilter.biome()
+                        )
+                ));
+
+                context.register(VENT_FIELD_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(VENT_FIELD_KEY),
+                        List.of(
+                                RarityFilter.onAverageOnceEvery(4),
+                                InSquarePlacement.spread(),
+                                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                                BiomeFilter.biome()
+                        )
+                ));
+                context.register(GLOW_GROTTO_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(GLOW_GROTTO_KEY),
+                        List.of(
+                                RarityFilter.onAverageOnceEvery(6),
+                                InSquarePlacement.spread(),
+                                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
                                 BiomeFilter.biome()
                         )
                 ));

@@ -37,7 +37,7 @@ public final class EyeOfTheSeaTests {
                 helper.fail("A fresh Eye of the Sea should seek crystal geodes, got " + EyeOfTheSeaItem.targetOf(stack));
                 return;
             }
-            List<SeaEyeTarget> expected = List.of(SeaEyeTarget.NAUTEC_RUINS, SeaEyeTarget.GATEWAYS,
+            List<SeaEyeTarget> expected = List.of(SeaEyeTarget.NAUTEC_RUINS, SeaEyeTarget.RESEARCH_OUTPOSTS, SeaEyeTarget.GATEWAYS,
                     SeaEyeTarget.OCEAN_RUINS, SeaEyeTarget.OCEAN_MONUMENTS, SeaEyeTarget.CRYSTAL_GEODES);
             for (SeaEyeTarget want : expected) {
                 SeaEyeTarget got = EyeOfTheSeaItem.cycle(stack);
@@ -55,6 +55,7 @@ public final class EyeOfTheSeaTests {
             if (!contains(structures, SeaEyeTarget.CRYSTAL_GEODES, Nautec.rl("stone_crystal_geode"))
                     || !contains(structures, SeaEyeTarget.CRYSTAL_GEODES, Nautec.rl("deepslate_crystal_geode"))
                     || !contains(structures, SeaEyeTarget.NAUTEC_RUINS, Nautec.rl("ruins_1"))
+                    || !contains(structures, SeaEyeTarget.RESEARCH_OUTPOSTS, Nautec.rl("research_outpost"))
                     || !contains(structures, SeaEyeTarget.GATEWAYS, Nautec.rl("underwater_gateway"))
                     || !contains(structures, SeaEyeTarget.OCEAN_RUINS, Identifier.withDefaultNamespace("ocean_ruin_cold"))
                     || !contains(structures, SeaEyeTarget.OCEAN_RUINS, Identifier.withDefaultNamespace("ocean_ruin_warm"))

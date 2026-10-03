@@ -559,6 +559,28 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.MUTATOR))
                 .save(pRecipeOutput, key("colony_replicator"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.OXYGEN_DIFFUSER.asItem())
+                .pattern("CGC")
+                .pattern("BVB")
+                .pattern("CKC")
+                .define('C', NTItems.CAST_IRON_INGOT)
+                .define('G', Items.GLASS)
+                .define('B', NTItems.AIR_BOTTLE)
+                .define('V', NTItems.VALVE)
+                .define('K', Items.DRIED_KELP_BLOCK)
+                .unlockedBy("has_item", has(NTItems.AIR_BOTTLE))
+                .save(pRecipeOutput, key("oxygen_diffuser"));
+
+        shaped(RecipeCategory.REDSTONE, NTBlocks.PRESSURE_HATCH.asItem(), 2)
+                .pattern("SV")
+                .pattern("GS")
+                .pattern("SS")
+                .define('S', NTItems.AQUARINE_STEEL_INGOT)
+                .define('V', NTItems.VALVE)
+                .define('G', Items.GLASS)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
+                .save(pRecipeOutput, key("pressure_hatch"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.BUBBLE_ANCHOR.asItem())
                 .pattern("PGP")
                 .pattern("GKG")
@@ -885,6 +907,18 @@ public class RecipesProvider extends RecipeProvider {
                 .define('R', NTItems.RESONANT_SHARD.get())
                 .unlockedBy("has_item", has(NTItems.SUBMARINE))
                 .save(pRecipeOutput, key("flight_module"));
+
+        shaped(RecipeCategory.MISC, NTItems.CARGO_MODULE.get(), 1)
+                .pattern("ABA")
+                .pattern("CPC")
+                .pattern("AVA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
+                .define('B', Items.BARREL)
+                .define('C', Items.CHEST)
+                .define('P', NTItems.DEEP_STEEL_PLATING.get())
+                .define('V', NTItems.VALVE.get())
+                .unlockedBy("has_item", has(NTItems.SUBMARINE))
+                .save(pRecipeOutput, key("cargo_module"));
     }
 
     private void miscItemsRecipes(@NotNull RecipeOutput pRecipeOutput) {

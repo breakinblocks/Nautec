@@ -289,6 +289,14 @@ public final class NTConfig {
             .comment("The chance a spliced colony takes the better parent's value for each stat")
             .defineInRange("replicatorSpliceChance", 0.7, 0.0, 1.0);
 
+    private static final ModConfigSpec.IntValue OXYGEN_DIFFUSER_POWER = BUILDER
+            .comment("The beam power in AP an Oxygen Diffuser needs. Any purity works")
+            .defineInRange("oxygenDiffuserPower", 10, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue OXYGEN_DIFFUSER_RADIUS = BUILDER
+            .comment("How far an Oxygen Diffuser's water breathing reaches, in blocks")
+            .defineInRange("oxygenDiffuserRadius", 12, 1, 64);
+
     private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_RADIUS = BUILDER
             .comment("How far a Bubble Anchor's field reaches from its centre on fuel. 7 gives a 15x15x15 cube")
             .defineInRange("bubbleAnchorRadius", 7, 1, 32);
@@ -895,6 +903,8 @@ public final class NTConfig {
     public static long replicatorBiomassCap = 200_000L;
     public static double replicatorErrorChance = 0.5;
     public static double replicatorSpliceChance = 0.7;
+    public static int oxygenDiffuserPower = 10;
+    public static int oxygenDiffuserRadius = 12;
     public static int bubbleAnchorRadius = 7;
     public static int bubbleAnchorMaxRadius = 12;
     public static int bubbleAnchorLaserPower = 20;
@@ -1152,6 +1162,8 @@ public final class NTConfig {
         replicatorBiomassCap = value(REPLICATOR_BIOMASS_CAP);
         replicatorErrorChance = value(REPLICATOR_ERROR_CHANCE);
         replicatorSpliceChance = value(REPLICATOR_SPLICE_CHANCE);
+        oxygenDiffuserPower = value(OXYGEN_DIFFUSER_POWER);
+        oxygenDiffuserRadius = value(OXYGEN_DIFFUSER_RADIUS);
         bubbleAnchorRadius = value(BUBBLE_ANCHOR_RADIUS);
         bubbleAnchorMaxRadius = value(BUBBLE_ANCHOR_MAX_RADIUS);
         bubbleAnchorLaserPower = value(BUBBLE_ANCHOR_LASER_POWER);

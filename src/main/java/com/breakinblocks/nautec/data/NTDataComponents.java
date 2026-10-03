@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.data;
 
+import net.minecraft.world.item.component.ItemContainerContents;
 import com.breakinblocks.nautec.content.items.MachineSettings;
 import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
@@ -68,6 +69,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<SubmarineModuleState>> SUBMARINE_MODULE_STATE = registerDataComponentType("submarine_module_state",
             () -> builder -> builder.persistent(SubmarineModuleState.CODEC).networkSynchronized(ByteBufCodecs.fromCodec(SubmarineModuleState.CODEC)));
+
+    public static final Supplier<DataComponentType<ItemContainerContents>> SUBMARINE_CARGO = registerDataComponentType("submarine_cargo",
+            () -> builder -> builder.persistent(ItemContainerContents.CODEC).networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<Float>> SUBMARINE_HEALTH = registerDataComponentType("submarine_health",
             () -> builder -> builder.persistent(Codec.FLOAT).networkSynchronized(ByteBufCodecs.FLOAT));

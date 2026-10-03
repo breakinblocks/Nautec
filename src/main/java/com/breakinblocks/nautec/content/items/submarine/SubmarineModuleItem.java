@@ -36,6 +36,10 @@ public class SubmarineModuleItem extends Item {
             return;
         }
 
+        if (this.moduleType.powerCost() <= 0 && this.moduleType.cooldownTicks() <= 0) {
+            return;
+        }
+
         Tooltips.tt(tooltipComponents, Component.translatable("nautec.submarine.module.cost",
                 formatPower(this.moduleType.powerCost())), ChatFormatting.DARK_AQUA);
 

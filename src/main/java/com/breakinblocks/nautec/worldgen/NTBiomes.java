@@ -68,6 +68,7 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.GLOW_POLYP_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
+        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.GLOW_GROTTO_PLACE_KEY);
 
         return baseOceanBiome(0.5F, 0x1C8C81)
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x0B4F4A))
@@ -86,6 +87,7 @@ public final class NTBiomes {
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.VENT_BASALT_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.VENT_MAGMA_PLACE_KEY);
+        generation.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, DatapackRegistryProvider.VENT_FIELD_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.VENT_TUBEWORM_PLACE_KEY);
 
         return baseOceanBiome(0.85F, 0x4A3527)
