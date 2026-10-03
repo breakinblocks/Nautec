@@ -260,6 +260,35 @@ public final class NTConfig {
             .comment("The fraction of AP lost relaying through a Prism Satellite from Uplink Arrays to Downlink Arrays")
             .defineInRange("satelliteLoss", 0.10, 0.0, 0.99);
 
+    private static final ModConfigSpec.IntValue REPLICATOR_POWER_USAGE = BUILDER
+            .comment("The beam power in AP a Colony Replicator needs to run")
+            .defineInRange("replicatorPowerUsage", 80, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue REPLICATOR_PURITY = BUILDER
+            .comment("The lowest beam purity a Colony Replicator runs with")
+            .defineInRange("replicatorPurity", 2.0, 0, 10);
+
+    private static final ModConfigSpec.IntValue REPLICATOR_DURATION = BUILDER
+            .comment("How many ticks a Colony Replicator takes to make one colony")
+            .defineInRange("replicatorDuration", 600, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.LongValue REPLICATOR_BIOMASS_COST = BUILDER
+            .comment("The total colony size of fodder a Colony Replicator uses up for each colony it makes")
+            .defineInRange("replicatorBiomassCost", 20_000L, 1L, Long.MAX_VALUE);
+
+    private static final ModConfigSpec.LongValue REPLICATOR_BIOMASS_CAP = BUILDER
+            .comment("The most fodder biomass a Colony Replicator stores")
+            .defineInRange("replicatorBiomassCap", 200_000L, 1L, Long.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue REPLICATOR_ERROR_CHANCE = BUILDER
+            .comment("The chance each stat is copied with an error when the colony has no Mutation Resistance.",
+                    "It falls to nothing at the Mutation Resistance cap, so a capped colony always copies perfectly")
+            .defineInRange("replicatorErrorChance", 0.5, 0.0, 1.0);
+
+    private static final ModConfigSpec.DoubleValue REPLICATOR_SPLICE_CHANCE = BUILDER
+            .comment("The chance a spliced colony takes the better parent's value for each stat")
+            .defineInRange("replicatorSpliceChance", 0.7, 0.0, 1.0);
+
     private static final ModConfigSpec.IntValue BUBBLE_ANCHOR_RADIUS = BUILDER
             .comment("How far a Bubble Anchor's field reaches from its centre on fuel. 7 gives a 15x15x15 cube")
             .defineInRange("bubbleAnchorRadius", 7, 1, 32);
@@ -859,6 +888,13 @@ public final class NTConfig {
     public static int emitterBuffer = 100_000;
     public static int emitterMaxLinks = 16;
     public static double satelliteLoss = 0.10;
+    public static int replicatorPowerUsage = 80;
+    public static double replicatorPurity = 2.0;
+    public static int replicatorDuration = 600;
+    public static long replicatorBiomassCost = 20_000L;
+    public static long replicatorBiomassCap = 200_000L;
+    public static double replicatorErrorChance = 0.5;
+    public static double replicatorSpliceChance = 0.7;
     public static int bubbleAnchorRadius = 7;
     public static int bubbleAnchorMaxRadius = 12;
     public static int bubbleAnchorLaserPower = 20;
@@ -1109,6 +1145,13 @@ public final class NTConfig {
         emitterBuffer = value(EMITTER_BUFFER);
         emitterMaxLinks = value(EMITTER_MAX_LINKS);
         satelliteLoss = value(SATELLITE_LOSS);
+        replicatorPowerUsage = value(REPLICATOR_POWER_USAGE);
+        replicatorPurity = value(REPLICATOR_PURITY);
+        replicatorDuration = value(REPLICATOR_DURATION);
+        replicatorBiomassCost = value(REPLICATOR_BIOMASS_COST);
+        replicatorBiomassCap = value(REPLICATOR_BIOMASS_CAP);
+        replicatorErrorChance = value(REPLICATOR_ERROR_CHANCE);
+        replicatorSpliceChance = value(REPLICATOR_SPLICE_CHANCE);
         bubbleAnchorRadius = value(BUBBLE_ANCHOR_RADIUS);
         bubbleAnchorMaxRadius = value(BUBBLE_ANCHOR_MAX_RADIUS);
         bubbleAnchorLaserPower = value(BUBBLE_ANCHOR_LASER_POWER);

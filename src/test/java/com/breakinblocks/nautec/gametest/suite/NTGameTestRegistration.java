@@ -65,8 +65,9 @@ public final class NTGameTestRegistration {
         AdvancedAnalyzerTests.register(r);
         DistributorTests.register(r);
         BubbleAnchorTests.register(r);
-        if (r.registeredCount() != 537) {
-            throw new IllegalStateException("Expected 537 Nautec suite tests, registered " + r.registeredCount());
+        ColonyReplicatorTests.register(r);
+        if (r.registeredCount() != 541) {
+            throw new IllegalStateException("Expected 541 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

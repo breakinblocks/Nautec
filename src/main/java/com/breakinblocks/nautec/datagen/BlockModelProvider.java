@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
@@ -212,8 +213,26 @@ public class BlockModelProvider extends ModelProvider {
         graftingStation(NTBlocks.GRAFTING_STATION.get());
         advancedAnalyzer(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         bubbleAnchor(NTBlocks.BUBBLE_ANCHOR.get());
+        replicator(NTBlocks.COLONY_REPLICATOR.get());
         simpleBlock(NTBlocks.DISTRIBUTOR.get(), cubeBottomTop("nautechnical_distributor", blockTexture(NTBlocks.DISTRIBUTOR.get(), "_side"),
                 blockTexture(NTBlocks.DISTRIBUTOR.get(), "_bottom"), blockTexture(NTBlocks.DISTRIBUTOR.get(), "_top")));
+    }
+
+    private void replicator(Block block) {
+        Identifier idle = createdModels.computeIfAbsent(Nautec.rl("block/colony_replicator"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(block, "_front"))
+                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
+                .put(TextureSlot.TOP, blockTexture(block, "_top"))
+                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/colony_replicator_active"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(block, "_front_active"))
+                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
+                .put(TextureSlot.TOP, blockTexture(block, "_top"))
+                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(BlockModelGenerators.createBooleanModelDispatch(ColonyReplicatorBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
     }
 
     private void bubbleAnchor(Block block) {

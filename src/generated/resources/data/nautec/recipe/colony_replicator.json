@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:bacterial_analyzer",
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal",
+    "M": "nautec:mutator",
+    "P": "nautec:petri_dish"
+  },
+  "pattern": [
+    "DMD",
+    "PAP",
+    "DFD"
+  ],
+  "result": {
+    "id": "nautec:colony_replicator"
+  }
+}

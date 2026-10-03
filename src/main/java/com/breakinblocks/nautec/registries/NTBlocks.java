@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.bubble.HeldWaterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.content.distributor.DistributorBlock;
@@ -164,6 +165,8 @@ public final class NTBlocks {
 
     public static final DeferredBlock<MutatorBlock> MUTATOR = bacteriaBlock(registerBlockAndItem("mutator", MutatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredBlock<ColonyReplicatorBlock> COLONY_REPLICATOR = bacteriaBlock(registerBlockAndItem("colony_replicator",
+            ColonyReplicatorBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<BubbleAnchorBlock> BUBBLE_ANCHOR = registerBlockAndItem("bubble_anchor", BubbleAnchorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).lightLevel(state -> state.getValue(BubbleAnchorBlock.ACTIVE) ? 12 : 4));
     public static final DeferredBlock<HeldWaterBlock> HELD_WATER = BLOCKS.registerBlock("held_water", HeldWaterBlock::new,

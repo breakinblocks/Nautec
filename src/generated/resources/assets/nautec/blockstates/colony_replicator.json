@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "active=false,facing=east": {
+      "model": "nautec:block/colony_replicator",
+      "y": 90
+    },
+    "active=false,facing=north": {
+      "model": "nautec:block/colony_replicator"
+    },
+    "active=false,facing=south": {
+      "model": "nautec:block/colony_replicator",
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "model": "nautec:block/colony_replicator",
+      "y": 270
+    },
+    "active=true,facing=east": {
+      "model": "nautec:block/colony_replicator_active",
+      "y": 90
+    },
+    "active=true,facing=north": {
+      "model": "nautec:block/colony_replicator_active"
+    },
+    "active=true,facing=south": {
+      "model": "nautec:block/colony_replicator_active",
+      "y": 180
+    },
+    "active=true,facing=west": {
+      "model": "nautec:block/colony_replicator_active",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nautec:block/colony_replicator_bottom",
+    "front": "nautec:block/colony_replicator_front_active",
+    "side": "nautec:block/colony_replicator_side",
+    "top": "nautec:block/colony_replicator_top"
+  }
+}

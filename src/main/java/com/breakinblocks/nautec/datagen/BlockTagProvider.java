@@ -69,6 +69,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 GRAFTING_STATION,
                 DISTRIBUTOR,
                 BUBBLE_ANCHOR,
+                COLONY_REPLICATOR,
                 ADVANCED_BACTERIAL_ANALYZER,
                 INCUBATOR,
                 FISHING_STATION,

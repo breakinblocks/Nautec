@@ -160,9 +160,11 @@ public final class ShowcaseTests {
 
         r.add("showcase/block_grid_places_every_block", ARENA, 60, 0, helper -> {
             ServerLevel level = helper.getLevel();
-            ShowcaseFrame frame = frame(helper, 2, 2);
-            ShowcaseParts.prepareArea(level, frame, -1, -1, 16, 16, 8);
-            Map<Block, BlockPos> placed = ShowcaseBlockGrid.build(level, frame, 8);
+            ShowcaseFrame frame = frame(helper, 1, 1);
+            int columns = 9;
+            ShowcaseParts.prepareArea(level, frame, -1, -1, ShowcaseBlockGrid.PITCH * (columns - 1) + 1,
+                    ShowcaseBlockGrid.PITCH * (ShowcaseBlockGrid.rows(columns) - 1) + 1, 8);
+            Map<Block, BlockPos> placed = ShowcaseBlockGrid.build(level, frame, columns);
 
             Set<Block> expected = nautecBlockItemBlocks();
             helper.assertTrue(!expected.isEmpty(), "Nautec should register block items");
