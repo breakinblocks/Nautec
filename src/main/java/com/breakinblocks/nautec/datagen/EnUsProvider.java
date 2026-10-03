@@ -406,6 +406,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.ABYSSAL_PYLON, "Abyssal Pylon");
         addBlock(NTBlocks.PRISMATIC_EMITTER, "Prismatic Emitter");
         addItem(TUNING_FORK, "Tuning Fork");
+        addItem(RESONANCE_CHARM, "Resonance Charm");
         addBlock(NTBlocks.TIDAL_ROTOR, "Tidal Rotor");
         addBlock(NTBlocks.THERMAL_VENT_TAP, "Thermal Vent Tap");
         addBlock(NTBlocks.FUSION_CASING, "Fusion Casing");
@@ -535,6 +536,13 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.tuning_fork.tooltip.tuned", "Tuned to the emitter at %s, %s, %s");
         add("nautec.tuning_fork.tooltip.untuned", "Not tuned");
         add("nautec.tuning_fork.tooltip.usage", "Right-click an emitter to tune, then machines to link. Sneak-right-click the emitter to unlink all, or the air to forget it.");
+        add("nautec.resonance_charm.bound", "Bound to %s.");
+        add("nautec.resonance_charm.unbound", "The charm is no longer bound.");
+        add("nautec.resonance_charm.no_network", "Link this pylon to a network first.");
+        add("nautec.resonance_charm.tooltip.bound", "Bound to %s");
+        add("nautec.resonance_charm.tooltip.unbound", "Not bound");
+        add("nautec.resonance_charm.tooltip.monocle", "Worn in a charm slot, it also works as a Prism Monocle.");
+        add("nautec.resonance_charm.tooltip.usage", "Right-click a pylon to bind it to that network. Wear it in a charm slot to charge your items. Sneak-right-click the air to unbind.");
         add("nautec.resonance.network", "Network");
         add("nautec.resonance.none", "Not linked");
         add("nautec.resonance.none.desc", "Use the arrows to pick one of your networks, or name a new one below and press Create.");

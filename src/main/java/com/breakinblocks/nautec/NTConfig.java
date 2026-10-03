@@ -230,6 +230,9 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue RESONANCE_CROSS_DIMENSION_LOSS = BUILDER
             .comment("The fraction of FE lost moving between Abyssal Pylons in different dimensions")
             .defineInRange("resonanceCrossDimensionLoss", 0.15, 0.0, 0.99);
+    private static final ModConfigSpec.IntValue CHARM_TRANSFER_RATE = BUILDER
+            .comment("The most FE per tick a Resonance Charm draws from its network to charge the wearer's items")
+            .defineInRange("charmTransferRate", 2_000, 1, Integer.MAX_VALUE / 20);
     private static final ModConfigSpec.IntValue EMITTER_RANGE = BUILDER
             .comment("How far in blocks a Prismatic Emitter can reach the machines linked to it")
             .defineInRange("emitterRange", 16, 1, 64);
@@ -753,6 +756,7 @@ public final class NTConfig {
     public static double resonanceSameDimensionLoss = 0.05;
     public static double resonanceCrossDimensionLoss = 0.15;
     public static int resonanceMaxNetworksPerPlayer = 16;
+    public static int charmTransferRate = 2_000;
     public static int emitterRange = 16;
     public static int emitterThroughput = 10_000;
     public static int emitterBuffer = 100_000;
@@ -978,6 +982,7 @@ public final class NTConfig {
         resonanceSameDimensionLoss = value(RESONANCE_SAME_DIMENSION_LOSS);
         resonanceCrossDimensionLoss = value(RESONANCE_CROSS_DIMENSION_LOSS);
         resonanceMaxNetworksPerPlayer = value(RESONANCE_MAX_NETWORKS);
+        charmTransferRate = value(CHARM_TRANSFER_RATE);
         emitterRange = value(EMITTER_RANGE);
         emitterThroughput = value(EMITTER_THROUGHPUT);
         emitterBuffer = value(EMITTER_BUFFER);

@@ -10,6 +10,8 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
@@ -172,6 +174,26 @@ public final class ResonanceNetworkTests {
                         "the receiver got the FE less the loss");
                 networks.delete(owner, network.id());
             });
+        });
+
+        r.add("resonance/networks_are_written_to_disk", 20, helper -> {
+            ServerPlayer owner = player(helper, "Saver");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Saved grid").network();
+            networks.trust(owner, network.id(), UUID.randomUUID(), "Friend");
+            helper.assertTrue(networks.isDirty(), "creating a network marks the data for saving");
+            helper.getLevel().getServer().overworld().getDataStorage().saveAndJoin();
+            helper.assertFalse(networks.isDirty(), "saving writes it out");
+
+            Tag encoded = ResonanceNetworks.CODEC.encodeStart(NbtOps.INSTANCE, networks).getOrThrow();
+            ResonanceNetworks decoded = ResonanceNetworks.CODEC.parse(NbtOps.INSTANCE, encoded).getOrThrow();
+            ResonanceNetwork loaded = decoded.get(network.id());
+            helper.assertTrue(loaded != null, "the network comes back after loading");
+            helper.assertValueEqual(loaded.name(), "Saved grid", "name");
+            helper.assertValueEqual(loaded.owner(), owner.getUUID(), "owner");
+            helper.assertValueEqual(loaded.trusted().size(), 1, "trusted players");
+            networks.delete(owner, network.id());
+            helper.succeed();
         });
 
         r.add("resonance/strangers_cannot_use_a_network", 20, helper -> {

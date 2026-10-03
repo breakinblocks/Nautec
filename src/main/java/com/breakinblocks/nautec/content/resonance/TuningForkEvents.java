@@ -14,7 +14,7 @@ public final class TuningForkEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getItemStack().getItem() instanceof TuningForkItem) {
+        if (event.getItemStack().getItem() instanceof TuningForkItem || event.getItemStack().getItem() instanceof ResonanceCharmItem) {
             event.setUseBlock(TriState.FALSE);
         }
     }

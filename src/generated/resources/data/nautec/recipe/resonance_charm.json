@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "E": "minecraft:ender_pearl",
+    "G": "nautec:atlantic_gold_ingot",
+    "R": "nautec:resonant_shard",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    " S ",
+    "ERE",
+    " G "
+  ],
+  "result": {
+    "id": "nautec:resonance_charm"
+  }
+}

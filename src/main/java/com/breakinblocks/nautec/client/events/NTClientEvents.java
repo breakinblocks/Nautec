@@ -1,8 +1,8 @@
 package com.breakinblocks.nautec.client.events;
 
+import com.breakinblocks.nautec.content.items.PrismMonocleItem;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.screen.AugmentationViewerScreen;
-import com.breakinblocks.nautec.compat.curio.CurioCompat;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTKeybinds;
 import com.breakinblocks.nautec.utils.AugmentHelper;
@@ -24,9 +24,7 @@ public final class NTClientEvents {
         public static void onRenderFog(ViewportEvent.RenderFog event) {
             Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
             if (cameraEntity instanceof Player player && cameraEntity.isUnderWater()) {
-                if (player.getItemBySlot(EquipmentSlot.HEAD).is(NTItems.DIVING_HELMET.get())
-                        || player.getItemBySlot(EquipmentSlot.HEAD).is(NTItems.PRISM_MONOCLE.get())
-                        || !CurioCompat.getStackInSlot(player, NTItems.PRISM_MONOCLE.get()).isEmpty()) {
+                if (player.getItemBySlot(EquipmentSlot.HEAD).is(NTItems.DIVING_HELMET.get()) || PrismMonocleItem.isWorn(player)) {
                     event.setNearPlaneDistance(-8.0f);
                     event.setFarPlaneDistance(250.0f);
                 }

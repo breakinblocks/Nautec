@@ -36,6 +36,8 @@ Wear the monocle in your helmet slot or in its own Monocle curio slot. While it 
 
 Use it to check that a beam is arriving and pure enough before you blame a recipe. Purity drops when a pure beam is averaged with a weaker one feeding the same block, and when it passes through a mirror or splitter.
 
+A <ItemLink id="resonance_charm"/> worn in a charm slot does the same job, so you do not need both. See [Resonance Network](nautec:deep_engineering/resonance_network.md).
+
 ***
 
 ## <Color id="gold">With Jade</Color>

@@ -80,6 +80,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.REACTOR_FUSION_UPGRADE.get());
         basicItem(NTItems.SPAWNER_CONFINEMENT_MATRIX.get());
         basicItem(NTItems.TUNING_FORK.get());
+        basicItem(NTItems.RESONANCE_CHARM.get());
         basicItem(NTItems.DORMANT_CRYSTAL_SEED.get());
         basicItem(NTItems.PRISMARINE_CRYSTAL_SEED.get());
         basicItem(NTItems.PRISMARINE_LENS.get());

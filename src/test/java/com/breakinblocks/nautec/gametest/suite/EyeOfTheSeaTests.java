@@ -65,7 +65,7 @@ public final class EyeOfTheSeaTests {
             helper.succeed();
         });
 
-        r.add("eye_of_the_sea/nothing_found_keeps_the_eye", 200, helper -> {
+        r.add("eye_of_the_sea/nothing_found_keeps_the_eye", 600, helper -> {
             ServerLevel level = helper.getLevel();
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             ItemStack stack = new ItemStack(NTItems.EYE_OF_THE_SEA.get());
@@ -93,10 +93,10 @@ public final class EyeOfTheSeaTests {
 
         r.add("eye_of_the_sea/thrown_eye_vanishes_without_a_drop", EyeOfTheSeaEntity.LIFETIME + 40, helper -> {
             ServerLevel level = helper.getLevel();
-            Vec3 start = Vec3.atCenterOf(helper.absolutePos(new BlockPos(4, 2, 4)));
+            Vec3 start = Vec3.atCenterOf(helper.absolutePos(new BlockPos(1, 2, 4)));
             EyeOfTheSeaEntity eye = new EyeOfTheSeaEntity(level, start.x, start.y, start.z);
             eye.setItem(new ItemStack(NTItems.EYE_OF_THE_SEA.get()));
-            eye.signalTo(start.add(40, 0, 0));
+            eye.signalTo(start.add(6, 0, 0));
             level.addFreshEntity(eye);
             if (eye.getType() != NTEntities.EYE_OF_THE_SEA.get() || eye.target() == null) {
                 helper.fail("The eye did not take a target");

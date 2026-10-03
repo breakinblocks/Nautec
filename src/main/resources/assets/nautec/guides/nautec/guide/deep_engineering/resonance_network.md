@@ -9,6 +9,7 @@ item_ids:
   - nautec:abyssal_pylon
   - nautec:prismatic_emitter
   - nautec:tuning_fork
+  - nautec:resonance_charm
 ---
 
 # <Color id="light_purple">Resonance Network</Color>
@@ -74,3 +75,18 @@ Powers nearby machines without cables. Feed it FE from a cable or a receiving py
 2. Right-click each machine to link it. Right-click a linked machine again to unlink it.
 
 An emitter reaches machines up to 16 blocks away and can feed 16 of them. Only the player who placed it can tune a fork to it. Sneak-right-click the emitter with the fork to unlink everything, or sneak-right-click the air to clear the fork.
+
+***
+
+<Row>
+  <ItemImage id="resonance_charm"/>
+  ### <Color id="aqua">Resonance Charm</Color>
+</Row>
+
+Charges the items you carry from a network, wherever you are.
+
+Right-click a pylon with the charm to bind it to that pylon's network; you need access to the network. Then wear it in a charm slot. Every half second it draws from the network's sending pylons and charges the FE items in your inventory, armour and curio slots, along with NauTec items that run on laser power, such as the <ItemLink id="atlantean_rifle"/> and the <ItemLink id="prismatic_battery"/>. It moves up to 2,000 FE/t.
+
+Its crystal also does the work of a <ItemLink id="prism_monocle"/>: while it is equipped you see power and purity readouts on laser blocks and the clearer underwater view without wearing a monocle.
+
+It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Sneak-right-click the air with it to unbind it.

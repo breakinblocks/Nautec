@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.data.components.ShockwaveCooldown;
 import com.breakinblocks.nautec.data.components.TeleportAnchor;
+import com.breakinblocks.nautec.content.resonance.ResonanceBinding;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,6 +40,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<Boolean>> IS_INFUSED = registerDataComponentType("is_infused",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final Supplier<DataComponentType<ResonanceBinding>> RESONANCE_BINDING = registerDataComponentType("resonance_binding",
+            () -> builder -> builder.persistent(ResonanceBinding.CODEC).networkSynchronized(ResonanceBinding.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<GlobalPos>> TUNED_EMITTER = registerDataComponentType("tuned_emitter",
             () -> builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC));

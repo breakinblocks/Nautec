@@ -1,17 +1,14 @@
 package com.breakinblocks.nautec.client.render;
 
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.compat.curio.CurioCompat;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
-import com.breakinblocks.nautec.registries.NTItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -60,8 +57,7 @@ public final class GatewayBlockedHighlight {
     }
 
     private static boolean wearsMonocle(Player player) {
-        return player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof PrismMonocleItem
-                || !CurioCompat.getStackInSlot(player, NTItems.PRISM_MONOCLE.get()).isEmpty();
+        return PrismMonocleItem.isWorn(player);
     }
 
     private static void box(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1) {

@@ -1139,6 +1139,17 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
                 .save(pRecipeOutput, key("prismatic_emitter"));
 
+        shaped(RecipeCategory.TOOLS, NTItems.RESONANCE_CHARM.get())
+                .pattern(" S ")
+                .pattern("ERE")
+                .pattern(" G ")
+                .define('S', Items.STRING)
+                .define('E', Items.ENDER_PEARL)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
+                .save(pRecipeOutput, key("resonance_charm"));
+
         shaped(RecipeCategory.TOOLS, NTItems.TUNING_FORK.get())
                 .pattern("A A")
                 .pattern(" A ")
