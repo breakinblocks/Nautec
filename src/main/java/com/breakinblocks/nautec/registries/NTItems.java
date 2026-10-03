@@ -16,6 +16,7 @@ import com.breakinblocks.nautec.content.items.NeptunesTridentItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.items.PressureSynthesizerItem;
 import com.breakinblocks.nautec.content.items.PrismMonocleItem;
+import com.breakinblocks.nautec.content.items.ConfigurationCardItem;
 import com.breakinblocks.nautec.content.items.CrystalSeedItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
@@ -233,6 +234,8 @@ public final class NTItems {
     public static final DeferredItem<PressureSynthesizerItem> ATLANTEAN_PRESSURE_SYNTHESIZER = registerItem("atlantean_pressure_synthesizer",
             properties -> new PressureSynthesizerItem(properties, PressureForgeBlockEntity.Synthesizer.ATLANTEAN),
             () -> new Item.Properties().stacksTo(16).rarity(Rarity.EPIC).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
+    public static final DeferredItem<ConfigurationCardItem> CONFIGURATION_CARD = registerItem("configuration_card",
+            ConfigurationCardItem::new, () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<TuningForkItem> TUNING_FORK = registerItem("tuning_fork",
             TuningForkItem::new, () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<SpawnerConfinementMatrixItem> SPAWNER_CONFINEMENT_MATRIX = registerItem("spawner_confinement_matrix",

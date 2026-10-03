@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -244,11 +247,12 @@ public final class BiologyFixTests {
                 ResourceHandler<ItemResource> leftSide = itemsOn(helper, analyzerPos, front.getClockWise());
                 ResourceHandler<ItemResource> backSide = itemsOn(helper, analyzerPos, back);
                 helper.assertTrue(frontSide != null && leftSide != null && backSide != null, "Analyzer should expose its front, sides and back");
-                ResourceHandler<ItemResource> bottom = itemsOn(helper, analyzerPos, Direction.DOWN);
-                helper.assertTrue(bottom != null, "Analyzer bottom should still let the result out");
-                helper.assertValueEqual(0, insert(bottom, 0, dish.copy()), "inserted through the bottom");
+                analyzer.setSideMode(SideKind.ITEMS, RelativeFace.BACK, SideMode.OUTPUT);
+                analyzer.setSideMode(SideKind.ITEMS, RelativeFace.BOTTOM, SideMode.NONE);
+                backSide = itemsOn(helper, analyzerPos, back);
+                helper.assertTrue(itemsOn(helper, analyzerPos, Direction.DOWN) == null, "An Off bottom exposes nothing");
 
-                helper.assertValueEqual(0, insert(backSide, 0, dish.copy()), "inserted through the output side");
+                helper.assertValueEqual(0, insert(backSide, 0, dish.copy()), "inserted through an output face");
                 helper.assertValueEqual(1, insert(leftSide, 0, dish.copy()), "dish inserted through a side");
                 helper.assertTrue(analyzer.getItemStackHandler().getStackInSlot(0).is(NTItems.PETRI_DISH.get()), "Input slot should hold the dish");
                 helper.assertValueEqual(0, extract(frontSide, 0, dish.copy()), "extracted the input through an input side");

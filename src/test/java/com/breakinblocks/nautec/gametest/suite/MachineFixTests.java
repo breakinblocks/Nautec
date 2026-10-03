@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.api.gateways.GatewayIndex;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -167,9 +170,13 @@ public final class MachineFixTests {
                 helper.assertTrue(down != null, "The chamber should expose an item handler on its bottom");
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(2, down.extract(1, shard, 2, tx), "output pulled from the bottom");
-                    helper.assertValueEqual(0, down.insert(0, ItemResource.of(NTItems.PRISMARINE_CRYSTAL_SHARD.get()), 1, tx),
-                            "input pushed in from the bottom");
                     tx.commit();
+                }
+                chamber.setSideMode(SideKind.ITEMS, RelativeFace.BOTTOM, SideMode.OUTPUT);
+                ResourceHandler<ItemResource> outputOnly = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.DOWN);
+                try (Transaction tx = Transaction.openRoot()) {
+                    helper.assertValueEqual(0, outputOnly.insert(0, ItemResource.of(NTItems.PRISMARINE_CRYSTAL_SHARD.get()), 1, tx),
+                            "input pushed into an output-only bottom");
                 }
                 helper.assertValueEqual(1, chamber.getItemStackHandler().getStackInSlot(1).getCount(), "output left after extraction");
                 helper.succeed();

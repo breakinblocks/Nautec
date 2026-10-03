@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:paper",
+    "nautec:aquatic_chip",
+    "minecraft:prismarine_crystals"
+  ],
+  "result": {
+    "id": "nautec:configuration_card"
+  }
+}

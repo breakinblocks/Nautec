@@ -1,16 +1,23 @@
 package com.breakinblocks.nautec.api.blockentities;
 
+import com.breakinblocks.nautec.api.sides.RelativeFace;
+import com.breakinblocks.nautec.api.sides.SideConfig;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
 import com.breakinblocks.nautec.capabilities.bacteria.BacteriaStorage;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.capabilities.fluid.SidedFluidHandler;
+import com.breakinblocks.nautec.capabilities.fluid.TankList;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
-import com.breakinblocks.nautec.capabilities.item.OutputSlotsItemHandler;
 import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.PowerStorage;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntSets;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.BlockPos;
@@ -20,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
@@ -35,9 +43,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -46,6 +55,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class ContainerBlockEntity extends BlockEntity {
     private @Nullable ItemStackHandler itemHandler;
+    private final SideConfig sideConfig = new SideConfig();
     private @Nullable FluidTank fluidTank;
     private @Nullable FluidTank secondaryFluidTank;
     private @Nullable PowerStorage powerStorage;
@@ -111,6 +121,10 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             in.child("power_storage").ifPresent(this.getPowerStorageImpl()::deserialize);
         if (this.getBacteriaStorageImpl() != null)
             in.child("bacteria_storage").ifPresent(this.getBacteriaStorageImpl()::deserialize);
+        if (hasSideConfig()) {
+            sideConfig.reset();
+            in.child("side_config").ifPresent(sideConfig::load);
+        }
         loadData(in);
     }
 
@@ -127,6 +141,8 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             getPowerStorageImpl().serialize(out.child("power_storage"));
         if (getBacteriaStorageImpl() != null)
             getBacteriaStorageImpl().serialize(out.child("bacteria_storage"));
+        if (hasSideConfig())
+            sideConfig.save(out.child("side_config"));
         saveData(out);
     }
 
@@ -391,25 +407,97 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         };
     }
 
+    public @Nullable SlotRoles itemRoles() {
+        return null;
+    }
+
+    public @Nullable SlotRoles fluidRoles() {
+        return null;
+    }
+
+    public boolean hasSideConfig() {
+        return itemRoles() != null || fluidRoles() != null;
+    }
+
+    public boolean hasSideConfig(SideKind kind) {
+        return (kind == SideKind.ITEMS ? itemRoles() : fluidRoles()) != null;
+    }
+
+    public SideConfig getSideConfig() {
+        return sideConfig;
+    }
+
+    public Direction front() {
+        BlockState state = getBlockState();
+        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            return state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        }
+        if (state.hasProperty(BlockStateProperties.FACING)) {
+            return state.getValue(BlockStateProperties.FACING);
+        }
+        return Direction.NORTH;
+    }
+
+    public void setSideMode(SideKind kind, RelativeFace face, SideMode mode) {
+        sideConfig.set(kind, face, mode);
+        sideConfigChanged();
+    }
+
+    public void sideConfigChanged() {
+        update();
+        if (level != null && !level.isClientSide()) {
+            level.invalidateCapabilities(worldPosition);
+        }
+    }
+
+    public void saveSettings(ValueOutput out) {
+    }
+
+    public boolean loadSettings(ValueInput in, ServerPlayer player) {
+        return false;
+    }
+
+    public List<FluidTank> fluidTanks() {
+        List<FluidTank> tanks = new ArrayList<>();
+        if (fluidTank != null) {
+            tanks.add(fluidTank);
+        }
+        if (secondaryFluidTank != null) {
+            tanks.add(secondaryFluidTank);
+        }
+        return tanks;
+    }
+
+    private <R extends Resource> @Nullable ResourceHandler<R> roleHandler(ResourceHandler<R> inner, SlotRoles roles, SideMode mode, R empty) {
+        if (mode == SideMode.NONE) {
+            return null;
+        }
+        return new RoleResourceHandler<>(inner, mode.inserts() ? roles.inputs() : IntSets.EMPTY_SET,
+                mode.extracts() ? roles.outputs() : IntSets.EMPTY_SET, empty);
+    }
+
     public ResourceHandler<ItemResource> getItemHandlerOnSide(Direction direction) {
-        ResourceHandler<ItemResource> sided = getHandlerOnSide(
+        SlotRoles roles = itemRoles();
+        if (roles != null && direction != null) {
+            return roleHandler(getItemHandler(), roles, sideConfig.get(SideKind.ITEMS, RelativeFace.of(front(), direction)), ItemResource.EMPTY);
+        }
+        return getHandlerOnSide(
                 Capabilities.Item.BLOCK,
                 SidedItemHandler::new,
                 direction,
                 getItemHandler()
         );
-        int[] outputs = getItemOutputSlots();
-        if (direction == null || outputs.length == 0) {
-            return sided;
-        }
-        return new OutputSlotsItemHandler(getItemHandler(), sided, outputs);
-    }
-
-    public int[] getItemOutputSlots() {
-        return new int[0];
     }
 
     public ResourceHandler<FluidResource> getFluidHandlerOnSide(Direction direction) {
+        SlotRoles roles = fluidRoles();
+        if (roles != null) {
+            ResourceHandler<FluidResource> tanks = new TankList(fluidTanks());
+            if (direction == null) {
+                return tanks;
+            }
+            return roleHandler(tanks, roles, sideConfig.get(SideKind.FLUIDS, RelativeFace.of(front(), direction)), FluidResource.EMPTY);
+        }
         return getHandlerOnSide(
                 Capabilities.Fluid.BLOCK,
                 SidedFluidHandler::new,

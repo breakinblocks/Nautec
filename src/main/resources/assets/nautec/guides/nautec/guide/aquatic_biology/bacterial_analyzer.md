@@ -29,7 +29,7 @@ It needs a beam of at least 5 AP entering its bottom face from below. The power 
 
 Both the time (60 ticks) and the power (5 AP) are configurable.
 
-To automate it, feed dishes into the front, left or right face of the lower block. Analyzed dishes can be pulled out of any face.
+Hoppers and pipes can feed dishes into the lower block and pull analyzed dishes out, through any face by default. [Side Configuration](nautec:getting_started/utilities.md) changes what each face allows.
 
 ***
 

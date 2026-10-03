@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -324,6 +325,16 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
         return Map.of();
+    }
+
+    @Override
+    public void saveSettings(ValueOutput out) {
+        ResonanceActions.copyNetwork(networkId, out);
+    }
+
+    @Override
+    public boolean loadSettings(ValueInput in, ServerPlayer player) {
+        return ResonanceActions.pasteNetwork(player, this, in);
     }
 
     @Override

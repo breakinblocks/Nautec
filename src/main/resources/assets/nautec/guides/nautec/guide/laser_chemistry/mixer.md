@@ -23,8 +23,9 @@ Right-click it with an empty hand to open it. It has four ingredient slots, one 
 
 * Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank. Salt Water comes from the [Deep Sea Drain](drain.md).
 * Right-click with an empty Bucket to take fluid out of the output tank.
-* Hoppers and pipes on any of the four sides can insert ingredients, fill the input tank and drain the output tank.
-* Item results can be pulled out of the output slot from any face, top and bottom included. Nothing can be inserted through the top or bottom.
+* Hoppers and pipes can insert ingredients, fill the input tank and drain the output tank.
+* Item results can be pulled out of the output slot.
+* Every face does all of this by default. [Side Configuration](nautec:getting_started/utilities.md) sets each face separately for items and fluids.
 
 The whisk spins while it works. The <ItemLink id="prism_monocle"/> shows the power arriving, and Jade also shows its tanks and mixing progress.
 

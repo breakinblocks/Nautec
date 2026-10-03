@@ -35,7 +35,7 @@ Each cycle takes as long as the spawner's own spawn delay. At the end of it, the
 
 When every slot is taken, the spawner pauses and keeps its buffer full until a slot opens up. Any part of a roll that does not fit is lost.
 
-Hoppers and pipes pull drops out from any side. Only the spawner puts items in.
+Hoppers and pipes pull drops out, from any face by default ([Side Configuration](nautec:getting_started/utilities.md)). Only the spawner puts items in.
 
 ## <Color id="gold">The Screen</Color>
 

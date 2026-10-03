@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawnerMenu> {
+    private @Nullable SideConfigPanel sidePanel;
+
     private static final int PANEL = 0xFFC8C7B3;
     private static final int PANEL_LIGHT = 0xFFE7E7D6;
     private static final int OUTLINE = 0xFF070707;
@@ -80,6 +82,9 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     @Override
     protected void init() {
         super.init();
+        if (sidePanel == null) {
+            sidePanel = SideConfigPanel.create(this.menu.getBlockEntity(), this.menu.containerId, true);
+        }
         addRenderableWidget(new FilterToggleButton(toggleX(), toggleY()));
         this.modeButton = addRenderableWidget(new ModeButton(modeButtonX(), modeButtonY()));
         this.modeButton.visible = panelOpen;
@@ -98,7 +103,19 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     }
 
     public List<Rect2i> extraAreas() {
-        return panelOpen ? List.of(tabArea(), panelArea()) : List.of(tabArea());
+        List<Rect2i> areas = new ArrayList<>(panelOpen ? List.of(tabArea(), panelArea()) : List.of(tabArea()));
+        if (sidePanel != null) {
+            areas.add(sidePanel.area(sideAnchorX(), sideAnchorY()));
+        }
+        return areas;
+    }
+
+    private int sideAnchorX() {
+        return this.leftPos - 2;
+    }
+
+    private int sideAnchorY() {
+        return this.topPos + TAB_Y + TAB_HEIGHT + 4;
     }
 
     public List<Rect2i> filterSlotAreas() {
@@ -212,6 +229,9 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     @Override
     public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractContents(graphics, mouseX, mouseY, partialTick);
+        if (sidePanel != null) {
+            sidePanel.extract(graphics, this.font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
+        }
         if (!panelOpen) {
             return;
         }
@@ -297,6 +317,9 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+            return true;
+        }
         int slot = hoveredFilterSlot(event.x(), event.y());
         if (slot >= 0) {
             clickFilterSlot(slot, event.button());

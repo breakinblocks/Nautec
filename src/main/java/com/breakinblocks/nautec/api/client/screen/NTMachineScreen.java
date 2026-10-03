@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.renderer.Rect2i;
+import com.breakinblocks.nautec.client.screen.SideConfigPanel;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -30,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import java.util.List;
 
-public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTMachineMenu<T>> {
+public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTMachineMenu<T>> implements SideConfigHost {
     private static final Identifier BACTERIA_OVERLAY_TEXTURE = Nautec.rl("textures/item/petri_dish_overlay.png");
     private static final Identifier DISH_TEXTURE = Nautec.rl("textures/item/petri_dish.png");
     private static final int SLOT_DARK = 0xFF1E2221;
@@ -39,6 +42,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     private static final int DISH_GHOST = 0x66FFFFFF;
 
     private SlotFluidHandler hoveredFluidHandlerSlot;
+    private @Nullable SideConfigPanel sidePanel;
     private SlotBacteriaStorage hoveredBacteriaStorageSlot;
 
     private final NumberFormat nf = NumberFormat.getIntegerInstance();
@@ -51,6 +55,14 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         super(menu, playerInventory, title, imageWidth, imageHeight);
 
         this.titleLabelY = 4;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if (sidePanel == null) {
+            sidePanel = SideConfigPanel.create(menu.blockEntity, menu.containerId);
+        }
     }
 
     @Override
@@ -145,6 +157,31 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         for (SlotFluidHandler fSlot : this.menu.getFluidTankSlots()) {
             fSlot.getRenderer().render(guiGraphics, this.leftPos + fSlot.getX(), this.topPos + fSlot.getY(), fSlot.getFluidStack());
         }
+
+        if (sidePanel != null) {
+            sidePanel.extract(guiGraphics, font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
+        }
+    }
+
+    private int sideAnchorX() {
+        return this.leftPos + this.imageWidth + 2;
+    }
+
+    private int sideAnchorY() {
+        return this.topPos + 4;
+    }
+
+    @Override
+    public @Nullable Rect2i sideConfigArea() {
+        return sidePanel == null ? null : sidePanel.area(sideAnchorX(), sideAnchorY());
+    }
+
+    @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
+        if (sidePanel != null && sidePanel.contains(mouseX, mouseY, sideAnchorX(), sideAnchorY())) {
+            return false;
+        }
+        return super.hasClickedOutside(mouseX, mouseY, left, top);
     }
 
     private void renderBacteria(GuiGraphicsExtractor guiGraphics, BacteriaInstance instance, int x, int y) {
@@ -187,6 +224,9 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+            return true;
+        }
         ItemStack carried = menu.getCarried();
         SlotBacteriaStorage slot = getHoveredBacteriaStorageSlot();
         if (carried.is(NTItems.PETRI_DISH) && slot != null) {

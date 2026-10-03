@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -30,14 +31,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements MenuProvider {
-    public static final Map<Direction, Pair<IOActions, int[]>> ITEM_SIDED_INTERACTIONS = Map.of(
-            Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{0}),
-            Direction.EAST, Pair.of(IOActions.INSERT, new int[]{0}),
-            Direction.WEST, Pair.of(IOActions.INSERT, new int[]{0}),
-            Direction.NORTH, Pair.of(IOActions.EXTRACT, new int[]{1})
-    );
     private boolean hasRecipe;
     private int progress;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[]{1});
 
     public BacterialAnalyzerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.BACTERIAL_ANALYZER.get(), blockPos, blockState);
@@ -119,13 +116,13 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{1};
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return capability == Capabilities.Item.BLOCK ? ITEM_SIDED_INTERACTIONS : Map.of();
+        return Map.of();
     }
 
     @Override

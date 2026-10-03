@@ -46,6 +46,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
@@ -237,6 +238,7 @@ public class NTJeiPlugin implements IModPlugin {
         ConfinedSpawnerGhostHandler handler = new ConfinedSpawnerGhostHandler();
         registration.addGhostIngredientHandler(ConfinedSpawnerScreen.class, handler);
         registration.addGuiContainerHandler(ConfinedSpawnerScreen.class, handler);
+        registration.addGenericGuiContainerHandler(AbstractContainerScreen.class, new SideConfigJeiHandler());
     }
 
     @Override

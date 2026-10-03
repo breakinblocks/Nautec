@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,6 +36,8 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
 
     private float charge;
     private int ventCooldown;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{INPUT_SLOT}, new int[]{OUTPUT_SLOT});
 
     public ResonanceChamberBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.RESONANCE_CHAMBER.get(), blockPos, blockState);
@@ -191,21 +193,12 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{OUTPUT_SLOT};
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Item.BLOCK) {
-            return Map.of(
-                    Direction.DOWN, Pair.of(IOActions.EXTRACT, new int[]{OUTPUT_SLOT}),
-                    Direction.UP, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
-                    Direction.NORTH, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
-                    Direction.EAST, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
-                    Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}),
-                    Direction.WEST, Pair.of(IOActions.INSERT, new int[]{INPUT_SLOT}));
-        }
         return Map.of();
     }
 

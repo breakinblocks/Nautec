@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.data;
 
+import com.breakinblocks.nautec.content.items.MachineSettings;
 import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
@@ -43,6 +44,12 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<ResonanceBinding>> RESONANCE_BINDING = registerDataComponentType("resonance_binding",
             () -> builder -> builder.persistent(ResonanceBinding.CODEC).networkSynchronized(ResonanceBinding.STREAM_CODEC));
+
+    public static final Supplier<DataComponentType<Integer>> WRENCH_MODE = registerDataComponentType("wrench_mode",
+            () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    public static final Supplier<DataComponentType<MachineSettings>> MACHINE_SETTINGS = registerDataComponentType("machine_settings",
+            () -> builder -> builder.persistent(MachineSettings.CODEC).networkSynchronized(MachineSettings.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<GlobalPos>> TUNED_EMITTER = registerDataComponentType("tuned_emitter",
             () -> builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC));

@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import java.util.Optional;
+import net.minecraft.server.level.ServerPlayer;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -72,7 +75,6 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     private @Nullable SpawnerSettings settings;
     private final SpawnerFilter filter = new SpawnerFilter();
     private final SpawnerLootSimulator simulator = new SpawnerLootSimulator();
-    private @Nullable ResourceHandler<ItemResource> extractOnly;
 
     private int bufferedPower;
     private int progress;
@@ -113,6 +115,8 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         }
     };
 
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[0], SlotRoles.range(0, SLOTS));
+
     public ConfinedSpawnerBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.CONFINED_SPAWNER.get(), pos, state);
         addItemHandler(SLOTS, (slot, stack) -> false);
@@ -134,15 +138,8 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     }
 
     @Override
-    public ResourceHandler<ItemResource> getItemHandlerOnSide(@Nullable Direction direction) {
-        if (extractOnly == null) {
-            IntList slots = new IntArrayList(SLOTS);
-            for (int i = 0; i < SLOTS; i++) {
-                slots.add(i);
-            }
-            extractOnly = new SidedItemHandler(getItemHandler(), IOActions.EXTRACT, slots);
-        }
-        return extractOnly;
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     public void confine(BlockState originalState, CompoundTag originalData) {
@@ -408,6 +405,23 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         filter.setWhitelist(!filter.isWhitelist());
         setChanged();
         sync();
+    }
+
+    @Override
+    public void saveSettings(ValueOutput out) {
+        filter.save(out.child("filter"));
+    }
+
+    @Override
+    public boolean loadSettings(ValueInput in, ServerPlayer player) {
+        Optional<ValueInput> copied = in.child("filter");
+        if (copied.isEmpty()) {
+            return false;
+        }
+        filter.load(copied.get());
+        setChanged();
+        sync();
+        return true;
     }
 
     @Override

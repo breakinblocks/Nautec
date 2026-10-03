@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -13,7 +14,6 @@ import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTFluids;
-import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -82,6 +82,9 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
             return DATA_COUNT;
         }
     };
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_SLOT, SAMPLE_SLOT}, new int[]{OUTPUT_SLOT});
+    private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
     public GraftingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.GRAFTING_STATION.get(), blockPos, blockState);
@@ -208,16 +211,18 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{OUTPUT_SLOT};
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
+    }
+
+    @Override
+    public SlotRoles fluidRoles() {
+        return FLUID_ROLES;
     }
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Item.BLOCK) {
-            return SidedCapUtils.allInsert(DISH_SLOT, SAMPLE_SLOT);
-        }
-        return capability == Capabilities.Fluid.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
+        return Map.of();
     }
 
     @Override

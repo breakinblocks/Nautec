@@ -50,7 +50,7 @@ The recipes are also shown in JEI. See [Deep Materials](materials.md) for what t
 
 Right-click with an item to put it in, and with an <ItemLink id="etching_acid_bucket"/> to fill the tank. Right-click with an empty hand to take the output, or the input when the output slot is empty.
 
-For automation, items go in from the top and the four sides, finished items can be pulled out of any face, and Etching Acid can be piped in from any side. Since the top has to stay under water, feed it from the sides. The Forge presses one item at a time and only finishes a press when there is room in the output slot.
+Hoppers and pipes can put items and Etching Acid in and take finished items out, through any face by default. [Side Configuration](nautec:getting_started/utilities.md) sets each face separately for items and fluids. Since the top has to stay under water, feed it from the sides. The Forge presses one item at a time and only finishes a press when there is room in the output slot.
 
 Look at it through a <ItemLink id="prism_monocle"/> to check it. It shows "Under pressure" with the acid level and beam purity when it is set up correctly, or the depth and water it still needs when it is not.
 

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -44,18 +45,6 @@ import java.util.Set;
 
 public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     public static final int OUTPUT_SLOT = 4;
-    public static final Map<@NotNull Direction, @NotNull Pair<IOActions, int[]>> ITEM_HANDLER_SIDED_INTERACTIONS = Map.of(
-            Direction.NORTH, Pair.of(IOActions.INSERT, new int[]{0, 1, 2, 3}),
-            Direction.EAST, Pair.of(IOActions.INSERT, new int[]{0, 1, 2, 3}),
-            Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{0, 1, 2, 3}),
-            Direction.WEST, Pair.of(IOActions.INSERT, new int[]{0, 1, 2, 3})
-    );
-    public static final Map<@NotNull Direction, @NotNull Pair<IOActions, int[]>> FLUID_HANDLER_SIDED_INTERACTIONS = Map.of(
-            Direction.NORTH, Pair.of(IOActions.BOTH, new int[]{0, 1}),
-            Direction.EAST, Pair.of(IOActions.BOTH, new int[]{0, 1}),
-            Direction.SOUTH, Pair.of(IOActions.BOTH, new int[]{0, 1}),
-            Direction.WEST, Pair.of(IOActions.BOTH, new int[]{0, 1})
-    );
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private boolean running;
     private int maxDuration;
@@ -67,6 +56,9 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     private int duration;
 
     private MixingRecipe recipe;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, 1, 2, 3}, new int[]{OUTPUT_SLOT});
+    private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0}, new int[]{1});
 
     public MixerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.MIXER.get(), blockPos, blockState);
@@ -86,18 +78,18 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{OUTPUT_SLOT};
+    public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
+        return Map.of();
     }
 
     @Override
-    public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Item.BLOCK) {
-            return ITEM_HANDLER_SIDED_INTERACTIONS;
-        } else if (capability == Capabilities.Fluid.BLOCK) {
-            return FLUID_HANDLER_SIDED_INTERACTIONS;
-        }
-        return Map.of();
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
+    }
+
+    @Override
+    public SlotRoles fluidRoles() {
+        return FLUID_ROLES;
     }
 
     @Override
@@ -167,16 +159,6 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
             transaction.commit();
         }
         return true;
-    }
-
-    @Override
-    public ResourceHandler<FluidResource> getFluidHandlerOnSide(Direction direction) {
-        return getHandlerOnSide(
-                Capabilities.Fluid.BLOCK,
-                (ignored, actionSlotsPair) -> new TwoTankSidedFluidHandler(getFluidHandler(), getSecondaryFluidHandler(), actionSlotsPair),
-                direction,
-                getFluidHandler()
-        );
     }
 
     @Override
@@ -320,7 +302,6 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
     public int getMaxDuration() {
         return level != null && level.isClientSide() ? maxDuration : getRecipe().map(MixingRecipe::duration).orElse(0);
     }
-
 
     @Override
     public Component getDisplayName() {

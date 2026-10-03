@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -42,6 +43,8 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
     private boolean spaceKnown;
     private Status status = Status.EMPTY;
 
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{SEED_SLOT}, new int[0]);
+
     public CrystalCradleBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.CRYSTAL_CRADLE.get(), pos, state);
         addItemHandler(1, 1, (slot, stack) -> stack.is(NTItems.PRISMARINE_CRYSTAL_SEED.get()));
@@ -59,12 +62,12 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Item.BLOCK) {
-            Pair<IOActions, int[]> insert = Pair.of(IOActions.INSERT, new int[]{SEED_SLOT});
-            return Map.of(Direction.UP, insert, Direction.DOWN, insert, Direction.NORTH, insert,
-                    Direction.EAST, insert, Direction.SOUTH, insert, Direction.WEST, insert);
-        }
         return Map.of();
+    }
+
+    @Override
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     public boolean hasSeed() {

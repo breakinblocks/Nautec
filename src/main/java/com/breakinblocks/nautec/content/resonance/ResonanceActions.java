@@ -1,5 +1,10 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.core.UUIDUtil;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
@@ -65,6 +70,26 @@ public final class ResonanceActions {
             fail(player, error);
         }
         ResonanceSync.send(player, pylon);
+    }
+
+    public static void copyNetwork(@Nullable UUID network, ValueOutput out) {
+        if (network != null) {
+            out.store("network", UUIDUtil.CODEC, network);
+        }
+    }
+
+    public static boolean pasteNetwork(ServerPlayer player, ResonanceTunable target, ValueInput in) {
+        Optional<UUID> id = in.read("network", UUIDUtil.CODEC);
+        if (id.isEmpty()) {
+            return false;
+        }
+        ResonanceNetwork network = ResonanceNetworks.get(player.level().getServer()).get(id.get());
+        if (network == null || !ResonanceNetworks.canUse(player, network)) {
+            player.sendSystemMessage(Component.translatable("nautec.resonance.error.no_access").withStyle(ChatFormatting.RED));
+            return false;
+        }
+        target.setNetwork(network);
+        return true;
     }
 
     private static String select(ServerPlayer player, ResonanceTunable pylon, ResonanceNetworks networks, UUID id) {

@@ -1217,6 +1217,13 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
                 .save(pRecipeOutput, key("downlink_array"));
 
+        shapeless(RecipeCategory.TOOLS, NTItems.CONFIGURATION_CARD.get(), 1)
+                .requires(Items.PAPER)
+                .requires(NTItems.AQUATIC_CHIP.get())
+                .requires(Items.PRISMARINE_CRYSTALS)
+                .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP.get()))
+                .save(pRecipeOutput, key("configuration_card"));
+
         shaped(RecipeCategory.TOOLS, NTItems.TUNING_FORK.get())
                 .pattern("A A")
                 .pattern(" A ")

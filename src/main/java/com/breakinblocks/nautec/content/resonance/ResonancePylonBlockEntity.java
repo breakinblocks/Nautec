@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -315,6 +316,22 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
         return Map.of();
+    }
+
+    @Override
+    public void saveSettings(ValueOutput out) {
+        ResonanceActions.copyNetwork(networkId, out);
+        out.putBoolean("send", sendMode);
+    }
+
+    @Override
+    public boolean loadSettings(ValueInput in, ServerPlayer player) {
+        boolean network = ResonanceActions.pasteNetwork(player, this, in);
+        boolean mode = in.getBooleanOr("send", sendMode) != sendMode;
+        if (mode) {
+            setSendMode(!sendMode);
+        }
+        return network || mode;
     }
 
     @Override

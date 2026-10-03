@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("4");
+        final PayloadRegistrar registrar = event.registrar("5");
         registrar.playToClient(
                 OpenAugmentationScreenPayload.TYPE,
                 OpenAugmentationScreenPayload.STREAM_CODEC,
@@ -20,6 +20,11 @@ public class NetworkEvents {
                 SetSpawnerFilterPayload.TYPE,
                 SetSpawnerFilterPayload.STREAM_CODEC,
                 SetSpawnerFilterPayload::handle
+        );
+        registrar.playToServer(
+                SetSideConfigPayload.TYPE,
+                SetSideConfigPayload.STREAM_CODEC,
+                SetSideConfigPayload::handle
         );
         registrar.playToServer(
                 KeyPressedPayload.TYPE,

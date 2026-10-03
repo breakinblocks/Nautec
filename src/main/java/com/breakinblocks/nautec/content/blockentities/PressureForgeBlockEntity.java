@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
@@ -10,7 +11,6 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
-import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -60,6 +59,9 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
 
     private int progress;
     private Synthesizer synthesizer = Synthesizer.NONE;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[]{1});
+    private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
     public PressureForgeBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.PRESSURE_FORGE.get(), blockPos, blockState);
@@ -188,22 +190,18 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{1};
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
+    }
+
+    @Override
+    public SlotRoles fluidRoles() {
+        return FLUID_ROLES;
     }
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Item.BLOCK) {
-            return Map.of(
-                    Direction.DOWN, Pair.of(IOActions.EXTRACT, new int[]{1}),
-                    Direction.UP, Pair.of(IOActions.INSERT, new int[]{0}),
-                    Direction.NORTH, Pair.of(IOActions.INSERT, new int[]{0}),
-                    Direction.EAST, Pair.of(IOActions.INSERT, new int[]{0}),
-                    Direction.SOUTH, Pair.of(IOActions.INSERT, new int[]{0}),
-                    Direction.WEST, Pair.of(IOActions.INSERT, new int[]{0}));
-        }
-        return capability == Capabilities.Fluid.BLOCK ? SidedCapUtils.allInsert(0) : Map.of();
+        return Map.of();
     }
 
     @Override

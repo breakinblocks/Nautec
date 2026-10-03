@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -131,11 +134,14 @@ public final class CrateAndCapabilityTests {
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(0, north.extract(0, cobble, 4, tx), "extract via insert-only north side");
                 }
+                mixer.setSideMode(SideKind.ITEMS, RelativeFace.TOP, SideMode.OUTPUT);
                 ResourceHandler<ItemResource> up = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.UP);
-                helper.assertTrue(up != null, "Mixer should expose its output slot on top");
+                helper.assertTrue(up != null, "An output face should still expose a handler");
                 try (Transaction tx = Transaction.openRoot()) {
-                    helper.assertValueEqual(0, up.insert(0, cobble, 4, tx), "insert via output-only top side");
+                    helper.assertValueEqual(0, up.insert(0, cobble, 4, tx), "insert via an output-only top face");
                 }
+                mixer.setSideMode(SideKind.ITEMS, RelativeFace.TOP, SideMode.NONE);
+                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.UP) == null, "An Off face exposes nothing");
                 helper.succeed();
             });
         });
@@ -203,8 +209,11 @@ public final class CrateAndCapabilityTests {
                     tx.commit();
                 }
                 helper.assertValueEqual(100, mixer.getSecondaryFluidTank().getFluidAmount(), "output tank amount after extract");
-                ResourceHandler<FluidResource> up = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.UP);
-                helper.assertTrue(up == null, "Mixer should not expose a fluid handler on top");
+                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.UP) != null,
+                        "Every face takes fluids by default");
+                mixer.setSideMode(SideKind.FLUIDS, RelativeFace.TOP, SideMode.NONE);
+                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.UP) == null,
+                        "A face set to Off should expose no fluid handler");
                 helper.succeed();
             });
         });

@@ -6,13 +6,14 @@ navigation:
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:aquarine_steel_wrench
+  - nautec:configuration_card
 ---
 
 # <Color id="light_purple">Tools and Utilities</Color>
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="aquarine_steel_wrench" scale="2"/>
-  The Wrench sets up and turns NauTec blocks.
+  The Wrench sets up and turns NauTec blocks, and sets which faces of a machine hoppers and pipes can use.
 </Column>
 
 ***
@@ -22,12 +23,53 @@ item_ids:
   ### <Color id="aqua">Aquarine Steel Wrench</Color>
 </Row>
 
-Right-click a block with the wrench:
+The wrench has three modes. Sneak and right-click the air to switch between them; the tooltip and the message above the hotbar show the current one.
 
-* Any block with a facing, such as the <ItemLink id="aquatic_catalyst"/>, a relay or a machine, turns to its next direction. Keep clicking to go all the way round.
+* Rotate: right-click any block with a facing, such as the <ItemLink id="aquatic_catalyst"/>, a relay or a machine, to turn it to its next direction. Keep clicking to go all the way round.
+* Item Sides and Fluid Sides: right-click a face of a machine to change what hoppers and pipes can do through it, and sneak right-click to step back. See Side Configuration below.
+
+These work in every mode:
+
 * An unformed Augmentation Station, Bio Reactor, Industrial Bio Reactor or Deep Sea Drain forms its multiblock when you click the controller block.
 * A <ItemLink id="gateway"/> forms its ring when you click it, and a sneak right-click on a formed ring packs the whole ring into one item. See [Gateway](nautec:deep_engineering/gateway.md).
 * A <ItemLink id="laser_junction"/> face becomes an input with a right-click and an output with a sneak right-click. Clicking a face again the same way turns it off.
 * A top edge block of a formed [Bio Reactor](nautec:aquatic_biology/bio_reactor.md), a roof block of a formed [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md), or a wall block of a formed [Deep Sea Drain](nautec:laser_chemistry/drain.md) opens a laser port there, so a beam can feed the machine. A reactor port closes again with another click.
 
 <Recipe id="nautec:aquarine_wrench"/>
+
+***
+
+## <Color id="gold">Side Configuration</Color>
+
+Every NauTec machine that holds items or fluids lets you choose, face by face, what automation can do there. Items and fluids are set separately. Each face has one of four modes:
+
+* Input and Output (green): hoppers and pipes can put inputs in and take outputs out. Every face starts like this.
+* Input (blue): inputs can go in, nothing comes out.
+* Output (orange): outputs can come out, nothing goes in.
+* Off (grey): hoppers and pipes cannot reach this face at all.
+
+A machine only ever takes inputs into its input slots and gives outputs from its output slots, whatever the face mode, so a pipe cannot pull your ingredients back out.
+
+Change a face with the wrench in Item Sides or Fluid Sides mode, or open the machine and click the small tab on the right edge of its screen. The tab opens a cross of six faces: front, back, left, right, top and bottom, named as you look at the machine's front. Left-click a face for the next mode and right-click for the previous one. Machines that hold both items and fluids have Items and Fluids buttons above the faces. Machines without a facing treat north as their front.
+
+Multiblocks such as the Bio Reactors, the Deep Sea Drain and the Fusion Plant keep their own rules, described on their pages.
+
+***
+
+<Row>
+  <ItemImage id="configuration_card"/>
+  ### <Color id="aqua">Configuration Card</Color>
+</Row>
+
+Copies settings from one block to another. Sneak and right-click a machine to copy its settings onto the card, then right-click another block to paste them. Sneak and right-click the air to clear the card. The tooltip shows where the settings came from and what they cover.
+
+* The side configuration pastes onto any machine with side configuration, so one card can set up a whole row of different machines the same way.
+* A block's own settings only paste onto the same kind of block:
+  * a <ItemLink id="confined_spawner"/>'s filter and whitelist mode
+  * a <ItemLink id="resonance_pylon"/>'s network and send or receive mode
+  * an Uplink or Downlink Array's network
+  * a <ItemLink id="laser_junction"/>'s input and output faces
+
+Pasting a resonance network checks that you are allowed to use it, the same as choosing it in the screen.
+
+<Recipe id="nautec:configuration_card"/>

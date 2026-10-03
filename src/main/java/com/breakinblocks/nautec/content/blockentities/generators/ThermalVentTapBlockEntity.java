@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.generators;
 
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
@@ -51,11 +52,12 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
         }
     };
     private final ResourceHandler<FluidResource> fuelInput = new SidedFluidHandler(fuel, Pair.of(IOActions.INSERT, new int[]{0}));
-    private @Nullable ResourceHandler<ItemResource> saltOutput;
 
     private Status status = Status.NO_HEAT;
     private int heat;
     private int burned;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[0], new int[]{0});
 
     public ThermalVentTapBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.THERMAL_VENT_TAP.get(), pos, state, BUFFER);
@@ -79,11 +81,8 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
     }
 
     @Override
-    public ResourceHandler<ItemResource> getItemHandlerOnSide(@Nullable Direction direction) {
-        if (saltOutput == null) {
-            saltOutput = new SidedItemHandler(getItemHandler(), IOActions.EXTRACT, new IntArrayList(new int[]{0}));
-        }
-        return saltOutput;
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     public int rate() {

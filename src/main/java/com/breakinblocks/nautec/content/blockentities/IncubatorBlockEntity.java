@@ -2,8 +2,8 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.utils.RecipeRevision;
-import com.breakinblocks.nautec.utils.SidedCapUtils;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -43,6 +42,8 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     private BacteriaIncubationRecipe recipe;
     private boolean active;
     private int progress;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT});
 
     public IncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.INCUBATOR.get(), blockPos, blockState);
@@ -136,8 +137,8 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return new int[]{DISH_OUT};
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     public boolean isActive() {
@@ -160,7 +161,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return capability == Capabilities.Item.BLOCK ? SidedCapUtils.allInsert(0, DISH_IN) : Map.of();
+        return Map.of();
     }
 
     @Override

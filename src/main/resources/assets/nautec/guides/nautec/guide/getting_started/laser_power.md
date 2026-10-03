@@ -31,7 +31,7 @@ Your first power source. It burns prismarine items one at a time and fires a bea
 
 <Recipe id="nautec:aquatic_catalyst"/>
 
-Load fuel by right-clicking the catalyst with a stack, or feed it from a hopper on any side. Right-click it with an empty hand to take back the fuel it has not started on yet.
+Load fuel by right-clicking the catalyst with a stack, or feed it from a hopper. Right-click it with an empty hand to take back the fuel it has not started on yet.
 
 | Fuel | Purity | Power | Burn time |
 |---|---|---|---|

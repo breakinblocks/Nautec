@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
+import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -77,6 +79,42 @@ public class LaserJunctionBlockEntity extends LaserBlockEntity {
     @Override
     protected int outgoingPower(Direction direction) {
         return getPowerToTransfer() / Math.max(1, connectedOutputs());
+    }
+
+    @Override
+    public void saveSettings(ValueOutput out) {
+        BlockState state = getBlockState();
+        for (Direction direction : Direction.values()) {
+            out.putString(direction.getSerializedName(), state.getValue(LaserJunctionBlock.CONNECTION[direction.get3DDataValue()]).getSerializedName());
+        }
+    }
+
+    @Override
+    public boolean loadSettings(ValueInput in, ServerPlayer player) {
+        BlockState state = getBlockState();
+        for (Direction direction : Direction.values()) {
+            String name = in.getStringOr(direction.getSerializedName(), "");
+            LaserJunctionBlock.ConnectionType type = null;
+            for (LaserJunctionBlock.ConnectionType candidate : LaserJunctionBlock.ConnectionType.values()) {
+                if (candidate.getSerializedName().equals(name)) {
+                    type = candidate;
+                }
+            }
+            if (type == null) {
+                return false;
+            }
+            state = state.setValue(LaserJunctionBlock.CONNECTION[direction.get3DDataValue()], type);
+            inputDirections.remove(direction);
+            outputDirections.remove(direction);
+            if (type == LaserJunctionBlock.ConnectionType.INPUT) {
+                inputDirections.add(direction);
+            } else if (type == LaserJunctionBlock.ConnectionType.OUTPUT) {
+                outputDirections.add(direction);
+            }
+        }
+        level.setBlockAndUpdate(worldPosition, state);
+        setChanged();
+        return true;
     }
 
     @Override

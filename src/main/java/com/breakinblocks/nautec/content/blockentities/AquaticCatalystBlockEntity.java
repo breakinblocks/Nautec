@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -43,6 +44,8 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private int syncedTransfer;
     private boolean burning;
     private BeamScan beamScan;
+
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
     public AquaticCatalystBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
@@ -262,7 +265,12 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
     @Override
     public <T> Map<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        return SidedCapUtils.allInsert(0);
+        return Map.of();
+    }
+
+    @Override
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     @Override

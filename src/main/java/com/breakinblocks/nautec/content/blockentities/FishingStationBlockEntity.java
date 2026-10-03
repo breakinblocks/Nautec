@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.menus.FishingStationMenu;
@@ -46,6 +47,8 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
     private float chasingVelocity;
     private int speed;
 
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[0], OUTPUT_SLOTS);
+
     public FishingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.FISHING_STATION.get(), blockPos, blockState);
         addItemHandler(3 * 5, (slot, stack) -> false);
@@ -62,8 +65,8 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
     }
 
     @Override
-    public int[] getItemOutputSlots() {
-        return OUTPUT_SLOTS;
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
     }
 
     @Override
