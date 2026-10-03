@@ -265,7 +265,8 @@ public class NTJeiPlugin implements IModPlugin {
                 new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
         registration.addCraftingStation(BacteriaGraftingCategory.RECIPE_TYPE,
                 new ItemStack(NTItems.GRAFTING_TOOL.get()),
-                new ItemStack(NTItems.PETRI_DISH.get()));
+                new ItemStack(NTItems.PETRI_DISH.get()),
+                new ItemStack(NTBlocks.GRAFTING_STATION.get()));
     }
 
 }

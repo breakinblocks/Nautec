@@ -6,6 +6,7 @@ navigation:
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:grafting_tool
+  - nautec:grafting_station
 ---
 
 # <Color id="light_purple">Bacteria Grafting</Color>
@@ -46,6 +47,27 @@ The tool has 80 durability.
 | Vent Tubeworm | Hydrothermal Vents | Sulfurophiles | 25% |
 
 Packs can change this list. JEI's Bacteria Grafting category always shows the current one, with the biome under "Only In".
+
+***
+
+## <Color id="gold">Grafting Station</Color>
+
+<Row>
+  <ItemImage id="grafting_station" scale="2"/>
+</Row>
+
+The Grafting Station grafts without the tool, and without the biome. Give it an empty <ItemLink id="petri_dish"/>, one of the graftable blocks from the table above, and Salt Water, and every cycle puts a fresh colony in the dish. There is no chance roll, so it never wastes a try.
+
+* Power: a beam of at least 100 AP at purity 2.8 or higher, into any face except the front. A <ItemLink id="prismarine_crystal"/> beam (3.0) fed straight in works; one bounced off a [Prismatic Mirror](nautec:deep_engineering/beam_optics.md) (2.7) is too weak.
+* Salt Water: 4,000 mB per colony. The tank holds 16,000 mB. Pipe it in from any side or right-click with a bucket.
+* Time: one minute per colony. A weak beam pauses it without losing progress.
+* Each colony uses up one dish and one block.
+
+Right-click it to open it. Hover over the arrow to see what it is waiting for, or look at it through a <ItemLink id="prism_monocle"/>. Hoppers and pipes can insert dishes and blocks from any side, and colonized dishes can be pulled out of any face. The front window lights up while it works.
+
+All of these values are in `config/nautec-common.toml`.
+
+<RecipeFor id="grafting_station"/>
 
 ***
 

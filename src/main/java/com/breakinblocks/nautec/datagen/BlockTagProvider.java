@@ -66,6 +66,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 INDUSTRIAL_BIO_REACTOR,
                 INDUSTRIAL_BIO_REACTOR_PART,
                 MUTATOR,
+                GRAFTING_STATION,
                 INCUBATOR,
                 FISHING_STATION,
                 BUDDING_PRISMARINE,

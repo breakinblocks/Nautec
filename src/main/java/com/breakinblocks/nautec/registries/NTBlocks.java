@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blocks.AnchorBlock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
+import com.breakinblocks.nautec.content.blocks.GraftingStationBlock;
 import com.breakinblocks.nautec.content.blocks.ConfinedSpawnerBlock;
 import com.breakinblocks.nautec.content.blocks.CrystalCradleBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerTopBlock;
@@ -159,6 +160,8 @@ public final class NTBlocks {
 
     public static final DeferredBlock<MutatorBlock> MUTATOR = bacteriaBlock(registerBlockAndItem("mutator", MutatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredBlock<GraftingStationBlock> GRAFTING_STATION = bacteriaBlock(registerBlockAndItem("grafting_station", GraftingStationBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<IncubatorBlock> INCUBATOR = bacteriaBlock(registerBlockAndItem("incubator", IncubatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
     public static final DeferredBlock<BioReactorBlock> BIO_REACTOR = bacteriaBlock(registerBlockAndItem("bio_reactor", BioReactorBlock::new,

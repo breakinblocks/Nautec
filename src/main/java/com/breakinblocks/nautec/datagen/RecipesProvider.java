@@ -547,6 +547,18 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD))
                 .save(pRecipeOutput, key("mutator"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.GRAFTING_STATION.asItem())
+                .pattern("DGD")
+                .pattern("PSP")
+                .pattern("DLD")
+                .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
+                .define('G', NTItems.GRAFTING_TOOL)
+                .define('P', NTItems.PETRI_DISH)
+                .define('S', NTBlocks.BACTERIAL_CONTAINMENT_SHIELD)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .unlockedBy("has_item", has(NTItems.GRAFTING_TOOL))
+                .save(pRecipeOutput, key("grafting_station"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.BACTERIAL_FUEL_CELL.asItem())
                 .pattern("DCD")
                 .pattern("PSP")

@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blocks.GraftingStationBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
@@ -203,6 +204,25 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.TOP, casing), blockModels.modelOutput));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(controller)
                 .with(BlockModelGenerators.createBooleanModelDispatch(FusionControllerBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+
+        graftingStation(NTBlocks.GRAFTING_STATION.get());
+    }
+
+    private void graftingStation(Block block) {
+        Identifier idle = createdModels.computeIfAbsent(Nautec.rl("block/grafting_station"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(block, "_front"))
+                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
+                .put(TextureSlot.TOP, blockTexture(block, "_top"))
+                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/grafting_station_active"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(block, "_front_active"))
+                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
+                .put(TextureSlot.TOP, blockTexture(block, "_top_active"))
+                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(BlockModelGenerators.createBooleanModelDispatch(GraftingStationBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
     }

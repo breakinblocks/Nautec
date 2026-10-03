@@ -1,0 +1,57 @@
+package com.breakinblocks.nautec.content.menus;
+
+import com.breakinblocks.nautec.api.menu.NTMachineMenu;
+import com.breakinblocks.nautec.api.menu.slots.SlotFluidHandler;
+import com.breakinblocks.nautec.content.blockentities.GraftingStationBlockEntity;
+import com.breakinblocks.nautec.registries.NTMenuTypes;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import org.jetbrains.annotations.NotNull;
+
+public class GraftingStationMenu extends NTMachineMenu<GraftingStationBlockEntity> {
+    private final ContainerData data;
+
+    public GraftingStationMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
+        this(containerId, inv, (GraftingStationBlockEntity) inv.player.level().getBlockEntity(extraData.readBlockPos()),
+                new SimpleContainerData(GraftingStationBlockEntity.DATA_COUNT));
+    }
+
+    public GraftingStationMenu(int containerId, @NotNull Inventory inv, @NotNull GraftingStationBlockEntity blockEntity) {
+        this(containerId, inv, blockEntity, blockEntity.getData());
+    }
+
+    private GraftingStationMenu(int containerId, Inventory inv, GraftingStationBlockEntity blockEntity, ContainerData data) {
+        super(NTMenuTypes.GRAFTING_STATION.get(), containerId, inv, blockEntity);
+        this.data = data;
+        addDataSlots(data);
+
+        addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
+                GraftingStationBlockEntity.DISH_SLOT, 53, 22));
+        addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
+                GraftingStationBlockEntity.SAMPLE_SLOT, 53, 46));
+        addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
+                GraftingStationBlockEntity.OUTPUT_SLOT, 107, 34));
+
+        addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, 28, 34, 18, 18));
+    }
+
+    @Override
+    protected int getMergeableSlotCount() {
+        return 2;
+    }
+
+    public int getProgress() {
+        return data.get(GraftingStationBlockEntity.DATA_PROGRESS);
+    }
+
+    public int getDuration() {
+        return Math.max(1, data.get(GraftingStationBlockEntity.DATA_DURATION));
+    }
+
+    public int getStatus() {
+        return data.get(GraftingStationBlockEntity.DATA_STATUS);
+    }
+}

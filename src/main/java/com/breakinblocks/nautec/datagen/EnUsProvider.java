@@ -463,6 +463,15 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.BIO_REACTOR_PART, "Bio Reactor");
         addBlock(NTBlocks.DRAIN_PART, "Deep Sea Drain");
         addBlock(NTBlocks.MUTATOR, "Mutator");
+        addBlock(NTBlocks.GRAFTING_STATION, "Grafting Station");
+        add("nautec.grafting_station.status.running", "Grafting");
+        add("nautec.grafting_station.status.no_dish", "Needs an empty Petri Dish");
+        add("nautec.grafting_station.status.no_sample", "Needs a graftable block");
+        add("nautec.grafting_station.status.no_water", "Needs more Salt Water");
+        add("nautec.grafting_station.status.output_full", "Output slot is full");
+        add("nautec.grafting_station.status.low_power", "Beam too weak");
+        add("nautec.grafting_station.status.low_purity", "Beam purity too low");
+        add("nautec.grafting_station.requirements", "Needs a beam of %s AP at purity %s or higher, and %s mB of Salt Water per colony");
         addBlock(NTBlocks.INCUBATOR, "Incubator");
         addBlock(NTBlocks.BIO_REACTOR, "Bio Reactor");
         addBlock(NTBlocks.INDUSTRIAL_BIO_REACTOR, "Industrial Bio Reactor");

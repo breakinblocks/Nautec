@@ -116,6 +116,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get());
         dropSelf(NTBlocks.INCUBATOR.get());
         dropSelf(NTBlocks.MUTATOR.get());
+        dropSelf(NTBlocks.GRAFTING_STATION.get());
         dropSelf(NTBlocks.BACTERIAL_FUEL_CELL.get());
         dropSelf(NTBlocks.BIO_REACTOR.get());
         add(NTBlocks.BIO_REACTOR_PART.get(), createStateDrop(NTBlocks.BIO_REACTOR_PART.get(), BioReactorMultiblock.BIO_REACTOR_PART, Map.of(

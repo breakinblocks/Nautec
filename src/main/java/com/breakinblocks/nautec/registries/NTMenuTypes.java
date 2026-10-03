@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.menus.AugmentMenu;
 import com.breakinblocks.nautec.content.menus.AugmentationStationExtensionMenu;
 import com.breakinblocks.nautec.content.menus.BacterialAnalyzerMenu;
+import com.breakinblocks.nautec.content.menus.GraftingStationMenu;
 import com.breakinblocks.nautec.content.menus.BioReactorMenu;
 import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.menus.CrateMenu;
@@ -38,6 +39,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<IncubatorMenu>> INCUBATOR = registerMenuType(IncubatorMenu::new, "incubator");
     public static final Supplier<MenuType<MutatorMenu>> MUTATOR = registerMenuType(MutatorMenu::new, "mutator");
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");
+    public static final Supplier<MenuType<GraftingStationMenu>> GRAFTING_STATION = registerMenuType(GraftingStationMenu::new, "grafting_station");
     public static final Supplier<MenuType<SubmarineModuleMenu>> SUBMARINE_MODULES = registerMenuType(SubmarineModuleMenu::new, "submarine_modules");
     public static final Supplier<MenuType<ConfinedSpawnerMenu>> CONFINED_SPAWNER = registerMenuType(ConfinedSpawnerMenu::new, "confined_spawner");
     public static final Supplier<MenuType<FusionControllerMenu>> FUSION_CONTROLLER = registerMenuType(FusionControllerMenu::new, "fusion_controller");

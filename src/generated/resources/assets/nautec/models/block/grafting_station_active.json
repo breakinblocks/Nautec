@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nautec:block/grafting_station_bottom",
+    "front": "nautec:block/grafting_station_front_active",
+    "side": "nautec:block/grafting_station_side",
+    "top": "nautec:block/grafting_station_top_active"
+  }
+}

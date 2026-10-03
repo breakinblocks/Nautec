@@ -376,6 +376,26 @@ public final class NTConfig {
             .comment("The Etching Acid capacity of an Abyssal Pressure Forge")
             .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.IntValue GRAFTING_STATION_POWER_USAGE = BUILDER
+            .comment("The beam power in AP a Grafting Station needs to run")
+            .defineInRange("graftingStationPowerUsage", 100, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue GRAFTING_STATION_PURITY = BUILDER
+            .comment("The lowest beam purity a Grafting Station runs with")
+            .defineInRange("graftingStationPurity", 2.8, 0, 10);
+
+    private static final ModConfigSpec.IntValue GRAFTING_STATION_DURATION = BUILDER
+            .comment("How many ticks a Grafting Station takes to grow one colony")
+            .defineInRange("graftingStationDuration", 1_200, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue GRAFTING_STATION_SALT_WATER_USAGE = BUILDER
+            .comment("The Salt Water in mb a Grafting Station uses for each colony")
+            .defineInRange("graftingStationSaltWaterUsage", 4_000, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue GRAFTING_STATION_CAPACITY = BUILDER
+            .comment("The Salt Water capacity of a Grafting Station")
+            .defineInRange("graftingStationCapacity", 16_000, 1, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.DoubleValue WAVE_JET_THRUST = BUILDER
             .comment("Speed the Wave Jet adds each tick while held under water, until it reaches waveJetMaxSpeed")
             .defineInRange("waveJetThrust", 0.1, 0.001, 1.0);
@@ -821,6 +841,12 @@ public final class NTConfig {
     public static int pressureForgeAcidUsage = 250;
     public static int pressureForgeCapacity = 4_000;
 
+    public static int graftingStationPowerUsage = 100;
+    public static double graftingStationPurity = 2.8;
+    public static int graftingStationDuration = 1_200;
+    public static int graftingStationSaltWaterUsage = 4_000;
+    public static int graftingStationCapacity = 16_000;
+
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
     public static int luckyZoneSpawnDistance;
@@ -1047,6 +1073,12 @@ public final class NTConfig {
         pressureForgePowerUsage = value(PRESSURE_FORGE_POWER_USAGE);
         pressureForgeAcidUsage = value(PRESSURE_FORGE_ACID_USAGE);
         pressureForgeCapacity = value(PRESSURE_FORGE_CAPACITY);
+
+        graftingStationPowerUsage = value(GRAFTING_STATION_POWER_USAGE);
+        graftingStationPurity = value(GRAFTING_STATION_PURITY);
+        graftingStationDuration = value(GRAFTING_STATION_DURATION);
+        graftingStationSaltWaterUsage = value(GRAFTING_STATION_SALT_WATER_USAGE);
+        graftingStationCapacity = value(GRAFTING_STATION_CAPACITY);
 
         luckyZonesEnabled = value(LUCKY_ZONES_ENABLED);
         luckyZoneIntervalSeconds = value(LUCKY_ZONE_INTERVAL);

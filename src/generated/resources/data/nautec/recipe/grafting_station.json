@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "nautec:dark_prismarine_pillar",
+    "G": "nautec:grafting_tool",
+    "L": "nautec:prismarine_lens",
+    "P": "nautec:petri_dish",
+    "S": "nautec:bacterial_containment_shield"
+  },
+  "pattern": [
+    "DGD",
+    "PSP",
+    "DLD"
+  ],
+  "result": {
+    "id": "nautec:grafting_station"
+  }
+}
