@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.resonance;
 
 import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -78,6 +79,7 @@ public class TuningForkItem extends Item {
                 serverLevel.getBlockState(pos).getBlock().getName(), emitter.getLinks().size()).withStyle(color));
         if (result == PrismaticEmitterBlockEntity.LinkResult.LINKED) {
             ring(serverLevel, pos, 2.0F);
+            NTCriteriaTriggers.EMITTER_LINKED.get().trigger(serverPlayer);
         } else if (result == PrismaticEmitterBlockEntity.LinkResult.UNLINKED) {
             ring(serverLevel, pos, 1.2F);
         }

@@ -1,0 +1,29 @@
+{
+  "parent": "nautec:satellite_launch",
+  "criteria": {
+    "relay": {
+      "trigger": "nautec:satellite_relay"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.orbital_relay.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "id": "nautec:downlink_array"
+    },
+    "title": {
+      "translate": "advancements.nautec.orbital_relay.title"
+    }
+  },
+  "requirements": [
+    [
+      "relay"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  },
+  "sends_telemetry_event": true
+}

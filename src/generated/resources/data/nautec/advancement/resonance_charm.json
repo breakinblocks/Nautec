@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:resonance_network",
+  "criteria": {
+    "charged": {
+      "trigger": "nautec:charm_charged"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.resonance_charm.description"
+    },
+    "icon": {
+      "id": "nautec:resonance_charm"
+    },
+    "title": {
+      "translate": "advancements.nautec.resonance_charm.title"
+    }
+  },
+  "requirements": [
+    [
+      "charged"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

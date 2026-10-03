@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -134,6 +135,7 @@ public class SatelliteArrayBlock extends LaserBlock {
         }
         array.launch();
         stack.consume(1, player);
+        NTCriteriaTriggers.SATELLITE_LAUNCHED.get().trigger(serverPlayer);
         serverPlayer.sendOverlayMessage(Component.translatable("nautec.satellite.launched").withStyle(ChatFormatting.AQUA));
         double x = pos.getX() + 0.5;
         double z = pos.getZ() + 0.5;

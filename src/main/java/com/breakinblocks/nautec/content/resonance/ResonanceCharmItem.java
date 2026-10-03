@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.items.ICurioItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTParticles;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -90,8 +91,8 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
 
     @Override
     public void curioTick(ItemStack stack, SlotContext slotContext) {
-        if (slotContext.entity() instanceof ServerPlayer player && player.tickCount % INTERVAL == 0) {
-            charge(player, stack);
+        if (slotContext.entity() instanceof ServerPlayer player && player.tickCount % INTERVAL == 0 && charge(player, stack) > 0) {
+            NTCriteriaTriggers.CHARM_CHARGED.get().trigger(player);
         }
     }
 

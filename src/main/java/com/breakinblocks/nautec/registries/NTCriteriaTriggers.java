@@ -20,6 +20,13 @@ public final class NTCriteriaTriggers {
     public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> SUBMARINE_FLIGHT = TRIGGERS.register("submarine_flight", PlayerTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> BACTERIA_GRAFTED = TRIGGERS.register("bacteria_grafted", PlayerTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> BACTERIA_MUTATED = TRIGGERS.register("bacteria_mutated", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> FUSION_RUNNING = TRIGGERS.register("fusion_running", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> RESONANCE_NETWORK = TRIGGERS.register("resonance_network", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> EMITTER_LINKED = TRIGGERS.register("emitter_linked", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> CHARM_CHARGED = TRIGGERS.register("charm_charged", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> SATELLITE_LAUNCHED = TRIGGERS.register("satellite_launched", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> SATELLITE_RELAY = TRIGGERS.register("satellite_relay", PlayerTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, PlayerTrigger> SUBMARINE_LASER = TRIGGERS.register("submarine_laser", PlayerTrigger::new);
 
     private NTCriteriaTriggers() {
     }

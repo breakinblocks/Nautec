@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.ArrayList;
 import com.breakinblocks.nautec.data.components.SubmarineModuleState;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 
 public class SubmarineModules {
     public static final int TELEPORT_CHARGE_TICKS = 50;
@@ -371,6 +372,9 @@ public class SubmarineModules {
         this.submarine.setLaserTicks(ticks);
         if (firing < 0) {
             return;
+        }
+        if (firing == 0 && pilot instanceof ServerPlayer serverPilot) {
+            NTCriteriaTriggers.SUBMARINE_LASER.get().trigger(serverPilot);
         }
 
         Vec3 forward = this.submarine.getForward();

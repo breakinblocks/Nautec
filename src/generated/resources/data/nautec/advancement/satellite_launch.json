@@ -1,0 +1,29 @@
+{
+  "parent": "nautec:resonance_network",
+  "criteria": {
+    "launched": {
+      "trigger": "nautec:satellite_launched"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.satellite_launch.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:prism_satellite"
+    },
+    "title": {
+      "translate": "advancements.nautec.satellite_launch.title"
+    }
+  },
+  "requirements": [
+    [
+      "launched"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

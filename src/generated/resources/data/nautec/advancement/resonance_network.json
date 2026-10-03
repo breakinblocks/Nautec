@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:tidal_rotor",
+  "criteria": {
+    "created": {
+      "trigger": "nautec:resonance_network"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.resonance_network.description"
+    },
+    "icon": {
+      "id": "nautec:resonance_pylon"
+    },
+    "title": {
+      "translate": "advancements.nautec.resonance_network.title"
+    }
+  },
+  "requirements": [
+    [
+      "created"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

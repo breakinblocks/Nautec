@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:tidal_rotor",
+  "criteria": {
+    "tap": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:thermal_vent_tap"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.thermal_vent_tap.description"
+    },
+    "icon": {
+      "id": "nautec:thermal_vent_tap"
+    },
+    "title": {
+      "translate": "advancements.nautec.thermal_vent_tap.title"
+    }
+  },
+  "requirements": [
+    [
+      "tap"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

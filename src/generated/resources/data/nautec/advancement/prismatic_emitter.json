@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:resonance_network",
+  "criteria": {
+    "linked": {
+      "trigger": "nautec:emitter_linked"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.prismatic_emitter.description"
+    },
+    "icon": {
+      "id": "nautec:prismatic_emitter"
+    },
+    "title": {
+      "translate": "advancements.nautec.prismatic_emitter.title"
+    }
+  },
+  "requirements": [
+    [
+      "linked"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

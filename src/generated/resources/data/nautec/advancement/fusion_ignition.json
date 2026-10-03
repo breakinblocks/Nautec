@@ -1,0 +1,29 @@
+{
+  "parent": "nautec:thermal_vent_tap",
+  "criteria": {
+    "running": {
+      "trigger": "nautec:fusion_running"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.nautec.fusion_ignition.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "id": "nautec:fusion_controller"
+    },
+    "title": {
+      "translate": "advancements.nautec.fusion_ignition.title"
+    }
+  },
+  "requirements": [
+    [
+      "running"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  },
+  "sends_telemetry_event": true
+}

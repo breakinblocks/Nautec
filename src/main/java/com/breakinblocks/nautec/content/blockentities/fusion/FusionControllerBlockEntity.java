@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -341,6 +342,9 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         }
         energy.set(energy.getAmountAsInt() + made);
         this.output = made;
+        if (level instanceof ServerLevel serverLevel && serverLevel.getGameTime() % 20 == 0) {
+            NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.FUSION_RUNNING.get(), serverLevel, worldPosition, 24.0);
+        }
         this.status = potential > structure.ceiling() ? Status.CONTAINMENT_LIMITED : Status.RUNNING;
     }
 

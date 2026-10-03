@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.menus.SatelliteArrayMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -270,6 +271,9 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         boolean changed = newStatus != status || newRelay != relay || Math.abs(newPurity - relayPurity) > 0.001F
                 || link.uplinks() != uplinks || link.downlinks() != downlinks;
         boolean flipped = (newRelay > 0) != (relay > 0) || newStatus != status;
+        if (!isUplink() && newRelay > 0 && relay <= 0) {
+            NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.SATELLITE_RELAY.get(), serverLevel, worldPosition, 32.0);
+        }
         this.status = newStatus;
         this.relay = newRelay;
         this.relayPurity = newPurity;

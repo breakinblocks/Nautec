@@ -142,7 +142,9 @@ public final class ContentIntegrityTests {
                     "resonant_shard", "pressing_the_deep", "atlantean_rifle", "particles_accelerated", "neptunes_trident",
                     "diving_suit", "abyssal_trench", "deep_survey", "abyssal_maw", "prismatic_angler", "sea_scout",
                     "submarine_flight", "gateway_found", "gateway_travel", "sea_lane", "ring_maker", "first_culture",
-                    "bacteria_mutation", "industrial_bio_reactor");
+                    "bacteria_mutation", "industrial_bio_reactor", "tidal_rotor", "thermal_vent_tap", "fusion_ignition",
+                    "resonance_network", "abyssal_pylon", "prismatic_emitter", "resonance_charm", "satellite_launch",
+                    "orbital_relay", "impulse_laser");
             for (String id : ids) {
                 var holder = advancements.get(Nautec.rl(id));
                 if (holder == null || holder.value().display().isEmpty()) {
@@ -150,7 +152,7 @@ public final class ContentIntegrityTests {
                     return;
                 }
             }
-            for (String id : List.of("particles_accelerated", "sea_lane", "deep_survey")) {
+            for (String id : List.of("particles_accelerated", "sea_lane", "deep_survey", "orbital_relay")) {
                 helper.assertValueEqual(AdvancementType.CHALLENGE, advancements.get(Nautec.rl(id)).value().display().orElseThrow().getType(),
                         "frame of nautec:" + id);
             }

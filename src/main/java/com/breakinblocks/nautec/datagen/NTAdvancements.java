@@ -101,6 +101,8 @@ public class NTAdvancements implements AdvancementSubProvider {
                 .vehicle(EntityPredicate.Builder.entity().of(entities, NTEntities.SUBMARINE.get()));
         AdvancementHolder seaScout = task(suited, "sea_scout", NTItems.SUBMARINE, AdvancementType.TASK, 0,
                 Map.of("riding", StartRidingTrigger.TriggerInstance.playerStartsRiding(inSubmarine)));
+        task(seaScout, "impulse_laser", NTItems.IMPULSE_LASER_MODULE, AdvancementType.TASK, 0,
+                Map.of("fired", player(NTCriteriaTriggers.SUBMARINE_LASER.get(), null)));
         task(seaScout, "submarine_flight", NTItems.FLIGHT_MODULE, AdvancementType.GOAL, 50,
                 Map.of("flying", player(NTCriteriaTriggers.SUBMARINE_FLIGHT.get(), null)));
 
@@ -113,6 +115,25 @@ public class NTAdvancements implements AdvancementSubProvider {
                         .vehicle(EntityPredicate.Builder.entity().of(entities, NTEntities.SUBMARINE.get())))));
         task(gatewayTravel, "ring_maker", NTBlocks.GATEWAY, AdvancementType.GOAL, 50,
                 Map.of("gateway", has(NTBlocks.GATEWAY)));
+
+        AdvancementHolder tidal = task(root, "tidal_rotor", NTBlocks.TIDAL_ROTOR, AdvancementType.TASK, 0,
+                Map.of("rotor", has(NTBlocks.TIDAL_ROTOR)));
+        AdvancementHolder vent = task(tidal, "thermal_vent_tap", NTBlocks.THERMAL_VENT_TAP, AdvancementType.TASK, 0,
+                Map.of("tap", has(NTBlocks.THERMAL_VENT_TAP)));
+        task(vent, "fusion_ignition", NTBlocks.FUSION_CONTROLLER, AdvancementType.GOAL, 50,
+                Map.of("running", player(NTCriteriaTriggers.FUSION_RUNNING.get(), null)));
+        AdvancementHolder network = task(tidal, "resonance_network", NTBlocks.RESONANCE_PYLON, AdvancementType.TASK, 0,
+                Map.of("created", player(NTCriteriaTriggers.RESONANCE_NETWORK.get(), null)));
+        task(network, "abyssal_pylon", NTBlocks.ABYSSAL_PYLON, AdvancementType.GOAL, 50,
+                Map.of("pylon", has(NTBlocks.ABYSSAL_PYLON)));
+        task(network, "prismatic_emitter", NTBlocks.PRISMATIC_EMITTER, AdvancementType.TASK, 0,
+                Map.of("linked", player(NTCriteriaTriggers.EMITTER_LINKED.get(), null)));
+        task(network, "resonance_charm", NTItems.RESONANCE_CHARM, AdvancementType.TASK, 0,
+                Map.of("charged", player(NTCriteriaTriggers.CHARM_CHARGED.get(), null)));
+        AdvancementHolder launched = task(network, "satellite_launch", NTItems.PRISM_SATELLITE, AdvancementType.GOAL, 50,
+                Map.of("launched", player(NTCriteriaTriggers.SATELLITE_LAUNCHED.get(), null)));
+        task(launched, "orbital_relay", NTBlocks.DOWNLINK_ARRAY, AdvancementType.CHALLENGE, 100,
+                Map.of("relay", player(NTCriteriaTriggers.SATELLITE_RELAY.get(), null)));
 
         AdvancementHolder culture = task(root, "first_culture", NTItems.GRAFTING_TOOL, AdvancementType.TASK, 0,
                 Map.of("grafted", player(NTCriteriaTriggers.BACTERIA_GRAFTED.get(), null)));

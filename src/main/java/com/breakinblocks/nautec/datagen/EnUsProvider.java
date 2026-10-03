@@ -146,6 +146,26 @@ public class EnUsProvider extends LanguageProvider {
         add("advancements.nautec.bacteria_mutation.description", "Mutate a strain of bacteria in a Mutator");
         add("advancements.nautec.industrial_bio_reactor.title", "Living Factory");
         add("advancements.nautec.industrial_bio_reactor.description", "Craft an Industrial Bio Reactor");
+        add("advancements.nautec.tidal_rotor.title", "Turning Tides");
+        add("advancements.nautec.tidal_rotor.description", "Craft a Tidal Rotor");
+        add("advancements.nautec.thermal_vent_tap.title", "Hot Spring");
+        add("advancements.nautec.thermal_vent_tap.description", "Craft a Thermal Vent Tap");
+        add("advancements.nautec.fusion_ignition.title", "A Star Below the Waves");
+        add("advancements.nautec.fusion_ignition.description", "Bring a Fusion Plant to ignition and draw power from it");
+        add("advancements.nautec.resonance_network.title", "On the Same Frequency");
+        add("advancements.nautec.resonance_network.description", "Create a Resonance Network");
+        add("advancements.nautec.abyssal_pylon.title", "Across the Veil");
+        add("advancements.nautec.abyssal_pylon.description", "Craft an Abyssal Pylon to send power between dimensions");
+        add("advancements.nautec.prismatic_emitter.title", "Cut the Cord");
+        add("advancements.nautec.prismatic_emitter.description", "Link a machine to a Prismatic Emitter with a Tuning Fork");
+        add("advancements.nautec.resonance_charm.title", "Pocket Pylon");
+        add("advancements.nautec.resonance_charm.description", "Charge an item with a worn Resonance Charm");
+        add("advancements.nautec.satellite_launch.title", "Liftoff");
+        add("advancements.nautec.satellite_launch.description", "Launch a Prism Satellite from an Uplink Array");
+        add("advancements.nautec.orbital_relay.title", "Orbital Relay");
+        add("advancements.nautec.orbital_relay.description", "Receive laser power at a Downlink Array");
+        add("advancements.nautec.impulse_laser.title", "Twin Lances");
+        add("advancements.nautec.impulse_laser.description", "Fire a submarine's Impulse Laser");
 
         add("nautec.gateway.title", "Gateway Address");
         add("nautec.gateway.apply", "Set");

@@ -1,0 +1,33 @@
+{
+  "parent": "nautec:root",
+  "criteria": {
+    "rotor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "nautec:tidal_rotor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.tidal_rotor.description"
+    },
+    "icon": {
+      "id": "nautec:tidal_rotor"
+    },
+    "title": {
+      "translate": "advancements.nautec.tidal_rotor.title"
+    }
+  },
+  "requirements": [
+    [
+      "rotor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

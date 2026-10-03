@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.resonance;
 
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
+import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +32,7 @@ public final class ResonanceActions {
                 ResonanceNetworks.Result result = networks.create(player, payload.text());
                 if (result.success()) {
                     pylon.setNetwork(result.network());
+                    NTCriteriaTriggers.RESONANCE_NETWORK.get().trigger(player);
                 }
                 yield result.error();
             }

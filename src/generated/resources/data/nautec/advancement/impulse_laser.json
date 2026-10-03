@@ -1,0 +1,26 @@
+{
+  "parent": "nautec:sea_scout",
+  "criteria": {
+    "fired": {
+      "trigger": "nautec:submarine_laser"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.nautec.impulse_laser.description"
+    },
+    "icon": {
+      "id": "nautec:impulse_laser_module"
+    },
+    "title": {
+      "translate": "advancements.nautec.impulse_laser.title"
+    }
+  },
+  "requirements": [
+    [
+      "fired"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
