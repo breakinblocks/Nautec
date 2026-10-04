@@ -228,6 +228,16 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         return String.format(Locale.ROOT, "%,d", value);
     }
 
+    protected static String compact(long value) {
+        if (value >= 1_000_000) {
+            return String.format(Locale.ROOT, "%.1fM", value / 1_000_000.0).replace(".0M", "M");
+        }
+        if (value >= 1_000) {
+            return String.format(Locale.ROOT, "%.1fk", value / 1_000.0).replace(".0k", "k");
+        }
+        return Long.toString(value);
+    }
+
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(graphics, mouseX, mouseY, partialTick);

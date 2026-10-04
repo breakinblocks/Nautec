@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "nautec:aquatic_chip",
+    "R": "minecraft:redstone",
+    "S": "nautec:aquarine_steel_ingot"
+  },
+  "pattern": [
+    " R ",
+    "SCS",
+    " R "
+  ],
+  "result": {
+    "id": "nautec:energy_conversion_upgrade"
+  }
+}

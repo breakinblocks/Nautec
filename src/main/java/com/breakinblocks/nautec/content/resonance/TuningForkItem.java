@@ -42,8 +42,12 @@ public class TuningForkItem extends Item {
         }
         ItemStack fork = context.getItemInHand();
         BlockPos pos = context.getClickedPos();
+        GlobalPos tuned = fork.get(NTDataComponents.TUNED_EMITTER.get());
+        boolean linkingEmitter = tuned != null && !serverPlayer.isSecondaryUseActive()
+                && tuned.dimension().equals(serverLevel.dimension()) && !tuned.pos().equals(pos)
+                && serverLevel.getBlockEntity(tuned.pos()) instanceof PrismaticEmitterBlockEntity;
 
-        if (serverLevel.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity emitter) {
+        if (!linkingEmitter && serverLevel.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity emitter) {
             if (!emitter.canTune(serverPlayer)) {
                 message(serverPlayer, Component.translatable("nautec.tuning_fork.not_yours", emitter.getOwnerName()).withStyle(ChatFormatting.RED));
                 return InteractionResult.FAIL;
@@ -59,7 +63,6 @@ public class TuningForkItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        GlobalPos tuned = fork.get(NTDataComponents.TUNED_EMITTER.get());
         if (tuned == null) {
             return InteractionResult.PASS;
         }

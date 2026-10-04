@@ -23,8 +23,12 @@ public final class PrismaticEmitterTests {
     }
 
     private static PrismaticEmitterBlockEntity emitter(GameTestHelper helper) {
-        helper.getLevel().setBlock(helper.absolutePos(EMITTER), NTBlocks.PRISMATIC_EMITTER.get().defaultBlockState(), Block.UPDATE_ALL);
-        return (PrismaticEmitterBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(EMITTER));
+        return emitter(helper, EMITTER);
+    }
+
+    private static PrismaticEmitterBlockEntity emitter(GameTestHelper helper, BlockPos relative) {
+        helper.getLevel().setBlock(helper.absolutePos(relative), NTBlocks.PRISMATIC_EMITTER.get().defaultBlockState(), Block.UPDATE_ALL);
+        return (PrismaticEmitterBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
     }
 
     private static BlockPos converter(GameTestHelper helper, BlockPos relative) {
@@ -99,6 +103,34 @@ public final class PrismaticEmitterTests {
             helper.assertValueEqual(emitter.toggle(near, Direction.UP), PrismaticEmitterBlockEntity.LinkResult.UNLINKED, "a second click unlinks");
             helper.assertTrue(emitter.getLinks().isEmpty(), "no links left");
             helper.succeed();
+        });
+
+        r.add("emitter/unlinks_a_broken_machine", 40, helper -> {
+            PrismaticEmitterBlockEntity emitter = emitter(helper);
+            BlockPos kept = converter(helper, new BlockPos(1, 1, 1));
+            BlockPos broken = converter(helper, new BlockPos(7, 1, 7));
+            emitter.toggle(kept, Direction.UP);
+            emitter.toggle(broken, Direction.UP);
+            helper.getLevel().setBlock(broken, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(emitter.getLinks().size(), 1, "links after breaking one machine");
+                helper.assertValueEqual(emitter.getLinks().getFirst().pos(), kept, "the surviving link");
+            });
+        });
+
+        r.add("emitter/chains_through_another_emitter", 60, helper -> {
+            PrismaticEmitterBlockEntity first = emitter(helper);
+            BlockPos secondPos = new BlockPos(4, 1, 7);
+            PrismaticEmitterBlockEntity second = emitter(helper, secondPos);
+            BlockPos target = converter(helper, new BlockPos(1, 1, 7));
+            helper.assertValueEqual(first.toggle(helper.absolutePos(secondPos), Direction.UP), PrismaticEmitterBlockEntity.LinkResult.LINKED, "emitter to emitter");
+            helper.assertValueEqual(second.toggle(target, Direction.UP), PrismaticEmitterBlockEntity.LinkResult.LINKED, "second emitter to machine");
+            helper.assertValueEqual(second.toggle(helper.absolutePos(EMITTER), Direction.UP), PrismaticEmitterBlockEntity.LinkResult.LOOP, "a chain cannot loop back");
+            try (Transaction tx = Transaction.openRoot()) {
+                first.getPort().insert(5_000, tx);
+                tx.commit();
+            }
+            helper.succeedWhen(() -> helper.assertValueEqual(stored(helper, target), 5_000, "power hopped through both emitters"));
         });
 
         r.add("emitter/only_the_owner_can_tune", 20, helper -> {

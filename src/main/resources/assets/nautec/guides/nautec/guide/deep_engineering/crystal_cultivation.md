@@ -67,7 +67,7 @@ Aim laser beams into any of the cradle's four sides. Every tick, the cradle adds
 * a [Focusing Lens](beam_optics.md) on an existing beam (raises it up to 2.0)
 * another Prismarine Crystal (3.0)
 
-When several beams feed the cradle their power adds up and their purity is averaged, so one weak beam can drag a strong one under 2.0.
+When several beams feed the cradle their power adds up and their purity stays close to the purest one, losing a quarter of the gap to their average. A weak beam still pulls the purity down a little, so a 2.1 beam joined by a 0 beam drops under 2.0.
 
 The seed grows into a full crystal after **10,000,000 AP** (`crystalGrowthPower` in `config/nautec-common.toml`; the purity floor is `crystalGrowthPurity`). More power grows it faster:
 

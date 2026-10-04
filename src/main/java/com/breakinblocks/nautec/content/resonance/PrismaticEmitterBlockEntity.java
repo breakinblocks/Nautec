@@ -26,14 +26,19 @@ import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
     private static final int VISUAL_HOLD = 20;
+    private static final int PRUNE_INTERVAL = 10;
 
     public record Link(BlockPos pos, Direction face) {
         public static final Codec<Link> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -48,6 +53,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
         TOO_FAR,
         FULL,
         NO_ENERGY,
+        LOOP,
         INVALID
     }
 
@@ -130,7 +136,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
     }
 
     public static boolean accepts(ServerLevel level, BlockPos pos, Direction face) {
-        if (level.getBlockEntity(pos) instanceof ResonancePylonBlockEntity || level.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity) {
+        if (level.getBlockEntity(pos) instanceof ResonancePylonBlockEntity) {
             return false;
         }
         return level.getCapability(Capabilities.Energy.BLOCK, pos, face) != null;
@@ -157,9 +163,47 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
         if (!accepts(serverLevel, pos, face)) {
             return LinkResult.NO_ENERGY;
         }
+        if (feedsBack(serverLevel, pos)) {
+            return LinkResult.LOOP;
+        }
         links.add(new Link(pos.immutable(), face));
         changed();
         return LinkResult.LINKED;
+    }
+
+    private boolean feedsBack(ServerLevel serverLevel, BlockPos start) {
+        Set<BlockPos> seen = new HashSet<>();
+        Deque<BlockPos> queue = new ArrayDeque<>();
+        queue.add(start);
+        while (!queue.isEmpty()) {
+            BlockPos pos = queue.poll();
+            if (pos.equals(worldPosition)) {
+                return true;
+            }
+            if (!seen.add(pos) || !serverLevel.isLoaded(pos)) {
+                continue;
+            }
+            if (serverLevel.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity other) {
+                for (Link link : other.links) {
+                    queue.add(link.pos());
+                }
+            }
+        }
+        return false;
+    }
+
+    private void pruneLinks(ServerLevel serverLevel) {
+        boolean removed = links.removeIf(link -> {
+            if (!serverLevel.isLoaded(link.pos()) || serverLevel.getCapability(Capabilities.Energy.BLOCK, link.pos(), link.face()) != null) {
+                return false;
+            }
+            caches.remove(link);
+            return true;
+        });
+        if (removed) {
+            cursor = 0;
+            changed();
+        }
     }
 
     public void clearLinks() {
@@ -180,6 +224,9 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
         super.commonTick();
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
+        }
+        if (!links.isEmpty() && (serverLevel.getGameTime() + worldPosition.hashCode()) % PRUNE_INTERVAL == 0) {
+            pruneLinks(serverLevel);
         }
         if (!links.isEmpty() && energy.getAmountAsInt() > 0) {
             int budget = Math.min(NTConfig.emitterThroughput, energy.getAmountAsInt());

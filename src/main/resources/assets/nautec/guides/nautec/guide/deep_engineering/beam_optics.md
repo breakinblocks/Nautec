@@ -43,7 +43,7 @@ The machines in this section need these purities:
 | Deep Steel Plating | Abyssal Pressure Forge | 2.5 |
 | Resonant Shard | [Resonance Chamber](resonance_chamber.md) | 3.0 |
 
-When two or more beams feed the same block, their power adds up and their purity is averaged.
+When two or more beams feed the same block, their power adds up and their purity stays close to the purest beam. The result is the highest purity minus a quarter of the gap between it and the average of all of them (`beamMergePurityDrop`), so a 3.0 beam merged with a 0 beam comes out at about 2.6.
 
 ***
 
@@ -54,7 +54,7 @@ When two or more beams feed the same block, their power adds up and their purity
 
 Turns a beam through a right angle. The mirror sends its beam out in the direction you were looking when you placed it, and accepts beams on the four sides around that line (not the front or the back).
 
-The outgoing beam keeps 0.9 of the incoming purity (`mirrorPurityFactor`). Power passes through unchanged. Because it takes input on four sides, a mirror also merges beams: two sources pointed into one mirror come out as one beam with their combined power and their average purity.
+The outgoing beam keeps 0.9 of the incoming purity (`mirrorPurityFactor`). Power passes through unchanged. Because it takes input on four sides, a mirror also merges beams: two sources pointed into one mirror come out as one beam with their combined power, at close to the purity of the purer one.
 
 <Recipe id="nautec:prismatic_mirror"/>
 

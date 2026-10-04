@@ -74,6 +74,8 @@ Powers nearby machines without cables. Feed it FE from a cable or a receiving py
 1. Hold a <ItemLink id="tuning_fork"/> and right-click the emitter to tune the fork to it.
 2. Right-click each machine to link it. Right-click a linked machine again to unlink it.
 
+A tuned fork links another emitter the same way, so power can hop from emitter to emitter to reach machines further away. A chain cannot loop back to an emitter it started from. To tune the fork to a different emitter, sneak-right-click the air first. Breaking a linked machine or emitter removes its tether.
+
 An emitter reaches machines up to 16 blocks away and can feed 16 of them. Only the player who placed it can tune a fork to it. Sneak-right-click the emitter with the fork to unlink everything, or sneak-right-click the air to clear the fork.
 
 ***

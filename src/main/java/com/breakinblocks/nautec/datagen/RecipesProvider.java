@@ -670,6 +670,36 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
                 .save(pRecipeOutput, key("energy_converter"));
+
+        shaped(RecipeCategory.MISC, NTItems.ENERGY_CONVERSION_UPGRADE.get())
+                .pattern(" R ")
+                .pattern("SCS")
+                .pattern(" R ")
+                .define('R', Items.REDSTONE)
+                .define('S', NTItems.AQUARINE_STEEL_INGOT)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTBlocks.ENERGY_CONVERTER))
+                .save(pRecipeOutput, key("energy_conversion_upgrade"));
+
+        shaped(RecipeCategory.MISC, NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get())
+                .pattern("GPG")
+                .pattern("PUP")
+                .pattern("GPG")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('P', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('U', NTItems.ENERGY_CONVERSION_UPGRADE)
+                .unlockedBy("has_item", has(NTItems.ENERGY_CONVERSION_UPGRADE))
+                .save(pRecipeOutput, key("advanced_energy_conversion_upgrade"));
+
+        shaped(RecipeCategory.MISC, NTItems.ULTIMATE_ENERGY_CONVERSION_UPGRADE.get())
+                .pattern("DRD")
+                .pattern("RUR")
+                .pattern("DRD")
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('U', NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE)
+                .unlockedBy("has_item", has(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE))
+                .save(pRecipeOutput, key("ultimate_energy_conversion_upgrade"));
     }
 
     private void ancientItemsRecipes(@NotNull RecipeOutput pRecipeOutput) {

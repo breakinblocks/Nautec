@@ -42,6 +42,11 @@ public class NetworkEvents {
                 BubbleAnchorTogglePayload::handle
         );
         registrar.playToServer(
+                SetConverterRatePayload.TYPE,
+                SetConverterRatePayload.STREAM_CODEC,
+                SetConverterRatePayload::handle
+        );
+        registrar.playToServer(
                 DistributorEditPayload.TYPE,
                 DistributorEditPayload.STREAM_CODEC,
                 DistributorEditPayload::handle

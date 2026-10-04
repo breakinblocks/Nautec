@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.menus.ColonyReplicatorMenu;
 import com.breakinblocks.nautec.content.menus.BubbleAnchorMenu;
+import com.breakinblocks.nautec.content.menus.EnergyConverterMenu;
 import com.breakinblocks.nautec.content.menus.DistributorMenu;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.menus.AugmentMenu;
@@ -45,6 +46,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");
     public static final Supplier<MenuType<ColonyReplicatorMenu>> COLONY_REPLICATOR = registerMenuType(ColonyReplicatorMenu::new, "colony_replicator");
     public static final Supplier<MenuType<BubbleAnchorMenu>> BUBBLE_ANCHOR = registerMenuType(BubbleAnchorMenu::new, "bubble_anchor");
+    public static final Supplier<MenuType<EnergyConverterMenu>> ENERGY_CONVERTER = registerMenuType(EnergyConverterMenu::new, "energy_converter");
     public static final Supplier<MenuType<DistributorMenu>> DISTRIBUTOR = registerMenuType(DistributorMenu::new, "nautechnical_distributor");
     public static final Supplier<MenuType<AdvancedBacterialAnalyzerMenu>> ADVANCED_BACTERIAL_ANALYZER = registerMenuType(AdvancedBacterialAnalyzerMenu::new, "advanced_bacterial_analyzer");
     public static final Supplier<MenuType<GraftingStationMenu>> GRAFTING_STATION = registerMenuType(GraftingStationMenu::new, "grafting_station");

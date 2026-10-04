@@ -282,17 +282,17 @@ public final class LaserFixTests {
                 return;
             }
             try (Transaction tx = Transaction.openRoot()) {
-                handler.insert(100_000, tx);
+                handler.insert(1_000_000, tx);
                 tx.commit();
             }
 
             helper.runAfterDelay(80, () -> {
-                helper.assertValueEqual(50, mixer(helper, eastMixer).getPower(), "east converter output");
-                helper.assertValueEqual(50, mixer(helper, southMixer).getPower(), "south converter output");
+                helper.assertValueEqual(75, mixer(helper, eastMixer).getPower(), "east converter output");
+                helper.assertValueEqual(75, mixer(helper, southMixer).getPower(), "south converter output");
                 EnergyConverterBlockEntity converter = helper.getBlockEntity(converterPos, EnergyConverterBlockEntity.class);
-                helper.assertValueEqual(100, converter.getSending(), "the converter reports what it sends");
+                helper.assertValueEqual(150, converter.getSending(), "the converter reports what it sends");
                 helper.assertValueEqual(2, converter.getBeams(), "the converter reports its beams");
-                helper.assertTrue(converter.getUpdateTag(helper.getLevel().registryAccess()).getIntOr("sending", 0) == 100,
+                helper.assertTrue(converter.getUpdateTag(helper.getLevel().registryAccess()).getIntOr("sending", 0) == 150,
                         "the amount sent reaches the client so the beam can draw");
                 helper.succeed();
             });

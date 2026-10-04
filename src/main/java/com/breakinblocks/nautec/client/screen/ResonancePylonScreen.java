@@ -45,7 +45,7 @@ public class ResonancePylonScreen extends ResonanceNetworkScreen<ResonancePylonM
     @Override
     protected void extractReadout(GuiGraphicsExtractor graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
         graphics.text(this.font, Component.translatable("nautec.resonance.flow", number(this.menu.getFlow())), tx, ty, READOUT, false);
-        graphics.text(this.font, Component.translatable("nautec.resonance.buffer", number(this.menu.getEnergy()), number(this.menu.getCapacity())),
+        graphics.text(this.font, Component.translatable("nautec.resonance.buffer", compact(this.menu.getEnergy()), compact(this.menu.getCapacity())),
                 tx, ty + 11, READOUT_DIM, false);
         Component tier = Component.translatable(this.menu.isInterdimensional() ? "nautec.resonance.tier.abyssal" : "nautec.resonance.tier.basic");
         graphics.text(this.font, tier, IMAGE_WIDTH - 13 - this.font.width(tier), ty, READOUT_DIM, false);

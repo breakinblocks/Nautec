@@ -51,7 +51,7 @@ The two small lamps near the lens end of each side show whether it has found a r
 
 ## <Color id="gold">Purity</Color>
 
-Purity is set where a beam starts. A catalyst beam carries its fuel's purity, 0.4 to 1.2. When two or more beams feed the same block, their power adds up and their purity is averaged.
+Purity is set where a beam starts. A catalyst beam carries its fuel's purity, 0.4 to 1.2. When two or more beams feed the same block, their power adds up and their purity stays close to the purest beam. The result is the highest purity minus a quarter of the gap between it and the average of all of them (`beamMergePurityDrop`), so a 3.0 beam merged with a 0 beam comes out at about 2.6.
 
 Higher purity comes from a <ItemLink id="prismarine_crystal"/> (3.0), a <ItemLink id="bacterial_fuel_cell"/> (up to 2.5), or a <ItemLink id="focusing_lens"/> added to an existing beam. [Beam Optics](nautec:deep_engineering/beam_optics.md) covers turning, splitting and focusing beams.
 

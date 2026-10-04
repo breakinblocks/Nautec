@@ -43,6 +43,6 @@ A mid-game generator that boils Salt Water over magma or lava, 350 to 1,250 FE/t
 
 * **Heat.** The tap checks the nine blocks directly beneath it for Magma Blocks or lava. One hot block gives 350 FE/t, and all nine give 1,250 FE/t. A <ItemLink id="hydrothermal_vent"/> from a vent field counts as three hot blocks on its own. In the Hydrothermal Vents biome the seabed counts as three hot blocks more.
 * **Fuel.** Pipe Salt Water into any side. The tap boils 10 mB every tick while it runs, so one [Deep Sea Drain](nautec:laser_chemistry/drain.md) keeps two taps going with a little to spare.
-* **Salt.** Every 1,000 mB it boils leaves one <ItemLink id="salt"/> behind. Pull it out of any side with a pipe or hopper. A full slot stops the salt, not the power.
+* **Salt.** Every 1,000 mB it boils leaves one <ItemLink id="salt"/> behind. The tap pushes it into any chest or other inventory touching it, or you can pull it out of any side with a pipe or hopper. A full slot stops the salt, not the power.
 
 Jade shows each generator's output and what it is missing.

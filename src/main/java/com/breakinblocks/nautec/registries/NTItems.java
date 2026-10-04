@@ -19,6 +19,7 @@ import com.breakinblocks.nautec.content.items.PrismMonocleItem;
 import com.breakinblocks.nautec.content.items.ConfigurationCardItem;
 import com.breakinblocks.nautec.content.items.CrystalSeedItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
+import com.breakinblocks.nautec.content.items.EnergyConversionUpgradeItem;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.content.items.RobotArmItem;
 import com.breakinblocks.nautec.content.items.SeaEyeTarget;
@@ -242,6 +243,15 @@ public final class NTItems {
             SpawnerConfinementMatrixItem::new, () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_FUSION_UPGRADE = bacteriaItem(registerItem("reactor_fusion_upgrade",
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.FUSION), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<EnergyConversionUpgradeItem> ENERGY_CONVERSION_UPGRADE = registerItem("energy_conversion_upgrade",
+            props -> new EnergyConversionUpgradeItem(props, EnergyConversionUpgradeItem.Tier.BASIC),
+            () -> new Item.Properties().stacksTo(EnergyConversionUpgradeItem.MAX_PER_SLOT));
+    public static final DeferredItem<EnergyConversionUpgradeItem> ADVANCED_ENERGY_CONVERSION_UPGRADE = registerItem("advanced_energy_conversion_upgrade",
+            props -> new EnergyConversionUpgradeItem(props, EnergyConversionUpgradeItem.Tier.ADVANCED),
+            () -> new Item.Properties().stacksTo(EnergyConversionUpgradeItem.MAX_PER_SLOT).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<EnergyConversionUpgradeItem> ULTIMATE_ENERGY_CONVERSION_UPGRADE = registerItem("ultimate_energy_conversion_upgrade",
+            props -> new EnergyConversionUpgradeItem(props, EnergyConversionUpgradeItem.Tier.ULTIMATE),
+            () -> new Item.Properties().stacksTo(EnergyConversionUpgradeItem.MAX_PER_SLOT).rarity(Rarity.EPIC));
 
     public static final DeferredItem<BatteryItem> PRISMATIC_BATTERY = registerItem("prismatic_battery",
             BatteryItem::new, new Item.Properties().stacksTo(1));

@@ -1,11 +1,15 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import it.unimi.dsi.fastutil.floats.FloatList;
+import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
@@ -575,8 +579,8 @@ public final class PowerAndLaserTests {
         }
     }
 
-    private static final int FE_BUFFER = 100_000;
-    private static final int FE_PER_TICK = 100;
+    private static final int FE_BUFFER = 1_000_000;
+    private static final int AP_PER_TICK = 150;
 
     private static void registerEnergyBridge(NTTestRegistrar r) {
         r.add("power/creative_energy_source_exposes_energy_capability", 20, helper -> {
@@ -620,8 +624,86 @@ public final class PowerAndLaserTests {
 
             helper.runAfterDelay(60, () -> {
                 helper.assertTrue(handler.getAmountAsInt() < FE_BUFFER, "converter should drain its FE buffer");
-                helper.assertValueEqual(FE_PER_TICK, mixer(helper, mixerPos).getPower(), "converted power reaching the mixer");
+                helper.assertValueEqual(AP_PER_TICK, mixer(helper, mixerPos).getPower(), "converted power reaching the mixer");
                 helper.succeed();
+            });
+        });
+
+        r.add("power/energy_conversion_upgrades_raise_the_max_rate", 20, helper -> {
+            BlockPos converterPos = new BlockPos(2, 1, 4);
+            helper.setBlock(converterPos, NTBlocks.ENERGY_CONVERTER.get().defaultBlockState());
+            EnergyConverterBlockEntity converter = helper.getBlockEntity(converterPos, EnergyConverterBlockEntity.class);
+            ItemStackHandler upgrades = converter.getItemStackHandler();
+
+            ItemStack basic = new ItemStack(NTItems.ENERGY_CONVERSION_UPGRADE.get(), 8);
+            ItemStack advanced = new ItemStack(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get(), 8);
+            ItemStack ultimate = new ItemStack(NTItems.ULTIMATE_ENERGY_CONVERSION_UPGRADE.get(), 8);
+            helper.assertValueEqual(8, upgrades.insertItem(0, advanced.copy(), false).getCount(), "the basic slot refuses an advanced upgrade");
+            helper.assertValueEqual(8, upgrades.insertItem(1, ultimate.copy(), false).getCount(), "the advanced slot refuses an ultimate upgrade");
+            helper.assertValueEqual(8, upgrades.insertItem(2, basic.copy(), false).getCount(), "the ultimate slot refuses a basic upgrade");
+
+            helper.assertTrue(upgrades.insertItem(0, basic.copy(), false).isEmpty(), "the basic slot takes 8 basic upgrades");
+            helper.assertValueEqual(1, upgrades.insertItem(0, basic.copyWithCount(1), false).getCount(), "the basic slot holds no more than 8");
+            int withBasic = NTConfig.energyConverterBaseAp + 8 * NTConfig.energyConversionUpgradeAp;
+            helper.assertValueEqual(withBasic, converter.getMaxRate(), "8 basic upgrades raise the max rate");
+
+            upgrades.insertItem(1, advanced.copy(), false);
+            upgrades.insertItem(2, ultimate.copy(), false);
+            int full = withBasic + 8 * NTConfig.advancedEnergyConversionUpgradeAp + 8 * NTConfig.ultimateEnergyConversionUpgradeAp;
+            helper.assertValueEqual(full, converter.getMaxRate(), "all three tiers add up");
+            helper.assertValueEqual(full, converter.getRate(), "an unset rate follows the max");
+
+            converter.setRate(full);
+            upgrades.setStackInSlot(2, ItemStack.EMPTY);
+            int withoutUltimate = full - 8 * NTConfig.ultimateEnergyConversionUpgradeAp;
+            helper.assertValueEqual(withoutUltimate, converter.getRate(), "removing upgrades pulls the rate down to the new max");
+            helper.succeed();
+        });
+
+        r.add("power/merged_beams_keep_close_to_the_purest", 20, helper -> {
+            float drop = (float) NTConfig.beamMergePurityDrop;
+            helper.assertValueEqual(0F, LaserBlockEntity.mergedPurity(FloatList.of()), "no beams give no purity");
+            helper.assertValueEqual(1.2F, LaserBlockEntity.mergedPurity(FloatList.of(1.2F)), "one beam keeps its purity");
+            helper.assertValueEqual(3F - 1.5F * drop, LaserBlockEntity.mergedPurity(FloatList.of(3F, 0F)),
+                    "a crystal beam merged with a converter beam keeps most of its purity");
+            helper.assertTrue(LaserBlockEntity.mergedPurity(FloatList.of(3F, 0F)) > 2.5F,
+                    "a 3.0 beam joined by a 0 beam still runs Deep Steel Plating");
+            helper.succeed();
+        });
+
+        r.add("power/energy_converter_rate_caps_output_and_spends_fe_per_ap", 120, helper -> {
+            BlockPos converterPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(converterPos, NTBlocks.ENERGY_CONVERTER.get().defaultBlockState());
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+            EnergyConverterBlockEntity converter = helper.getBlockEntity(converterPos, EnergyConverterBlockEntity.class);
+            helper.assertValueEqual(NTConfig.energyConverterBaseAp, converter.getRate(), "a new converter runs at the base max rate");
+            converter.setRate(NTConfig.energyConverterBaseAp + 50);
+            helper.assertValueEqual(NTConfig.energyConverterBaseAp, converter.getRate(), "the rate is capped at the base max");
+            converter.setRate(25);
+            helper.assertValueEqual(25, converter.getRate(), "the rate takes a lower setting");
+
+            try (Transaction tx = Transaction.openRoot()) {
+                converter.getFeBuffer().insert(FE_BUFFER, tx);
+                tx.commit();
+            }
+
+            int[] before = new int[1];
+            helper.runAfterDelay(40, () -> before[0] = converter.getFeStored());
+            helper.runAfterDelay(50, () -> {
+                helper.assertValueEqual(25, converter.getSending(), "the converter sends the set rate");
+                helper.assertValueEqual(25, mixer(helper, mixerPos).getPower(), "the mixer receives the set rate");
+                helper.assertValueEqual(10 * 25 * NTConfig.energyConverterFePerAp, before[0] - converter.getFeStored(),
+                        "ten ticks at 25 AP spend energyConverterFePerAp FE for each AP");
+                converter.setRate(0);
+            });
+            helper.runAfterDelay(60, () -> {
+                helper.assertValueEqual(0, converter.getSending(), "a rate of 0 stops the beam");
+                int stored = converter.getFeStored();
+                helper.runAfterDelay(5, () -> {
+                    helper.assertValueEqual(stored, converter.getFeStored(), "a stopped converter keeps its FE");
+                    helper.succeed();
+                });
             });
         });
     }

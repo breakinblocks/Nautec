@@ -24,13 +24,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
@@ -40,6 +46,7 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
     public static final int VENT_BIOME_HEAT = 3;
     public static final int VENT_BLOCK_HEAT = 3;
     private static final int SCAN_INTERVAL = 40;
+    private static final int PUSH_INTERVAL = 10;
 
     private final FluidTank fuel = new FluidTank(FUEL_CAPACITY) {
         @Override
@@ -54,6 +61,8 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
         }
     };
     private final ResourceHandler<FluidResource> fuelInput = new SidedFluidHandler(fuel, Pair.of(IOActions.INSERT, new int[]{0}));
+
+    private final List<BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>> itemOutputs = new ArrayList<>();
 
     private Status status = Status.NO_HEAT;
     private int heat;
@@ -100,6 +109,7 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
     @Override
     protected void serverTick(ServerLevel level) {
         tick(level);
+        pushSalt(level);
         boolean lit = status == Status.RUNNING;
         if (getBlockState().getValue(ThermalVentTapBlock.LIT) != lit) {
             level.setBlock(worldPosition, getBlockState().setValue(ThermalVentTapBlock.LIT, lit), Block.UPDATE_CLIENTS);
@@ -131,6 +141,30 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
         if (burned >= perSalt) {
             burned -= perSalt;
             forceInsertItem(0, new ItemStack(NTItems.SALT.get()), false);
+        }
+    }
+
+    private void pushSalt(ServerLevel level) {
+        if (level.getGameTime() % PUSH_INTERVAL != 0 || getItemHandler().getResource(0).isEmpty()) {
+            return;
+        }
+        if (itemOutputs.isEmpty()) {
+            for (Direction direction : Direction.values()) {
+                itemOutputs.add(BlockCapabilityCache.create(Capabilities.Item.BLOCK, level, worldPosition.relative(direction), direction.getOpposite()));
+            }
+        }
+        for (BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache : itemOutputs) {
+            ResourceHandler<ItemResource> target = cache.getCapability();
+            if (target == null) {
+                continue;
+            }
+            try (Transaction tx = Transaction.openRoot()) {
+                ResourceHandlerUtil.moveStacking(getItemHandler(), target, resource -> true, Integer.MAX_VALUE, tx);
+                tx.commit();
+            }
+            if (getItemHandler().getResource(0).isEmpty()) {
+                return;
+            }
         }
     }
 

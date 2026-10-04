@@ -20,11 +20,13 @@ public enum EnergyConverterComponentProvider implements StreamServerDataProvider
 
     private static final Identifier UID = Nautec.rl("energy_converter");
 
-    public record Data(int sending, int beams, int fe) {
+    public record Data(int sending, int beams, int fe, int rate, int capacity) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Data::sending,
                 ByteBufCodecs.VAR_INT, Data::beams,
                 ByteBufCodecs.VAR_INT, Data::fe,
+                ByteBufCodecs.VAR_INT, Data::rate,
+                ByteBufCodecs.VAR_INT, Data::capacity,
                 Data::new
         );
     }
@@ -32,7 +34,7 @@ public enum EnergyConverterComponentProvider implements StreamServerDataProvider
     @Override
     public Data streamData(BlockAccessor accessor) {
         EnergyConverterBlockEntity converter = (EnergyConverterBlockEntity) accessor.getBlockEntity();
-        return new Data(converter.getSending(), converter.getBeams(), converter.getFeStored());
+        return new Data(converter.getSending(), converter.getBeams(), converter.getFeStored(), converter.getRate(), EnergyConverterBlockEntity.maxFe());
     }
 
     @Override
@@ -51,9 +53,9 @@ public enum EnergyConverterComponentProvider implements StreamServerDataProvider
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
             EnergyConverterComponentProvider.INSTANCE.decodeFromData(accessor).ifPresent(data -> {
-                EnergyConverterBlock.lines(data.sending(), data.beams()).forEach(tooltip::add);
+                EnergyConverterBlock.lines(data.sending(), data.beams(), data.rate()).forEach(tooltip::add);
                 tooltip.add(Component.translatable("nautec.energy_converter.fe", String.format("%,d", data.fe()),
-                        String.format("%,d", EnergyConverterBlockEntity.maxFe())).withStyle(ChatFormatting.GRAY));
+                        String.format("%,d", data.capacity())).withStyle(ChatFormatting.GRAY));
             });
         }
 

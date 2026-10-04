@@ -68,7 +68,7 @@ Merges beams and sends them where you choose. Each of its six faces can be an in
 * Right-click a face with an <ItemLink id="aquarine_steel_wrench"/> to make it an input. Do it again to close it.
 * Shift-right-click a face to make it an output. Do it again to close it.
 
-The power of every input is added together and split evenly between the connected outputs, rounded down. Two outputs from a 25 AP input get 12 AP each. Purity is the average of every connected input, and a source that has gone idle counts as zero, so keep every input fed or it drags the purity down.
+The power of every input is added together and split evenly between the connected outputs, rounded down. Two outputs from a 25 AP input get 12 AP each. Purity stays close to the purest input, losing a quarter of the gap to the average of every connected input. A source that has gone idle counts as zero, so an empty input still pulls the purity down a little.
 
 Use one to add two weak sources together, for example two catalysts into a [Deep Sea Drain](drain.md).
 

@@ -34,6 +34,28 @@ public final class NTConfig {
             .comment("The distance of Long Distance Laser lasers.")
             .defineInRange("longDistanceLaserDistance", 64, 0, 128);
 
+    private static final ModConfigSpec.IntValue ENERGY_CONVERTER_FE_PER_AP = BUILDER
+            .comment("How much FE an Energy Converter spends for each AP it sends")
+            .defineInRange("energyConverterFePerAp", 10, 1, 1_000_000);
+    private static final ModConfigSpec.IntValue ENERGY_CONVERTER_FE_CAPACITY = BUILDER
+            .comment("How much FE an Energy Converter can hold")
+            .defineInRange("energyConverterFeCapacity", 4_000_000, 1_000, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue ENERGY_CONVERTER_BASE_AP = BUILDER
+            .comment("The highest transmission rate, in AP per tick, of an Energy Converter with no upgrades")
+            .defineInRange("energyConverterBaseAp", 150, 1, 1_000_000);
+    private static final ModConfigSpec.IntValue ENERGY_CONVERSION_UPGRADE_AP = BUILDER
+            .comment("How much each Energy Conversion Upgrade raises an Energy Converter's highest rate, in AP per tick")
+            .defineInRange("energyConversionUpgradeAp", 150, 0, 1_000_000);
+    private static final ModConfigSpec.IntValue ADVANCED_ENERGY_CONVERSION_UPGRADE_AP = BUILDER
+            .comment("How much each Advanced Energy Conversion Upgrade raises an Energy Converter's highest rate, in AP per tick")
+            .defineInRange("advancedEnergyConversionUpgradeAp", 500, 0, 1_000_000);
+    private static final ModConfigSpec.IntValue ULTIMATE_ENERGY_CONVERSION_UPGRADE_AP = BUILDER
+            .comment("How much each Ultimate Energy Conversion Upgrade raises an Energy Converter's highest rate, in AP per tick")
+            .defineInRange("ultimateEnergyConversionUpgradeAp", 1500, 0, 1_000_000);
+    private static final ModConfigSpec.DoubleValue BEAM_MERGE_PURITY_DROP = BUILDER
+            .comment("When beams merge into one block, how far the purity falls from the purest beam toward the average of all of them. 0 keeps the highest purity, 1 is a plain average")
+            .defineInRange("beamMergePurityDrop", 0.25, 0.0, 1.0);
+
     private static final ModConfigSpec.IntValue MIXER_INPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Input Tank")
             .defineInRange("mixerInputCapacity", 32_000, 0, Integer.MAX_VALUE);
@@ -828,6 +850,13 @@ public final class NTConfig {
     public static int augmentationStationPower;
     public static int laserDistance;
     public static int longDistanceLaserDistance;
+    public static int energyConverterFePerAp = 10;
+    public static int energyConverterFeCapacity = 4_000_000;
+    public static int energyConverterBaseAp = 150;
+    public static int energyConversionUpgradeAp = 150;
+    public static int advancedEnergyConversionUpgradeAp = 500;
+    public static int ultimateEnergyConversionUpgradeAp = 1500;
+    public static double beamMergePurityDrop = 0.25;
 
     public static int mixerInputCapacity;
     public static int mixerOutputCapacity;
@@ -1087,6 +1116,13 @@ public final class NTConfig {
 
         laserDistance = value(REGULAR_LASER_DISTANCE);
         longDistanceLaserDistance = value(LONG_DISTANCE_LASER_DISTANCE);
+        energyConverterFePerAp = value(ENERGY_CONVERTER_FE_PER_AP);
+        energyConverterFeCapacity = value(ENERGY_CONVERTER_FE_CAPACITY);
+        energyConverterBaseAp = value(ENERGY_CONVERTER_BASE_AP);
+        energyConversionUpgradeAp = value(ENERGY_CONVERSION_UPGRADE_AP);
+        advancedEnergyConversionUpgradeAp = value(ADVANCED_ENERGY_CONVERSION_UPGRADE_AP);
+        ultimateEnergyConversionUpgradeAp = value(ULTIMATE_ENERGY_CONVERSION_UPGRADE_AP);
+        beamMergePurityDrop = value(BEAM_MERGE_PURITY_DROP);
 
         mixerInputCapacity = value(MIXER_INPUT_CAPACITY);
         mixerOutputCapacity = value(MIXER_OUTPUT_CAPACITY);

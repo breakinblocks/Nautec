@@ -11,7 +11,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -126,6 +128,24 @@ public final class OceanGeneratorTests {
                 helper.assertTrue(tap.getEnergyStorage().getAmountAsInt() > 0, "it stores FE");
                 helper.assertTrue(tap.getItemStackHandler().getStackInSlot(0).is(NTItems.SALT.get()), "it leaves salt behind");
                 helper.assertTrue(helper.getBlockState(TAP).getValue(BlockStateProperties.LIT), "it lights up while running");
+            });
+        });
+
+        r.add("generators/vent_tap_pushes_salt_into_adjacent_inventory", 60, helper -> {
+            ThermalVentTapBlockEntity tap = tap(helper, 1);
+            BlockPos chestPos = TAP.east();
+            helper.setBlock(chestPos, Blocks.CHEST);
+            tap.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.SALT.get(), 5));
+            helper.succeedWhen(() -> {
+                ChestBlockEntity chest = helper.getBlockEntity(chestPos, ChestBlockEntity.class);
+                int salt = 0;
+                for (int i = 0; i < chest.getContainerSize(); i++) {
+                    if (chest.getItem(i).is(NTItems.SALT.get())) {
+                        salt += chest.getItem(i).getCount();
+                    }
+                }
+                helper.assertValueEqual(salt, 5, "salt in the chest");
+                helper.assertTrue(tap.getItemStackHandler().getStackInSlot(0).isEmpty(), "the tap's salt slot is emptied");
             });
         });
 

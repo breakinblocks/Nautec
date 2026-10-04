@@ -29,6 +29,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -189,15 +190,24 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
         this.power = power;
 
-        float purity = 0;
-        for (float pps : this.purityPerSide.values()) {
-            purity += pps;
-        }
-        int size = this.purityPerSide.size();
-        this.purity = newPurity + purity / (size > 0 ? size : 1);
+        this.purity = newPurity + mergedPurity(this.purityPerSide.values());
 
         this.powerPerSide.clear();
         this.purityPerSide.clear();
+    }
+
+    public static float mergedPurity(Collection<Float> purities) {
+        if (purities.isEmpty()) {
+            return 0;
+        }
+        float sum = 0;
+        float highest = 0;
+        for (float purity : purities) {
+            sum += purity;
+            highest = Math.max(highest, purity);
+        }
+        float average = sum / purities.size();
+        return highest - (highest - average) * (float) NTConfig.beamMergePurityDrop;
     }
 
     private void damageLivingEntities(AABB box) {
