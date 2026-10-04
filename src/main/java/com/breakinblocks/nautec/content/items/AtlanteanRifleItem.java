@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.client.renderer.items.AtlanteanRifleItemRenderer;
+import com.breakinblocks.nautec.compat.apotheosis.ApothicAttributesCompat;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTDamageTypes;
@@ -153,7 +154,7 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
             return;
         }
 
-        int firing = firingTicks(getUseDuration(stack, entity) - remaining);
+        int firing = firingTicks(player, getUseDuration(stack, entity) - remaining);
         if (firing < 0 || firing % DAMAGE_INTERVAL != 0) {
             return;
         }
@@ -171,7 +172,8 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
         Entity target = hit.entity();
         if (target != null) {
             DamageSource source = level.damageSources().source(NTDamageTypes.PARTICLE_BEAM, shooter);
-            if (target.hurtServer(level, source, damage)) {
+            float dealt = (float) (damage * ApothicAttributesCompat.beamDamageMultiplier(shooter));
+            if (target.hurtServer(level, source, dealt)) {
                 popTarget(level, target, damage);
             }
         }
@@ -187,12 +189,16 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
                 box.getXsize() * 0.35D, box.getYsize() * 0.35D, box.getZsize() * 0.35D, HIT_POP_SPEED);
     }
 
-    public static int firingTicks(int ticksUsing) {
-        return ticksUsing - NTConfig.rifleChargeTicks;
+    public static int chargeTicks(LivingEntity holder) {
+        return (int) Math.round(NTConfig.rifleChargeTicks / ApothicAttributesCompat.drawSpeed(holder));
+    }
+
+    public static int firingTicks(LivingEntity holder, int ticksUsing) {
+        return ticksUsing - chargeTicks(holder);
     }
 
     public static float firingTicks(LivingEntity holder, float partialTick) {
-        return isUsing(holder) ? holder.getTicksUsingItem(partialTick) - NTConfig.rifleChargeTicks : Float.NEGATIVE_INFINITY;
+        return isUsing(holder) ? holder.getTicksUsingItem(partialTick) - chargeTicks(holder) : Float.NEGATIVE_INFINITY;
     }
 
     public static boolean isUsing(LivingEntity holder) {
@@ -200,7 +206,7 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
     }
 
     public static boolean isFiring(LivingEntity holder) {
-        return isUsing(holder) && firingTicks(holder.getTicksUsingItem()) >= 0;
+        return isUsing(holder) && firingTicks(holder, holder.getTicksUsingItem()) >= 0;
     }
 
     public static float rampProgress(float firingTicks) {

@@ -8,10 +8,14 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.api.multiblocks.MultiblockData;
+import com.breakinblocks.nautec.api.sides.RelativeFace;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
-import com.breakinblocks.nautec.capabilities.item.ReactorSidedItemHandler;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
@@ -40,8 +44,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,8 +67,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     private final int[] workTicks;
     private final long[] nextFeedCheck;
     private final ProductCache[] productCache;
-    private final IntSet inputSlots;
-    private final IntSet outputSlots;
+    private final SlotRoles slotRoles;
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private MultiblockData multiblockData;
     private long lastProductiveTick = Long.MIN_VALUE;
@@ -95,8 +96,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
             outputs.add(i);
         }
         outputs.add(dishOutSlot());
-        this.inputSlots = IntSets.unmodifiable(inputs);
-        this.outputSlots = IntSets.unmodifiable(outputs);
+        this.slotRoles = new SlotRoles(IntSets.unmodifiable(inputs), IntSets.unmodifiable(outputs));
 
         addItemHandler(totalItemSlots(), slot -> isUpgradeSlot(slot) ? 1 : 64, this::isItemValid);
         addBacteriaStorage(colonies);
@@ -489,17 +489,26 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     }
 
     @Override
-    public int[] ghostSlots() {
-        return inputSlots.toIntArray();
-    }
-
-    public ResourceHandler<ItemResource> automationHandler(boolean allowExtract) {
-        return new ReactorSidedItemHandler(getItemHandler(), this.inputSlots, allowExtract ? this.outputSlots : IntSets.EMPTY_SET);
+    public SlotRoles itemRoles() {
+        return slotRoles;
     }
 
     @Override
-    public ResourceHandler<ItemResource> getItemHandlerOnSide(Direction direction) {
-        return direction == null ? getItemHandler() : automationHandler(true);
+    public Direction front() {
+        HorizontalDirection fixed = multiblock().getFixedDirection();
+        return fixed != null ? fixed.toRegularDirection() : super.front();
+    }
+
+    public SideMode itemMode(Direction direction) {
+        return getSideConfig().get(SideKind.ITEMS, RelativeFace.of(front(), direction));
+    }
+
+    @Override
+    public void sideConfigChanged() {
+        super.sideConfigChanged();
+        if (level != null && !level.isClientSide()) {
+            forEachFormedPosition(level::invalidateCapabilities);
+        }
     }
 
     @Override

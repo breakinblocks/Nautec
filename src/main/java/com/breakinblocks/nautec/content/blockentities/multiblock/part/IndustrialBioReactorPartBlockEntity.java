@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.part;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
+import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.item.DelegatingItemHandler;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.IndustrialBioReactorBlockEntity;
@@ -129,14 +130,16 @@ public class IndustrialBioReactorPartBlockEntity extends LaserBlockEntity implem
         if (direction == null) {
             return getItemHandler();
         }
-        int layer = getLayer();
-        if (!OUTWARD[layer][getCell()].contains(direction)) {
+        if (!OUTWARD[getLayer()][getCell()].contains(direction)) {
             return null;
         }
-        boolean extract = layer == 0 && direction == Direction.DOWN;
+        IndustrialBioReactorBlockEntity reactor = controller();
+        if (reactor != null && reactor.itemMode(direction) == SideMode.NONE) {
+            return null;
+        }
         return new DelegatingItemHandler(() -> {
-            IndustrialBioReactorBlockEntity reactor = controller();
-            return reactor == null ? null : reactor.automationHandler(extract);
+            IndustrialBioReactorBlockEntity current = controller();
+            return current == null ? null : current.getItemHandlerOnSide(direction);
         });
     }
 

@@ -205,8 +205,8 @@ Nine colonies need feeding from only three nutrient slots, so run no more than t
 
 ## <Color id="gold">Automation</Color>
 
-* Nutrients and upgrades go in through any outer face of any of its blocks: a hopper on the roof, a hopper pointing into a wall, or a pipe anywhere on the outside.
-* Output comes out of the underside of the floor, for example into hoppers under it, and out of the front of the Industrial Bio Reactor block with a pipe.
+* Every outer face of every block takes and gives items: a hopper on the roof or pointing into a wall feeds nutrients and upgrades, hoppers under the floor pull output, and a pipe works anywhere on the outside.
+* [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side: Front is the north wall with the Industrial Bio Reactor block in it, Left is the east wall and Right the west wall. For example, set the roof to Input and the floor to Output so pipes on the roof never pull output and pipes under the floor never push into it.
 
 Colonies load and unload through the Dish Port, the two slots between the colony grid and the outputs. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the empty dish comes out of the lower slot. An empty dish takes out the colony with the least Vitality left. Automation reaches the port wherever it reaches the other slots.
 

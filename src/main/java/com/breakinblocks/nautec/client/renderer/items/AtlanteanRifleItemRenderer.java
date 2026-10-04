@@ -32,6 +32,7 @@ import org.joml.Vector3f;
 
 public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleItem> {
     public static final DataTicket<Integer> OWNER_ID = DataTicket.create("nautec:atlantean_rifle_owner", Integer.class);
+    public static final DataTicket<Float> CHARGE_TICKS = DataTicket.create("nautec:atlantean_rifle_charge_ticks", Float.class);
 
     private static final Identifier CORE_MASK = Nautec.rl("textures/item/atlantean_rifle_core.png");
     private static final String CORE_BONE = "core";
@@ -55,6 +56,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         float ticks = holder != null && AtlanteanRifleItem.isUsing(holder) ? holder.getTicksUsingItem(partialTick) : -1F;
         state.addGeckolibData(AtlanteanRifleItem.USE_TICKS, ticks);
         state.addGeckolibData(OWNER_ID, holder == null ? -1 : holder.getId());
+        state.addGeckolibData(CHARGE_TICKS, (float) (holder == null ? NTConfig.rifleChargeTicks : AtlanteanRifleItem.chargeTicks(holder)));
     }
 
     @Override
@@ -127,10 +129,11 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         if (ticks < 0F) {
             return;
         }
-        float angle = spinAngle(ticks);
+        float charge = pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks);
+        float angle = spinAngle(ticks, charge);
         snapshots.ifPresent(CORE_BONE, snapshot -> snapshot.setRotX(angle));
 
-        float ramp = AtlanteanRifleItem.rampProgress(ticks - NTConfig.rifleChargeTicks);
+        float ramp = AtlanteanRifleItem.rampProgress(ticks - charge);
         if (ramp <= 0F) {
             return;
         }
@@ -150,8 +153,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         return Mth.sin(ticks * slow) * 0.6F + Mth.sin(ticks * fast) * 0.4F;
     }
 
-    static float spinAngle(float ticks) {
-        float charge = NTConfig.rifleChargeTicks;
+    static float spinAngle(float ticks, float charge) {
         float angle = ticks < charge
                 ? SPIN_RADIANS_PER_TICK * ticks * ticks / (2F * charge)
                 : SPIN_RADIANS_PER_TICK * (ticks - charge / 2F);
@@ -166,7 +168,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         @Override
         public void submitRenderTask(RenderPassInfo<GeoRenderState> pass, SubmitNodeCollector tasks) {
             float ticks = pass.getOrDefaultGeckolibData(AtlanteanRifleItem.USE_TICKS, -1F);
-            float ramp = AtlanteanRifleItem.rampProgress(ticks - NTConfig.rifleChargeTicks);
+            float ramp = AtlanteanRifleItem.rampProgress(ticks - pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks));
             if (ramp <= 0F) {
                 return;
             }

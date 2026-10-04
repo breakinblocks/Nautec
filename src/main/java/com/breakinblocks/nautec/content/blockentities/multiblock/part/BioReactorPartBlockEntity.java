@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.part;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
+import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.item.DelegatingItemHandler;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
@@ -82,13 +83,28 @@ public class BioReactorPartBlockEntity extends LaserBlockEntity implements Multi
         if (direction == null) {
             return getItemHandler();
         }
-        if (direction != Direction.DOWN) {
+        if (!isOutward(direction)) {
+            return null;
+        }
+        BioReactorBlockEntity reactor = controller();
+        if (reactor != null && reactor.itemMode(direction) == SideMode.NONE) {
             return null;
         }
         return new DelegatingItemHandler(() -> {
-            BioReactorBlockEntity reactor = controller();
-            return reactor == null ? null : reactor.automationHandler(true);
+            BioReactorBlockEntity current = controller();
+            return current == null ? null : current.getItemHandlerOnSide(direction);
         });
+    }
+
+    private boolean isOutward(Direction direction) {
+        if (level == null || controllerPos == null) {
+            return false;
+        }
+        BlockPos neighbour = worldPosition.relative(direction);
+        if (neighbour.equals(controllerPos)) {
+            return false;
+        }
+        return !(level.getBlockEntity(neighbour) instanceof BioReactorPartBlockEntity part && controllerPos.equals(part.getControllerPos()));
     }
 
     public void setLaserInput(boolean hatch) {

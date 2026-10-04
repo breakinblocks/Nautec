@@ -3,11 +3,13 @@ package com.breakinblocks.nautec.content.items.tools;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.BioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.IndustrialBioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
@@ -31,10 +33,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -111,6 +115,21 @@ public class AquarineWrenchItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
+        WrenchMode mode = mode(useOnContext.getItemInHand());
+        SideKind kind = mode.kind();
+        if (kind != null && sideConfigTarget(level, pos) instanceof ContainerBlockEntity machine && machine.hasSideConfig(kind)) {
+            if (!level.isClientSide() && player != null) {
+                RelativeFace face = RelativeFace.of(machine.front(), useOnContext.getClickedFace());
+                SideMode current = machine.getSideConfig().get(kind, face);
+                SideMode next = player.isSecondaryUseActive() ? current.previous() : current.next();
+                machine.setSideMode(kind, face, next);
+                player.sendOverlayMessage(Component.translatable("nautec.side_config.tooltip", Component.translatable(face.translationKey()),
+                        Component.translatable(kind.translationKey()), Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA));
+                level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 0.6F, 1.4F);
+            }
+            return InteractionResult.SUCCESS;
+        }
+
         if (level.getBlockEntity(pos) instanceof BioReactorPartBlockEntity partBE) {
             BlockState state = level.getBlockState(pos);
             if (state.getValue(BioReactorMultiblock.TOP) && state.getValue(BioReactorMultiblock.BIO_REACTOR_PART) % 2 != 0) {
@@ -129,21 +148,6 @@ public class AquarineWrenchItem extends Item {
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.FAIL;
-        }
-
-        WrenchMode mode = mode(useOnContext.getItemInHand());
-        SideKind kind = mode.kind();
-        if (kind != null && level.getBlockEntity(pos) instanceof ContainerBlockEntity machine && machine.hasSideConfig(kind)) {
-            if (!level.isClientSide() && player != null) {
-                RelativeFace face = RelativeFace.of(machine.front(), useOnContext.getClickedFace());
-                SideMode current = machine.getSideConfig().get(kind, face);
-                SideMode next = player.isSecondaryUseActive() ? current.previous() : current.next();
-                machine.setSideMode(kind, face, next);
-                player.sendOverlayMessage(Component.translatable("nautec.side_config.tooltip", Component.translatable(face.translationKey()),
-                        Component.translatable(kind.translationKey()), Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA));
-                level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 0.6F, 1.4F);
-            }
-            return InteractionResult.SUCCESS;
         }
 
         if (!useOnContext.getPlayer().isCrouching()) {
@@ -175,5 +179,14 @@ public class AquarineWrenchItem extends Item {
             }
         }
         return InteractionResult.FAIL;
+    }
+
+    private static @Nullable BlockEntity sideConfigTarget(Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof MultiblockPartEntity part && part.getControllerPos() != null
+                && level.getBlockEntity(part.getControllerPos()) instanceof AbstractBioReactorBlockEntity reactor) {
+            return reactor;
+        }
+        return blockEntity;
     }
 }

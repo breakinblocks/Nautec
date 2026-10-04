@@ -54,15 +54,15 @@ Speed and Yield Upgrades both cut the nutrients spent per item, because nutrient
   ### <Color id="aqua">Reactor Fusion Upgrade</Color>
 </Row>
 
-Made from one of each of the other three. It counts as one Speed, one Yield and one Efficiency Upgrade, all in a single slot, and stacks with them and with other Fusion Upgrades. Multiplies the power draw by 4 instead of the 3.46 the three separate upgrades would cost together.
+Made from one of each of the other three. It counts as one Speed, one Yield and one Efficiency Upgrade, all in a single slot, and stacks with them and with other Fusion Upgrades. Multiplies the power draw by 2.5, less than the 3.46 the three separate upgrades would cost together.
 
-It is for a reactor whose slots are already full. Four Fusion Upgrades in an Industrial Bio Reactor give 3 times the speed, 5 items per cycle and 32% nutrient use, for 256 times the base power.
+It is for a reactor whose slots are already full. Four Fusion Upgrades in an Industrial Bio Reactor give 3 times the speed, 5 items per cycle and 32% nutrient use, for about 39 times the base power.
 
 ***
 
 ## <Color id="gold">Power Math</Color>
 
-AP needed = (base + per colony x filled colony slots) x 1.6 per Speed Upgrade x 1.8 per Yield Upgrade x 1.2 per Efficiency Upgrade x 4 per Fusion Upgrade, rounded up
+AP needed = (base + per colony x filled colony slots) x 1.6 per Speed Upgrade x 1.8 per Yield Upgrade x 1.2 per Efficiency Upgrade x 2.5 per Fusion Upgrade, rounded up
 
 Every upgrade multiplies the whole total again, so the cost climbs fast. The base and per-colony values are on the [Production Rates](production_rates.md) page.
 
@@ -78,9 +78,9 @@ A Bio Reactor with 3 colonies:
 | 1 Speed, 1 Yield | 288 |
 | 1 Yield, 1 Efficiency | 216 |
 | 2 Efficiency | 144 |
-| 1 Fusion | 400 |
-| 1 Fusion, 1 Yield | 720 |
-| 2 Fusion | 1,600 |
+| 1 Fusion | 250 |
+| 1 Fusion, 1 Yield | 450 |
+| 2 Fusion | 625 |
 
 An Industrial Bio Reactor with 9 colonies:
 
@@ -92,10 +92,10 @@ An Industrial Bio Reactor with 9 colonies:
 | 4 Speed | 3,605 |
 | 2 Speed, 2 Yield | 4,562 |
 | 4 Yield | 5,774 |
-| 1 Fusion | 2,200 |
-| 2 Fusion | 8,800 |
-| 2 Fusion, 2 Yield | 28,512 |
-| 4 Fusion | 140,800 |
+| 1 Fusion | 1,375 |
+| 2 Fusion | 3,438 |
+| 2 Fusion, 2 Yield | 11,138 |
+| 4 Fusion | 21,485 |
 
 Every bonus and multiplier on this page is configurable.
 

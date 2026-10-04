@@ -52,7 +52,12 @@ The rifle holds 1,000,000 AP (`riflePowerCapacity`) and comes out of the craftin
 
 The rifle takes Infinity and curses, nothing else. Infinity halves the power drain, so a full rifle lasts about 324 seconds (5 and a half minutes) of continuous fire. Its enchantability is very low, so use a book on an anvil rather than an enchanting table.
 
-With Apotheosis installed, the rifle counts as a bow for affixes and gems.
+With Apotheosis installed, the rifle counts as a bow for affixes and gems, and the bow stats apply to the beam:
+
+* Draw speed shortens the charge before the beam fires. +50% draw speed charges it in two thirds of the time.
+* Arrow velocity and arrow damage multiply the beam's damage. +50% arrow velocity is 1.5 times the damage.
+* Protection pierce and shred ignore some of the target's Protection, and armor pierce and shred ignore some of its armor, scaling with the gem.
+* Critical strike chance and damage apply to the beam as they do to any attack.
 
 ***
 

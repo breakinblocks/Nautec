@@ -4,6 +4,9 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
+import com.breakinblocks.nautec.api.sides.RelativeFace;
+import com.breakinblocks.nautec.api.sides.SideKind;
+import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
@@ -145,6 +148,18 @@ public final class BioReactorOverhaulTests {
             tx.commit();
             return inserted;
         }
+    }
+
+    private static int extract(ResourceHandler<ItemResource> handler, int slot, ItemStack stack) {
+        try (Transaction tx = Transaction.openRoot()) {
+            int extracted = handler.extract(slot, ItemResource.of(stack), stack.getCount(), tx);
+            tx.commit();
+            return extracted;
+        }
+    }
+
+    private static ResourceHandler<ItemResource> items(GameTestHelper helper, BlockPos pos, Direction side) {
+        return helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
     }
 
     private static int window() {
@@ -374,19 +389,19 @@ public final class BioReactorOverhaulTests {
 
             reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(0), new ItemStack(NTItems.REACTOR_FUSION_UPGRADE.get()));
             helper.assertTrue(reactor.hasUpgrades(), "fusion counts as an upgrade");
-            helper.assertValueEqual(2200, reactor.getRequiredPower(), "550 x 4 for one fusion upgrade");
+            helper.assertValueEqual(1375, reactor.getRequiredPower(), "550 x 2.5 for one fusion upgrade");
             helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 1.5f) < EPSILON, "speed with one fusion upgrade");
             helper.assertValueEqual(2, reactor.getItemsPerCycle(), "items per cycle with one fusion upgrade");
             helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.75f) < EPSILON, "vitality per tick with one fusion upgrade");
 
             reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(1), new ItemStack(NTItems.REACTOR_SPEED_UPGRADE.get()));
-            helper.assertValueEqual(3520, reactor.getRequiredPower(), "550 x 4 x 1.6 for a fusion upgrade and a speed upgrade");
+            helper.assertValueEqual(2200, reactor.getRequiredPower(), "550 x 2.5 x 1.6 for a fusion upgrade and a speed upgrade");
             helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 2.0f) < EPSILON, "speed with a fusion upgrade and a speed upgrade");
 
             for (int slot = 0; slot < IndustrialBioReactorBlockEntity.UPGRADE_SLOTS; slot++) {
                 reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(slot), new ItemStack(NTItems.REACTOR_FUSION_UPGRADE.get()));
             }
-            helper.assertValueEqual(140800, reactor.getRequiredPower(), "550 x 4^4 for four fusion upgrades");
+            helper.assertValueEqual(21485, reactor.getRequiredPower(), "550 x 2.5^4 rounded up for four fusion upgrades");
             helper.assertTrue(Math.abs(reactor.getSpeedMultiplier() - 3.0f) < EPSILON, "speed with four fusion upgrades");
             helper.assertValueEqual(5, reactor.getItemsPerCycle(), "items per cycle with four fusion upgrades");
             helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.31640625f) < EPSILON, "vitality per tick with four fusion upgrades");
@@ -639,6 +654,59 @@ public final class BioReactorOverhaulTests {
                 helper.assertValueEqual(4, insert(side, reactor.nutrientSlot(0), new ItemStack(Items.IRON_ORE, 4)), "nutrient into a nutrient slot");
                 helper.assertValueEqual(0, insert(side, reactor.outputSlot(1), new ItemStack(Items.IRON_ORE)), "nutrient into an output slot");
                 helper.assertValueEqual(1, reactor.getItemStackHandler().getStackInSlot(reactor.upgradeSlot(0)).getCount(), "upgrade slots hold one item");
+                helper.succeed();
+            });
+        });
+        r.add("bio_overhaul/bio_reactor_side_config_applies_to_parts", 60, helper -> {
+            placeBioReactor(helper, FORMED_BIO_CONTROLLER);
+            helper.runAfterDelay(1, () -> helper.assertTrue(
+                    MultiblockHelper.form(NTMultiblocks.BIO_REACTOR.get(), helper.absolutePos(FORMED_BIO_CONTROLLER), helper.getLevel()),
+                    "Bio reactor should form"));
+            helper.runAfterDelay(3, () -> {
+                BioReactorBlockEntity reactor = helper.getBlockEntity(FORMED_BIO_CONTROLLER, BioReactorBlockEntity.class);
+                BlockPos base = FORMED_BIO_CONTROLLER.below();
+                BlockPos northWall = base.north();
+                reactor.getItemStackHandler().setStackInSlot(reactor.outputSlot(0), new ItemStack(Items.COBBLESTONE, 4));
+
+                ResourceHandler<ItemResource> wall = items(helper, northWall, Direction.NORTH);
+                helper.assertTrue(wall != null, "An outer wall face should expose the reactor");
+                helper.assertValueEqual(1, extract(wall, reactor.outputSlot(0), new ItemStack(Items.COBBLESTONE, 1)), "extracted through a wall set to Both");
+                helper.assertTrue(items(helper, northWall, Direction.EAST) == null, "A face against another part should expose nothing");
+
+                reactor.setSideMode(SideKind.ITEMS, RelativeFace.BOTTOM, SideMode.INPUT);
+                ResourceHandler<ItemResource> bottom = items(helper, base, Direction.DOWN);
+                helper.assertTrue(bottom != null, "An Input bottom should still expose the reactor");
+                helper.assertValueEqual(0, extract(bottom, reactor.outputSlot(0), new ItemStack(Items.COBBLESTONE, 1)), "extracted through an Input bottom");
+                helper.assertValueEqual(2, insert(bottom, reactor.nutrientSlot(0), new ItemStack(Items.IRON_ORE, 2)), "nutrients through an Input bottom");
+
+                reactor.setSideMode(SideKind.ITEMS, RelativeFace.FRONT, SideMode.NONE);
+                helper.assertTrue(items(helper, northWall, Direction.NORTH) == null, "A front set to None should expose nothing on the north wall");
+                helper.succeed();
+            });
+        });
+
+        r.add("bio_overhaul/industrial_side_config_applies_to_walls", 60, helper -> {
+            BlockPos origin = new BlockPos(2, 1, 2);
+            buildIndustrial(helper, origin);
+            helper.runAfterDelay(1, () -> helper.assertTrue(formIndustrial(helper, origin), "Industrial Bio Reactor should form"));
+            helper.runAfterDelay(3, () -> {
+                IndustrialBioReactorBlockEntity reactor = helper.getBlockEntity(industrialController(origin), IndustrialBioReactorBlockEntity.class);
+                BlockPos westWall = cellPos(origin, 1, 5);
+                reactor.getItemStackHandler().setStackInSlot(reactor.outputSlot(4), new ItemStack(Items.STONE, 6));
+
+                ResourceHandler<ItemResource> wall = items(helper, westWall, Direction.WEST);
+                helper.assertTrue(wall != null, "The west wall should expose the reactor");
+                helper.assertValueEqual(2, extract(wall, reactor.outputSlot(4), new ItemStack(Items.STONE, 2)), "extracted through a wall set to Both");
+                helper.assertTrue(items(helper, westWall, Direction.EAST) == null, "A face into the culture chamber should expose nothing");
+
+                RelativeFace west = RelativeFace.of(reactor.front(), Direction.WEST);
+                reactor.setSideMode(SideKind.ITEMS, west, SideMode.OUTPUT);
+                ResourceHandler<ItemResource> output = items(helper, westWall, Direction.WEST);
+                helper.assertValueEqual(0, insert(output, reactor.nutrientSlot(0), new ItemStack(Items.IRON_ORE, 2)), "nutrients through an Output wall");
+                helper.assertValueEqual(2, extract(output, reactor.outputSlot(4), new ItemStack(Items.STONE, 2)), "extracted through an Output wall");
+
+                ResourceHandler<ItemResource> floor = items(helper, cellPos(origin, 0, 12), Direction.DOWN);
+                helper.assertValueEqual(2, insert(floor, reactor.nutrientSlot(0), new ItemStack(Items.IRON_ORE, 2)), "nutrients through the floor, which is still Both");
                 helper.succeed();
             });
         });

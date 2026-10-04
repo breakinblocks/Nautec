@@ -100,8 +100,8 @@ Each colony has its own output slot. When a slot is full, that colony pauses unt
 
 ## <Color id="gold">Automation</Color>
 
-* Pull output from the underside of the base, for example with a hopper under the reactor, or from the Bio Reactor block with a pipe.
-* Insert nutrients and upgrades through the top of the Bio Reactor block, for example with a hopper sitting on it, or with a pipe into the underside of the base.
+* Every outer face of the formed reactor takes and gives items: a hopper under the base pulls output, a hopper on top of the Bio Reactor block feeds nutrients, and a pipe works on any side.
+* [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side, so Bottom set to Output makes the entire base output only. The reactor treats its north side as the front.
 * Load and unload colonies through the Dish Port, the two slots at the bottom left of the screen. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the empty dish comes out of the second slot. An empty dish takes out the colony with the least Vitality left. Automation reaches the port wherever it reaches the other slots.
 
 Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. With nutrients coming in and output going out, the reactor runs indefinitely.
