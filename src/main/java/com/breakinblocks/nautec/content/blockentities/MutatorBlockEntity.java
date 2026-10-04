@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -41,18 +42,20 @@ import java.util.Set;
 public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider {
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
+    public static final int DISH_EMPTY_OUT = 3;
+    private static final int[] LOAD_SLOTS = {0};
 
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private BacteriaMutationRecipe recipe;
     private boolean active;
     private int progress;
 
-    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT});
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
     public MutatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.MUTATOR.get(), blockPos, blockState);
         addBacteriaStorage(2);
-        addItemHandler(3, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
+        addItemHandler(4, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
     }
 
     @Override
@@ -93,6 +96,27 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         checkRecipe();
     }
 
+    @Override
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot != DISH_IN) {
+            return true;
+        }
+        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::mutationReady, this::canMutate);
+    }
+
+    private int mutationReady() {
+        return getBacteriaStorage().getBacteria(1).isEmpty() ? -1 : 1;
+    }
+
+    private boolean canMutate(BacteriaInstance colony) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return true;
+        }
+        ItemStack catalyst = getItemStackHandler().getStackInSlot(0);
+        return !catalyst.isEmpty() && serverLevel.recipeAccess()
+                .getRecipeFor(BacteriaMutationRecipe.TYPE, new BacteriaRecipeInput(colony, catalyst), level).isPresent();
+    }
+
     public static float computeSuccessChance(BacteriaMutationRecipe recipe, BacteriaInstance input) {
         long cap = Math.max(1, NTConfig.bacteriaColonySizeCap);
         float sizeFactor = 1f - 0.25f * ((float) Math.min(input.getSize(), cap) / cap);
@@ -121,9 +145,8 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         }
 
         if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, DISH_IN, DISH_OUT, new int[]{0},
-                    () -> getBacteriaStorage().getBacteria(1).isEmpty() ? -1 : 1, slot -> {
-                    });
+            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::mutationReady, slot -> {
+            });
         }
 
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
@@ -218,7 +241,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
-        getItemStackHandler().ensureSize(3);
+        getItemStackHandler().ensureSize(4);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
     }

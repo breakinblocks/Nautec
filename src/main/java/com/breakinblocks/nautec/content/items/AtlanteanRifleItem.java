@@ -137,7 +137,7 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!hasPower(stack, player, drainFor(stack, 0))) {
+        if (!hasPower(stack, player, drainFor(player, stack, 0))) {
             if (!level.isClientSide()) {
                 player.sendOverlayMessage(Component.translatable("nautec.atlantean_rifle.no_power").withStyle(ChatFormatting.RED));
             }
@@ -159,25 +159,45 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
             return;
         }
 
-        if (!drain(stack, player, drainFor(stack, firing))) {
+        if (!drain(stack, player, drainFor(player, stack, firing))) {
             player.stopUsingItem();
             return;
         }
 
-        fire(serverLevel, player, damageFor(firing));
+        fire(serverLevel, player, damageFor(player, firing));
     }
 
     public static @Nullable Entity fire(ServerLevel level, LivingEntity shooter, float damage) {
-        AtlanteanRifleBeam.Hit hit = AtlanteanRifleBeam.trace(level, shooter, NTConfig.rifleRange, 1.0F);
-        Entity target = hit.entity();
-        if (target != null) {
-            DamageSource source = level.damageSources().source(NTDamageTypes.PARTICLE_BEAM, shooter);
-            float dealt = (float) (damage * ApothicAttributesCompat.beamDamageMultiplier(shooter));
-            if (target.hurtServer(level, source, dealt)) {
-                popTarget(level, target, damage);
+        DamageSource source = level.damageSources().source(NTDamageTypes.PARTICLE_BEAM, shooter);
+        float dealt = (float) (damage * ApothicAttributesCompat.beamDamageMultiplier(shooter));
+        Entity first = null;
+        for (AtlanteanRifleBeam.Hit hit : AtlanteanRifleBeam.traceAll(level, shooter, NTConfig.rifleRange, 1.0F)) {
+            for (Entity target : hit.entities()) {
+                if (first == null) {
+                    first = target;
+                }
+                if (target.hurtServer(level, source, dealt)) {
+                    popTarget(level, target, damage);
+                }
             }
         }
-        return target;
+        return first;
+    }
+
+    public static int pierceCount(LivingEntity holder) {
+        return 0;
+    }
+
+    public static int ricochetCount(LivingEntity holder) {
+        return 0;
+    }
+
+    public static float maxRamp(LivingEntity holder) {
+        return 1F;
+    }
+
+    public static float shakeScale(LivingEntity holder) {
+        return 1F;
     }
 
     private static void popTarget(ServerLevel level, Entity target, float damage) {
@@ -209,20 +229,41 @@ public class AtlanteanRifleItem extends Item implements IPowerItem, GeoItem {
         return isUsing(holder) && firingTicks(holder, holder.getTicksUsingItem()) >= 0;
     }
 
-    public static float rampProgress(float firingTicks) {
-        return Mth.clamp(firingTicks / NTConfig.rifleRampTicks, 0F, 1F);
+    public static float rampTicks(LivingEntity holder) {
+        return NTConfig.rifleRampTicks;
+    }
+
+    public static float rampProgress(float firingTicks, float rampTicks) {
+        return Mth.clamp(firingTicks / Math.max(1F, rampTicks), 0F, 1F);
+    }
+
+    public static float rampProgress(LivingEntity holder, float firingTicks) {
+        return rampProgress(firingTicks, rampTicks(holder));
     }
 
     public static float damageFor(int firingTicks) {
-        return Mth.lerp(rampProgress(firingTicks), (float) NTConfig.rifleBaseDamage, (float) NTConfig.rifleMaxDamage);
+        return damageAt(rampProgress(firingTicks, NTConfig.rifleRampTicks));
+    }
+
+    public static float damageFor(LivingEntity holder, int firingTicks) {
+        float overdrive = Math.max(1F, maxRamp(holder));
+        return damageAt(Mth.clamp(firingTicks / Math.max(1F, rampTicks(holder)), 0F, overdrive));
+    }
+
+    private static float damageAt(float ramp) {
+        return Mth.lerp(ramp, (float) NTConfig.rifleBaseDamage, (float) NTConfig.rifleMaxDamage);
     }
 
     public static int drainFor(int firingTicks) {
-        return Math.round(Mth.lerp(rampProgress(firingTicks), NTConfig.rifleBaseDrain, NTConfig.rifleMaxDrain));
+        return drainAt(rampProgress(firingTicks, NTConfig.rifleRampTicks));
     }
 
-    public static int drainFor(ItemStack stack, int firingTicks) {
-        int drain = drainFor(firingTicks);
+    private static int drainAt(float ramp) {
+        return Math.round(Mth.lerp(ramp, NTConfig.rifleBaseDrain, NTConfig.rifleMaxDrain));
+    }
+
+    public static int drainFor(LivingEntity holder, ItemStack stack, int firingTicks) {
+        int drain = drainAt(rampProgress(holder, firingTicks));
         return hasInfinity(stack) ? Math.round(drain * INFINITY_DRAIN_MULTIPLIER) : drain;
     }
 

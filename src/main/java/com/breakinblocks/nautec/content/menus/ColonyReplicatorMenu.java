@@ -40,7 +40,7 @@ public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEnt
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.PARTNER, PARTNER_X, PARTNER_Y));
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.FODDER, FODDER_X, FODDER_Y));
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.RESULT, RESULT_X, RESULT_Y));
-        addDishPort(ColonyReplicatorBlockEntity.DISH_IN, 24, 61, ColonyReplicatorBlockEntity.DISH_OUT, 46, 61);
+        addDishPort(ColonyReplicatorBlockEntity.DISH_IN, 7, 61, ColonyReplicatorBlockEntity.DISH_OUT, 27, 61, ColonyReplicatorBlockEntity.DISH_EMPTY_OUT, 47, 61);
     }
 
     @Override

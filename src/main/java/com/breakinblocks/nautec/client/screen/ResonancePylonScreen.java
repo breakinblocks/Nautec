@@ -18,6 +18,11 @@ public class ResonancePylonScreen extends ResonanceNetworkScreen<ResonancePylonM
     }
 
     @Override
+    protected int chunkState() {
+        return this.menu.getChunkState();
+    }
+
+    @Override
     protected void addHeaderWidgets(int x, int y) {
         addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 72, y + 4, 64, 14,
                 () -> Component.translatable(this.menu.isSendMode() ? "nautec.resonance.mode.send" : "nautec.resonance.mode.receive"),

@@ -59,6 +59,10 @@ public class ResonancePylonMenu extends NTAbstractContainerMenu<ResonancePylonBl
         return data.get(ResonancePylonBlockEntity.DATA_MODE) == 0;
     }
 
+    public int getChunkState() {
+        return data.get(ResonancePylonBlockEntity.DATA_CHUNK);
+    }
+
     public boolean isInterdimensional() {
         return data.get(ResonancePylonBlockEntity.DATA_TIER) == 1;
     }

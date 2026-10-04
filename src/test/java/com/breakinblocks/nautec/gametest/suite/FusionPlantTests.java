@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionPortBlockEntity;
@@ -13,6 +14,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +31,8 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 public final class FusionPlantTests {
     private static final BlockPos CORE = new BlockPos(4, 5, 4);
     private static final int RADIUS = 2;
+    private static final BlockPos WIDE_CORE = new BlockPos(9, 5, 9);
+    private static final Identifier WIDE_ARENA = Nautec.rl("empty_19x11x19");
 
     private FusionPlantTests() {
     }
@@ -38,7 +42,11 @@ public final class FusionPlantTests {
     }
 
     private static BlockPos controllerPos(GameTestHelper helper, int radius) {
-        return helper.absolutePos(CORE).offset(0, 1, -radius);
+        return controllerPos(helper, CORE, radius);
+    }
+
+    private static BlockPos controllerPos(GameTestHelper helper, BlockPos corePos, int radius) {
+        return helper.absolutePos(corePos).offset(0, 1, -radius);
     }
 
     private static BlockPos injectorPos(GameTestHelper helper) {
@@ -46,7 +54,11 @@ public final class FusionPlantTests {
     }
 
     private static BlockPos injectorPos(GameTestHelper helper, int radius) {
-        return helper.absolutePos(CORE).offset(-radius, 0, 0);
+        return injectorPos(helper, CORE, radius);
+    }
+
+    private static BlockPos injectorPos(GameTestHelper helper, BlockPos corePos, int radius) {
+        return helper.absolutePos(corePos).offset(-radius, 0, 0);
     }
 
     private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated) {
@@ -54,8 +66,12 @@ public final class FusionPlantTests {
     }
 
     private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated, int radius) {
+        return build(helper, cultivated, CORE, radius);
+    }
+
+    private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated, BlockPos corePos, int radius) {
         ServerLevel level = helper.getLevel();
-        BlockPos core = helper.absolutePos(CORE);
+        BlockPos core = helper.absolutePos(corePos);
         for (int x = -radius; x <= radius; x++) {
             for (int y = -FusionStructure.FLOOR_DROP; y <= FusionStructure.CEILING_RISE; y++) {
                 for (int z = -radius; z <= radius; z++) {
@@ -72,11 +88,11 @@ public final class FusionPlantTests {
         PrismarineCrystalBlock.build(level, core, cultivated);
         level.setBlock(core.above(FusionStructure.CEILING_RISE), NTBlocks.FUSION_COLLECTOR.get().defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(core.below(FusionStructure.FLOOR_DROP), NTBlocks.FUSION_COLLECTOR.get().defaultBlockState(), Block.UPDATE_ALL);
-        level.setBlock(injectorPos(helper, radius), NTBlocks.LASER_INJECTOR.get().defaultBlockState()
+        level.setBlock(injectorPos(helper, corePos, radius), NTBlocks.LASER_INJECTOR.get().defaultBlockState()
                 .setValue(LaserInjectorBlock.FACING, Direction.EAST), Block.UPDATE_ALL);
-        level.setBlock(controllerPos(helper, radius), NTBlocks.FUSION_CONTROLLER.get().defaultBlockState()
+        level.setBlock(controllerPos(helper, corePos, radius), NTBlocks.FUSION_CONTROLLER.get().defaultBlockState()
                 .setValue(FusionControllerBlock.FACING, Direction.NORTH), Block.UPDATE_ALL);
-        FusionControllerBlockEntity controller = (FusionControllerBlockEntity) level.getBlockEntity(controllerPos(helper, radius));
+        FusionControllerBlockEntity controller = (FusionControllerBlockEntity) level.getBlockEntity(controllerPos(helper, corePos, radius));
         controller.rescan(level);
         return controller;
     }
@@ -86,9 +102,13 @@ public final class FusionPlantTests {
     }
 
     private static void feedInjector(GameTestHelper helper, int power, float purity, int radius) {
+        feedInjector(helper, power, purity, CORE, radius);
+    }
+
+    private static void feedInjector(GameTestHelper helper, int power, float purity, BlockPos corePos, int radius) {
         helper.onEachTick(() -> {
-            if (helper.getLevel().getBlockEntity(injectorPos(helper, radius)) instanceof LaserInjectorBlockEntity injector) {
-                BlockPos origin = injectorPos(helper, radius).west(3);
+            if (helper.getLevel().getBlockEntity(injectorPos(helper, corePos, radius)) instanceof LaserInjectorBlockEntity injector) {
+                BlockPos origin = injectorPos(helper, corePos, radius).west(3);
                 injector.receivePower(power, Direction.EAST, origin);
                 injector.receiveNewPurity(purity, Direction.EAST, origin);
             }
@@ -212,12 +232,12 @@ public final class FusionPlantTests {
             helper.succeed();
         });
 
-        r.add("fusion/satellite_crystals_raise_ceiling_and_yield", 20, helper -> {
+        r.add("fusion/satellite_crystals_raise_ceiling_and_yield", WIDE_ARENA, 20, 0, helper -> {
             int radius = FusionStructure.MIN_SATELLITE_RADIUS;
             int corner = FusionStructure.satelliteOffset(radius);
-            FusionControllerBlockEntity controller = build(helper, true, radius);
+            FusionControllerBlockEntity controller = build(helper, true, WIDE_CORE, radius);
             ServerLevel level = helper.getLevel();
-            BlockPos core = helper.absolutePos(CORE);
+            BlockPos core = helper.absolutePos(WIDE_CORE);
             helper.assertTrue(controller.getStructure().formed(), "a 7x7 chamber forms, got " + controller.getStructure().problem());
             helper.assertValueEqual(controller.getStructure().satelliteCount(), 0, "satellites before any are placed");
             helper.assertValueEqual(controller.getStructure().fePerAp(), NTConfig.fusionFePerAp, "FE per AP with no satellites");
@@ -249,13 +269,13 @@ public final class FusionPlantTests {
             helper.succeed();
         });
 
-        r.add("fusion/satellites_raise_output_per_ap", 300, helper -> {
+        r.add("fusion/satellites_raise_output_per_ap", WIDE_ARENA, 300, 0, helper -> {
             long ignition = NTConfig.fusionIgnitionEnergy;
             NTConfig.fusionIgnitionEnergy = 4_000;
             int radius = FusionStructure.MIN_SATELLITE_RADIUS;
             int corner = FusionStructure.satelliteOffset(radius);
-            FusionControllerBlockEntity controller = build(helper, true, radius);
-            BlockPos core = helper.absolutePos(CORE);
+            FusionControllerBlockEntity controller = build(helper, true, WIDE_CORE, radius);
+            BlockPos core = helper.absolutePos(WIDE_CORE);
             for (int dx = -1; dx <= 1; dx += 2) {
                 for (int dz = -1; dz <= 1; dz += 2) {
                     PrismarineCrystalBlock.build(helper.getLevel(), core.offset(dx * corner, 0, dz * corner), true);
@@ -264,7 +284,7 @@ public final class FusionPlantTests {
             controller.rescan(helper.getLevel());
             helper.assertValueEqual(controller.getStructure().satelliteCount(), FusionStructure.MAX_SATELLITES, "all four satellites");
             controller.getFuelTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 10_000));
-            feedInjector(helper, 1_000, 3.0F, radius);
+            feedInjector(helper, 1_000, 3.0F, WIDE_CORE, radius);
             int expected = Math.min(1_000 * controller.getStructure().fePerAp(), controller.getStructure().ceiling());
             helper.succeedWhen(() -> {
                 helper.assertTrue(controller.getStatus().running(), "the plant runs, status " + controller.getStatus());

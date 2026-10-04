@@ -7,7 +7,6 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
-import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.menus.BacterialAnalyzerMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
@@ -38,7 +37,7 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
 
     public BacterialAnalyzerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.BACTERIAL_ANALYZER.get(), blockPos, blockState);
-        addItemHandler(2, 1, (slot, stack) -> (slot == 0 && stack.getItem() instanceof PetriDishItem));
+        addItemHandler(2, 1, (slot, stack) -> slot == 0 && AdvancedBacterialAnalyzerBlockEntity.needsAnalysis(stack));
     }
 
     @Override

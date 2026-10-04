@@ -60,6 +60,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.UPLINK_ARRAY.get());
         dropSelf(NTBlocks.DOWNLINK_ARRAY.get());
         dropSelf(NTBlocks.ABYSSAL_PYLON.get());
+        dropSelf(NTBlocks.RESONANCE_NODE.get());
         dropSelf(NTBlocks.PRISMATIC_EMITTER.get());
         dropSelf(NTBlocks.TIDAL_ROTOR.get());
         dropSelf(NTBlocks.THERMAL_VENT_TAP.get());

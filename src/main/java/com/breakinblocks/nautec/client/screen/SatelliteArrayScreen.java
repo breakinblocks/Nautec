@@ -25,6 +25,11 @@ public class SatelliteArrayScreen extends ResonanceNetworkScreen<SatelliteArrayM
     private static final int[] LIMITS = {1_000, 5_000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1_000_000};
 
     @Override
+    protected int chunkState() {
+        return this.menu.getChunkState();
+    }
+
+    @Override
     protected void addHeaderWidgets(int x, int y) {
         if (this.menu.blockEntity.isUplink()) {
             return;
@@ -108,7 +113,7 @@ public class SatelliteArrayScreen extends ResonanceNetworkScreen<SatelliteArrayM
         }
         lines.add(Component.translatable(statusKey()));
         lines.add(Component.translatable(statusKey() + ".desc").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("nautec.satellite.links", this.menu.getUplinks(), this.menu.getDownlinks()).withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("nautec.satellite.links", this.menu.getUplinks(), this.menu.getDownlinks(), this.menu.getNodes()).withStyle(ChatFormatting.GRAY));
         lines.add(Component.translatable("nautec.satellite.loss.desc", Math.round(NTConfig.satelliteLoss * 100)).withStyle(ChatFormatting.GRAY));
         lines.add(Component.translatable(this.menu.isUplink() ? "nautec.satellite.buffer.uplink" : "nautec.satellite.buffer.downlink").withStyle(ChatFormatting.GRAY));
         return true;

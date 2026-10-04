@@ -30,9 +30,13 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.List;
+
 public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleItem> {
     public static final DataTicket<Integer> OWNER_ID = DataTicket.create("nautec:atlantean_rifle_owner", Integer.class);
     public static final DataTicket<Float> CHARGE_TICKS = DataTicket.create("nautec:atlantean_rifle_charge_ticks", Float.class);
+    public static final DataTicket<Float> RAMP_TICKS = DataTicket.create("nautec:atlantean_rifle_ramp_ticks", Float.class);
+    public static final DataTicket<Float> SHAKE_SCALE = DataTicket.create("nautec:atlantean_rifle_shake_scale", Float.class);
 
     private static final Identifier CORE_MASK = Nautec.rl("textures/item/atlantean_rifle_core.png");
     private static final String CORE_BONE = "core";
@@ -57,6 +61,8 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         state.addGeckolibData(AtlanteanRifleItem.USE_TICKS, ticks);
         state.addGeckolibData(OWNER_ID, holder == null ? -1 : holder.getId());
         state.addGeckolibData(CHARGE_TICKS, (float) (holder == null ? NTConfig.rifleChargeTicks : AtlanteanRifleItem.chargeTicks(holder)));
+        state.addGeckolibData(RAMP_TICKS, holder == null ? (float) NTConfig.rifleRampTicks : AtlanteanRifleItem.rampTicks(holder));
+        state.addGeckolibData(SHAKE_SCALE, holder == null ? 1F : Math.max(0F, AtlanteanRifleItem.shakeScale(holder)));
     }
 
     @Override
@@ -94,24 +100,34 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
             return;
         }
 
-        AtlanteanRifleBeam.Hit hit = AtlanteanRifleBeam.trace(level, holder, NTConfig.rifleRange, partialTick);
-        boolean impactHit = hit.entity() != null || hit.length() < NTConfig.rifleRange - 0.01D;
-        if (ShaderPackOverlay.shaderPackActive()) {
-            ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
-            if (perspective.firstPerson()) {
-                Vec3 muzzleWorld = cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z);
-                AtlanteanRifleBeamRenderer.submitWorldBeam(cameraPos, tasks, muzzleWorld, hit.end(), firing, impactHit);
-                return;
+        float ramp = AtlanteanRifleItem.rampProgress(holder, firing);
+        List<AtlanteanRifleBeam.Hit> segments = AtlanteanRifleBeam.traceAll(level, holder, NTConfig.rifleRange, partialTick);
+        ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
+        if (ShaderPackOverlay.shaderPackActive() && perspective.firstPerson()) {
+            Vec3 muzzleWorld = cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z);
+            for (int i = 0; i < segments.size(); i++) {
+                AtlanteanRifleBeam.Hit hit = segments.get(i);
+                AtlanteanRifleBeamRenderer.submitWorldBeam(cameraPos, tasks, i == 0 ? muzzleWorld : hit.origin(), hit.end(), ramp, hit.impact());
             }
+            return;
         }
-        Vec3 hitRelative = hit.end().subtract(cameraPos);
-        Vector3f hitRoot = worldToRoot.transformPosition(new Vector3f((float) hitRelative.x, (float) hitRelative.y, (float) hitRelative.z));
-        Vector3f hitLocal = new Matrix4f(pose).invert().transformPosition(hitRoot);
 
-        AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks,
-                new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z),
-                new Vec3(hitLocal.x, hitLocal.y, hitLocal.z),
-                firing, impactHit, true);
+        Matrix4f rootToLocal = new Matrix4f(pose).invert();
+        for (int i = 0; i < segments.size(); i++) {
+            AtlanteanRifleBeam.Hit hit = segments.get(i);
+            Vec3 from = i == 0
+                    ? new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z)
+                    : toLocal(hit.origin(), cameraPos, worldToRoot, rootToLocal);
+            AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks, from,
+                    toLocal(hit.end(), cameraPos, worldToRoot, rootToLocal), ramp, hit.impact(), true);
+        }
+    }
+
+    private static Vec3 toLocal(Vec3 world, Vec3 cameraPos, Matrix4f worldToRoot, Matrix4f rootToLocal) {
+        Vec3 relative = world.subtract(cameraPos);
+        Vector3f root = worldToRoot.transformPosition(new Vector3f((float) relative.x, (float) relative.y, (float) relative.z));
+        Vector3f local = rootToLocal.transformPosition(root);
+        return new Vec3(local.x, local.y, local.z);
     }
 
     private static Matrix4f worldToRoot(RenderPassInfo<GeoRenderState> pass) {
@@ -133,11 +149,11 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         float angle = spinAngle(ticks, charge);
         snapshots.ifPresent(CORE_BONE, snapshot -> snapshot.setRotX(angle));
 
-        float ramp = AtlanteanRifleItem.rampProgress(ticks - charge);
+        float ramp = AtlanteanRifleItem.rampProgress(ticks - charge, rampTicks(pass));
         if (ramp <= 0F) {
             return;
         }
-        float shake = ramp * ramp;
+        float shake = ramp * ramp * pass.getOrDefaultGeckolibData(SHAKE_SCALE, 1F);
         snapshots.ifPresent(ROOT_BONE, snapshot -> snapshot
                 .setTranslation(
                         SHAKE_TRANSLATION * shake * wobble(ticks, 7.3F, 13.1F),
@@ -147,6 +163,10 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
                         SHAKE_ROTATION * shake * wobble(ticks, 8.1F, 14.7F),
                         SHAKE_ROTATION * shake * wobble(ticks, 6.7F, 12.5F),
                         SHAKE_ROTATION * shake * wobble(ticks, 10.3F, 16.3F)));
+    }
+
+    private static float rampTicks(RenderPassInfo<GeoRenderState> pass) {
+        return pass.getOrDefaultGeckolibData(RAMP_TICKS, (float) NTConfig.rifleRampTicks);
     }
 
     private static float wobble(float ticks, float slow, float fast) {
@@ -168,7 +188,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         @Override
         public void submitRenderTask(RenderPassInfo<GeoRenderState> pass, SubmitNodeCollector tasks) {
             float ticks = pass.getOrDefaultGeckolibData(AtlanteanRifleItem.USE_TICKS, -1F);
-            float ramp = AtlanteanRifleItem.rampProgress(ticks - pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks));
+            float ramp = AtlanteanRifleItem.rampProgress(ticks - pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks), rampTicks(pass));
             if (ramp <= 0F) {
                 return;
             }

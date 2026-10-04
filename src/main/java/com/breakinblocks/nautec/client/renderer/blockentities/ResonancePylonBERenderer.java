@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public class ResonancePylonBERenderer extends NTBERenderer<ResonancePylonBlockEntity, ResonancePylonBERenderer.PylonRenderState> {
     private static final float BASIC_SCALE = 0.11F;
     private static final float ABYSSAL_SCALE = 0.14F;
-    private static final float HOVER = 1.15F;
+    private static final float HOVER = 0.7F;
 
     public ResonancePylonBERenderer(BlockEntityRendererProvider.Context ctx) {
         super(ctx);

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.content.resonance.ResonanceClientState;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
@@ -68,6 +69,8 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
 
     protected abstract void addHeaderWidgets(int x, int y);
 
+    protected abstract int chunkState();
+
     protected abstract void extractReadoutBackground(GuiGraphicsExtractor graphics, int x, int y, int width);
 
     protected abstract void extractReadout(GuiGraphicsExtractor graphics, int x, int y, ResonanceSyncPayload.@Nullable NetworkView view);
@@ -111,14 +114,24 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 22, y + 32, 14, 14, () -> Component.literal(">"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
                 () -> Component.translatable("nautec.resonance.cycle.desc"), () -> cycle(1)));
 
-        this.nameBox = new EditBox(this.font, x + 8, y + 52, IMAGE_WIDTH - 72, 14, Component.translatable("nautec.resonance.new_name"));
+        this.nameBox = new EditBox(this.font, x + 8, y + 52, IMAGE_WIDTH - 104, 14, Component.translatable("nautec.resonance.new_name"));
         this.nameBox.setMaxLength(24);
         this.nameBox.setHint(Component.translatable("nautec.resonance.new_name").withStyle(ChatFormatting.DARK_GRAY));
         this.nameBox.setValue(nameDraft);
         this.nameBox.setResponder(value -> nameDraft = value);
         this.nameBox.setTooltip(Tooltip.create(Component.translatable("nautec.resonance.new_name.desc")));
         addRenderableWidget(this.nameBox);
-        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 60, y + 52, 52, 14, () -> Component.translatable("nautec.resonance.create"),
+        PanelButton chunk = addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 36, y + 52, 28, 14, () -> Component.translatable("nautec.resonance.chunk"),
+                () -> chunkState() == ResonanceChunkLoading.ON ? SEND_COLOR : NEUTRAL,
+                () -> chunkState() == ResonanceChunkLoading.ON ? SEND_HOVER : NEUTRAL_HOVER,
+                () -> Component.translatable(switch (chunkState()) {
+                    case ResonanceChunkLoading.ON -> "nautec.resonance.chunk.on";
+                    case ResonanceChunkLoading.DISABLED -> "nautec.resonance.chunk.disabled";
+                    default -> "nautec.resonance.chunk.off";
+                }).append("\n").append(Component.translatable("nautec.resonance.chunk.desc").withStyle(ChatFormatting.GRAY)),
+                () -> send(ResonanceActionPayload.CHUNK, null, "")));
+        chunk.active = chunkState() != ResonanceChunkLoading.DISABLED;
+        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 92, y + 52, 52, 14, () -> Component.translatable("nautec.resonance.create"),
                 () -> NEUTRAL, () -> NEUTRAL_HOVER, () -> Component.translatable("nautec.resonance.create.desc"), () -> {
             if (!nameDraft.isBlank()) {
                 send(ResonanceActionPayload.CREATE, null, nameDraft);

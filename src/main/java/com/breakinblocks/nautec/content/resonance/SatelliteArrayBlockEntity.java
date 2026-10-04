@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.mojang.serialization.Codec;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -45,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuProvider, ResonanceTunable {
+public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuProvider, ResonanceTunable, ChunkLoadable {
     public static final int STATUS_ONLINE = 0;
     public static final int STATUS_NO_NETWORK = 1;
     public static final int STATUS_NO_SATELLITE = 2;
@@ -63,7 +64,9 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
     public static final int DATA_FE = 9;
     public static final int DATA_PRIORITY = 11;
     public static final int DATA_LIMIT = 12;
-    public static final int DATA_COUNT = 14;
+    public static final int DATA_CHUNK = 14;
+    public static final int DATA_NODES = 15;
+    public static final int DATA_COUNT = 16;
 
     public static final int MIN_PRIORITY = -100;
     public static final int MAX_PRIORITY = 100;
@@ -93,6 +96,9 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
     private double pendingPurity;
     private int priority;
     private int limit = Integer.MAX_VALUE;
+    private int nodes;
+    private boolean chunkLoading;
+    private final ResonanceChunkLoading.Ticket ticket = new ResonanceChunkLoading.Ticket();
 
     private final SimpleEnergyHandler energy;
     private final EnergyHandler port = new EnergyHandler() {
@@ -136,6 +142,8 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
                 case DATA_PRIORITY -> priority;
                 case DATA_LIMIT -> ResonancePylonBlockEntity.low(effectiveLimit());
                 case DATA_LIMIT + 1 -> ResonancePylonBlockEntity.high(effectiveLimit());
+                case DATA_CHUNK -> ResonanceChunkLoading.state(chunkLoading);
+                case DATA_NODES -> nodes;
                 default -> 0;
             };
         }
@@ -293,9 +301,35 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         if (added <= 0) {
             return;
         }
-        apPurity = (float) (((double) apStored * apPurity + (double) added * purity) / (apStored + added));
+        apPurity = mergedPurity(apStored, apPurity, added, purity);
         apStored += added;
         setChanged();
+    }
+
+    public int apRoom() {
+        return transmitting() ? Math.max(0, NTConfig.satelliteApBuffer - apStored) : 0;
+    }
+
+    public int feRoom() {
+        return transmitting() ? Math.max(0, energy.getCapacityAsInt() - energy.getAmountAsInt()) : 0;
+    }
+
+    public void storeAp(int amount, float purity) {
+        addAp(amount, purity);
+    }
+
+    @Override
+    public boolean isChunkLoading() {
+        return chunkLoading;
+    }
+
+    @Override
+    public void setChunkLoading(boolean chunkLoading) {
+        this.chunkLoading = chunkLoading;
+        setChanged();
+        if (level instanceof ServerLevel serverLevel) {
+            ticket.update(serverLevel, worldPosition, chunkLoading);
+        }
     }
 
     public int takeFe(int amount) {
@@ -455,6 +489,9 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
 
     private void serverTick(ServerLevel serverLevel) {
         long tick = serverLevel.getGameTime();
+        if (tick % 20 == 0) {
+            ticket.update(serverLevel, worldPosition, chunkLoading);
+        }
         if (tick % SKY_INTERVAL == 0) {
             sky = SatelliteGrid.clearSky(serverLevel, worldPosition.above());
         }
@@ -480,16 +517,16 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
             }
         }
 
-        SatelliteGrid.Link link = network == null ? SatelliteGrid.EMPTY : SatelliteGrid.link(network.id(), serverLevel.dimension(), tick);
+        SatelliteGrid.Link link = network == null ? SatelliteGrid.EMPTY : SatelliteGrid.link(network.id(), tick);
         int newStatus;
         if (isUplink()) {
             newStatus = network == null ? STATUS_NO_NETWORK : !satellite ? STATUS_NO_SATELLITE : !sky ? STATUS_SKY_BLOCKED
-                    : link.downlinks() == 0 ? STATUS_NO_DOWNLINK : STATUS_ONLINE;
+                    : link.downlinks() == 0 && link.nodes() == 0 ? STATUS_NO_DOWNLINK : STATUS_ONLINE;
         } else {
             newStatus = network == null ? STATUS_NO_NETWORK : !sky ? STATUS_SKY_BLOCKED : link.uplinks() == 0 ? STATUS_NO_UPLINK : STATUS_ONLINE;
         }
 
-        boolean changed = newStatus != status || link.uplinks() != uplinks || link.downlinks() != downlinks;
+        boolean changed = newStatus != status || link.uplinks() != uplinks || link.downlinks() != downlinks || link.nodes() != nodes;
         boolean flipped = newStatus != status;
         if (!isUplink() && relay > 0 && newStatus == STATUS_ONLINE && status != STATUS_ONLINE) {
             NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.SATELLITE_RELAY.get(), serverLevel, worldPosition, 32.0);
@@ -497,6 +534,7 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         this.status = newStatus;
         this.uplinks = link.uplinks();
         this.downlinks = link.downlinks();
+        this.nodes = link.nodes();
         if ((changed && (flipped || tick - lastSync >= SYNC_INTERVAL)) || tick - lastSync >= SYNC_INTERVAL * 4) {
             lastSync = tick;
             setChanged();
@@ -512,6 +550,9 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (level instanceof ServerLevel serverLevel) {
+            ticket.release(serverLevel, pos);
+        }
         super.preRemoveSideEffects(pos, state);
         if (satellite && level != null) {
             satellite = false;
@@ -536,6 +577,7 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
     @Override
     public void saveSettings(ValueOutput out) {
         ResonanceActions.copyNetwork(networkId, out);
+        out.putBoolean("chunk_loading", chunkLoading);
         if (!isUplink()) {
             out.putInt("priority", priority);
             out.putInt("limit", limit);
@@ -545,6 +587,10 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
     @Override
     public boolean loadSettings(ValueInput in, ServerPlayer player) {
         boolean applied = ResonanceActions.pasteNetwork(player, this, in);
+        if (in.read("chunk_loading", Codec.BOOL).isPresent()) {
+            setChunkLoading(in.getBooleanOr("chunk_loading", chunkLoading));
+            applied = true;
+        }
         if (!isUplink()) {
             if (in.getInt("priority").isPresent()) {
                 setPriority(in.getIntOr("priority", priority));
@@ -578,6 +624,8 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         out.putInt("beam", beam);
         out.putInt("priority", priority);
         out.putInt("limit", limit);
+        out.putInt("nodes", nodes);
+        out.putBoolean("chunk_loading", chunkLoading);
         energy.serialize(out.child("energy"));
     }
 
@@ -599,6 +647,8 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
         this.beam = in.getIntOr("beam", 0);
         this.priority = in.getIntOr("priority", 0);
         this.limit = in.getIntOr("limit", Integer.MAX_VALUE);
+        this.nodes = in.getIntOr("nodes", 0);
+        this.chunkLoading = in.getBooleanOr("chunk_loading", false);
         energy.deserialize(in.childOrEmpty("energy"));
     }
 

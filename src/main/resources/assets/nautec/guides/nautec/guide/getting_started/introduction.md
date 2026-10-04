@@ -12,7 +12,7 @@ item_ids:
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="prismarine_sand" scale="2"/>
-  NauTec is an ocean tech mod whose machines run on laser beams.
+  NauTec 2 is an ocean tech mod whose machines run on laser beams.
 </Column>
 
 NauTec machines are powered by laser power (AP) fired as a beam from one block into another. Beams also carry a purity value, and better recipes need purer beams. Everything starts with prismarine, and most of the early materials come from the sea floor: ruins, buried geodes, crates and the parts left inside them.
@@ -44,4 +44,4 @@ It is the easiest early supply of Prismarine Shards, which the Aquatic Catalyst 
 
 ## <Color id="gold">This Book</Color>
 
-You get the NauTec Guide the first time you join a world (turn this off with `spawnBookInInventory` in `config/nautec-common.toml`). Hold GuideMe's guide key while hovering a NauTec item to open its page.
+You get the NauTec 2 Guide the first time you join a world (turn this off with `spawnBookInInventory` in `config/nautec-common.toml`). Hold GuideMe's guide key while hovering a NauTec item to open its page.

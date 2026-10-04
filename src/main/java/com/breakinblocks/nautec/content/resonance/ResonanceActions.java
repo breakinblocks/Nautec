@@ -44,18 +44,30 @@ public final class ResonanceActions {
             case ResonanceActionPayload.PRIORITY -> {
                 if (pylon instanceof SatelliteArrayBlockEntity array && !array.isUplink()) {
                     array.setPriority(parse(payload.text(), array.getPriority()));
+                } else if (pylon instanceof ResonanceNodeBlockEntity node) {
+                    node.setPriority(parse(payload.text(), node.getPriority()));
                 }
                 yield null;
             }
             case ResonanceActionPayload.LIMIT -> {
                 if (pylon instanceof SatelliteArrayBlockEntity array && !array.isUplink()) {
                     array.setLimit(parse(payload.text(), array.getLimit()));
+                } else if (pylon instanceof ResonanceNodeBlockEntity node) {
+                    node.setLimit(parse(payload.text(), node.getLimit()));
                 }
                 yield null;
             }
             case ResonanceActionPayload.MODE -> {
                 if (pylon instanceof ResonancePylonBlockEntity sender) {
                     sender.setSendMode(!sender.isSendMode());
+                } else if (pylon instanceof ResonanceNodeBlockEntity node) {
+                    node.setOutput(!node.isOutput());
+                }
+                yield null;
+            }
+            case ResonanceActionPayload.CHUNK -> {
+                if (pylon instanceof ChunkLoadable loadable) {
+                    loadable.setChunkLoading(!loadable.isChunkLoading());
                 }
                 yield null;
             }

@@ -241,7 +241,7 @@ public final class BiologyFixTests {
                 BacterialAnalyzerBlockEntity analyzer = helper.getBlockEntity(analyzerPos, BacterialAnalyzerBlockEntity.class);
                 Direction front = helper.getBlockState(analyzerPos).getValue(BlockStateProperties.HORIZONTAL_FACING);
                 Direction back = front.getOpposite();
-                ItemStack dish = new ItemStack(NTItems.PETRI_DISH.get());
+                ItemStack dish = DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.LITHOPHILES, 100));
 
                 ResourceHandler<ItemResource> frontSide = itemsOn(helper, analyzerPos, front);
                 ResourceHandler<ItemResource> leftSide = itemsOn(helper, analyzerPos, front.getClockWise());

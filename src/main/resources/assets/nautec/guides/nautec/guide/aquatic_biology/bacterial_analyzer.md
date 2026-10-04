@@ -16,7 +16,7 @@ item_ids:
   The Bacterial Analyzer reveals a colony's size, Vitality and stats.
 </Column>
 
-Put a <ItemLink id="petri_dish"/> holding an unanalyzed colony in the left slot. After 3 seconds the analyzed dish moves to the right slot. Empty the right slot before the next dish can start.
+Put a <ItemLink id="petri_dish"/> holding an unanalyzed colony in the left slot. After 3 seconds the analyzed dish moves to the right slot. Empty the right slot before the next dish can start. The left slot only takes dishes holding an unanalyzed colony, so a pipe never clogs it with empty or finished dishes.
 
 The machines all work on unanalyzed colonies too. Analysis only lets you read the numbers, but you need those numbers to choose which colony to mutate, grow or burn. A colony that comes out of the [Mutator](mutator.md) is unanalyzed again.
 

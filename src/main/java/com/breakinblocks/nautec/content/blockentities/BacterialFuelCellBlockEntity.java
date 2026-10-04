@@ -3,7 +3,9 @@ package com.breakinblocks.nautec.content.blockentities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
+import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
@@ -11,11 +13,13 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -24,17 +28,39 @@ import java.util.Set;
 
 public class BacterialFuelCellBlockEntity extends LaserBlockEntity {
     private static final int BURN_PERIOD = 70;
+    public static final int DISH_IN = 0;
+    public static final int DISH_EMPTY_OUT = 1;
+    private static final int[] LOAD_SLOTS = {0};
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN}, new int[]{DISH_EMPTY_OUT});
 
     private float burnBuffer;
 
     public BacterialFuelCellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.BACTERIAL_FUEL_CELL.get(), blockPos, blockState);
         addBacteriaStorage(1);
+        addItemHandler(2, 1, (slot, stack) -> slot == DISH_IN && DishPort.isDish(stack));
+    }
+
+    @Override
+    public SlotRoles itemRoles() {
+        return ITEM_ROLES;
+    }
+
+    @Override
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot != DISH_IN) {
+            return true;
+        }
+        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DishPort.NONE, LOAD_SLOTS, () -> -1, colony -> true);
     }
 
     @Override
     public void commonTick() {
         super.commonTick();
+        if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
+            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DishPort.NONE, LOAD_SLOTS, () -> -1, slot -> {
+            });
+        }
 
         BacteriaInstance bacteria = getBacteriaStorage().getBacteria(0);
         if (bacteria.isEmpty()) {

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
@@ -37,13 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ResonancePylonBlockEntity extends ContainerBlockEntity implements MenuProvider, ResonanceEndpoint, ResonanceTunable {
+public class ResonancePylonBlockEntity extends ContainerBlockEntity implements MenuProvider, ResonanceEndpoint, ResonanceTunable, ChunkLoadable {
     public static final int DATA_ENERGY = 0;
     public static final int DATA_CAPACITY = 2;
     public static final int DATA_FLOW = 4;
     public static final int DATA_MODE = 6;
     public static final int DATA_TIER = 7;
-    public static final int DATA_COUNT = 8;
+    public static final int DATA_CHUNK = 8;
+    public static final int DATA_COUNT = 9;
     private static final int VISUAL_HOLD = 20;
 
     private final SimpleEnergyHandler energy;
@@ -53,6 +55,8 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
     private @Nullable UUID networkId;
     private String networkName = "";
     private boolean sendMode = true;
+    private boolean chunkLoading;
+    private final ResonanceChunkLoading.Ticket ticket = new ResonanceChunkLoading.Ticket();
     private @Nullable UUID joined;
 
     private int sentThisTick;
@@ -74,6 +78,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
                 case DATA_FLOW + 1 -> high(flow);
                 case DATA_MODE -> sendMode ? 0 : 1;
                 case DATA_TIER -> interdimensional() ? 1 : 0;
+                case DATA_CHUNK -> ResonanceChunkLoading.state(chunkLoading);
                 default -> 0;
             };
         }
@@ -177,6 +182,28 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         sync();
     }
 
+    @Override
+    public boolean isChunkLoading() {
+        return chunkLoading;
+    }
+
+    @Override
+    public void setChunkLoading(boolean chunkLoading) {
+        this.chunkLoading = chunkLoading;
+        setChanged();
+        if (level instanceof ServerLevel serverLevel) {
+            ticket.update(serverLevel, worldPosition, chunkLoading);
+        }
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (level instanceof ServerLevel serverLevel) {
+            ticket.release(serverLevel, pos);
+        }
+        super.preRemoveSideEffects(pos, state);
+    }
+
     public void setSendMode(boolean send) {
         this.sendMode = send;
         setChanged();
@@ -194,6 +221,9 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         }
         sentThisTick = 0;
         receivedThisTick = 0;
+        if (level.getGameTime() % 20 == 0) {
+            ticket.update(serverLevel, worldPosition, chunkLoading);
+        }
 
         ResonanceNetwork network = networkId == null ? null : ResonanceNetworks.get(serverLevel.getServer()).get(networkId);
         if (network == null) {
@@ -322,6 +352,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
     public void saveSettings(ValueOutput out) {
         ResonanceActions.copyNetwork(networkId, out);
         out.putBoolean("send", sendMode);
+        out.putBoolean("chunk_loading", chunkLoading);
     }
 
     @Override
@@ -331,7 +362,11 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         if (mode) {
             setSendMode(!sendMode);
         }
-        return network || mode;
+        boolean chunk = in.read("chunk_loading", Codec.BOOL).isPresent();
+        if (chunk) {
+            setChunkLoading(in.getBooleanOr("chunk_loading", chunkLoading));
+        }
+        return network || mode || chunk;
     }
 
     @Override
@@ -343,6 +378,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         }
         out.putString("network_name", networkName);
         out.putBoolean("send", sendMode);
+        out.putBoolean("chunk_loading", chunkLoading);
         out.putBoolean("active", visualActive);
     }
 
@@ -353,6 +389,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
         this.networkId = in.read("network", UUIDUtil.CODEC).orElse(null);
         this.networkName = in.getStringOr("network_name", "");
         this.sendMode = in.getBooleanOr("send", true);
+        this.chunkLoading = in.getBooleanOr("chunk_loading", false);
         this.visualActive = in.getBooleanOr("active", false);
     }
 

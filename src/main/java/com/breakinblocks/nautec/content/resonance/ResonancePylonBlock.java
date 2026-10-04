@@ -21,7 +21,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ResonancePylonBlock extends ContainerBlock {
-    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 12, 15);
+    private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 4, 14);
 
     private final boolean interdimensional;
 

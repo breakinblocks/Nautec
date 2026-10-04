@@ -39,8 +39,9 @@ public final class DivingSuitOverlay {
         int maxOxygen = 600;
         int spriteSize = 9;
 
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        if (player == null || minecraft.options.hideGui) return;
 
         int oxygenLevels = NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST));
         boolean inSpace = isInAirlessSpace(player);

@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec;
 
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.registries.NTFeatures;
 import com.mojang.logging.LogUtils;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
@@ -101,6 +103,7 @@ public final class Nautec {
         });
 
         modEventBus.addListener(AddPackFindersEvent.class, GeneratedPackFinder::onAddPackFinders);
+        modEventBus.addListener(RegisterTicketControllersEvent.class, ResonanceChunkLoading::register);
 
         NTEntities.ENTITIES.register(modEventBus);
         NTItems.ITEMS.register(modEventBus);
@@ -229,6 +232,8 @@ public final class Nautec {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_PYLON.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.SATELLITE_ARRAY.get(),
+                (blockEntity, dir) -> blockEntity.getPort());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_NODE.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());

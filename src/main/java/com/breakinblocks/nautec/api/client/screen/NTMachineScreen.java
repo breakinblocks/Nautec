@@ -76,11 +76,13 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     protected void extractDishPort(GuiGraphicsExtractor guiGraphics) {
         Slot in = this.menu.getDishIn();
         Slot out = this.menu.getDishOut();
-        if (in == null || out == null) {
+        Slot emptyOut = this.menu.getDishEmptyOut();
+        if (in == null || out == null || emptyOut == null) {
             return;
         }
         extractSlotFrame(guiGraphics, in.x, in.y);
         extractSlotFrame(guiGraphics, out.x, out.y);
+        extractSlotFrame(guiGraphics, emptyOut.x, emptyOut.y);
         if (!in.hasItem()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DISH_TEXTURE, leftPos + in.x, topPos + in.y, 0F, 0F, 16, 16, 16, 16, DISH_GHOST);
         }
@@ -99,17 +101,27 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     private void dishPortTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Slot in = this.menu.getDishIn();
         Slot out = this.menu.getDishOut();
-        if (in == null || out == null) {
+        Slot emptyOut = this.menu.getDishEmptyOut();
+        if (in == null || out == null || emptyOut == null) {
             return;
         }
-        boolean overIn = !in.hasItem() && isHovering(in.x, in.y, 16, 16, mouseX, mouseY);
-        boolean overOut = !out.hasItem() && isHovering(out.x, out.y, 16, 16, mouseX, mouseY);
-        if (overIn || overOut) {
+        if (!in.hasItem() && isHovering(in.x, in.y, 16, 16, mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
                     Component.translatable("nautec.dish_port.title"),
                     Component.translatable("nautec.dish_port.load").withStyle(ChatFormatting.GRAY),
                     Component.translatable("nautec.dish_port.unload").withStyle(ChatFormatting.GRAY),
+                    Component.translatable("nautec.dish_port.ready").withStyle(ChatFormatting.GRAY),
                     Component.translatable("nautec.dish_port.automation").withStyle(ChatFormatting.DARK_GRAY)
+            ), mouseX, mouseY);
+        } else if (!out.hasItem() && isHovering(out.x, out.y, 16, 16, mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+                    Component.translatable("nautec.dish_port.title"),
+                    Component.translatable("nautec.dish_port.colony_out").withStyle(ChatFormatting.GRAY)
+            ), mouseX, mouseY);
+        } else if (!emptyOut.hasItem() && isHovering(emptyOut.x, emptyOut.y, 16, 16, mouseX, mouseY)) {
+            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+                    Component.translatable("nautec.dish_port.title"),
+                    Component.translatable("nautec.dish_port.empty_out").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
     }

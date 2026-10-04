@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -37,17 +38,19 @@ import java.util.Set;
 public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvider {
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
+    public static final int DISH_EMPTY_OUT = 3;
+    private static final int[] LOAD_SLOTS = {0};
 
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private BacteriaIncubationRecipe recipe;
     private boolean active;
     private int progress;
 
-    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT});
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
     public IncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.INCUBATOR.get(), blockPos, blockState);
-        addItemHandler(3, 1, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
+        addItemHandler(4, 1, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
         addBacteriaStorage(1);
     }
 
@@ -93,7 +96,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         }
 
         if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, DISH_IN, DISH_OUT, new int[]{0}, this::finishedColony, slot -> progress = 0);
+            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::finishedColony, slot -> progress = 0);
         }
 
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
@@ -129,6 +132,29 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         bacteria.setSize(bacteria.getSize() + grown);
         bacteria.setAge(0);
         getBacteriaStorage().onBacteriaChanged(0);
+    }
+
+    @Override
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot != DISH_IN) {
+            return true;
+        }
+        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::finishedColony, this::canIncubate);
+    }
+
+    private boolean canIncubate(BacteriaInstance colony) {
+        if (colony.getSize() >= NTConfig.bacteriaColonySizeCap && colony.getAge() <= 0) {
+            return false;
+        }
+        if (!(level instanceof ServerLevel server)) {
+            return true;
+        }
+        for (RecipeHolder<BacteriaIncubationRecipe> holder : server.recipeAccess().recipeMap().byType(BacteriaIncubationRecipe.TYPE)) {
+            if (colony.is(holder.value().bacteria())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int finishedColony() {
@@ -177,7 +203,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
-        getItemStackHandler().ensureSize(3);
+        getItemStackHandler().ensureSize(4);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
     }

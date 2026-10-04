@@ -363,6 +363,18 @@ public final class NTConfig {
             .comment("The most AP, and separately the most FE, a Downlink Array takes from its network each tick.",
                     "Each downlink can be set lower in its screen")
             .defineInRange("satelliteTransferLimit", 100_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue SATELLITE_CROSS_DIMENSION_PURITY_LOSS = BUILDER
+            .comment("The fraction of purity laser power loses when a network's satellite carries it to a dimension that has no Uplink Array of its own")
+            .defineInRange("satelliteCrossDimensionPurityLoss", 0.05, 0.0, 1.0);
+    private static final ModConfigSpec.IntValue RESONANCE_NODE_AP_BUFFER = BUILDER
+            .comment("The laser power a Resonance Node holds")
+            .defineInRange("resonanceNodeApBuffer", 200_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue RESONANCE_NODE_FE_BUFFER = BUILDER
+            .comment("The FE a Resonance Node holds")
+            .defineInRange("resonanceNodeFeBuffer", 1_000_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.BooleanValue RESONANCE_CHUNK_LOADING = BUILDER
+            .comment("Whether Resonance Nodes, Energy Nodes and Uplink and Downlink Arrays may keep their own chunk loaded when a player turns it on. When false, no block keeps a chunk loaded whatever its setting")
+            .define("resonanceChunkLoading", true);
     private static final ModConfigSpec.IntValue EMITTER_MAX_LINKS = BUILDER
             .comment("The most machines one Prismatic Emitter can be linked to")
             .defineInRange("emitterMaxLinks", 16, 1, 256);
@@ -953,6 +965,10 @@ public final class NTConfig {
     public static int satelliteApBuffer = 5_000_000;
     public static int satelliteFeBuffer = 5_000_000;
     public static int satelliteTransferLimit = 100_000;
+    public static double satelliteCrossDimensionPurityLoss = 0.05;
+    public static int resonanceNodeApBuffer = 200_000;
+    public static int resonanceNodeFeBuffer = 1_000_000;
+    public static boolean resonanceChunkLoading = true;
     public static int tidalRotorMinOutput = 40;
     public static int tidalRotorMaxOutput = 80;
     public static int ventTapMinOutput = 350;
@@ -1221,6 +1237,10 @@ public final class NTConfig {
         satelliteApBuffer = value(SATELLITE_AP_BUFFER);
         satelliteFeBuffer = value(SATELLITE_FE_BUFFER);
         satelliteTransferLimit = value(SATELLITE_TRANSFER_LIMIT);
+        satelliteCrossDimensionPurityLoss = value(SATELLITE_CROSS_DIMENSION_PURITY_LOSS);
+        resonanceNodeApBuffer = value(RESONANCE_NODE_AP_BUFFER);
+        resonanceNodeFeBuffer = value(RESONANCE_NODE_FE_BUFFER);
+        resonanceChunkLoading = value(RESONANCE_CHUNK_LOADING);
         tidalRotorMinOutput = value(TIDAL_ROTOR_MIN_OUTPUT);
         tidalRotorMaxOutput = value(TIDAL_ROTOR_MAX_OUTPUT);
         ventTapMinOutput = value(VENT_TAP_MIN_OUTPUT);

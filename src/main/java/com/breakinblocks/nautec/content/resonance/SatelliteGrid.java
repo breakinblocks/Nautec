@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.resonance;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -18,29 +19,28 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.IntUnaryOperator;
 
 @EventBusSubscriber(modid = Nautec.MODID)
 public final class SatelliteGrid {
-    public static final Link EMPTY = new Link(0, 0F, 0, 0, 0);
+    public static final Link EMPTY = new Link(0, 0F, 0, 0, 0, 0);
 
     private static final Map<UUID, Set<SatelliteArrayBlockEntity>> ARRAYS = new HashMap<>();
-    private static final Map<Key, Cached> CACHE = new HashMap<>();
+    private static final Map<UUID, Set<ResonanceNodeBlockEntity>> NODES = new HashMap<>();
+    private static final Map<UUID, Cached> CACHE = new HashMap<>();
     private static final Map<UUID, CharmEntry> CHARMS = new HashMap<>();
 
     private SatelliteGrid() {
     }
 
-    public record Link(int total, float purity, int share, int uplinks, int downlinks) {
-    }
-
-    private record Key(UUID network, ResourceKey<Level> dimension) {
+    public record Link(int total, float purity, int share, int uplinks, int downlinks, int nodes) {
     }
 
     private record Cached(long tick, Link link) {
@@ -71,8 +71,27 @@ public final class SatelliteGrid {
         }
     }
 
+    public static void joinNode(UUID network, ResonanceNodeBlockEntity node) {
+        NODES.computeIfAbsent(network, key -> new LinkedHashSet<>()).add(node);
+    }
+
+    public static void leaveNode(UUID network, ResonanceNodeBlockEntity node) {
+        Set<ResonanceNodeBlockEntity> members = NODES.get(network);
+        if (members != null) {
+            members.remove(node);
+            if (members.isEmpty()) {
+                NODES.remove(network);
+            }
+        }
+    }
+
     public static List<SatelliteArrayBlockEntity> members(UUID network) {
         Set<SatelliteArrayBlockEntity> members = ARRAYS.get(network);
+        return members == null ? List.of() : List.copyOf(members);
+    }
+
+    public static List<ResonanceNodeBlockEntity> nodes(UUID network) {
+        Set<ResonanceNodeBlockEntity> members = NODES.get(network);
         return members == null ? List.of() : List.copyOf(members);
     }
 
@@ -84,24 +103,23 @@ public final class SatelliteGrid {
         return level.getHeight(Heightmap.Types.OCEAN_FLOOR, top.getX(), top.getZ()) <= top.getY() + 1;
     }
 
-    public static Link link(UUID network, ResourceKey<Level> dimension, long tick) {
-        Key key = new Key(network, dimension);
-        Cached cached = CACHE.get(key);
+    public static Link link(UUID network, long tick) {
+        Cached cached = CACHE.get(network);
         if (cached != null && cached.tick() == tick) {
             return cached.link();
         }
-        Link link = compute(members(network), dimension);
-        CACHE.put(key, new Cached(tick, link));
+        Link link = compute(members(network), nodes(network));
+        CACHE.put(network, new Cached(tick, link));
         return link;
     }
 
-    public static Link compute(List<SatelliteArrayBlockEntity> members, ResourceKey<Level> dimension) {
+    public static Link compute(List<SatelliteArrayBlockEntity> members, List<ResonanceNodeBlockEntity> nodes) {
         long total = 0;
         double weighted = 0;
         int uplinks = 0;
         int downlinks = 0;
         for (SatelliteArrayBlockEntity array : members) {
-            if (array.isRemoved() || !dimension.equals(array.dimension())) {
+            if (array.isRemoved()) {
                 continue;
             }
             if (array.isUplink()) {
@@ -115,10 +133,16 @@ public final class SatelliteGrid {
                 downlinks++;
             }
         }
+        int outputs = 0;
+        for (ResonanceNodeBlockEntity node : nodes) {
+            if (!node.isRemoved() && node.isOutput()) {
+                outputs++;
+            }
+        }
         int capped = (int) Math.min(Integer.MAX_VALUE, total);
         float purity = total > 0 ? (float) (weighted / total) : 0F;
         int share = downlinks == 0 || uplinks == 0 ? 0 : (int) Math.floor(capped * (1.0 - NTConfig.satelliteLoss) / downlinks);
-        return new Link(capped, purity, share, uplinks, downlinks);
+        return new Link(capped, purity, share, uplinks, downlinks, outputs);
     }
 
     @SubscribeEvent
@@ -141,26 +165,31 @@ public final class SatelliteGrid {
             }
         }
 
-        for (Map.Entry<UUID, Set<SatelliteArrayBlockEntity>> entry : new ArrayList<>(ARRAYS.entrySet())) {
-            UUID network = entry.getKey();
-            Map<ResourceKey<Level>, List<SatelliteArrayBlockEntity>> byDimension = new LinkedHashMap<>();
-            for (SatelliteArrayBlockEntity array : entry.getValue()) {
+        Set<UUID> networks = new HashSet<>(ARRAYS.keySet());
+        networks.addAll(NODES.keySet());
+        for (UUID network : networks) {
+            List<SatelliteArrayBlockEntity> arrays = new ArrayList<>();
+            for (SatelliteArrayBlockEntity array : ARRAYS.getOrDefault(network, Set.of())) {
                 if (!array.isRemoved() && array.getLevel() != null) {
-                    byDimension.computeIfAbsent(array.dimension(), key -> new ArrayList<>()).add(array);
+                    arrays.add(array);
                 }
             }
-            for (Map.Entry<ResourceKey<Level>, List<SatelliteArrayBlockEntity>> group : byDimension.entrySet()) {
-                List<ServerPlayer> players = new ArrayList<>();
-                if (charmTick) {
-                    for (Map.Entry<UUID, ServerPlayer> charm : charmPlayers.entrySet()) {
-                        CharmEntry charmEntry = CHARMS.get(charm.getKey());
-                        if (charmEntry != null && charmEntry.network().equals(network) && charm.getValue().level().dimension().equals(group.getKey())) {
-                            players.add(charm.getValue());
-                        }
+            List<ResonanceNodeBlockEntity> nodes = new ArrayList<>();
+            for (ResonanceNodeBlockEntity node : NODES.getOrDefault(network, Set.of())) {
+                if (!node.isRemoved() && node.getLevel() != null) {
+                    nodes.add(node);
+                }
+            }
+            List<ServerPlayer> players = new ArrayList<>();
+            if (charmTick) {
+                for (Map.Entry<UUID, ServerPlayer> charm : charmPlayers.entrySet()) {
+                    CharmEntry charmEntry = CHARMS.get(charm.getKey());
+                    if (charmEntry != null && charmEntry.network().equals(network)) {
+                        players.add(charm.getValue());
                     }
                 }
-                transfer(group.getValue(), players, tick, charmDelivered);
             }
+            transfer(arrays, nodes, players, tick, charmDelivered);
         }
 
         if (charmTick) {
@@ -181,104 +210,138 @@ public final class SatelliteGrid {
         }
     }
 
-    private static void transfer(List<SatelliteArrayBlockEntity> arrays, List<ServerPlayer> players, long tick, Map<UUID, Integer> charmDelivered) {
-        List<SatelliteArrayBlockEntity> senders = new ArrayList<>();
+    private static void transfer(List<SatelliteArrayBlockEntity> arrays, List<ResonanceNodeBlockEntity> nodes, List<ServerPlayer> players, long tick,
+                                 Map<UUID, Integer> charmDelivered) {
+        List<SatelliteArrayBlockEntity> cores = new ArrayList<>();
         List<SatelliteArrayBlockEntity> downlinks = new ArrayList<>();
         for (SatelliteArrayBlockEntity array : arrays) {
             array.beginTransfer();
             if (array.transmitting()) {
-                senders.add(array);
+                cores.add(array);
             } else if (array.receiving()) {
                 downlinks.add(array);
             }
         }
-        if (!senders.isEmpty()) {
-            int offset = (int) Math.floorMod(tick, (long) senders.size());
-            List<SatelliteArrayBlockEntity> rotated = new ArrayList<>(senders.size());
-            for (int i = 0; i < senders.size(); i++) {
-                rotated.add(senders.get((i + offset) % senders.size()));
-            }
-            moveAp(rotated, downlinks);
-            moveFe(rotated, downlinks, players, charmDelivered);
+        List<ResonanceNodeBlockEntity> inputs = new ArrayList<>();
+        List<ResonanceNodeBlockEntity> outputs = new ArrayList<>();
+        for (ResonanceNodeBlockEntity node : nodes) {
+            (node.isOutput() ? outputs : inputs).add(node);
+        }
+        if (!cores.isEmpty()) {
+            List<SatelliteArrayBlockEntity> rotated = rotate(cores, tick);
+            feedCores(inputs, rotated);
+            moveAp(rotated, downlinks, outputs);
+            moveFe(rotated, downlinks, outputs, players, charmDelivered);
         }
         for (SatelliteArrayBlockEntity array : arrays) {
             array.finishTransfer();
         }
     }
 
+    private static <T> List<T> rotate(List<T> list, long tick) {
+        int offset = (int) Math.floorMod(tick, (long) list.size());
+        List<T> rotated = new ArrayList<>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            rotated.add(list.get((i + offset) % list.size()));
+        }
+        return rotated;
+    }
+
     private static double factor() {
         return 1.0 - NTConfig.satelliteLoss;
     }
 
-    private static void moveAp(List<SatelliteArrayBlockEntity> senders, List<SatelliteArrayBlockEntity> downlinks) {
-        long supply = 0;
-        double weighted = 0;
-        for (SatelliteArrayBlockEntity sender : senders) {
-            supply += sender.getApStored();
-            weighted += (double) sender.getApStored() * sender.getApPurity();
-        }
-        if (supply <= 0 || downlinks.isEmpty()) {
-            return;
-        }
-        float purity = (float) (weighted / supply);
-        List<Receiver> receivers = new ArrayList<>();
-        for (SatelliteArrayBlockEntity downlink : downlinks) {
-            receivers.add(new Receiver() {
-                @Override
-                public int priority() {
-                    return downlink.getPriority();
-                }
+    public static float crossDimension(float purity) {
+        return (float) (purity * (1.0 - NTConfig.satelliteCrossDimensionPurityLoss));
+    }
 
-                @Override
-                public int demand() {
-                    return downlink.apDemand();
+    private static void feedCores(List<ResonanceNodeBlockEntity> inputs, List<SatelliteArrayBlockEntity> cores) {
+        for (ResonanceNodeBlockEntity node : inputs) {
+            ResourceKey<Level> dimension = node.dimension();
+            for (int pass = 0; pass < 2; pass++) {
+                boolean sameDimension = pass == 0;
+                for (SatelliteArrayBlockEntity core : cores) {
+                    if (core.dimension().equals(dimension) != sameDimension) {
+                        continue;
+                    }
+                    int ap = Math.min(node.apOffer(), core.apRoom());
+                    if (ap > 0) {
+                        float purity = sameDimension ? node.getApPurity() : crossDimension(node.getApPurity());
+                        core.storeAp(node.takeAp(ap), purity);
+                    }
+                    int fe = Math.min(node.feOffer(), core.feRoom());
+                    if (fe > 0) {
+                        core.giveFe(node.takeFe(fe));
+                    }
                 }
-
-                @Override
-                public int deliver(int amount) {
-                    downlink.giveAp(amount, purity);
-                    return amount;
-                }
-            });
-        }
-        long delivered = allocate(receivers, (long) Math.floor(supply * factor()));
-        long cost = Math.min(supply, (long) Math.ceil(delivered / factor()));
-        for (SatelliteArrayBlockEntity sender : senders) {
-            if (cost <= 0) {
-                break;
             }
-            cost -= sender.takeAp((int) Math.min(Integer.MAX_VALUE, cost));
         }
     }
 
-    private static void moveFe(List<SatelliteArrayBlockEntity> senders, List<SatelliteArrayBlockEntity> downlinks, List<ServerPlayer> players,
-                               Map<UUID, Integer> charmDelivered) {
+    private static void moveAp(List<SatelliteArrayBlockEntity> cores, List<SatelliteArrayBlockEntity> downlinks, List<ResonanceNodeBlockEntity> outputs) {
         long supply = 0;
-        for (SatelliteArrayBlockEntity sender : senders) {
-            supply += sender.getEnergy().getAmountAsInt();
+        float purity = 0F;
+        Set<ResourceKey<Level>> supplied = new HashSet<>();
+        for (SatelliteArrayBlockEntity core : cores) {
+            int stored = core.getApStored();
+            if (stored <= 0) {
+                continue;
+            }
+            purity = LaserBlockEntity.mergedPurity(supply, purity, stored, core.getApPurity());
+            supply += stored;
+            supplied.add(core.dimension());
         }
-        if (supply <= 0 || (downlinks.isEmpty() && players.isEmpty())) {
+        if (supply <= 0 || (downlinks.isEmpty() && outputs.isEmpty())) {
+            return;
+        }
+        float local = purity;
+        float remote = crossDimension(purity);
+        List<Receiver> receivers = new ArrayList<>();
+        for (SatelliteArrayBlockEntity downlink : downlinks) {
+            float given = supplied.contains(downlink.dimension()) ? local : remote;
+            receivers.add(receiver(downlink.getPriority(), downlink.apDemand(), amount -> {
+                downlink.giveAp(amount, given);
+                return amount;
+            }));
+        }
+        for (ResonanceNodeBlockEntity node : outputs) {
+            float given = supplied.contains(node.dimension()) ? local : remote;
+            receivers.add(receiver(node.getPriority(), node.apDemand(), amount -> {
+                node.giveAp(amount, given);
+                return amount;
+            }));
+        }
+        long delivered = allocate(receivers, (long) Math.floor(supply * factor()));
+        long cost = Math.min(supply, (long) Math.ceil(delivered / factor()));
+        for (SatelliteArrayBlockEntity core : cores) {
+            if (cost <= 0) {
+                break;
+            }
+            cost -= core.takeAp((int) Math.min(Integer.MAX_VALUE, cost));
+        }
+    }
+
+    private static void moveFe(List<SatelliteArrayBlockEntity> cores, List<SatelliteArrayBlockEntity> downlinks, List<ResonanceNodeBlockEntity> outputs,
+                               List<ServerPlayer> players, Map<UUID, Integer> charmDelivered) {
+        long supply = 0;
+        for (SatelliteArrayBlockEntity core : cores) {
+            supply += core.getEnergy().getAmountAsInt();
+        }
+        if (supply <= 0 || (downlinks.isEmpty() && outputs.isEmpty() && players.isEmpty())) {
             return;
         }
         List<Receiver> receivers = new ArrayList<>();
         for (SatelliteArrayBlockEntity downlink : downlinks) {
-            receivers.add(new Receiver() {
-                @Override
-                public int priority() {
-                    return downlink.getPriority();
-                }
-
-                @Override
-                public int demand() {
-                    return downlink.feDemand();
-                }
-
-                @Override
-                public int deliver(int amount) {
-                    downlink.giveFe(amount);
-                    return amount;
-                }
-            });
+            receivers.add(receiver(downlink.getPriority(), downlink.feDemand(), amount -> {
+                downlink.giveFe(amount);
+                return amount;
+            }));
+        }
+        for (ResonanceNodeBlockEntity node : outputs) {
+            receivers.add(receiver(node.getPriority(), node.feDemand(), amount -> {
+                node.giveFe(amount);
+                return amount;
+            }));
         }
         for (ServerPlayer player : players) {
             ItemStack charm = ResonanceCharmItem.equipped(player);
@@ -287,33 +350,39 @@ public final class SatelliteGrid {
                 continue;
             }
             int demand = ResonanceCharmItem.demand(player, charm, NTConfig.charmTransferRate * ResonanceCharmItem.INTERVAL);
-            receivers.add(new Receiver() {
-                @Override
-                public int priority() {
-                    return ResonanceCharmItem.priority(charm);
-                }
-
-                @Override
-                public int demand() {
-                    return demand;
-                }
-
-                @Override
-                public int deliver(int amount) {
-                    int used = ResonanceCharmItem.deliver(player, charm, amount);
-                    charmDelivered.merge(player.getUUID(), used, Integer::sum);
-                    return used;
-                }
-            });
+            receivers.add(receiver(ResonanceCharmItem.priority(charm), demand, amount -> {
+                int used = ResonanceCharmItem.deliver(player, charm, amount);
+                charmDelivered.merge(player.getUUID(), used, Integer::sum);
+                return used;
+            }));
         }
         long delivered = allocate(receivers, (long) Math.floor(supply * factor()));
         long cost = Math.min(supply, (long) Math.ceil(delivered / factor()));
-        for (SatelliteArrayBlockEntity sender : senders) {
+        for (SatelliteArrayBlockEntity core : cores) {
             if (cost <= 0) {
                 break;
             }
-            cost -= sender.takeFe((int) Math.min(Integer.MAX_VALUE, cost));
+            cost -= core.takeFe((int) Math.min(Integer.MAX_VALUE, cost));
         }
+    }
+
+    private static Receiver receiver(int priority, int demand, IntUnaryOperator deliver) {
+        return new Receiver() {
+            @Override
+            public int priority() {
+                return priority;
+            }
+
+            @Override
+            public int demand() {
+                return demand;
+            }
+
+            @Override
+            public int deliver(int amount) {
+                return deliver.applyAsInt(amount);
+            }
+        };
     }
 
     private static long allocate(List<Receiver> receivers, long available) {
@@ -367,6 +436,7 @@ public final class SatelliteGrid {
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         ARRAYS.clear();
+        NODES.clear();
         CACHE.clear();
         CHARMS.clear();
     }

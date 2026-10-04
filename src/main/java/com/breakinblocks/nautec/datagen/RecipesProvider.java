@@ -1266,6 +1266,17 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
                 .save(pRecipeOutput, key("resonance_pylon"));
 
+        shaped(RecipeCategory.MISC, NTBlocks.RESONANCE_NODE.asItem(), 2)
+                .pattern(" S ")
+                .pattern("ARA")
+                .pattern(" C ")
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.PRISM_SATELLITE))
+                .save(pRecipeOutput, key("resonance_node"));
+
         shaped(RecipeCategory.MISC, NTBlocks.PRISMATIC_EMITTER.asItem())
                 .pattern(" S ")
                 .pattern("CLC")

@@ -17,6 +17,7 @@ public abstract class NTMachineMenu<T extends ContainerBlockEntity> extends NTAb
     private final NonNullList<SlotBacteriaStorage> bacteriaStorageSlots;
     private @Nullable Slot dishIn;
     private @Nullable Slot dishOut;
+    private @Nullable Slot dishEmptyOut;
 
     public NTMachineMenu(MenuType<?> menuType, int containerId, @NotNull Inventory inv, @NotNull T blockEntity) {
         this(menuType, containerId, inv, blockEntity, 92);
@@ -36,10 +37,11 @@ public abstract class NTMachineMenu<T extends ContainerBlockEntity> extends NTAb
         this.fluidTankSlots.add(slot);
     }
 
-    public void addDishPort(int inIndex, int inX, int inY, int outIndex, int outX, int outY) {
+    public void addDishPort(int inIndex, int inX, int inY, int outIndex, int outX, int outY, int emptyOutIndex, int emptyOutX, int emptyOutY) {
         ItemStackHandler handler = blockEntity.getItemStackHandler();
         this.dishIn = addSlot(new ResourceHandlerSlot(handler, handler::set, inIndex, inX, inY));
         this.dishOut = addSlot(new ResourceHandlerSlot(handler, handler::set, outIndex, outX, outY));
+        this.dishEmptyOut = addSlot(new ResourceHandlerSlot(handler, handler::set, emptyOutIndex, emptyOutX, emptyOutY));
     }
 
     public @Nullable Slot getDishIn() {
@@ -48,6 +50,10 @@ public abstract class NTMachineMenu<T extends ContainerBlockEntity> extends NTAb
 
     public @Nullable Slot getDishOut() {
         return dishOut;
+    }
+
+    public @Nullable Slot getDishEmptyOut() {
+        return dishEmptyOut;
     }
 
     public void addBacteriaStorageSlot(SlotBacteriaStorage slot) {

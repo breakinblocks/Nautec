@@ -17,6 +17,8 @@ item_ids:
 
 Right-click the Fuel Cell with a <ItemLink id="petri_dish"/> to load the colony into it. Right-click with an empty dish to take back whatever is left. A loaded colony merges with the one already inside only if it is the same strain with exactly the same stats.
 
+Hoppers and pipes can feed it too. A dish holding a colony goes in through any face and loads as soon as the Fuel Cell is empty or holds a matching colony with room to spare, and the empty dish can be pulled back out. It refuses empty dishes and colonies it cannot take yet, so a chest of dishes behind it keeps it burning one colony after another. [Side Configuration](nautec:getting_started/utilities.md) sets what each face allows, with the wrench since the Fuel Cell has no screen.
+
 It works with any colony, analyzed or not, including the strains that make nothing in the [Bio Reactor](bio_reactor.md).
 
 ***

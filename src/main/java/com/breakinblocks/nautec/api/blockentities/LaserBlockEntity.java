@@ -210,6 +210,18 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return highest - (highest - average) * (float) NTConfig.beamMergePurityDrop;
     }
 
+    public static float mergedPurity(long amountA, float purityA, long amountB, float purityB) {
+        if (amountA <= 0) {
+            return amountB <= 0 ? 0F : purityB;
+        }
+        if (amountB <= 0) {
+            return purityA;
+        }
+        float highest = Math.max(purityA, purityB);
+        float average = (float) ((amountA * (double) purityA + amountB * (double) purityB) / (amountA + amountB));
+        return highest - (highest - average) * (float) NTConfig.beamMergePurityDrop;
+    }
+
     private void damageLivingEntities(AABB box) {
         List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, box);
         for (LivingEntity livingEntity : livingEntities) {

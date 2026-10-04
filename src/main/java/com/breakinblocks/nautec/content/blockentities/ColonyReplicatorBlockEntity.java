@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -46,6 +47,8 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public static final int RESULT = 3;
     public static final int DISH_IN = 0;
     public static final int DISH_OUT = 1;
+    public static final int DISH_EMPTY_OUT = 2;
+    private static final int[] LOAD_SLOTS = {FODDER};
 
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_NO_TEMPLATE = 1;
@@ -65,7 +68,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public static final int DATA_BIOMASS = 4;
     public static final int DATA_COUNT = 6;
 
-    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN}, new int[]{DISH_OUT});
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
     private boolean splice;
     private int progress;
@@ -101,7 +104,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public ColonyReplicatorBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.COLONY_REPLICATOR.get(), pos, state);
         addBacteriaStorage(4);
-        addItemHandler(2, 1, (slot, stack) -> slot == DISH_IN && DishPort.isDish(stack));
+        addItemHandler(3, 1, (slot, stack) -> slot == DISH_IN && DishPort.isDish(stack));
     }
 
     public ContainerData getData() {
@@ -154,9 +157,8 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
             return;
         }
         if (serverLevel.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, DISH_IN, DISH_OUT, new int[]{FODDER},
-                    () -> getBacteriaStorage().getBacteria(RESULT).isEmpty() ? -1 : RESULT, slot -> {
-                    });
+            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::copyReady, slot -> {
+            });
         }
         absorbFodder();
 
@@ -178,6 +180,23 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         if (getBlockState().getValue(ColonyReplicatorBlock.ACTIVE) != active) {
             level.setBlock(worldPosition, getBlockState().setValue(ColonyReplicatorBlock.ACTIVE, active), Block.UPDATE_CLIENTS);
         }
+    }
+
+    @Override
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot != DISH_IN) {
+            return true;
+        }
+        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::copyReady, this::isFodder);
+    }
+
+    private int copyReady() {
+        return getBacteriaStorage().getBacteria(RESULT).isEmpty() ? -1 : RESULT;
+    }
+
+    private boolean isFodder(BacteriaInstance colony) {
+        BacteriaInstance template = getBacteriaStorage().getBacteria(TEMPLATE);
+        return !template.isEmpty() && colony.is(template.getBacteria());
     }
 
     private void absorbFodder() {
@@ -336,6 +355,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
+        getItemStackHandler().ensureSize(3);
         this.splice = in.getBooleanOr("splice", false);
         this.progress = in.getIntOr("progress", 0);
         this.status = in.getIntOr("status", STATUS_NO_TEMPLATE);

@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
+import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import org.jetbrains.annotations.Nullable;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.minecraft.world.item.ItemStack;
@@ -63,6 +65,15 @@ public final class SatelliteTests {
         SatelliteArrayBlockEntity array = (SatelliteArrayBlockEntity) helper.getLevel().getBlockEntity(pos);
         array.setNetwork(network);
         return array;
+    }
+
+    private static ResonanceNodeBlockEntity node(GameTestHelper helper, BlockPos relative, ResonanceNetwork network, boolean output) {
+        BlockPos pos = helper.absolutePos(relative);
+        helper.getLevel().setBlock(pos, NTBlocks.RESONANCE_NODE.get().defaultBlockState(), Block.UPDATE_ALL);
+        ResonanceNodeBlockEntity node = (ResonanceNodeBlockEntity) helper.getLevel().getBlockEntity(pos);
+        node.setNetwork(network);
+        node.setOutput(output);
+        return node;
     }
 
     private static void feed(GameTestHelper helper, SatelliteArrayBlockEntity uplink) {
@@ -167,24 +178,78 @@ public final class SatelliteTests {
             });
         });
 
-        r.add("satellite/ap_never_leaves_its_dimension", 120, helper -> {
+        r.add("satellite/ap_crosses_dimensions_with_purity_loss", 200, helper -> {
             ServerPlayer owner = player(helper, "SatDim");
             ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
             ResonanceNetwork network = networks.create(owner, "Sat dimension").network();
             SatelliteArrayBlockEntity uplink = array(helper, new BlockPos(1, 1, 1), true, network);
-            array(helper, new BlockPos(6, 1, 6), false, network);
             uplink.launch();
             feed(helper, uplink);
+            ServerLevel nether = helper.getLevel().getServer().getLevel(Level.NETHER);
+            BlockPos arena = helper.absolutePos(new BlockPos(4, 1, 4));
+            BlockPos remote = new BlockPos(arena.getX(), 200, arena.getZ());
+            nether.setBlock(remote, NTBlocks.RESONANCE_NODE.get().defaultBlockState(), Block.UPDATE_ALL);
+            ResonanceNodeBlockEntity node = (ResonanceNodeBlockEntity) nether.getBlockEntity(remote);
+            node.setNetwork(network);
+            node.setOutput(true);
+            node.setChunkLoading(true);
+            float expected = FEED_PURITY * (float) (1.0 - NTConfig.satelliteCrossDimensionPurityLoss);
             helper.succeedWhen(() -> {
-                List<SatelliteArrayBlockEntity> members = SatelliteGrid.members(network.id());
-                helper.assertValueEqual(members.size(), 2, "both arrays joined the network");
-                SatelliteGrid.Link here = SatelliteGrid.compute(members, helper.getLevel().dimension());
-                SatelliteGrid.Link nether = SatelliteGrid.compute(members, Level.NETHER);
-                helper.assertValueEqual(here.share(), share(1), "the overworld downlink gets its share");
-                helper.assertValueEqual(nether.uplinks(), 0, "no uplink reaches the Nether");
-                helper.assertValueEqual(nether.share(), 0, "no AP reaches the Nether");
+                helper.assertValueEqual(node.getStatus(), ResonanceNodeBlockEntity.STATUS_ONLINE, "the Nether node finds the Overworld core");
+                helper.assertTrue(node.getApStored() > 0, "AP reaches the Nether");
+                helper.assertTrue(Math.abs(node.getApPurity() - expected) < 0.001F,
+                        "purity drops by the cross-dimension loss, expected " + expected + " got " + node.getApPurity());
+                nether.setBlock(remote, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 networks.delete(owner, network.id());
             });
+        });
+
+        r.add("resonance_node/input_feeds_the_core_and_output_takes_from_it", 200, helper -> {
+            ServerPlayer owner = player(helper, "NodeOwner");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Node relay").network();
+            SatelliteArrayBlockEntity core = array(helper, new BlockPos(1, 1, 1), true, network);
+            core.launch();
+            ResonanceNodeBlockEntity input = node(helper, new BlockPos(4, 1, 2), network, false);
+            ResonanceNodeBlockEntity output = node(helper, new BlockPos(6, 1, 6), network, true);
+            helper.onEachTick(() -> {
+                input.receivePower(FEED, Direction.NORTH, input.getBlockPos().north());
+                input.receiveNewPurity(FEED_PURITY, Direction.NORTH, input.getBlockPos().north());
+            });
+            try (Transaction tx = Transaction.openRoot()) {
+                helper.assertValueEqual(input.getPort().insert(5_000, tx), 5_000, "an input node takes FE from cables");
+                helper.assertValueEqual(output.getPort().insert(5_000, tx), 0, "an output node refuses FE from cables");
+                tx.commit();
+            }
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(input.getStatus(), ResonanceNodeBlockEntity.STATUS_ONLINE, "input node status");
+                helper.assertValueEqual(output.getStatus(), ResonanceNodeBlockEntity.STATUS_ONLINE, "output node status");
+                helper.assertTrue(output.getApStored() > 0, "AP from the input node reaches the output node through the core");
+                helper.assertTrue(Math.abs(output.getApPurity() - FEED_PURITY) < 0.001F, "purity carries through in one dimension, got " + output.getApPurity());
+                helper.assertTrue(output.getEnergy().getAmountAsInt() > 0, "FE from the input node reaches the output node");
+                networks.delete(owner, network.id());
+            });
+        });
+
+        r.add("resonance_node/needs_a_core", 60, helper -> {
+            ServerPlayer owner = player(helper, "NodeCore");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Node core").network();
+            ResonanceNodeBlockEntity output = node(helper, new BlockPos(4, 1, 4), network, true);
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(output.getStatus(), ResonanceNodeBlockEntity.STATUS_NO_CORE, "a node without a core");
+                helper.assertValueEqual(output.apDemand(), 0, "it asks for nothing");
+                networks.delete(owner, network.id());
+            });
+        });
+
+        r.add("resonance_node/merged_purity_favours_the_purer_source", 20, helper -> {
+            float merged = LaserBlockEntity.mergedPurity(1_000, 3.0F, 1_000, 1.0F);
+            float expected = 3.0F - (3.0F - 2.0F) * (float) NTConfig.beamMergePurityDrop;
+            helper.assertTrue(Math.abs(merged - expected) < 0.001F, "equal amounts keep close to the purer one, got " + merged);
+            helper.assertTrue(LaserBlockEntity.mergedPurity(0, 0F, 500, 2.5F) == 2.5F, "an empty store takes the incoming purity");
+            helper.assertTrue(LaserBlockEntity.mergedPurity(9_000, 1.0F, 1_000, 3.0F) > 2.0F, "a small pure input still lifts a large impure store");
+            helper.succeed();
         });
 
         r.add("satellite/uplinks_buffer_ap_and_fe", 80, helper -> {

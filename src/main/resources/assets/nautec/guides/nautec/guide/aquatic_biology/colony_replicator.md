@@ -55,7 +55,7 @@ It needs a laser beam of at least 80 AP at purity 2.0 or higher, into any face e
 
 ## <Color id="gold">Automation</Color>
 
-The two slots at the bottom left are the Dish Port. A Petri Dish holding a colony put into the left slot loads it into the fodder slot, and the empty dish comes out on the right. An empty dish takes each finished colony out of the output slot. Hoppers and pipes can fill the port and pull dishes out, so a row of grafting machines can keep it fed.
+The three slots at the bottom left are the Dish Port: a dish goes in on the left, finished copies come out of the middle slot and empty dishes come out on the right. A Petri Dish holding a colony of the template's strain loads it into the fodder slot. An empty dish takes each finished colony out of the output slot. The port only accepts a dish it can use right then: no fodder before a template is set, no fodder of another strain, and no empty dish until a copy is waiting. Hoppers and pipes can fill the port and pull dishes out, so a row of grafting machines can keep it fed.
 
 The power, purity, time, biomass cost and storage, copy error chance and splice chance are all in `config/nautec-common.toml`.
 

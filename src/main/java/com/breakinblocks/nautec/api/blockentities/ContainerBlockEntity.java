@@ -20,6 +20,7 @@ import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.PowerStorage;
+import com.breakinblocks.nautec.utils.ItemTemplates;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntSets;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -59,6 +60,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class ContainerBlockEntity extends BlockEntity {
     private @Nullable ItemStackHandler itemHandler;
+    private BiPredicate<Integer, ItemStack> itemValidation = (slot, stack) -> true;
     private final SideConfig sideConfig = new SideConfig();
     private final Int2ObjectMap<ItemStack> ghostInputs = new Int2ObjectOpenHashMap<>();
 
@@ -192,6 +194,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
     }
 
     private void addItemHandlerInternal(int slots, UnaryOperator<Integer> slotLimit, BiPredicate<Integer, ItemStack> validation) {
+        this.itemValidation = validation;
         this.itemHandler = new ItemStackHandler(slots) {
             @Override
             protected void onContentsChanged(int slot, ItemStack stack) {
@@ -203,7 +206,8 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             @Override
             public boolean isValid(int slot, @NotNull ItemResource resource) {
                 ItemStack ghost = ghostInputs.get(slot);
-                return (ghost == null || resource.is(ghost.getItem())) && validation.test(slot, resource.toStack());
+                return (ghost == null || ItemTemplates.matches(ghost, resource)) && validation.test(slot, resource.toStack())
+                        && acceptsNow(slot, resource);
             }
 
             @Override
@@ -212,6 +216,10 @@ public abstract class ContainerBlockEntity extends BlockEntity {
                 return resource.isEmpty() ? limit : Math.min(limit, resource.getMaxStackSize());
             }
         };
+    }
+
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        return true;
     }
 
     public ItemStack forceExtractItem(int slot, int amount, boolean simulate) {
@@ -472,7 +480,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         }
         ItemStack previous = ghostInputs.remove(slot);
         if (!stack.isEmpty()) {
-            if (!itemHandler.isValid(slot, ItemResource.of(stack))) {
+            if (!itemValidation.test(slot, stack)) {
                 if (previous != null) {
                     ghostInputs.put(slot, previous);
                 }

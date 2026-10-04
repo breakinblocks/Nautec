@@ -72,6 +72,14 @@ public class SatelliteArrayMenu extends NTAbstractContainerMenu<SatelliteArrayBl
         return ResonancePylonBlockEntity.join(data.get(SatelliteArrayBlockEntity.DATA_FE), data.get(SatelliteArrayBlockEntity.DATA_FE + 1));
     }
 
+    public int getChunkState() {
+        return data.get(SatelliteArrayBlockEntity.DATA_CHUNK);
+    }
+
+    public int getNodes() {
+        return data.get(SatelliteArrayBlockEntity.DATA_NODES);
+    }
+
     public int getPriority() {
         return (short) data.get(SatelliteArrayBlockEntity.DATA_PRIORITY);
     }

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "nautec:block/resonance_node",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "nautec:block/resonance_node",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "nautec:block/resonance_node",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "nautec:block/resonance_node",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "nautec:block/resonance_node"
+    },
+    "facing=west": {
+      "model": "nautec:block/resonance_node",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

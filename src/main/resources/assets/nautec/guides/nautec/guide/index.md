@@ -1,13 +1,13 @@
 ---
 navigation:
-  title: NauTec
+  title: NauTec 2
   icon: nautec:nautec_guide
   position: 0
 item_ids:
   - nautec:nautec_guide
 ---
 
-# <Color id="gold">NauTec</Color>
+# <Color id="gold">NauTec 2</Color>
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="aquatic_catalyst" scale="2"/>

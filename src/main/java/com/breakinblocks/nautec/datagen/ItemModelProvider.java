@@ -153,6 +153,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.DIVING_LEGGINGS.get());
         basicItem(NTItems.DIVING_BOOTS.get());
 
+        itemModels.itemModelOutput.accept(NTBlocks.RESONANCE_NODE.asItem(), ItemModelUtils.plainModel(Nautec.rl("item/resonance_node")));
         itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 

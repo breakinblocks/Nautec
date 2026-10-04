@@ -19,7 +19,7 @@ Put the colony in the left bacteria slot and the catalyst in the item slot. Ever
 
 The catalyst is not used up, so one item covers every attempt. Hoppers and pipes can insert it, through any face by default ([Side Configuration](nautec:getting_started/utilities.md)).
 
-The two slots at the bottom left are the Dish Port. A Petri Dish holding a colony put into the left slot loads it into the left bacteria slot when that slot is free, and the empty dish comes out on the right. An empty dish takes each new mutation out of the right bacteria slot as soon as it appears, which keeps the Mutator working. Hoppers and pipes can fill the port and pull dishes out.
+The three slots at the bottom left are the Dish Port: a dish goes in on the left, new mutations come out of the middle slot and empty dishes come out on the right. A Petri Dish holding a colony loads it into the left bacteria slot when that slot is free and the catalyst in the Mutator works on that strain. An empty dish takes each new mutation out of the right bacteria slot as soon as it appears, which keeps the Mutator working. The port only accepts a dish it can use right then, so put the catalyst in first, and a pipe keeps hold of anything else instead of jamming the machine.
 
  JEI's Bacteria Mutations category lists the catalyst and base chance for every mutation.
 

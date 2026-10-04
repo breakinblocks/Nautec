@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,6 +97,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
             outputs.add(i);
         }
         outputs.add(dishOutSlot());
+        outputs.add(dishEmptyOutSlot());
         this.slotRoles = new SlotRoles(IntSets.unmodifiable(inputs), IntSets.unmodifiable(outputs));
 
         addItemHandler(totalItemSlots(), slot -> isUpgradeSlot(slot) ? 1 : 64, this::isItemValid);
@@ -129,7 +131,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
     }
 
     public int totalItemSlots() {
-        return colonies + nutrientSlots + upgradeSlots + 2;
+        return colonies + nutrientSlots + upgradeSlots + 3;
     }
 
     public int dishInSlot() {
@@ -138,6 +140,10 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
 
     public int dishOutSlot() {
         return dishInSlot() + 1;
+    }
+
+    public int dishEmptyOutSlot() {
+        return dishInSlot() + 2;
     }
 
     public int outputSlot(int colony) {
@@ -281,7 +287,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
 
         boolean server = !level.isClientSide();
         if (server && level.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, dishInSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony);
+            DishPort.tick(this, dishInSlot(), dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony);
         }
         if (level instanceof ServerLevel serverLevel && recipeRevision.changed(serverLevel)) {
             Arrays.fill(this.productCache, null);
@@ -486,6 +492,14 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
                 consumer.accept(MultiblockHelper.getCurPos(first, new Vec3i(index % width, y, index / width), data.direction()));
             }
         }
+    }
+
+    @Override
+    protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot != dishInSlot()) {
+            return true;
+        }
+        return DishPort.accepts(this, resource, dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, colony -> true);
     }
 
     @Override

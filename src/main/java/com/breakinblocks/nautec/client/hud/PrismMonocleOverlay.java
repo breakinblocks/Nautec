@@ -16,7 +16,7 @@ public final class PrismMonocleOverlay {
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
         Player player = mc.player;
-        if (level == null || player == null) return;
+        if (level == null || player == null || mc.options.hideGui) return;
 
         int lineOffset = 0;
         int x = guiGraphics.guiWidth() / 2;

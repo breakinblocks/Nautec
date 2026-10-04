@@ -121,7 +121,7 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         int downlinks = 0;
         long stored = 0;
         for (SatelliteArrayBlockEntity array : SatelliteGrid.members(network.id())) {
-            if (array.isRemoved() || !array.dimension().equals(player.level().dimension())) {
+            if (array.isRemoved()) {
                 continue;
             }
             if (array.transmitting()) {

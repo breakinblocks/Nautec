@@ -70,7 +70,7 @@ public final class AtlanteanRifleClientEvents {
             }
 
             if (AtlanteanRifleItem.isFiring(player)) {
-                float ramp = AtlanteanRifleItem.rampProgress(AtlanteanRifleItem.firingTicks(player, 1.0F));
+                float ramp = AtlanteanRifleItem.rampProgress(player, AtlanteanRifleItem.firingTicks(player, 1.0F));
                 spawnImpact(level, player, ramp);
                 shedSparks(minecraft, level, player, ramp);
             }
@@ -83,14 +83,15 @@ public final class AtlanteanRifleClientEvents {
     }
 
     private static void spawnImpact(ClientLevel level, Player player, float ramp) {
-        double range = NTConfig.rifleRange;
-        AtlanteanRifleBeam.Hit hit = AtlanteanRifleBeam.trace(level, player, range, 1.0F);
-        if (hit.entity() == null && hit.length() >= range - 0.01D) {
-            return;
+        for (AtlanteanRifleBeam.Hit hit : AtlanteanRifleBeam.traceAll(level, player, NTConfig.rifleRange, 1.0F)) {
+            if (hit.impact()) {
+                spawnImpact(level, hit.end(), ramp);
+            }
         }
+    }
 
+    private static void spawnImpact(ClientLevel level, Vec3 end, float ramp) {
         RandomSource random = level.getRandom();
-        Vec3 end = hit.end();
         int sparks = Math.round(Mth.lerp(ramp, IMPACT_SPARKS_COLD, IMPACT_SPARKS_HOT));
         for (int i = 0; i < sparks; i++) {
             level.addParticle(NTParticles.LASER_SPARK.get(), end.x, end.y, end.z,

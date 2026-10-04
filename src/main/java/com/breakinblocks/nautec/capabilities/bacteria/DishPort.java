@@ -6,12 +6,15 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 
 public final class DishPort {
     public static final int INTERVAL = 5;
+    public static final int NONE = -1;
 
     private DishPort() {
     }
@@ -20,11 +23,37 @@ public final class DishPort {
         return stack.getItem() instanceof PetriDishItem;
     }
 
-    public static boolean tick(ContainerBlockEntity machine, int inSlot, int outSlot, int[] loadSlots, IntSupplier unloadSlot, IntConsumer onUnload) {
+    public static BacteriaInstance colonyOf(ItemStack stack) {
+        if (!isDish(stack)) {
+            return BacteriaInstance.EMPTY;
+        }
+        IBacteriaStorage dish = stack.copyWithCount(1).getCapability(NTCapabilities.BacteriaStorage.ITEM);
+        return dish == null ? BacteriaInstance.EMPTY : dish.getBacteria(0);
+    }
+
+    public static boolean accepts(ContainerBlockEntity machine, ItemResource resource, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
+                                  IntSupplier unloadSlot, Predicate<BacteriaInstance> loadable) {
+        if (!(resource.getItem() instanceof PetriDishItem)) {
+            return false;
+        }
+        ItemStackHandler items = machine.getItemStackHandler();
+        IBacteriaStorage storage = machine.getBacteriaStorage();
+        if (items == null || storage == null) {
+            return false;
+        }
+        BacteriaInstance held = colonyOf(resource.toStack());
+        if (!held.isEmpty()) {
+            return items.getStackInSlot(emptyOutSlot).isEmpty() && loadable.test(held) && loadTarget(storage, held, loadSlots) >= 0;
+        }
+        return colonyOutSlot != NONE && items.getStackInSlot(colonyOutSlot).isEmpty() && unloadSlot.getAsInt() >= 0;
+    }
+
+    public static boolean tick(ContainerBlockEntity machine, int inSlot, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
+                               IntSupplier unloadSlot, IntConsumer onUnload) {
         ItemStackHandler items = machine.getItemStackHandler();
         IBacteriaStorage storage = machine.getBacteriaStorage();
         ItemStack in = items.getStackInSlot(inSlot);
-        if (storage == null || in.isEmpty() || !items.getStackInSlot(outSlot).isEmpty()) {
+        if (storage == null || in.isEmpty()) {
             return false;
         }
         ItemStack result = in.copyWithCount(1);
@@ -34,7 +63,12 @@ public final class DishPort {
         }
 
         BacteriaInstance held = dish.getBacteria(0);
+        int outSlot;
         if (!held.isEmpty()) {
+            outSlot = emptyOutSlot;
+            if (!items.getStackInSlot(outSlot).isEmpty()) {
+                return false;
+            }
             int target = loadTarget(storage, held, loadSlots);
             if (target < 0) {
                 return false;
@@ -42,6 +76,10 @@ public final class DishPort {
             storage.insertBacteria(target, held, false);
             dish.setBacteria(0, BacteriaInstance.EMPTY);
         } else {
+            outSlot = colonyOutSlot;
+            if (outSlot == NONE || !items.getStackInSlot(outSlot).isEmpty()) {
+                return false;
+            }
             int source = unloadSlot.getAsInt();
             if (source < 0 || storage.getBacteria(source).isEmpty()) {
                 return false;

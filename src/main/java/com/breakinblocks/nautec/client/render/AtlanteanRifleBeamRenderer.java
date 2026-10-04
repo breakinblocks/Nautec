@@ -61,21 +61,20 @@ public final class AtlanteanRifleBeamRenderer {
     }
 
     public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
-                                  float firing, boolean impact) {
-        submitBeam(poseStack, collector, from, to, firing, impact, false);
+                                  float ramp, boolean impact) {
+        submitBeam(poseStack, collector, from, to, ramp, impact, false);
     }
 
-    public static void submitWorldBeam(Vec3 camera, SubmitNodeCollector collector, Vec3 from, Vec3 to, float firing, boolean impact) {
-        ShaderPackOverlay.anchored(camera, () -> submitBeam(new PoseStack(), collector, from.subtract(camera), to.subtract(camera), firing, impact, true));
+    public static void submitWorldBeam(Vec3 camera, SubmitNodeCollector collector, Vec3 from, Vec3 to, float ramp, boolean impact) {
+        ShaderPackOverlay.anchored(camera, () -> submitBeam(new PoseStack(), collector, from.subtract(camera), to.subtract(camera), ramp, impact, true));
     }
 
     public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
-                                  float firing, boolean impact, boolean world) {
+                                  float ramp, boolean impact, boolean world) {
         if (to.distanceTo(from) < MIN_LENGTH) {
             return;
         }
 
-        float ramp = AtlanteanRifleItem.rampProgress(firing);
         int color = ARGB.color(Math.round(Mth.lerp(ramp, INTENSITY_COLD, INTENSITY_HOT) * 255F), LaserBeamRenderer.CYAN);
         Vector3f start = from.toVector3f();
         Vector3f end = to.toVector3f();

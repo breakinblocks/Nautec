@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OxygenDiffuserBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ColonyReplicatorBlockEntity;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
@@ -178,6 +179,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonancePylonBlockEntity>> RESONANCE_PYLON = BLOCK_ENTITIES.register("resonance_pylon",
             () -> new BlockEntityType<>(ResonancePylonBlockEntity::new,
                     NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()));
+    public static final Supplier<BlockEntityType<ResonanceNodeBlockEntity>> RESONANCE_NODE = BLOCK_ENTITIES.register("resonance_node",
+            () -> new BlockEntityType<>(ResonanceNodeBlockEntity::new,
+                    NTBlocks.RESONANCE_NODE.get()));
     public static final Supplier<BlockEntityType<SatelliteArrayBlockEntity>> SATELLITE_ARRAY = BLOCK_ENTITIES.register("satellite_array",
             () -> new BlockEntityType<>(SatelliteArrayBlockEntity::new,
                     NTBlocks.UPLINK_ARRAY.get(), NTBlocks.DOWNLINK_ARRAY.get()));

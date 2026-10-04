@@ -1,6 +1,6 @@
-# Nautec
+# NauTec 2
 
-Nautec is an underwater tech mod for NeoForge. Nautec moves progression off the land and onto the ocean floor. Powered by aquatic laser beams you aim by line of sight, resources are grown from bacteria
+NauTec 2 is an underwater tech mod for NeoForge, rebuilt from the original NauTec ModJam entry into a mod of its own. It keeps the mod ID `nautec`. Nautec moves progression off the land and onto the ocean floor. Powered by aquatic laser beams you aim by line of sight, resources are grown from bacteria
 colonies, and the endgame is rebuilding your own body part by part with ancient atlantean technology.
 
 Minecraft 26.1.2, NeoForge 26.1.2.95, Java 25.

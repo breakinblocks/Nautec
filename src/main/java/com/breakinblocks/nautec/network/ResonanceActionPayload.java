@@ -27,6 +27,7 @@ public record ResonanceActionPayload(BlockPos pos, int action, Optional<UUID> ne
     public static final int DELETE = 7;
     public static final int PRIORITY = 8;
     public static final int LIMIT = 9;
+    public static final int CHUNK = 10;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ResonanceActionPayload> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, ResonanceActionPayload::pos,

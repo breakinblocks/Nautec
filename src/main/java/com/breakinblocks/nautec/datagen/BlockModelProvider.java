@@ -104,6 +104,9 @@ public class BlockModelProvider extends ModelProvider {
         fusionPlant();
         simpleBlock(NTBlocks.RESONANCE_PYLON.get(), existingModelFile(NTBlocks.RESONANCE_PYLON.get()));
         simpleBlock(NTBlocks.ABYSSAL_PYLON.get(), existingModelFile(NTBlocks.ABYSSAL_PYLON.get()));
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(NTBlocks.RESONANCE_NODE.get(),
+                        BlockModelGenerators.plainVariant(existingModelFile(NTBlocks.RESONANCE_NODE.get())))
+                .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING));
         simpleBlock(NTBlocks.PRISMATIC_EMITTER.get(), existingModelFile(NTBlocks.PRISMATIC_EMITTER.get()));
         simpleBlock(NTBlocks.UPLINK_ARRAY.get(), existingModelFile(NTBlocks.UPLINK_ARRAY.get()));
         simpleBlock(NTBlocks.DOWNLINK_ARRAY.get(), existingModelFile(NTBlocks.DOWNLINK_ARRAY.get()));

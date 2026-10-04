@@ -22,7 +22,7 @@ public class MutatorMenu extends NTMachineMenu<MutatorBlockEntity> {
 
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 0, 79, 61));
 
-        addDishPort(MutatorBlockEntity.DISH_IN, 24, 61, MutatorBlockEntity.DISH_OUT, 46, 61);
+        addDishPort(MutatorBlockEntity.DISH_IN, 7, 61, MutatorBlockEntity.DISH_OUT, 27, 61, MutatorBlockEntity.DISH_EMPTY_OUT, 47, 61);
     }
 
     @Override

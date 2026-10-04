@@ -54,7 +54,7 @@ public final class SubmarineHudOverlay {
 
     public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null || minecraft.screen instanceof SubmarineHudPositionScreen) {
+        if (minecraft.player == null || minecraft.options.hideGui || minecraft.screen instanceof SubmarineHudPositionScreen) {
             return;
         }
 

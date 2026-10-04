@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
-import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserBlockEntityRenderer;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserRenderState;
 import com.breakinblocks.nautec.client.render.LaserBeamRenderer;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlockEntity;
@@ -9,7 +10,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class SatelliteArrayBERenderer extends NTBERenderer<SatelliteArrayBlockEntity, SatelliteArrayBERenderer.ArrayRenderState> {
+public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<SatelliteArrayBlockEntity, SatelliteArrayBERenderer.ArrayRenderState> {
     public static final float FOCUS = 1.95F;
     public static final float ORBIT_HEIGHT = 40F;
     public static final float ORBIT_RADIUS = 4F;
@@ -56,7 +56,7 @@ public class SatelliteArrayBERenderer extends NTBERenderer<SatelliteArrayBlockEn
     @Override
     public void extractRenderState(SatelliteArrayBlockEntity array, ArrayRenderState state, float partialTick, Vec3 cameraPos,
                                    ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(array, state, crumbling);
+        super.extractRenderState(array, state, partialTick, cameraPos, crumbling);
         state.uplink = array.isUplink();
         state.online = array.getStatus() == SatelliteArrayBlockEntity.STATUS_ONLINE;
         state.active = state.online && array.getRelay() > 0;
@@ -76,6 +76,7 @@ public class SatelliteArrayBERenderer extends NTBERenderer<SatelliteArrayBlockEn
 
     @Override
     public void submit(ArrayRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, poseStack, collector, camera);
         float pulse = 0.5F + 0.5F * Mth.sin(state.ticks * 0.2F);
         float hover = FOCUS + Mth.sin(state.ticks * 0.06F) * 0.03F;
         poseStack.pushPose();
@@ -133,7 +134,8 @@ public class SatelliteArrayBERenderer extends NTBERenderer<SatelliteArrayBlockEn
 
     @Override
     public @NotNull AABB getRenderBoundingBox(SatelliteArrayBlockEntity array) {
-        return new AABB(array.getBlockPos()).expandTowards(0, FOCUS + ORBIT_HEIGHT + 3, 0).inflate(ORBIT_RADIUS + 3, 0, ORBIT_RADIUS + 3);
+        return super.getRenderBoundingBox(array)
+                .minmax(new AABB(array.getBlockPos()).expandTowards(0, FOCUS + ORBIT_HEIGHT + 3, 0).inflate(ORBIT_RADIUS + 3, 0, ORBIT_RADIUS + 3));
     }
 
     @Override
@@ -146,7 +148,7 @@ public class SatelliteArrayBERenderer extends NTBERenderer<SatelliteArrayBlockEn
         return 160;
     }
 
-    public static class ArrayRenderState extends BlockEntityRenderState {
+    public static class ArrayRenderState extends LaserRenderState {
         public final ItemStackRenderState item = new ItemStackRenderState();
         public boolean uplink;
         public boolean online;

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
 import com.breakinblocks.nautec.content.blocks.HydrothermalVentBlock;
@@ -236,6 +237,10 @@ public final class NTBlocks {
             properties -> new ResonancePylonBlock(properties, true),
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> 9));
+
+    public static final DeferredBlock<ResonanceNodeBlock> RESONANCE_NODE = registerBlockAndItem("resonance_node", ResonanceNodeBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().lightLevel(state -> 7), true, false);
 
     public static final DeferredBlock<SatelliteArrayBlock> UPLINK_ARRAY = registerBlockAndItem("uplink_array",
             properties -> new SatelliteArrayBlock(properties, true),

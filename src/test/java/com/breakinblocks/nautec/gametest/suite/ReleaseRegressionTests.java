@@ -127,7 +127,7 @@ public final class ReleaseRegressionTests {
             helper.setBlock(pos, NTBlocks.BACTERIAL_ANALYZER.get().defaultBlockState());
             BacterialAnalyzerBlockEntity machine = helper.getBlockEntity(pos, BacterialAnalyzerBlockEntity.class);
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-            player.getInventory().setItem(10, new ItemStack(NTItems.PETRI_DISH.get()));
+            player.getInventory().setItem(10, DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.LITHOPHILES, 100)));
             BacterialAnalyzerMenu menu = new BacterialAnalyzerMenu(1, player.getInventory(), machine);
             menu.quickMoveStack(player, 3);
             helper.assertTrue(machine.getItemStackHandler().getStackInSlot(0).is(NTItems.PETRI_DISH.get()), "Player to machine transfer");

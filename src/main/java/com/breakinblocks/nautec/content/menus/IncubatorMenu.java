@@ -21,7 +21,7 @@ public class IncubatorMenu extends NTMachineMenu<IncubatorBlockEntity> {
 
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), 0, 79, 26));
 
-        addDishPort(IncubatorBlockEntity.DISH_IN, 24, 61, IncubatorBlockEntity.DISH_OUT, 46, 61);
+        addDishPort(IncubatorBlockEntity.DISH_IN, 7, 61, IncubatorBlockEntity.DISH_OUT, 27, 61, IncubatorBlockEntity.DISH_EMPTY_OUT, 47, 61);
     }
 
     @Override
