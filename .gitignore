@@ -45,3 +45,5 @@ assets-src/art/__pycache__/
 !**/src/**/*.md
 
 /tools/
+
+metadata/logo-nautec2.aseprite
