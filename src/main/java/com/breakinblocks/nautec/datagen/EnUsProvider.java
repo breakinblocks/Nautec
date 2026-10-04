@@ -879,7 +879,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.fusion.problem.no_crystal", "No Prismarine Crystal found. Put the controller in a wall facing out, with the crystal 2 to 5 blocks behind it.");
         add("nautec.fusion.problem.controller", "The controller must sit in a side wall, not in the floor, ceiling or a frame edge.");
         add("nautec.fusion.problem.unloaded", "Part of the chamber is in an unloaded chunk.");
-        add("nautec.fusion.problem.interior", "Something is in the chamber. Leave it empty apart from the crystal: only air or water.");
+        add("nautec.fusion.problem.interior", "Something is in the chamber. Leave it empty apart from the crystal and any satellite crystals in its corners: only air or water.");
         add("nautec.fusion.problem.frame", "Every edge of the chamber must be Fusion Casing.");
         add("nautec.fusion.problem.shell", "A wall, floor or ceiling block is not a Fusion Plant part.");
         add("nautec.fusion.problem.injector", "A Laser Injector is out of place. Injectors go in the middle of a side wall at the height of the crystal core, pointing at it.");
@@ -892,11 +892,13 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.fusion.injected", "Injected: %s AP at %s");
         add("nautec.fusion.injected.desc", "Only beams with a purity of %s or more count. Purity 3.0 gives full output.");
         add("nautec.fusion.ceiling", "Ceiling: %s FE/t");
-        add("nautec.fusion.ceiling.desc", "Set by the chamber size, plus %s FE/t for each Containment Coil, up to %s FE/t.");
+        add("nautec.fusion.ceiling.desc", "Set by the chamber size, plus %s FE/t for each Containment Coil and %s FE/t for each satellite crystal, up to %s FE/t.");
         add("nautec.fusion.chamber", "Chamber: %s x 6 x %s");
         add("nautec.fusion.chamber.desc", "The space inside the walls. Wider chambers hold more plasma.");
         add("nautec.fusion.parts", "Injectors: %s/%s, Coils: %s");
         add("nautec.fusion.parts.desc", "Laser Injectors feeding the crystal, and Containment Coils in the shell.");
+        add("nautec.fusion.satellites", "Satellites: %s/%s");
+        add("nautec.fusion.satellites.desc", "Cultivated Prismarine Crystals standing in the inner corners of a 7 x 7 or 9 x 9 chamber. Each adds %s FE/t to the ceiling and the maximum output, and %s FE for each AP injected.");
         add("nautec.fusion.burn", "Burn: %s mB/t");
         add("nautec.fusion.burn.desc", "Salt Water burned each tick. Each mB makes %s FE.");
         add("nautec.fusion.heat", "Plasma heat: %s%%");

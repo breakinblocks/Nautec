@@ -34,22 +34,34 @@ public final class FusionPlantTests {
     }
 
     private static BlockPos controllerPos(GameTestHelper helper) {
-        return helper.absolutePos(CORE).offset(0, 1, -RADIUS);
+        return controllerPos(helper, RADIUS);
+    }
+
+    private static BlockPos controllerPos(GameTestHelper helper, int radius) {
+        return helper.absolutePos(CORE).offset(0, 1, -radius);
     }
 
     private static BlockPos injectorPos(GameTestHelper helper) {
-        return helper.absolutePos(CORE).offset(-RADIUS, 0, 0);
+        return injectorPos(helper, RADIUS);
+    }
+
+    private static BlockPos injectorPos(GameTestHelper helper, int radius) {
+        return helper.absolutePos(CORE).offset(-radius, 0, 0);
     }
 
     private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated) {
+        return build(helper, cultivated, RADIUS);
+    }
+
+    private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated, int radius) {
         ServerLevel level = helper.getLevel();
         BlockPos core = helper.absolutePos(CORE);
-        for (int x = -RADIUS; x <= RADIUS; x++) {
+        for (int x = -radius; x <= radius; x++) {
             for (int y = -FusionStructure.FLOOR_DROP; y <= FusionStructure.CEILING_RISE; y++) {
-                for (int z = -RADIUS; z <= RADIUS; z++) {
-                    int faces = (Math.abs(x) == RADIUS ? 1 : 0)
+                for (int z = -radius; z <= radius; z++) {
+                    int faces = (Math.abs(x) == radius ? 1 : 0)
                             + (y == -FusionStructure.FLOOR_DROP || y == FusionStructure.CEILING_RISE ? 1 : 0)
-                            + (Math.abs(z) == RADIUS ? 1 : 0);
+                            + (Math.abs(z) == radius ? 1 : 0);
                     BlockState state = faces >= 2 ? NTBlocks.FUSION_CASING.get().defaultBlockState()
                             : faces == 1 ? NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get().defaultBlockState()
                             : Blocks.AIR.defaultBlockState();
@@ -60,19 +72,23 @@ public final class FusionPlantTests {
         PrismarineCrystalBlock.build(level, core, cultivated);
         level.setBlock(core.above(FusionStructure.CEILING_RISE), NTBlocks.FUSION_COLLECTOR.get().defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(core.below(FusionStructure.FLOOR_DROP), NTBlocks.FUSION_COLLECTOR.get().defaultBlockState(), Block.UPDATE_ALL);
-        level.setBlock(injectorPos(helper), NTBlocks.LASER_INJECTOR.get().defaultBlockState()
+        level.setBlock(injectorPos(helper, radius), NTBlocks.LASER_INJECTOR.get().defaultBlockState()
                 .setValue(LaserInjectorBlock.FACING, Direction.EAST), Block.UPDATE_ALL);
-        level.setBlock(controllerPos(helper), NTBlocks.FUSION_CONTROLLER.get().defaultBlockState()
+        level.setBlock(controllerPos(helper, radius), NTBlocks.FUSION_CONTROLLER.get().defaultBlockState()
                 .setValue(FusionControllerBlock.FACING, Direction.NORTH), Block.UPDATE_ALL);
-        FusionControllerBlockEntity controller = (FusionControllerBlockEntity) level.getBlockEntity(controllerPos(helper));
+        FusionControllerBlockEntity controller = (FusionControllerBlockEntity) level.getBlockEntity(controllerPos(helper, radius));
         controller.rescan(level);
         return controller;
     }
 
     private static void feedInjector(GameTestHelper helper, int power, float purity) {
+        feedInjector(helper, power, purity, RADIUS);
+    }
+
+    private static void feedInjector(GameTestHelper helper, int power, float purity, int radius) {
         helper.onEachTick(() -> {
-            if (helper.getLevel().getBlockEntity(injectorPos(helper)) instanceof LaserInjectorBlockEntity injector) {
-                BlockPos origin = injectorPos(helper).west(3);
+            if (helper.getLevel().getBlockEntity(injectorPos(helper, radius)) instanceof LaserInjectorBlockEntity injector) {
+                BlockPos origin = injectorPos(helper, radius).west(3);
                 injector.receivePower(power, Direction.EAST, origin);
                 injector.receiveNewPurity(purity, Direction.EAST, origin);
             }
@@ -194,6 +210,67 @@ public final class FusionPlantTests {
             EnergyHandler energy = level.getCapability(Capabilities.Energy.BLOCK, portPos, Direction.EAST);
             helper.assertTrue(energy != null, "the port exposes an energy handler");
             helper.succeed();
+        });
+
+        r.add("fusion/satellite_crystals_raise_ceiling_and_yield", 20, helper -> {
+            int radius = FusionStructure.MIN_SATELLITE_RADIUS;
+            int corner = FusionStructure.satelliteOffset(radius);
+            FusionControllerBlockEntity controller = build(helper, true, radius);
+            ServerLevel level = helper.getLevel();
+            BlockPos core = helper.absolutePos(CORE);
+            helper.assertTrue(controller.getStructure().formed(), "a 7x7 chamber forms, got " + controller.getStructure().problem());
+            helper.assertValueEqual(controller.getStructure().satelliteCount(), 0, "satellites before any are placed");
+            helper.assertValueEqual(controller.getStructure().fePerAp(), NTConfig.fusionFePerAp, "FE per AP with no satellites");
+
+            PrismarineCrystalBlock.build(level, core.offset(corner, 0, corner), true);
+            PrismarineCrystalBlock.build(level, core.offset(-corner, 0, -corner), true);
+            controller.rescan(level);
+            FusionStructure structure = controller.getStructure();
+            helper.assertTrue(structure.formed(), "satellites in the corners keep the chamber formed, got " + structure.problem() + " at " + structure.problemPos());
+            helper.assertValueEqual(structure.satelliteCount(), 2, "satellite count");
+            helper.assertValueEqual(structure.maxOutput(), NTConfig.fusionMaxOutput + 2 * NTConfig.fusionSatelliteContainment, "maximum output with two satellites");
+            helper.assertValueEqual(structure.ceiling(), Math.min(structure.maxOutput(),
+                    FusionStructure.chamberContainment(radius) + 2 * NTConfig.fusionSatelliteContainment), "ceiling with two satellites");
+            helper.assertValueEqual(structure.fePerAp(), NTConfig.fusionFePerAp + 2 * NTConfig.fusionSatelliteFePerAp, "FE per AP with two satellites");
+
+            BlockPos wild = core.offset(corner, 0, -corner);
+            PrismarineCrystalBlock.build(level, wild, false);
+            controller.rescan(level);
+            helper.assertValueEqual(controller.getStructure().problem(), FusionStructure.Problem.WILD_CRYSTAL, "a wild satellite");
+            helper.assertValueEqual(controller.getStructure().problemPos(), wild, "the position of the wild satellite");
+            for (int i = -3; i <= 2; i++) {
+                level.setBlock(wild.above(i), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            }
+
+            BlockPos offCorner = core.offset(corner - 1, 0, corner);
+            PrismarineCrystalBlock.build(level, offCorner, true);
+            controller.rescan(level);
+            helper.assertValueEqual(controller.getStructure().problem(), FusionStructure.Problem.INTERIOR, "a crystal outside the corners");
+            helper.succeed();
+        });
+
+        r.add("fusion/satellites_raise_output_per_ap", 300, helper -> {
+            long ignition = NTConfig.fusionIgnitionEnergy;
+            NTConfig.fusionIgnitionEnergy = 4_000;
+            int radius = FusionStructure.MIN_SATELLITE_RADIUS;
+            int corner = FusionStructure.satelliteOffset(radius);
+            FusionControllerBlockEntity controller = build(helper, true, radius);
+            BlockPos core = helper.absolutePos(CORE);
+            for (int dx = -1; dx <= 1; dx += 2) {
+                for (int dz = -1; dz <= 1; dz += 2) {
+                    PrismarineCrystalBlock.build(helper.getLevel(), core.offset(dx * corner, 0, dz * corner), true);
+                }
+            }
+            controller.rescan(helper.getLevel());
+            helper.assertValueEqual(controller.getStructure().satelliteCount(), FusionStructure.MAX_SATELLITES, "all four satellites");
+            controller.getFuelTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 10_000));
+            feedInjector(helper, 1_000, 3.0F, radius);
+            int expected = Math.min(1_000 * controller.getStructure().fePerAp(), controller.getStructure().ceiling());
+            helper.succeedWhen(() -> {
+                helper.assertTrue(controller.getStatus().running(), "the plant runs, status " + controller.getStatus());
+                helper.assertValueEqual(controller.getOutput(), expected, "output with four satellites at purity 3.0");
+                NTConfig.fusionIgnitionEnergy = ignition;
+            });
         });
     }
 }

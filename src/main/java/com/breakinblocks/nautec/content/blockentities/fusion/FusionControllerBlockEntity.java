@@ -63,7 +63,8 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
     public static final int DATA_RADIUS = 14;
     public static final int DATA_INJECTORS = 15;
     public static final int DATA_COILS = 16;
-    public static final int DATA_COUNT = 17;
+    public static final int DATA_SATELLITES = 17;
+    public static final int DATA_COUNT = 18;
 
     private final FluidTank fuel = new FluidTank(FUEL_CAPACITY) {
         @Override
@@ -101,6 +102,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
     private int visualRadius;
     private int visualHeat;
     private int visualPower;
+    private int visualSatellites;
 
     private final ContainerData data = new ContainerData() {
         @Override
@@ -123,6 +125,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
                 case DATA_RADIUS -> structure.radius();
                 case DATA_INJECTORS -> structure.injectors().size();
                 case DATA_COILS -> structure.coils();
+                case DATA_SATELLITES -> structure.satelliteCount();
                 default -> 0;
             };
         }
@@ -230,6 +233,10 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         return visualPower / (float) VISUAL_STEPS;
     }
 
+    public int getVisualSatellites() {
+        return visualSatellites;
+    }
+
     public Direction getFront() {
         return getBlockState().getValue(FusionControllerBlock.FACING);
     }
@@ -319,7 +326,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         }
 
         double quality = Math.min(1.0, purity / 3.0);
-        long potential = (long) (injected * (double) NTConfig.fusionFePerAp * quality);
+        long potential = (long) (injected * (double) structure.fePerAp() * quality);
         int space = energy.getCapacityAsInt() - energy.getAmountAsInt();
         int target = (int) Math.min(Math.min(potential, structure.ceiling()), space);
         if (target <= 0) {
@@ -397,20 +404,22 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         BlockPos core = structure.core();
         int radius = structure.radius();
         int heatStep = (int) Math.round(heatPermille() / (double) HEAT_STEPS * VISUAL_STEPS);
-        int powerStep = output <= 0 ? 0 : Math.max(1, (int) Math.round(output / (double) Math.max(1, NTConfig.fusionMaxOutput) * VISUAL_STEPS));
+        int satellites = formed ? structure.satellites() : 0;
+        int powerStep = output <= 0 ? 0 : Math.max(1, (int) Math.round(output / (double) Math.max(1, structure.maxOutput()) * VISUAL_STEPS));
         boolean active = status == Status.RUNNING || status == Status.CONTAINMENT_LIMITED;
 
         if (getBlockState().getValue(FusionControllerBlock.ACTIVE) != active) {
             level.setBlock(worldPosition, getBlockState().setValue(FusionControllerBlock.ACTIVE, active), Block.UPDATE_CLIENTS);
         }
         boolean changed = formed != visualFormed || radius != visualRadius || heatStep != visualHeat || powerStep != visualPower
-                || (core == null ? visualCore != null : !core.equals(visualCore));
+                || satellites != visualSatellites || (core == null ? visualCore != null : !core.equals(visualCore));
         if (changed) {
             this.visualFormed = formed;
             this.visualCore = core;
             this.visualRadius = radius;
             this.visualHeat = heatStep;
             this.visualPower = powerStep;
+            this.visualSatellites = satellites;
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
@@ -435,6 +444,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         out.putInt("visual_radius", visualRadius);
         out.putInt("visual_heat", visualHeat);
         out.putInt("visual_power", visualPower);
+        out.putInt("visual_satellites", visualSatellites);
     }
 
     @Override
@@ -449,6 +459,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         this.visualRadius = in.getIntOr("visual_radius", 0);
         this.visualHeat = in.getIntOr("visual_heat", 0);
         this.visualPower = in.getIntOr("visual_power", 0);
+        this.visualSatellites = in.getIntOr("visual_satellites", 0);
     }
 
     @Override

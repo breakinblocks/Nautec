@@ -49,6 +49,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         state.radius = controller.getVisualRadius();
         state.heat = controller.getVisualHeat();
         state.power = controller.getVisualPower();
+        state.satellites = controller.getVisualSatellites();
         state.ticks = (float) (controller.getLevel().getGameTime() % 72_000L) + partialTick;
     }
 
@@ -73,6 +74,18 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
                     color(0xB8A6FF, columnEnergy * 0.55F));
         }
         poseStack.popPose();
+
+        int corner = FusionStructure.satelliteOffset(state.radius);
+        for (int bit = 0; bit < FusionStructure.MAX_SATELLITES; bit++) {
+            if ((state.satellites & (1 << bit)) == 0) {
+                continue;
+            }
+            poseStack.pushPose();
+            poseStack.translate((bit & 1) != 0 ? corner : -corner, 0, (bit & 2) != 0 ? corner : -corner);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-state.ticks * (2F + 5F * state.power)));
+            cylinder(poseStack, collector, 0.7F + 0.1F * state.power, -COLUMN_HALF_HEIGHT, COLUMN_HALF_HEIGHT, color(0xB8A6FF, columnEnergy * 0.8F));
+            poseStack.popPose();
+        }
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-state.ticks * (3F + 6F * state.power)));
@@ -189,6 +202,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         public int radius;
         public float heat;
         public float power;
+        public int satellites;
         public float ticks;
     }
 }

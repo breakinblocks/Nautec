@@ -100,4 +100,8 @@ public class FusionControllerMenu extends NTAbstractContainerMenu<FusionControll
     public int getCoils() {
         return data.get(FusionControllerBlockEntity.DATA_COILS);
     }
+
+    public int getSatellites() {
+        return data.get(FusionControllerBlockEntity.DATA_SATELLITES);
+    }
 }

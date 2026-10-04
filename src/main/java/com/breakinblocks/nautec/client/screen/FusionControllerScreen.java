@@ -142,6 +142,8 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
         graphics.text(this.font, Component.translatable("nautec.fusion.parts", this.menu.getInjectors(), FusionStructure.MAX_INJECTORS, this.menu.getCoils()), x, y, READOUT_DIM, false);
         y += LINE;
         graphics.text(this.font, Component.translatable("nautec.fusion.burn", decimal(burnRate())), x, y, READOUT_DIM, false);
+        y += LINE;
+        graphics.text(this.font, Component.translatable("nautec.fusion.satellites", this.menu.getSatellites(), FusionStructure.MAX_SATELLITES), x, y, READOUT_DIM, false);
 
         List<FormattedCharSequence> footer = this.font.split(footerText(), this.imageWidth - 16);
         int fy = FOOTER_Y;
@@ -216,7 +218,7 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
         int row = mouseY - ry;
         if (row < GAUGE_Y - READOUT_Y + 6) {
             lines.add(Component.translatable("nautec.fusion.output", number(this.menu.getOutput())));
-            lines.add(Component.translatable("nautec.fusion.output.desc", number(NTConfig.fusionFePerAp)).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("nautec.fusion.output.desc", number(FusionStructure.fePerAp(this.menu.getSatellites()))).withStyle(ChatFormatting.GRAY));
             lines.add(Component.translatable("nautec.fusion.gauge.desc").withStyle(ChatFormatting.DARK_GRAY));
             return lines;
         }
@@ -228,7 +230,8 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
             }
             case 1 -> {
                 lines.add(Component.translatable("nautec.fusion.ceiling", number(this.menu.getCeiling())));
-                lines.add(Component.translatable("nautec.fusion.ceiling.desc", number(NTConfig.fusionCoilContainment), number(NTConfig.fusionMaxOutput)).withStyle(ChatFormatting.GRAY));
+                lines.add(Component.translatable("nautec.fusion.ceiling.desc", number(NTConfig.fusionCoilContainment), number(NTConfig.fusionSatelliteContainment),
+                        number(FusionStructure.maxOutput(this.menu.getSatellites()))).withStyle(ChatFormatting.GRAY));
             }
             case 2 -> {
                 int width = Math.max(0, this.menu.getRadius() * 2 - 1);
@@ -242,6 +245,11 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
             case 4 -> {
                 lines.add(Component.translatable("nautec.fusion.burn", decimal(burnRate())));
                 lines.add(Component.translatable("nautec.fusion.burn.desc", number(NTConfig.fusionFePerMb)).withStyle(ChatFormatting.GRAY));
+            }
+            case 5 -> {
+                lines.add(Component.translatable("nautec.fusion.satellites", this.menu.getSatellites(), FusionStructure.MAX_SATELLITES));
+                lines.add(Component.translatable("nautec.fusion.satellites.desc", number(NTConfig.fusionSatelliteContainment),
+                        number(NTConfig.fusionSatelliteFePerAp)).withStyle(ChatFormatting.GRAY));
             }
             default -> {
             }

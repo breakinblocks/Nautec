@@ -410,6 +410,14 @@ public final class NTConfig {
             .comment("The FE per tick each Containment Coil in the shell adds to a Fusion Plant's output ceiling")
             .defineInRange("fusionCoilContainment", 4_000, 0, Integer.MAX_VALUE / 2);
 
+    private static final ModConfigSpec.IntValue FUSION_SATELLITE_CONTAINMENT = BUILDER
+            .comment("The FE per tick each satellite crystal in the corners of a 7x7 or 9x9 Fusion Plant chamber adds to both its output ceiling and its maximum output")
+            .defineInRange("fusionSatelliteContainment", 100_000, 0, Integer.MAX_VALUE / 8);
+
+    private static final ModConfigSpec.IntValue FUSION_SATELLITE_FE_PER_AP = BUILDER
+            .comment("The FE each satellite crystal adds to what a Fusion Plant makes for each AP of injected beam")
+            .defineInRange("fusionSatelliteFePerAp", 10, 0, 100_000);
+
     private static final ModConfigSpec.DoubleValue FUSION_MIN_PURITY = BUILDER
             .comment("The lowest purity a beam entering a Laser Injector must have to count toward a Fusion Plant")
             .defineInRange("fusionMinPurity", 2.0, 0, 10);
@@ -955,6 +963,8 @@ public final class NTConfig {
     public static int fusionFePerAp = 50;
     public static int fusionMaxOutput = 300_000;
     public static int fusionCoilContainment = 4_000;
+    public static int fusionSatelliteContainment = 100_000;
+    public static int fusionSatelliteFePerAp = 10;
     public static double fusionMinPurity = 2.0;
     public static int fusionFePerMb = 2_000;
     public static int fusionEnergyBuffer = 4_000_000;
@@ -1221,6 +1231,8 @@ public final class NTConfig {
         fusionFePerAp = value(FUSION_FE_PER_AP);
         fusionMaxOutput = value(FUSION_MAX_OUTPUT);
         fusionCoilContainment = value(FUSION_COIL_CONTAINMENT);
+        fusionSatelliteContainment = value(FUSION_SATELLITE_CONTAINMENT);
+        fusionSatelliteFePerAp = value(FUSION_SATELLITE_FE_PER_AP);
         fusionMinPurity = value(FUSION_MIN_PURITY);
         fusionFePerMb = value(FUSION_FE_PER_MB);
         fusionEnergyBuffer = value(FUSION_ENERGY_BUFFER);
