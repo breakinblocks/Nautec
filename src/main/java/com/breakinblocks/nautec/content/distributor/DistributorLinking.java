@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public final class DistributorLinking {
     private static final long TIMEOUT = 20L * 60;
     private static final Map<UUID, Pending> PENDING = new HashMap<>();
+    private static final Map<UUID, Pending> CLIENT_PENDING = new HashMap<>();
 
     private record Pending(GlobalPos distributor, long expires) {
     }
@@ -47,6 +49,26 @@ public final class DistributorLinking {
         return true;
     }
 
+    public static void toggleClient(Player player, BlockPos distributor) {
+        GlobalPos target = GlobalPos.of(player.level().dimension(), distributor);
+        Pending current = CLIENT_PENDING.get(player.getUUID());
+        if (current != null && current.distributor().equals(target)) {
+            CLIENT_PENDING.remove(player.getUUID());
+        } else {
+            CLIENT_PENDING.put(player.getUUID(), new Pending(target, player.level().getGameTime() + TIMEOUT));
+        }
+    }
+
+    private static @Nullable GlobalPos clientPending(Player player) {
+        Pending pending = CLIENT_PENDING.get(player.getUUID());
+        if (pending == null || pending.expires() < player.level().getGameTime()
+                || !pending.distributor().dimension().equals(player.level().dimension())) {
+            CLIENT_PENDING.remove(player.getUUID());
+            return null;
+        }
+        return pending.distributor();
+    }
+
     public static @Nullable GlobalPos pending(ServerPlayer player) {
         Pending pending = PENDING.get(player.getUUID());
         if (pending == null || pending.expires() < player.level().getGameTime()) {
@@ -58,8 +80,20 @@ public final class DistributorLinking {
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || event.getHand() != InteractionHand.MAIN_HAND
-                || !player.isSecondaryUseActive() || !player.getMainHandItem().isEmpty()) {
+        Player eventPlayer = event.getEntity();
+        if (event.getHand() != InteractionHand.MAIN_HAND || !eventPlayer.isSecondaryUseActive() || !eventPlayer.getMainHandItem().isEmpty()) {
+            return;
+        }
+        if (event.getLevel().isClientSide()) {
+            GlobalPos source = clientPending(eventPlayer);
+            if (source != null && !source.pos().equals(event.getPos())) {
+                CLIENT_PENDING.put(eventPlayer.getUUID(), new Pending(source, eventPlayer.level().getGameTime() + TIMEOUT));
+                event.setCanceled(true);
+                event.setCancellationResult(InteractionResult.SUCCESS);
+            }
+            return;
+        }
+        if (!(eventPlayer instanceof ServerPlayer player)) {
             return;
         }
         GlobalPos source = pending(player);

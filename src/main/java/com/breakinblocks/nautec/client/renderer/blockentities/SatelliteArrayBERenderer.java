@@ -37,6 +37,7 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
     private static final int FULL_BRIGHT = 15728880;
 
     private final ItemModelResolver itemModelResolver;
+    private @Nullable ItemStack satelliteStack;
 
     public SatelliteArrayBERenderer(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
@@ -67,7 +68,7 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
         state.launch = array.getLaunchedAt() == Long.MIN_VALUE ? 1F
                 : Mth.clamp((gameTime - array.getLaunchedAt() + partialTick) / SatelliteArrayBlockEntity.LAUNCH_TICKS, 0F, 1F);
         if (state.uplink && state.satellite) {
-            this.itemModelResolver.updateForTopItem(state.item, new ItemStack(NTItems.PRISM_SATELLITE.get()), ItemDisplayContext.FIXED,
+            this.itemModelResolver.updateForTopItem(state.item, satelliteStack(), ItemDisplayContext.FIXED,
                     array.getLevel(), null, 0);
         } else {
             state.item.clear();
@@ -106,6 +107,13 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
             LaserBeamRenderer.submitBeam(poseStack, collector, sky, focus, 0.1F, beam, true);
             LaserBeamRenderer.submitFlare(poseStack, collector, focus, 0.22F + 0.08F * pulse, beam, true);
         }
+    }
+
+    private ItemStack satelliteStack() {
+        if (satelliteStack == null) {
+            satelliteStack = new ItemStack(NTItems.PRISM_SATELLITE.get());
+        }
+        return satelliteStack;
     }
 
     private static Vector3f satellitePosition(ArrayRenderState state, Vector3f focus) {

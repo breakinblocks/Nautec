@@ -71,16 +71,17 @@ public class AquarineSwordItem extends Item implements IPowerItem {
 
     @Override
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
-        if(NTDataComponentsUtils.isAbilityEnabled(stack)){
+        AttributeModifier modifier = DISABLED_DAMAGE;
+        if (NTDataComponentsUtils.isAbilityEnabled(stack)) {
             IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
-            ItemAttributeModifiers attributes = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
-            boolean hasEnergy = powerStorage.getPowerStored() > 0;
-            attributes = attributes.withModifierAdded(Attributes.ATTACK_DAMAGE, hasEnergy ? ENABLED_DAMAGE : DISABLED_DAMAGE, EquipmentSlotGroup.MAINHAND);
-            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attributes);
-        } else {
-            ItemAttributeModifiers attributes = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
-            attributes = attributes.withModifierAdded(Attributes.ATTACK_DAMAGE, DISABLED_DAMAGE, EquipmentSlotGroup.MAINHAND);
-            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, attributes);
+            if (powerStorage.getPowerStored() > 0) {
+                modifier = ENABLED_DAMAGE;
+            }
+        }
+        ItemAttributeModifiers current = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        ItemAttributeModifiers updated = current.withModifierAdded(Attributes.ATTACK_DAMAGE, modifier, EquipmentSlotGroup.MAINHAND);
+        if (!updated.equals(current)) {
+            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, updated);
         }
         super.inventoryTick(stack, level, entity, slot);
     }

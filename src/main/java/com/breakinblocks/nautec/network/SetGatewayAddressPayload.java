@@ -18,6 +18,7 @@ public record SetGatewayAddressPayload(BlockPos pos, GatewayAddress address) imp
     public static final Type<SetGatewayAddressPayload> TYPE = new Type<>(Nautec.rl("set_gateway_address"));
 
     private static final double REACH = 16.0;
+    private static final int THROTTLE_TICKS = 3;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetGatewayAddressPayload> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, SetGatewayAddressPayload::pos,
@@ -38,7 +39,8 @@ public record SetGatewayAddressPayload(BlockPos pos, GatewayAddress address) imp
             }
 
             BlockPos pos = payload.pos();
-            if (!player.blockPosition().closerThan(pos, REACH + 4.0)
+            if (!pos.equals(ServerPacketGuards.openGateway(player))
+                    || !player.blockPosition().closerThan(pos, REACH)
                     || !level.isLoaded(pos)
                     || !(level.getBlockEntity(pos) instanceof GatewayBlockEntity gateway)) {
                 return;
@@ -46,7 +48,7 @@ public record SetGatewayAddressPayload(BlockPos pos, GatewayAddress address) imp
 
             GatewayAddress current = gateway.getAddress();
             GatewayAddress wanted = payload.address();
-            if (current.equals(wanted)) {
+            if (current.equals(wanted) || !ServerPacketGuards.allow(player, "gateway_address", THROTTLE_TICKS)) {
                 return;
             }
 

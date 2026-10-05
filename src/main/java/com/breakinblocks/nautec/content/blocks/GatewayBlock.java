@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.network.OpenGatewayScreenPayload;
+import com.breakinblocks.nautec.network.ServerPacketGuards;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.registries.NTSounds;
@@ -221,6 +222,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
 
     public static InteractionResult openScreen(Player player, GatewayBlockEntity gateway) {
         if (player instanceof ServerPlayer serverPlayer) {
+            ServerPacketGuards.openGateway(serverPlayer, gateway.getBlockPos());
             PacketDistributor.sendToPlayer(serverPlayer, new OpenGatewayScreenPayload(gateway.getBlockPos(), gateway.getAddress()));
         }
         return InteractionResult.SUCCESS;

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -27,6 +28,7 @@ public final class PrismarineCrystalRenderer {
 
     private static final float FLOOR_Y = -2.98F;
     private static final float HALO_RADIUS = 1.5F;
+    private static final float SHARD_LOD_RATIO = 80F;
 
     private static final Shard[] SHARDS = {
             new Shard(1.05F, -1.35F, 0.0F, 0.62F, 0.85F, 0.18F),
@@ -64,6 +66,11 @@ public final class PrismarineCrystalRenderer {
         JsonMesh.submitTranslucent(poseStack, collector, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash), world);
         poseStack.popPose();
 
+        if (world && farAway(poseStack.last().pose())) {
+            poseStack.popPose();
+            return;
+        }
+
         JsonMesh.Part shard = JsonMesh.PRISMARINE_CRYSTAL.part("shard");
         for (Shard s : SHARDS) {
             float orbit = s.start + phase + ticks * 0.012F * Math.signum(s.spin);
@@ -77,6 +84,12 @@ public final class PrismarineCrystalRenderer {
         }
 
         poseStack.popPose();
+    }
+
+    private static boolean farAway(Matrix4f pose) {
+        float distanceSqr = pose.m30() * pose.m30() + pose.m31() * pose.m31() + pose.m32() * pose.m32();
+        float scaleSqr = pose.m00() * pose.m00() + pose.m01() * pose.m01() + pose.m02() * pose.m02();
+        return scaleSqr * SHARD_LOD_RATIO * SHARD_LOD_RATIO < distanceSqr;
     }
 
     public static long seed(BlockPos pos) {

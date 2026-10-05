@@ -42,7 +42,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import com.breakinblocks.nautec.data.components.SubmarineModuleState;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
@@ -65,6 +67,7 @@ public class SubmarineModules {
     private final long[] readyAt = new long[SubmarineEntity.MODULE_SLOTS];
     private final int[] cooldownTicks = new int[SubmarineEntity.MODULE_SLOTS];
     private final int[] activeTicks = new int[SubmarineEntity.MODULE_SLOTS];
+    private final Map<SubmarineModuleType, Long> typeReadyAt = new EnumMap<>(SubmarineModuleType.class);
 
     private int boostTicks;
     private int stealthTicks;
@@ -111,6 +114,10 @@ public class SubmarineModules {
             readyAt[slot] = submarine.level().getGameTime() + left;
             cooldownTicks[slot] = left;
             activeTicks[slot] = slot < state.active().size() ? state.active().get(slot) : 0;
+            SubmarineModuleType type = submarine.getModuleType(slot);
+            if (type != null) {
+                typeReadyAt.merge(type, readyAt[slot], Math::max);
+            }
         }
         boostTicks = state.boost();
         stealthTicks = state.stealth();
@@ -157,6 +164,7 @@ public class SubmarineModules {
             this.cooldownTicks[slot] = 0;
             this.activeTicks[slot] = 0;
         }
+        this.typeReadyAt.clear();
     }
 
     public void sendCooldownSnapshot(ServerPlayer player) {
@@ -209,6 +217,9 @@ public class SubmarineModules {
     }
 
     public boolean isTypeReady(SubmarineModuleType type) {
+        if (this.submarine.level().getGameTime() < this.typeReadyAt.getOrDefault(type, 0L)) {
+            return false;
+        }
         for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
             if (this.submarine.getModuleType(slot) == type && !isReady(slot)) {
                 return false;
@@ -218,6 +229,7 @@ public class SubmarineModules {
     }
 
     private void startTypeCooldown(SubmarineModuleType type, int cooldown, int active) {
+        this.typeReadyAt.put(type, this.submarine.level().getGameTime() + cooldown);
         for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
             if (this.submarine.getModuleType(slot) == type) {
                 startCooldown(slot, cooldown, active);
@@ -449,7 +461,8 @@ public class SubmarineModules {
         }
 
         ServerLevel destination = resolveDestination(anchor);
-        if (destination == null || !isDestinationClear(destination, anchor)) {
+        if (destination == null
+                || (destination.isLoaded(anchor.pos().pos()) && !isDestinationClear(destination, anchor))) {
             refuse(pilot, "destination_blocked");
             return false;
         }

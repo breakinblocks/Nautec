@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
+import com.google.common.base.Suppliers;
 
 public class AugmentationStationBlockEntity extends ContainerBlockEntity implements MultiblockEntity {
     public static final int STATUS_READY = 0;
@@ -279,6 +281,10 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     }
 
     public int getStatus() {
+        return getStatus(this::getRecipe);
+    }
+
+    private int getStatus(Supplier<Optional<AugmentationRecipe>> recipeLookup) {
         if (isRunning) {
             return STATUS_RUNNING;
         }
@@ -302,7 +308,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         if (!loaded) {
             return STATUS_EMPTY;
         }
-        if (getRecipe().isEmpty()) {
+        if (recipeLookup.get().isEmpty()) {
             return STATUS_NO_RECIPE;
         }
         for (BlockPos pos : augmentItems.keySet()) {
@@ -319,8 +325,9 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     }
 
     private void sendStatus(ServerPlayer player, boolean open) {
-        int status = getStatus();
-        Optional<AugmentationRecipe> available = status == STATUS_RUNNING ? Optional.ofNullable(recipe) : getRecipe();
+        Supplier<Optional<AugmentationRecipe>> recipeLookup = Suppliers.memoize(this::getRecipe);
+        int status = getStatus(recipeLookup);
+        Optional<AugmentationRecipe> available = status == STATUS_RUNNING ? Optional.ofNullable(recipe) : recipeLookup.get();
         List<AugmentationStationSyncPayload.Extension> extensions = new ArrayList<>();
         for (Direction direction : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
             BlockPos pos = worldPosition.relative(direction, 2);

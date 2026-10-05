@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.api.blockentities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -10,12 +11,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -28,16 +29,21 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 public abstract class LaserBlockEntity extends ContainerBlockEntity {
     protected final Object2IntMap<Direction> laserDistances;
-    private final Object2ObjectMap<Direction, Object2IntMap<ItemEntity>> activeTransformations;
+    private static final int PROCESS_INTERVAL = 5;
+
+    private final Object2ObjectMap<Direction, Map<ItemEntity, Transformation>> activeTransformations;
+    private final RecipeRevision recipeRevision = new RecipeRevision();
 
     private int powerToTransfer;
     protected int power;
@@ -164,20 +170,22 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
             checkConnections();
         }
 
+        boolean processing = !level.isClientSide()
+                && (level.getGameTime() + Math.floorMod(worldPosition.hashCode(), PROCESS_INTERVAL)) % PROCESS_INTERVAL == 0;
+        if (processing && level instanceof ServerLevel serverLevel && recipeRevision.changed(serverLevel)) {
+            activeTransformations.clear();
+        }
         for (Direction direction : getLaserOutputs()) {
             int distance = this.laserDistances.getInt(direction);
             if (distance > 0) {
-                AABB box = createLaserBeamAABB(direction, distance);
-
-                if (!level.isClientSide() && outgoingPower(direction) > 0) {
-                    damageLivingEntities(box);
-                    processItemCrafting(box, direction);
-                } else if (!level.isClientSide()) {
+                if (!level.isClientSide() && outgoingPower(direction) <= 0) {
                     activeTransformations.remove(direction);
+                } else if (processing) {
+                    processBeam(createLaserBeamAABB(direction, distance), direction);
                 }
 
                 BlockPos targetPos = worldPosition.relative(direction, distance);
-                if (level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
+                if (level.isLoaded(targetPos) && level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
                     laserBE.receivePower(outgoingPower(direction), direction, worldPosition);
                     laserBE.receiveNewPurity(outgoingPurity(direction), direction, worldPosition);
                 }
@@ -222,13 +230,6 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return highest - (highest - average) * (float) NTConfig.beamMergePurityDrop;
     }
 
-    private void damageLivingEntities(AABB box) {
-        List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, box);
-        for (LivingEntity livingEntity : livingEntities) {
-            livingEntity.hurt(level.damageSources().inFire(), 3);
-        }
-    }
-
     private Optional<ItemTransformationRecipe> getCurrentRecipe(ItemStack itemStack, float beamPurity) {
         if (!(this.level instanceof ServerLevel serverLevel)) {
             return Optional.empty();
@@ -258,48 +259,72 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
     }
 
-    private void processItemCrafting(AABB box, Direction direction) {
-        List<ItemEntity> itemEntities = level.getEntitiesOfClass(ItemEntity.class, box);
+    private void processBeam(AABB box, Direction direction) {
+        Map<ItemEntity, Transformation> tracked = activeTransformations.get(direction);
         float beamPurity = outgoingPurity(direction);
+        for (Entity entity : level.getEntities((Entity) null, box, candidate -> candidate instanceof LivingEntity || candidate instanceof ItemEntity)) {
+            if (entity instanceof LivingEntity livingEntity) {
+                livingEntity.hurt(level.damageSources().inFire(), 3);
+            } else if (entity instanceof ItemEntity itemEntity) {
+                if (tracked == null) {
+                    tracked = new IdentityHashMap<>();
+                    activeTransformations.put(direction, tracked);
+                }
+                tracked.computeIfAbsent(itemEntity, ignored -> new Transformation());
+            }
+        }
+        if (tracked == null) {
+            return;
+        }
 
-        for (ItemEntity itemEntity : itemEntities) {
-            if (!activeTransformations.containsKey(direction) || !activeTransformations.get(direction).containsKey(itemEntity)) {
-                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(itemEntity.getItem(), beamPurity);
-                if (optionalRecipe.isPresent()) {
-                    if (!activeTransformations.containsKey(direction)) {
-                        activeTransformations.put(direction, new Object2IntArrayMap<>());
-                    }
-                    activeTransformations.get(direction).put(itemEntity, 0);
+        Iterator<Map.Entry<ItemEntity, Transformation>> iterator = tracked.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<ItemEntity, Transformation> entry = iterator.next();
+            ItemEntity cookingItem = entry.getKey();
+            Transformation transformation = entry.getValue();
+
+            if (!cookingItem.isAlive() || !box.intersects(cookingItem.getBoundingBox())) {
+                iterator.remove();
+                continue;
+            }
+
+            ItemTransformationRecipe recipe = transformation.recipe(cookingItem.getItem(), beamPurity);
+            if (recipe == null) {
+                continue;
+            }
+            if (!transformation.started) {
+                transformation.started = true;
+                continue;
+            }
+            if (transformation.progress >= recipe.duration()) {
+                spawnTransformationResult(cookingItem, recipe);
+                iterator.remove();
+            } else {
+                transformation.progress += PROCESS_INTERVAL;
+                if (level instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(ParticleTypes.END_ROD, cookingItem.getX(), cookingItem.getY() + 0.25, cookingItem.getZ(), 6, 0.25, 0.25, 0.25, 0.01);
                 }
             }
         }
+        if (tracked.isEmpty()) {
+            activeTransformations.remove(direction);
+        }
+    }
 
-        if (activeTransformations.containsKey(direction) && !activeTransformations.get(direction).isEmpty()) {
-            Object2IntMap<ItemEntity> activeTransformation = activeTransformations.get(direction);
-            ObjectIterator<Object2IntMap.Entry<ItemEntity>> iterator = activeTransformation.object2IntEntrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<ItemEntity, Integer> entry = iterator.next();
-                ItemEntity cookingItem = entry.getKey();
-                int cookTime = entry.getValue();
+    private final class Transformation {
+        private ItemStack key = ItemStack.EMPTY;
+        private float purity = Float.NaN;
+        private @Nullable ItemTransformationRecipe recipe;
+        private boolean started;
+        private int progress;
 
-                if (!cookingItem.isAlive() || !box.intersects(cookingItem.getBoundingBox())) {
-                    iterator.remove();
-                    continue;
-                }
-
-                Optional<ItemTransformationRecipe> optionalRecipe = getCurrentRecipe(cookingItem.getItem(), beamPurity);
-                if (optionalRecipe.isPresent()) {
-                    if (cookTime >= optionalRecipe.get().duration()) {
-                        spawnTransformationResult(cookingItem, optionalRecipe.get());
-                        iterator.remove();
-                    } else {
-                        activeTransformation.put(cookingItem, cookTime + 1);
-                        if (level instanceof ServerLevel serverLevel && cookTime % 5 == 0) {
-                            serverLevel.sendParticles(ParticleTypes.END_ROD, cookingItem.getX(), cookingItem.getY() + 0.25, cookingItem.getZ(), 6, 0.25, 0.25, 0.25, 0.01);
-                        }
-                    }
-                }
+        private @Nullable ItemTransformationRecipe recipe(ItemStack stack, float beamPurity) {
+            if (purity != beamPurity || !ItemStack.matches(key, stack)) {
+                key = stack.copy();
+                purity = beamPurity;
+                recipe = getCurrentRecipe(stack, beamPurity).orElse(null);
             }
+            return recipe;
         }
     }
 
@@ -334,7 +359,10 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     }
 
     public BeamScan scanBeam(Direction direction) {
-        int maxLaserDistance = getMaxLaserDistance();
+        int maxLaserDistance = loadedReach(direction, getMaxLaserDistance());
+        if (maxLaserDistance <= 0) {
+            return new BeamScan(direction, BeamScan.Status.NO_TARGET, 0);
+        }
         Vec3 from = worldPosition.relative(direction).getCenter();
         Vec3 to = worldPosition.relative(direction, maxLaserDistance).getCenter();
         BlockHitResult blockHitResult = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
@@ -358,6 +386,15 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
             return new BeamScan(direction, BeamScan.Status.BLOCKED, hitDistance);
         }
         return new BeamScan(direction, BeamScan.Status.NO_TARGET, 0);
+    }
+
+    protected int loadedReach(Direction direction, int maxDistance) {
+        for (int i = 1; i <= maxDistance; i++) {
+            if (!level.isLoaded(worldPosition.relative(direction, i))) {
+                return i - 1;
+            }
+        }
+        return maxDistance;
     }
 
     protected void checkConnections() {

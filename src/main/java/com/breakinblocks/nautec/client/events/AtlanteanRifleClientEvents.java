@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.client.events;
 
-import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.render.AtlanteanRifleBeamRenderer;
 import com.breakinblocks.nautec.client.sound.AtlanteanRifleChargeSound;
@@ -55,6 +54,7 @@ public final class AtlanteanRifleClientEvents {
             return;
         }
 
+        AtlanteanRifleBeamRenderer.tick(level);
         CHARGE_SOUNDS.values().removeIf(AbstractTickableSoundInstance::isStopped);
         FIRE_SOUNDS.values().removeIf(AbstractTickableSoundInstance::isStopped);
 
@@ -83,7 +83,7 @@ public final class AtlanteanRifleClientEvents {
     }
 
     private static void spawnImpact(ClientLevel level, Player player, float ramp) {
-        for (AtlanteanRifleBeam.Hit hit : AtlanteanRifleBeam.traceAll(level, player, NTConfig.rifleRange, 1.0F)) {
+        for (AtlanteanRifleBeam.Hit hit : AtlanteanRifleBeamRenderer.trace(level, player, 1.0F)) {
             if (hit.impact()) {
                 spawnImpact(level, hit.end(), ramp);
             }

@@ -58,11 +58,10 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
         for (Direction direction : blockEntity.getLaserOutputs()) {
             int laserDistance = laserDistances.getOrDefault(direction, 0);
 
-            BlockPos originPos = blockEntity.getBlockPos();
-            BlockPos targetPos = originPos.relative(direction, laserDistance - 1);
-            BlockState blockState = blockEntity.getLevel().getBlockState(targetPos.relative(direction));
             if (laserDistance > 0 && blockEntity.shouldRender(direction)) {
-                VoxelShape shape = blockState.getShape(blockEntity.getLevel(), targetPos.relative(direction), CollisionContext.empty());
+                BlockPos hitPos = blockEntity.getBlockPos().relative(direction, laserDistance);
+                BlockState blockState = blockEntity.getLevel().getBlockState(hitPos);
+                VoxelShape shape = blockState.getShape(blockEntity.getLevel(), hitPos, CollisionContext.empty());
                 if (shape.isEmpty()) {
                     state.beams.add(new LaserRenderState.Beam(direction, laserDistance, 0.5F, false));
                     continue;

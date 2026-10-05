@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SetSideConfigPayload(int containerId, int kind, int face, int mode) implements CustomPacketPayload {
+    private static final int THROTTLE_TICKS = 2;
     public static final Type<SetSideConfigPayload> TYPE = new Type<>(Nautec.rl("set_side_config"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SetSideConfigPayload> STREAM_CODEC = StreamCodec.composite(
@@ -44,7 +45,7 @@ public record SetSideConfigPayload(int containerId, int kind, int face, int mode
                 return;
             }
             SideKind kind = SideKind.values()[payload.kind()];
-            if (!menu.blockEntity.hasSideConfig(kind)) {
+            if (!menu.blockEntity.hasSideConfig(kind) || !ServerPacketGuards.allow(player, "side_config", THROTTLE_TICKS)) {
                 return;
             }
             menu.blockEntity.setSideMode(kind, RelativeFace.values()[payload.face()], SideMode.values()[payload.mode()]);

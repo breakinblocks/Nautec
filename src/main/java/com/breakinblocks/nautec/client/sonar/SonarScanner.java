@@ -6,8 +6,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
@@ -74,13 +78,24 @@ public final class SonarScanner {
     }
 
     private void scanSection(SectionPos section) {
+        LevelChunkSection chunkSection = null;
+        if (level instanceof LevelReader reader) {
+            ChunkAccess chunk = reader.getChunk(section.x(), section.z(), ChunkStatus.FULL, false);
+            if (chunk == null) return;
+            int index = chunk.getSectionIndexFromSectionY(section.y());
+            if (index < 0 || index >= chunk.getSectionsCount()) return;
+            chunkSection = chunk.getSection(index);
+            if (chunkSection.hasOnlyAir() || !chunkSection.maybeHas(state -> state.is(Tags.Blocks.ORES))) return;
+        }
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int x = section.minBlockX(); x <= section.maxBlockX(); x++) {
             for (int y = section.minBlockY(); y <= section.maxBlockY(); y++) {
                 for (int z = section.minBlockZ(); z <= section.maxBlockZ(); z++) {
                     if (center.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) > radiusSquared) continue;
                     cursor.set(x, y, z);
-                    BlockState state = level.getBlockState(cursor);
+                    BlockState state = chunkSection != null
+                            ? chunkSection.getBlockState(x & 15, y & 15, z & 15)
+                            : level.getBlockState(cursor);
                     if (!state.is(Tags.Blocks.ORES)) continue;
                     Identifiable ore = identities.computeIfAbsent(state.getBlock(), block ->
                             new Identifiable(block.getDescriptionId(), colorFor(block.getDescriptionId())));

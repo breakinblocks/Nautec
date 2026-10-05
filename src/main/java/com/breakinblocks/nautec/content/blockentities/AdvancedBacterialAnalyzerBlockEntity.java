@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.content.blocks.AdvancedBacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.menus.AdvancedBacterialAnalyzerMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,9 +45,9 @@ public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity imple
     public static final int STATUS_LOW_POWER = 3;
     public static final int STATUS_LOW_PURITY = 4;
 
-    public static final int DATA_DURATION = DISHES;
-    public static final int DATA_STATUS = DISHES + 1;
-    public static final int DATA_COUNT = DISHES + 2;
+    public static final int DATA_DURATION = DISHES * 2;
+    public static final int DATA_STATUS = DISHES * 2 + 2;
+    public static final int DATA_COUNT = DISHES * 2 + 3;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(SlotRoles.range(0, DISHES), SlotRoles.range(FIRST_OUTPUT, FIRST_OUTPUT + DISHES));
 
@@ -56,11 +57,13 @@ public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity imple
     private final ContainerData data = new ContainerData() {
         @Override
         public int get(int index) {
-            if (index < DISHES) {
-                return progress[index];
+            if (index < DATA_DURATION) {
+                int value = progress[index / 2];
+                return index % 2 == 0 ? ResonancePylonBlockEntity.low(value) : ResonancePylonBlockEntity.high(value);
             }
             return switch (index) {
-                case DATA_DURATION -> NTConfig.advancedAnalyzerCraftingSpeed;
+                case DATA_DURATION -> ResonancePylonBlockEntity.low(NTConfig.advancedAnalyzerCraftingSpeed);
+                case DATA_DURATION + 1 -> ResonancePylonBlockEntity.high(NTConfig.advancedAnalyzerCraftingSpeed);
                 case DATA_STATUS -> status;
                 default -> 0;
             };

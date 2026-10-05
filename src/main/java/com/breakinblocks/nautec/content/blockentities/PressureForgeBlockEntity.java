@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -57,8 +58,16 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         }
     }
 
+    private static final int PRESSURE_CHECK_INTERVAL = 20;
+
     private int progress;
     private Synthesizer synthesizer = Synthesizer.NONE;
+    private final RecipeRevision recipeRevision = new RecipeRevision();
+    private boolean recipeDirty = true;
+    private float cachedPurity = Float.NaN;
+    private @Nullable PressureForgingRecipe cachedRecipe;
+    private boolean pressureKnown;
+    private boolean pressurised;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[]{1});
     private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
@@ -82,6 +91,8 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         ItemStack previous = this.synthesizer.stack();
         this.synthesizer = synthesizer;
         this.progress = 0;
+        this.pressureKnown = false;
+        this.recipeDirty = true;
         setChanged();
         if (level != null && !level.isClientSide()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -167,16 +178,36 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
 
     private @Nullable PressureForgingRecipe currentRecipe(ServerLevel level) {
         ItemStack input = getItemStackHandler().getStackInSlot(0);
-        if (input.isEmpty() || !isPressurised()) {
+        if (input.isEmpty()) {
             return null;
         }
+        if (!pressureKnown || level.getGameTime() % PRESSURE_CHECK_INTERVAL == 0) {
+            pressureKnown = true;
+            pressurised = isPressurised();
+        }
+        if (!pressurised) {
+            return null;
+        }
+        float purity = getPurity();
+        if (recipeRevision.changed(level) || recipeDirty || purity != cachedPurity) {
+            recipeDirty = false;
+            cachedPurity = purity;
+            cachedRecipe = level.recipeAccess()
+                    .getRecipeFor(PressureForgingRecipe.Type.INSTANCE,
+                            new PressureForgingRecipeInput(input, purity,
+                                    synthesizer == Synthesizer.ATLANTEAN ? Integer.MIN_VALUE : worldPosition.getY()), level)
+                    .map(RecipeHolder::value)
+                    .orElse(null);
+        }
+        return cachedRecipe;
+    }
 
-        return level.recipeAccess()
-                .getRecipeFor(PressureForgingRecipe.Type.INSTANCE,
-                        new PressureForgingRecipeInput(input, getPurity(),
-                                synthesizer == Synthesizer.ATLANTEAN ? Integer.MIN_VALUE : worldPosition.getY()), level)
-                .map(RecipeHolder::value)
-                .orElse(null);
+    @Override
+    protected void onItemsChanged(int slot) {
+        super.onItemsChanged(slot);
+        if (slot == 0) {
+            recipeDirty = true;
+        }
     }
 
     @Override

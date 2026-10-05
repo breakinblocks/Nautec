@@ -5,10 +5,11 @@ import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.registries.NTFluids;
 import java.util.Optional;
-import com.breakinblocks.nautec.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.PowerParticleOption;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,14 +43,21 @@ public class ItemInfusion {
     private static final int MAX_INFUSION_TIME = 150;
     private static final int PARTICLE_INTERVAL = 5;
     private static final int SOUND_INTERVAL = 50;
+    private static final int PARTICLE_COUNT = 20;
+    private static final double PARTICLE_RADIUS = 0.3;
     private static final float SOUND_VOLUME = 1.0F;
     private static final float SOUND_PITCH = 1.0F;
 
     public static void cancel(ItemEntity itemEntity) {
-        itemEntity.removeData(NTDataAttachments.ITEM_INFUSION);
+        if (itemEntity.hasData(NTDataAttachments.ITEM_INFUSION)) {
+            itemEntity.removeData(NTDataAttachments.ITEM_INFUSION);
+        }
     }
 
     public static void processPowerItemInfusion(ItemEntity itemEntity, Level level) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
         ItemStack stack = itemEntity.getItem();
         if (!(stack.getItem() instanceof IPowerItem) || NTDataComponentsUtils.isInfused(stack)) {
             cancel(itemEntity);
@@ -67,22 +75,24 @@ public class ItemInfusion {
             ItemInfusion infusionData = active.get();
 
             if (infusionData.getInfusionProgress() >= MAX_INFUSION_TIME) {
-                NTDataComponentsUtils.setInfusedStatus(stack, true);
+                ItemStack infused = stack.copy();
+                NTDataComponentsUtils.setInfusedStatus(infused, true);
+                itemEntity.setItem(infused);
 
-                spawnCompletionEffects(itemEntity, level);
+                spawnCompletionEffects(itemEntity, serverLevel);
 
                 cancel(itemEntity);
 
                 BlockPos originalFluidPos = infusionData.getOriginalFluidPos();
-                if (!level.isClientSide() && level.getFluidState(originalFluidPos).is(NTFluids.EAS.getStillFluid())
+                if (level.getFluidState(originalFluidPos).is(NTFluids.EAS.getStillFluid())
                         && level.getFluidState(originalFluidPos).isSource()) {
                     level.setBlock(originalFluidPos, Blocks.AIR.defaultBlockState(), 11);
                 }
             } else {
                 infusionData.incrementInfusionProgress();
 
-                if (infusionData.getInfusionProgress() % PARTICLE_INTERVAL == 0 && level.isClientSide()) {
-                    ParticleUtils.spawnParticlesAroundItem(itemEntity, level, ParticleTypes.ENCHANT);
+                if (infusionData.getInfusionProgress() % PARTICLE_INTERVAL == 0) {
+                    spawnParticles(itemEntity, serverLevel, ParticleTypes.ENCHANT);
                 }
 
                 if (infusionData.getInfusionProgress() % SOUND_INTERVAL == 0) {
@@ -93,10 +103,12 @@ public class ItemInfusion {
         }
     }
 
-    private static void spawnCompletionEffects(ItemEntity itemEntity, Level level) {
-        if (level.isClientSide()) {
-            ParticleUtils.spawnParticlesAroundItem(itemEntity, level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F));
-        }
+    private static void spawnParticles(ItemEntity itemEntity, ServerLevel level, ParticleOptions particle) {
+        level.sendParticles(particle, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), PARTICLE_COUNT, PARTICLE_RADIUS, PARTICLE_RADIUS, PARTICLE_RADIUS, 0);
+    }
+
+    private static void spawnCompletionEffects(ItemEntity itemEntity, ServerLevel level) {
+        spawnParticles(itemEntity, level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F));
 
         level.playSound(null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(),
                 SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, SOUND_VOLUME, SOUND_PITCH);

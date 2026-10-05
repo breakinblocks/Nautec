@@ -52,8 +52,28 @@ public final class SubmarineCollision {
     public static boolean blocked(Level level, Entity entity, Vec3 position, float yawDegrees, float pitchDegrees) {
         float pitchRad = pitchDegrees * Mth.DEG_TO_RAD;
         float yawRad = yawDegrees * Mth.DEG_TO_RAD;
-        for (Vec3 offset : SHELL) {
-            Vec3 world = position.add(offset.xRot(pitchRad).yRot(-yawRad));
+        Vec3[] points = new Vec3[SHELL.length];
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE;
+        double maxY = -Double.MAX_VALUE;
+        double maxZ = -Double.MAX_VALUE;
+        for (int i = 0; i < SHELL.length; i++) {
+            Vec3 world = position.add(SHELL[i].xRot(pitchRad).yRot(-yawRad));
+            points[i] = world;
+            minX = Math.min(minX, world.x);
+            minY = Math.min(minY, world.y);
+            minZ = Math.min(minZ, world.z);
+            maxX = Math.max(maxX, world.x);
+            maxY = Math.max(maxY, world.y);
+            maxZ = Math.max(maxZ, world.z);
+        }
+        AABB hull = new AABB(minX - MARGIN, minY - MARGIN, minZ - MARGIN, maxX + MARGIN, maxY + MARGIN, maxZ + MARGIN);
+        if (!level.getBlockCollisions(entity, hull).iterator().hasNext()) {
+            return false;
+        }
+        for (Vec3 world : points) {
             AABB probe = new AABB(world.x - MARGIN, world.y - MARGIN, world.z - MARGIN,
                     world.x + MARGIN, world.y + MARGIN, world.z + MARGIN);
             if (level.getBlockCollisions(entity, probe).iterator().hasNext()) {

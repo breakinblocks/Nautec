@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -23,6 +24,7 @@ import java.util.Map;
 public abstract class BacteriaCategory<T> extends AbstractRecipeCategory<T> {
     private static final Identifier BACTERIA_SLOT_SPRITE = Nautec.rl("container/bacteria_slot");
     private final Map<T, List<BacteriaSlot>> slots;
+    private RegistryAccess slotsAccess;
 
     protected BacteriaCategory(IRecipeType<T> recipeType, Component title, IDrawable icon, int width, int height) {
         super(recipeType, title, icon, width, height);
@@ -53,8 +55,19 @@ public abstract class BacteriaCategory<T> extends AbstractRecipeCategory<T> {
     }
 
     public void addBacteriaSlot(T recipe, int x, int y, ResourceKey<Bacteria> bacteria) {
-        BacteriaInstance instance = BacteriaInstance.withMaxStats(bacteria, Minecraft.getInstance().level.registryAccess());
-        this.slots.computeIfAbsent(recipe, key -> new ArrayList<>()).add(new BacteriaSlot(instance, x, y));
+        RegistryAccess access = Minecraft.getInstance().level.registryAccess();
+        if (access != this.slotsAccess) {
+            this.slots.clear();
+            this.slotsAccess = access;
+        }
+        List<BacteriaSlot> recipeSlots = this.slots.computeIfAbsent(recipe, key -> new ArrayList<>());
+        for (BacteriaSlot slot : recipeSlots) {
+            if (slot.x == x && slot.y == y && slot.bacteria.getBacteria().equals(bacteria)) {
+                return;
+            }
+        }
+        recipeSlots.removeIf(slot -> slot.x == x && slot.y == y);
+        recipeSlots.add(new BacteriaSlot(BacteriaInstance.withMaxStats(bacteria, access), x, y));
     }
 
     public record BacteriaSlot(BacteriaInstance bacteria, int x, int y) {

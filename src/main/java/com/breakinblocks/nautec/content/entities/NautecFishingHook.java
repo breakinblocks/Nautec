@@ -35,6 +35,7 @@ public class NautecFishingHook extends FishingHook {
     public static final int REEL_WINDOW_TICKS = 40;
     public static final int WIN_SCREEN_TICKS = 10;
     public static final int REPORT_GRACE_TICKS = 20;
+    public static final int EARLY_REPORT_TOLERANCE_TICKS = 10;
 
     private int holdBiteUntil = -1;
     private boolean biteAnnounced;
@@ -146,6 +147,11 @@ public class NautecFishingHook extends FishingHook {
         int elapsed = this.tickCount - this.challengeStartedAt;
         if (elapsed > FishingMinigame.DURATION_TICKS + REPORT_GRACE_TICKS) {
             return;
+        }
+        for (int tick : reportedTicks) {
+            if (tick > elapsed + EARLY_REPORT_TOLERANCE_TICKS) {
+                return;
+            }
         }
 
         this.challengeStartedAt = -1;

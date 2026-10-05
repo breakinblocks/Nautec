@@ -362,7 +362,8 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
                 }
                 if (newBeam != beam) {
                     beam = newBeam;
-                    sync();
+                    setChanged();
+                    requestSync();
                 }
                 flow = beam;
                 push(serverLevel);

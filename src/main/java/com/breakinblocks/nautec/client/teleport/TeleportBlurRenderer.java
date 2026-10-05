@@ -27,6 +27,8 @@ import java.util.OptionalInt;
 public final class TeleportBlurRenderer {
     private static @Nullable TextureTarget scene;
     private static @Nullable MappableRingBuffer uniforms;
+    private static final int RELEASE_AFTER_IDLE_FRAMES = 120;
+    private static int idleFrames;
 
     private TeleportBlurRenderer() {
     }
@@ -35,7 +37,11 @@ public final class TeleportBlurRenderer {
     public static void render(RenderLevelStageEvent.AfterLevel event) {
         Minecraft minecraft = Minecraft.getInstance();
         float strength = TeleportFxManager.screenStrength(minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false));
-        if (strength <= 0F) return;
+        if (strength <= 0F) {
+            if (scene != null && ++idleFrames > RELEASE_AFTER_IDLE_FRAMES) close();
+            return;
+        }
+        idleFrames = 0;
 
         RenderTarget target = minecraft.getMainRenderTarget();
         if (target.width <= 0 || target.height <= 0 || target.getColorTexture() == null
@@ -75,6 +81,7 @@ public final class TeleportBlurRenderer {
     }
 
     private static void close() {
+        idleFrames = 0;
         if (scene != null) {
             scene.destroyBuffers();
             scene = null;

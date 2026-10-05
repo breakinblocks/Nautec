@@ -4,19 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.breakinblocks.nautec.Nautec;
-import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
-import com.breakinblocks.nautec.data.NTDataAttachments;
-import com.breakinblocks.nautec.network.ClearAugmentPayload;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClearAugmentsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -29,25 +25,14 @@ public class ClearAugmentsCommand {
     }
 
     private static int execute(CommandContext<CommandSourceStack> ctx) {
-        ServerPlayer player = (ServerPlayer) ctx.getSource().getPlayer();
+        ServerPlayer player = ctx.getSource().getPlayer();
         if (player == null) return 0;
-        
-        Map<AugmentSlot, Augment> currentAugments = new HashMap<>(AugmentHelper.getAugments(player));
-        
-        for (Map.Entry<AugmentSlot, Augment> entry : currentAugments.entrySet()) {
-            Augment augment = entry.getValue();
-            if (augment != null) {
-                augment.onRemoved(player);
-            }
+
+        List<AugmentSlot> slots = new ArrayList<>(AugmentHelper.getAugments(player).keySet());
+        for (AugmentSlot slot : slots) {
+            AugmentHelper.removeAugment(player, slot);
         }
-        
-        player.setData(NTDataAttachments.AUGMENTS, new HashMap<>());
-        player.setData(NTDataAttachments.AUGMENTS_EXTRA_DATA, new HashMap<>());
-        
-        for (AugmentSlot slot : currentAugments.keySet()) {
-            PacketDistributor.sendToPlayer(player, new ClearAugmentPayload(slot));
-        }
-        
+
         player.sendSystemMessage(Component.literal("Cleared all player augments"));
         return 1;
     }

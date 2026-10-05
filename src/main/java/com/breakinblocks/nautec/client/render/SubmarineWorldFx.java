@@ -11,11 +11,19 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineWorldFx {
+    private static final List<SubmarineEntity> SUBMARINES = new ArrayList<>();
+
     private SubmarineWorldFx() {
     }
 
@@ -34,10 +42,33 @@ public final class SubmarineWorldFx {
 
         PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
 
-        for (Entity entity : level.entitiesForRendering()) {
-            if (entity instanceof SubmarineEntity submarine && submarine.isLaserEngaged()) {
+        if (SUBMARINES.isEmpty()) {
+            return;
+        }
+        SUBMARINES.removeIf(Entity::isRemoved);
+        for (SubmarineEntity submarine : SUBMARINES) {
+            if (submarine.level() == level && submarine.isLaserEngaged()) {
                 SubmarineLaserRenderer.render(submarine, poseStack, collector, cameraPos, partialTick);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onJoin(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof SubmarineEntity submarine && !SUBMARINES.contains(submarine)) {
+            SUBMARINES.add(submarine);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLeave(EntityLeaveLevelEvent event) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof SubmarineEntity submarine) {
+            SUBMARINES.remove(submarine);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+        SUBMARINES.clear();
     }
 }

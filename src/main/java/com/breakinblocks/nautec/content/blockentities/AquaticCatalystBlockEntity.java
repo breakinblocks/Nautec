@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
@@ -22,6 +23,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -48,12 +50,29 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private boolean burning;
     private BeamScan beamScan;
     private int boosters;
+    private final RecipeRevision validatorRevision = new RecipeRevision();
+    private @Nullable Item validatedItem;
+    private boolean validatedResult;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
     public AquaticCatalystBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
-        addItemHandler(1, (slot, stack) -> getRecipeForCache(stack) != null);
+        addItemHandler(1, (slot, stack) -> acceptsFuel(stack));
+    }
+
+    private boolean acceptsFuel(ItemStack stack) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+        if (validatorRevision.changed(serverLevel)) {
+            validatedItem = null;
+        }
+        if (stack.getItem() != validatedItem) {
+            validatedItem = stack.getItem();
+            validatedResult = getRecipeForCache(stack) != null;
+        }
+        return validatedResult;
     }
 
     @Override
@@ -71,7 +90,11 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
         if (beamScan == null || level.getGameTime() % checkConnectionsInterval() == 0) {
             beamScan = scanBeam(getEmitterDirection());
-            boosters = countBoosters();
+            int counted = countBoosters();
+            if (counted != boosters) {
+                boosters = counted;
+                update();
+            }
         }
         if (boosters > 0 && level.getGameTime() % 20 == 0) {
             consumeClusters();

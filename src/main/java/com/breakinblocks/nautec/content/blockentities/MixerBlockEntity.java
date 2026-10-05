@@ -263,7 +263,9 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         this.duration = in.getIntOr("duration", 0);
         this.running = in.getBooleanOr("running", false);
         this.maxDuration = in.getIntOr("max_duration", 0);
-        this.independentAngle = in.getFloatOr("independentAngle", 0);
+        if (level == null || !level.isClientSide()) {
+            this.independentAngle = in.getFloatOr("independentAngle", 0);
+        }
     }
 
     @Override

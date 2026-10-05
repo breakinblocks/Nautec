@@ -15,6 +15,8 @@ public abstract class Augment {
     protected Player player;
     protected final AugmentSlot augmentSlot;
 
+    private static final int COOLDOWN_SAVE_INTERVAL = 20;
+
     private int cooldown;
 
     public Augment(AugmentType<?> augmentType, AugmentSlot augmentSlot) {
@@ -67,7 +69,10 @@ public abstract class Augment {
     public void commonTick(PlayerTickEvent.Post event) {
         if (player == null) return;
         if (isOnCooldown()) {
-            setCooldown(getCooldown() - 1);
+            cooldown--;
+            if (cooldown == 0 || cooldown % COOLDOWN_SAVE_INTERVAL == 0) {
+                setChanged();
+            }
         }
         if (player.level().isClientSide()) {
             clientTick(event);

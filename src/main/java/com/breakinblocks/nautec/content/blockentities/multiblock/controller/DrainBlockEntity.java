@@ -36,7 +36,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEntity {
@@ -51,6 +53,11 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     private static final int LID_TO_VALVE_DELAY = 30;
     private static final int WATER_COLUMN_SCAN = 64;
     private static final Pattern WORD_SPLIT = Pattern.compile("[/_.-]");
+    private static final Map<TagKey<Biome>, Boolean> OCEAN_TAGS = new ConcurrentHashMap<>();
+    private static final int OCEAN_CHECK_INTERVAL = 200;
+    private boolean oceanKnown;
+    private boolean ocean;
+    private long oceanCheckedAt;
 
     private MultiblockData multiblockData;
 
@@ -175,6 +182,16 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         if (!NTConfig.drainRequiresOcean) {
             return true;
         }
+        long now = level.getGameTime();
+        if (!oceanKnown || now - oceanCheckedAt >= OCEAN_CHECK_INTERVAL || now < oceanCheckedAt) {
+            oceanKnown = true;
+            oceanCheckedAt = now;
+            ocean = scanOceanBiome();
+        }
+        return ocean;
+    }
+
+    private boolean scanOceanBiome() {
         if (isOcean(level.getBiome(worldPosition))) {
             return true;
         }
@@ -186,7 +203,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
     }
 
     public static boolean isOcean(Holder<Biome> biome) {
-        return biome.tags().anyMatch(DrainBlockEntity::isOceanTag);
+        return biome.tags().anyMatch(tag -> OCEAN_TAGS.computeIfAbsent(tag, DrainBlockEntity::isOceanTag));
     }
 
     private static boolean isOceanTag(TagKey<Biome> tag) {

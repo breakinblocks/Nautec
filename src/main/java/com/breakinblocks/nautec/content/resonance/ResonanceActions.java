@@ -5,7 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.core.UUIDUtil;
+import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
+import net.minecraft.core.BlockPos;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -20,8 +22,16 @@ public final class ResonanceActions {
     }
 
     public static void apply(ServerPlayer player, ResonanceActionPayload payload) {
-        if (!(player.level().getBlockEntity(payload.pos()) instanceof ResonanceTunable pylon)
-                || player.distanceToSqr(payload.pos().getCenter()) > REACH * REACH) {
+        BlockPos pos = payload.pos();
+        if (player.distanceToSqr(pos.getCenter()) > REACH * REACH || !player.level().isLoaded(pos)) {
+            return;
+        }
+        if (!(player.containerMenu instanceof NTAbstractContainerMenu<?> menu)
+                || !menu.getBlockEntity().getBlockPos().equals(pos)
+                || !menu.stillValid(player)) {
+            return;
+        }
+        if (!(player.level().getBlockEntity(pos) instanceof ResonanceTunable pylon)) {
             return;
         }
         ResonanceNetworks networks = ResonanceNetworks.get(player.level().getServer());

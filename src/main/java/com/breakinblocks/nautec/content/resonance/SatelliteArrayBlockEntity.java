@@ -430,7 +430,8 @@ public class SatelliteArrayBlockEntity extends LaserBlockEntity implements MenuP
                 }
                 if (newBeam != beam) {
                     beam = newBeam;
-                    sync();
+                    setChanged();
+                    requestSync();
                 }
                 push(serverLevel);
             }

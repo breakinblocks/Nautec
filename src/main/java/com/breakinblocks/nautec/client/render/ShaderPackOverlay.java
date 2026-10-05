@@ -18,6 +18,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.GameShuttingDownEvent;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +32,9 @@ import java.util.List;
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class ShaderPackOverlay {
     private static final int MAX_QUEUED = 50_000;
-    private static final List<Entry> QUEUE = new ArrayList<>();
+    private static final List<Entry> POOL = new ArrayList<>();
+    private static int queued;
+    private static int packActiveThisFrame = -1;
 
     private static boolean resolved;
     private static @Nullable Object irisApi;
@@ -50,11 +53,19 @@ public final class ShaderPackOverlay {
             collector.submitCustomGeometry(poseStack, renderType, renderer);
             return;
         }
-        if (renderingShadowPass() || QUEUE.size() >= MAX_QUEUED) {
+        if (queued >= MAX_QUEUED || renderingShadowPass()) {
             return;
         }
+        if (queued == POOL.size()) {
+            POOL.add(new Entry());
+        }
         PoseStack.Pose pose = poseStack.last();
-        QUEUE.add(new Entry(new Matrix4f(pose.pose()), new Matrix3f(pose.normal()), renderType, renderer, anchor));
+        Entry entry = POOL.get(queued++);
+        entry.pose.set(pose.pose());
+        entry.normal.set(pose.normal());
+        entry.renderType = renderType;
+        entry.renderer = renderer;
+        entry.anchor = anchor;
     }
 
     public static void anchored(Vec3 worldAnchor, Runnable submissions) {
@@ -72,8 +83,16 @@ public final class ShaderPackOverlay {
     }
 
     public static boolean shaderPackActive() {
-        resolve();
-        return irisApi != null && invoke(shaderPackInUse);
+        if (packActiveThisFrame < 0) {
+            resolve();
+            packActiveThisFrame = irisApi != null && invoke(shaderPackInUse) ? 1 : 0;
+        }
+        return packActiveThisFrame == 1;
+    }
+
+    @SubscribeEvent
+    public static void onFrameStart(RenderFrameEvent.Pre event) {
+        packActiveThisFrame = -1;
     }
 
     private static boolean renderingShadowPass() {
@@ -126,7 +145,7 @@ public final class ShaderPackOverlay {
     @SubscribeEvent
     public static void captureDepth(RenderLevelStageEvent.AfterOpaqueFeatures event) {
         depthCaptured = false;
-        if (QUEUE.isEmpty() || !shaderPackActive() || renderingShadowPass()) {
+        if (queued == 0 || !shaderPackActive() || renderingShadowPass()) {
             return;
         }
         RenderTarget main = Minecraft.getInstance().getMainRenderTarget();
@@ -149,7 +168,7 @@ public final class ShaderPackOverlay {
 
     @SubscribeEvent
     public static void render(RenderLevelStageEvent.AfterLevel event) {
-        if (QUEUE.isEmpty()) {
+        if (queued == 0) {
             depthCaptured = false;
             return;
         }
@@ -169,23 +188,32 @@ public final class ShaderPackOverlay {
         MultiBufferSource.BufferSource source = MultiBufferSource.immediate(buffer);
         PoseStack poseStack = new PoseStack();
         PoseStack.Pose pose = poseStack.last();
-        for (Entry entry : QUEUE) {
+        for (int i = 0; i < queued; i++) {
+            Entry entry = POOL.get(i);
             pose.pose().set(modelView);
-            if (entry.anchor() != null) {
-                Vec3 offset = entry.anchor().subtract(camera);
+            if (entry.anchor != null) {
+                Vec3 offset = entry.anchor.subtract(camera);
                 pose.pose().translate((float) offset.x, (float) offset.y, (float) offset.z);
             }
-            pose.pose().mul(entry.pose());
-            pose.normal().set(viewNormal).mul(entry.normal());
-            entry.renderer().render(pose, source.getBuffer(entry.renderType()));
+            pose.pose().mul(entry.pose);
+            pose.normal().set(viewNormal).mul(entry.normal);
+            entry.renderer.render(pose, source.getBuffer(entry.renderType));
         }
         source.endBatch();
-        QUEUE.clear();
+        clearQueue();
+    }
+
+    private static void clearQueue() {
+        for (int i = 0; i < queued; i++) {
+            POOL.get(i).release();
+        }
+        queued = 0;
     }
 
     @SubscribeEvent
     public static void onLogout(ClientPlayerNetworkEvent.LoggingOut event) {
-        QUEUE.clear();
+        clearQueue();
+        POOL.clear();
         close();
     }
 
@@ -205,7 +233,17 @@ public final class ShaderPackOverlay {
         }
     }
 
-    private record Entry(Matrix4f pose, Matrix3f normal, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer,
-                         @Nullable Vec3 anchor) {
+    private static final class Entry {
+        private final Matrix4f pose = new Matrix4f();
+        private final Matrix3f normal = new Matrix3f();
+        private @Nullable RenderType renderType;
+        private @Nullable SubmitNodeCollector.CustomGeometryRenderer renderer;
+        private @Nullable Vec3 anchor;
+
+        private void release() {
+            renderType = null;
+            renderer = null;
+            anchor = null;
+        }
     }
 }

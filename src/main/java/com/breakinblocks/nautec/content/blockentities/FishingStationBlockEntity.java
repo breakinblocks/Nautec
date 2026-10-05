@@ -155,7 +155,9 @@ public class FishingStationBlockEntity extends LaserBlockEntity implements MenuP
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
-        this.independentAngle = in.getFloatOr("angle", 0);
+        if (level == null || !level.isClientSide()) {
+            this.independentAngle = in.getFloatOr("angle", 0);
+        }
         this.progress = in.getIntOr("progress", 0);
     }
 

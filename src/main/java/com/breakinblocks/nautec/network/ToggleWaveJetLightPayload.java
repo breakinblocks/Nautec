@@ -8,12 +8,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record ToggleWaveJetLightPayload() implements CustomPacketPayload {
+    private static final int THROTTLE_TICKS = 4;
     public static final Type<ToggleWaveJetLightPayload> TYPE = new Type<>(Nautec.rl("toggle_wave_jet_light"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ToggleWaveJetLightPayload> STREAM_CODEC =
@@ -26,7 +27,10 @@ public record ToggleWaveJetLightPayload() implements CustomPacketPayload {
 
     public static void handle(ToggleWaveJetLightPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            Player player = context.player();
+            if (!(context.player() instanceof ServerPlayer player)
+                    || !ServerPacketGuards.allow(player, "wave_jet_light", THROTTLE_TICKS)) {
+                return;
+            }
             ItemStack stack = WaveJetSpotlight.heldWaveJet(player);
             if (stack == null) {
                 return;

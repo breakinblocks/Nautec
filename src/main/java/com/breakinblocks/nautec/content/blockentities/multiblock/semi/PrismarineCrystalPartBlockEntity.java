@@ -66,7 +66,12 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
     protected void checkConnections() {
         for (Direction direction : getLaserOutputs()) {
             int maxLaserDistance = getMaxLaserDistance();
+            int reach = loadedReach(direction, maxLaserDistance);
             for (int i = 1; i < maxLaserDistance; i++) {
+                if (i > reach) {
+                    laserDistances.put(direction, i - 1);
+                    break;
+                }
                 BlockPos pos = worldPosition.relative(direction, i);
                 BlockState state = level.getBlockState(pos);
 

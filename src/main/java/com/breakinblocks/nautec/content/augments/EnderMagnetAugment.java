@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
@@ -26,9 +27,20 @@ public class EnderMagnetAugment extends Augment {
         if (!player.isCrouching()) {
             List<ItemEntity> nearbyItems = player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(MAGNET_RADIUS));
             for (ItemEntity itemEntity : nearbyItems) {
-                if (player.addItem(itemEntity.getItem())) {
-                    playPickupFx(itemEntity);
+                if (itemEntity.isRemoved()) {
+                    continue;
+                }
+                ItemStack remaining = itemEntity.getItem().copy();
+                int before = remaining.getCount();
+                player.addItem(remaining);
+                if (remaining.getCount() >= before) {
+                    continue;
+                }
+                playPickupFx(itemEntity);
+                if (remaining.isEmpty()) {
                     itemEntity.remove(Entity.RemovalReason.DISCARDED);
+                } else {
+                    itemEntity.setItem(remaining);
                 }
             }
         }

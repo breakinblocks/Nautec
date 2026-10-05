@@ -34,6 +34,8 @@ public class DistributorBlock extends ContainerBlock {
         if (player.isSecondaryUseActive()) {
             if (player instanceof ServerPlayer serverPlayer) {
                 DistributorLinking.toggle(serverPlayer, pos);
+            } else if (level.isClientSide()) {
+                DistributorLinking.toggleClient(player, pos);
             }
             return InteractionResult.SUCCESS;
         }

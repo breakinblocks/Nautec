@@ -62,11 +62,11 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public static final int STATUS_UNSUPPORTED = 9;
 
     public static final int DATA_PROGRESS = 0;
-    public static final int DATA_DURATION = 1;
-    public static final int DATA_STATUS = 2;
-    public static final int DATA_SPLICE = 3;
-    public static final int DATA_BIOMASS = 4;
-    public static final int DATA_COUNT = 6;
+    public static final int DATA_DURATION = 2;
+    public static final int DATA_STATUS = 4;
+    public static final int DATA_SPLICE = 5;
+    public static final int DATA_BIOMASS = 6;
+    public static final int DATA_COUNT = 8;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
@@ -81,8 +81,10 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         public int get(int index) {
             int stored = (int) Math.min(Integer.MAX_VALUE, biomass);
             return switch (index) {
-                case DATA_PROGRESS -> progress;
-                case DATA_DURATION -> NTConfig.replicatorDuration;
+                case DATA_PROGRESS -> ResonancePylonBlockEntity.low(progress);
+                case DATA_PROGRESS + 1 -> ResonancePylonBlockEntity.high(progress);
+                case DATA_DURATION -> ResonancePylonBlockEntity.low(NTConfig.replicatorDuration);
+                case DATA_DURATION + 1 -> ResonancePylonBlockEntity.high(NTConfig.replicatorDuration);
                 case DATA_STATUS -> status;
                 case DATA_SPLICE -> splice ? 1 : 0;
                 case DATA_BIOMASS -> ResonancePylonBlockEntity.low(stored);

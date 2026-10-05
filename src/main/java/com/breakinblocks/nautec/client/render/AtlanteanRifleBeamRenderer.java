@@ -1,16 +1,22 @@
 package com.breakinblocks.nautec.client.render;
 
+import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.content.items.AtlanteanRifleBeam;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class AtlanteanRifleBeamRenderer {
@@ -32,7 +38,13 @@ public final class AtlanteanRifleBeamRenderer {
     private record MuzzleSample(Vec3 worldPos, long capturedAt) {
     }
 
+    private record TraceSample(Level level, long gameTime, float partialTick, Vec3 eye, Vec3 view,
+                               List<AtlanteanRifleBeam.Hit> hits) {
+    }
+
     private static final Map<Integer, MuzzleSample> MUZZLES = new HashMap<>();
+    private static final Map<Integer, TraceSample> TRACES = new HashMap<>();
+    private static @Nullable Level trackedLevel;
 
     private AtlanteanRifleBeamRenderer() {
     }
@@ -58,6 +70,34 @@ public final class AtlanteanRifleBeamRenderer {
 
     public static void forget() {
         MUZZLES.clear();
+        TRACES.clear();
+        trackedLevel = null;
+    }
+
+    public static void tick(Level level) {
+        if (level != trackedLevel) {
+            forget();
+            trackedLevel = level;
+            return;
+        }
+        long now = System.nanoTime();
+        MUZZLES.values().removeIf(sample -> now - sample.capturedAt() > SAMPLE_LIFETIME_NANOS);
+        long gameTime = level.getGameTime();
+        TRACES.values().removeIf(sample -> sample.gameTime() < gameTime - 1);
+    }
+
+    public static List<AtlanteanRifleBeam.Hit> trace(Level level, LivingEntity holder, float partialTick) {
+        long gameTime = level.getGameTime();
+        Vec3 eye = holder.getEyePosition(partialTick);
+        Vec3 view = holder.getViewVector(partialTick);
+        TraceSample sample = TRACES.get(holder.getId());
+        if (sample != null && sample.level() == level && sample.gameTime() == gameTime
+                && sample.partialTick() == partialTick && sample.eye().equals(eye) && sample.view().equals(view)) {
+            return sample.hits();
+        }
+        List<AtlanteanRifleBeam.Hit> hits = AtlanteanRifleBeam.traceAll(level, holder, NTConfig.rifleRange, partialTick);
+        TRACES.put(holder.getId(), new TraceSample(level, gameTime, partialTick, eye, view, hits));
+        return hits;
     }
 
     public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,

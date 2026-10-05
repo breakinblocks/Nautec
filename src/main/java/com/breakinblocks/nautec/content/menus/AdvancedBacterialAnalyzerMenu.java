@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.blockentities.AdvancedBacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
+import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
@@ -48,11 +49,12 @@ public class AdvancedBacterialAnalyzerMenu extends NTMachineMenu<AdvancedBacteri
     }
 
     public int getProgress(int dish) {
-        return data.get(dish);
+        return ResonancePylonBlockEntity.join(data.get(dish * 2), data.get(dish * 2 + 1));
     }
 
     public int getDuration() {
-        return Math.max(1, data.get(AdvancedBacterialAnalyzerBlockEntity.DATA_DURATION));
+        return Math.max(1, ResonancePylonBlockEntity.join(data.get(AdvancedBacterialAnalyzerBlockEntity.DATA_DURATION),
+                data.get(AdvancedBacterialAnalyzerBlockEntity.DATA_DURATION + 1)));
     }
 
     public int getStatus() {

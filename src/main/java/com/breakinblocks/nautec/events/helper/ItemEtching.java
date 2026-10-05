@@ -3,8 +3,7 @@ package com.breakinblocks.nautec.events.helper;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import com.breakinblocks.nautec.utils.RecipeRevision;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,49 +18,58 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FluidState;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ItemEtching {
     public static final int ACID_CONSUME_CHANCE = 3;
 
-    private static final Reference2IntMap<ItemEntity> activeEtching = new Reference2IntOpenHashMap<>();
+    private static final Map<ItemEntity, Entry> activeEtching = new IdentityHashMap<>();
+    private static final RecipeRevision REVISION = new RecipeRevision();
 
     public static void onEntityLeave(ItemEntity itemEntity) {
-        activeEtching.removeInt(itemEntity);
+        activeEtching.remove(itemEntity);
     }
 
     public static void processItemEtching(ItemEntity itemEntity, Level level) {
-        Optional<ItemEtchingRecipe> optionalRecipe = getEtchingRecipe(itemEntity.getItem(), level);
-        if (optionalRecipe.isEmpty()) {
-            activeEtching.removeInt(itemEntity);
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (REVISION.changed(serverLevel)) {
+            activeEtching.clear();
+        }
+        ItemStack stack = itemEntity.getItem();
+        Entry entry = activeEtching.get(itemEntity);
+        if (entry == null || !ItemStack.isSameItemSameComponents(entry.key, stack)) {
+            Optional<ItemEtchingRecipe> recipe = getEtchingRecipe(stack, serverLevel);
+            entry = new Entry(stack.copyWithCount(1), recipe.orElse(null));
+            activeEtching.put(itemEntity, entry);
+            if (recipe.isPresent()) {
+                return;
+            }
+        }
+        if (entry.recipe == null) {
             return;
         }
 
-        if (!activeEtching.containsKey(itemEntity)) {
-            activeEtching.put(itemEntity, 0);
+        int etchingTime = entry.progress;
+        if (etchingTime >= entry.recipe.duration()) {
+            activeEtching.remove(itemEntity);
+            transformItem(itemEntity, entry.recipe, level, level.getRandom().nextInt(ACID_CONSUME_CHANCE) == 0);
             return;
         }
 
-        int etchingTime = activeEtching.getInt(itemEntity);
-        if (etchingTime >= optionalRecipe.get().duration()) {
-            activeEtching.removeInt(itemEntity);
-            transformItem(itemEntity, optionalRecipe.get(), level, level.getRandom().nextInt(ACID_CONSUME_CHANCE) == 0);
-            return;
-        }
-
-        activeEtching.put(itemEntity, etchingTime + 1);
-        if (level instanceof ServerLevel serverLevel && etchingTime % 5 == 0) {
+        entry.progress = etchingTime + 1;
+        if (etchingTime % 5 == 0) {
             serverLevel.sendParticles(ParticleTypes.FLAME, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 20, 0.5, 0.5, 0.5, 0);
         }
     }
 
-    private static Optional<ItemEtchingRecipe> getEtchingRecipe(ItemStack stack, Level level) {
-        if (level instanceof ServerLevel serverLevel) {
-            return serverLevel.recipeAccess()
-                    .getRecipeFor(ItemEtchingRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level)
-                    .map(RecipeHolder::value);
-        }
-        return Optional.empty();
+    private static Optional<ItemEtchingRecipe> getEtchingRecipe(ItemStack stack, ServerLevel level) {
+        return level.recipeAccess()
+                .getRecipeFor(ItemEtchingRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level)
+                .map(RecipeHolder::value);
     }
 
     public static void transformItem(ItemEntity itemEntity, ItemEtchingRecipe recipe, Level level, boolean consumeAcid) {
@@ -91,5 +99,16 @@ public class ItemEtching {
 
     private static boolean isAcidSource(FluidState state) {
         return state.isSource() && state.is(NTFluids.ETCHING_ACID.getStillFluid());
+    }
+
+    private static final class Entry {
+        private final ItemStack key;
+        private final ItemEtchingRecipe recipe;
+        private int progress;
+
+        private Entry(ItemStack key, ItemEtchingRecipe recipe) {
+            this.key = key;
+            this.recipe = recipe;
+        }
     }
 }

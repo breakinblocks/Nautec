@@ -21,7 +21,6 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.ItemUtils;
-import com.breakinblocks.nautec.utils.ParticleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -34,11 +33,16 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -53,18 +57,23 @@ public final class NTEvents {
     public static class Game {
         @SubscribeEvent
         public static void onItemEntityTick(EntityTickEvent.Post event) {
-            if (event.getEntity() instanceof ItemEntity itemEntity) {
-                Level level = itemEntity.level();
+            if (!(event.getEntity() instanceof ItemEntity itemEntity) || itemEntity.level().isClientSide()) {
+                return;
+            }
+            Level level = itemEntity.level();
+            BlockPos pos = itemEntity.blockPosition();
+            FluidState fluid = level.getFluidState(pos);
+            FluidType fluidType = fluid.getFluidType();
 
-                if (level.getFluidState(itemEntity.blockPosition()).getFluidType() == NTFluids.ETCHING_ACID.getFluidType().get()) {
-                    ItemEtching.processItemEtching(itemEntity, level);
-                }
+            if (fluidType == NTFluids.ETCHING_ACID.getFluidType().get()) {
+                ItemEtching.processItemEtching(itemEntity, level);
+            }
 
-                if (level.getFluidState(itemEntity.blockPosition()).getFluidType() == NTFluids.EAS.getFluidType().get() || level.getBlockState(itemEntity.blockPosition().below()).getFluidState().is(NTFluids.EAS.getStillFluid())) {
-                    ItemInfusion.processPowerItemInfusion(itemEntity, level);
-                } else {
-                    ItemInfusion.cancel(itemEntity);
-                }
+            if (itemEntity.getItem().getItem() instanceof IPowerItem
+                    && (fluidType == NTFluids.EAS.getFluidType().get() || level.getFluidState(pos.below()).is(NTFluids.EAS.getStillFluid()))) {
+                ItemInfusion.processPowerItemInfusion(itemEntity, level);
+            } else {
+                ItemInfusion.cancel(itemEntity);
             }
         }
 
@@ -90,35 +99,45 @@ public final class NTEvents {
         }
 
         @SubscribeEvent
-        public static void onPlayerLoggedIn(PlayerInteractEvent.LeftClickBlock event) {
+        public static void onHarvestCrystal(PlayerInteractEvent.LeftClickBlock event) {
+            if (event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START) {
+                return;
+            }
             Player player = event.getEntity();
+            ItemStack mainHandItem = player.getMainHandItem();
+            if (player.hasInfiniteMaterials() || !mainHandItem.is(NTItems.AQUARINE_PICKAXE) || !Boolean.TRUE.equals(mainHandItem.get(NTDataComponents.ABILITY_ENABLED))) {
+                return;
+            }
 
             Level level = player.level();
             BlockPos pos = event.getPos();
             BlockEntity blockEntity = level.getBlockEntity(pos);
-
-            ItemStack mainHandItem = player.getMainHandItem();
-            if (!player.hasInfiniteMaterials() && mainHandItem.is(NTItems.AQUARINE_PICKAXE) && mainHandItem.get(NTDataComponents.ABILITY_ENABLED)) {
-                PrismarineCrystalBlockEntity be = null;
-                if (blockEntity instanceof PrismarineCrystalPartBlockEntity partBlockEntity) {
-                    be = (PrismarineCrystalBlockEntity) level.getBlockEntity(partBlockEntity.getCrystalPos());
-                } else if (blockEntity instanceof PrismarineCrystalBlockEntity blockEntity1) {
-                    be = blockEntity1;
+            PrismarineCrystalBlockEntity be = null;
+            if (blockEntity instanceof PrismarineCrystalPartBlockEntity partBlockEntity) {
+                if (level.getBlockEntity(partBlockEntity.getCrystalPos()) instanceof PrismarineCrystalBlockEntity crystal) {
+                    be = crystal;
                 }
+            } else if (blockEntity instanceof PrismarineCrystalBlockEntity crystal) {
+                be = crystal;
+            }
 
-                if (be != null && !be.isBreaking() && !be.isCultivated()) {
-                    be.playBreakAnimation();
-                    ItemUtils.giveItemToPlayer(player, NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(level.getRandom().nextInt(1, 3)));
-                    if (level.getRandom().nextInt(0, 4) == 0) {
-                        PrismarineCrystalBlock.removeCrystal(level, player, be.getBlockPos());
-                        if (level.isClientSide()) {
-                            ParticleUtils.spawnBreakParticle(be.getBlockPos(), be.getBlockState().getBlock(), 50, level);
-                        }
-                        level.playSound(null, pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 4, 0.75f);
-                    } else {
-                        level.playSound(null, pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1, 0.5f);
-                    }
-                }
+            if (be == null || be.isBreaking() || be.isCultivated()) {
+                return;
+            }
+            be.playBreakAnimation();
+            if (level.isClientSide()) {
+                return;
+            }
+
+            ItemUtils.giveItemToPlayer(player, NTItems.PRISMARINE_CRYSTAL_SHARD.toStack(level.getRandom().nextInt(1, 3)));
+            if (level.getRandom().nextInt(0, 4) == 0) {
+                BlockPos crystalPos = be.getBlockPos();
+                BlockState crystalState = be.getBlockState();
+                PrismarineCrystalBlock.removeCrystal(level, player, crystalPos);
+                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, crystalPos.above(), Block.getId(crystalState));
+                level.playSound(null, pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 4, 0.75f);
+            } else {
+                level.playSound(null, pos, SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1, 0.5f);
             }
         }
 

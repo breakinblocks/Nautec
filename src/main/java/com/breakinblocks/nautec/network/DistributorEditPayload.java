@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.network;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.distributor.DistributorLink;
 import com.breakinblocks.nautec.content.menus.DistributorMenu;
+import com.breakinblocks.nautec.utils.TemplateSanitizer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -76,7 +77,7 @@ public record DistributorEditPayload(int containerId, int action, int link, int 
                 return;
             }
             switch (payload.action()) {
-                case SET_ITEM -> link.setItem(payload.slot(), payload.item());
+                case SET_ITEM -> link.setItem(payload.slot(), TemplateSanitizer.item(payload.item(), player.registryAccess()));
                 case SET_FLUID -> link.setFluid(payload.slot(), payload.fluid());
                 case ITEM_AMOUNT -> link.setItemAmount(payload.slot(), payload.amount());
                 case FLUID_AMOUNT -> link.setFluidAmount(payload.slot(), payload.amount());

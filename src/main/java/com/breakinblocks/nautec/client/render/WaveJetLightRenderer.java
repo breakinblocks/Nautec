@@ -43,6 +43,17 @@ public final class WaveJetLightRenderer {
     private static final double THIRD_PERSON_FORWARD = 0.6D;
     private static final double THIRD_PERSON_DROP = 0.45D;
 
+    private static final float[] COS = new float[SEGMENTS + 1];
+    private static final float[] SIN = new float[SEGMENTS + 1];
+
+    static {
+        for (int i = 0; i <= SEGMENTS; i++) {
+            float angle = (float) (Math.PI * 2.0 * i / SEGMENTS);
+            COS[i] = Mth.cos(angle);
+            SIN[i] = Mth.sin(angle);
+        }
+    }
+
     private static @Nullable ByteBufferBuilder renderBuffer;
 
     @SubscribeEvent
@@ -109,29 +120,53 @@ public final class WaveJetLightRenderer {
             return;
         }
 
+        float sx = (float) side.x;
+        float sy = (float) side.y;
+        float sz = (float) side.z;
+        float ux = (float) up.x;
+        float uy = (float) up.y;
+        float uz = (float) up.z;
+        float[] nearRing = new float[(SEGMENTS + 1) * 3];
+        float[] farRing = new float[(SEGMENTS + 1) * 3];
         for (int shell = 0; shell < SHELL_SCALES.length; shell++) {
             float scale = SHELL_SCALES[shell];
             float peak = PEAK_ALPHA * SHELL_WEIGHTS[shell];
+            fillRing(nearRing, origin, direction, cameraPos, 0.0F, scale, sx, sy, sz, ux, uy, uz);
+            int nearColor = ARGB.color(alpha(peak, 0.0F, length), CORE_COLOR);
             for (int slice = 0; slice < SLICES; slice++) {
-                float nearDistance = length * slice / SLICES;
                 float farDistance = length * (slice + 1) / SLICES;
-                Vec3 nearCentre = origin.add(direction.scale(nearDistance)).subtract(cameraPos);
-                Vec3 farCentre = origin.add(direction.scale(farDistance)).subtract(cameraPos);
-                float nearRadius = (LENS_RADIUS + nearDistance * SPREAD) * scale;
-                float farRadius = (LENS_RADIUS + farDistance * SPREAD) * scale;
-                int nearColor = ARGB.color(alpha(peak, nearDistance, length), CORE_COLOR);
+                fillRing(farRing, origin, direction, cameraPos, farDistance, scale, sx, sy, sz, ux, uy, uz);
                 int farColor = ARGB.color(alpha(peak, farDistance, length), CORE_COLOR);
 
                 for (int segment = 0; segment < SEGMENTS; segment++) {
-                    float from = (float) (Math.PI * 2.0 * segment / SEGMENTS);
-                    float to = (float) (Math.PI * 2.0 * (segment + 1) / SEGMENTS);
-
-                    vertex(pose, buffer, ring(nearCentre, side, up, from, nearRadius), nearColor);
-                    vertex(pose, buffer, ring(nearCentre, side, up, to, nearRadius), nearColor);
-                    vertex(pose, buffer, ring(farCentre, side, up, to, farRadius), farColor);
-                    vertex(pose, buffer, ring(farCentre, side, up, from, farRadius), farColor);
+                    int a = segment * 3;
+                    int b = a + 3;
+                    buffer.addVertex(pose, nearRing[a], nearRing[a + 1], nearRing[a + 2]).setColor(nearColor);
+                    buffer.addVertex(pose, nearRing[b], nearRing[b + 1], nearRing[b + 2]).setColor(nearColor);
+                    buffer.addVertex(pose, farRing[b], farRing[b + 1], farRing[b + 2]).setColor(farColor);
+                    buffer.addVertex(pose, farRing[a], farRing[a + 1], farRing[a + 2]).setColor(farColor);
                 }
+
+                float[] swap = nearRing;
+                nearRing = farRing;
+                farRing = swap;
+                nearColor = farColor;
             }
+        }
+    }
+
+    private static void fillRing(float[] ring, Vec3 origin, Vec3 direction, Vec3 cameraPos, float distance, float scale,
+                                 float sx, float sy, float sz, float ux, float uy, float uz) {
+        float cx = (float) (origin.x + direction.x * distance - cameraPos.x);
+        float cy = (float) (origin.y + direction.y * distance - cameraPos.y);
+        float cz = (float) (origin.z + direction.z * distance - cameraPos.z);
+        float radius = (LENS_RADIUS + distance * SPREAD) * scale;
+        for (int i = 0; i <= SEGMENTS; i++) {
+            float c = COS[i] * radius;
+            float sn = SIN[i] * radius;
+            ring[i * 3] = cx + sx * c + ux * sn;
+            ring[i * 3 + 1] = cy + sy * c + uy * sn;
+            ring[i * 3 + 2] = cz + sz * c + uz * sn;
         }
     }
 
@@ -148,16 +183,6 @@ public final class WaveJetLightRenderer {
             return eyes.add(direction.scale(FIRST_PERSON_FORWARD)).subtract(up.scale(FIRST_PERSON_DROP));
         }
         return eyes.add(direction.scale(THIRD_PERSON_FORWARD)).subtract(0.0D, THIRD_PERSON_DROP, 0.0D);
-    }
-
-    private static Vec3 ring(Vec3 centre, Vec3 side, Vec3 up, float angle, float radius) {
-        return centre
-                .add(side.scale(Mth.cos(angle) * radius))
-                .add(up.scale(Mth.sin(angle) * radius));
-    }
-
-    private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, Vec3 position, int color) {
-        buffer.addVertex(pose, (float) position.x, (float) position.y, (float) position.z).setColor(color);
     }
 
     private static float reach(ClientLevel level, Player player, Vec3 origin, Vec3 direction) {

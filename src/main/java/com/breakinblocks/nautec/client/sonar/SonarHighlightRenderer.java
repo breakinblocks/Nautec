@@ -17,6 +17,7 @@ import java.util.Map;
 public final class SonarHighlightRenderer {
     private static @Nullable ByteBufferBuilder renderBuffer;
     private record VisibleBox(AABB box, int color) { }
+    private static final Map<VisibleBox, Float> MERGED = new HashMap<>();
 
     private SonarHighlightRenderer() {
     }
@@ -26,22 +27,41 @@ public final class SonarHighlightRenderer {
             return;
         }
 
-        Map<VisibleBox, Float> boxes = new HashMap<>();
-        for (SonarScan scan : NautecSonarManager.scans()) {
-            collect(boxes, scan.marks(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.45F);
-            collect(boxes, scan.hostiles(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.55F);
-        }
-        Vec3 offset = cameraPos.reverse();
-
+        List<SonarScan> scans = NautecSonarManager.scans();
         if (renderBuffer == null) renderBuffer = new ByteBufferBuilder(4096);
         MultiBufferSource.BufferSource source = MultiBufferSource.immediate(renderBuffer);
         VertexConsumer buffer = source.getBuffer(NTRenderTypes.sonarHighlight());
         PoseStack.Pose pose = poseStack.last();
-        for (Map.Entry<VisibleBox, Float> entry : boxes.entrySet()) {
-            VisibleBox visible = entry.getKey();
-            box(pose, buffer, visible.box().move(offset), visible.color(), entry.getValue());
+
+        if (scans.size() == 1) {
+            SonarScan scan = scans.getFirst();
+            float pulse = scan.pulseRadius(partialTick);
+            emit(pose, buffer, cameraPos, scan.marks(), pulse, partialTick, scan.fade() * 0.45F);
+            emit(pose, buffer, cameraPos, scan.hostiles(), pulse, partialTick, scan.fade() * 0.55F);
+            source.endBatch();
+            return;
         }
+
+        MERGED.clear();
+        for (SonarScan scan : scans) {
+            collect(MERGED, scan.marks(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.45F);
+            collect(MERGED, scan.hostiles(), scan.pulseRadius(partialTick), partialTick, scan.fade() * 0.55F);
+        }
+        for (Map.Entry<VisibleBox, Float> entry : MERGED.entrySet()) {
+            VisibleBox visible = entry.getKey();
+            box(pose, buffer, visible.box(), cameraPos, visible.color(), entry.getValue());
+        }
+        MERGED.clear();
         source.endBatch();
+    }
+
+    private static void emit(PoseStack.Pose pose, VertexConsumer buffer, Vec3 cameraPos, List<NautecSonarManager.Mark> marks,
+                             float pulse, float partialTick, float alpha) {
+        for (NautecSonarManager.Mark mark : marks) {
+            if (mark.revealAt() <= pulse) {
+                box(pose, buffer, mark.interpolatedBox(partialTick), cameraPos, mark.color(), alpha);
+            }
+        }
     }
 
     private static void collect(Map<VisibleBox, Float> boxes, List<NautecSonarManager.Mark> marks,
@@ -60,15 +80,15 @@ public final class SonarHighlightRenderer {
         }
     }
 
-    private static void box(PoseStack.Pose pose, VertexConsumer buffer, AABB box, int color, float alpha) {
+    private static void box(PoseStack.Pose pose, VertexConsumer buffer, AABB box, Vec3 cameraPos, int color, float alpha) {
         int tinted = ARGB.color((int) (alpha * 255F), color);
 
-        float x0 = (float) box.minX;
-        float y0 = (float) box.minY;
-        float z0 = (float) box.minZ;
-        float x1 = (float) box.maxX;
-        float y1 = (float) box.maxY;
-        float z1 = (float) box.maxZ;
+        float x0 = (float) (box.minX - cameraPos.x);
+        float y0 = (float) (box.minY - cameraPos.y);
+        float z0 = (float) (box.minZ - cameraPos.z);
+        float x1 = (float) (box.maxX - cameraPos.x);
+        float y1 = (float) (box.maxY - cameraPos.y);
+        float z1 = (float) (box.maxZ - cameraPos.z);
 
         quad(pose, buffer, tinted, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0);
         quad(pose, buffer, tinted, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1);

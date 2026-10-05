@@ -96,6 +96,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     private boolean pendingSave;
 
     private @Nullable Entity displayEntity;
+    private boolean displayEntityFailed;
     private float spin;
     private float oSpin;
 
@@ -180,6 +181,8 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         this.spawnerTag = originalData;
         this.settings = level != null ? SpawnerSettings.read(originalData, level.registryAccess()) : null;
         this.displayEntityTag = settings != null ? settings.displayEntity().copy() : new CompoundTag();
+        this.displayEntity = null;
+        this.displayEntityFailed = false;
         this.simulator.clear();
         this.progress = 0;
         this.cycleLength = 0;
@@ -347,6 +350,11 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         freeSlotKnown = false;
     }
 
+    @Override
+    protected void onFluidChanged() {
+        requestSync();
+    }
+
     private void sync() {
         if (level != null && !level.isClientSide()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -367,8 +375,9 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     }
 
     public @Nullable Entity getOrCreateDisplayEntity() {
-        if (displayEntity == null && level != null && !displayEntityTag.isEmpty()) {
+        if (displayEntity == null && !displayEntityFailed && level != null && !displayEntityTag.isEmpty()) {
             displayEntity = EntityType.loadEntityRecursive(displayEntityTag.copy(), level, EntitySpawnReason.SPAWNER, entity -> entity);
+            displayEntityFailed = displayEntity == null;
         }
         return displayEntity;
     }
@@ -486,6 +495,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         if (!display.equals(displayEntityTag)) {
             displayEntityTag = display;
             displayEntity = null;
+            displayEntityFailed = false;
         }
     }
 
@@ -500,6 +510,8 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
             TagValueOutput out = TagValueOutput.createWithContext(reporter, registries);
             writeClientData(out);
+            getFluidTank().serialize(out.child("fluid_tank"));
+            getSideConfig().save(out.child("side_config"));
             return out.buildResult();
         }
     }

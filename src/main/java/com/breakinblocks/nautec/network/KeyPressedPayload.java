@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.codec.AugmentCodecs;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,8 +36,11 @@ public record KeyPressedPayload(AugmentSlot augmentSlot) implements CustomPacket
             if (augment != null && augment.canActivate()
                     && augment.getAugmentType().getAugmentSlots().contains(payload.augmentSlot)) {
                 augment.setPlayer(player);
+                CompoundTag before = augment.serializeNBT(player.level().registryAccess());
                 augment.handleKeybindPress();
-                AugmentHelper.syncAugment(player, augment);
+                if (!before.equals(augment.serializeNBT(player.level().registryAccess()))) {
+                    AugmentHelper.syncAugment(player, augment);
+                }
             }
         }).exceptionally(e -> {
             context.disconnect(Component.translatable("nautec.network.action_failed", e.getMessage()));

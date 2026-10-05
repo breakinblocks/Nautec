@@ -27,6 +27,7 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
     private static final float IDLE_CULTURE = 0.1F;
     private static final float ACTIVE_CULTURE = 0.27F;
 
+    private int[] lattice = new int[64];
     private float centerX;
     private float centerZ;
     private float rightX;
@@ -130,17 +131,26 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
         int rows = Math.max(1, Mth.ceil((v1 - v0) / CELL));
         float cellU = (u1 - u0) / columns;
         float cellV = (v1 - v0) / rows;
+        int stride = columns + 1;
+        int points = stride * (rows + 1);
+        if (lattice.length < points) {
+            lattice = new int[points];
+        }
+        for (int row = 0; row <= rows; row++) {
+            float v = v0 + row * cellV;
+            for (int column = 0; column <= columns; column++) {
+                lattice[row * stride + column] = gridColor(tracker, tint, intensity, time, face, plane, u0 + column * cellU, v);
+            }
+        }
         for (int row = 0; row < rows; row++) {
             float va = v0 + row * cellV;
-            float vb = va + cellV;
+            float vb = v0 + (row + 1) * cellV;
             for (int column = 0; column < columns; column++) {
                 float ua = u0 + column * cellU;
-                float ub = ua + cellU;
+                float ub = u0 + (column + 1) * cellU;
+                int i = row * stride + column;
                 ReactorFx.quad(pose, buffer, face, plane, ua, ub, va, vb,
-                        gridColor(tracker, tint, intensity, time, face, plane, ua, va),
-                        gridColor(tracker, tint, intensity, time, face, plane, ub, va),
-                        gridColor(tracker, tint, intensity, time, face, plane, ub, vb),
-                        gridColor(tracker, tint, intensity, time, face, plane, ua, vb));
+                        lattice[i], lattice[i + 1], lattice[i + stride + 1], lattice[i + stride]);
             }
         }
     }

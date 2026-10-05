@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.blockentities;
 
-import net.minecraft.world.level.block.Block;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -163,8 +162,7 @@ public class EnergyConverterBlockEntity extends LaserBlockEntity implements Menu
         transmitPower(sent);
         if (sent != sending) {
             sending = sent;
-            setChanged();
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+            update();
         }
     }
 

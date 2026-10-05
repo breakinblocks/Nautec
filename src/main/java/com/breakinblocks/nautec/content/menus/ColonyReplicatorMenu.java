@@ -49,11 +49,12 @@ public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEnt
     }
 
     public int getProgress() {
-        return data.get(ColonyReplicatorBlockEntity.DATA_PROGRESS);
+        return ResonancePylonBlockEntity.join(data.get(ColonyReplicatorBlockEntity.DATA_PROGRESS), data.get(ColonyReplicatorBlockEntity.DATA_PROGRESS + 1));
     }
 
     public int getDuration() {
-        return Math.max(1, data.get(ColonyReplicatorBlockEntity.DATA_DURATION));
+        return Math.max(1, ResonancePylonBlockEntity.join(data.get(ColonyReplicatorBlockEntity.DATA_DURATION),
+                data.get(ColonyReplicatorBlockEntity.DATA_DURATION + 1)));
     }
 
     public int getStatus() {

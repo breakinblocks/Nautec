@@ -35,7 +35,7 @@ public final class NTDataAttachments {
 
     public static final Supplier<AttachmentType<Map<BlockPos, BlockState>>> SPOTLIGHT_ORIGINALS = ATTACHMENTS.register(
             "spotlight_originals", () -> AttachmentType.<Map<BlockPos, BlockState>>builder(Collections::emptyMap)
-                    .serialize(SPOTLIGHT_CODEC.fieldOf("value")).build()
+                    .serialize(SPOTLIGHT_CODEC.fieldOf("value"), map -> !map.isEmpty()).build()
     );
     public static final Supplier<AttachmentType<Map<AugmentSlot, Augment>>> AUGMENTS = ATTACHMENTS.register(
             "augments", () -> AttachmentType.<Map<AugmentSlot, Augment>>builder(Collections::emptyMap)

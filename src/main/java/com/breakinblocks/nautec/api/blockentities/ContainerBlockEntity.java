@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
 import com.breakinblocks.nautec.capabilities.bacteria.BacteriaStorage;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.capabilities.fluid.SidedFluidHandler;
@@ -21,6 +22,7 @@ import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.PowerStorage;
 import com.breakinblocks.nautec.utils.ItemTemplates;
+import com.breakinblocks.nautec.utils.TemplateSanitizer;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntSets;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -32,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
@@ -59,6 +62,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public abstract class ContainerBlockEntity extends BlockEntity {
+    public static final int SYNC_INTERVAL = 10;
     private @Nullable ItemStackHandler itemHandler;
     private BiPredicate<Integer, ItemStack> itemValidation = (slot, stack) -> true;
     private final SideConfig sideConfig = new SideConfig();
@@ -74,6 +78,8 @@ public abstract class ContainerBlockEntity extends BlockEntity {
     private @Nullable FluidTank secondaryFluidTank;
     private @Nullable PowerStorage powerStorage;
     private @Nullable BacteriaStorage bacteriaStorage;
+    private long lastSync = -SYNC_INTERVAL;
+    private boolean syncScheduled;
 
     public ContainerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -136,11 +142,15 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         if (this.getBacteriaStorageImpl() != null)
             in.child("bacteria_storage").ifPresent(this.getBacteriaStorageImpl()::deserialize);
         if (hasSideConfig()) {
-            sideConfig.reset();
-            in.child("side_config").ifPresent(sideConfig::load);
+            in.child("side_config").ifPresent(config -> {
+                sideConfig.reset();
+                sideConfig.load(config);
+            });
         }
-        ghostInputs.clear();
-        in.read("ghost_inputs", GhostEntry.CODEC.listOf()).ifPresent(list -> list.forEach(entry -> ghostInputs.put(entry.slot(), entry.stack())));
+        in.read("ghost_inputs", GhostEntry.CODEC.listOf()).ifPresent(list -> {
+            ghostInputs.clear();
+            list.forEach(entry -> ghostInputs.put(entry.slot(), entry.stack()));
+        });
         loadData(in);
     }
 
@@ -159,7 +169,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             getBacteriaStorageImpl().serialize(out.child("bacteria_storage"));
         if (hasSideConfig())
             sideConfig.save(out.child("side_config"));
-        if (!ghostInputs.isEmpty()) {
+        if (itemHandler != null && ghostSlots().length > 0) {
             List<GhostEntry> ghosts = new ArrayList<>();
             ghostInputs.int2ObjectEntrySet().forEach(entry -> ghosts.add(new GhostEntry(entry.getIntKey(), entry.getValue())));
             out.store("ghost_inputs", GhostEntry.CODEC.listOf(), ghosts);
@@ -341,9 +351,36 @@ public abstract class ContainerBlockEntity extends BlockEntity {
 
     public void update() {
         setChanged();
-        if (level != null && !level.isClientSide()) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        requestSync();
+    }
+
+    public final void requestSync() {
+        if (!(level instanceof ServerLevel serverLevel) || syncScheduled) {
+            return;
         }
+        if (readyToSync(serverLevel.getGameTime())) {
+            flushSync();
+        } else {
+            syncScheduled = true;
+            BlockEntitySyncQueue.schedule(serverLevel, this);
+        }
+    }
+
+    final boolean readyToSync(long gameTime) {
+        return gameTime - lastSync >= SYNC_INTERVAL;
+    }
+
+    final void flushSync() {
+        syncScheduled = false;
+        if (level == null || isRemoved()) {
+            return;
+        }
+        lastSync = level.getGameTime();
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+    }
+
+    final void cancelScheduledSync() {
+        syncScheduled = false;
     }
 
     protected void onItemsChanged(int slot) {
@@ -486,7 +523,14 @@ public abstract class ContainerBlockEntity extends BlockEntity {
                 }
                 return false;
             }
-            ghostInputs.put(slot, stack.copyWithCount(1));
+            ItemStack template = (DishPort.isDish(stack) ? TemplateSanitizer.item(stack) : stack).copyWithCount(1);
+            if (level != null && !TemplateSanitizer.fits(template, level.registryAccess())) {
+                if (previous != null) {
+                    ghostInputs.put(slot, previous);
+                }
+                return false;
+            }
+            ghostInputs.put(slot, template);
         }
         update();
         return true;

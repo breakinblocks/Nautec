@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.distributor;
 
+import com.breakinblocks.nautec.utils.TemplateSanitizer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,8 @@ import java.util.List;
 public final class DistributorLink {
     public static final int ITEM_REQUESTS = 9;
     public static final int FLUID_REQUESTS = 3;
+    public static final int MAX_ITEM_AMOUNT = 4096;
+    public static final int MAX_FLUID_AMOUNT = 1_000_000;
 
     private final BlockPos pos;
     private final Direction face;
@@ -54,24 +57,24 @@ public final class DistributorLink {
     }
 
     public void setItem(int slot, ItemStack stack) {
-        items[slot] = stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1);
+        items[slot] = stack.isEmpty() ? ItemStack.EMPTY : TemplateSanitizer.item(stack).copyWithCount(1);
         itemAmounts[slot] = stack.isEmpty() ? 0 : Math.max(1, Math.min(stack.getCount(), stack.getMaxStackSize()));
     }
 
     public void setItemAmount(int slot, int amount) {
         if (!items[slot].isEmpty()) {
-            itemAmounts[slot] = Math.max(1, Math.min(amount, 4096));
+            itemAmounts[slot] = Math.max(1, Math.min(amount, MAX_ITEM_AMOUNT));
         }
     }
 
     public void setFluid(int slot, FluidStack stack) {
-        fluids[slot] = stack.isEmpty() ? FluidStack.EMPTY : stack.copyWithAmount(1);
-        fluidAmounts[slot] = stack.isEmpty() ? 0 : Math.max(1000, stack.getAmount());
+        fluids[slot] = TemplateSanitizer.fluid(stack);
+        fluidAmounts[slot] = stack.isEmpty() ? 0 : Math.max(1000, Math.min(stack.getAmount(), MAX_FLUID_AMOUNT));
     }
 
     public void setFluidAmount(int slot, int amount) {
         if (!fluids[slot].isEmpty()) {
-            fluidAmounts[slot] = Math.max(1, Math.min(amount, 1_000_000));
+            fluidAmounts[slot] = Math.max(1, Math.min(amount, MAX_FLUID_AMOUNT));
         }
     }
 

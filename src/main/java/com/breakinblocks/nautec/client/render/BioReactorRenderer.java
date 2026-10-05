@@ -19,6 +19,8 @@ public class BioReactorRenderer extends ReactorFxRenderer<BioReactorBlockEntity>
     private static final float CULTURE_STEP = 0.25F;
     private static final int BUBBLES = 6;
 
+    private int[] lattice = new int[64];
+
     public BioReactorRenderer(BlockEntityRendererProvider.Context context) {
     }
 
@@ -76,17 +78,26 @@ public class BioReactorRenderer extends ReactorFxRenderer<BioReactorBlockEntity>
         int rows = Math.max(1, Mth.ceil((SURFACE - BOTTOM) / CULTURE_STEP));
         float cellU = (MAX_U - MIN_U) / columns;
         float cellV = (SURFACE - BOTTOM) / rows;
+        int stride = columns + 1;
+        int points = stride * (rows + 1);
+        if (lattice.length < points) {
+            lattice = new int[points];
+        }
+        for (int row = 0; row <= rows; row++) {
+            float v = BOTTOM + row * cellV;
+            for (int column = 0; column <= columns; column++) {
+                lattice[row * stride + column] = cultureColor(tracker, tint, intensity, MIN_U + column * cellU + faceShift, v, time);
+            }
+        }
         for (int row = 0; row < rows; row++) {
             float va = BOTTOM + row * cellV;
-            float vb = va + cellV;
+            float vb = BOTTOM + (row + 1) * cellV;
             for (int column = 0; column < columns; column++) {
                 float ua = MIN_U + column * cellU;
-                float ub = ua + cellU;
+                float ub = MIN_U + (column + 1) * cellU;
+                int i = row * stride + column;
                 ReactorFx.quad(pose, buffer, face, plane, ua, ub, va, vb,
-                        cultureColor(tracker, tint, intensity, ua + faceShift, va, time),
-                        cultureColor(tracker, tint, intensity, ub + faceShift, va, time),
-                        cultureColor(tracker, tint, intensity, ub + faceShift, vb, time),
-                        cultureColor(tracker, tint, intensity, ua + faceShift, vb, time));
+                        lattice[i], lattice[i + 1], lattice[i + stride + 1], lattice[i + stride]);
             }
         }
     }

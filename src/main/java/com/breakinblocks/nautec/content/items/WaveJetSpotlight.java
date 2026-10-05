@@ -53,6 +53,7 @@ public final class WaveJetSpotlight {
     private static final Map<Lit, LightState> LIGHTS = new HashMap<>();
     private static final double BACK_OFF_STEP = 0.5D;
     private static final double BACK_OFF_LIMIT = 3.0D;
+    private static final int REAIM_INTERVAL = 3;
 
     public static boolean isLit(ItemStack stack) {
         return stack.is(NTItems.WAVE_JET.get()) && NTDataComponentsUtils.isAbilityEnabled(stack);
@@ -96,6 +97,9 @@ public final class WaveJetSpotlight {
             return;
         }
 
+        if (LIT.containsKey(player.getUUID()) && player.tickCount % REAIM_INTERVAL != 0) {
+            return;
+        }
         aim(level, player);
     }
 
@@ -187,10 +191,11 @@ public final class WaveJetSpotlight {
             return;
         }
         LevelChunk chunk = level.getChunkAt(pos);
-        Map<BlockPos, BlockState> originals = new HashMap<>(chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS));
-        originals.remove(pos);
-        chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
-        chunk.markUnsaved();
+        if (chunk.hasData(NTDataAttachments.SPOTLIGHT_ORIGINALS)) {
+            Map<BlockPos, BlockState> originals = new HashMap<>(chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS));
+            originals.remove(pos);
+            storeOriginals(chunk, originals);
+        }
         LightState light = LIGHTS.remove(new Lit(level.dimension(), pos));
         if (light != null && level.getBlockState(pos).is(Blocks.LIGHT)) {
             level.setBlock(pos, light.original(), Block.UPDATE_CLIENTS);
@@ -244,7 +249,7 @@ public final class WaveJetSpotlight {
         LevelChunk chunk;
         while ((chunk = LOADED.poll()) != null) {
             ServerLevel level = (ServerLevel) chunk.getLevel();
-            if (!level.isLoaded(chunk.getPos().getWorldPosition())) continue;
+            if (!chunk.hasData(NTDataAttachments.SPOTLIGHT_ORIGINALS) || !level.isLoaded(chunk.getPos().getWorldPosition())) continue;
             Map<BlockPos, BlockState> originals = chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS);
             Map<BlockPos, BlockState> retained = new HashMap<>();
             for (Map.Entry<BlockPos, BlockState> entry : originals.entrySet()) {
@@ -255,10 +260,18 @@ public final class WaveJetSpotlight {
                 }
             }
             if (!originals.equals(retained)) {
-                chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(retained));
-                chunk.markUnsaved();
+                storeOriginals(chunk, retained);
             }
         }
+    }
+
+    private static void storeOriginals(LevelChunk chunk, Map<BlockPos, BlockState> originals) {
+        if (originals.isEmpty()) {
+            chunk.removeData(NTDataAttachments.SPOTLIGHT_ORIGINALS);
+        } else {
+            chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
+        }
+        chunk.markUnsaved();
     }
 
     private WaveJetSpotlight() {

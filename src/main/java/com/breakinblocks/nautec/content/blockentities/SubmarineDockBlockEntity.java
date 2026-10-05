@@ -62,10 +62,12 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
             return;
         }
 
-        for (SubmarineEntity submarine : submarines) {
-            hold(submarine);
-            charge(submarine);
-            breathe(submarine);
+        if (!level.isClientSide()) {
+            for (SubmarineEntity submarine : submarines) {
+                hold(submarine);
+                charge(submarine);
+                breathe(submarine);
+            }
         }
 
         if (level.isClientSide()) {
@@ -78,7 +80,6 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
             return;
         }
         submarine.setDeltaMovement(Vec3.ZERO);
-        submarine.hurtMarked = true;
     }
 
     private static void charge(SubmarineEntity submarine) {

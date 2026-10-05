@@ -18,11 +18,18 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.world.level.Level;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 
 public class GuardianEyeAugment extends Augment {
+    private static final double MAX_DISTANCE = 15.0;
+    private static final double HIT_PADDING = 0.5;
+    private static final int FIRE_INTERVAL = 2;
+    private static final int BEAM_TIMEOUT = 5;
+
     public Vec3 laserFiredPos = null;
     public int timeLeft = 0;
 
@@ -30,6 +37,8 @@ public class GuardianEyeAugment extends Augment {
     private int beamTicks;
 
     private float clientLaserTime;
+    private long lastFireTime = -FIRE_INTERVAL;
+    private long lastSendTime = -FIRE_INTERVAL;
 
     public GuardianEyeAugment(AugmentSlot augmentSlot) {
         super(NTAugments.GUARDIAN_EYE.get(), augmentSlot);
@@ -37,7 +46,9 @@ public class GuardianEyeAugment extends Augment {
 
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
-        if (player.isLocalPlayer() && NTKeybinds.ACTIVATE_LASER_KEYBIND.get().isDown()) {
+        if (player.isLocalPlayer() && NTKeybinds.ACTIVATE_LASER_KEYBIND.get().isDown()
+                && intervalPassed(lastSendTime)) {
+            lastSendTime = player.level().getGameTime();
             ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }
@@ -92,35 +103,63 @@ public class GuardianEyeAugment extends Augment {
     }
 
     @Override
+    public boolean canActivate() {
+        return super.canActivate() && intervalPassed(lastFireTime);
+    }
+
+    private boolean intervalPassed(long last) {
+        long elapsed = player.level().getGameTime() - last;
+        return elapsed >= FIRE_INTERVAL || elapsed < 0;
+    }
+
+    @Override
     public void handleKeybindPress() {
+        Level level = player.level();
+        if (!level.isClientSide()) {
+            lastFireTime = level.getGameTime();
+        }
         Vec3 look = player.getLookAngle();
         Vec3 startPos = player.getEyePosition(1.0f);
-        double maxDistance = 15.0;
-        BlockHitResult blockHit = player.level().clip(new ClipContext(startPos, startPos.add(look.scale(maxDistance)),
+        Vec3 endPos = startPos.add(look.scale(MAX_DISTANCE));
+        BlockHitResult blockHit = level.clip(new ClipContext(startPos, endPos,
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         if (blockHit.getType() != HitResult.Type.MISS) {
-            maxDistance = blockHit.getLocation().distanceTo(startPos);
+            endPos = blockHit.getLocation();
         }
-        double step = 0.1;
-        for (double t = 0; t <= maxDistance; t += step) {
-            Vec3 checkPos = startPos.add(look.scale(t));
-            List<LivingEntity> entities = player.level().getEntitiesOfClass(LivingEntity.class, new AABB(checkPos.add(-0.5, -0.5, -0.5), checkPos.add(0.5, 0.5, 0.5)));
 
-            for (LivingEntity entity : entities) {
-                if (entity != player) {
-                    if (!player.level().isClientSide()) {
-                        entity.hurt(entity.damageSources().magic(), NTConfig.guardianAugmentDamage);
-                        timeLeft = 1000;
-                        laserFiredPos = entity.getEyePosition();
-                    }
-                    this.targetEntity = entity;
-                    this.beamTicks = 3;
-                    return;
+        LivingEntity closest = null;
+        double closestDistance = Double.MAX_VALUE;
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(startPos, endPos).inflate(HIT_PADDING),
+                entity -> entity != player && entity.isAlive());
+        for (LivingEntity entity : entities) {
+            AABB box = entity.getBoundingBox().inflate(HIT_PADDING);
+            double distance;
+            if (box.contains(startPos)) {
+                distance = 0;
+            } else {
+                Optional<Vec3> hit = box.clip(startPos, endPos);
+                if (hit.isEmpty()) {
+                    continue;
                 }
+                distance = startPos.distanceToSqr(hit.get());
+            }
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closest = entity;
             }
         }
 
-        this.targetEntity = null;
+        if (closest == null) {
+            this.targetEntity = null;
+            return;
+        }
+        if (!level.isClientSide()) {
+            closest.hurt(player.damageSources().indirectMagic(player, player), NTConfig.guardianAugmentDamage);
+            timeLeft = 1000;
+            laserFiredPos = closest.getEyePosition();
+        }
+        this.targetEntity = closest;
+        this.beamTicks = BEAM_TIMEOUT;
     }
 
     @Override

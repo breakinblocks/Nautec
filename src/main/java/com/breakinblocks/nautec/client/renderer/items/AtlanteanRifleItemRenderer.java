@@ -101,7 +101,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         }
 
         float ramp = AtlanteanRifleItem.rampProgress(holder, firing);
-        List<AtlanteanRifleBeam.Hit> segments = AtlanteanRifleBeam.traceAll(level, holder, NTConfig.rifleRange, partialTick);
+        List<AtlanteanRifleBeam.Hit> segments = AtlanteanRifleBeamRenderer.trace(level, holder, partialTick);
         ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
         if (ShaderPackOverlay.shaderPackActive() && perspective.firstPerson()) {
             Vec3 muzzleWorld = cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z);

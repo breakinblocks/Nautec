@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, MixerBERenderer.MixerRenderState> {
+    private static final HorizontalDirection[] HORIZONTAL_DIRECTIONS = HorizontalDirection.values();
     private static final float SIDE_MARGIN = (float) MixerBlock.SHAPE.min(Direction.Axis.X) + 0.075f;
     private static final float MIN_Y = 2 / 16f;
     private static final float MAX_Y = 1 - MIN_Y;
@@ -130,7 +131,7 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     }
 
     private static void submitItem(ItemStackRenderState itemState, int index, PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
-        Direction direction = HorizontalDirection.values()[index].toRegularDirection();
+        Direction direction = HORIZONTAL_DIRECTIONS[index].toRegularDirection();
 
         poseStack.pushPose();
         {

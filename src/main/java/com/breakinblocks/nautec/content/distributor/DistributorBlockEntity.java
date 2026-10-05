@@ -25,6 +25,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -36,10 +37,13 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 public class DistributorBlockEntity extends ContainerBlockEntity implements MenuProvider {
@@ -51,8 +55,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         SELF
     }
 
-    private record Endpoint(DistributorLink link, @Nullable ResourceHandler<ItemResource> items, @Nullable ResourceHandler<FluidResource> fluids,
-                            List<ItemStack> keptItems, Set<Fluid> keptFluids) {
+    private record Endpoint(DistributorLink link, @Nullable ContainerBlockEntity machine, @Nullable ResourceHandler<ItemResource> items,
+                            @Nullable ResourceHandler<FluidResource> fluids, List<ItemStack> keptItems, Set<Fluid> keptFluids) {
         boolean keeps(ItemResource resource) {
             for (ItemStack template : keptItems) {
                 if (ItemTemplates.matches(template, resource)) {
@@ -66,7 +70,47 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
     private record Neighbour(@Nullable ResourceHandler<ItemResource> items, @Nullable ResourceHandler<FluidResource> fluids) {
     }
 
+    private record Caches(BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> items,
+                          BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> fluids) {
+        static Caches create(ServerLevel level, BlockPos pos, Direction face, BooleanSupplier valid) {
+            Runnable ignored = () -> {
+            };
+            return new Caches(BlockCapabilityCache.create(Capabilities.Item.BLOCK, level, pos, face, valid, ignored),
+                    BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, level, pos, face, valid, ignored));
+        }
+    }
+
+    private static final class BackOff {
+        private static final int GHOSTS = DistributorLink.ITEM_REQUESTS + DistributorLink.FLUID_REQUESTS;
+
+        private final int[] delay = new int[GHOSTS + 1];
+        private final int[] skip = new int[GHOSTS + 1];
+
+        boolean ready(int index) {
+            if (skip[index] > 0) {
+                skip[index]--;
+                return false;
+            }
+            return true;
+        }
+
+        void result(int index, boolean moved, int maxDelay) {
+            if (moved) {
+                delay[index] = 0;
+                return;
+            }
+            delay[index] = Math.min(maxDelay, Math.max(1, delay[index] * 2));
+            skip[index] = delay[index];
+        }
+    }
+
+    private static final int MAX_BACK_OFF_TICKS = 100;
+
     private final List<DistributorLink> links = new ArrayList<>();
+    private final Map<DistributorLink, Caches> linkCaches = new IdentityHashMap<>();
+    private final Map<DistributorLink, BackOff> backOffs = new IdentityHashMap<>();
+    private final Map<Direction, Caches> neighbourCaches = new EnumMap<>(Direction.class);
+    private int cacheGeneration;
 
     public DistributorBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.DISTRIBUTOR.get(), pos, state);
@@ -110,10 +154,27 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
     }
 
     public void changed() {
+        resetCaches();
         setChanged();
         if (level != null && !level.isClientSide()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
+    }
+
+    private void resetCaches() {
+        cacheGeneration++;
+        linkCaches.clear();
+        backOffs.clear();
+        neighbourCaches.clear();
+    }
+
+    private Caches caches(ServerLevel serverLevel, BlockPos pos, Direction face) {
+        int generation = cacheGeneration;
+        return Caches.create(serverLevel, pos, face, () -> !isRemoved() && generation == cacheGeneration);
+    }
+
+    private static int maxBackOffCycles() {
+        return Math.max(1, MAX_BACK_OFF_TICKS / Math.max(1, NTConfig.distributorInterval));
     }
 
     @Override
@@ -134,7 +195,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
             }
             List<ItemStack> keptItems = new ArrayList<>();
             Set<Fluid> keptFluids = new HashSet<>();
-            boolean outputsOnly = serverLevel.getBlockEntity(link.pos()) instanceof ContainerBlockEntity machine && machine.hasSideConfig(SideKind.ITEMS);
+            ContainerBlockEntity machine = serverLevel.getBlockEntity(link.pos()) instanceof ContainerBlockEntity container ? container : null;
+            boolean outputsOnly = machine != null && machine.hasSideConfig(SideKind.ITEMS);
             for (int i = 0; i < DistributorLink.ITEM_REQUESTS; i++) {
                 if (!link.item(i).isEmpty() && !outputsOnly) {
                     keptItems.add(link.item(i));
@@ -145,11 +207,11 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                     keptFluids.add(link.fluid(i).getFluid());
                 }
             }
-            if (!outputsOnly && serverLevel.getBlockEntity(link.pos()) instanceof ContainerBlockEntity machine) {
+            if (!outputsOnly && machine != null) {
                 keptItems.addAll(machine.ghosts().values());
             }
-            endpoints.add(new Endpoint(link, serverLevel.getCapability(Capabilities.Item.BLOCK, link.pos(), link.face()),
-                    serverLevel.getCapability(Capabilities.Fluid.BLOCK, link.pos(), link.face()), keptItems, keptFluids));
+            Caches caches = linkCaches.computeIfAbsent(link, key -> caches(serverLevel, key.pos(), key.face()));
+            endpoints.add(new Endpoint(link, machine, caches.items().getCapability(), caches.fluids().getCapability(), keptItems, keptFluids));
         }
         List<Neighbour> neighbours = new ArrayList<>();
         for (Direction direction : Direction.values()) {
@@ -157,12 +219,13 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
             if (linked.contains(target) || !serverLevel.isLoaded(target) || serverLevel.getBlockEntity(target) instanceof DistributorBlockEntity) {
                 continue;
             }
-            neighbours.add(new Neighbour(serverLevel.getCapability(Capabilities.Item.BLOCK, target, direction.getOpposite()),
-                    serverLevel.getCapability(Capabilities.Fluid.BLOCK, target, direction.getOpposite())));
+            Caches caches = neighbourCaches.computeIfAbsent(direction, key -> caches(serverLevel, target, key.getOpposite()));
+            neighbours.add(new Neighbour(caches.items().getCapability(), caches.fluids().getCapability()));
         }
 
+        int maxDelay = maxBackOffCycles();
         for (Endpoint endpoint : endpoints) {
-            supply(serverLevel, endpoint, endpoints, neighbours);
+            supply(endpoint, endpoints, neighbours, backOffs.computeIfAbsent(endpoint.link(), key -> new BackOff()), maxDelay);
         }
         for (Endpoint endpoint : endpoints) {
             for (Neighbour neighbour : neighbours) {
@@ -172,33 +235,37 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         }
     }
 
-    private void supply(ServerLevel serverLevel, Endpoint endpoint, List<Endpoint> endpoints, List<Neighbour> neighbours) {
+    private static void supply(Endpoint endpoint, List<Endpoint> endpoints, List<Neighbour> neighbours, BackOff backOff, int maxDelay) {
         DistributorLink link = endpoint.link();
-        if (serverLevel.getBlockEntity(link.pos()) instanceof ContainerBlockEntity machine && machine.getItemStackHandler() != null) {
+        ContainerBlockEntity machine = endpoint.machine();
+        if (machine != null && machine.getItemStackHandler() != null && !machine.ghosts().isEmpty() && backOff.ready(BackOff.GHOSTS)) {
+            int moved = 0;
             for (Int2ObjectMap.Entry<ItemStack> ghost : machine.ghosts().int2ObjectEntrySet()) {
                 ResourceHandler<ItemResource> slot = new SingleSlotHandler<>(machine.getItemHandler(), ghost.getIntKey());
                 ItemStack template = ghost.getValue();
-                fillItems(slot, resource -> ItemTemplates.matches(template, resource), Integer.MAX_VALUE, endpoint, endpoints, neighbours);
+                moved += fillItems(slot, resource -> ItemTemplates.matches(template, resource), Integer.MAX_VALUE, endpoint, endpoints, neighbours);
             }
+            backOff.result(BackOff.GHOSTS, moved > 0, maxDelay);
         }
         if (endpoint.items() != null) {
             for (int i = 0; i < DistributorLink.ITEM_REQUESTS; i++) {
                 ItemStack template = link.item(i);
-                if (template.isEmpty()) {
+                if (template.isEmpty() || !backOff.ready(i)) {
                     continue;
                 }
                 Predicate<ItemResource> wanted = resource -> ItemTemplates.matches(template, resource);
                 long have = count(endpoint.items(), wanted);
                 int need = (int) Math.max(0, link.itemAmount(i) - have);
                 if (need > 0) {
-                    fillItems(endpoint.items(), wanted, need, endpoint, endpoints, neighbours);
+                    backOff.result(i, fillItems(endpoint.items(), wanted, need, endpoint, endpoints, neighbours) > 0, maxDelay);
                 }
             }
         }
         if (endpoint.fluids() != null) {
             for (int i = 0; i < DistributorLink.FLUID_REQUESTS; i++) {
+                int index = DistributorLink.ITEM_REQUESTS + i;
                 FluidStack template = link.fluid(i);
-                if (template.isEmpty()) {
+                if (template.isEmpty() || !backOff.ready(index)) {
                     continue;
                 }
                 Fluid fluid = template.getFluid();
@@ -207,6 +274,7 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                 if (need <= 0) {
                     continue;
                 }
+                int requested = need;
                 Predicate<FluidResource> filter = resource -> resource.getFluid() == fluid;
                 for (Endpoint other : endpoints) {
                     if (other != endpoint && need > 0 && !other.keptFluids().contains(fluid)) {
@@ -218,22 +286,29 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                         need -= move(neighbour.fluids(), endpoint.fluids(), filter, need);
                     }
                 }
+                backOff.result(index, need < requested, maxDelay);
             }
         }
     }
 
-    private static void fillItems(ResourceHandler<ItemResource> destination, Predicate<ItemResource> filter, int need, Endpoint self, List<Endpoint> endpoints,
-                                  List<Neighbour> neighbours) {
+    private static int fillItems(ResourceHandler<ItemResource> destination, Predicate<ItemResource> filter, int need, Endpoint self, List<Endpoint> endpoints,
+                                 List<Neighbour> neighbours) {
+        int moved = 0;
         for (Endpoint other : endpoints) {
             if (other != self && need > 0) {
-                need -= move(other.items(), destination, resource -> filter.test(resource) && !other.keeps(resource), need);
+                int step = move(other.items(), destination, resource -> filter.test(resource) && !other.keeps(resource), need);
+                need -= step;
+                moved += step;
             }
         }
         for (Neighbour neighbour : neighbours) {
             if (need > 0) {
-                need -= move(neighbour.items(), destination, filter, need);
+                int step = move(neighbour.items(), destination, filter, need);
+                need -= step;
+                moved += step;
             }
         }
+        return moved;
     }
 
     private static <R extends Resource> long count(ResourceHandler<R> handler, Predicate<R> filter) {
@@ -285,6 +360,7 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
+        resetCaches();
         links.clear();
         for (ValueInput child : in.childrenListOrEmpty("links")) {
             links.add(DistributorLink.load(child));

@@ -43,7 +43,15 @@ public final class AugmentHelper {
             Nautec.LOGGER.warn("Refusing to write null AugmentSlot key (extra data) for player {}", player.getName().getString());
             return;
         }
-        Map<AugmentSlot, CompoundTag> augments = new HashMap<>(getAugmentsData(player));
+        Map<AugmentSlot, CompoundTag> current = getAugmentsData(player);
+        if (tag.equals(current.get(augmentSlot))) {
+            return;
+        }
+        if (current instanceof HashMap<AugmentSlot, CompoundTag> mutable) {
+            mutable.put(augmentSlot, tag);
+            return;
+        }
+        Map<AugmentSlot, CompoundTag> augments = new HashMap<>(current);
         augments.put(augmentSlot, tag);
         player.setData(NTDataAttachments.AUGMENTS_EXTRA_DATA, augments);
     }

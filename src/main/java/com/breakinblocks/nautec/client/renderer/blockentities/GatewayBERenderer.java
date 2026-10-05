@@ -28,8 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayBERenderer.GatewayRenderState> {
     public static final Identifier TEXTURE = Nautec.rl("textures/entity/gateway_ring.png");
@@ -67,9 +66,16 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         state.front = gateway.getFront();
         state.address = gateway.getAddress();
         state.light = LevelRenderer.getLightCoords(gateway.getLevel(), gateway.getBlockPos().above(GatewayRing.CENTRE));
-        state.ripples.clear();
+        state.rippleCount = 0;
         for (GatewayBlockEntity.Ripple ripple : gateway.getRipples()) {
-            state.ripples.add(new float[]{ripple.x(), ripple.y(), (float) (gameTime - ripple.startedAt()) + partialTick});
+            int o = state.rippleCount * 3;
+            if (o + 3 > state.ripples.length) {
+                state.ripples = Arrays.copyOf(state.ripples, Math.max(o + 3, state.ripples.length * 2));
+            }
+            state.ripples[o] = ripple.x();
+            state.ripples[o + 1] = ripple.y();
+            state.ripples[o + 2] = (float) (gameTime - ripple.startedAt()) + partialTick;
+            state.rippleCount++;
         }
     }
 
@@ -105,8 +111,8 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         if (open > 0F) {
             submitHorizon(poseStack, collector, open);
         }
-        for (float[] ripple : state.ripples) {
-            submitRipple(poseStack, collector, ripple[0], ripple[1], ripple[2]);
+        for (int i = 0; i < state.rippleCount; i++) {
+            submitRipple(poseStack, collector, state.ripples[i * 3], state.ripples[i * 3 + 1], state.ripples[i * 3 + 2]);
         }
         poseStack.popPose();
     }
@@ -224,6 +230,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         public Direction front = Direction.SOUTH;
         public GatewayAddress address = GatewayAddress.DEFAULT;
         public int light;
-        public final List<float[]> ripples = new ArrayList<>();
+        public float[] ripples = new float[12];
+        public int rippleCount;
     }
 }

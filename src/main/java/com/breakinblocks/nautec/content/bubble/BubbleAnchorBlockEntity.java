@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.bubble;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -38,7 +39,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -71,6 +76,8 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
     private static final Map<Integer, int[][]> OFFSETS = new HashMap<>();
     private static final Set<BubbleAnchorBlockEntity> ACTIVE = Collections.newSetFromMap(new WeakHashMap<>());
+    private static final List<PendingRelease> PENDING_RELEASES = new ArrayList<>();
+    private static final int MAINTENANCE_BUDGET = 128;
 
     private boolean enabled = true;
     private boolean fillWater = true;
@@ -82,6 +89,7 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
     private int heldRadius;
     private int cursor;
     private boolean releasing;
+    private int swept;
     private int laserHold;
     private int laserRadius;
 
@@ -305,6 +313,7 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
                 heldCenter = desiredCenter;
                 heldRadius = desiredCenter == null ? 0 : radius;
                 cursor = 0;
+                swept = 0;
                 setChanged();
             }
             return;
@@ -314,6 +323,7 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
                 heldCenter = desiredCenter;
                 heldRadius = radius;
                 cursor = 0;
+                swept = 0;
                 setChanged();
             }
             clearStep(serverLevel, NTConfig.bubbleAnchorBlocksPerTick);
@@ -331,6 +341,11 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
     private void clearStep(ServerLevel serverLevel, int budget) {
         int[][] offsets = offsets(heldRadius);
         cursor = Math.floorMod(cursor, offsets.length);
+        if (swept >= offsets.length) {
+            budget = Math.min(budget, MAINTENANCE_BUDGET);
+        } else {
+            swept += budget;
+        }
         for (int i = 0; i < budget; i++) {
             int[] offset = offsets[cursor];
             cursor = (cursor + 1) % offsets.length;
@@ -363,18 +378,18 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
                     && Math.abs(pos.getZ() - keepCenter.getZ()) <= keepRadius) {
                 continue;
             }
-            release(serverLevel, pos);
+            release(serverLevel, pos, fillWater, this);
             done++;
         }
         return cursor >= offsets.length;
     }
 
-    private void release(Level world, BlockPos pos) {
+    private static void release(Level world, BlockPos pos, boolean fillWater, @Nullable BubbleAnchorBlockEntity self) {
         if (!world.isLoaded(pos) || !world.getBlockState(pos).is(NTBlocks.HELD_WATER.get())) {
             return;
         }
         for (BubbleAnchorBlockEntity other : ACTIVE) {
-            if (other != this && !other.isRemoved() && other.level == world && other.covers(pos)) {
+            if (other != self && !other.isRemoved() && other.level == world && other.covers(pos)) {
                 return;
             }
         }
@@ -383,14 +398,62 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
 
     public void releaseAll() {
         ACTIVE.remove(this);
-        if (heldCenter == null || level == null || level.isClientSide()) {
+        if (heldCenter == null || !(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        for (int[] offset : offsets(heldRadius)) {
-            release(level, heldCenter.offset(offset[0], offset[1], offset[2]));
+        PendingRelease pending = new PendingRelease(serverLevel, heldCenter, offsets(heldRadius), fillWater);
+        if (!pending.step(Math.max(NTConfig.bubbleAnchorBlocksPerTick, MAINTENANCE_BUDGET))) {
+            PENDING_RELEASES.add(pending);
         }
         heldCenter = null;
         heldRadius = 0;
+    }
+
+    private static final class PendingRelease {
+        private final ServerLevel level;
+        private final BlockPos center;
+        private final int[][] offsets;
+        private final boolean fillWater;
+        private int cursor;
+
+        private PendingRelease(ServerLevel level, BlockPos center, int[][] offsets, boolean fillWater) {
+            this.level = level;
+            this.center = center;
+            this.offsets = offsets;
+            this.fillWater = fillWater;
+        }
+
+        private boolean step(int budget) {
+            int end = Math.min(offsets.length, cursor + budget);
+            for (; cursor < end; cursor++) {
+                int[] offset = offsets[offsets.length - 1 - cursor];
+                release(level, center.offset(offset[0], offset[1], offset[2]), fillWater, null);
+            }
+            return cursor >= offsets.length;
+        }
+    }
+
+    @EventBusSubscriber(modid = Nautec.MODID)
+    public static final class Releases {
+        private Releases() {
+        }
+
+        @SubscribeEvent
+        public static void onLevelTick(LevelTickEvent.Post event) {
+            if (PENDING_RELEASES.isEmpty() || !(event.getLevel() instanceof ServerLevel serverLevel)) {
+                return;
+            }
+            int budget = Math.max(NTConfig.bubbleAnchorBlocksPerTick, MAINTENANCE_BUDGET);
+            PENDING_RELEASES.removeIf(pending -> pending.level == serverLevel && pending.step(budget));
+        }
+
+        @SubscribeEvent
+        public static void onServerStopping(ServerStoppingEvent event) {
+            for (PendingRelease pending : PENDING_RELEASES) {
+                pending.step(Integer.MAX_VALUE);
+            }
+            PENDING_RELEASES.clear();
+        }
     }
 
     @Override
