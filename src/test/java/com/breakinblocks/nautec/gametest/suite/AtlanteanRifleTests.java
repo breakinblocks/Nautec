@@ -115,7 +115,7 @@ public final class AtlanteanRifleTests {
 
             NTItems.ATLANTEAN_RIFLE.get().onUseTick(level, shooter, stack, AtlanteanRifleItem.USE_DURATION - NTConfig.rifleChargeTicks);
 
-            int expected = NTConfig.rifleBaseDrain / 2;
+            int expected = Math.round(NTConfig.rifleBaseDrain * 0.5F);
             if (before - stored(stack) != expected) {
                 helper.fail("An Infinity rifle drew " + (before - stored(stack)) + " power, expected " + expected);
                 return;

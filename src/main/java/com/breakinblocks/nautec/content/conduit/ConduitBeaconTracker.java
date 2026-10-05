@@ -38,6 +38,11 @@ public final class ConduitBeaconTracker {
         }
     }
 
+    public static boolean isTracked(ResourceKey<Level> dimension, BlockPos pos) {
+        Set<BlockPos> beacons = ACTIVE.get(dimension);
+        return beacons != null && beacons.contains(pos);
+    }
+
     public static boolean protects(ResourceKey<Level> dimension, BlockPos pos) {
         Set<BlockPos> beacons = ACTIVE.get(dimension);
         if (beacons == null || beacons.isEmpty()) {

@@ -33,6 +33,8 @@ public final class FusionPlantTests {
     private static final int RADIUS = 2;
     private static final BlockPos WIDE_CORE = new BlockPos(9, 5, 9);
     private static final Identifier WIDE_ARENA = Nautec.rl("empty_19x11x19");
+    private static int lowIgnitionHolders;
+    private static long savedIgnition;
 
     private FusionPlantTests() {
     }
@@ -59,6 +61,19 @@ public final class FusionPlantTests {
 
     private static BlockPos injectorPos(GameTestHelper helper, BlockPos corePos, int radius) {
         return helper.absolutePos(corePos).offset(-radius, 0, 0);
+    }
+
+    private static void lowerIgnition() {
+        if (lowIgnitionHolders++ == 0) {
+            savedIgnition = NTConfig.fusionIgnitionEnergy;
+            NTConfig.fusionIgnitionEnergy = 4_000;
+        }
+    }
+
+    private static void restoreIgnition() {
+        if (--lowIgnitionHolders == 0) {
+            NTConfig.fusionIgnitionEnergy = savedIgnition;
+        }
     }
 
     private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated) {
@@ -165,8 +180,7 @@ public final class FusionPlantTests {
         });
 
         r.add("fusion/ignites_then_makes_fe_from_salt_water", 300, helper -> {
-            long ignition = NTConfig.fusionIgnitionEnergy;
-            NTConfig.fusionIgnitionEnergy = 4_000;
+            lowerIgnition();
             FusionControllerBlockEntity controller = build(helper, true);
             BlockPos converterPos = controllerPos(helper).north();
             helper.getLevel().setBlock(converterPos, NTBlocks.ENERGY_CONVERTER.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -180,7 +194,7 @@ public final class FusionPlantTests {
                 helper.assertTrue(controller.getFuelTank().getFluidAmount() < 10_000, "it burns Salt Water");
                 EnergyConverterBlockEntity converter = (EnergyConverterBlockEntity) helper.getLevel().getBlockEntity(converterPos);
                 helper.assertTrue(converter.getFeBuffer().getAmountAsInt() > 0, "it pushes FE into a neighbour");
-                NTConfig.fusionIgnitionEnergy = ignition;
+                restoreIgnition();
             });
         });
 
@@ -270,8 +284,7 @@ public final class FusionPlantTests {
         });
 
         r.add("fusion/satellites_raise_output_per_ap", WIDE_ARENA, 300, 0, helper -> {
-            long ignition = NTConfig.fusionIgnitionEnergy;
-            NTConfig.fusionIgnitionEnergy = 4_000;
+            lowerIgnition();
             int radius = FusionStructure.MIN_SATELLITE_RADIUS;
             int corner = FusionStructure.satelliteOffset(radius);
             FusionControllerBlockEntity controller = build(helper, true, WIDE_CORE, radius);
@@ -289,7 +302,7 @@ public final class FusionPlantTests {
             helper.succeedWhen(() -> {
                 helper.assertTrue(controller.getStatus().running(), "the plant runs, status " + controller.getStatus());
                 helper.assertValueEqual(controller.getOutput(), expected, "output with four satellites at purity 3.0");
-                NTConfig.fusionIgnitionEnergy = ignition;
+                restoreIgnition();
             });
         });
     }

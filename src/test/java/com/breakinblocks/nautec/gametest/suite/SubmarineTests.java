@@ -817,10 +817,10 @@ public final class SubmarineTests {
             helper.succeed();
         });
 
-        r.add("submarine/flight_module_holds_the_hull_up", 80, helper -> {
-            BlockPos high = new BlockPos(4, 30, 4);
+        r.add("submarine/flight_module_holds_the_hull_up", Nautec.rl("empty_34x16x14"), 80, 0, helper -> {
+            BlockPos high = new BlockPos(6, 9, 7);
             SubmarineEntity flyer = helper.spawn(NTEntities.SUBMARINE.get(), high);
-            SubmarineEntity faller = helper.spawn(NTEntities.SUBMARINE.get(), high.offset(12, 0, 0));
+            SubmarineEntity faller = helper.spawn(NTEntities.SUBMARINE.get(), high.offset(20, 0, 0));
             flyer.setPowerStored(NTConfig.submarinePowerCapacity);
             faller.setPowerStored(NTConfig.submarinePowerCapacity);
             flyer.setModule(0, new ItemStack(NTItems.FLIGHT_MODULE.get()));

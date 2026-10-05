@@ -144,7 +144,7 @@ public final class ExpansionFeatureTests {
             });
             helper.runAfterDelay(ticksOfReserve + 20, () -> {
                 helper.assertFalse(beacon.isRunning(), "an empty buffer turns it off");
-                helper.assertFalse(ConduitBeaconTracker.protects(helper.getLevel().dimension(), helper.absolutePos(BEACON)),
+                helper.assertFalse(ConduitBeaconTracker.isTracked(helper.getLevel().dimension(), helper.absolutePos(BEACON)),
                         "a stopped beacon no longer blocks spawns");
                 helper.succeed();
             });
