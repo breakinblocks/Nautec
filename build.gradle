@@ -4,6 +4,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.141'
+    id 'me.modmuss50.mod-publish-plugin' version '1.1.0'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -127,7 +128,6 @@ dependencies {
 
     implementation "maven.modrinth:curios:dRnRThvD"
     implementation "curse.maven:jade-324717:7938398"
-    implementation "maven.modrinth:durability-display:7GxQSk24"
 
     compileOnly "org.appliedenergistics:guideme:${guideme_version}"
     runtimeOnly "org.appliedenergistics:guideme:${guideme_version}"
@@ -204,13 +204,57 @@ tasks.register('deployToPack') {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
+            artifactId = mod_id
             from components.java
         }
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/repo"
+            name = "BreakInBlocks"
+            url = releaseBuild ?
+                "https://maven.breakinblocks.com/releases" :
+                "https://maven.breakinblocks.com/snapshots"
+            credentials {
+                username = System.getenv("MAVEN_USER") ?: ""
+                password = System.getenv("MAVEN_TOKEN") ?: ""
+            }
         }
+    }
+}
+
+def publishDryRun = project.hasProperty("dryRun") && project.property("dryRun") == "true"
+
+publishMods {
+    dryRun = publishDryRun
+    file = jar.archiveFile
+    def changelogFile = file("metadata/changelogs/${mod_version}.md")
+    changelog = changelogFile.exists() ? changelogFile.text : "Release ${project.version}"
+    displayName = "${mod_name} ${project.version}"
+    type = STABLE
+    modLoaders.add("neoforge")
+
+    curseforge {
+        projectId = "1727082"
+        projectSlug = "nautec-2"
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        minecraftVersions.add(minecraft_version)
+        clientRequired = true
+        serverRequired = true
+        requires("geckolib", "curios")
+        optional("jei", "jade", "guideme", "apotheosis", "stellaris")
+    }
+}
+
+tasks.named('publishMods') {
+    if (!releaseBuild && !publishDryRun) {
+        doFirst {
+            throw new GradleException("publishMods uploads to CurseForge, so it needs -Prelease=true. "
+                    + "Pass -PdryRun=true to test without uploading.")
+        }
+    }
+    def mavenUser = providers.environmentVariable("MAVEN_USER")
+    if (mavenUser.isPresent() && !publishDryRun) {
+        dependsOn 'publishMavenJavaPublicationToBreakInBlocksRepository'
     }
 }
 

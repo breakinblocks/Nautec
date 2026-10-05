@@ -18,7 +18,6 @@ import com.breakinblocks.nautec.capabilities.bacteria.ItemBacteriaWrapper;
 import com.breakinblocks.nautec.capabilities.fluid.DivingSuitAirHandler;
 import com.breakinblocks.nautec.capabilities.power.ItemPowerWrapper;
 import com.breakinblocks.nautec.capabilities.power.LaserPowerView;
-import com.breakinblocks.nautec.compat.duradisplay.DuraDisplayCompat;
 import com.breakinblocks.nautec.content.commands.arguments.AugmentSlotArgumentType;
 import com.breakinblocks.nautec.content.commands.arguments.AugmentTypeArgumentType;
 import com.breakinblocks.nautec.data.NTDataAttachments;
@@ -59,7 +58,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -142,11 +140,6 @@ public final class Nautec {
         preserveWorldgenConfig();
         modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.WORLDGEN_SPEC, "nautec-worldgen.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, NTConfig.SPEC, "nautec-common.toml");
-
-
-        if (ModList.get().isLoaded("duradisplay")) {
-            DuraDisplayCompat.register();
-        }
     }
 
     private static void preserveWorldgenConfig() {
