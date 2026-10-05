@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.blocks.multiblock.part;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.IndustrialBioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.items.tools.AquarineWrenchItem;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
@@ -30,6 +31,7 @@ public class IndustrialBioReactorPartBlock extends LaserBlock {
                 .setValue(Multiblock.FORMED, false)
                 .setValue(IndustrialBioReactorMultiblock.LAYER, 0)
                 .setValue(IndustrialBioReactorMultiblock.CELL, 0)
+                .setValue(IndustrialBioReactorMultiblock.ORIENTATION, HorizontalDirection.NORTH)
                 .setValue(BioReactorMultiblock.HATCH, false)
                 .setValue(BioReactorMultiblock.ACTIVE, false)
         );
@@ -51,6 +53,7 @@ public class IndustrialBioReactorPartBlock extends LaserBlock {
                 Multiblock.FORMED,
                 IndustrialBioReactorMultiblock.LAYER,
                 IndustrialBioReactorMultiblock.CELL,
+                IndustrialBioReactorMultiblock.ORIENTATION,
                 BioReactorMultiblock.HATCH,
                 BioReactorMultiblock.ACTIVE
         ));

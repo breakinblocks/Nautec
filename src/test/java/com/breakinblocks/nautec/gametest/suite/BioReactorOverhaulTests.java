@@ -7,11 +7,13 @@ import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
 import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.IndustrialBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.BioReactorPartBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.IndustrialBioReactorPartBlockEntity;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
@@ -25,6 +27,7 @@ import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Vec3i;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -436,6 +439,43 @@ public final class BioReactorOverhaulTests {
                 helper.succeed();
             });
         });
+
+        for (HorizontalDirection facing : new HorizontalDirection[]{HorizontalDirection.EAST, HorizontalDirection.SOUTH, HorizontalDirection.WEST}) {
+            r.add("bio_overhaul/industrial_forms_facing_" + facing.getSerializedName(), 60, helper -> {
+                BlockPos controller = new BlockPos(4, 2, 4);
+                BlockPos first = MultiblockHelper.getFirstBlockPos(facing, controller,
+                        MultiblockHelper.getRelativeControllerPos(NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get()));
+                Map<Integer, Block> definition = NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get().getDefinition();
+                for (int layer = 0; layer < IndustrialBioReactorMultiblock.HEIGHT; layer++) {
+                    for (int cell = 0; cell < IndustrialBioReactorMultiblock.SIZE * IndustrialBioReactorMultiblock.SIZE; cell++) {
+                        BlockPos pos = MultiblockHelper.getCurPos(first, new Vec3i(cell % IndustrialBioReactorMultiblock.SIZE, layer,
+                                cell / IndustrialBioReactorMultiblock.SIZE), facing);
+                        helper.setBlock(pos, definition.get(IndustrialBioReactorMultiblock.keyAt(layer, cell)));
+                    }
+                }
+                helper.runAfterDelay(1, () -> {
+                    helper.assertTrue(MultiblockHelper.form(NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get(), helper.absolutePos(controller), helper.getLevel()),
+                            "A reactor built with its controller in the " + facing.getSerializedName() + " wall should form");
+                    BlockState state = helper.getBlockState(controller);
+                    helper.assertTrue(state.getValue(Multiblock.FORMED), "Controller should be formed");
+                    helper.assertValueEqual(facing, state.getValue(IndustrialBioReactorMultiblock.ORIENTATION), "controller orientation");
+                    IndustrialBioReactorBlockEntity reactor = helper.getBlockEntity(controller, IndustrialBioReactorBlockEntity.class);
+                    helper.assertValueEqual(facing.toRegularDirection(), reactor.front(), "front of the reactor");
+
+                    BlockPos roofEdge = MultiblockHelper.getCurPos(first, new Vec3i(1, IndustrialBioReactorMultiblock.HEIGHT - 1, 0), facing);
+                    BlockState roof = helper.getBlockState(roofEdge);
+                    helper.assertValueEqual(facing, roof.getValue(IndustrialBioReactorMultiblock.ORIENTATION), "part orientation");
+                    helper.getLevel().setBlock(helper.absolutePos(roofEdge), roof.setValue(BioReactorMultiblock.HATCH, true), 3);
+                    IndustrialBioReactorPartBlockEntity hatch = helper.getBlockEntity(roofEdge, IndustrialBioReactorPartBlockEntity.class);
+                    helper.assertTrue(hatch.getLaserInputs().contains(Direction.UP), "a hatch takes a beam from above");
+                    helper.assertTrue(hatch.getLaserInputs().contains(facing.toRegularDirection()), "a front edge hatch takes a beam on its outer side");
+                    helper.assertFalse(hatch.getLaserInputs().contains(facing.toRegularDirection().getOpposite()), "but not from the inside");
+                    helper.assertTrue(hatch.getItemHandlerOnSide(facing.toRegularDirection()) != null, "the outer face of the front wall takes items");
+                    helper.assertTrue(hatch.getItemHandlerOnSide(facing.toRegularDirection().getOpposite()) == null, "the inner face does not");
+                    helper.succeed();
+                });
+            });
+        }
 
         r.add("bio_overhaul/industrial_refuses_wrong_shape", 60, helper -> {
             BlockPos origin = new BlockPos(2, 1, 2);

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -56,6 +57,7 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
         state.time = (level.getGameTime() % TIME_WRAP) + partialTick;
         state.offset = ReactorFx.depthOffset(Math.sqrt(dx * dx + dy * dy + dz * dz));
         state.seed = (int) (pos.asLong() ^ (pos.asLong() >>> 32));
+        state.front = blockEntity.front();
     }
 
     @Override
@@ -89,6 +91,7 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
         public float cameraY;
         public float cameraZ;
         public int seed;
+        public Direction front = Direction.NORTH;
 
         private State(ReactorFxRenderer<?> renderer) {
             this.renderer = renderer;

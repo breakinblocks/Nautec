@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
+import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
@@ -55,6 +56,11 @@ public class IndustrialBioReactorBlockEntity extends AbstractBioReactorBlockEnti
     @Override
     protected Block partBlock() {
         return NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get();
+    }
+
+    @Override
+    public Direction front() {
+        return IndustrialBioReactorMultiblock.orientation(getBlockState()).toRegularDirection();
     }
 
     @Override

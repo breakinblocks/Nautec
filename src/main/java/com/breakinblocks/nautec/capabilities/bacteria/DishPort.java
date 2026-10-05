@@ -33,6 +33,11 @@ public final class DishPort {
 
     public static boolean accepts(ContainerBlockEntity machine, ItemResource resource, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
                                   IntSupplier unloadSlot, Predicate<BacteriaInstance> loadable) {
+        return accepts(machine, resource, emptyOutSlot, colonyOutSlot, loadSlots, unloadSlot, loadable, false);
+    }
+
+    public static boolean accepts(ContainerBlockEntity machine, ItemResource resource, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
+                                  IntSupplier unloadSlot, Predicate<BacteriaInstance> loadable, boolean swapWhenFull) {
         if (!(resource.getItem() instanceof PetriDishItem)) {
             return false;
         }
@@ -43,13 +48,24 @@ public final class DishPort {
         }
         BacteriaInstance held = colonyOf(resource.toStack());
         if (!held.isEmpty()) {
-            return (emptyOutSlot == NONE || items.getStackInSlot(emptyOutSlot).isEmpty()) && loadable.test(held) && loadTarget(storage, held, loadSlots) >= 0;
+            if (!loadable.test(held)) {
+                return false;
+            }
+            if (loadTarget(storage, held, loadSlots) >= 0) {
+                return emptyOutSlot == NONE || items.getStackInSlot(emptyOutSlot).isEmpty();
+            }
+            return swapWhenFull && colonyOutSlot != NONE && items.getStackInSlot(colonyOutSlot).isEmpty() && unloadSlot.getAsInt() >= 0;
         }
         return colonyOutSlot != NONE && items.getStackInSlot(colonyOutSlot).isEmpty() && unloadSlot.getAsInt() >= 0;
     }
 
     public static boolean tick(ContainerBlockEntity machine, int inSlot, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
                                IntSupplier unloadSlot, IntConsumer onUnload) {
+        return tick(machine, inSlot, emptyOutSlot, colonyOutSlot, loadSlots, unloadSlot, onUnload, false);
+    }
+
+    public static boolean tick(ContainerBlockEntity machine, int inSlot, int emptyOutSlot, int colonyOutSlot, int[] loadSlots,
+                               IntSupplier unloadSlot, IntConsumer onUnload, boolean swapWhenFull) {
         ItemStackHandler items = machine.getItemStackHandler();
         IBacteriaStorage storage = machine.getBacteriaStorage();
         ItemStack in = items.getStackInSlot(inSlot);
@@ -65,12 +81,12 @@ public final class DishPort {
         BacteriaInstance held = dish.getBacteria(0);
         int outSlot;
         if (!held.isEmpty()) {
-            outSlot = emptyOutSlot;
-            if (outSlot != NONE && !items.getStackInSlot(outSlot).isEmpty()) {
-                return false;
-            }
             int target = loadTarget(storage, held, loadSlots);
             if (target < 0) {
+                return swapWhenFull && swap(machine, inSlot, colonyOutSlot, result, dish, held, unloadSlot, onUnload);
+            }
+            outSlot = emptyOutSlot;
+            if (outSlot != NONE && !items.getStackInSlot(outSlot).isEmpty()) {
                 return false;
             }
             storage.insertBacteria(target, held, false);
@@ -96,6 +112,27 @@ public final class DishPort {
 
         items.extractItem(inSlot, 1, false);
         machine.forceInsertItem(outSlot, result, false);
+        return true;
+    }
+
+    private static boolean swap(ContainerBlockEntity machine, int inSlot, int colonyOutSlot, ItemStack result, IBacteriaStorage dish,
+                                BacteriaInstance held, IntSupplier unloadSlot, IntConsumer onUnload) {
+        ItemStackHandler items = machine.getItemStackHandler();
+        IBacteriaStorage storage = machine.getBacteriaStorage();
+        if (colonyOutSlot == NONE || !items.getStackInSlot(colonyOutSlot).isEmpty()) {
+            return false;
+        }
+        int source = unloadSlot.getAsInt();
+        if (source < 0 || storage.getBacteria(source).isEmpty()) {
+            return false;
+        }
+        BacteriaInstance old = storage.getBacteria(source).copy();
+        onUnload.accept(source);
+        storage.setBacteria(source, held);
+        storage.onBacteriaChanged(source);
+        dish.setBacteria(0, old);
+        items.extractItem(inSlot, 1, false);
+        machine.forceInsertItem(colonyOutSlot, result, false);
         return true;
     }
 

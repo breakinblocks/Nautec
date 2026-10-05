@@ -251,6 +251,31 @@ public final class DishPortTests {
                 helper.succeed();
             });
         });
+
+        r.add("dish_port/full_reactor_swaps_out_the_weakest", 40, helper -> {
+            helper.setBlock(MACHINE, NTBlocks.BIO_REACTOR.get());
+            BioReactorBlockEntity reactor = helper.getBlockEntity(MACHINE, BioReactorBlockEntity.class);
+            int weakest = reactor.getColonySlots() - 1;
+            for (int slot = 0; slot < reactor.getColonySlots(); slot++) {
+                reactor.getBacteriaStorage().setBacteria(slot, colony(helper, NTBacterias.LITHOPHILES, 80 + slot));
+                reactor.setVitality(slot, slot == weakest ? 10 : 500);
+            }
+            ResourceHandler<ItemResource> side = items(helper);
+            helper.assertValueEqual(1, insert(side, reactor.dishInSlot(), dish(colony(helper, NTBacterias.CALCIOPHILES, 60))),
+                    "a full reactor takes a colony dish to swap");
+
+            helper.runAfterDelay(12, () -> {
+                helper.assertValueEqual(NTBacterias.CALCIOPHILES, reactor.getBacteriaStorage().getBacteria(weakest).getBacteria(),
+                        "The new colony should take the weakest colony's slot");
+                BacteriaInstance out = contents(reactor.getItemStackHandler().getStackInSlot(reactor.dishOutSlot()));
+                helper.assertValueEqual(NTBacterias.LITHOPHILES, out.getBacteria(), "the old colony leaves in the same dish");
+                helper.assertValueEqual(80L + weakest, out.getSize(), "size of the swapped out colony");
+                helper.assertTrue(reactor.getItemStackHandler().getStackInSlot(reactor.dishEmptyOutSlot()).isEmpty(), "no empty dish comes out");
+                helper.assertValueEqual(0, insert(side, reactor.dishInSlot(), dish(colony(helper, NTBacterias.HALOTROPHS, 60))),
+                        "no second swap while the colony output is full");
+                helper.succeed();
+            });
+        });
     }
 
     static BacteriaInstance colony(GameTestHelper helper, ResourceKey<Bacteria> key, long size) {

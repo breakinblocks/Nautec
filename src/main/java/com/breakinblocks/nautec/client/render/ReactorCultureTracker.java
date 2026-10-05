@@ -65,10 +65,10 @@ public final class ReactorCultureTracker {
 
     public AABB bounds(AbstractBioReactorBlockEntity blockEntity, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         AABB box = this.bounds;
-        if (box == null) {
-            double x = blockEntity.getBlockPos().getX();
-            double y = blockEntity.getBlockPos().getY();
-            double z = blockEntity.getBlockPos().getZ();
+        double x = blockEntity.getBlockPos().getX();
+        double y = blockEntity.getBlockPos().getY();
+        double z = blockEntity.getBlockPos().getZ();
+        if (box == null || box.minX != x + minX || box.minZ != z + minZ || box.maxX != x + maxX || box.maxZ != z + maxZ) {
             box = new AABB(x + minX, y + minY, z + minZ, x + maxX, y + maxY, z + maxZ);
             this.bounds = box;
         }

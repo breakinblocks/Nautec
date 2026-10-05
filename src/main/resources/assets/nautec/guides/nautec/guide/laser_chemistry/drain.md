@@ -49,7 +49,7 @@ The drain needs more than 20 AP per tick (configurable). An <ItemLink id="aquati
 
 Two catalysts burning shards, merged in a [Laser Junction](laser_manipulation.md), give 24 and run the drain. Four are needed on Prismarine Crystals. A junction splits its power evenly between its outputs, so give it a single output toward the drain.
 
-The beam goes in through a laser port. With the wrench, right-click the outer side of one of the four middle wall pieces (not a corner). That face becomes the port; aim your beam into it. The drain has one port at a time, and setting a new one moves it.
+The beam goes in through a laser port. With the wrench, right-click one of the four middle wall pieces (not a corner) on its outer side face: the vertical face pointing away from the drain. Not its top, not its bottom, and not the side facing in. The exact face you click becomes the port, and the beam has to enter through that same face, so clicking the top or bottom of the wall makes a port that a beam coming in from the side can never reach. The drain has one port at a time, and setting a new one moves it, so if the drain is not getting power, click the outer side face again.
 
 ***
 

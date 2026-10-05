@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.content.blocks.multiblock.controller.AugmentationStationBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
@@ -196,13 +197,16 @@ public class MultiblockModelHelper {
                 bmp.multiblockTexture(multiblock, "controller_bottom"),
                 bmp.multiblockTexture(multiblock, "controller_top"),
                 side, side, side, side, side);
-        PropertyDispatch.C2<MultiVariant, Boolean, Boolean> dispatch = PropertyDispatch.initial(Multiblock.FORMED, BioReactorMultiblock.ACTIVE);
+        PropertyDispatch.C3<MultiVariant, Boolean, Boolean, HorizontalDirection> dispatch = PropertyDispatch.initial(
+                Multiblock.FORMED, BioReactorMultiblock.ACTIVE, IndustrialBioReactorMultiblock.ORIENTATION);
         for (boolean active : new boolean[]{false, true}) {
             Identifier formed = industrialModel(bmp.name(block) + "_formed" + (active ? "_active" : ""),
                     IndustrialBioReactorMultiblock.CONTROLLER_LAYER, IndustrialBioReactorMultiblock.CONTROLLER_CELL, false, active);
-            dispatch = dispatch
-                    .select(false, active, BlockModelGenerators.plainVariant(unformed))
-                    .select(true, active, BlockModelGenerators.plainVariant(formed));
+            for (HorizontalDirection orientation : HorizontalDirection.values()) {
+                dispatch = dispatch
+                        .select(false, active, orientation, BlockModelGenerators.plainVariant(unformed))
+                        .select(true, active, orientation, industrialVariant(formed, orientation));
+            }
         }
         bmp.blockModels().blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(dispatch));
     }
@@ -210,8 +214,9 @@ public class MultiblockModelHelper {
     public void industrialBioReactorPart(Block block) {
         Multiblock multiblock = NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get();
         Identifier invalid = bmp.cubeAll(bmp.name(block) + "_invalid", bmp.multiblockTexture(multiblock, "interior"));
-        PropertyDispatch.C4<MultiVariant, Integer, Integer, Boolean, Boolean> dispatch = PropertyDispatch.initial(
-                IndustrialBioReactorMultiblock.LAYER, IndustrialBioReactorMultiblock.CELL, BioReactorMultiblock.HATCH, BioReactorMultiblock.ACTIVE);
+        PropertyDispatch.C5<MultiVariant, Integer, Integer, Boolean, Boolean, HorizontalDirection> dispatch = PropertyDispatch.initial(
+                IndustrialBioReactorMultiblock.LAYER, IndustrialBioReactorMultiblock.CELL, BioReactorMultiblock.HATCH, BioReactorMultiblock.ACTIVE,
+                IndustrialBioReactorMultiblock.ORIENTATION);
         for (int layer : IndustrialBioReactorMultiblock.LAYER.getPossibleValues()) {
             for (int cell : IndustrialBioReactorMultiblock.CELL.getPossibleValues()) {
                 int key = IndustrialBioReactorMultiblock.keyAt(layer, cell);
@@ -224,12 +229,18 @@ public class MultiblockModelHelper {
                             model = industrialModel(bmp.name(block) + "_l" + layer + "_c" + cell
                                     + (shownHatch ? "_hatch" : "") + (active ? "_active" : ""), layer, cell, shownHatch, active);
                         }
-                        dispatch = dispatch.select(layer, cell, hatch, active, BlockModelGenerators.plainVariant(model));
+                        for (HorizontalDirection orientation : HorizontalDirection.values()) {
+                            dispatch = dispatch.select(layer, cell, hatch, active, orientation, industrialVariant(model, orientation));
+                        }
                     }
                 }
             }
         }
         bmp.blockModels().blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(dispatch));
+    }
+
+    private static MultiVariant industrialVariant(Identifier model, HorizontalDirection orientation) {
+        return BlockModelProvider.rotated(BlockModelGenerators.plainVariant(model), 0, orientation.ordinal() * 90);
     }
 
     private Identifier industrialModel(String name, int layer, int cell, boolean hatch, boolean active) {

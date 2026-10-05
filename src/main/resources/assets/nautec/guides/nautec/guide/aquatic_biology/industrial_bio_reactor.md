@@ -24,7 +24,7 @@ It works like the [Bio Reactor](bio_reactor.md): the same [production formula](p
 Four layers, each 5 by 5:
 
 * Layer 1 (bottom): Dark Prismarine Pillars in the four corners, Polished Prismarine everywhere else.
-* Layers 2 and 3: Dark Prismarine Pillars in the corners and Bacteria Containment Shields along the edges, with the 3 by 3 middle left empty. The Industrial Bio Reactor takes the place of the middle shield of the north wall in layer 2.
+* Layers 2 and 3: Dark Prismarine Pillars in the corners and Bacteria Containment Shields along the edges, with the 3 by 3 middle left empty. The Industrial Bio Reactor takes the place of the middle shield of one wall in layer 2.
 * Layer 4 (roof): Dark Prismarine Pillars in the corners, Aquarine Steel Blocks everywhere else.
 
 <GameScene zoom="3" background="#333333" interactive={true}>
@@ -113,7 +113,7 @@ Four layers, each 5 by 5:
   <IsometricCamera yaw="225" pitch="30"/>
 </GameScene>
 
-The structure only forms facing one way: the Industrial Bio Reactor has to be in the middle of the north wall, as in the scene. The 3 by 3 by 2 chamber inside must be air, with no water and no blocks in it. Without the roof it looks like this:
+The Industrial Bio Reactor can go in the middle of any of the four walls, so you can build the frame first and put the reactor block in whichever side faces you. The scene shows it in the north wall. The 3 by 3 by 2 chamber inside must be air, with no water and no blocks in it. Without the roof it looks like this:
 
 <GameScene zoom="3" background="#333333" interactive={true}>
   <Block id="nautec:dark_prismarine_pillar" x="0" y="0" z="0"/>
@@ -206,9 +206,9 @@ Nine colonies need feeding from only three nutrient slots, so run no more than t
 ## <Color id="gold">Automation</Color>
 
 * Every outer face of every block takes and gives items: a hopper on the roof or pointing into a wall feeds nutrients and upgrades, hoppers under the floor pull output, and a pipe works anywhere on the outside.
-* [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side: Front is the north wall with the Industrial Bio Reactor block in it, Left is the east wall and Right the west wall. For example, set the roof to Input and the floor to Output so pipes on the roof never pull output and pipes under the floor never push into it.
+* [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side: Front is the wall with the Industrial Bio Reactor block in it, and Left and Right are the walls on your left and right as you face that block from outside. For example, set the roof to Input and the floor to Output so pipes on the roof never pull output and pipes under the floor never push into it.
 
-Colonies load and unload through the Dish Port. A dish goes into the upper slot between the colony grid and the outputs, and dishes holding a colony come out of the lower one; empty dishes come out of the slot in the bottom row, between the nutrients and the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the port refuses it while no slot can. An empty dish takes out the colony with the least nutrient buffer left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
+Colonies load and unload through the Dish Port. A dish goes into the upper slot between the colony grid and the outputs, and dishes holding a colony come out of the lower one; empty dishes come out of the slot in the bottom row, between the nutrients and the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it. Once every colony slot is full, a new colony dish swaps instead: its colony replaces the one with the least nutrient buffer left, and the old colony comes out in that same dish, so no empty dish is left over. A swap waits while the colony output slot is full. An empty dish takes out the colony with the least nutrient buffer left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
 
 Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
 

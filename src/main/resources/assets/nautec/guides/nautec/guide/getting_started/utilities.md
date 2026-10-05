@@ -35,7 +35,7 @@ These work in every mode:
 * Sneak right-clicking a Prismarine Crystal you grew yourself picks the whole crystal up. Wild crystals cannot be moved. See [Crystal Cultivation](nautec:deep_engineering/crystal_cultivation.md).
 * Right-clicking a Sea Scout opens its module screen. See [Sea Scout](nautec:submarine/submarine.md).
 * A <ItemLink id="laser_junction"/> face becomes an input with a right-click and an output with a sneak right-click. Clicking a face again the same way turns it off.
-* A top edge block of a formed [Bio Reactor](nautec:aquatic_biology/bio_reactor.md), a roof block of a formed [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md), or a wall block of a formed [Deep Sea Drain](nautec:laser_chemistry/drain.md) opens a laser port there, so a beam can feed the machine. A reactor port closes again with another click. On the reactors this does not work in Item Sides mode, since that mode sets the reactor's sides.
+* A top edge block of a formed [Bio Reactor](nautec:aquatic_biology/bio_reactor.md), a roof block of a formed [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md), or the outer side face of a middle wall block of a formed [Deep Sea Drain](nautec:laser_chemistry/drain.md) opens a laser port there, so a beam can feed the machine. On the drain the port is the exact face you click, so click the side, not the top or bottom. A reactor port closes again with another click. On the reactors this does not work in Item Sides mode, since that mode sets the reactor's sides.
 
 <Recipe id="nautec:aquarine_wrench"/>
 

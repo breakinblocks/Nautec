@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
 import com.breakinblocks.nautec.api.sides.SideMode;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.item.DelegatingItemHandler;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.IndustrialBioReactorBlockEntity;
@@ -30,8 +31,8 @@ import java.util.Set;
 
 public class IndustrialBioReactorPartBlockEntity extends LaserBlockEntity implements MultiblockPartEntity {
     private static final int CELLS = IndustrialBioReactorMultiblock.SIZE * IndustrialBioReactorMultiblock.SIZE;
-    private static final Set<Direction>[] HATCH_INPUTS = hatchInputs();
-    private static final Set<Direction>[][] OUTWARD = outwardFaces();
+    private static final Set<Direction>[][] HATCH_INPUTS = hatchInputs();
+    private static final Set<Direction>[][][] OUTWARD = outwardFaces();
 
     private final ResourceHandler<ItemResource> controllerItems = new DelegatingItemHandler(() -> {
         IndustrialBioReactorBlockEntity reactor = controller();
@@ -44,29 +45,40 @@ public class IndustrialBioReactorPartBlockEntity extends LaserBlockEntity implem
     }
 
     @SuppressWarnings("unchecked")
-    private static Set<Direction>[] hatchInputs() {
-        Set<Direction>[] inputs = new Set[CELLS];
-        for (int cell = 0; cell < CELLS; cell++) {
-            Set<Direction> faces = EnumSet.of(Direction.UP);
-            for (Direction direction : IndustrialBioReactorMultiblock.outwardFaces(IndustrialBioReactorMultiblock.HEIGHT - 1, cell)) {
-                if (direction.getAxis().isHorizontal()) {
-                    faces.add(direction);
+    private static Set<Direction>[][] hatchInputs() {
+        HorizontalDirection[] orientations = HorizontalDirection.values();
+        Set<Direction>[][] inputs = new Set[orientations.length][CELLS];
+        for (HorizontalDirection orientation : orientations) {
+            for (int cell = 0; cell < CELLS; cell++) {
+                Set<Direction> faces = EnumSet.of(Direction.UP);
+                for (Direction direction : IndustrialBioReactorMultiblock.outwardFaces(IndustrialBioReactorMultiblock.HEIGHT - 1, cell)) {
+                    if (direction.getAxis().isHorizontal()) {
+                        faces.add(direction);
+                    }
                 }
+                inputs[orientation.ordinal()][cell] = Collections.unmodifiableSet(IndustrialBioReactorMultiblock.toWorld(faces, orientation));
             }
-            inputs[cell] = Collections.unmodifiableSet(faces);
         }
         return inputs;
     }
 
     @SuppressWarnings("unchecked")
-    private static Set<Direction>[][] outwardFaces() {
-        Set<Direction>[][] faces = new Set[IndustrialBioReactorMultiblock.HEIGHT][CELLS];
-        for (int layer = 0; layer < IndustrialBioReactorMultiblock.HEIGHT; layer++) {
-            for (int cell = 0; cell < CELLS; cell++) {
-                faces[layer][cell] = Collections.unmodifiableSet(IndustrialBioReactorMultiblock.outwardFaces(layer, cell));
+    private static Set<Direction>[][][] outwardFaces() {
+        HorizontalDirection[] orientations = HorizontalDirection.values();
+        Set<Direction>[][][] faces = new Set[orientations.length][IndustrialBioReactorMultiblock.HEIGHT][CELLS];
+        for (HorizontalDirection orientation : orientations) {
+            for (int layer = 0; layer < IndustrialBioReactorMultiblock.HEIGHT; layer++) {
+                for (int cell = 0; cell < CELLS; cell++) {
+                    faces[orientation.ordinal()][layer][cell] = Collections.unmodifiableSet(
+                            IndustrialBioReactorMultiblock.toWorld(IndustrialBioReactorMultiblock.outwardFaces(layer, cell), orientation));
+                }
             }
         }
         return faces;
+    }
+
+    private int orientationIndex() {
+        return IndustrialBioReactorMultiblock.orientation(getBlockState()).ordinal();
     }
 
     public int getLayer() {
@@ -107,7 +119,7 @@ public class IndustrialBioReactorPartBlockEntity extends LaserBlockEntity implem
 
     @Override
     public Set<Direction> getLaserInputs() {
-        return isHatch() ? HATCH_INPUTS[getCell()] : Set.of();
+        return isHatch() ? HATCH_INPUTS[orientationIndex()][getCell()] : Set.of();
     }
 
     @Override
@@ -130,7 +142,7 @@ public class IndustrialBioReactorPartBlockEntity extends LaserBlockEntity implem
         if (direction == null) {
             return getItemHandler();
         }
-        if (!OUTWARD[getLayer()][getCell()].contains(direction)) {
+        if (!OUTWARD[orientationIndex()][getLayer()][getCell()].contains(direction)) {
             return null;
         }
         IndustrialBioReactorBlockEntity reactor = controller();

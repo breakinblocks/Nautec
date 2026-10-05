@@ -287,7 +287,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
 
         boolean server = !level.isClientSide();
         if (server && level.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, dishInSlot(), dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony);
+            DishPort.tick(this, dishInSlot(), dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony, true);
         }
         if (level instanceof ServerLevel serverLevel && recipeRevision.changed(serverLevel)) {
             Arrays.fill(this.productCache, null);
@@ -296,6 +296,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
 
         boolean productive = false;
         boolean worked = false;
+        boolean starved = false;
         if (canRun() && getPower() >= getRequiredPower()) {
             IBacteriaStorage storage = getBacteriaStorage();
             float speed = getSpeedMultiplier();
@@ -325,8 +326,11 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
                 boolean fed = spendVitality(i, bacteria, cost, server);
                 if (++this.workTicks[i] >= WORK_TICKS_PER_DECAY) {
                     this.workTicks[i] = 0;
-                    if (server && !fed && bacteria.isSenescent()) {
-                        decay(i, bacteria, storage);
+                    if (server && !fed) {
+                        starved = true;
+                        if (bacteria.isSenescent()) {
+                            decay(i, bacteria, storage);
+                        }
                     }
                 }
 
@@ -346,7 +350,9 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         }
 
         if (server) {
-            if (worked) {
+            if (starved) {
+                update();
+            } else if (worked) {
                 setChanged();
             }
             updateActive(productive);
@@ -499,7 +505,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         if (slot != dishInSlot()) {
             return true;
         }
-        return DishPort.accepts(this, resource, dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, colony -> true);
+        return DishPort.accepts(this, resource, dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, colony -> true, true);
     }
 
     @Override

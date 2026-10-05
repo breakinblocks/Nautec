@@ -3,7 +3,9 @@ package com.breakinblocks.nautec.content.blocks.multiblock.controller;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
+import com.breakinblocks.nautec.api.utils.HorizontalDirection;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
+import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -24,6 +26,7 @@ public class IndustrialBioReactorBlock extends LaserBlock {
         registerDefaultState(defaultBlockState()
                 .setValue(Multiblock.FORMED, false)
                 .setValue(BioReactorMultiblock.ACTIVE, false)
+                .setValue(IndustrialBioReactorMultiblock.ORIENTATION, HorizontalDirection.NORTH)
         );
     }
 
@@ -34,7 +37,7 @@ public class IndustrialBioReactorBlock extends LaserBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(Multiblock.FORMED, BioReactorMultiblock.ACTIVE));
+        super.createBlockStateDefinition(builder.add(Multiblock.FORMED, BioReactorMultiblock.ACTIVE, IndustrialBioReactorMultiblock.ORIENTATION));
     }
 
     @Override

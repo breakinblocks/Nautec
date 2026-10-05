@@ -4,12 +4,12 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.controller.Indu
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 
 public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBioReactorBlockEntity> {
-    private static final float CENTER_X = 0.5F;
-    private static final float CENTER_Z = 2.5F;
+    private static final float CHAMBER_OFFSET = 2.0F;
     private static final float HALF = 1.5F;
     private static final float FLOOR = 0.0F;
     private static final float SURFACE = 1.5F;
@@ -27,6 +27,8 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
     private static final float IDLE_CULTURE = 0.1F;
     private static final float ACTIVE_CULTURE = 0.27F;
 
+    private float centerX;
+    private float centerZ;
     private float rightX;
     private float rightZ;
     private float upX;
@@ -48,6 +50,8 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
             return;
         }
         float time = state.time;
+        centerX = chamberCenterX(state.front);
+        centerZ = chamberCenterZ(state.front);
         float active = tracker.activeLevel();
         float peak = tracker.peakFlash();
         int tint = ReactorFx.mix(tint(tracker), tracker.peakFlashColor(), peak * 0.5F);
@@ -57,7 +61,7 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
         }
         intensity += peak * 0.3F;
 
-        orient(state.cameraX - CENTER_X, state.cameraY - SURFACE * 0.5F, state.cameraZ - CENTER_Z);
+        orient(state.cameraX - centerX, state.cameraY - SURFACE * 0.5F, state.cameraZ - centerZ);
 
         if (intensity > 0.004F) {
             for (int shell = 0; shell < SHELL_SCALES.length; shell++) {
@@ -107,10 +111,10 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
     private void drawShell(PoseStack.Pose pose, VertexConsumer buffer, ReactorCultureTracker tracker, int tint,
                            float intensity, float scale, boolean outer, float time) {
         float half = (HALF - INSET) * scale;
-        float x0 = CENTER_X - half;
-        float x1 = CENTER_X + half;
-        float z0 = CENTER_Z - half;
-        float z1 = CENTER_Z + half;
+        float x0 = centerX - half;
+        float x1 = centerX + half;
+        float z0 = centerZ - half;
+        float z1 = centerZ + half;
         float y0 = FLOOR + INSET;
         float y1 = outer ? SURFACE : y0 + (SURFACE - y0) * (0.45F + 0.55F * scale);
         drawGrid(pose, buffer, tracker, tint, intensity, time, ReactorFx.NORTH, z0, x0, x1, y0, y1);
@@ -181,10 +185,10 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
 
     private void drawWaterline(PoseStack.Pose pose, VertexConsumer buffer, int color, float intensity, float time) {
         float inset = INSET * 0.5F;
-        float x0 = CENTER_X - HALF + inset;
-        float x1 = CENTER_X + HALF - inset;
-        float z0 = CENTER_Z - HALF + inset;
-        float z1 = CENTER_Z + HALF - inset;
+        float x0 = centerX - HALF + inset;
+        float x1 = centerX + HALF - inset;
+        float z0 = centerZ - HALF + inset;
+        float z1 = centerZ + HALF - inset;
         drawWaterlineWall(pose, buffer, ReactorFx.NORTH, z0, x0, x1, color, intensity, time);
         drawWaterlineWall(pose, buffer, ReactorFx.SOUTH, z1, x0, x1, color, intensity, time);
         drawWaterlineWall(pose, buffer, ReactorFx.WEST, x0, z0, z1, color, intensity, time);
@@ -214,8 +218,8 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
         for (int mote = 0; mote < MOTES; mote++) {
             int seed = state.seed + mote * 17;
             float speed = 0.006F + ReactorFx.hash(seed + 2) * 0.012F;
-            float x = CENTER_X + reach * Mth.sin(state.time * speed + ReactorFx.hash(seed) * Mth.TWO_PI);
-            float z = CENTER_Z + reach * Mth.sin(state.time * speed * 1.21F + ReactorFx.hash(seed + 1) * Mth.TWO_PI);
+            float x = centerX + reach * Mth.sin(state.time * speed + ReactorFx.hash(seed) * Mth.TWO_PI);
+            float z = centerZ + reach * Mth.sin(state.time * speed * 1.21F + ReactorFx.hash(seed + 1) * Mth.TWO_PI);
             float y = low + height * (0.5F + 0.5F * Mth.sin(state.time * speed * 0.83F + ReactorFx.hash(seed + 4) * Mth.TWO_PI));
             float twinkle = 0.6F + 0.4F * Mth.sin(state.time * 0.2F + ReactorFx.hash(seed + 3) * Mth.TWO_PI);
             float alpha = brightness * twinkle;
@@ -238,8 +242,8 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
     }
 
     private void drawColonyFlash(State state, PoseStack.Pose pose, VertexConsumer buffer, int colony, float flash, int color) {
-        float cx = CENTER_X - HALF + colony % 3 + 0.5F;
-        float cz = CENTER_Z - HALF + colony / 3 + 0.5F;
+        float cx = centerX - HALF + colony % 3 + 0.5F;
+        float cz = centerZ - HALF + colony / 3 + 0.5F;
         float spread = 1.0F - Mth.sqrt(flash);
         float rise = Math.min(1.0F, spread * 3.5F);
 
@@ -279,7 +283,18 @@ public class IndustrialBioReactorRenderer extends ReactorFxRenderer<IndustrialBi
 
     @Override
     protected AABB bounds(IndustrialBioReactorBlockEntity blockEntity, ReactorCultureTracker tracker) {
-        return tracker.bounds(blockEntity, -1.05D, -0.05D, 0.95D, 2.05D, 2.05D, 4.05D);
+        Direction front = blockEntity.front();
+        double x = chamberCenterX(front);
+        double z = chamberCenterZ(front);
+        return tracker.bounds(blockEntity, x - 1.55D, -0.05D, z - 1.55D, x + 1.55D, 2.05D, z + 1.55D);
+    }
+
+    private static float chamberCenterX(Direction front) {
+        return 0.5F - front.getStepX() * CHAMBER_OFFSET;
+    }
+
+    private static float chamberCenterZ(Direction front) {
+        return 0.5F - front.getStepZ() * CHAMBER_OFFSET;
     }
 
     @Override

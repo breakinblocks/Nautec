@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.apache.commons.lang3.IntegerRange;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +31,7 @@ public class IndustrialBioReactorMultiblock implements Multiblock {
     public static final int CONTROLLER_CELL = 2;
     public static final IntegerProperty LAYER = IntegerProperty.create("layer", 0, HEIGHT - 1);
     public static final IntegerProperty CELL = IntegerProperty.create("cell", 0, SIZE * SIZE - 1);
+    public static final EnumProperty<HorizontalDirection> ORIENTATION = EnumProperty.create("orientation", HorizontalDirection.class);
 
     public static final int CONTROLLER = 0;
     public static final int PILLAR = 1;
@@ -74,6 +76,29 @@ public class IndustrialBioReactorMultiblock implements Multiblock {
             return CHAMBER;
         }
         return LAYOUT[layer].layer()[cell];
+    }
+
+    public static Direction toWorld(Direction canonical, HorizontalDirection orientation) {
+        if (!canonical.getAxis().isHorizontal()) {
+            return canonical;
+        }
+        Direction result = canonical;
+        for (int i = 0; i < orientation.ordinal(); i++) {
+            result = result.getClockWise();
+        }
+        return result;
+    }
+
+    public static Set<Direction> toWorld(Set<Direction> canonical, HorizontalDirection orientation) {
+        Set<Direction> faces = EnumSet.noneOf(Direction.class);
+        for (Direction direction : canonical) {
+            faces.add(toWorld(direction, orientation));
+        }
+        return faces;
+    }
+
+    public static HorizontalDirection orientation(BlockState state) {
+        return state.hasProperty(ORIENTATION) ? state.getValue(ORIENTATION) : HorizontalDirection.NORTH;
     }
 
     public static boolean isCorner(int cell) {
@@ -147,12 +172,14 @@ public class IndustrialBioReactorMultiblock implements Multiblock {
         if (key == CHAMBER) {
             return null;
         }
+        HorizontalDirection orientation = multiblockData.direction() != null ? multiblockData.direction() : HorizontalDirection.NORTH;
         if (key == CONTROLLER) {
-            return getFormedController().defaultBlockState().setValue(FORMED, true);
+            return getFormedController().defaultBlockState().setValue(FORMED, true).setValue(ORIENTATION, orientation);
         }
         return NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get().defaultBlockState()
                 .setValue(LAYER, layoutIndex)
                 .setValue(CELL, layerIndex)
+                .setValue(ORIENTATION, orientation)
                 .setValue(FORMED, true);
     }
 
@@ -160,10 +187,5 @@ public class IndustrialBioReactorMultiblock implements Multiblock {
     public boolean isFormed(Level level, BlockPos blockPos) {
         BlockState block = level.getBlockState(blockPos);
         return block.hasProperty(FORMED) && block.getValue(FORMED);
-    }
-
-    @Override
-    public @Nullable HorizontalDirection getFixedDirection() {
-        return HorizontalDirection.NORTH;
     }
 }

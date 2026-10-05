@@ -1,16 +1,58 @@
 {
   "variants": {
-    "active=false,formed=false": {
+    "active=false,formed=false,orientation=east": {
       "model": "nautec:block/industrial_bio_reactor"
     },
-    "active=false,formed=true": {
+    "active=false,formed=false,orientation=north": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=false,formed=false,orientation=south": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=false,formed=false,orientation=west": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=false,formed=true,orientation=east": {
+      "model": "nautec:block/industrial_bio_reactor_formed",
+      "y": 90
+    },
+    "active=false,formed=true,orientation=north": {
       "model": "nautec:block/industrial_bio_reactor_formed"
     },
-    "active=true,formed=false": {
+    "active=false,formed=true,orientation=south": {
+      "model": "nautec:block/industrial_bio_reactor_formed",
+      "y": 180
+    },
+    "active=false,formed=true,orientation=west": {
+      "model": "nautec:block/industrial_bio_reactor_formed",
+      "y": 270
+    },
+    "active=true,formed=false,orientation=east": {
       "model": "nautec:block/industrial_bio_reactor"
     },
-    "active=true,formed=true": {
+    "active=true,formed=false,orientation=north": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=true,formed=false,orientation=south": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=true,formed=false,orientation=west": {
+      "model": "nautec:block/industrial_bio_reactor"
+    },
+    "active=true,formed=true,orientation=east": {
+      "model": "nautec:block/industrial_bio_reactor_formed_active",
+      "y": 90
+    },
+    "active=true,formed=true,orientation=north": {
       "model": "nautec:block/industrial_bio_reactor_formed_active"
+    },
+    "active=true,formed=true,orientation=south": {
+      "model": "nautec:block/industrial_bio_reactor_formed_active",
+      "y": 180
+    },
+    "active=true,formed=true,orientation=west": {
+      "model": "nautec:block/industrial_bio_reactor_formed_active",
+      "y": 270
     }
   }
 }
