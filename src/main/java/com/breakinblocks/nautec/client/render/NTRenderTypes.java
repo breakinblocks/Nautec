@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.render;
 
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.LayeringTransform;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -44,6 +46,31 @@ public final class NTRenderTypes {
 
     private static final RenderType FUSION_FIELD = RenderType.create("nautec_fusion_field",
             RenderSetup.builder(NTRenderPipelines.FUSION_FIELD).createRenderSetup());
+
+    private static final Function<Identifier, RenderType> EMISSIVE_OVERLAY = Util.memoize(texture -> RenderType.create("nautec_emissive_overlay",
+            RenderSetup.builder(RenderPipelines.ENTITY_TRANSLUCENT_EMISSIVE)
+                    .withTexture("Sampler0", texture)
+                    .useOverlay()
+                    .affectsCrumbling()
+                    .sortOnUpload()
+                    .setOutline(RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+                    .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                    .createRenderSetup()));
+
+    private static final Function<Identifier, RenderType> EYES_OVERLAY = Util.memoize(texture -> RenderType.create("nautec_eyes_overlay",
+            RenderSetup.builder(RenderPipelines.EYES)
+                    .withTexture("Sampler0", texture)
+                    .sortOnUpload()
+                    .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                    .createRenderSetup()));
+
+    public static RenderType emissiveOverlay(Identifier texture) {
+        return EMISSIVE_OVERLAY.apply(texture);
+    }
+
+    public static RenderType eyesOverlay(Identifier texture) {
+        return EYES_OVERLAY.apply(texture);
+    }
 
     public static RenderType fusionPlasma() {
         return FUSION_PLASMA;

@@ -406,6 +406,22 @@ public final class NTConfig {
             .comment("The mB of Salt Water a Thermal Vent Tap boils for each Salt it leaves behind")
             .defineInRange("ventTapSaltWaterPerSalt", 1_000, 1, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_OUTPUT = BUILDER
+            .comment("The FE per tick a Combustion Dynamo makes while it burns oil and water, before any additive")
+            .defineInRange("combustionDynamoOutput", 320, 0, 10_000_000);
+
+    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_TICKS_PER_OIL = BUILDER
+            .comment("How many ticks a Combustion Dynamo runs on each mB of oil, before any additive")
+            .defineInRange("combustionDynamoTicksPerOil", 10, 1, 100_000);
+
+    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_WATER_PER_TICK = BUILDER
+            .comment("The mB of water a Combustion Dynamo uses each tick it runs, before any additive")
+            .defineInRange("combustionDynamoWaterPerTick", 1, 0, 100_000);
+
+    private static final ModConfigSpec.IntValue COMBUSTION_DYNAMO_TANK_CAPACITY = BUILDER
+            .comment("The mB each of a Combustion Dynamo's oil and water tanks holds")
+            .defineInRange("combustionDynamoTankCapacity", 8_000, 1_000, 1_000_000);
+
     private static final ModConfigSpec.LongValue FUSION_IGNITION_ENERGY = BUILDER
             .comment("The AP a cold Fusion Plant must take in through its Laser Injectors before it ignites")
             .defineInRange("fusionIgnitionEnergy", 5_000_000L, 1L, Long.MAX_VALUE);
@@ -1021,6 +1037,10 @@ public final class NTConfig {
     public static int ventTapMaxOutput = 1_250;
     public static int ventTapSaltWaterPerTick = 10;
     public static int ventTapSaltWaterPerSalt = 1_000;
+    public static int combustionDynamoOutput = 320;
+    public static int combustionDynamoTicksPerOil = 10;
+    public static int combustionDynamoWaterPerTick = 1;
+    public static int combustionDynamoTankCapacity = 8_000;
     public static long fusionIgnitionEnergy = 5_000_000L;
     public static int fusionFePerAp = 50;
     public static int fusionMaxOutput = 300_000;
@@ -1295,6 +1315,10 @@ public final class NTConfig {
         ventTapMaxOutput = value(VENT_TAP_MAX_OUTPUT);
         ventTapSaltWaterPerTick = value(VENT_TAP_SALT_WATER_PER_TICK);
         ventTapSaltWaterPerSalt = value(VENT_TAP_SALT_WATER_PER_SALT);
+        combustionDynamoOutput = value(COMBUSTION_DYNAMO_OUTPUT);
+        combustionDynamoTicksPerOil = value(COMBUSTION_DYNAMO_TICKS_PER_OIL);
+        combustionDynamoWaterPerTick = value(COMBUSTION_DYNAMO_WATER_PER_TICK);
+        combustionDynamoTankCapacity = value(COMBUSTION_DYNAMO_TANK_CAPACITY);
         fusionIgnitionEnergy = value(FUSION_IGNITION_ENERGY);
         fusionFePerAp = value(FUSION_FE_PER_AP);
         fusionMaxOutput = value(FUSION_MAX_OUTPUT);

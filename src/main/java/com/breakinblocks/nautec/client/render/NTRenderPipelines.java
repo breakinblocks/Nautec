@@ -100,13 +100,15 @@ public final class NTRenderPipelines {
 
     public static final RenderPipeline LASER_FLARE = laser("laser_flare");
 
+    private static final DepthStencilState SURFACE_OVERLAY_DEPTH = new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false, -1.0F, -10.0F);
+
     public static final RenderPipeline CRYSTAL_SHELL = crystal("crystal_shell", BlendFunction.TRANSLUCENT);
 
     public static final RenderPipeline CRYSTAL_CORE = crystal("crystal_core", BlendFunction.ADDITIVE);
 
-    public static final RenderPipeline CRYSTAL_HALO = crystalGlow("crystal_halo");
+    public static final RenderPipeline CRYSTAL_HALO = crystalGlow("crystal_halo", SURFACE_OVERLAY_DEPTH);
 
-    public static final RenderPipeline GATEWAY_GLOW = crystal("gateway_glow", BlendFunction.ADDITIVE);
+    public static final RenderPipeline GATEWAY_GLOW = crystal("gateway_glow", BlendFunction.ADDITIVE, SURFACE_OVERLAY_DEPTH);
 
     public static final RenderPipeline GATEWAY_HORIZON = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(Nautec.rl("pipeline/gateway_horizon"))
@@ -147,6 +149,10 @@ public final class NTRenderPipelines {
     }
 
     private static RenderPipeline crystal(String name, BlendFunction blend) {
+        return crystal(name, blend, new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false));
+    }
+
+    private static RenderPipeline crystal(String name, BlendFunction blend, DepthStencilState depth) {
         return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(Nautec.rl("pipeline/" + name))
                 .withVertexShader(Nautec.rl("core/crystal"))
@@ -154,19 +160,19 @@ public final class NTRenderPipelines {
                 .withSampler("Sampler0")
                 .withColorTargetState(new ColorTargetState(blend))
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, VertexFormat.Mode.QUADS)
-                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                .withDepthStencilState(depth)
                 .withCull(false)
                 .build();
     }
 
-    private static RenderPipeline crystalGlow(String name) {
+    private static RenderPipeline crystalGlow(String name, DepthStencilState depth) {
         return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(Nautec.rl("pipeline/" + name))
                 .withVertexShader("core/position_tex_color")
                 .withFragmentShader(Nautec.rl("core/" + name))
                 .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
-                .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+                .withDepthStencilState(depth)
                 .withCull(false)
                 .build();
     }

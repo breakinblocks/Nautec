@@ -53,6 +53,7 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartB
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionCollectorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.generators.CombustionDynamoBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
 import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
@@ -208,6 +209,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ThermalVentTapBlockEntity>> THERMAL_VENT_TAP = BLOCK_ENTITIES.register("thermal_vent_tap",
             () -> new BlockEntityType<>(ThermalVentTapBlockEntity::new,
                     NTBlocks.THERMAL_VENT_TAP.get()));
+    public static final Supplier<BlockEntityType<CombustionDynamoBlockEntity>> COMBUSTION_DYNAMO = BLOCK_ENTITIES.register("combustion_dynamo",
+            () -> new BlockEntityType<>(CombustionDynamoBlockEntity::new,
+                    NTBlocks.COMBUSTION_DYNAMO.get()));
     public static final Supplier<BlockEntityType<FusionControllerBlockEntity>> FUSION_CONTROLLER = BLOCK_ENTITIES.register("fusion_controller",
             () -> new BlockEntityType<>(FusionControllerBlockEntity::new,
                     NTBlocks.FUSION_CONTROLLER.get()));

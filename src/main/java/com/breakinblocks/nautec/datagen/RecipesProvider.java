@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AquaticCatalystChannelingRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.CombustionAdditiveRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AugmentationRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.ColonyFeedingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.IncubationRecipeBuilder;
@@ -58,6 +59,7 @@ public class RecipesProvider extends RecipeProvider {
     protected void buildRecipes() {
         RecipeOutput pRecipeOutput = output;
         aquaticCatalystRecipes(pRecipeOutput);
+        combustionAdditiveRecipes(pRecipeOutput);
         beamOpticsRecipes(pRecipeOutput);
         resonanceRecipes(pRecipeOutput);
         gatewayRecipes(pRecipeOutput);
@@ -191,6 +193,14 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(1.2f)
                 .duration(200)
                 .save(pRecipeOutput, key("prismarine_crystal_shards_to_ap"));
+    }
+
+    private void combustionAdditiveRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        CombustionAdditiveRecipeBuilder.newRecipe(tag(Tags.Items.DUSTS_REDSTONE))
+                .outputMultiplier(1.5f)
+                .fuelMultiplier(1.1f)
+                .duration(1200)
+                .save(pRecipeOutput, key("combustion_additive/redstone"));
     }
 
     private void resonanceRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -1239,6 +1249,20 @@ public class RecipesProvider extends RecipeProvider {
                 .fluidResult(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
                 .save(pRecipeOutput, key("saltwater_mixing"));
 
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.KELP_SLURRY.get(), 2))
+                .ingredients(iwcFromItemLike(Items.KELP, 4))
+                .duration(100)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("kelp_slurry_mixing"));
+
+        MixingRecipeBuilder.newRecipe()
+                .ingredients(iwcFromItemLike(NTItems.ALGAL_LIPID.get(), 1))
+                .duration(100)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 250))
+                .fluidResult(new FluidStackTemplate(NTFluids.OIL.getStillFluid(), 1000))
+                .save(pRecipeOutput, key("oil_from_algal_lipid_mixing"));
+
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRESSURE_SYNTHESIZER.get(), 1))
                 .ingredients(iwcFromItemLike(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get(), 1))
                 .duration(400)
@@ -1466,6 +1490,19 @@ public class RecipesProvider extends RecipeProvider {
                 .define('H', NTItems.AQUATIC_CHIP)
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
                 .save(pRecipeOutput, key("thermal_vent_tap"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.COMBUSTION_DYNAMO.asItem())
+                .pattern("GTG")
+                .pattern("PCP")
+                .pattern("AHA")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('T', NTBlocks.OIL_BARREL)
+                .define('P', Items.PISTON)
+                .define('C', NTBlocks.CAST_IRON_BLOCK)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('H', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
+                .save(pRecipeOutput, key("combustion_dynamo"));
 
         shaped(RecipeCategory.BUILDING_BLOCKS, NTBlocks.FUSION_CASING.asItem(), 8)
                 .pattern("DAD")
@@ -1922,6 +1959,8 @@ public class RecipesProvider extends RecipeProvider {
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 5f)
                 .save(output);
+        new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.LIPOPHILES, Ingredient.of(NTItems.KELP_SLURRY.get()), 10f)
+                .save(output);
         new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), 5f)
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BETA_PHYLOBACTERIA, Ingredient.of(Items.BEETROOT), 10f)
@@ -1970,6 +2009,7 @@ public class RecipesProvider extends RecipeProvider {
         incubation(output, new IncubationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.BROWN_MUSHROOM_BLOCK), IntRange.of(10, 30), 0.07f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.HALOTROPHS, Ingredient.of(Items.SAND), IntRange.of(10, 30), 0.07f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.LIPOPHILES, Ingredient.of(NTItems.KELP_SLURRY.get()), IntRange.of(10, 30), 0.07f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.BRYOPHYTOPHILES, Ingredient.of(Items.MOSS_BLOCK), IntRange.of(10, 30), 0.07f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.ALGAEFORMERS, Ingredient.of(Items.KELP), IntRange.of(10, 30), 0.07f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), IntRange.of(10, 30), 0.07f));

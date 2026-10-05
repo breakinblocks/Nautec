@@ -113,6 +113,8 @@ public final class NTItems {
     public static final DeferredItem<Item> CAST_IRON_COMPOUND = registerItem("cast_iron_compound",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SALT = registerItem("salt", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> KELP_SLURRY = registerItem("kelp_slurry", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> ALGAL_LIPID = registerItem("algal_lipid", Item::new, new Item.Properties());
 
     public static final DeferredItem<Item> RUSTY_GEAR = registerItem("rusty_gear",
             Item::new, new Item.Properties());

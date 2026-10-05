@@ -234,6 +234,8 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.getFuelInput());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.COMBUSTION_DYNAMO.get(),
+                (blockEntity, dir) -> blockEntity.getEnergyOutput());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),

@@ -21,8 +21,10 @@ import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
+import com.breakinblocks.nautec.content.blockentities.generators.CombustionDynamoBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.ThermalVentTapBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.TidalRotorBlockEntity;
+import com.breakinblocks.nautec.content.blocks.generators.CombustionDynamoBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.content.blocks.generators.TidalRotorBlock;
 import snownee.jade.api.WailaPlugin;
@@ -40,6 +42,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(FusionControllerComponentProvider.INSTANCE, FusionControllerBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, TidalRotorBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, ThermalVentTapBlockEntity.class);
+        registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, CombustionDynamoBlockEntity.class);
         registration.registerBlockDataProvider(EnergyConverterComponentProvider.INSTANCE, EnergyConverterBlockEntity.class);
     }
 
@@ -57,6 +60,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(FusionControllerComponentProvider.Client.INSTANCE, FusionControllerBlock.class);
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, TidalRotorBlock.class);
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, ThermalVentTapBlock.class);
+        registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, CombustionDynamoBlock.class);
         registration.registerBlockComponent(EnergyConverterComponentProvider.Client.INSTANCE, EnergyConverterBlock.class);
     }
 }

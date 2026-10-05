@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.client.renderer.items;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.render.AtlanteanRifleBeamRenderer;
+import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleBeam;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
@@ -20,7 +21,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -182,7 +182,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
 
     private static class CoreChargeLayer extends TextureLayerGeoLayer<AtlanteanRifleItem, GeoItemRenderer.RenderData, GeoRenderState> {
         CoreChargeLayer(GeoRenderer<AtlanteanRifleItem, GeoItemRenderer.RenderData, GeoRenderState> renderer) {
-            super(renderer, CORE_MASK, RenderTypes::entityTranslucentEmissive);
+            super(renderer, CORE_MASK, NTRenderTypes::emissiveOverlay);
         }
 
         @Override

@@ -72,6 +72,7 @@ import com.breakinblocks.nautec.client.screen.GraftingStationScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
 import com.breakinblocks.nautec.client.screen.IndustrialBioReactorScreen;
 import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
+import com.breakinblocks.nautec.client.screen.CombustionDynamoScreen;
 import com.breakinblocks.nautec.client.screen.FusionControllerScreen;
 import com.breakinblocks.nautec.client.screen.ResonancePylonScreen;
 import com.breakinblocks.nautec.client.screen.SatelliteArrayScreen;
@@ -407,6 +408,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.SUBMARINE_MODULES.get(), SubmarineModuleScreen::new);
         event.register(NTMenuTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerScreen::new);
         event.register(NTMenuTypes.FUSION_CONTROLLER.get(), FusionControllerScreen::new);
+        event.register(NTMenuTypes.COMBUSTION_DYNAMO.get(), CombustionDynamoScreen::new);
         event.register(NTMenuTypes.RESONANCE_PYLON.get(), ResonancePylonScreen::new);
         event.register(NTMenuTypes.SATELLITE_ARRAY.get(), SatelliteArrayScreen::new);
         event.register(NTMenuTypes.RESONANCE_NODE.get(), ResonanceNodeScreen::new);

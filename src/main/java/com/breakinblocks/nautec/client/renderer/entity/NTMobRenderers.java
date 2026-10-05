@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.breakinblocks.nautec.client.model.entity.AbyssalMawModel;
 import com.breakinblocks.nautec.client.model.entity.LanternJellyModel;
 import com.breakinblocks.nautec.client.model.entity.SiltSkipperModel;
@@ -13,7 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.LivingEntityEmissiveLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -53,7 +53,7 @@ public final class NTMobRenderers {
         public LanternJellyRenderer(EntityRendererProvider.Context context) {
             super(context, new LanternJellyModel(context.bakeLayer(LANTERN_JELLY_LAYER)), 0.5F, texture("lantern_jelly"));
             this.addLayer(new LivingEntityEmissiveLayer<>(this, state -> texture("lantern_jelly_glow"),
-                    LanternJellyModel::glowBrightness, this.getModel(), RenderTypes::entityTranslucentEmissive, false));
+                    LanternJellyModel::glowBrightness, this.getModel(), NTRenderTypes::emissiveOverlay, false));
         }
     }
 

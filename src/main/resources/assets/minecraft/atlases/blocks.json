@@ -14,6 +14,26 @@
       "type": "directory",
       "source": "entity",
       "prefix": "entity/"
+    },
+    {
+      "type": "single",
+      "resource": "minecraft:item/bamboo"
+    },
+    {
+      "type": "single",
+      "resource": "minecraft:item/cocoa_beans"
+    },
+    {
+      "type": "single",
+      "resource": "minecraft:item/glow_berries"
+    },
+    {
+      "type": "single",
+      "resource": "minecraft:item/sea_pickle"
+    },
+    {
+      "type": "single",
+      "resource": "minecraft:item/sugar_cane"
     }
   ]
 }

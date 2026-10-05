@@ -19,7 +19,7 @@ item_ids:
   Generators that turn the ocean into Forge Energy (FE) for other mods' machines.
 </Column>
 
-NauTec has three FE generators, one for each stage of the mod. The Tidal Rotor runs on the ocean itself, the Thermal Vent Tap boils Salt Water over the seabed's heat, and the [Fusion Plant](nautec:deep_engineering/fusion_plant.md) is the late-game reactor. Every generator pushes its FE into any cable or machine touching it.
+NauTec has four FE generators. The Tidal Rotor runs on the ocean itself, the Thermal Vent Tap boils Salt Water over the seabed's heat, the [Combustion Dynamo](nautec:getting_started/combustion_dynamo.md) burns oil grown by bacteria, and the [Fusion Plant](nautec:deep_engineering/fusion_plant.md) is the late-game reactor. Every generator pushes its FE into any cable or machine touching it.
 
 ***
 

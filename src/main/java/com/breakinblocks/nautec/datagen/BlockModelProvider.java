@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blocks.AdvancedBacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.blocks.GraftingStationBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
+import com.breakinblocks.nautec.content.blocks.generators.CombustionDynamoBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
@@ -204,6 +205,13 @@ public class BlockModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(tap)
                 .with(BlockModelGenerators.createBooleanModelDispatch(ThermalVentTapBlock.LIT,
                         BlockModelGenerators.plainVariant(lit), BlockModelGenerators.plainVariant(idle))));
+
+        Block dynamo = NTBlocks.COMBUSTION_DYNAMO.get();
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(dynamo)
+                .with(BlockModelGenerators.createBooleanModelDispatch(CombustionDynamoBlock.LIT,
+                        BlockModelGenerators.plainVariant(existingModelFile("combustion_dynamo_lit")),
+                        BlockModelGenerators.plainVariant(existingModelFile(dynamo))))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
     }
 
     private void fusionPlant() {

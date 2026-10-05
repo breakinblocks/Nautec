@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
+import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -28,6 +29,7 @@ public final class RecipeSyncEvents {
                 BacteriaIncubationRecipe.TYPE,
                 ResonanceCraftingRecipe.Type.INSTANCE,
                 PressureForgingRecipe.Type.INSTANCE,
-                ColonyFeedingRecipe.TYPE);
+                ColonyFeedingRecipe.TYPE,
+                CombustionAdditiveRecipe.Type.INSTANCE);
     }
 }

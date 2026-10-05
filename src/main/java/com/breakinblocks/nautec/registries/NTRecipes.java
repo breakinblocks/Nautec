@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
+import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
@@ -25,6 +26,7 @@ public final class NTRecipes {
 
     static {
         register(AquaticCatalystChannelingRecipe.NAME, AquaticCatalystChannelingRecipe.Serializer.INSTANCE, AquaticCatalystChannelingRecipe.Type.INSTANCE);
+        register(CombustionAdditiveRecipe.NAME, CombustionAdditiveRecipe.Serializer.INSTANCE, CombustionAdditiveRecipe.Type.INSTANCE);
         register(ItemTransformationRecipe.NAME, ItemTransformationRecipe.Serializer.INSTANCE, ItemTransformationRecipe.Type.INSTANCE);
         register(ItemEtchingRecipe.NAME, ItemEtchingRecipe.Serializer.INSTANCE, ItemEtchingRecipe.Type.INSTANCE);
         register(MixingRecipe.NAME, MixingRecipe.Serializer.INSTANCE, MixingRecipe.Type.INSTANCE);

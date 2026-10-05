@@ -56,6 +56,7 @@
     "nautec:energy_converter",
     "nautec:tidal_rotor",
     "nautec:thermal_vent_tap",
+    "nautec:combustion_dynamo",
     "nautec:resonance_pylon",
     "nautec:abyssal_pylon",
     "nautec:resonance_node",

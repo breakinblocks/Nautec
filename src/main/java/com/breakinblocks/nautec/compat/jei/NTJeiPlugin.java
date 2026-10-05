@@ -10,6 +10,8 @@ import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.client.ClientRecipes;
 import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
 import com.breakinblocks.nautec.compat.jei.categories.AquaticCatalystChannelingRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.CombustionAdditiveCategory;
+import com.breakinblocks.nautec.compat.jei.categories.CombustionDynamoCategory;
 import com.breakinblocks.nautec.compat.jei.categories.AugmentationRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaGraftingCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaIncubationCategory;
@@ -23,6 +25,7 @@ import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
+import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
@@ -83,6 +86,7 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(ResonanceCraftingRecipe.Type.INSTANCE, ResonanceCraftingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(ItemTransformationRecipe.Type.INSTANCE, ItemTransformationRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AquaticCatalystChannelingRecipe.Type.INSTANCE, AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(CombustionAdditiveRecipe.Type.INSTANCE, CombustionAdditiveCategory.RECIPE_TYPE),
             new RecipeBinding<>(ItemEtchingRecipe.Type.INSTANCE, ItemEtchingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
@@ -185,6 +189,12 @@ public class NTJeiPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new BacteriaGraftingCategory(
                 registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new CombustionDynamoCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new CombustionAdditiveCategory(
+                registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -215,6 +225,7 @@ public class NTJeiPlugin implements IModPlugin {
 
         registration.addRecipes(BioReactorCategory.RECIPE_TYPE, bioReactorRecipes);
         registration.addRecipes(EasInfusionCategory.RECIPE_TYPE, EasInfusionCategory.recipes());
+        registration.addRecipes(CombustionDynamoCategory.RECIPE_TYPE, CombustionDynamoCategory.recipes());
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
@@ -276,6 +287,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addCraftingStation(ColonyFeedingCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.BIO_REACTOR.get()),
                 new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
+        registration.addCraftingStation(CombustionDynamoCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
+        registration.addCraftingStation(CombustionAdditiveCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
         registration.addCraftingStation(BacteriaGraftingCategory.RECIPE_TYPE,
                 new ItemStack(NTItems.GRAFTING_TOOL.get()),
                 new ItemStack(NTItems.PETRI_DISH.get()),

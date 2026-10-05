@@ -35,6 +35,7 @@ Each strain has its own nutrient, and by default it is the same item that strain
 |---|---|
 | Lithophiles | Stone |
 | Silicophiles and Halotrophs | Sand |
+| Lipophiles | Kelp Slurry |
 | Calciophiles | Bone Block |
 | Crimson Microbes | Crimson Nylium |
 | Carbophages | any coal ore |

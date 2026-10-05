@@ -96,6 +96,8 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.AQUARINE_STEEL_COMPOUND.get());
         basicItem(NTItems.CAST_IRON_COMPOUND.get());
         basicItem(NTItems.SALT.get());
+        basicItem(NTItems.KELP_SLURRY.get());
+        basicItem(NTItems.ALGAL_LIPID.get());
         basicItem(NTItems.AIR_BOTTLE.get());
 
         basicItem(NTItems.ELDRITCH_HEART.get());

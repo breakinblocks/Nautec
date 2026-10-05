@@ -53,6 +53,7 @@ import com.breakinblocks.nautec.content.blocks.ResonanceChamberBlock;
 import com.breakinblocks.nautec.content.blocks.SubmarineDockBlock;
 import com.breakinblocks.nautec.content.blocks.flora.DeepKelpBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionCollectorBlock;
+import com.breakinblocks.nautec.content.blocks.generators.CombustionDynamoBlock;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlock;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlock;
@@ -286,6 +287,9 @@ public final class NTBlocks {
     public static final DeferredBlock<ThermalVentTapBlock> THERMAL_VENT_TAP = registerBlockAndItem("thermal_vent_tap", ThermalVentTapBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(4.5f, 12.0f).sound(SoundType.METAL).requiresCorrectToolForDrops()
                     .noOcclusion().lightLevel(state -> state.getValue(ThermalVentTapBlock.LIT) ? 9 : 0));
+    public static final DeferredBlock<CombustionDynamoBlock> COMBUSTION_DYNAMO = registerBlockAndItem("combustion_dynamo", CombustionDynamoBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0f, 8.0f).sound(SoundType.METAL).requiresCorrectToolForDrops()
+                    .noOcclusion().lightLevel(state -> state.getValue(CombustionDynamoBlock.LIT) ? 8 : 0));
 
     public static final DeferredBlock<Block> FUSION_CASING = registerBlockAndItem("fusion_casing", Block::new,
             fusionProperties());

@@ -16,6 +16,7 @@ public final class NTTags {
 
     public static final class Fluids {
         public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oxygen"));
+        public static final TagKey<Fluid> OIL = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oil"));
     }
 
     public static final class Blocks {

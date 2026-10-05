@@ -61,6 +61,7 @@ public final class NTBacterias {
     public static final ResourceKey<Bacteria> RED_MYCOTROPHIC_BACTERIA = keyAndAddBacteria("red_mycotrophic_bacteria");
     public static final ResourceKey<Bacteria> BROWN_MYCOTROPHIC_BACTERIA = keyAndAddBacteria("brown_mycotrophic_bacteria");
     public static final ResourceKey<Bacteria> HALOTROPHS = keyAndAddBacteria("halotrophs");
+    public static final ResourceKey<Bacteria> LIPOPHILES = keyAndAddBacteria("lipophiles");
     public static final ResourceKey<Bacteria> BRYOPHYTOPHILES = keyAndAddBacteria("bryophytophiles");
     public static final ResourceKey<Bacteria> ALGAEFORMERS = keyAndAddBacteria("algaeformers");
     public static final ResourceKey<Bacteria> RHIZOBACTERIA = keyAndAddBacteria("rhizobacteria");
@@ -169,6 +170,14 @@ public final class NTBacterias {
                 .growthRate(FloatRange.of(0.5F, 1.1F))
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(88, 169, 47)));
+        register(context, LIPOPHILES, SimpleBacteria.of()
+                .initialSize(LongRange.of(300, 500))
+                .resource(NTItems.ALGAL_LIPID.get())
+                .productionRate(FloatRange.of(0.1F, 0.3F))
+                .lifespan(IntRange.of(1100, 2300))
+                .growthRate(FloatRange.of(0.5F, 1.0F))
+                .mutationResistance(FloatRange.of(0F, 0.12F))
+                .color(ARGB.color(213, 194, 52)));
         register(context, BRYOPHYTOPHILES, SimpleBacteria.of()
                 .initialSize(LongRange.of(300, 500))
                 .resource(Items.MOSS_BLOCK)

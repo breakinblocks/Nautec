@@ -1,0 +1,726 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "nautec:block/combustion_dynamo_engine",
+    "base_top": "nautec:block/combustion_dynamo_base_top",
+    "base_side": "nautec:block/combustion_dynamo_base_side",
+    "trim": "nautec:block/combustion_dynamo_trim",
+    "engine": "nautec:block/combustion_dynamo_engine",
+    "window": "nautec:block/combustion_dynamo_window",
+    "oil_tank": "nautec:block/combustion_dynamo_oil_tank",
+    "water_tank": "nautec:block/combustion_dynamo_water_tank",
+    "fittings": "nautec:block/combustion_dynamo_fittings"
+  },
+  "elements": [
+    {
+      "name": "base",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        3,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#base_side",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#base_side",
+          "cullface": "south"
+        },
+        "east": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#base_side",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#base_side",
+          "cullface": "west"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base_top"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base_top",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "name": "trim",
+      "from": [
+        1,
+        3,
+        3
+      ],
+      "to": [
+        15,
+        4,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            0,
+            15,
+            1
+          ],
+          "texture": "#trim"
+        },
+        "south": {
+          "uv": [
+            1,
+            0,
+            15,
+            1
+          ],
+          "texture": "#trim"
+        },
+        "east": {
+          "uv": [
+            2,
+            0,
+            14,
+            1
+          ],
+          "texture": "#trim"
+        },
+        "west": {
+          "uv": [
+            2,
+            0,
+            14,
+            1
+          ],
+          "texture": "#trim"
+        },
+        "up": {
+          "uv": [
+            1,
+            3,
+            15,
+            15
+          ],
+          "texture": "#trim"
+        }
+      }
+    },
+    {
+      "name": "engine",
+      "from": [
+        2,
+        4,
+        4
+      ],
+      "to": [
+        14,
+        10,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            12,
+            6
+          ],
+          "texture": "#engine"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            12,
+            6
+          ],
+          "texture": "#engine"
+        },
+        "east": {
+          "uv": [
+            1,
+            0,
+            11,
+            6
+          ],
+          "texture": "#engine"
+        },
+        "west": {
+          "uv": [
+            1,
+            0,
+            11,
+            6
+          ],
+          "texture": "#engine"
+        },
+        "up": {
+          "uv": [
+            0,
+            6,
+            12,
+            16
+          ],
+          "texture": "#engine"
+        }
+      }
+    },
+    {
+      "name": "window_housing",
+      "from": [
+        3,
+        4,
+        3
+      ],
+      "to": [
+        13,
+        10,
+        4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            10,
+            6
+          ],
+          "texture": "#window"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#window"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#window"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            10,
+            1
+          ],
+          "texture": "#window"
+        }
+      }
+    },
+    {
+      "name": "radiator",
+      "from": [
+        3,
+        5,
+        14
+      ],
+      "to": [
+        13,
+        9,
+        15
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            0,
+            10,
+            10,
+            14
+          ],
+          "texture": "#fittings"
+        },
+        "east": {
+          "uv": [
+            10,
+            10,
+            11,
+            14
+          ],
+          "texture": "#fittings"
+        },
+        "west": {
+          "uv": [
+            10,
+            10,
+            11,
+            14
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            0,
+            14,
+            10,
+            15
+          ],
+          "texture": "#fittings"
+        },
+        "down": {
+          "uv": [
+            0,
+            14,
+            10,
+            15
+          ],
+          "texture": "#fittings"
+        }
+      }
+    },
+    {
+      "name": "oil_tank",
+      "from": [
+        2,
+        10,
+        5
+      ],
+      "to": [
+        6,
+        15,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#oil_tank"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#oil_tank"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#oil_tank"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#oil_tank"
+        }
+      }
+    },
+    {
+      "name": "oil_cap",
+      "from": [
+        2,
+        15,
+        5
+      ],
+      "to": [
+        6,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "south": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "east": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "west": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ],
+          "texture": "#fittings",
+          "cullface": "up"
+        }
+      }
+    },
+    {
+      "name": "water_tank",
+      "from": [
+        10,
+        10,
+        5
+      ],
+      "to": [
+        14,
+        15,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            4,
+            5
+          ],
+          "texture": "#water_tank"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#water_tank"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#water_tank"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            8,
+            5
+          ],
+          "texture": "#water_tank"
+        }
+      }
+    },
+    {
+      "name": "water_cap",
+      "from": [
+        10,
+        15,
+        5
+      ],
+      "to": [
+        14,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "south": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "east": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "west": {
+          "uv": [
+            0,
+            6,
+            4,
+            7
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            4,
+            4
+          ],
+          "texture": "#fittings",
+          "cullface": "up"
+        }
+      }
+    },
+    {
+      "name": "manifold",
+      "from": [
+        6,
+        11,
+        6
+      ],
+      "to": [
+        10,
+        12,
+        8
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            7,
+            4,
+            8
+          ],
+          "texture": "#fittings"
+        },
+        "south": {
+          "uv": [
+            0,
+            7,
+            4,
+            8
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            0,
+            8,
+            4,
+            10
+          ],
+          "texture": "#fittings"
+        },
+        "down": {
+          "uv": [
+            0,
+            8,
+            4,
+            10
+          ],
+          "texture": "#fittings"
+        }
+      }
+    },
+    {
+      "name": "exhaust",
+      "from": [
+        7,
+        10,
+        11
+      ],
+      "to": [
+        9,
+        16,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture": "#fittings"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture": "#fittings"
+        },
+        "east": {
+          "uv": [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture": "#fittings"
+        },
+        "west": {
+          "uv": [
+            6,
+            0,
+            8,
+            6
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            8,
+            0,
+            10,
+            2
+          ],
+          "texture": "#fittings",
+          "cullface": "up"
+        }
+      }
+    },
+    {
+      "name": "exhaust_collar",
+      "from": [
+        6,
+        13,
+        10
+      ],
+      "to": [
+        10,
+        14,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            4,
+            14,
+            5
+          ],
+          "texture": "#fittings"
+        },
+        "south": {
+          "uv": [
+            10,
+            4,
+            14,
+            5
+          ],
+          "texture": "#fittings"
+        },
+        "east": {
+          "uv": [
+            10,
+            4,
+            14,
+            5
+          ],
+          "texture": "#fittings"
+        },
+        "west": {
+          "uv": [
+            10,
+            4,
+            14,
+            5
+          ],
+          "texture": "#fittings"
+        },
+        "up": {
+          "uv": [
+            10,
+            0,
+            14,
+            4
+          ],
+          "texture": "#fittings"
+        },
+        "down": {
+          "uv": [
+            10,
+            0,
+            14,
+            4
+          ],
+          "texture": "#fittings"
+        }
+      }
+    }
+  ]
+}

@@ -69,6 +69,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.PRISMATIC_EMITTER.get());
         dropSelf(NTBlocks.TIDAL_ROTOR.get());
         dropSelf(NTBlocks.THERMAL_VENT_TAP.get());
+        dropSelf(NTBlocks.COMBUSTION_DYNAMO.get());
         dropSelf(NTBlocks.FUSION_CASING.get());
         dropSelf(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get());
         dropSelf(NTBlocks.CONTAINMENT_COIL.get());

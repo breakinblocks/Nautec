@@ -85,6 +85,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 ENERGY_CONVERTER,
                 TIDAL_ROTOR,
                 THERMAL_VENT_TAP,
+                COMBUSTION_DYNAMO,
                 RESONANCE_PYLON,
                 ABYSSAL_PYLON,
                 RESONANCE_NODE,
@@ -105,6 +106,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 FUSION_PORT);
         tag(BlockTags.NEEDS_IRON_TOOL,
                 THERMAL_VENT_TAP,
+                COMBUSTION_DYNAMO,
                 RESONANCE_PYLON,
                 RESONANCE_NODE,
                 PRISMATIC_EMITTER,
