@@ -546,6 +546,14 @@ public final class NTConfig {
             .comment("The Salt Water capacity of a Grafting Station")
             .defineInRange("graftingStationCapacity", 16_000, 1, Integer.MAX_VALUE);
 
+    private static final ModConfigSpec.DoubleValue ADVANCED_GRAFTING_ANCHOR_SPEED = BUILDER
+            .comment("How many times faster a Grafting Station grafts with an Advanced Grafting Anchor fitted (3.0 means +200%)")
+            .defineInRange("advancedGraftingAnchorSpeed", 3.0, 1, 100);
+
+    private static final ModConfigSpec.DoubleValue ADVANCED_GRAFTING_ANCHOR_POWER = BUILDER
+            .comment("The factor an Advanced Grafting Anchor multiplies the Grafting Station's beam power requirement by")
+            .defineInRange("advancedGraftingAnchorPowerMultiplier", 5.0, 1, 100);
+
     private static final ModConfigSpec.DoubleValue WAVE_JET_THRUST = BUILDER
             .comment("Speed the Wave Jet adds each tick while held under water, until it reaches waveJetMaxSpeed")
             .defineInRange("waveJetThrust", 0.1, 0.001, 1.0);
@@ -1073,6 +1081,8 @@ public final class NTConfig {
     public static int graftingStationDuration = 1_200;
     public static int graftingStationSaltWaterUsage = 4_000;
     public static int graftingStationCapacity = 16_000;
+    public static double advancedGraftingAnchorSpeed = 3.0;
+    public static double advancedGraftingAnchorPowerMultiplier = 5.0;
 
     public static boolean luckyZonesEnabled;
     public static int luckyZoneIntervalSeconds;
@@ -1345,6 +1355,8 @@ public final class NTConfig {
         graftingStationDuration = value(GRAFTING_STATION_DURATION);
         graftingStationSaltWaterUsage = value(GRAFTING_STATION_SALT_WATER_USAGE);
         graftingStationCapacity = value(GRAFTING_STATION_CAPACITY);
+        advancedGraftingAnchorSpeed = value(ADVANCED_GRAFTING_ANCHOR_SPEED);
+        advancedGraftingAnchorPowerMultiplier = value(ADVANCED_GRAFTING_ANCHOR_POWER);
 
         luckyZonesEnabled = value(LUCKY_ZONES_ENABLED);
         luckyZoneIntervalSeconds = value(LUCKY_ZONE_INTERVAL);

@@ -8,6 +8,7 @@ item_ids:
   - nautec:grafting_tool
   - nautec:grafting_station
   - nautec:grafting_anchor
+  - nautec:advanced_grafting_anchor
 ---
 
 # <Color id="light_purple">Bacteria Grafting</Color>
@@ -62,7 +63,7 @@ The Grafting Station grafts without the tool, and without the biome. Give it an 
 * Power: a beam of at least 100 AP at purity 2.8 or higher, into any face except the front. A <ItemLink id="prismarine_crystal"/> beam (3.0) fed straight in works; one bounced off a [Prismatic Mirror](nautec:deep_engineering/beam_optics.md) (2.7) is too weak.
 * Salt Water: 4,000 mB per colony. The tank holds 16,000 mB. Pipe it in or right-click with a bucket.
 * Time: one minute per colony. A weak beam pauses it without losing progress.
-* Each colony uses up one dish and one block, unless a Grafting Anchor is fitted.
+* Each colony uses up one dish and one block, unless a Grafting Anchor or Advanced Grafting Anchor is fitted.
 
 Right-click it to open it. Hover over the arrow to see what it is waiting for, or look at it through a <ItemLink id="prism_monocle"/>. Hoppers and pipes can insert dishes and blocks and pull colonized dishes out, through any face by default ([Side Configuration](nautec:getting_started/utilities.md)). The front window lights up while it works.
 
@@ -78,6 +79,15 @@ All of these values are in `config/nautec-common.toml`.
 An upgrade for the Grafting Station. Put it in the slot at the bottom left of the station's screen, and the sample block stays put after each graft, so one block grafts colonies for as long as you keep the dishes and Salt Water coming. Shift-clicking the anchor from your inventory puts it straight into its slot. Pipes cannot reach that slot, so automation never pulls it out by mistake.
 
 <RecipeFor id="grafting_anchor"/>
+
+<Row>
+  <ItemImage id="advanced_grafting_anchor"/>
+  ### <Color id="aqua">Advanced Grafting Anchor</Color>
+</Row>
+
+A Grafting Anchor upgraded with four Reactor Speed Upgrades from the [Bio Reactor](bio_reactor.md). It goes in the same slot and keeps the sample block the same way, and it also grafts 200% faster, so a colony takes 20 seconds instead of a minute. The catch is power: the station then needs a beam of 500 AP, five times the usual 100, still at purity 2.8 or higher. Hover over the arrow in the station's screen to see what it needs with the anchor you have fitted.
+
+<RecipeFor id="advanced_grafting_anchor"/>
 
 ***
 

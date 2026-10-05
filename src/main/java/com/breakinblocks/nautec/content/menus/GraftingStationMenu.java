@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.content.menus;
 
 import net.minecraft.world.item.ItemStack;
-import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotFluidHandler;
 import com.breakinblocks.nautec.content.blockentities.GraftingStationBlockEntity;
@@ -50,7 +49,7 @@ public class GraftingStationMenu extends NTMachineMenu<GraftingStationBlockEntit
     @Override
     protected boolean performMerge(int index, ItemStack stack) {
         int playerEnd = playerSlotStart + 36;
-        if (index >= playerSlotStart && index < playerEnd && stack.is(NTItems.GRAFTING_ANCHOR.get())) {
+        if (index >= playerSlotStart && index < playerEnd && GraftingStationBlockEntity.isAnchor(stack)) {
             int machineStart = playerSlotStart == 0 ? playerEnd : 0;
             return moveItemStackTo(stack, machineStart + GraftingStationBlockEntity.ANCHOR_SLOT,
                     machineStart + GraftingStationBlockEntity.ANCHOR_SLOT + 1, false);
@@ -68,5 +67,9 @@ public class GraftingStationMenu extends NTMachineMenu<GraftingStationBlockEntit
 
     public int getStatus() {
         return data.get(GraftingStationBlockEntity.DATA_STATUS);
+    }
+
+    public int getRequiredPower() {
+        return data.get(GraftingStationBlockEntity.DATA_POWER);
     }
 }

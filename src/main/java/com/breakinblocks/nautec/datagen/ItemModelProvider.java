@@ -78,6 +78,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.DEEP_STEEL_PLATING.get());
         basicItem(NTItems.REACTOR_SPEED_UPGRADE.get());
         basicItem(NTItems.GRAFTING_ANCHOR.get());
+        basicItem(NTItems.ADVANCED_GRAFTING_ANCHOR.get());
         basicItem(NTItems.ENERGY_CONVERSION_UPGRADE.get());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
         basicItem(NTItems.ULTIMATE_ENERGY_CONVERSION_UPGRADE.get());

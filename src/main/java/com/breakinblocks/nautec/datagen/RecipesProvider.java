@@ -1332,6 +1332,15 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTBlocks.GRAFTING_STATION))
                 .save(pRecipeOutput, key("grafting_anchor"));
 
+        shaped(RecipeCategory.MISC, NTItems.ADVANCED_GRAFTING_ANCHOR.get())
+                .pattern(" S ")
+                .pattern("SAS")
+                .pattern(" S ")
+                .define('S', NTItems.REACTOR_SPEED_UPGRADE)
+                .define('A', NTItems.GRAFTING_ANCHOR)
+                .unlockedBy("has_item", has(NTItems.GRAFTING_ANCHOR))
+                .save(pRecipeOutput, key("advanced_grafting_anchor"));
+
         for (Map.Entry<BiomeTankType, DeferredBlock<BiomeTankBlock>> tank : NTBlocks.BIOME_TANKS.entrySet()) {
             shaped(RecipeCategory.MISC, tank.getValue().asItem())
                     .pattern("DGD")

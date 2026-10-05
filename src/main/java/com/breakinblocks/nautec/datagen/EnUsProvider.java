@@ -417,6 +417,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(CAST_IRON_COMPOUND, "Cast Iron Compound");
         addItem(GRAFTING_TOOL, "Grafting Tool");
         addItem(GRAFTING_ANCHOR, "Grafting Anchor");
+        addItem(ADVANCED_GRAFTING_ANCHOR, "Advanced Grafting Anchor");
         addItem(PRISMARINE_LENS, "Prismarine Lens");
         addItem(AQUATIC_CHIP, "Aquatic Chip");
         
@@ -645,6 +646,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.advanced_analyzer.requirements", "Needs a beam of %s AP at purity %s or higher. All nine dishes analyze at once.");
         add("nautec.grafting_station.status.running", "Grafting");
         add("nautec.grafting_anchor.effect", "In a Grafting Station, keeps the sample block instead of using it up");
+        add("nautec.advanced_grafting_anchor.effect", "Grafts %s%% faster, but the beam must carry %sx the power");
         add("nautec.conduit_beacon.running", "Running");
         add("nautec.conduit_beacon.no_water", "Needs water in the 3x3x3 space around it");
         add("nautec.conduit_beacon.no_frame", "Needs a conduit frame of at least 16 prismarine blocks");

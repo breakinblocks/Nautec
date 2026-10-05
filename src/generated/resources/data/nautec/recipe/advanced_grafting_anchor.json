@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:grafting_anchor",
+    "S": "nautec:reactor_speed_upgrade"
+  },
+  "pattern": [
+    " S ",
+    "SAS",
+    " S "
+  ],
+  "result": {
+    "id": "nautec:advanced_grafting_anchor"
+  }
+}

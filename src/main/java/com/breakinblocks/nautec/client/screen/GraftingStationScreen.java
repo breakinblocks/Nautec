@@ -45,7 +45,7 @@ public class GraftingStationScreen extends NTMachineScreen<GraftingStationBlockE
             boolean running = status == GraftingStationBlockEntity.STATUS_RUNNING;
             guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
                     Component.translatable(GraftingStationBlock.statusKey(status)).withStyle(running ? ChatFormatting.AQUA : ChatFormatting.RED),
-                    Component.translatable("nautec.grafting_station.requirements", NTConfig.graftingStationPowerUsage,
+                    Component.translatable("nautec.grafting_station.requirements", station().getRequiredPower(),
                             String.format("%.1f", NTConfig.graftingStationPurity), NTConfig.graftingStationSaltWaterUsage).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }

@@ -8,12 +8,12 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.content.blocks.GraftingStationBlock;
+import com.breakinblocks.nautec.content.items.GraftingAnchorItem;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.menus.GraftingStationMenu;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTFluids;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
@@ -56,7 +56,8 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
     public static final int DATA_PROGRESS = 0;
     public static final int DATA_DURATION = 1;
     public static final int DATA_STATUS = 2;
-    public static final int DATA_COUNT = 3;
+    public static final int DATA_POWER = 3;
+    public static final int DATA_COUNT = 4;
 
     private static final int SYNC_INTERVAL = 10;
 
@@ -69,8 +70,9 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         public int get(int index) {
             return switch (index) {
                 case DATA_PROGRESS -> progress;
-                case DATA_DURATION -> NTConfig.graftingStationDuration;
+                case DATA_DURATION -> getDuration();
                 case DATA_STATUS -> status;
+                case DATA_POWER -> getRequiredPower();
                 default -> 0;
             };
         }
@@ -93,7 +95,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         addItemHandler(4, (slot, stack) -> switch (slot) {
             case DISH_SLOT -> isEmptyDish(stack);
             case SAMPLE_SLOT -> sample(stack) != null;
-            case ANCHOR_SLOT -> stack.is(NTItems.GRAFTING_ANCHOR.get());
+            case ANCHOR_SLOT -> isAnchor(stack);
             default -> false;
         });
         addFluidTank(NTConfig.graftingStationCapacity, fluidStack -> fluidStack.getFluid() == NTFluids.SALT_WATER.getStillFluid());
@@ -114,8 +116,30 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         return blockItem.getBlock().defaultBlockState().typeHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
     }
 
+    public static boolean isAnchor(ItemStack stack) {
+        return stack.getItem() instanceof GraftingAnchorItem;
+    }
+
     public boolean hasAnchor() {
-        return getItemStackHandler().getStackInSlot(ANCHOR_SLOT).is(NTItems.GRAFTING_ANCHOR.get());
+        return isAnchor(getItemStackHandler().getStackInSlot(ANCHOR_SLOT));
+    }
+
+    public boolean hasAdvancedAnchor() {
+        return getItemStackHandler().getStackInSlot(ANCHOR_SLOT).getItem() instanceof GraftingAnchorItem anchor && anchor.isAdvanced();
+    }
+
+    public int getDuration() {
+        if (!hasAdvancedAnchor()) {
+            return NTConfig.graftingStationDuration;
+        }
+        return Math.max(1, (int) Math.round(NTConfig.graftingStationDuration / NTConfig.advancedGraftingAnchorSpeed));
+    }
+
+    public int getRequiredPower() {
+        if (!hasAdvancedAnchor()) {
+            return NTConfig.graftingStationPowerUsage;
+        }
+        return (int) Math.ceil(NTConfig.graftingStationPowerUsage * NTConfig.advancedGraftingAnchorPowerMultiplier);
     }
 
     public ContainerData getData() {
@@ -146,7 +170,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         int newStatus = checkStatus();
         if (newStatus == STATUS_RUNNING) {
             progress++;
-            if (progress >= NTConfig.graftingStationDuration) {
+            if (progress >= getDuration()) {
                 graft(serverLevel);
                 progress = 0;
             }
@@ -182,7 +206,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         if (!getItemStackHandler().getStackInSlot(OUTPUT_SLOT).isEmpty()) {
             return STATUS_OUTPUT_FULL;
         }
-        if (getPower() < NTConfig.graftingStationPowerUsage) {
+        if (getPower() < getRequiredPower()) {
             return STATUS_LOW_POWER;
         }
         if (getPurity() < NTConfig.graftingStationPurity) {

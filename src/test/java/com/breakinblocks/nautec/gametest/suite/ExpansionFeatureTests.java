@@ -242,6 +242,38 @@ public final class ExpansionFeatureTests {
             helper.succeed();
         });
 
+        r.add("grafting_anchor/advanced_is_faster_and_hungrier", 40, helper -> {
+            helper.setBlock(MACHINE, NTBlocks.GRAFTING_STATION.get());
+            GraftingStationBlockEntity station = helper.getBlockEntity(MACHINE, GraftingStationBlockEntity.class);
+            int baseDuration = station.getDuration();
+            int basePower = station.getRequiredPower();
+            station.getItemStackHandler().setStackInSlot(GraftingStationBlockEntity.SAMPLE_SLOT, new ItemStack(Items.STONE));
+            station.getItemStackHandler().setStackInSlot(GraftingStationBlockEntity.DISH_SLOT, new ItemStack(NTItems.PETRI_DISH.get()));
+            station.getFluidTank().setFluid(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.graftingStationSaltWaterUsage * 2));
+            helper.assertTrue(station.getItemStackHandler().isItemValid(GraftingStationBlockEntity.ANCHOR_SLOT,
+                    new ItemStack(NTItems.ADVANCED_GRAFTING_ANCHOR.get())), "the advanced anchor fits the anchor slot");
+            station.getItemStackHandler().setStackInSlot(GraftingStationBlockEntity.ANCHOR_SLOT, new ItemStack(NTItems.ADVANCED_GRAFTING_ANCHOR.get()));
+            helper.assertTrue(station.hasAnchor(), "the advanced anchor counts as an anchor");
+            helper.assertValueEqual(station.getDuration(), (int) Math.round(baseDuration / NTConfig.advancedGraftingAnchorSpeed), "grafts faster");
+            helper.assertValueEqual(station.getRequiredPower(), (int) Math.ceil(basePower * NTConfig.advancedGraftingAnchorPowerMultiplier),
+                    "needs more power");
+            BlockPos origin = helper.absolutePos(MACHINE.above());
+            station.receivePower(basePower, Direction.UP, origin);
+            station.receiveNewPurity(3.0F, Direction.UP, origin);
+            station.commonTick();
+            helper.assertValueEqual(station.getStatus(), GraftingStationBlockEntity.STATUS_LOW_POWER, "the base beam is too weak");
+            for (int tick = 0; tick < station.getDuration() + 5; tick++) {
+                station.receivePower(station.getRequiredPower(), Direction.UP, origin);
+                station.receiveNewPurity(3.0F, Direction.UP, origin);
+                station.commonTick();
+            }
+            helper.assertFalse(station.getItemStackHandler().getStackInSlot(GraftingStationBlockEntity.OUTPUT_SLOT).isEmpty(),
+                    "graft made in the shortened time");
+            helper.assertValueEqual(1, station.getItemStackHandler().getStackInSlot(GraftingStationBlockEntity.SAMPLE_SLOT).getCount(),
+                    "the sample block stays");
+            helper.succeed();
+        });
+
         r.add("biome_tank/grows_its_plant_for_pipes_to_take", 120, helper -> {
             int saved = NTConfig.biomeTankTicks;
             NTConfig.biomeTankTicks = 20;

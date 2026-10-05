@@ -212,6 +212,8 @@ public final class NTItems {
 
     public static final DeferredItem<GraftingAnchorItem> GRAFTING_ANCHOR = bacteriaItem(registerItem("grafting_anchor", GraftingAnchorItem::new,
             () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<GraftingAnchorItem> ADVANCED_GRAFTING_ANCHOR = bacteriaItem(registerItem("advanced_grafting_anchor",
+            properties -> new GraftingAnchorItem(properties, true), () -> new Item.Properties().stacksTo(1)));
     public static final DeferredItem<GraftingToolItem> GRAFTING_TOOL = bacteriaItem(registerItem("grafting_tool", GraftingToolItem::new,
             () -> new Item.Properties().durability(80)));
     public static final DeferredItem<PetriDishItem> PETRI_DISH = bacteriaItem(registerItem("petri_dish", PetriDishItem::new, () -> new Item.Properties()
