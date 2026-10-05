@@ -8,8 +8,11 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
+import com.breakinblocks.nautec.content.blocks.GatewayBlock;
+import com.breakinblocks.nautec.content.blocks.GatewayRingPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponents;
@@ -166,6 +169,29 @@ public final class NTEvents {
                 return;
             }
             ItemUtils.giveItemToPlayer(player, PrismarineCrystalBlock.pickUp(level, crystal));
+        }
+
+        @SubscribeEvent
+        public static void onWrenchGateway(PlayerInteractEvent.RightClickBlock event) {
+            Player player = event.getEntity();
+            if (!player.isSecondaryUseActive() || !event.getItemStack().is(Tags.Items.TOOLS_WRENCH)) {
+                return;
+            }
+            Level level = event.getLevel();
+            BlockPos pos = event.getPos();
+            BlockState state = level.getBlockState(pos);
+            GatewayBlockEntity gateway = state.getBlock() instanceof GatewayRingPartBlock
+                    ? GatewayRingPartBlock.core(level, state, pos)
+                    : level.getBlockEntity(pos) instanceof GatewayBlockEntity core ? core : null;
+            if (gateway == null) {
+                return;
+            }
+            event.setCanceled(true);
+            if (!level.mayInteract(player, gateway.getBlockPos())) {
+                event.setCancellationResult(InteractionResult.FAIL);
+                return;
+            }
+            event.setCancellationResult(GatewayBlock.useWrench(level, gateway, player));
         }
 
         @SubscribeEvent

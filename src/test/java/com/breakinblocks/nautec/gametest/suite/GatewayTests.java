@@ -36,6 +36,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.List;
 
@@ -559,6 +561,25 @@ public final class GatewayTests {
             helper.succeed();
         });
 
+        r.add("gateway/sneak_wrench_click_packs_the_ring", ARENA, 40, 0, helper -> {
+            GatewayAddress code = unique(27);
+            ring(helper, CORE_A, code);
+            BlockPos core = helper.absolutePos(CORE_A);
+            Player player = sneakingWith(helper, new ItemStack(NTItems.AQUARINE_WRENCH.get()));
+            BlockPos part = GatewayRing.cellPos(core, HorizontalDirection.NORTH, GatewayRing.CENTRE, 12);
+            PlayerInteractEvent.RightClickBlock event = CommonHooks.onRightClickBlock(player, InteractionHand.MAIN_HAND, part, hitOn(part));
+            helper.assertTrue(event.isCanceled(), "A sneaking wrench click should be taken before the wrench or the ring sees it");
+            helper.assertTrue(helper.getLevel().getBlockState(core).isAir(), "The core should be gone after a sneaking wrench click");
+            boolean packed = false;
+            for (ItemStack stack : player.getInventory()) {
+                if (stack.is(NTBlocks.GATEWAY.asItem()) && code.equals(stack.get(NTDataComponents.GATEWAY_ADDRESS.get()))) {
+                    packed = true;
+                }
+            }
+            helper.assertTrue(packed, "The player should get the packed gateway");
+            helper.succeed();
+        });
+
         r.add("gateway/packed_gateway_rebuilds_facing_the_placer", ARENA, 40, 0, helper -> {
             GatewayAddress code = unique(26);
             ItemStack packed = new ItemStack(NTBlocks.GATEWAY.asItem());
@@ -642,6 +663,9 @@ public final class GatewayTests {
             helper.assertTrue(gateway.forceBuild(player), "Forcing should report a built ring");
             helper.assertTrue(gateway.isFormed(), "Forcing should form the ring");
             helper.assertValueEqual(HorizontalDirection.NORTH, gateway.getMultiblockData().direction(), "It should face the player");
+            helper.assertTrue(gateway.isWild(), "A creative force build should make a wild ring");
+            helper.assertFalse(gateway.needsPower(), "A creative force build should not need power");
+            helper.assertFalse(gateway.getAddress().equals(GatewayAddress.DEFAULT), "A force built ring with no address should get a wild one");
             for (BlockPos blocker : blockers) {
                 helper.assertFalse(helper.getLevel().getBlockState(blocker).is(Blocks.STONE), "Forcing should clear " + blocker);
             }

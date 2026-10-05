@@ -100,7 +100,14 @@ public final class SatelliteGrid {
     }
 
     public static boolean clearSky(Level level, BlockPos top) {
-        return level.getHeight(Heightmap.Types.OCEAN_FLOOR, top.getX(), top.getZ()) <= top.getY() + 1;
+        int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, top.getX(), top.getZ());
+        BlockPos.MutableBlockPos cursor = top.mutable();
+        for (int y = top.getY() + 1; y < surface; y++) {
+            if (!level.getBlockState(cursor.setY(y)).getOcclusionShape().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static Link link(UUID network, long tick) {

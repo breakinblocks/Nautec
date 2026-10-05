@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:anchor",
     "D": "nautec:deep_steel_plating",
+    "E": "minecraft:end_crystal",
     "R": "nautec:resonant_shard",
     "T": "nautec:grafting_tool"
   },
   "pattern": [
     " R ",
-    "DAD",
+    "DED",
     " T "
   ],
   "result": {

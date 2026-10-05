@@ -454,11 +454,11 @@ public class RecipesProvider extends RecipeProvider {
 
         shaped(RecipeCategory.MISC, NTBlocks.LASER_JUNCTION.asItem(), 2)
                 .pattern("ARA")
-                .pattern("RHR")
+                .pattern("RDR")
                 .pattern("ARA")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('R', NTBlocks.PRISMARINE_RELAY)
-                .define('H', Items.HEART_OF_THE_SEA)
+                .define('D', Items.DIAMOND)
                 .unlockedBy("has_item", has(NTBlocks.PRISMARINE_RELAY))
                 .save(pRecipeOutput, key("laser_junction"));
 
@@ -1323,11 +1323,11 @@ public class RecipesProvider extends RecipeProvider {
 
         shaped(RecipeCategory.MISC, NTItems.GRAFTING_ANCHOR.get())
                 .pattern(" R ")
-                .pattern("DAD")
+                .pattern("DED")
                 .pattern(" T ")
                 .define('R', NTItems.RESONANT_SHARD)
                 .define('D', NTItems.DEEP_STEEL_PLATING)
-                .define('A', NTBlocks.ANCHOR)
+                .define('E', Items.END_CRYSTAL)
                 .define('T', NTItems.GRAFTING_TOOL)
                 .unlockedBy("has_item", has(NTBlocks.GRAFTING_STATION))
                 .save(pRecipeOutput, key("grafting_anchor"));

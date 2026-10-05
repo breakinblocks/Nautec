@@ -3,12 +3,12 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "H": "minecraft:heart_of_the_sea",
+    "D": "minecraft:diamond",
     "R": "nautec:prismarine_laser_relay"
   },
   "pattern": [
     "ARA",
-    "RHR",
+    "RDR",
     "ARA"
   ],
   "result": {

@@ -177,7 +177,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.gateway.status.ready", "Ready: opens when a player or submarine comes within 12 blocks");
         add("nautec.gateway.status.unlinked", "Idle: no other ring has this address");
         add("nautec.gateway.status.no_power", "No power: aim a laser at the Gateway");
-        add("nautec.gateway.force_built", "Ring built: blocks in the way were cleared");
+        add("nautec.gateway.force_built", "Wild ring built: it needs no power, and blocks in the way were cleared");
         add("nautec.gateway.status.charging", "Charging: opens once it holds %s AP, then uses %s AP/t while open");
         add("nautec.gateway.status.redstone", "Held shut by a redstone signal");
         add("nautec.gateway.status.wild", "Wild ring: builds its far end on the first trip if it has none");
@@ -807,7 +807,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.satellite.launched", "Satellite launched.");
         add("nautec.satellite.error.downlink", "Satellites launch from an Uplink Array.");
         add("nautec.satellite.error.occupied", "This uplink already has a satellite.");
-        add("nautec.satellite.error.sky", "The uplink needs clear sky above it. Water is fine.");
+        add("nautec.satellite.error.sky", "The uplink needs clear sky above it. Only solid blocks get in the way; water, glass and leaves are fine.");
         add("nautec.satellite.kind.uplink", "Uplink");
         add("nautec.satellite.stored", "AP %s / %s   FE %s / %s");
         add("nautec.satellite.buffer.uplink", "The network's core. Stores the AP beamed into it and the FE piped into it, along with what input Resonance Nodes send, then sends both to the network's downlinks, output nodes and charms.");
@@ -844,7 +844,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.satellite.status.no_satellite", "No satellite");
         add("nautec.satellite.status.no_satellite.desc", "Right-click this uplink with a Prism Satellite to launch one.");
         add("nautec.satellite.status.sky", "Sky blocked");
-        add("nautec.satellite.status.sky.desc", "The column above the dish must be open to the sky. Water counts as open.");
+        add("nautec.satellite.status.sky.desc", "Nothing solid may sit in the column above the dish. Water, glass and leaves count as open.");
         add("nautec.satellite.status.no_uplink", "No uplink");
         add("nautec.satellite.status.no_uplink.desc", "No Uplink Array on this network has a satellite and clear sky.");
         add("nautec.satellite.status.no_downlink", "No outputs");

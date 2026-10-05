@@ -37,7 +37,7 @@ An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a 
 
 ## <Color id="gold">Rules</Color>
 
-* **Sky:** both arrays need open sky above the dish. Water counts as open, so arrays on the sea floor work.
+* **Sky:** both arrays need open sky above the dish. Only solid blocks get in the way. Water, glass and leaves count as open, so arrays on the sea floor or under a glass roof work.
 * **Dimension:** every uplink with a launched satellite feeds one pool for the whole network, in every dimension. A downlink in a dimension with no uplink of its own still gets power, but its AP arrives with 5% less purity (`satelliteCrossDimensionPurityLoss`). Build an uplink in that dimension to avoid the loss.
 * **Sharing:** downlinks with the highest priority are filled first, and downlinks with the same priority split evenly. 10% is lost on the way. Purity carries through unchanged within a dimension that has an uplink.
 * **Several uplinks:** every uplink on a network adds to the same pool, whatever dimension it is in. Their beams merge, so the pool's purity stays close to the purest uplink's.

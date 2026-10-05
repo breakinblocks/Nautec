@@ -147,7 +147,7 @@ public final class SatelliteTests {
             }));
         });
 
-        r.add("satellite/water_counts_as_open_sky", 60, helper -> {
+        r.add("satellite/only_solid_blocks_block_the_sky", 60, helper -> {
             BlockPos base = helper.absolutePos(new BlockPos(4, 1, 4));
             helper.getLevel().setBlock(base, NTBlocks.DOWNLINK_ARRAY.get().defaultBlockState(), Block.UPDATE_ALL);
             openSky(helper, base);
@@ -158,6 +158,11 @@ public final class SatelliteTests {
             }
             helper.assertTrue(SatelliteGrid.clearSky(helper.getLevel(), top), "water above the dish still counts as clear");
             helper.getLevel().setBlock(top.above(5), Blocks.GLASS.defaultBlockState(), Block.UPDATE_ALL);
+            helper.getLevel().setBlock(top.above(6), Blocks.OAK_LEAVES.defaultBlockState(), Block.UPDATE_ALL);
+            helper.assertTrue(SatelliteGrid.clearSky(helper.getLevel(), top), "glass and leaves above the dish still count as clear");
+            helper.getLevel().setBlock(top.above(7), Blocks.STONE_SLAB.defaultBlockState(), Block.UPDATE_ALL);
+            helper.assertFalse(SatelliteGrid.clearSky(helper.getLevel(), top), "a slab above the dish blocks it");
+            helper.getLevel().setBlock(top.above(7), Blocks.STONE.defaultBlockState(), Block.UPDATE_ALL);
             helper.assertFalse(SatelliteGrid.clearSky(helper.getLevel(), top), "a solid block above the dish blocks it");
             helper.succeed();
         });

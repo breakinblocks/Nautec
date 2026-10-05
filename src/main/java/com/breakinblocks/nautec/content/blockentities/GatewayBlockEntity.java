@@ -656,6 +656,12 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
             serverLevel.setBlock(cell, NTBlocks.GATEWAY_RING.get().defaultBlockState(), 3);
         }
         this.preferredFront = facing.getOpposite();
+        this.wild = true;
+        this.needsPower = false;
+        if (address.equals(GatewayAddress.DEFAULT)) {
+            address = wildAddress(serverLevel);
+        }
+        setChanged();
         build(serverLevel, new HorizontalDirection[]{direction});
         return isFormed();
     }

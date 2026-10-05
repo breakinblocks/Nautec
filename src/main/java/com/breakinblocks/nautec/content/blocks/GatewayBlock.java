@@ -163,7 +163,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
         return InteractionResult.SUCCESS;
     }
 
-    private static InteractionResult useWrench(Level level, GatewayBlockEntity gateway, Player player) {
+    public static InteractionResult useWrench(Level level, GatewayBlockEntity gateway, Player player) {
         if (player.isShiftKeyDown()) {
             if (!gateway.isFormed()) {
                 return forceBuild(level, gateway, player);
