@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -36,6 +37,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.advancedAnalyzerPowerUsage;
+    }
+
     public static final int DISHES = 9;
     public static final int FIRST_OUTPUT = DISHES;
 
@@ -119,6 +127,7 @@ public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity imple
         boolean blocked = false;
         boolean powered = getPower() >= NTConfig.advancedAnalyzerPowerUsage;
         boolean pure = getPurity() >= NTConfig.advancedAnalyzerPurity;
+        int steps = powered && pure ? overclock.advance(beamSpeed()) : 0;
         for (int dish = 0; dish < DISHES; dish++) {
             if (!needsAnalysis(getItemStackHandler().getStackInSlot(dish))) {
                 progress[dish] = 0;
@@ -129,7 +138,7 @@ public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity imple
                 continue;
             }
             if (progress[dish] < NTConfig.advancedAnalyzerCraftingSpeed) {
-                progress[dish]++;
+                progress[dish] = Math.min(NTConfig.advancedAnalyzerCraftingSpeed, progress[dish] + steps);
                 continue;
             }
             int output = freeOutput();

@@ -184,7 +184,7 @@ Once it is formed, right-click any of its blocks without the wrench in your hand
 
 ## <Color id="gold">Power</Color>
 
-It needs 100 AP plus 50 AP per filled colony slot: 150 AP for one colony and 550 AP for nine, before upgrades multiply it. Like the Bio Reactor, this is a threshold. Below it nothing runs and all progress resets.
+It needs 100 AP plus 50 AP per filled colony slot: 150 AP for one colony and 550 AP for nine, before upgrades multiply it. Like the Bio Reactor, this is a minimum. Below it nothing runs and all progress resets, and a stronger beam above it speeds the reactor up (see Stronger Beams below).
 
 Power goes in through hatches in the roof. Right-click one of the Aquarine Steel Blocks of the formed roof with the wrench to turn it into a hatch, and again to turn it back. This does not work in Item Sides mode, which sets the reactor's sides instead. A hatch takes a beam pointing down into it from above, and a hatch on the roof's edge also takes one pointing into its outer side. You can open as many hatches as you like, and their power adds together. A beam into the front of the Industrial Bio Reactor block itself counts as well.
 
@@ -217,5 +217,22 @@ A simple layout: a chest and hopper on one corner of the roof for nutrients, hat
 ***
 
 ## <Color id="gold">Recipe</Color>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Industrial Bio Reactor first works out the AP it needs from its colonies and upgrades. A stronger beam than that speeds up production on top of its Speed Upgrades: speed is the square root of (beam ÷ what it needs).
+
+| Beam, as a multiple of what it needs | Speed |
+|---|---|
+| 1× | ×1 (normal) |
+| 4× | ×2 |
+| 9× | ×3 |
+| 16× | ×4 |
+
+The two multiply. A reactor whose Speed Upgrade makes it run ×1.5 and that gets four times the power it needs runs ×3. Nutrients are spent per tick of work, so a stronger beam makes more items from the same nutrient. Hover a progress arrow to see the beam speed and the total speed with upgrades; Jade shows the beam speed too.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
 
 <RecipeFor id="industrial_bio_reactor"/>

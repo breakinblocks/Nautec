@@ -253,6 +253,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         return multiplier;
     }
 
+    @Override
     public int getRequiredPower() {
         double raw = (basePower() + (double) powerPerColony() * getActiveColonies()) * getPowerMultiplier();
         return (int) Math.ceil(raw - 1.0e-6);
@@ -299,7 +300,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         boolean starved = false;
         if (canRun() && getPower() >= getRequiredPower()) {
             IBacteriaStorage storage = getBacteriaStorage();
-            float speed = getSpeedMultiplier();
+            float speed = getSpeedMultiplier() * beamSpeed();
             int perCycle = getItemsPerCycle();
             float cost = getVitalityCost();
             for (int i = 0; i < colonies; i++) {

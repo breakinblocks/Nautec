@@ -65,7 +65,7 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
         if (!level.isClientSide()) {
             for (SubmarineEntity submarine : submarines) {
                 hold(submarine);
-                charge(submarine);
+                charge(submarine, chargeRate());
                 breathe(submarine);
             }
         }
@@ -82,10 +82,19 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
         submarine.setDeltaMovement(Vec3.ZERO);
     }
 
-    private static void charge(SubmarineEntity submarine) {
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.dockPowerUsage;
+    }
+
+    public int chargeRate() {
+        return Math.round(NTConfig.dockChargeRate * Math.max(1F, beamSpeed()));
+    }
+
+    private static void charge(SubmarineEntity submarine, int rate) {
         IPowerStorage storage = submarine.getPowerStorage();
         if (storage.getPowerStored() < storage.getPowerCapacity()) {
-            storage.tryFillPower(NTConfig.dockChargeRate, false);
+            storage.tryFillPower(rate, false);
         }
     }
 

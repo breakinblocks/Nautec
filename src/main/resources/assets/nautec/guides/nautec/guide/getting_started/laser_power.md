@@ -80,3 +80,9 @@ The crystal stays where it generated, so build around it. An Aquarine Steel Pick
 * [Charger](nautec:laser_chemistry/charger.md) and [Prismatic Battery](nautec:laser_chemistry/prismatic_battery.md): storing power in items.
 
 Wear a <ItemLink id="prism_monocle"/> to read the power and purity arriving at any laser block.
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+A machine's AP figure is the least it needs to run, not a cost. A stronger beam than that is never wasted: most machines run faster on it, by the square root of (beam ÷ what they need), so four times the power runs a machine twice as fast. [Stronger Beams](nautec:getting_started/stronger_beams.md) has the full rule and the list of machines.

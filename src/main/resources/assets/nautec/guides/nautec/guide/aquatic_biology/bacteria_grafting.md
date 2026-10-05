@@ -26,6 +26,23 @@ Hold the Grafting Tool in your main hand and an empty <ItemLink id="petri_dish"/
 
 ## <Color id="gold">Grafting Tool</Color>
 
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Grafting Station grafts faster on a beam stronger than it needs: speed is the square root of (beam ÷ what it needs). It needs 100 AP, or 500 AP with an Advanced Grafting Anchor, always at purity 2.8 or higher.
+
+| Beam, as a multiple of what it needs | Speed |
+|---|---|
+| 1× | ×1 (normal) |
+| 4× | ×2 |
+| 9× | ×3 |
+| 16× | ×4 |
+
+The two stack. An Advanced Grafting Anchor already grafts three times as fast on its 500 AP, and a 2,000 AP beam doubles that again, so a colony takes 10 seconds instead of 60.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
 <RecipeFor id="grafting_tool"/>
 
 The tool has 80 durability.

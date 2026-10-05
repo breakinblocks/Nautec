@@ -105,6 +105,14 @@ Every bonus and multiplier on this page is configurable.
 
 The ingredients are covered on the [Deep Materials](nautec:deep_engineering/materials.md) page.
 
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+A stronger beam than a reactor needs speeds it up on top of its Speed Upgrades, and the two multiply. Every upgrade that raises the power draw also raises the beam a reactor needs before it speeds up, so the beam speed is always measured against the reactor as upgraded.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
 <RecipeFor id="reactor_speed_upgrade"/>
 
 <RecipeFor id="reactor_yield_upgrade"/>

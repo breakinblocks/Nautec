@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.api.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
 import com.breakinblocks.nautec.utils.RecipeRevision;
@@ -102,6 +103,14 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
     public int getPower() {
         return power;
+    }
+
+    public int getRequiredPower() {
+        return 0;
+    }
+
+    public float beamSpeed() {
+        return getRequiredPower() > 0 ? BeamOverclock.speed(getPower(), getRequiredPower()) : 0F;
     }
 
     public int getPowerToTransfer() {

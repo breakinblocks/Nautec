@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
@@ -41,6 +42,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.replicatorPowerUsage;
+    }
+
     public static final int TEMPLATE = 0;
     public static final int PARTNER = 1;
     public static final int FODDER = 2;
@@ -166,7 +174,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
 
         int newStatus = checkStatus();
         if (newStatus == STATUS_RUNNING) {
-            progress++;
+            progress += overclock.advance(beamSpeed());
             if (progress >= NTConfig.replicatorDuration) {
                 produce(serverLevel.getRandom());
                 progress = 0;

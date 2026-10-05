@@ -61,3 +61,20 @@ Mutation is the only thing that changes a colony's stats, and a colony keeps its
 ## <Color id="gold">Recipe</Color>
 
 <Recipe id="nautec:mutator"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Mutator needs 10 AP. A stronger beam makes its attempts faster: its speed is the square root of (beam ÷ 10).
+
+| Beam | Speed |
+|---|---|
+| 10 AP | ×1 (normal) |
+| 40 AP | ×2 |
+| 90 AP | ×3 |
+| 160 AP | ×4 |
+
+Each attempt has the same chance as before, so a faster Mutator simply gets more tries per minute. The 12 seconds per attempt is on a 10 AP beam.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

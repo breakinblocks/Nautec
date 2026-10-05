@@ -70,3 +70,11 @@ A <ItemLink id="prismarine_crystal"/> hit from the side emits 3.0. Point it stra
 ### <Color id="aqua">Resonance Chamber Recipe</Color>
 
 <Recipe id="nautec:resonance_chamber"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Resonance Chamber already adds the beam's full power to its charge every tick, so a stronger beam charges it faster in direct proportion: twice the beam, twice as fast. It does not use the square root rule the other machines follow.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

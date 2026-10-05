@@ -41,6 +41,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -105,8 +106,7 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
 
     @Override
     protected @NotNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (stack.getItem() instanceof AquarineWrenchItem && !state.getValue(LASER_PORT) && state.getValue(DrainMultiblock.DRAIN_PART) % 2 != 0) {
-            DrainPartBlock.setLaserPort(pos, level, hitResult.getDirection());
+        if (stack.getItem() instanceof AquarineWrenchItem && wrenchLaserPort(level, pos, state, player)) {
             return InteractionResult.SUCCESS;
         }
         
@@ -122,6 +122,22 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
         }
         
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
+
+    public static boolean wrenchLaserPort(Level level, BlockPos pos, BlockState state, @Nullable Player player) {
+        if (!(state.getBlock() instanceof DrainPartBlock) || !state.getValue(Multiblock.FORMED) || state.getValue(DrainMultiblock.DRAIN_PART) % 2 == 0) {
+            return false;
+        }
+        if (!(level.getBlockEntity(pos) instanceof DrainPartBlockEntity part) || part.getActualBlockEntityPos() == null) {
+            return false;
+        }
+        BlockPos controller = part.getActualBlockEntityPos();
+        Direction outward = Direction.getApproximateNearest(pos.getX() - controller.getX(), 0, pos.getZ() - controller.getZ());
+        setLaserPort(pos, level, outward);
+        if (!level.isClientSide() && player != null) {
+            player.sendOverlayMessage(Component.translatable("nautec.drain.message.port_set").withStyle(ChatFormatting.AQUA));
+        }
+        return true;
     }
 
     public static void setLaserPort(BlockPos partPos, Level level, Direction direction) {

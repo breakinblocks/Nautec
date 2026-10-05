@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.compat.jade;
 
+import net.minecraft.world.level.block.Block;
 import com.breakinblocks.nautec.content.blocks.EnergyConverterBlock;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
@@ -48,6 +49,7 @@ public class JadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
+        registration.registerBlockComponent(BeamSpeedComponentProvider.INSTANCE, Block.class);
         registration.registerBlockComponent(AquaticCatalystComponentProvider.Client.INSTANCE, AquaticCatalystBlock.class);
         registration.registerBlockComponent(LaserJunctionComponentProvider.INSTANCE, LaserJunctionBlock.class);
         registration.registerBlockComponent(MixerComponentProvider.INSTANCE, MixerBlock.class);

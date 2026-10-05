@@ -26,6 +26,12 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue DRAIN_POWER_REQUIREMENT = BUILDER
             .comment("The amount of power required by the Deep Sea Drain each tick.")
             .defineInRange("drainPowerRequirement", 20, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.BooleanValue BEAM_OVERCLOCK = BUILDER
+            .comment("Whether processing machines run faster on a laser beam stronger than they need. Speed grows with the square root of the beam, so four times the power a machine needs runs it twice as fast")
+            .define("beamOverclock", true);
+    private static final ModConfigSpec.DoubleValue BEAM_OVERCLOCK_MAX_SPEED = BUILDER
+            .comment("The highest speed multiplier a stronger beam can give a machine. 0 means no limit")
+            .defineInRange("beamOverclockMaxSpeed", 0.0, 0.0, 1_000_000.0);
 
     private static final ModConfigSpec.IntValue REGULAR_LASER_DISTANCE = BUILDER
             .comment("The distance of normals lasers.")
@@ -64,7 +70,7 @@ public final class NTConfig {
             .defineInRange("mixerOutputCapacity", 32_000, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue DRAIN_SALT_WATER_AMOUNT = BUILDER
-            .comment("The amount of salt water collected by the Deep Sea Drain each second (mb)")
+            .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. It scales with the square root of the beam, so four times the beam pumps twice as much")
             .defineInRange("drainSaltWaterAmount", 500, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue DRAIN_CAPACITY = BUILDER
             .comment("The fluid capacity of the Deep Sea Drain")
@@ -929,6 +935,8 @@ public final class NTConfig {
 
     public static int mixerPower;
     public static int drainPower;
+    public static boolean beamOverclock = true;
+    public static double beamOverclockMaxSpeed = 0.0;
     public static int augmentationStationPower;
     public static int laserDistance;
     public static int longDistanceLaserDistance;
@@ -1206,6 +1214,8 @@ public final class NTConfig {
 
         mixerPower = value(MIXER_POWER_REQUIREMENT);
         drainPower = value(DRAIN_POWER_REQUIREMENT);
+        beamOverclock = value(BEAM_OVERCLOCK);
+        beamOverclockMaxSpeed = value(BEAM_OVERCLOCK_MAX_SPEED);
         augmentationStationPower = value(AUGMENTATION_STATION_POWER_REQUIREMENT);
 
         laserDistance = value(REGULAR_LASER_DISTANCE);

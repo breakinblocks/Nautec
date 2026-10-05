@@ -96,3 +96,20 @@ For the next four seconds you are held in place while the robot arms work, and a
 <Recipe id="nautec:augmentation_station_extension"/>
 
 <Recipe id="nautec:claw_robot_arm"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+Each extension in use needs 25 AP. A stronger beam installs faster: speed is the square root of (beam ÷ 25), and the install runs at the pace of the weakest extension in use, so power them evenly.
+
+| Beam | Speed |
+|---|---|
+| 25 AP | ×1 (normal) |
+| 100 AP | ×2 |
+| 225 AP | ×3 |
+| 400 AP | ×4 |
+
+The four seconds an install takes is with every extension at 25 AP.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.items.tools;
 
+import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
@@ -85,6 +86,10 @@ public class AquarineWrenchItem extends Item {
         BlockState blockState = level.getBlockState(pos);
         BlockState controllerState = blockState;
         Player player = useOnContext.getPlayer();
+
+        if (DrainPartBlock.wrenchLaserPort(level, pos, blockState, player)) {
+            return InteractionResult.SUCCESS;
+        }
 
         if (level.getBlockEntity(pos) instanceof LaserJunctionBlockEntity be && blockState.hasProperty(LaserJunctionBlock.CONNECTION[0])) {
             Direction direction = useOnContext.getClickedFace();

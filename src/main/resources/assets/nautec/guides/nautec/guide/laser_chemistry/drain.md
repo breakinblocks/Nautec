@@ -49,7 +49,7 @@ The drain needs more than 20 AP per tick (configurable). An <ItemLink id="aquati
 
 Two catalysts burning shards, merged in a [Laser Junction](laser_manipulation.md), give 24 and run the drain. Four are needed on Prismarine Crystals. A junction splits its power evenly between its outputs, so give it a single output toward the drain.
 
-The beam goes in through a laser port. With the wrench, right-click one of the four middle wall pieces (not a corner) on its outer side face: the vertical face pointing away from the drain. Not its top, not its bottom, and not the side facing in. The exact face you click becomes the port, and the beam has to enter through that same face, so clicking the top or bottom of the wall makes a port that a beam coming in from the side can never reach. The drain has one port at a time, and setting a new one moves it, so if the drain is not getting power, click the outer side face again.
+The beam goes in through a laser port. With the wrench, right-click one of the four middle wall pieces (not a corner). Any face works: the port always faces outward, away from the drain, and a message confirms it. Aim the beam at that wall's outer side. The drain has one port at a time, so wrenching another middle wall moves it, and wrenching the same wall again sets it afresh.
 
 ***
 
@@ -59,7 +59,17 @@ Shift-right-click the drain with both hands empty to open it. It opens once it h
 
 If it does not open, a message says how much power it is receiving against what it needs. If it opens but something will stop it pumping, such as missing water or the wrong biome, the message says that too.
 
-While open and powered it pumps 500 mB of Salt Water every second into a 128,000 mB tank (both configurable). It is the steady source of Salt Water for the [Mixer](mixer.md), since ocean water in a Bucket stays plain water unless a pack has turned on `collectSaltWater` in `config/nautec-common.toml`.
+While open and powered it pumps Salt Water into a 128,000 mB tank. A beam just over 20 AP pumps 500 mB every second, and a stronger beam pumps more with no upper limit, though each extra mB costs more power: four times the beam pumps twice as much.
+
+| Beam | Salt Water per second |
+|---|---|
+| just over 20 AP | about 500 mB |
+| 80 AP | 1,000 mB |
+| 320 AP | 2,000 mB |
+| 2,000 AP | 5,000 mB |
+| 20,000 AP | about 15,800 mB |
+
+Jade shows the drain's current rate. The base rate, the power it needs and the tank size are all configurable. It is the steady source of Salt Water for the [Mixer](mixer.md), since ocean water in a Bucket stays plain water unless a pack has turned on `collectSaltWater` in `config/nautec-common.toml`.
 
 * Take Salt Water out with a pipe on the bottom of the centre block.
 * Or right-click any part of the drain with a Bucket or other fluid container. A Bucket fills once the tank holds at least 1,000 mB.
@@ -71,6 +81,14 @@ Look at a wall piece with the <ItemLink id="prism_monocle"/> to see how much flu
 ***
 
 ### <Color id="aqua">Recipes</Color>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Deep Sea Drain pumps more Salt Water on a stronger beam, by the same square root rule as the machines: four times the beam pumps twice as much. The table above lists the rates.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
 
 <RecipeFor id="deep_sea_drain"/>
 

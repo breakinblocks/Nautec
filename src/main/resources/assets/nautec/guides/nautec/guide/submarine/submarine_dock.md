@@ -29,7 +29,7 @@ Park the hull over the pad. It counts as docked when it overlaps the 3 by 3 area
 
 ## <Color id="gold">What It Does</Color>
 
-* Charges the hull at 40 power per tick, about 21 minutes from empty to full, without picking the hull up. The rate is configurable.
+* Charges the hull at 40 power per tick on a 20 AP beam, about 21 minutes from empty to full, without picking the hull up. A stronger beam charges faster (see below). The rate is configurable.
 * Holds an empty hull still, so what you leave on the pad is still there when you come back. A pilot always overrides the clamps and can drive straight off.
 * Keeps everyone aboard breathing on the dock's power, even with the hull's cell empty.
 
@@ -38,3 +38,20 @@ Park the hull over the pad. It counts as docked when it overlaps the 3 by 3 area
 ### <Color id="aqua">Sea Scout Dock Recipe</Color>
 
 <Recipe id="nautec:submarine_dock"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Submarine Dock needs 20 AP. A stronger beam charges a docked submarine faster: its speed is the square root of (beam ÷ 20).
+
+| Beam | Speed |
+|---|---|
+| 20 AP | ×1 (normal) |
+| 80 AP | ×2 |
+| 180 AP | ×3 |
+| 320 AP | ×4 |
+
+It charges 40 power per tick on a 20 AP beam, 80 per tick on 80 AP, and so on.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

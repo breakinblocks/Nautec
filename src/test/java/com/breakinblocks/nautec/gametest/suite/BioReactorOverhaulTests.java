@@ -67,7 +67,7 @@ public final class BioReactorOverhaulTests {
 
     private static BioReactorBlockEntity loneReactor(GameTestHelper helper, BlockPos reactorPos, BlockPos sourcePos) {
         helper.setBlock(reactorPos, NTBlocks.BIO_REACTOR.get().defaultBlockState());
-        BacteriaMachineTests.placeShieldedSource(helper, sourcePos, Direction.NORTH);
+        BacteriaMachineTests.feedExact(helper, reactorPos);
         return helper.getBlockEntity(reactorPos, BioReactorBlockEntity.class);
     }
 
@@ -260,6 +260,7 @@ public final class BioReactorOverhaulTests {
                 int before = count(reactor, Items.STONE);
                 try {
                     NTConfig.bioReactorBaseSpeed = 250.0;
+                    BacteriaMachineTests.feedNow(reactor);
                     reactor.commonTick();
                 } finally {
                     NTConfig.bioReactorBaseSpeed = speed;
@@ -272,6 +273,7 @@ public final class BioReactorOverhaulTests {
                 reactor.getItemStackHandler().setStackInSlot(reactor.outputSlot(0), new ItemStack(Items.STONE, 63));
                 try {
                     NTConfig.bioReactorBaseSpeed = 250.0;
+                    BacteriaMachineTests.feedNow(reactor);
                     reactor.commonTick();
                 } finally {
                     NTConfig.bioReactorBaseSpeed = speed;

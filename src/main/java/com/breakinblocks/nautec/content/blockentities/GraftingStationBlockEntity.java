@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
@@ -41,6 +42,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class GraftingStationBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
     public static final int DISH_SLOT = 0;
     public static final int SAMPLE_SLOT = 1;
     public static final int OUTPUT_SLOT = 2;
@@ -139,6 +142,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         return Math.max(1, (int) Math.round(NTConfig.graftingStationDuration / NTConfig.advancedGraftingAnchorSpeed));
     }
 
+    @Override
     public int getRequiredPower() {
         if (!hasAdvancedAnchor()) {
             return NTConfig.graftingStationPowerUsage;
@@ -173,7 +177,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
 
         int newStatus = checkStatus();
         if (newStatus == STATUS_RUNNING) {
-            progress++;
+            progress += overclock.advance(beamSpeed());
             if (progress >= getDuration()) {
                 graft(serverLevel);
                 progress = 0;

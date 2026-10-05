@@ -77,6 +77,21 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         return getPower() > NTConfig.drainPower;
     }
 
+    public int saltWaterPerSecond() {
+        return saltWaterPerSecond(getPower());
+    }
+
+    public static int saltWaterPerSecond(int power) {
+        if (power <= NTConfig.drainPower) {
+            return 0;
+        }
+        if (NTConfig.drainPower <= 0) {
+            return NTConfig.drainSaltWaterAmount;
+        }
+        double scaled = NTConfig.drainSaltWaterAmount * Math.sqrt(power / (double) NTConfig.drainPower);
+        return (int) Math.min(Integer.MAX_VALUE, Math.round(scaled));
+    }
+
     public @Nullable Component open() {
         if (!isFormed()) {
             return Component.translatable("nautec.drain.message.not_formed");
@@ -274,7 +289,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
             return;
         }
         if (isFormed() && isOpen() && !isMoving() && hasOperatingPower() && pumpBlocker() == null) {
-            getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), NTConfig.drainSaltWaterAmount));
+            getFluidTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), saltWaterPerSecond()));
         }
     }
 

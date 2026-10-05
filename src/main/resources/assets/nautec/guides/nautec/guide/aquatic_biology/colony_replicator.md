@@ -59,4 +59,21 @@ The three slots at the bottom left are the Dish Port: a dish goes in on the left
 
 The power, purity, time, biomass cost and storage, copy error chance and splice chance are all in `config/nautec-common.toml`.
 
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Colony Replicator needs 80 AP. A stronger beam copies colonies faster: its speed is the square root of (beam ÷ 80).
+
+| Beam | Speed |
+|---|---|
+| 80 AP | ×1 (normal) |
+| 320 AP | ×2 |
+| 720 AP | ×3 |
+| 1,280 AP | ×4 |
+
+It still needs purity 2.0 or higher, and purity does not speed it up. The 30 seconds per colony is on an 80 AP beam.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
 <RecipeFor id="colony_replicator"/>

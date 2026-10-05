@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -47,6 +48,19 @@ public final class BacteriaMachineTests {
         }
     }
 
+    static void feedNow(LaserBlockEntity laser) {
+        laser.receivePower(laser.getRequiredPower(), Direction.UP, laser.getBlockPos().above());
+    }
+
+    static void feedExact(GameTestHelper helper, BlockPos pos) {
+        BlockPos abs = helper.absolutePos(pos);
+        helper.onEachTick(() -> {
+            if (helper.getLevel().getBlockEntity(abs) instanceof LaserBlockEntity laser) {
+                laser.receivePower(laser.getRequiredPower(), Direction.UP, abs.above());
+            }
+        });
+    }
+
     static SimpleCollapsedStats stats(float growthRate, float mutationResistance, float productionRate, int lifespan) {
         return new SimpleCollapsedStats(SimpleBacteriaStats.EMPTY, growthRate, mutationResistance, productionRate, lifespan, -1);
     }
@@ -74,7 +88,7 @@ public final class BacteriaMachineTests {
             BlockPos reactorPos = new BlockPos(4, 1, 4);
             BlockPos sourcePos = new BlockPos(4, 1, 6);
             helper.setBlock(reactorPos, NTBlocks.BIO_REACTOR.get().defaultBlockState());
-            placeShieldedSource(helper, sourcePos, Direction.NORTH);
+            feedExact(helper, reactorPos);
 
             BioReactorBlockEntity reactor = helper.getBlockEntity(reactorPos, BioReactorBlockEntity.class);
             if (reactor == null) {
@@ -196,8 +210,8 @@ public final class BacteriaMachineTests {
             BlockPos fastPos = new BlockPos(6, 1, 4);
             helper.setBlock(slowPos, NTBlocks.INCUBATOR.get().defaultBlockState());
             helper.setBlock(fastPos, NTBlocks.INCUBATOR.get().defaultBlockState());
-            placeShieldedSource(helper, slowPos.above(3), Direction.DOWN);
-            placeShieldedSource(helper, fastPos.above(3), Direction.DOWN);
+            feedExact(helper, slowPos);
+            feedExact(helper, fastPos);
 
             IncubatorBlockEntity slow = helper.getBlockEntity(slowPos, IncubatorBlockEntity.class);
             IncubatorBlockEntity fast = helper.getBlockEntity(fastPos, IncubatorBlockEntity.class);

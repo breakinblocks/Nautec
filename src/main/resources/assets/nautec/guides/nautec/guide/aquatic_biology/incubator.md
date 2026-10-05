@@ -56,3 +56,20 @@ The two slots at the bottom left are the Dish Port: a dish goes in on the left a
 ## <Color id="gold">Recipe</Color>
 
 <Recipe id="nautec:incubator"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Incubator needs 20 AP. A stronger beam runs its growth cycles faster: its speed is the square root of (beam ÷ 20).
+
+| Beam | Speed |
+|---|---|
+| 20 AP | ×1 (normal) |
+| 80 AP | ×2 |
+| 180 AP | ×3 |
+| 320 AP | ×4 |
+
+Every cycle still has its own chance to eat a nutrient, so a faster Incubator grows the colony and goes through nutrient at the same higher rate. The 5 second cycle is on a 20 AP beam.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

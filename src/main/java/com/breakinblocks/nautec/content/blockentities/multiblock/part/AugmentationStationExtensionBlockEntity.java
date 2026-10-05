@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.multiblock.part;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockPartEntity;
@@ -36,6 +37,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class AugmentationStationExtensionBlockEntity extends LaserBlockEntity implements MultiblockPartEntity, MenuProvider {
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.augmentationStationPower;
+    }
+
     public float prevMiddleIndependentAngle;
     public float prevTipIndependentAngle;
     public float middleIndependentAngle;

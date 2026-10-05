@@ -137,8 +137,8 @@ public final class PersistenceTests {
                 helper.fail("Expected MutatorBlockEntity at " + TARGET_POS);
                 return;
             }
-            BacteriaMachineTests.placeShieldedSource(helper, SOURCE_POS.above(3), Direction.DOWN);
-            BacteriaMachineTests.placeShieldedSource(helper, TARGET_POS.above(3), Direction.DOWN);
+            BacteriaMachineTests.feedExact(helper, SOURCE_POS);
+            BacteriaMachineTests.feedExact(helper, TARGET_POS);
 
             source.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, 1000,
                     BacteriaMachineTests.stats(1f, 0f, 1f, 2000), 0));

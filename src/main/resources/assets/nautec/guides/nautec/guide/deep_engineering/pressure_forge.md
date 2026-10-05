@@ -76,3 +76,20 @@ You need a working Forge under real water first, since the Flawless Prismarine C
 ### <Color id="aqua">Abyssal Pressure Forge Recipe</Color>
 
 <Recipe id="nautec:pressure_forge"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Pressure Forge needs 40 AP. A stronger beam forges faster: its speed is the square root of (beam ÷ 40).
+
+| Beam | Speed |
+|---|---|
+| 40 AP | ×1 (normal) |
+| 160 AP | ×2 |
+| 360 AP | ×3 |
+| 640 AP | ×4 |
+
+The times in the recipe table are on a 40 AP beam. The Etching Acid each recipe uses does not change.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

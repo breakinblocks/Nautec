@@ -58,4 +58,21 @@ See [Chemistry Fluids](chemistry_introduction.md) for what each fluid is for.
 
 The <ItemLink id="whisk"/> is repaired from a Broken Whisk, or crafted from Cast Iron Rods, a Prismarine Crystal Shard and an Aquarine Steel Ingot.
 
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+The Mixer needs 10 AP. A stronger beam runs every recipe faster: its speed is the square root of (beam ÷ 10).
+
+| Beam | Speed |
+|---|---|
+| 10 AP | ×1 (normal) |
+| 40 AP | ×2 |
+| 90 AP | ×3 |
+| 160 AP | ×4 |
+
+The times in the recipe table are on a 10 AP beam.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
 <RecipeFor id="mixer"/>

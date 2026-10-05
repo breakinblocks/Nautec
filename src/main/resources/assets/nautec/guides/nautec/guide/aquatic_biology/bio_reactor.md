@@ -124,6 +124,23 @@ Feeding stops the loss at once, but it does not make the colony young again: it 
 
 <RecipesFor id="bacterial_containment_shield"/>
 
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+A Bio Reactor first works out the AP it needs from its colonies and upgrades. A stronger beam than that speeds up production on top of its Speed Upgrades: speed is the square root of (beam ÷ what it needs).
+
+| Beam, as a multiple of what it needs | Speed |
+|---|---|
+| 1× | ×1 (normal) |
+| 4× | ×2 |
+| 9× | ×3 |
+| 16× | ×4 |
+
+The two multiply. A reactor whose Speed Upgrade makes it run ×1.5 and that gets four times the power it needs runs ×3. Nutrients are spent per tick of work, so a stronger beam makes more items from the same nutrient. Hover a progress arrow to see the beam speed and the total speed with upgrades; Jade shows the beam speed too.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
 <RecipeFor id="polished_prismarine"/>
 
 <RecipeFor id="dark_prismarine_pillar"/>

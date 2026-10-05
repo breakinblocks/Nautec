@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.utils.RecipeRevision;
@@ -44,6 +45,13 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.mixerPower;
+    }
+
     public static final int OUTPUT_SLOT = 4;
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private boolean running;
@@ -132,7 +140,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
                 if (removeInputs(currentRecipe)) setOutputs(currentRecipe);
                 this.recipe = getRecipe().orElse(null);
             } else {
-                duration++;
+                duration = Math.min(recipe.duration(), duration + overclock.advance(beamSpeed()));
             }
         } else {
             this.running = false;

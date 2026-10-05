@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.NTDataAttachments;
@@ -53,6 +54,8 @@ import java.util.function.Supplier;
 import com.google.common.base.Suppliers;
 
 public class AugmentationStationBlockEntity extends ContainerBlockEntity implements MultiblockEntity {
+    private final BeamOverclock overclock = new BeamOverclock();
+
     public static final int STATUS_READY = 0;
     public static final int STATUS_MISSING_EXTENSION = 1;
     public static final int STATUS_NO_ARM = 2;
@@ -219,6 +222,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                 cancelAugmentation();
                 return;
             }
+            float speed = Float.MAX_VALUE;
             for (var input : operationInputs.entrySet()) {
                 var extension = (AugmentationStationExtensionBlockEntity) level.getBlockEntity(input.getKey());
                 if (extension.getPower() < NTConfig.augmentationStationPower
@@ -226,8 +230,10 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                     cancelAugmentation();
                     return;
                 }
+                speed = Math.min(speed, extension.beamSpeed());
             }
-            if (--duration <= 0) {
+            duration -= overclock.advance(speed == Float.MAX_VALUE ? 1F : speed);
+            if (duration <= 0) {
                 Player recipient = player;
                 AugmentationRecipe completedRecipe = recipe;
                 AugmentSlot completedSlot = slot;

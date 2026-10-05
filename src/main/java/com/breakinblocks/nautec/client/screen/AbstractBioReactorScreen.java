@@ -151,6 +151,11 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         List<Component> lines = new ArrayList<>();
         ChatFormatting powerColor = reactor.getPower() >= reactor.getRequiredPower() ? ChatFormatting.GREEN : ChatFormatting.RED;
         lines.add(Component.translatable("nautec.bio_reactor.power", reactor.getPower(), reactor.getRequiredPower()).withStyle(powerColor));
+        if (reactor.beamSpeed() > 0F) {
+            lines.add(Component.translatable("nautec.bio_reactor.beam_speed",
+                    String.format(Locale.ROOT, "%.2f", reactor.beamSpeed()),
+                    String.format(Locale.ROOT, "%.2f", reactor.beamSpeed() * reactor.getSpeedMultiplier())).withStyle(ChatFormatting.AQUA));
+        }
         if (reactor.hasUpgrades()) {
             lines.add(Component.translatable("nautec.bio_reactor.upgrades",
                     String.format(Locale.ROOT, "%.2f", reactor.getSpeedMultiplier()),

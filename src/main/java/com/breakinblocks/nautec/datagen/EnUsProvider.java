@@ -737,6 +737,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bio_reactor.vitality", "Nutrients: %s seconds left");
         add("nautec.bio_reactor.starving", "No nutrients: the colony is aging");
         add("nautec.bio_reactor.power", "Power: %s / %s AP");
+        add("nautec.bio_reactor.beam_speed", "Beam speed x%s, total speed x%s with upgrades");
         add("nautec.bio_reactor.upgrades", "Speed x%s, %s items per cycle, %s%% nutrient use");
         add("nautec.reactor_upgrade.speed.effect", "+%s%% production speed per upgrade");
         add("nautec.reactor_upgrade.yield.effect", "+%s item per completed cycle per upgrade");
@@ -997,6 +998,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.drain.message.no_power", "The drain needs more than %s AP per tick to open. It is receiving %s AP.");
         add("nautec.drain.message.opened_idle", "Opening, but it will not pump yet: %s");
         add("nautec.drain.message.moving", "The drain is still moving");
+        add("nautec.drain.message.port_set", "Laser port set on this wall. Aim a beam at its outer side");
         add("nautec.drain.status.not_formed", "Not formed");
         add("nautec.drain.status.not_formed.desc", "Right-click the centre with an Aquarine Steel Wrench to form it");
         add("nautec.drain.status.no_power", "Not enough power");
@@ -1016,6 +1018,9 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.drain.status.pumping", "Pumping Salt Water");
         add("nautec.drain.status.pumping.desc", "Pumping Salt Water into its tank");
         add("nautec.jade.drain.power", "Power: %s AP (needs more than %s)");
+        add("nautec.jade.drain.rate", "Pumps %s mB of Salt Water a second");
+        add("nautec.jade.beam_speed", "Speed x%s on a %s AP beam (needs %s)");
+        add("nautec.jade.beam_speed.low", "Beam too weak: %s AP, needs %s");
         add("nautec.crystal_seed.dormant.tooltip", "Awaken it in a Resonance Chamber at purity 3.0");
         add("nautec.crystal_seed.awakened.tooltip", "Set it in a Crystal Cradle and feed the cradle high-purity laser power");
         add("nautec.cultivated_crystal.tooltip.place", "Needs six blocks of free space to place");

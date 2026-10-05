@@ -26,7 +26,7 @@ The machines all work on unanalyzed colonies too. Analysis only lets you read th
 
 The Analyzer is two blocks tall, so it needs a free block above it when you place it. Right-click either half to open it.
 
-It needs a beam of at least 5 AP entering its bottom face from below. The power is a threshold, not a cost: below 5 AP it pauses, and at or above it runs at full speed.
+It needs a beam of at least 5 AP entering its bottom face from below. The power is a threshold, not a cost: below 5 AP it pauses, at 5 AP it runs at normal speed, and a stronger beam runs it faster (see below).
 
 Both the time (60 ticks) and the power (5 AP) are configurable.
 
@@ -61,3 +61,20 @@ Analyzes nine dishes at once. It has nine input slots and nine output slots, and
 Hover over the arrow to see what it is waiting for, or look at it through a <ItemLink id="prism_monocle"/>. Hoppers and pipes can feed it and empty it through any face by default ([Side Configuration](nautec:getting_started/utilities.md)). Its time, power and purity are in `config/nautec-common.toml`.
 
 <Recipe id="nautec:advanced_bacterial_analyzer"/>
+
+***
+
+## <Color id="gold">Stronger Beams</Color>
+
+Both analyzers run faster on a beam stronger than they need: speed is the square root of (beam ÷ what it needs). The Bacterial Analyzer needs 5 AP, so 20 AP analyzes twice as fast. The Advanced Bacterial Analyzer needs 40 AP at purity 2.1, so 160 AP at that purity analyzes all nine dishes twice as fast. Purity never speeds either of them up.
+
+| Beam, as a multiple of what it needs | Speed |
+|---|---|
+| 1× | ×1 (normal) |
+| 4× | ×2 |
+| 9× | ×3 |
+| 16× | ×4 |
+
+The Bacterial Analyzer's 3 seconds per dish is on a 5 AP beam.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.

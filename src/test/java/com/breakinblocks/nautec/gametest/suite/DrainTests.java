@@ -2,9 +2,11 @@ package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.DrainPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
@@ -15,7 +17,11 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -78,6 +84,48 @@ public final class DrainTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("drain/wrench_on_any_face_sets_an_outward_port_and_reaims", 200, helper -> {
+            buildFormedDrain(helper, false);
+            BlockPos abs = helper.absolutePos(PORT_PART);
+            DrainPartBlock.setLaserPort(abs, helper.getLevel(), Direction.UP);
+            DrainPartBlockEntity part = helper.getBlockEntity(PORT_PART, DrainPartBlockEntity.class);
+            helper.assertTrue(part.getLaserInputs().contains(Direction.UP), "a port aimed at the top, as an old world might have");
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            ItemStack wrench = new ItemStack(NTItems.AQUARINE_WRENCH.get());
+            player.setItemInHand(InteractionHand.MAIN_HAND, wrench);
+            BlockHitResult top = new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false);
+            InteractionResult result = helper.getBlockState(PORT_PART).useItemOn(wrench, helper.getLevel(), player, InteractionHand.MAIN_HAND, top);
+            helper.assertTrue(result.consumesAction(), "wrenching the top of a port wall is taken");
+            helper.assertTrue(part.getLaserInputs().contains(Direction.SOUTH), "the port turns to face outward, away from the centre");
+            helper.assertTrue(part.getLaserOutputs().contains(Direction.NORTH), "and passes its beam on to the centre");
+            DrainPartBlock.setLaserPort(abs, helper.getLevel(), Direction.UP);
+            player.setShiftKeyDown(true);
+            InteractionResult sneaking = wrench.useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, top));
+            helper.assertTrue(sneaking.consumesAction(), "a sneaking wrench click also sets the port");
+            helper.assertTrue(part.getLaserInputs().contains(Direction.SOUTH), "the sneaking click aims it outward too");
+            BacteriaMachineTests.placeShieldedSource(helper, SOURCE, Direction.NORTH);
+            helper.succeedWhen(() -> helper.assertTrue(drain(helper).getPower() > 0, "a beam into the outward port reaches the drain"));
+        });
+
+        r.add("drain/pump_rate_scales_with_the_square_root_of_the_beam", 20, helper -> {
+            int power = NTConfig.drainPower;
+            int base = NTConfig.drainSaltWaterAmount;
+            NTConfig.drainPower = 20;
+            NTConfig.drainSaltWaterAmount = 500;
+            try {
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(20), 0, "no pumping at the threshold");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(21), 512, "just over the threshold");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(80), 1000, "four times the beam pumps twice as much");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(320), 2000, "sixteen times the beam pumps four times as much");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(2_000_000), 158_114, "no upper limit on the beam");
+                helper.assertTrue(DrainBlockEntity.saltWaterPerSecond(Integer.MAX_VALUE) > 0, "the largest beam does not overflow");
+            } finally {
+                NTConfig.drainPower = power;
+                NTConfig.drainSaltWaterAmount = base;
+            }
+            helper.succeed();
+        });
+
         r.add("drain/opens_and_pumps_through_its_laser_port", 400, helper -> {
             helper.setBiome(Biomes.OCEAN);
             buildFormedDrain(helper, true);

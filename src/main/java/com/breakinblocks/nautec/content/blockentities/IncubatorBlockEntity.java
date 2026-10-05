@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -36,6 +37,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.incubatorPowerUsage;
+    }
+
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
     public static final int DISH_EMPTY_OUT = 3;
@@ -111,7 +119,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
                     progress = 0;
                 } else {
-                    progress++;
+                    progress = Math.min(NTConfig.incubatorCraftingSpeed, progress + overclock.advance(beamSpeed()));
                 }
             }
         } else {

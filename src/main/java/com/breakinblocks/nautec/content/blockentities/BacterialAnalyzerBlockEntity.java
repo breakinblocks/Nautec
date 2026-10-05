@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
@@ -30,6 +31,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements MenuProvider {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.bacteriaAnalyzerPowerUsage;
+    }
+
     private boolean hasRecipe;
     private int progress;
 
@@ -92,7 +100,7 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
 
                     this.progress = 0;
                 } else {
-                    progress++;
+                    progress = Math.min(NTConfig.bacteriaAnalyzerCraftingSpeed, progress + overclock.advance(beamSpeed()));
                 }
             }
         } else {

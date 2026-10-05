@@ -78,6 +78,10 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
                 }
                 tooltip.add(Component.translatable("nautec.jade.drain.power", data.power(), NTConfig.drainPower)
                         .withStyle(data.power() > NTConfig.drainPower ? ChatFormatting.WHITE : ChatFormatting.RED));
+                if (data.power() > NTConfig.drainPower) {
+                    tooltip.add(Component.translatable("nautec.jade.drain.rate", DrainBlockEntity.saltWaterPerSecond(data.power()))
+                            .withStyle(ChatFormatting.AQUA));
+                }
             });
         }
 

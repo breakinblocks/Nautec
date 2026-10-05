@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -35,6 +36,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class PressureForgeBlockEntity extends LaserBlockEntity {
+    private final BeamOverclock overclock = new BeamOverclock();
+
+    @Override
+    public int getRequiredPower() {
+        return NTConfig.pressureForgePowerUsage;
+    }
+
     private static final int WORK_PERIOD = 40;
 
     public enum Synthesizer implements StringRepresentable {
@@ -155,7 +163,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         }
 
         if (this.progress < recipe.duration()) {
-            this.progress++;
+            this.progress = Math.min(recipe.duration(), this.progress + overclock.advance(beamSpeed()));
             MachineSounds.interval(serverLevel, worldPosition, NTSounds.PRESSURE_FORGE_WORK, WORK_PERIOD, 0.5f, 0.7f);
             return;
         }
