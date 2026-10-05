@@ -101,7 +101,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         if (slot != DISH_IN) {
             return true;
         }
-        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::mutationReady, this::canMutate);
+        return DishPort.accepts(this, resource, DishPort.NONE, DISH_OUT, LOAD_SLOTS, this::mutationReady, this::canMutate);
     }
 
     private int mutationReady() {
@@ -145,7 +145,8 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         }
 
         if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::mutationReady, slot -> {
+            DishPort.reclaim(this, DISH_IN, DISH_EMPTY_OUT);
+            DishPort.tick(this, DISH_IN, DishPort.NONE, DISH_OUT, LOAD_SLOTS, this::mutationReady, slot -> {
             });
         }
 

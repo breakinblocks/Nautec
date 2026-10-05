@@ -96,7 +96,8 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         }
 
         if (level instanceof ServerLevel server && server.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, DISH_IN, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::finishedColony, slot -> progress = 0);
+            DishPort.reclaim(this, DISH_IN, DISH_EMPTY_OUT);
+            DishPort.tick(this, DISH_IN, DishPort.NONE, DISH_OUT, LOAD_SLOTS, this::finishedColony, slot -> progress = 0);
         }
 
         boolean canRun = level.isClientSide() ? this.active : this.recipe != null;
@@ -139,7 +140,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         if (slot != DISH_IN) {
             return true;
         }
-        return DishPort.accepts(this, resource, DISH_EMPTY_OUT, DISH_OUT, LOAD_SLOTS, this::finishedColony, this::canIncubate);
+        return DishPort.accepts(this, resource, DishPort.NONE, DISH_OUT, LOAD_SLOTS, this::finishedColony, this::canIncubate);
     }
 
     private boolean canIncubate(BacteriaInstance colony) {

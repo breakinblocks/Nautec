@@ -77,12 +77,14 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         Slot in = this.menu.getDishIn();
         Slot out = this.menu.getDishOut();
         Slot emptyOut = this.menu.getDishEmptyOut();
-        if (in == null || out == null || emptyOut == null) {
+        if (in == null || out == null) {
             return;
         }
         extractSlotFrame(guiGraphics, in.x, in.y);
         extractSlotFrame(guiGraphics, out.x, out.y);
-        extractSlotFrame(guiGraphics, emptyOut.x, emptyOut.y);
+        if (emptyOut != null) {
+            extractSlotFrame(guiGraphics, emptyOut.x, emptyOut.y);
+        }
         if (!in.hasItem()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DISH_TEXTURE, leftPos + in.x, topPos + in.y, 0F, 0F, 16, 16, 16, 16, DISH_GHOST);
         }
@@ -102,7 +104,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         Slot in = this.menu.getDishIn();
         Slot out = this.menu.getDishOut();
         Slot emptyOut = this.menu.getDishEmptyOut();
-        if (in == null || out == null || emptyOut == null) {
+        if (in == null || out == null) {
             return;
         }
         if (!in.hasItem() && isHovering(in.x, in.y, 16, 16, mouseX, mouseY)) {
@@ -118,7 +120,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
                     Component.translatable("nautec.dish_port.title"),
                     Component.translatable("nautec.dish_port.colony_out").withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
-        } else if (!emptyOut.hasItem() && isHovering(emptyOut.x, emptyOut.y, 16, 16, mouseX, mouseY)) {
+        } else if (emptyOut != null && !emptyOut.hasItem() && isHovering(emptyOut.x, emptyOut.y, 16, 16, mouseX, mouseY)) {
             guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
                     Component.translatable("nautec.dish_port.title"),
                     Component.translatable("nautec.dish_port.empty_out").withStyle(ChatFormatting.GRAY)

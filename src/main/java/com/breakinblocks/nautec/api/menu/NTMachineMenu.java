@@ -44,6 +44,12 @@ public abstract class NTMachineMenu<T extends ContainerBlockEntity> extends NTAb
         this.dishEmptyOut = addSlot(new ResourceHandlerSlot(handler, handler::set, emptyOutIndex, emptyOutX, emptyOutY));
     }
 
+    public void addDishPort(int inIndex, int inX, int inY, int outIndex, int outX, int outY) {
+        ItemStackHandler handler = blockEntity.getItemStackHandler();
+        this.dishIn = addSlot(new ResourceHandlerSlot(handler, handler::set, inIndex, inX, inY));
+        this.dishOut = addSlot(new ResourceHandlerSlot(handler, handler::set, outIndex, outX, outY));
+    }
+
     public @Nullable Slot getDishIn() {
         return dishIn;
     }

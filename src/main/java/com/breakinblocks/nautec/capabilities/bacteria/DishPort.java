@@ -43,7 +43,7 @@ public final class DishPort {
         }
         BacteriaInstance held = colonyOf(resource.toStack());
         if (!held.isEmpty()) {
-            return items.getStackInSlot(emptyOutSlot).isEmpty() && loadable.test(held) && loadTarget(storage, held, loadSlots) >= 0;
+            return (emptyOutSlot == NONE || items.getStackInSlot(emptyOutSlot).isEmpty()) && loadable.test(held) && loadTarget(storage, held, loadSlots) >= 0;
         }
         return colonyOutSlot != NONE && items.getStackInSlot(colonyOutSlot).isEmpty() && unloadSlot.getAsInt() >= 0;
     }
@@ -66,7 +66,7 @@ public final class DishPort {
         int outSlot;
         if (!held.isEmpty()) {
             outSlot = emptyOutSlot;
-            if (!items.getStackInSlot(outSlot).isEmpty()) {
+            if (outSlot != NONE && !items.getStackInSlot(outSlot).isEmpty()) {
                 return false;
             }
             int target = loadTarget(storage, held, loadSlots);
@@ -75,6 +75,10 @@ public final class DishPort {
             }
             storage.insertBacteria(target, held, false);
             dish.setBacteria(0, BacteriaInstance.EMPTY);
+            if (outSlot == NONE) {
+                items.setStackInSlot(inSlot, result);
+                return true;
+            }
         } else {
             outSlot = colonyOutSlot;
             if (outSlot == NONE || !items.getStackInSlot(outSlot).isEmpty()) {
@@ -93,6 +97,14 @@ public final class DishPort {
         items.extractItem(inSlot, 1, false);
         machine.forceInsertItem(outSlot, result, false);
         return true;
+    }
+
+    public static void reclaim(ContainerBlockEntity machine, int inSlot, int oldSlot) {
+        ItemStackHandler items = machine.getItemStackHandler();
+        if (items.getStackInSlot(inSlot).isEmpty() && !items.getStackInSlot(oldSlot).isEmpty()) {
+            items.setStackInSlot(inSlot, items.getStackInSlot(oldSlot).copyWithCount(1));
+            items.extractItem(oldSlot, 1, false);
+        }
     }
 
     private static int loadTarget(IBacteriaStorage storage, BacteriaInstance held, int[] slots) {

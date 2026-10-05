@@ -43,11 +43,10 @@ public final class DishPortTests {
 
             helper.runAfterDelay(12, () -> {
                 helper.assertValueEqual(100L, incubator.getBacteriaStorage().getBacteria(0).getSize(), "colony loaded from the dish");
-                ItemStack emptied = incubator.getItemStackHandler().getStackInSlot(IncubatorBlockEntity.DISH_EMPTY_OUT);
-                helper.assertTrue(emptied.is(NTItems.PETRI_DISH.get()) && contents(emptied).isEmpty(), "The emptied dish should come out");
-
-                incubator.getItemStackHandler().setStackInSlot(IncubatorBlockEntity.DISH_EMPTY_OUT, ItemStack.EMPTY);
-                incubator.getItemStackHandler().setStackInSlot(IncubatorBlockEntity.DISH_IN, new ItemStack(NTItems.PETRI_DISH.get()));
+                ItemStack emptied = incubator.getItemStackHandler().getStackInSlot(IncubatorBlockEntity.DISH_IN);
+                helper.assertTrue(emptied.is(NTItems.PETRI_DISH.get()) && contents(emptied).isEmpty(), "The emptied dish should stay in the port");
+                helper.assertTrue(incubator.getItemStackHandler().getStackInSlot(IncubatorBlockEntity.DISH_EMPTY_OUT).isEmpty(),
+                        "Nothing should go to the old empty dish slot");
             });
             helper.runAfterDelay(24, () -> {
                 helper.assertFalse(incubator.getBacteriaStorage().getBacteria(0).isEmpty(), "A growing colony should stay put");
@@ -60,6 +59,8 @@ public final class DishPortTests {
                 helper.assertTrue(incubator.getBacteriaStorage().getBacteria(0).isEmpty(), "A colony at the cap should be taken out");
                 BacteriaInstance out = contents(incubator.getItemStackHandler().getStackInSlot(IncubatorBlockEntity.DISH_OUT));
                 helper.assertValueEqual(NTConfig.bacteriaColonySizeCap, out.getSize(), "size of the unloaded colony");
+                helper.assertTrue(incubator.getItemStackHandler().getStackInSlot(IncubatorBlockEntity.DISH_IN).isEmpty(),
+                        "The port should be free for the next colony");
                 helper.succeed();
             });
         });
@@ -79,6 +80,43 @@ public final class DishPortTests {
                 helper.assertTrue(mutator.getBacteriaStorage().getBacteria(1).isEmpty(), "The result should be taken out");
                 BacteriaInstance out = contents(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_OUT));
                 helper.assertValueEqual(NTBacterias.CALCIOPHILES, out.getBacteria(), "unloaded strain");
+                helper.succeed();
+            });
+        });
+
+        r.add("dish_port/mutator_reuses_the_emptied_dish", 40, helper -> {
+            helper.setBlock(MACHINE, NTBlocks.MUTATOR.get());
+            MutatorBlockEntity mutator = helper.getBlockEntity(MACHINE, MutatorBlockEntity.class);
+            mutator.getItemStackHandler().setStackInSlot(MutatorBlockEntity.DISH_IN, dish(colony(helper, NTBacterias.LITHOPHILES, 50)));
+
+            helper.runAfterDelay(12, () -> {
+                helper.assertValueEqual(NTBacterias.LITHOPHILES, mutator.getBacteriaStorage().getBacteria(0).getBacteria(), "colony loaded");
+                ItemStack held = mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_IN);
+                helper.assertTrue(held.is(NTItems.PETRI_DISH.get()) && contents(held).isEmpty(), "The emptied dish should wait in the port");
+                helper.assertTrue(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_EMPTY_OUT).isEmpty(),
+                        "Nothing should go to the old empty dish slot");
+                mutator.getBacteriaStorage().setBacteria(0, BacteriaInstance.EMPTY);
+                mutator.getBacteriaStorage().setBacteria(1, colony(helper, NTBacterias.CALCIOPHILES, 30));
+            });
+            helper.runAfterDelay(24, () -> {
+                BacteriaInstance out = contents(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_OUT));
+                helper.assertValueEqual(NTBacterias.CALCIOPHILES, out.getBacteria(), "the held dish carried the mutation out");
+                helper.assertTrue(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_IN).isEmpty(),
+                        "The port should be free for the next colony");
+                helper.succeed();
+            });
+        });
+
+        r.add("dish_port/mutator_reclaims_a_dish_from_the_old_slot", 30, helper -> {
+            helper.setBlock(MACHINE, NTBlocks.MUTATOR.get());
+            MutatorBlockEntity mutator = helper.getBlockEntity(MACHINE, MutatorBlockEntity.class);
+            mutator.getItemStackHandler().setStackInSlot(MutatorBlockEntity.DISH_EMPTY_OUT, new ItemStack(NTItems.PETRI_DISH.get()));
+            mutator.getBacteriaStorage().setBacteria(1, colony(helper, NTBacterias.CALCIOPHILES, 30));
+
+            helper.runAfterDelay(12, () -> {
+                helper.assertTrue(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_EMPTY_OUT).isEmpty(), "old slot emptied");
+                BacteriaInstance out = contents(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.DISH_OUT));
+                helper.assertValueEqual(NTBacterias.CALCIOPHILES, out.getBacteria(), "the reclaimed dish took the result out");
                 helper.succeed();
             });
         });
