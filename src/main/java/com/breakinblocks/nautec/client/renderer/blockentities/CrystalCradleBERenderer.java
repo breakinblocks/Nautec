@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class CrystalCradleBERenderer extends NTBERenderer<CrystalCradleBlockEntity, CrystalCradleBERenderer.CradleRenderState> {
     private static final float SEED_SCALE = 0.08F;
     private static final float CRYSTAL_BASE = 2.98F;
+    private static final float HALO_LIFT = 0.01F;
 
     public CrystalCradleBERenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -44,7 +45,7 @@ public class CrystalCradleBERenderer extends NTBERenderer<CrystalCradleBlockEnti
         }
         float scale = SEED_SCALE + (1.0F - SEED_SCALE) * state.progress;
         poseStack.pushPose();
-        poseStack.translate(0.5F, 1.0F + CRYSTAL_BASE * scale, 0.5F);
+        poseStack.translate(0.5F, 1.0F + HALO_LIFT + CRYSTAL_BASE * scale, 0.5F);
         poseStack.scale(scale, scale, scale);
         PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks, state.seed, 0F, state.progress > 0.5F);
         poseStack.popPose();
