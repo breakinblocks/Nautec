@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.datagen;
 
+import net.neoforged.neoforge.registries.DeferredBlock;
+import com.breakinblocks.nautec.content.biometank.BiomeTankType;
+import com.breakinblocks.nautec.content.biometank.BiomeTankBlock;
+import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
@@ -220,6 +224,11 @@ public class BlockModelProvider extends ModelProvider {
         replicator(NTBlocks.COLONY_REPLICATOR.get());
         blockModels.createDoor(NTBlocks.PRESSURE_HATCH.get());
         oxygenDiffuser(NTBlocks.OXYGEN_DIFFUSER.get());
+        conduitBeacon(NTBlocks.CONDUIT_BEACON.get());
+        dishStorage(NTBlocks.AQUARINE_DISH_STORAGE.get());
+        dishStorage(NTBlocks.DEEP_STEEL_DISH_STORAGE.get());
+        dishStorage(NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get());
+        biomeTanks();
         simpleBlock(NTBlocks.HYDROTHERMAL_VENT.get(), cubeBottomTop("hydrothermal_vent", blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_side"),
                 blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_bottom"), blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_top")));
         simpleBlock(NTBlocks.DISTRIBUTOR.get(), cubeBottomTop("nautechnical_distributor", blockTexture(NTBlocks.DISTRIBUTOR.get(), "_side"),
@@ -241,6 +250,32 @@ public class BlockModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.createBooleanModelDispatch(ColonyReplicatorBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+    }
+
+    private void conduitBeacon(Block block) {
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(BlockModelGenerators.createBooleanModelDispatch(ConduitBeaconBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(existingModelFile("conduit_beacon_active")),
+                        BlockModelGenerators.plainVariant(existingModelFile(block)))));
+    }
+
+    private void dishStorage(Block block) {
+        Identifier model = ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(block, new TextureMapping()
+                .put(TextureSlot.FRONT, blockTexture(block, "_front"))
+                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
+                .put(TextureSlot.TOP, blockTexture(block, "_top"))
+                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput);
+        horizontalBlock(block, model);
+    }
+
+    private void biomeTanks() {
+        TextureSlot plant = TextureSlot.create("plant");
+        ModelTemplate template = new ModelTemplate(Optional.of(Nautec.rl("block/biome_tank")), Optional.empty(), plant);
+        for (Map.Entry<BiomeTankType, DeferredBlock<BiomeTankBlock>> entry : NTBlocks.BIOME_TANKS.entrySet()) {
+            Identifier model = template.create(entry.getValue().get(), new TextureMapping().put(plant, new Material(entry.getKey().texture())),
+                    blockModels.modelOutput);
+            simpleBlock(entry.getValue().get(), model);
+        }
     }
 
     private void oxygenDiffuser(Block block) {

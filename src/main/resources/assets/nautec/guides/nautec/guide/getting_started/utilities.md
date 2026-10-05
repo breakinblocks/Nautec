@@ -26,14 +26,16 @@ item_ids:
 The wrench has three modes. Sneak and right-click the air to switch between them; the tooltip and the message above the hotbar show the current one.
 
 * Rotate: right-click any block with a facing, such as the <ItemLink id="aquatic_catalyst"/>, a relay or a machine, to turn it to its next direction. Keep clicking to go all the way round.
-* Item Sides and Fluid Sides: right-click a face of a machine to change what hoppers and pipes can do through it, and sneak right-click to step back. On a formed Bio Reactor or Industrial Bio Reactor, any block of the structure sets that side of the whole reactor. See Side Configuration below.
+* Item Sides and Fluid Sides: right-click a face of a machine to change what hoppers and pipes can do through it, and sneak right-click to step back. In Item Sides mode, any block of a formed Bio Reactor or Industrial Bio Reactor sets that side of the whole reactor. See Side Configuration below.
 
 These work in every mode:
 
-* An unformed Augmentation Station, Bio Reactor, Industrial Bio Reactor or Deep Sea Drain forms its multiblock when you click the controller block.
+* An unformed Augmentation Station, Bio Reactor, Industrial Bio Reactor or Deep Sea Drain forms its multiblock when you click the controller block without sneaking.
 * A <ItemLink id="gateway"/> forms its ring when you click it, and a sneak right-click on a formed ring packs the whole ring into one item. See [Gateway](nautec:deep_engineering/gateway.md).
+* Sneak right-clicking a Prismarine Crystal you grew yourself picks the whole crystal up. Wild crystals cannot be moved. See [Crystal Cultivation](nautec:deep_engineering/crystal_cultivation.md).
+* Right-clicking a Sea Scout opens its module screen. See [Sea Scout](nautec:submarine/submarine.md).
 * A <ItemLink id="laser_junction"/> face becomes an input with a right-click and an output with a sneak right-click. Clicking a face again the same way turns it off.
-* A top edge block of a formed [Bio Reactor](nautec:aquatic_biology/bio_reactor.md), a roof block of a formed [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md), or a wall block of a formed [Deep Sea Drain](nautec:laser_chemistry/drain.md) opens a laser port there, so a beam can feed the machine. A reactor port closes again with another click. On the reactors this only works in Rotate mode, since the other two modes set the reactor's sides.
+* A top edge block of a formed [Bio Reactor](nautec:aquatic_biology/bio_reactor.md), a roof block of a formed [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md), or a wall block of a formed [Deep Sea Drain](nautec:laser_chemistry/drain.md) opens a laser port there, so a beam can feed the machine. A reactor port closes again with another click. On the reactors this does not work in Item Sides mode, since that mode sets the reactor's sides.
 
 <Recipe id="nautec:aquarine_wrench"/>
 
@@ -50,7 +52,7 @@ Every NauTec machine that holds items or fluids lets you choose, face by face, w
 
 A machine only ever takes inputs into its input slots and gives outputs from its output slots, whatever the face mode, so a pipe cannot pull your ingredients back out.
 
-Change a face with the wrench in Item Sides or Fluid Sides mode, or open the machine and click the small tab on the right edge of its screen. The tab opens a cross of six faces: front, back, left, right, top and bottom, named as you look at the machine's front. Left-click a face for the next mode and right-click for the previous one. Machines that hold both items and fluids have Items and Fluids buttons above the faces. Machines without a facing treat north as their front.
+Change a face with the wrench in Item Sides or Fluid Sides mode, or open the machine and click the small tab on the right edge of its screen. The tab opens a cross of six faces: front, back, left, right, top and bottom, named as you look at the machine's front. Left-click a face for the next mode and right-click for the previous one. Machines that hold both items and fluids have Items and Fluids buttons above the faces. Machines without a facing, or facing straight up or down, treat north as their front.
 
 The Bio Reactor and Industrial Bio Reactor have one item setting per side for the whole structure: the faces in the reactor's screen stand for the six outer sides of the multiblock, with its north side as the front. Other multiblocks such as the Deep Sea Drain and the Fusion Plant keep their own rules, described on their pages.
 
@@ -66,8 +68,9 @@ Copies settings from one block to another. Sneak and right-click a machine to co
 * The side configuration pastes onto any machine with side configuration, so one card can set up a whole row of different machines the same way.
 * A block's own settings only paste onto the same kind of block:
   * a <ItemLink id="confined_spawner"/>'s filter and whitelist mode
-  * a <ItemLink id="resonance_pylon"/>'s network and send or receive mode
-  * an Uplink or Downlink Array's network
+  * a <ItemLink id="resonance_node"/>'s network, input or output mode, priority, limit and chunk loading
+  * a <ItemLink id="resonance_pylon"/>'s network, send or receive mode and chunk loading
+  * an Uplink or Downlink Array's network and chunk loading, plus a Downlink Array's priority and limit
   * a <ItemLink id="laser_junction"/>'s input and output faces
 
 Pasting a resonance network checks that you are allowed to use it, the same as choosing it in the screen.

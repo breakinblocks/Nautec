@@ -21,7 +21,7 @@ It takes a beam in at the back and sends the same power and purity out of the fr
 
 ## <Color id="gold">Placing It</Color>
 
-The front, where the beam leaves, faces you when you place it. So stand where the beam should go and look back toward the source when you place it. If it ends up facing the wrong way, right-click it with the <ItemLink id="aquarine_steel_wrench"/>; each click turns it to the next of the six directions.
+The front, where the beam leaves, faces you when you place it. So stand where the beam should go and look back toward the source when you place it. If it ends up facing the wrong way, right-click it with the <ItemLink id="aquarine_steel_wrench"/> in Rotate mode (sneak and right-click the air to change the wrench's mode); each click turns it to the next of the six directions.
 
 The beam only connects to a block that takes a beam on the side facing it, such as a machine, a <ItemLink id="prismarine_laser_relay"/> or another Long Distance Laser. It passes through water, kelp and seagrass but stops at the first solid block, glass included. A new connection can take up to half a second to appear.
 

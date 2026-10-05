@@ -36,7 +36,7 @@ Hoppers and pipes can feed dishes into the lower block and pull analyzed dishes 
 
 ## <Color id="gold">Reading an Analyzed Dish</Color>
 
-The tooltip shows Size, Vitality and, for a strain that makes something, its Strain Yield. Hold Shift to see the item the strain produces and its four stats. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
+The tooltip shows Size, Vitality and, for a strain that makes something, its Strain Yield. Hold Shift to see the item the strain produces and its four stats. Hold Shift and Control together to also see the range each stat can move to when the colony next mutates. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
 
 ***
 

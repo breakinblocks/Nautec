@@ -47,7 +47,7 @@ items per minute = progress per tick x 12 x items per cycle
 | 0.12 | Adamantophiles (diamonds) | netherite, allthemodium, vibranium, unobtainium, neutronium, plutonium and terrasteel ingots |
 | 0.1 | Smaragdophiles (emeralds) | |
 
-Strains for other mods' materials only exist when a mod that uses that material is in the pack. Cyanobacteria, Halobacteria, Methanogens and Thermophiles make nothing, so their Strain Yield does not matter.
+Strains for other mods' materials only exist when a mod that uses that material is in the pack. When several mods add the same material, the reactor makes the item from the first mod listed in `preferredTagNamespaces` in `config/nautec-common.toml` (default: `minecraft`), and otherwise the first item id in alphabetical order. Cyanobacteria, Halobacteria, Methanogens and Thermophiles make nothing, so their Strain Yield does not matter.
 
 JEI's Bio Reactor category and an analyzed dish's tooltip both show a strain's Strain Yield. Packs can set it with the optional `production_multiplier` field in a strain's json, which defaults to 1.
 

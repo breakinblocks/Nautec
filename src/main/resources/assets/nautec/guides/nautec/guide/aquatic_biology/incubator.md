@@ -15,7 +15,7 @@ item_ids:
   The Incubator grows a colony and restores its Vitality.
 </Column>
 
-Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain.
+Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
 
 Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first.
 
@@ -49,7 +49,7 @@ The Incubator is still the place to grow a colony, and the only way to reset its
 
 Hoppers and pipes can insert the nutrient, so a chest feeding the Incubator keeps a long growing run going. Every face allows it by default; [Side Configuration](nautec:getting_started/utilities.md) changes that.
 
-The three slots at the bottom left are the Dish Port: a dish goes in on the left, dishes holding a colony come out of the middle slot and empty dishes come out on the right. A Petri Dish holding a colony loads its colony, as long as the bacteria slot is empty or holds the same strain with room to spare, and the strain is one the Incubator can grow. A colony already at the size cap only goes in if it has aged, since a fresh one has nothing left to gain. An empty dish takes the colony out once it reaches the size cap. The port only accepts a dish it can use right then, so a pipe or hopper keeps hold of anything else instead of jamming the machine, and colonies and empty dishes leave through different slots, so automation can send each one somewhere else.
+The three slots at the bottom left are the Dish Port: a dish goes in on the left, dishes holding a colony come out of the middle slot and empty dishes come out on the right. A Petri Dish holding a colony loads its colony, as long as the bacteria slot is empty or holds the same strain with exactly the same stats and room to spare, and the strain is one the Incubator can grow. A colony already at the size cap only goes in if it has aged, since a fresh one has nothing left to gain. An empty dish takes the colony out once it reaches the size cap. The port only accepts a dish it can use right then, so a pipe or hopper keeps hold of anything else instead of jamming the machine, and colonies and empty dishes leave through different slots, so automation can send each one somewhere else.
 
 ***
 

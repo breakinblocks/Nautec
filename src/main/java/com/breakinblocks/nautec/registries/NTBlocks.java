@@ -1,5 +1,12 @@
 package com.breakinblocks.nautec.registries;
 
+import java.util.Map;
+import java.util.EnumMap;
+import java.util.Collections;
+import com.breakinblocks.nautec.content.biometank.BiomeTankType;
+import com.breakinblocks.nautec.content.biometank.BiomeTankBlock;
+import com.breakinblocks.nautec.content.dishstorage.DishStorageBlock;
+import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
@@ -242,6 +249,22 @@ public final class NTBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> 7), true, false);
 
+    public static final DeferredBlock<ConduitBeaconBlock> CONDUIT_BEACON = registerBlockAndItem("conduit_beacon", ConduitBeaconBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
+                    .requiresCorrectToolForDrops().lightLevel(state -> state.getValue(ConduitBeaconBlock.ACTIVE) ? 15 : 6));
+
+    public static final DeferredBlock<DishStorageBlock> AQUARINE_DISH_STORAGE = bacteriaBlock(registerBlockAndItem("aquarine_dish_storage",
+            properties -> new DishStorageBlock(48, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<DishStorageBlock> DEEP_STEEL_DISH_STORAGE = bacteriaBlock(registerBlockAndItem("deep_steel_dish_storage",
+            properties -> new DishStorageBlock(96, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<DishStorageBlock> ATLANTIC_GOLD_DISH_STORAGE = bacteriaBlock(registerBlockAndItem("atlantic_gold_dish_storage",
+            properties -> new DishStorageBlock(192, properties),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops()));
+
+    public static final Map<BiomeTankType, DeferredBlock<BiomeTankBlock>> BIOME_TANKS = biomeTanks();
+
     public static final DeferredBlock<SatelliteArrayBlock> UPLINK_ARRAY = registerBlockAndItem("uplink_array",
             properties -> new SatelliteArrayBlock(properties, true),
             BlockBehaviour.Properties.of().mapColor(MapColor.GOLD).strength(5.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
@@ -321,6 +344,15 @@ public final class NTBlocks {
 
     private static <T extends Block> DeferredBlock<T> registerBlockAndItem(String name, Function<BlockBehaviour.Properties, T> blockConstructor, BlockBehaviour.Properties properties) {
         return registerBlockAndItem(name, blockConstructor, properties, true, true);
+    }
+
+    private static Map<BiomeTankType, DeferredBlock<BiomeTankBlock>> biomeTanks() {
+        Map<BiomeTankType, DeferredBlock<BiomeTankBlock>> tanks = new EnumMap<>(BiomeTankType.class);
+        for (BiomeTankType type : BiomeTankType.values()) {
+            tanks.put(type, registerBlockAndItem(type.blockName(), properties -> new BiomeTankBlock(type, properties),
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS).strength(2.0f, 6.0f).sound(SoundType.GLASS).noOcclusion()));
+        }
+        return Collections.unmodifiableMap(tanks);
     }
 
     public static <T extends Block> DeferredBlock<T> bacteriaBlock(DeferredBlock<T> block) {

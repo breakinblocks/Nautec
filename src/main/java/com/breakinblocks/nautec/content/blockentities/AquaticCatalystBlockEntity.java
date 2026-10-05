@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+import net.minecraft.world.level.block.AmethystClusterBlock;
+import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -44,6 +47,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private int syncedTransfer;
     private boolean burning;
     private BeamScan beamScan;
+    private int boosters;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
@@ -67,15 +71,18 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
         if (beamScan == null || level.getGameTime() % checkConnectionsInterval() == 0) {
             beamScan = scanBeam(getEmitterDirection());
+            boosters = countBoosters();
+        }
+        if (boosters > 0 && level.getGameTime() % 20 == 0) {
+            consumeClusters();
         }
 
         boolean burningNow = false;
         if (currentRecipe != null) {
             int distance = getLaserDistances().getInt(getEmitterDirection());
             if (distance > 0 && beamScan.connected()) {
-                int amount = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
-                transmitPower(amount);
-                setPurity(currentRecipe.value().purity());
+                transmitPower(transferAmount());
+                setPurity(boostedPurity());
                 duration++;
                 burningNow = true;
             } else {
@@ -100,6 +107,66 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
                 .setValue(AquaticCatalystBlock.LINKED, beamScan.connected());
         if (newState != state) {
             level.setBlockAndUpdate(worldPosition, newState);
+        }
+    }
+
+    public int transferAmount() {
+        if (currentRecipe == null) {
+            return 0;
+        }
+        int base = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
+        return (int) Math.round(base * (1 + boosters * NTConfig.catalystBuddingOutputBonus));
+    }
+
+    public float boostedPurity() {
+        if (currentRecipe == null) {
+            return 0;
+        }
+        float base = currentRecipe.value().purity();
+        if (boosters == 0 || base >= NTConfig.catalystBuddingMaxPurity) {
+            return base;
+        }
+        return (float) Math.min(NTConfig.catalystBuddingMaxPurity, base + boosters * NTConfig.catalystBuddingPurityBonus);
+    }
+
+    public int getBoosters() {
+        return boosters;
+    }
+
+    private int countBoosters() {
+        int count = 0;
+        for (BlockPos pos : boosterPositions()) {
+            if (level.getBlockState(pos).is(NTBlocks.BUDDING_PRISMARINE.get())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private List<BlockPos> boosterPositions() {
+        List<BlockPos> positions = new ArrayList<>();
+        Direction emitter = getEmitterDirection();
+        for (Direction direction : Direction.values()) {
+            if (direction != emitter) {
+                positions.add(worldPosition.relative(direction));
+            }
+        }
+        return positions;
+    }
+
+    private void consumeClusters() {
+        for (BlockPos budding : boosterPositions()) {
+            if (!level.getBlockState(budding).is(NTBlocks.BUDDING_PRISMARINE.get())) {
+                continue;
+            }
+            for (Direction direction : Direction.values()) {
+                BlockPos clusterPos = budding.relative(direction);
+                BlockState cluster = level.getBlockState(clusterPos);
+                if (cluster.is(NTBlocks.PRISMARINE_CLUSTER.get())
+                        && cluster.getValue(AmethystClusterBlock.FACING) == direction) {
+                    level.destroyBlock(clusterPos, false);
+                }
+            }
         }
     }
 
@@ -172,6 +239,13 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
                         getMaxLaserDistance(), directionName(emitter)).withStyle(ChatFormatting.RED));
                 lines.add(Component.translatable("nautec.catalyst.diagnostics.hint.no_target").withStyle(ChatFormatting.GRAY));
             }
+        }
+
+        int found = countBoosters();
+        if (found > 0) {
+            lines.add(Component.translatable("nautec.catalyst.diagnostics.boosters", found,
+                    Math.round(found * NTConfig.catalystBuddingOutputBonus * 100),
+                    String.format("%.2f", found * NTConfig.catalystBuddingPurityBonus)).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
 
         if (isActive()) {
@@ -307,7 +381,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         out.putInt("duration", duration);
         if (currentRecipe != null) {
             out.putString("current_recipe", currentRecipe.id().identifier().toString());
-            out.putInt("transfer", currentRecipe.value().powerAmount() / currentRecipe.value().duration());
+            out.putInt("transfer", transferAmount());
         }
         if (nextRecipe != null) out.putString("next_recipe", nextRecipe.id().identifier().toString());
     }

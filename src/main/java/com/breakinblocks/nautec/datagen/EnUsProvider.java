@@ -416,6 +416,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(VALVE, "Valve");
         addItem(CAST_IRON_COMPOUND, "Cast Iron Compound");
         addItem(GRAFTING_TOOL, "Grafting Tool");
+        addItem(GRAFTING_ANCHOR, "Grafting Anchor");
         addItem(PRISMARINE_LENS, "Prismarine Lens");
         addItem(AQUATIC_CHIP, "Aquatic Chip");
         
@@ -449,6 +450,11 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.CONFINED_SPAWNER, "Confined Spawner");
         addBlock(NTBlocks.RESONANCE_PYLON, "Energy Node");
         addBlock(NTBlocks.RESONANCE_NODE, "Resonance Node");
+        addBlock(NTBlocks.CONDUIT_BEACON, "Conduit Beacon");
+        addBlock(NTBlocks.AQUARINE_DISH_STORAGE, "Aquarine Dish Storage");
+        addBlock(NTBlocks.DEEP_STEEL_DISH_STORAGE, "Deep Steel Dish Storage");
+        addBlock(NTBlocks.ATLANTIC_GOLD_DISH_STORAGE, "Atlantic Gold Dish Storage");
+        NTBlocks.BIOME_TANKS.forEach((type, tank) -> addBlock(tank, type.displayName() + " Biome Tank"));
         addBlock(NTBlocks.ABYSSAL_PYLON, "Abyssal Energy Node");
         addBlock(NTBlocks.PRISMATIC_EMITTER, "Prismatic Emitter");
         addBlock(NTBlocks.UPLINK_ARRAY, "Uplink Array");
@@ -638,6 +644,17 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.advanced_analyzer.status.low_purity", "Beam purity too low");
         add("nautec.advanced_analyzer.requirements", "Needs a beam of %s AP at purity %s or higher. All nine dishes analyze at once.");
         add("nautec.grafting_station.status.running", "Grafting");
+        add("nautec.grafting_anchor.effect", "In a Grafting Station, keeps the sample block instead of using it up");
+        add("nautec.conduit_beacon.running", "Running");
+        add("nautec.conduit_beacon.no_water", "Needs water in the 3x3x3 space around it");
+        add("nautec.conduit_beacon.no_frame", "Needs a conduit frame of at least 16 prismarine blocks");
+        add("nautec.conduit_beacon.redstone", "Turned off by a redstone signal on it or its frame");
+        add("nautec.conduit_beacon.no_power", "No laser power");
+        add("nautec.conduit_beacon.frame", "Frame: %s blocks, Conduit Power reach %s");
+        add("nautec.conduit_beacon.buffer", "Buffer: %s / %s AP");
+        add("nautec.dish_storage.capacity", "Holds %s Petri Dishes");
+        add("nautec.dish_storage.count", "%s / %s");
+        add("nautec.biome_tank.grows", "Grows one %s every %s seconds");
         add("nautec.dish_port.title", "Dish Port");
         add("nautec.dish_port.load", "A dish holding a colony loads it into the machine.");
         add("nautec.dish_port.unload", "An empty dish takes a finished colony back out.");
@@ -1081,6 +1098,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.catalyst.diagnostics.status.burning", "Status: burning, sending %s AP/t");
         add("nautec.catalyst.diagnostics.status.waiting", "Status: waiting for a receiver. Fuel is held until one is connected.");
         add("nautec.catalyst.diagnostics.status.idle", "Status: idle, no fuel loaded");
+        add("nautec.catalyst.diagnostics.boosters", "Budding Prismarine: %s touching, +%s%% output, +%s purity");
         add("nautec.catalyst.distance.one", "1 block %s");
         add("nautec.catalyst.distance", "%s blocks %s");
         add("nautec.direction.north", "north");

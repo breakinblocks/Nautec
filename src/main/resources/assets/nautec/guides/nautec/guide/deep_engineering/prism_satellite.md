@@ -18,7 +18,7 @@ item_ids:
     <ItemImage id="prism_satellite" scale="2"/>
     <ItemImage id="downlink_array" scale="2"/>
   </Row>
-  Carries laser power (AP) and FE across a whole dimension with no relay chain.
+  Carries laser power (AP) and FE anywhere on a network, with no relay chain.
 </Column>
 
 An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a satellite in orbit above it. The satellite beams it back down to every <ItemLink id="downlink_array"/> on the same network, however far away they are, and each downlink fires it into the laser blocks around it.
@@ -28,7 +28,7 @@ An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a 
 ## <Color id="gold">Setting Up</Color>
 
 1. Place an <ItemLink id="uplink_array"/>. It is two blocks tall.
-2. Right-click it with an empty hand and pick or create a network, the same way as on a <ItemLink id="resonance_pylon"/>. Pylons and arrays share networks and their trusted players.
+2. Right-click it with an empty hand and pick or create a network, the same way as on a <ItemLink id="resonance_pylon"/>. Pylons, arrays and [Resonance Nodes](resonance_node.md) share networks and their trusted players.
 3. Right-click the uplink with a <ItemLink id="prism_satellite"/> to launch it. The satellite climbs into orbit and stays there until the uplink is broken, which drops it back.
 4. Fire lasers into the uplink's sides or underside.
 5. Place a <ItemLink id="downlink_array"/> where the power is needed, put it on the same network, and point a laser block's input at one of its sides or its underside.
@@ -38,10 +38,10 @@ An <ItemLink id="uplink_array"/> takes AP from your lasers and beams it up to a 
 ## <Color id="gold">Rules</Color>
 
 * **Sky:** both arrays need open sky above the dish. Water counts as open, so arrays on the sea floor work.
-* **Dimension:** AP stays in the dimension it was sent from. Build an uplink with its own satellite in every dimension that needs one.
-* **Sharing:** downlinks with the highest priority are filled first, and downlinks with the same priority split evenly. 10% is lost on the way. Purity carries through unchanged.
-* **Several uplinks:** every uplink on a network in the same dimension adds to the same pool.
-* **Loaded chunks:** both ends only work while their chunks are loaded.
+* **Dimension:** every uplink with a launched satellite feeds one pool for the whole network, in every dimension. A downlink in a dimension with no uplink of its own still gets power, but its AP arrives with 5% less purity (`satelliteCrossDimensionPurityLoss`). Build an uplink in that dimension to avoid the loss.
+* **Sharing:** downlinks with the highest priority are filled first, and downlinks with the same priority split evenly. 10% is lost on the way. Purity carries through unchanged within a dimension that has an uplink.
+* **Several uplinks:** every uplink on a network adds to the same pool, whatever dimension it is in. Their beams merge, so the pool's purity stays close to the purest uplink's.
+* **Loaded chunks:** an array only works while its chunk is loaded. Turn on **Load** in its screen and it keeps its own chunk loaded, unless the server has turned that off (`resonanceChunkLoading`).
 
 The screen shows whether the array is online and, if not, what it is waiting for, along with how much AP and FE it holds.
 
@@ -65,6 +65,6 @@ Priority runs from -100 to 100. Each tick the network fills the highest priority
 
 The limit is the most AP, and separately the most FE, the downlink takes each tick. It steps through set values up to the server's maximum (`satelliteTransferLimit`, 100,000 by default). Click the number to reset it to that maximum.
 
-Resonance Charms bound to the network take part in the same priority order, so a charm can be set to charge before or after your machines. See [Resonance Network](resonance_network.md).
+Output [Resonance Nodes](resonance_node.md) and Resonance Charms bound to the network take part in the same priority order, so a node or a charm can be set to draw before or after your downlinks. See [Resonance Network](resonance_network.md) for the charm.
 
 A <ItemLink id="configuration_card"/> copies a downlink's network, priority and limit onto another downlink.

@@ -1,0 +1,6 @@
+{
+  "parent": "nautec:block/biome_tank",
+  "textures": {
+    "plant": "minecraft:item/bamboo"
+  }
+}

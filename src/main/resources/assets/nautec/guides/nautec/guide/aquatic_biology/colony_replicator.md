@@ -25,7 +25,7 @@ Breeding a strong colony takes a long chain of [mutations](mutator.md), and ever
 * Fodder (middle): any colony of the template's strain, whatever its stats. It is broken down into biomass as soon as it goes in. A colony of another strain stays in the slot and the machine waits.
 * Output (right): the new colony.
 
-Each new colony uses 20,000 biomass, which is the total size of the fodder: ten colonies of 2,000 work as well as one of 20,000. The bar beside the fodder slot shows how much is stored, up to 200,000. Biomass belongs to one strain, so changing the template to another strain throws away what is stored.
+Each new colony uses 20,000 biomass, which is the total size of the fodder: ten colonies of 2,000 work as well as one of 20,000. The bar beside the fodder slot shows how much is stored, up to 200,000. Fodder that would take the store past 200,000 is still used up, and the extra is lost. Biomass belongs to one strain, so changing the template to another strain throws away what is stored.
 
 The new colony has the template's stats, comes out analyzed, and starts at a fresh graft's size, so grow it in the [Incubator](incubator.md) before you put it to work.
 
@@ -41,7 +41,7 @@ Mutation Resistance decides how faithful the copy is. With no resistance, each s
 
 Press the mode button to switch to Splice. Put a second analyzed colony of the same strain in the partner slot (bottom left). Neither parent is used up.
 
-The child takes each of its four stats from one parent, and for each stat it has a 70% chance of taking the better value. Splicing a colony with a high Production Rate and one with a long Lifespan can give you both. The child can never beat the better parent on any stat, and it is then copied with the template's copy error chance as above.
+The child takes each of its four stats from one parent, and for each stat it has a 70% chance of taking the better value. Splicing a colony with a high Production Rate and one with a long Lifespan can give you both. The child can never beat the better parent on any stat, and it is then copied with a copy error chance set by its own Mutation Resistance, as above.
 
 Splicing uses the same biomass as replicating.
 

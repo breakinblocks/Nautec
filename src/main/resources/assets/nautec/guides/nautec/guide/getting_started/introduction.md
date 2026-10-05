@@ -21,7 +21,7 @@ NauTec machines are powered by laser power (AP) fired as a beam from one block i
 
 ## <Color id="gold">Where to Start</Color>
 
-* Collect prismarine. Dig <ItemLink id="prismarine_sand"/> on beaches and ocean floors for Prismarine Shards, and get Prismarine Crystals from guardians.
+* Collect prismarine. Dig <ItemLink id="prismarine_sand"/> on beaches and ocean floors for Prismarine Shards and Prismarine Crystals.
 * Build an <ItemLink id="aquatic_catalyst"/> and fire your first beam: [Laser Power](laser_power.md).
 * Drop Aquarine Steel Compound into that beam to make Aquarine Steel, the metal most recipes use: [Item Transformation](item_transformation.md).
 * Explore the ocean floor for [Structures](structures.md) and [Salvage](salvage.md), and make a [Diving Suit](diving_gear.md) so you can stay down long enough to loot them.
@@ -36,9 +36,9 @@ From there the guide splits into [Laser Chemistry](nautec:laser_chemistry/laser_
   ### <Color id="aqua">Prismarine Sand</Color>
 </Row>
 
-A falling block like sand, scattered over beaches and ocean floors in every ocean. Digging it drops 2 to 4 Prismarine Shards and a little experience. Fortune adds shards, and Silk Touch picks up the block instead.
+A falling block like sand, scattered over beaches and ocean floors in every ocean. Digging it drops 2 to 4 Prismarine Shards, 2 to 4 Prismarine Crystals and a little experience. Fortune adds shards, and Silk Touch picks up the block instead.
 
-It is the easiest early supply of Prismarine Shards, which the Aquatic Catalyst burns as fuel.
+It is the easiest early supply of Prismarine Shards and Prismarine Crystals, which the Aquatic Catalyst burns as fuel.
 
 ***
 

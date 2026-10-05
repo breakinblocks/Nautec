@@ -25,7 +25,7 @@ The Distributor links to blocks up to 256 blocks away in the same dimension. Eve
 2. Sneak and right-click each block you want to link, also with an empty hand. The face you click is the face the Distributor uses, just like the side a pipe connects to.
 3. Sneak and right-click the Distributor again when you are done.
 
-Sneak and right-clicking a linked block again unlinks it. You can also unlink blocks from the Distributor's screen. One Distributor holds up to 64 links.
+Sneak and right-clicking a linked block again unlinks it. Linking ends by itself after a minute with no new link. You can also unlink blocks from the Distributor's screen. One Distributor holds up to 64 links.
 
 For machines from other mods the face matters: pick the face that gives out results, such as the bottom of a furnace. NauTec machines follow their [Side Configuration](utilities.md), so only their outputs are ever collected.
 
@@ -43,7 +43,7 @@ There are two ways to ask for inputs.
 
 On a NauTec machine, open its screen, hold Sneak and click an empty input slot with an item, or drag the item onto the slot from JEI. The slot now shows that item faintly: it is a ghost input. The Distributor keeps that slot as full as it can, and the slot only accepts that item. A ghost input or a request matches the exact item, enchantments and other data included. Petri Dishes are matched by what they hold: a ghost of an empty dish only takes empty dishes, and a ghost of a dish holding a colony takes any colony of that strain, whatever its size or stats. Sneak and click it with an empty hand to clear it. Hover over an input slot for a reminder.
 
-For any linked block, NauTec or not, select it in the Distributor's screen and set requests on the right: up to nine items and three fluids, each with an amount to keep in the block. Click a request slot with an item or a filled bucket, or drag one in from JEI. Scroll over a request to change its amount and right-click it to clear it. This is also how you supply NauTec machines that have no screen, such as Etching Acid for the Abyssal Pressure Forge.
+For any linked block, NauTec or not, select it in the Distributor's screen and set requests on the right: up to nine items and three fluids, each with an amount to keep in the block. Click a request slot with an item or a filled bucket, or drag one in from JEI. Scroll over a request to change its amount (hold Shift to change items by 16 and fluids by 10,000 mB) and right-click it to clear it. This is also how you supply NauTec machines that have no screen, such as Etching Acid for the Abyssal Pressure Forge.
 
 Inputs come first from other linked machines' outputs, then from the chests and tanks next to the Distributor. So one machine's product can feed the next machine directly, and only what is left over is exported. Anything a link requests is never collected back out of it.
 

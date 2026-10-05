@@ -176,7 +176,7 @@ The structure only forms facing one way: the Industrial Bio Reactor has to be in
   <IsometricCamera yaw="225" pitch="30"/>
 </GameScene>
 
-Right-click the Industrial Bio Reactor with an <ItemLink id="aquarine_steel_wrench"/>, without sneaking, to form it. If a block is wrong, chat names its position, what is there and what should be. Breaking any block of the formed reactor takes it apart again.
+Right-click the Industrial Bio Reactor with an <ItemLink id="aquarine_steel_wrench"/> in Rotate mode, without sneaking, to form it. If a block is wrong, chat names its position, what is there and what should be. Breaking any block of the formed reactor takes it apart again.
 
 Once it is formed, right-click any of its blocks without the wrench in your hand to open it.
 
@@ -186,9 +186,9 @@ Once it is formed, right-click any of its blocks without the wrench in your hand
 
 It needs 100 AP plus 50 AP per filled colony slot: 150 AP for one colony and 550 AP for nine, before upgrades multiply it. Like the Bio Reactor, this is a threshold. Below it nothing runs and all progress resets.
 
-Power goes in through hatches in the roof. Right-click one of the Aquarine Steel Blocks of the formed roof with the wrench to turn it into a hatch, and again to turn it back. A hatch takes a beam pointing down into it from above, and a hatch on the roof's edge also takes one pointing into its outer side. You can open as many hatches as you like, and their power adds together. A beam into the front of the Industrial Bio Reactor block itself counts as well.
+Power goes in through hatches in the roof. Right-click one of the Aquarine Steel Blocks of the formed roof with the wrench to turn it into a hatch, and again to turn it back. This does not work in Item Sides mode, which sets the reactor's sides instead. A hatch takes a beam pointing down into it from above, and a hatch on the roof's edge also takes one pointing into its outer side. You can open as many hatches as you like, and their power adds together. A beam into the front of the Industrial Bio Reactor block itself counts as well.
 
-That is far more than one catalyst gives. An [Energy Converter](nautec:laser_chemistry/energy_converter.md) sends 100 AP per tick, so six of them on six hatches cover nine colonies without upgrades. Beams can also be combined in a <ItemLink id="laser_junction"/> before they reach a hatch.
+That is far more than one catalyst gives. An [Energy Converter](nautec:laser_chemistry/energy_converter.md) with no upgrades sends up to 150 AP per tick, so four of them on four hatches cover nine colonies without upgrades. Beams can also be combined in a <ItemLink id="laser_junction"/> before they reach a hatch.
 
 ***
 
@@ -208,7 +208,7 @@ Nine colonies need feeding from only three nutrient slots, so run no more than t
 * Every outer face of every block takes and gives items: a hopper on the roof or pointing into a wall feeds nutrients and upgrades, hoppers under the floor pull output, and a pipe works anywhere on the outside.
 * [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side: Front is the north wall with the Industrial Bio Reactor block in it, Left is the east wall and Right the west wall. For example, set the roof to Input and the floor to Output so pipes on the roof never pull output and pipes under the floor never push into it.
 
-Colonies load and unload through the Dish Port. A dish goes into the upper slot between the colony grid and the outputs, and dishes holding a colony come out of the lower one; empty dishes come out of the slot in the bottom row, between the nutrients and the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the port refuses it while no slot can. An empty dish takes out the colony with the least Vitality left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
+Colonies load and unload through the Dish Port. A dish goes into the upper slot between the colony grid and the outputs, and dishes holding a colony come out of the lower one; empty dishes come out of the slot in the bottom row, between the nutrients and the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the port refuses it while no slot can. An empty dish takes out the colony with the least nutrient buffer left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
 
 Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. Keep hoppers off the roof hatches: a block sitting on a hatch stops a beam coming down into it.
 

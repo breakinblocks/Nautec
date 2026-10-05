@@ -19,7 +19,7 @@ item_ids:
 
 ## <Color id="gold">Throwing It</Color>
 
-Right-click to throw the eye. It rises and flies toward the nearest matching structure, the same way an Eye of Ender does, then bursts into bubbles after about four seconds. It never drops and is never used up, so you can throw it as often as you like, with a two second wait between throws.
+Right-click to throw the eye. It hums for a moment while it searches (a message above your hotbar says so, and you cannot throw it again until the search ends), then it rises and flies toward the nearest matching structure, the same way an Eye of Ender does, then bursts into bubbles after about four seconds. It never drops and is never used up, so you can throw it as often as you like, with a two second wait between throws.
 
 If nothing matching is within about 1,600 blocks, the eye stays in your hand and a message says so.
 

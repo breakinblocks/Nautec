@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.dishstorage.DishStorageMenu;
 import com.breakinblocks.nautec.content.menus.ResonanceNodeMenu;
 import com.breakinblocks.nautec.content.menus.ColonyReplicatorMenu;
 import com.breakinblocks.nautec.content.menus.BubbleAnchorMenu;
@@ -57,6 +58,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<ResonancePylonMenu>> RESONANCE_PYLON = registerMenuType(ResonancePylonMenu::new, "resonance_pylon");
     public static final Supplier<MenuType<SatelliteArrayMenu>> SATELLITE_ARRAY = registerMenuType(SatelliteArrayMenu::new, "satellite_array");
     public static final Supplier<MenuType<ResonanceNodeMenu>> RESONANCE_NODE = registerMenuType(ResonanceNodeMenu::new, "resonance_node");
+    public static final Supplier<MenuType<DishStorageMenu>> DISH_STORAGE = registerMenuType(DishStorageMenu::new, "dish_storage");
 
 
     private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {

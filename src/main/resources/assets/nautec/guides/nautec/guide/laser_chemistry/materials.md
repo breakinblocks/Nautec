@@ -82,7 +82,7 @@ Old iron from the sea floor blasts down too: an Anchor gives 11 ingots and an Oi
   ### <Color id="aqua">Cast Iron Rod</Color>
 </Row>
 
-Used in the Aquarine Steel tools, the Fishing Station and the Deep Sea Drain Wall.
+Used in the Aquarine Steel tools, the Fishing Station, the Deep Sea Drain Wall, the Oil Barrel and the Whisk.
 
 <Recipe id="nautec:cast_iron_rod"/>
 
@@ -129,13 +129,14 @@ The coil goes into the Charger, the Prismatic Battery, most Aquarine Steel tools
   ### <Color id="aqua">Broken Whisk</Color>
 </Row>
 
-Drowned sometimes drop one, and lucky fishing zones can turn one up as treasure.
+Drowned sometimes drop one, lucky fishing zones can turn one up as treasure, and ocean ruin and research outpost chests can hold one.
 
 <Row>
   <ItemImage id="whisk"/>
   ### <Color id="aqua">Whisk</Color>
 </Row>
 
-The stirring part of the [Mixer](mixer.md).
+The stirring part of the [Mixer](mixer.md). Repair a Broken Whisk with four Cast Iron Nuggets, or craft a new one from Cast Iron Rods, a Prismarine Crystal Shard and an Aquarine Steel Ingot.
 
 <Recipe id="nautec:whisk"/>
+<Recipe id="nautec:whisk_from_cast_iron"/>

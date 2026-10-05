@@ -1,5 +1,10 @@
 package com.breakinblocks.nautec.registries;
 
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import com.breakinblocks.nautec.content.biometank.BiomeTankBlockEntity;
+import com.breakinblocks.nautec.content.dishstorage.DishStorageBlockEntity;
+import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OxygenDiffuserBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ColonyReplicatorBlockEntity;
@@ -179,6 +184,15 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonancePylonBlockEntity>> RESONANCE_PYLON = BLOCK_ENTITIES.register("resonance_pylon",
             () -> new BlockEntityType<>(ResonancePylonBlockEntity::new,
                     NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()));
+    public static final Supplier<BlockEntityType<ConduitBeaconBlockEntity>> CONDUIT_BEACON = BLOCK_ENTITIES.register("conduit_beacon",
+            () -> new BlockEntityType<>(ConduitBeaconBlockEntity::new,
+                    NTBlocks.CONDUIT_BEACON.get()));
+    public static final Supplier<BlockEntityType<DishStorageBlockEntity>> DISH_STORAGE = BLOCK_ENTITIES.register("dish_storage",
+            () -> new BlockEntityType<>(DishStorageBlockEntity::new,
+                    NTBlocks.AQUARINE_DISH_STORAGE.get(), NTBlocks.DEEP_STEEL_DISH_STORAGE.get(), NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get()));
+    public static final Supplier<BlockEntityType<BiomeTankBlockEntity>> BIOME_TANK = BLOCK_ENTITIES.register("biome_tank",
+            () -> new BlockEntityType<>(BiomeTankBlockEntity::new,
+                    NTBlocks.BIOME_TANKS.values().stream().map(DeferredBlock::get).toArray(Block[]::new)));
     public static final Supplier<BlockEntityType<ResonanceNodeBlockEntity>> RESONANCE_NODE = BLOCK_ENTITIES.register("resonance_node",
             () -> new BlockEntityType<>(ResonanceNodeBlockEntity::new,
                     NTBlocks.RESONANCE_NODE.get()));

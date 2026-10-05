@@ -52,7 +52,7 @@ It takes the trident enchantments and the sword ones:
 * Sharpness, Smite, Bane of Arthropods, Knockback, Fire Aspect, Looting and Sweeping Edge
 * Curse of Vanishing
 
-Loyalty is already built in, and it never needs Unbreaking or Mending. As on any trident, only one of Sharpness, Smite, Bane of Arthropods and Impaling can go on it. Sharpness is the one that also raises shockwave damage.
+Loyalty is already built in, and it never needs Unbreaking or Mending. As on any trident, only one of Sharpness, Smite, Bane of Arthropods and Impaling can go on it. Sharpness is the one that also raises shockwave damage. Riptide and Channeling cannot go on together.
 
 With Riptide, using it in water or rain launches you instead of throwing it, so a Riptide trident releases no shockwave. Channeling calls a real lightning bolt on a target under open sky during a thunderstorm, the same as a vanilla trident.
 

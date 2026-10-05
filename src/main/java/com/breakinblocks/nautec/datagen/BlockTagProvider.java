@@ -88,6 +88,10 @@ public class BlockTagProvider extends BlockTagsProvider {
                 RESONANCE_PYLON,
                 ABYSSAL_PYLON,
                 RESONANCE_NODE,
+                CONDUIT_BEACON,
+                AQUARINE_DISH_STORAGE,
+                DEEP_STEEL_DISH_STORAGE,
+                ATLANTIC_GOLD_DISH_STORAGE,
                 PRISMATIC_EMITTER,
                 UPLINK_ARRAY,
                 DOWNLINK_ARRAY,
@@ -107,6 +111,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 UPLINK_ARRAY,
                 DOWNLINK_ARRAY,
                 SATELLITE_ARRAY_TOP);
+        NTBlocks.BIOME_TANKS.values().forEach(tank -> tag(BlockTags.MINEABLE_WITH_PICKAXE).add(tank.get()));
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA, HYDROTHERMAL_VENT.get());
         tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
         tag(BlockTags.DOORS, PRESSURE_HATCH);

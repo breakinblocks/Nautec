@@ -39,7 +39,7 @@ Collect all six with Shears; any other tool breaks them for nothing. Every one o
 | <ItemLink id="vent_tubeworm"/> | Hydrothermal Vents | 3 |
 | <ItemLink id="abyssal_coral"/> | Abyssal Trench | none |
 
-Deep Kelp grows upward in water like kelp, up to 40 blocks tall (`kelpHeight` in `config/nautec-common.toml`). Glow Polyp clings to any face of a block the way glow lichen does, and Bone Meal spreads it. The other four are single underwater plants.
+Deep Kelp grows upward in water like kelp, up to 40 blocks tall (`kelpHeight` in `config/nautec-common.toml`). Only the top block of a strand drops, so shear the tip. Glow Polyp clings to any face of a block the way glow lichen does, and Bone Meal spreads it. The other four are single underwater plants.
 
 Lucky fishing zones in each biome also turn up that biome's plants. See [Fishing](fishing.md).
 

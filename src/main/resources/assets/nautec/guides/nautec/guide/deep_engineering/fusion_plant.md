@@ -32,7 +32,7 @@ Laser Injectors fire beams into the crystal heart. The crystal fires them on as 
 ## <Color id="gold">What It Needs</Color>
 
 * A Cultivated Prismarine Crystal, grown as described on [Crystal Cultivation](crystal_cultivation.md). The heart must be cultivated.
-* Laser beams with a purity of 2.0 or more. Purity 3.0 gives full output, so the strongest plants are fed by another crystal or by [Bacterial Fuel Cells](nautec:aquatic_biology/bacterial_fuel_cell.md).
+* Laser beams with a purity of 2.0 or more. Purity 3.0 gives full output, so the strongest plants are fed through another crystal. A [Bacterial Fuel Cell](nautec:aquatic_biology/bacterial_fuel_cell.md) at its best (2.5) gives five sixths of full output.
 * A steady supply of Salt Water from [Deep Sea Drains](nautec:laser_chemistry/drain.md).
 * The parts below. JEI shows their recipes: they take Deep Steel Plating, Atlantic Gold, Ender Pearls, Flawless Prismarine Crystals and, for the controller, a Nether Star.
 

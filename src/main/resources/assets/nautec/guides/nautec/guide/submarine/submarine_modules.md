@@ -49,7 +49,7 @@ Cooldowns belong to the module type and start when you fire. Firing one copy of 
 | [Stealth](stealth_module.md) | 2 min of stealth | 50,000 | 130 s |
 | [Sonar](sonar_module.md) | One ping | 30,000 | 45 s |
 | [Shield](shield_module.md) | Passive soak and a discharge | 10,000 per heart soaked, 25,000 per discharge | 5 s |
-| [Impulse Laser](impulse_laser_module.md) | Toggle | 10,000 every half second | None |
+| [Impulse Laser](impulse_laser_module.md) | Fires while held | 400 a tick, rising to 1,400 a tick | None |
 | [Teleport](teleport_module.md) | Jump to an anchor | 200,000 | 30 s |
 | [Flight](flight_module.md) | Passive | 4 per tick while airborne | None |
 | [Cargo Hold](cargo_module.md) | Opens the hold | None | None |

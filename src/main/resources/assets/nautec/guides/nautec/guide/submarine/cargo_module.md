@@ -24,7 +24,7 @@ One Cargo Hold Module gives the hull a 27 slot hold, the size of a chest. A seco
 * While piloting, select the module on the bar and fire it (left-click or F). It costs no power and has no cooldown.
 * From outside, stand behind the hull and right-click it. Right-clicking from the front or the sides still climbs in.
 
-A Sea Scout cannot be stored in its own hold.
+A Sea Scout cannot be stored in a hold, its own or another's.
 
 ***
 

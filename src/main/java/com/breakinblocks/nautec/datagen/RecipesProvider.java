@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.datagen;
 
+import java.util.Map;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import com.breakinblocks.nautec.content.biometank.BiomeTankType;
+import com.breakinblocks.nautec.content.biometank.BiomeTankBlock;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
@@ -1276,6 +1280,70 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.AQUATIC_CHIP)
                 .unlockedBy("has_item", has(NTItems.PRISM_SATELLITE))
                 .save(pRecipeOutput, key("resonance_node"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.CONDUIT_BEACON.asItem())
+                .pattern("SAS")
+                .pattern("ACA")
+                .pattern("SAS")
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('C', Items.CONDUIT)
+                .unlockedBy("has_item", has(Items.CONDUIT))
+                .save(pRecipeOutput, key("conduit_beacon"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.AQUARINE_DISH_STORAGE.asItem())
+                .pattern("ADA")
+                .pattern("DCD")
+                .pattern("ADA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('D', NTItems.PETRI_DISH)
+                .define('C', Tags.Items.CHESTS_WOODEN)
+                .unlockedBy("has_item", has(NTItems.PETRI_DISH))
+                .save(pRecipeOutput, key("aquarine_dish_storage"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.DEEP_STEEL_DISH_STORAGE.asItem())
+                .pattern("PCP")
+                .pattern("PSP")
+                .pattern("PCP")
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('S', NTBlocks.AQUARINE_DISH_STORAGE)
+                .unlockedBy("has_item", has(NTBlocks.AQUARINE_DISH_STORAGE))
+                .save(pRecipeOutput, key("deep_steel_dish_storage"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.asItem())
+                .pattern("GFG")
+                .pattern("GSG")
+                .pattern("GFG")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('S', NTBlocks.DEEP_STEEL_DISH_STORAGE)
+                .unlockedBy("has_item", has(NTBlocks.DEEP_STEEL_DISH_STORAGE))
+                .save(pRecipeOutput, key("atlantic_gold_dish_storage"));
+
+        shaped(RecipeCategory.MISC, NTItems.GRAFTING_ANCHOR.get())
+                .pattern(" R ")
+                .pattern("DAD")
+                .pattern(" T ")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('A', NTBlocks.ANCHOR)
+                .define('T', NTItems.GRAFTING_TOOL)
+                .unlockedBy("has_item", has(NTBlocks.GRAFTING_STATION))
+                .save(pRecipeOutput, key("grafting_anchor"));
+
+        for (Map.Entry<BiomeTankType, DeferredBlock<BiomeTankBlock>> tank : NTBlocks.BIOME_TANKS.entrySet()) {
+            shaped(RecipeCategory.MISC, tank.getValue().asItem())
+                    .pattern("DGD")
+                    .pattern("GXG")
+                    .pattern("GOG")
+                    .define('D', NTItems.DEEP_STEEL_PLATING)
+                    .define('G', Tags.Items.GLASS_PANES)
+                    .define('X', tank.getKey().plant())
+                    .define('O', Tags.Items.OBSIDIANS)
+                    .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
+                    .save(pRecipeOutput, key(tank.getKey().blockName()));
+        }
 
         shaped(RecipeCategory.MISC, NTBlocks.PRISMATIC_EMITTER.asItem())
                 .pattern(" S ")

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "bottom": "nautec:block/deep_steel_dish_storage_bottom",
+    "front": "nautec:block/deep_steel_dish_storage_front",
+    "side": "nautec:block/deep_steel_dish_storage_side",
+    "top": "nautec:block/deep_steel_dish_storage_top"
+  }
+}

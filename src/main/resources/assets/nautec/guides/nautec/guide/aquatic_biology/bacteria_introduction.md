@@ -47,8 +47,9 @@ The Incubator, Mutator and Bio Reactor screens have bacteria slots. Pick up a Pe
 
 * An empty dish takes the whole colony out of the slot.
 * A dish holding a colony puts it into the slot if the slot is empty.
+* A dish holding a colony of the same strain with exactly the same stats takes the slot's colony into the dish and merges the two there.
 
-Two colonies merge only when they are the same strain with exactly the same stats, which in practice means two halves of the same colony. The merged colony keeps the older of the two ages. A colony never grows past the size cap (40,000 by default, configurable), and anything over the cap stays in the dish.
+Two colonies merge only when they are the same strain with exactly the same stats, which in practice means two halves of the same colony. The merged colony keeps the older of the two ages. A colony never grows past the size cap (40,000 by default, configurable), and anything over the cap stays where it was.
 
 The Bacterial Analyzer takes the dish itself in an item slot, and the Bacterial Fuel Cell is loaded by right-clicking it with the dish or by piping dishes into it. The Incubator, Mutator, Colony Replicator and both Bio Reactors also have a Dish Port: dishes holding a colony go in, and colonies and empty dishes come out of separate slots.
 

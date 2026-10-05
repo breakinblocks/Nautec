@@ -46,7 +46,7 @@ A sending pylon takes FE from cables or machines on any side and sends it into t
 
 FE only crosses dimensions between two Abyssal Pylons, one at each end. A receiver takes from senders in its own dimension first, since that loses less.
 
-Pylons only work while their chunk is loaded, so keep both ends of a long link chunk loaded if it has to run while you are away.
+Pylons only work while their chunk is loaded. Turn on **Load** in a pylon's screen and it keeps its own chunk loaded, so a long link keeps running while you are away, unless the server has turned that off (`resonanceChunkLoading`).
 
 ***
 
@@ -93,4 +93,4 @@ Its crystal also does the work of a <ItemLink id="prism_monocle"/>: while it is 
 
 It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Right-click the air with it to open its screen. The screen shows the network it is bound to, its owner, how many uplinks and downlinks the network has in your dimension, how much FE the uplinks hold, and how many sending pylons it has. It also sets the charm's priority: on the uplinks, a charm with a higher priority charges before downlinks and charms with a lower one. Sneak-right-click the air with it to unbind it.
 
-The same networks connect Uplink and Downlink Arrays, which carry laser power instead of FE. See <ItemLink id="prism_satellite"/>.
+The same networks connect Uplink and Downlink Arrays and [Resonance Nodes](resonance_node.md), which carry laser power as well as FE. See <ItemLink id="prism_satellite"/>.

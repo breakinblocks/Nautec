@@ -61,6 +61,11 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.DOWNLINK_ARRAY.get());
         dropSelf(NTBlocks.ABYSSAL_PYLON.get());
         dropSelf(NTBlocks.RESONANCE_NODE.get());
+        dropSelf(NTBlocks.CONDUIT_BEACON.get());
+        dropSelf(NTBlocks.AQUARINE_DISH_STORAGE.get());
+        dropSelf(NTBlocks.DEEP_STEEL_DISH_STORAGE.get());
+        dropSelf(NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get());
+        NTBlocks.BIOME_TANKS.values().forEach(tank -> dropSelf(tank.get()));
         dropSelf(NTBlocks.PRISMATIC_EMITTER.get());
         dropSelf(NTBlocks.TIDAL_ROTOR.get());
         dropSelf(NTBlocks.THERMAL_VENT_TAP.get());

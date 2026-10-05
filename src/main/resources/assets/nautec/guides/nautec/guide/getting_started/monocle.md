@@ -28,11 +28,17 @@ Wear the monocle in your helmet slot or in its own Monocle curio slot. While it 
 | Any machine, relay, optic or other laser block | Power arriving (AP per tick) and Purity |
 | <ItemLink id="aquatic_catalyst"/> | Duration: ticks the current fuel item has been burning |
 | <ItemLink id="bacterial_fuel_cell"/> | Output (AP per tick), Purity and Fuel, or No colony |
-| <ItemLink id="pressure_forge"/> | Under pressure, Acid (mb) and Purity, or what depth and water it still needs |
+| <ItemLink id="pressure_forge"/> | Any synthesizer fitted, then Under pressure, Acid (mb) and Purity, or what depth and water it still needs |
 | <ItemLink id="resonance_chamber"/> | Charge, Ceiling and Purity, or Cracked while it cools down |
 | <ItemLink id="gateway"/> and its ring | Its Address; whether it is open, ready, idle, out of power, held shut by redstone or blocked; whether it is a wild ring; and its stored power |
 | <ItemLink id="submarine_dock"/> | Whether a Sea Scout is docked |
 | Deep Sea Drain wall | Power and Fluid Stored |
+| <ItemLink id="bubble_anchor"/> | Its status, the field size, and the fuel left or what it ends as |
+| <ItemLink id="oxygen_diffuser"/> | Its range while running, or the AP it needs |
+| <ItemLink id="energy_converter"/> | AP sent, how many beams share it and the FE/t it costs, or why it is idle |
+| <ItemLink id="grafting_station"/> and <ItemLink id="advanced_bacterial_analyzer"/> | Status, Power and Purity |
+| <ItemLink id="colony_replicator"/> | Status, Replicate or Splice mode, and Biomass |
+| <ItemLink id="uplink_array"/> and <ItemLink id="downlink_array"/> | Uplink or Downlink, and its status |
 
 Use it to check that a beam is arriving and pure enough before you blame a recipe. Purity drops a little when a weaker beam feeds the same block as a pure one, and when it passes through a mirror or splitter.
 
@@ -42,4 +48,4 @@ A <ItemLink id="resonance_charm"/> worn in a charm slot does the same job, so yo
 
 ## <Color id="gold">With Jade</Color>
 
-If Jade is installed it adds its own tooltips for some blocks: the Aquatic Catalyst's status, queued fuel, remaining ticks and AP per tick, a Crate's locked state, and the Mixer and Laser Junction.
+If Jade is installed it adds its own tooltips for some blocks: the Aquatic Catalyst's status, queued fuel, remaining ticks, AP per tick and what its beam reaches, plus the Mixer, Laser Junction, Deep Sea Drain, Confined Spawner, Crystal Cradle, Prismarine Crystal, Fusion Plant controller, Tidal Rotor, Thermal Vent Tap and Energy Converter.

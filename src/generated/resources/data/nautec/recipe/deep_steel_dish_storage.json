@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "nautec:aquatic_chip",
+    "P": "nautec:deep_steel_plating",
+    "S": "nautec:aquarine_dish_storage"
+  },
+  "pattern": [
+    "PCP",
+    "PSP",
+    "PCP"
+  ],
+  "result": {
+    "id": "nautec:deep_steel_dish_storage"
+  }
+}

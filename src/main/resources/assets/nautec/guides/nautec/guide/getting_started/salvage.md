@@ -66,7 +66,7 @@ Lucky fishing zones and the Prismatic Fishing Rod roll extra loot that includes 
 
 <Recipe id="nautec:atlantic_gold_nuggets_from_ingot"/>
 
-The ingot goes into the Sea Scout, the Solar and Sonar Modules and the Auxiliary Ventricle augment.
+The ingot goes into the Sea Scout, the Solar and Sonar Modules, the Auxiliary Ventricle augment and the Resonance Charm, and later into the Fusion Plant parts, the Crystal Cradle, the Prism Satellite and the resonance network blocks.
 
 ***
 
@@ -75,6 +75,6 @@ The ingot goes into the Sea Scout, the Solar and Sonar Modules and the Auxiliary
   ### <Color id="aqua">Prismarine Lens</Color>
 </Row>
 
-A lens used in the Bacterial Analyzer, the Impulse Laser Module and the Solar and Sonar Modules. You can craft it from Aquarine Steel, and it also turns up as lucky zone treasure.
+A lens used in the Bacterial Analyzer, the Grafting Station, the Laser Injector, the Prismatic Emitter, the Impulse Laser Module, the Solar and Sonar Modules and several late machines. You can craft it from Aquarine Steel, and it also turns up as lucky zone treasure.
 
 <RecipeFor id="prismarine_lens"/>

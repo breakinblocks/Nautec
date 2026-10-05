@@ -35,13 +35,17 @@ Purity is set by the source and then changed by every optic the beam passes thro
 | <ItemLink id="bacterial_fuel_cell"/> | up to 2.5 |
 | <ItemLink id="prismarine_crystal"/>, hit from the side | 3.0 |
 
+Each Budding Prismarine block touching an Aquatic Catalyst adds 0.1 to its beam's purity, up to 2.0. See [Laser Power](nautec:getting_started/laser_power.md).
+
 The machines in this section need these purities:
 
 | Output | Machine | Purity |
 |---|---|---|
 | Flawless Prismarine Crystal | [Abyssal Pressure Forge](pressure_forge.md) | 2.0 |
+| Atlantic Gold Ingot | Abyssal Pressure Forge | 2.0 |
 | Deep Steel Plating | Abyssal Pressure Forge | 2.5 |
 | Resonant Shard | [Resonance Chamber](resonance_chamber.md) | 3.0 |
+| Prismarine Crystal Seed | Resonance Chamber | 3.0 |
 
 When two or more beams feed the same block, their power adds up and their purity stays close to the purest beam. The result is the highest purity minus a quarter of the gap between it and the average of all of them (`beamMergePurityDrop`), so a 3.0 beam merged with a 0 beam comes out at about 2.6.
 

@@ -47,7 +47,7 @@ Drop Rusty Gears into Etching Acid. Gears go into the Aquarine Steel pickaxe, ax
   ### <Color id="aqua">Valve</Color>
 </Row>
 
-Drop Ancient Valves into Etching Acid. Valves go into the Aquarine Steel chestplate and leggings and the Deep Sea Drain.
+Drop Ancient Valves into Etching Acid. Valves go into the Aquarine Steel chestplate and leggings, the Deep Sea Drain, the Thermal Vent Tap, the Oxygen Diffuser, the Pressure Hatch, the Cargo Hold Module and the Fusion Port.
 
 ***
 
@@ -65,7 +65,7 @@ Hold a Burnt Coil in a purity 1.5 beam for 10 seconds. Reach that purity with a 
   ### <Color id="aqua">Aquatic Chip</Color>
 </Row>
 
-Craft a Damaged Aquatic Chip with Prismarine Shards. Aquatic Chips go into the Incubator, Bio Reactor and Bacterial Fuel Cell, the Pressure Forge, the Resonance Chamber, every Sea Scout module and most crafted augments. Lucky zone treasure in the Bioluminescent Grove sometimes gives one ready made.
+Craft a Damaged Aquatic Chip with Prismarine Shards. Aquatic Chips go into the Incubator, Bio Reactor and Bacterial Fuel Cell, the Pressure Forge, the Resonance Chamber, most Sea Scout modules and most crafted augments. Lucky zone treasure in the Bioluminescent Grove sometimes gives one ready made.
 
 <Recipe id="nautec:aquatic_chip"/>
 
@@ -73,7 +73,7 @@ Craft a Damaged Aquatic Chip with Prismarine Shards. Aquatic Chips go into the I
 
 ## <Color id="gold">Whisk</Color>
 
-Craft a Broken Whisk with Cast Iron Nuggets. The Whisk is needed for the [Mixer](nautec:laser_chemistry/mixer.md). Broken Whisks come from Drowned and lucky zone treasure.
+Craft a Broken Whisk with Cast Iron Nuggets. The Whisk is needed for the [Mixer](nautec:laser_chemistry/mixer.md). Broken Whisks come from Drowned, ocean ruin chests and lucky zone treasure.
 
 <Recipe id="nautec:whisk"/>
 

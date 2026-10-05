@@ -49,7 +49,7 @@ A 3 by 3 by 2 structure:
   <IsometricCamera yaw="225" pitch="30"/>
 </GameScene>
 
-Right-click the Bio Reactor with an <ItemLink id="aquarine_steel_wrench"/>, without sneaking, to form it. If a block is wrong, chat names its position, what is there and what should be. Breaking any block of a formed reactor takes it apart again.
+Right-click the Bio Reactor with an <ItemLink id="aquarine_steel_wrench"/> in Rotate mode, without sneaking, to form it. If a block is wrong, chat names its position, what is there and what should be. Breaking any block of a formed reactor takes it apart again.
 
 Once it is formed, right-click the Bio Reactor to open it.
 
@@ -68,7 +68,7 @@ Once it is formed, right-click the Bio Reactor to open it.
 
 ## <Color id="gold">Power and Hatches</Color>
 
-The reactor takes power through hatches. Right-click one of the four Bacteria Containment Shields in the top layer with the wrench to turn it into a hatch (click again to turn it back), then point a beam down into the hatch from above. You can open more than one hatch, and their power adds together.
+The reactor takes power through hatches. Right-click one of the four Bacteria Containment Shields in the top layer with the wrench to turn it into a hatch (click again to turn it back), then point a beam down into the hatch from above. This does not work in Item Sides mode, which sets the reactor's sides instead. You can open more than one hatch, and their power adds together.
 
 | Colonies | AP needed |
 |---|---|
@@ -102,7 +102,7 @@ Each colony has its own output slot. When a slot is full, that colony pauses unt
 
 * Every outer face of the formed reactor takes and gives items: a hopper under the base pulls output, a hopper on top of the Bio Reactor block feeds nutrients, and a pipe works on any side.
 * [Side Configuration](nautec:getting_started/utilities.md) sets what each side of the structure does. Use the tab on the right of the reactor's screen, or the wrench in Item Sides mode on any block of the reactor. One setting covers a whole side, so Bottom set to Output makes the entire base output only. The reactor treats its north side as the front.
-* Load and unload colonies through the Dish Port. A dish goes into the slot at the bottom left and dishes holding a colony come out of the slot beside it; empty dishes come out of the slot under the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the port refuses it while no slot can. An empty dish takes out the colony with the least Vitality left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
+* Load and unload colonies through the Dish Port. A dish goes into the slot at the bottom left and dishes holding a colony come out of the slot beside it; empty dishes come out of the slot under the upgrades. A Petri Dish holding a colony loads it into the first colony slot that can take all of it, and the port refuses it while no slot can. An empty dish takes out the colony with the least nutrient buffer left, so keep empty dishes away from a reactor's port unless you mean to unload it. Automation reaches the port wherever it reaches the other slots.
 
 Automation only puts items into the nutrient, upgrade and Dish Port slots and only takes them from the output slots and the Dish Port. With nutrients coming in and output going out, the reactor runs indefinitely.
 

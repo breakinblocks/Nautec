@@ -41,7 +41,7 @@ It only fires, and only burns colony, while a block that accepts a beam is withi
 
 Power and burn rise together, so every point of size gives the same total energy. A fast colony only spends it sooner. A full 40,000 colony gives 24 AP for about 67 minutes at Production Rate 1, or 48 AP for about 33 minutes at Production Rate 2.
 
-Every [Item Transformation](nautec:getting_started/item_transformation.md) recipe NauTec ships needs a purity of 2.0 or less, which a colony reaches at 0.8 Mutation Resistance. That runs them without building a Prismarine Crystal core.
+Most [Item Transformation](nautec:getting_started/item_transformation.md) recipes NauTec ships need a purity of 2.0 or less, which a colony reaches at 0.8 Mutation Resistance. That runs them without building a Prismarine Crystal core. Gears from a Cast Iron Block need 2.5, so only a colony at the resistance cap runs that one.
 
 The base power (24), burn rate (0.5) and top purity (2.5) are all configurable.
 

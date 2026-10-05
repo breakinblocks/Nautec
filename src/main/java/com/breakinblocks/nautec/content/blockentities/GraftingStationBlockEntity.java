@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.content.menus.GraftingStationMenu;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.maps.BacteriaObtainValue;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTFluids;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
@@ -42,6 +43,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
     public static final int DISH_SLOT = 0;
     public static final int SAMPLE_SLOT = 1;
     public static final int OUTPUT_SLOT = 2;
+    public static final int ANCHOR_SLOT = 3;
 
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_NO_DISH = 1;
@@ -88,9 +90,10 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
 
     public GraftingStationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.GRAFTING_STATION.get(), blockPos, blockState);
-        addItemHandler(3, (slot, stack) -> switch (slot) {
+        addItemHandler(4, (slot, stack) -> switch (slot) {
             case DISH_SLOT -> isEmptyDish(stack);
             case SAMPLE_SLOT -> sample(stack) != null;
+            case ANCHOR_SLOT -> stack.is(NTItems.GRAFTING_ANCHOR.get());
             default -> false;
         });
         addFluidTank(NTConfig.graftingStationCapacity, fluidStack -> fluidStack.getFluid() == NTFluids.SALT_WATER.getStillFluid());
@@ -109,6 +112,10 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
             return null;
         }
         return blockItem.getBlock().defaultBlockState().typeHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
+    }
+
+    public boolean hasAnchor() {
+        return getItemStackHandler().getStackInSlot(ANCHOR_SLOT).is(NTItems.GRAFTING_ANCHOR.get());
     }
 
     public ContainerData getData() {
@@ -193,7 +200,9 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         }
         storage.setBacteria(0, BacteriaInstance.roll(sample.bacteria(), serverLevel.registryAccess()));
         getItemStackHandler().extractItem(DISH_SLOT, 1, false);
-        getItemStackHandler().extractItem(SAMPLE_SLOT, 1, false);
+        if (!hasAnchor()) {
+            getItemStackHandler().extractItem(SAMPLE_SLOT, 1, false);
+        }
         getFluidTank().drain(NTConfig.graftingStationSaltWaterUsage);
         forceInsertItem(OUTPUT_SLOT, result, false);
     }
@@ -238,6 +247,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
+        getItemStackHandler().ensureSize(4);
         this.progress = in.getIntOr("progress", 0);
         this.status = in.getIntOr("status", STATUS_NO_DISH);
     }

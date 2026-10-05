@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.client.screen.DishStorageScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonanceNodeBERenderer;
 import com.breakinblocks.nautec.client.screen.ResonanceNodeScreen;
 import com.breakinblocks.nautec.client.screen.ColonyReplicatorScreen;
@@ -325,6 +326,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMATIC_EMITTER.get(), PrismaticEmitterBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.SATELLITE_ARRAY.get(), SatelliteArrayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANCE_NODE.get(), ResonanceNodeBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.CONDUIT_BEACON.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_INJECTOR.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
@@ -408,6 +410,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.RESONANCE_PYLON.get(), ResonancePylonScreen::new);
         event.register(NTMenuTypes.SATELLITE_ARRAY.get(), SatelliteArrayScreen::new);
         event.register(NTMenuTypes.RESONANCE_NODE.get(), ResonanceNodeScreen::new);
+        event.register(NTMenuTypes.DISH_STORAGE.get(), DishStorageScreen::new);
     }
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {

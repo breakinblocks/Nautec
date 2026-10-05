@@ -17,7 +17,7 @@ item_ids:
   Presses materials under deep water using a laser beam and Etching Acid.
 </Column>
 
-The Abyssal Pressure Forge makes Flawless Prismarine Crystals and Deep Steel Plating. It only runs deep underground and under a column of water, so build it on the sea floor or flood a deep shaft.
+The Abyssal Pressure Forge makes Flawless Prismarine Crystals, Atlantic Gold Ingots and Deep Steel Plating. It only runs deep underground and under a column of water, so build it on the sea floor or flood a deep shaft.
 
 ***
 
@@ -40,6 +40,7 @@ All of these values are in `config/nautec-common.toml`.
 | Input | Output | Purity | Max Y | Time |
 |---|---|---|---|---|
 | Resonant Shard | Flawless Prismarine Crystal | 2.0 | -20 | 10 seconds |
+| Block of Gold | 2 Atlantic Gold Ingots | 2.0 | -20 | 15 seconds |
 | Aquarine Steel Ingot | Deep Steel Plating | 2.5 | -40 | 15 seconds |
 
 The recipes are also shown in JEI. See [Deep Materials](materials.md) for what the outputs are used for.
@@ -68,7 +69,7 @@ A synthesizer fitted to the Forge stands in for the deep water, so you can build
 
 You need a working Forge under real water first, since the Flawless Prismarine Crystal comes out of one.
 
-<Color id="gold">Tip</Color>: Laser beams pass through water. A <ItemLink id="bacterial_fuel_cell"/> at full purity (2.5) covers both recipes, and so does a <ItemLink id="prismarine_crystal"/> behind one [Prismatic Mirror](beam_optics.md) (3.0 x 0.9 = 2.7).
+<Color id="gold">Tip</Color>: Laser beams pass through water. A <ItemLink id="bacterial_fuel_cell"/> at full purity (2.5) covers all three recipes, and so does a <ItemLink id="prismarine_crystal"/> behind one [Prismatic Mirror](beam_optics.md) (3.0 x 0.9 = 2.7).
 
 ***
 

@@ -28,7 +28,7 @@ Each of these comes from exactly one machine recipe. JEI shows the recipes with 
 
 Made in a [Resonance Chamber](resonance_chamber.md) from a <ItemLink id="prismarine_crystal_shard"/>, on a beam of purity 3.0 or higher. One shard in, one Resonant Shard out.
 
-Used in the [Gateway](gateway.md), the [Abyssal Pressure Forge](pressure_forge.md) and [Neptune's Trident](neptunes_trident.md), and pressed into Flawless Prismarine Crystals.
+Used in the [Gateway](gateway.md), the [Abyssal Pressure Forge](pressure_forge.md), [Neptune's Trident](neptunes_trident.md), the Laser Injector of the [Fusion Plant](fusion_plant.md), the Dormant Crystal Seed and the [Resonance Network](resonance_network.md) blocks, and pressed into Flawless Prismarine Crystals.
 
 ***
 
@@ -39,7 +39,7 @@ Used in the [Gateway](gateway.md), the [Abyssal Pressure Forge](pressure_forge.m
 
 Made in an [Abyssal Pressure Forge](pressure_forge.md) from a Resonant Shard. Needs purity 2.0, the Forge at Y -20 or lower, and 10 seconds per crystal.
 
-Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md) and the [Gateway](gateway.md).
+Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md), the [Gateway](gateway.md), the Fusion Controller, the Crystal Cradle, the Dormant Crystal Seed and the Pressure Synthesizer.
 
 ***
 
@@ -50,6 +50,6 @@ Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_
 
 Made in an [Abyssal Pressure Forge](pressure_forge.md) from an Aquarine Steel Ingot. Needs purity 2.5, the Forge at Y -40 or lower, and 15 seconds per plate.
 
-Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md) and the [Gateway](gateway.md).
+Used in the [Atlantean Rifle](atlantean_rifle.md), [Neptune's Trident](neptunes_trident.md), the [Gateway](gateway.md), most [Fusion Plant](fusion_plant.md) parts and the Crystal Cradle.
 
 It also repairs a <ItemLink id="submarine"/> on an anvil. Put the picked-up Sea Scout in the left slot and plating in the right. Each plate restores 20% of the hull and costs 2 levels. The repair item and the amount per item are `submarineRepairItem` and `submarineRepairPercent` in `config/nautec-common.toml`.

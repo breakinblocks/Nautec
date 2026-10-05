@@ -12,7 +12,7 @@ item_ids:
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="mixer" scale="2"/>
-  Mixes items into Salt Water to make chemicals and Aquarine Steel Compound.
+  Mixes items into Salt Water to make chemicals, Aquarine Steel Compound and machine parts.
 </Column>
 
 ## <Color id="gold">Setting It Up</Color>
@@ -21,7 +21,7 @@ The Mixer takes a laser beam into any face and runs while at least 10 AP per tic
 
 Right-click it with an empty hand to open it. It has four ingredient slots, one output slot, an input tank and an output tank, each tank holding 32,000 mB (32 buckets, configurable).
 
-* Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank. Salt Water comes from the [Deep Sea Drain](drain.md).
+* Right-click with a <ItemLink id="saltwater_bucket"/> to fill the input tank. Salt Water comes from the [Deep Sea Drain](drain.md), or from the Mixer itself with a Water Bucket and Salt.
 * Right-click with an empty Bucket to take fluid out of the output tank.
 * Hoppers and pipes can insert ingredients, fill the input tank and drain the output tank.
 * Item results can be pulled out of the output slot.
@@ -33,13 +33,18 @@ The whisk spins while it works. The <ItemLink id="prism_monocle"/> shows the pow
 
 ## <Color id="gold">Recipes</Color>
 
-Every recipe uses 1,000 mB of Salt Water. JEI lists the ingredients under Mixing.
+JEI lists the ingredients under Mixing.
 
-| Result | Time |
-|---|---|
-| 1,000 mB Electrolyte Algae Serum | 10 seconds |
-| 1,000 mB Etching Acid | 7.5 seconds |
-| 5 Aquarine Steel Compound | 5 seconds |
+| Result | Fluid used | Time |
+|---|---|---|
+| 1,000 mB Salt Water | 1,000 mB Water and 1 <ItemLink id="salt"/> | 5 seconds |
+| 1,000 mB Electrolyte Algae Serum | 1,000 mB Salt Water | 10 seconds |
+| 1,000 mB Etching Acid | 1,000 mB Salt Water | 7.5 seconds |
+| 5 Aquarine Steel Compound | 1,000 mB Salt Water | 5 seconds |
+| 1 <ItemLink id="burnt_coil"/> | 1,000 mB Salt Water | 10 seconds |
+| 2 <ItemLink id="aquatic_chip"/>s | 1,000 mB Salt Water | 10 seconds |
+| 1 <ItemLink id="pressure_synthesizer"/> | 8,000 mB Salt Water | 20 seconds |
+| 1 <ItemLink id="atlantean_pressure_synthesizer"/> | 8,000 mB Salt Water | 30 seconds |
 
 A recipe only starts when its result fits in the output, so empty the output tank or slot between batches. Losing power pauses a mix without resetting it.
 
@@ -51,6 +56,6 @@ See [Chemistry Fluids](chemistry_introduction.md) for what each fluid is for.
 
 ### <Color id="aqua">Mixer Recipe</Color>
 
-The <ItemLink id="whisk"/> is repaired from a Broken Whisk.
+The <ItemLink id="whisk"/> is repaired from a Broken Whisk, or crafted from Cast Iron Rods, a Prismarine Crystal Shard and an Aquarine Steel Ingot.
 
 <RecipeFor id="mixer"/>

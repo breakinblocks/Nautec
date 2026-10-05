@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.menus;
 
+import net.minecraft.world.item.ItemStack;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.api.menu.slots.SlotFluidHandler;
 import com.breakinblocks.nautec.content.blockentities.GraftingStationBlockEntity;
@@ -34,6 +36,8 @@ public class GraftingStationMenu extends NTMachineMenu<GraftingStationBlockEntit
                 GraftingStationBlockEntity.SAMPLE_SLOT, 53, 46));
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
                 GraftingStationBlockEntity.OUTPUT_SLOT, 107, 34));
+        addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
+                GraftingStationBlockEntity.ANCHOR_SLOT, 8, 60));
 
         addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, 28, 34, 18, 18));
     }
@@ -41,6 +45,17 @@ public class GraftingStationMenu extends NTMachineMenu<GraftingStationBlockEntit
     @Override
     protected int getMergeableSlotCount() {
         return 2;
+    }
+
+    @Override
+    protected boolean performMerge(int index, ItemStack stack) {
+        int playerEnd = playerSlotStart + 36;
+        if (index >= playerSlotStart && index < playerEnd && stack.is(NTItems.GRAFTING_ANCHOR.get())) {
+            int machineStart = playerSlotStart == 0 ? playerEnd : 0;
+            return moveItemStackTo(stack, machineStart + GraftingStationBlockEntity.ANCHOR_SLOT,
+                    machineStart + GraftingStationBlockEntity.ANCHOR_SLOT + 1, false);
+        }
+        return super.performMerge(index, stack);
     }
 
     public int getProgress() {

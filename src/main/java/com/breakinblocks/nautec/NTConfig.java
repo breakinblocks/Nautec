@@ -857,8 +857,46 @@ public final class NTConfig {
                     "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
 
+    private static final ModConfigSpec.DoubleValue CATALYST_BUDDING_OUTPUT_BONUS = BUILDER
+            .comment("The extra AP output an Aquatic Catalyst gets for each Budding Prismarine block touching it, as a fraction of its normal output")
+            .defineInRange("catalystBuddingOutputBonus", 0.25, 0.0, 10.0);
+
+    private static final ModConfigSpec.DoubleValue CATALYST_BUDDING_PURITY_BONUS = BUILDER
+            .comment("The purity an Aquatic Catalyst's beam gains for each Budding Prismarine block touching it")
+            .defineInRange("catalystBuddingPurityBonus", 0.1, 0.0, 10.0);
+
+    private static final ModConfigSpec.DoubleValue CATALYST_BUDDING_MAX_PURITY = BUILDER
+            .comment("The highest purity Budding Prismarine can raise an Aquatic Catalyst's beam to")
+            .defineInRange("catalystBuddingMaxPurity", 2.0, 0.0, 10.0);
+
+    private static final ModConfigSpec.IntValue CONDUIT_BEACON_POWER_USAGE = BUILDER
+            .comment("The AP a running Conduit Beacon uses each tick, taken from its internal buffer")
+            .defineInRange("conduitBeaconPowerUsage", 50, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue CONDUIT_BEACON_BUFFER = BUILDER
+            .comment("The AP a Conduit Beacon stores. Incoming laser power fills it, and the beacon keeps running from it after the beam stops")
+            .defineInRange("conduitBeaconBuffer", 5000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.IntValue CONDUIT_BEACON_SPAWN_RADIUS = BUILDER
+            .comment("The horizontal radius in blocks around a running Conduit Beacon where hostile, passive and ambient mobs do not spawn naturally")
+            .defineInRange("conduitBeaconSpawnRadius", 128, 0, 1024);
+
+    private static final ModConfigSpec.IntValue BIOME_TANK_TICKS = BUILDER
+            .comment("The ticks a Biome Tank takes to grow one of its plant")
+            .defineInRange("biomeTankTicks", 600, 1, Integer.MAX_VALUE);
+
     static final ModConfigSpec SPEC = BUILDER.build();
     static final ModConfigSpec WORLDGEN_SPEC = WORLDGEN_BUILDER.build();
+
+    public static int biomeTankTicks = 600;
+
+    public static int conduitBeaconPowerUsage = 50;
+    public static int conduitBeaconBuffer = 5000;
+    public static int conduitBeaconSpawnRadius = 128;
+
+    public static double catalystBuddingOutputBonus = 0.25;
+    public static double catalystBuddingPurityBonus = 0.1;
+    public static double catalystBuddingMaxPurity = 2.0;
 
     public static int kelpHeight;
     public static boolean spawnBookInInventory;
@@ -1377,5 +1415,12 @@ public final class NTConfig {
         submarineTeleportMinPowerPercent = value(SUBMARINE_TELEPORT_MIN_POWER);
         submarineTeleportCooldownTicks = value(SUBMARINE_TELEPORT_COOLDOWN);
         submarineArmorModuleToughness = value(SUBMARINE_ARMOR_MODULE_TOUGHNESS);
+        catalystBuddingOutputBonus = value(CATALYST_BUDDING_OUTPUT_BONUS);
+        catalystBuddingPurityBonus = value(CATALYST_BUDDING_PURITY_BONUS);
+        catalystBuddingMaxPurity = value(CATALYST_BUDDING_MAX_PURITY);
+        conduitBeaconPowerUsage = value(CONDUIT_BEACON_POWER_USAGE);
+        conduitBeaconBuffer = value(CONDUIT_BEACON_BUFFER);
+        conduitBeaconSpawnRadius = value(CONDUIT_BEACON_SPAWN_RADIUS);
+        biomeTankTicks = value(BIOME_TANK_TICKS);
     }
 }

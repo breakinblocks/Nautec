@@ -69,7 +69,7 @@ Murky brown water over a floor patched with basalt and magma, with bubbles risin
 
 ### Vent Fields
 
-Clusters of two to five black chimneys of basalt and blackstone rising from the floor, the tallest up to nine blocks. Each is capped with a <ItemLink id="hydrothermal_vent"/> pouring out smoke and bubbles, with magma inside and under it and Vent Tubeworms crowded around the base.
+Clusters of two to five black chimneys of basalt and blackstone rising from the floor, the tallest up to eight blocks. Each is capped with a <ItemLink id="hydrothermal_vent"/> pouring out smoke and bubbles, with magma inside and under it and Vent Tubeworms crowded around the base.
 
 * The chimney walls are studded with copper, iron and gold ore.
 * A Hydrothermal Vent burns anything that stands on it, like magma. Sneak to cross it safely.

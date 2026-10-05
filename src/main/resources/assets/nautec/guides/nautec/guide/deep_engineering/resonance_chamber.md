@@ -15,7 +15,7 @@ item_ids:
   Stores up a laser beam as charge and crafts when the charge reaches a critical level.
 </Column>
 
-The Resonance Chamber turns <ItemLink id="prismarine_crystal_shard"/>s into Resonant Shards. It needs a beam of purity 3.0 or higher. It takes beams on its four sides and its top.
+The Resonance Chamber turns <ItemLink id="prismarine_crystal_shard"/>s into Resonant Shards, and awakens a Dormant Crystal Seed into a Prismarine Crystal Seed for [Crystal Cultivation](crystal_cultivation.md). It needs a beam of purity 3.0 or higher. It takes beams on its four sides and its top.
 
 ***
 

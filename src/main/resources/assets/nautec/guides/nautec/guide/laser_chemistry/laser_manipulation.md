@@ -40,6 +40,7 @@ Beams also carry purity, which some recipes need. See [Beam Optics](nautec:deep_
 | [Deep Sea Drain](drain.md) | more than 20 |
 | [Charger](charger.md) | any amount (the item takes what the beam delivers, up to its input limit) |
 | [Fishing Station](fishing_station.md) | 1 or more |
+| [Confined Spawner](confined_spawner.md) | 50 to run nonstop (less runs it in bursts) |
 
 An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Crystal Shards sends 12 AP per tick. Burning Prismarine Crystals it sends 6. The machine requirements above are configurable.
 
@@ -52,7 +53,7 @@ An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Cry
 
 Takes a beam in at the back and sends it out the front, another 16 blocks. Power and purity pass through unchanged, so chain relays to cover any distance. Relays can sit underwater.
 
-A relay lines itself up when you place it against another laser block. Place it on a source's emitting face (a catalyst's lens, another relay's front) and it takes that beam in and passes it on away from the source. Place it on a machine that takes a beam and it points into that machine. Against anything else, its front points the way you are looking. Right-click it with an <ItemLink id="aquarine_steel_wrench"/> to turn it to the next direction.
+A relay lines itself up when you place it against another laser block. Place it on a source's emitting face (a catalyst's lens, another relay's front) and it takes that beam in and passes it on away from the source. Place it on a machine that takes a beam and it points into that machine. Against anything else, its front points the way you are looking. Right-click it with an <ItemLink id="aquarine_steel_wrench"/> in Rotate mode to turn it to the next direction.
 
 <RecipeFor id="prismarine_laser_relay"/>
 

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "nautec:flawless_prismarine_crystal",
+    "G": "nautec:atlantic_gold_ingot",
+    "S": "nautec:deep_steel_dish_storage"
+  },
+  "pattern": [
+    "GFG",
+    "GSG",
+    "GFG"
+  ],
+  "result": {
+    "id": "nautec:atlantic_gold_dish_storage"
+  }
+}

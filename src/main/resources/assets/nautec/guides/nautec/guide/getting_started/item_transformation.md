@@ -27,6 +27,7 @@ The item has to stay in the beam for the full time. If it is pushed out, or the 
 | Aquarine Steel Compound | 2 Aquarine Steel Ingots | 2.0 | 4 s |
 | <ItemLink id="burnt_coil"/> | Laser Channeling Coil | 1.5 | 10 s |
 | Prismarine Crystals | 2 <ItemLink id="prismarine_crystal_shard"/>s | 2.0 | 8 s |
+| <ItemLink id="cast_iron_block"/> | 4 <ItemLink id="gear"/>s | 2.5 | 8 s |
 
 When more than one recipe matches, the beam uses the one with the highest purity it meets, so a beam of 2.0 or more turns each compound into 2 ingots.
 
@@ -50,7 +51,8 @@ The Laser Channeling Coil and Prismarine Crystal Shards need more purity than a 
 
 * A <ItemLink id="prismarine_crystal"/>, purity 3.0. See the setup below.
 * A <ItemLink id="bacterial_fuel_cell"/>, up to 2.5 depending on its colony.
-* A <ItemLink id="focusing_lens"/> in the beam's path, which adds 0.5 to the beam passing straight through it.
+* A <ItemLink id="focusing_lens"/> in the beam's path, which adds 0.5 to the beam passing straight through it, up to 2.0 (`lensPurityBonus`).
+* <ItemLink id="budding_prismarine"/> touching the catalyst, which adds 0.1 per block, up to 2.0. See [Laser Power](laser_power.md).
 
 An item is judged by the purity of the beam it lies in. In a beam leaving a lens, mirror or splitter, that is the purity after the optic has changed it. A catalyst on Prismarine Crystal Shards firing through one lens gives 1.7 in the lens's outgoing beam, enough for the coil.
 
@@ -58,7 +60,7 @@ An item is judged by the purity of the beam it lies in. In a beam leaving a lens
 
 ## <Color id="gold">Under a Prismarine Crystal</Color>
 
-Every Crystal Geode (see [Structures](structures.md)) has a Prismarine Crystal standing with one block of air under it, which is the setup this needs.
+Every Crystal Geode (see [Structures](structures.md)) has a Prismarine Crystal standing over an open gap (one block in a stone geode, two in a deepslate geode), which is the setup this needs.
 
 * Place an Aquatic Catalyst level with the crystal's core, the fourth crystal block up from the bottom, facing the core from the side. Keep it within 16 blocks with nothing solid in between.
 * Load the catalyst with any fuel. The crystal's bottom block now fires a purity 3.0 beam straight down into the floor.

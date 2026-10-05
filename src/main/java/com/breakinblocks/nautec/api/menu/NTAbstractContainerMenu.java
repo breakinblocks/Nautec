@@ -18,7 +18,7 @@ public abstract class NTAbstractContainerMenu<T extends ContainerBlockEntity> ex
     public final @NotNull T blockEntity;
     protected final @NotNull Inventory inv;
     private final ContainerLevelAccess access;
-    private int playerSlotStart;
+    protected int playerSlotStart;
     private final ImmutableList<Block> validBlocks;
 
     public @NotNull T getBlockEntity() {

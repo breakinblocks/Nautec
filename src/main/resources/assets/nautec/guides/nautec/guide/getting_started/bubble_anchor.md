@@ -17,7 +17,7 @@ item_ids:
 
 Place the anchor, give it fuel, and every block of water in the cube around it is held back: you can walk, mine and build inside as if the sea were not there. Water just outside the cube stays out. A faint ring of bubbles shows the edge.
 
-Kelp and seagrass inside the cube are cleared, and waterlogged blocks are drained. Blocks you place inside the field go straight into the held water.
+Kelp, seagrass and bubble columns inside the cube are cleared, and waterlogged blocks are drained. Blocks you place inside the field go straight into the held water.
 
 ***
 
@@ -38,7 +38,7 @@ It warns you 10 seconds before the last of its fuel runs out. The bar beside the
 
 ## <Color id="gold">When the Field Ends</Color>
 
-The field ends when the fuel runs out, when you turn it off, or when you break the anchor. The held water is released from the edges inward.
+The field ends when the fuel runs out, when you turn it off, or when you break the anchor. When the fuel runs out or you turn it off, the held water is released from the edges inward. Breaking the anchor releases all of it at once.
 
 The **Ends as** button chooses what fills the space you left open:
 
@@ -51,7 +51,7 @@ The **Cube** button chooses where the cube sits. Centred puts the anchor in the 
 
 ## <Color id="gold">Laser Power</Color>
 
-A laser beam of 20 AP or more, into any face, runs the anchor with no fuel for as long as the beam holds. A purer beam makes the field larger:
+A laser beam of 20 AP or more, into any face, runs the anchor with no fuel for as long as the beam holds, and for 2 seconds after it drops. A purer beam makes the field larger:
 
 | Purity | Field |
 |---|---|

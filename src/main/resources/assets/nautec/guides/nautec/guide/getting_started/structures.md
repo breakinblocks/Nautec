@@ -21,7 +21,7 @@ An <ItemLink id="eye_of_the_sea"/> points the way to the nearest one of each kin
 
 ## <Color id="gold">Ocean Ruins</Color>
 
-A small arch of dark prismarine standing on the ocean floor, built from Chiseled Dark Prismarine, Dark Prismarine Pillars, slabs and stairs.
+A small arch of dark prismarine standing on the ocean floor, built from Chiseled Dark Prismarine, Dark Prismarine Pillars and dark prismarine slabs.
 
 What to take:
 
@@ -35,7 +35,7 @@ What to take:
 
 Hollow rooms buried under the ocean floor. There are two kinds: a stone geode with its floor between y -10 and 30, and a deepslate geode with its floor between y -59 and -25. Both always have at least 4 blocks of rock above them, so under a deep seabed they sit lower. Nothing marks them on the surface. `/locate` and the [Eye of the Sea](eye_of_the_sea.md) point at the middle of the room.
 
-In the middle stands a <ItemLink id="prismarine_crystal"/> inside scaffolding. It is the only natural source of a purity 3.0 beam, and it stays where it generated, so the geode is where you do [high purity Item Transformation](item_transformation.md) until you have other options. The crystal already has the one block gap under it that the setup needs.
+In the middle stands a <ItemLink id="prismarine_crystal"/> inside scaffolding. It is the only natural source of a purity 3.0 beam, and it stays where it generated, so the geode is where you do [high purity Item Transformation](item_transformation.md) until you have other options. The crystal already has the open gap under it that the setup needs: one block in a stone geode, two in a deepslate geode.
 
 Around it you will find:
 

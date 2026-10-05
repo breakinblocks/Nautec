@@ -1,0 +1,6 @@
+{
+  "parent": "nautec:block/conduit_beacon",
+  "textures": {
+    "core": "nautec:block/conduit_beacon_core_active"
+  }
+}
