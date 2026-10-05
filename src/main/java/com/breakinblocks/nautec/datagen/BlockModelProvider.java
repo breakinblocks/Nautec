@@ -199,10 +199,8 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.TIDAL_ROTOR.get(), cubeBottomTop("tidal_rotor", blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_side"),
                 blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_bottom"), blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_top")));
         Block tap = NTBlocks.THERMAL_VENT_TAP.get();
-        Identifier idle = cubeBottomTop("thermal_vent_tap", blockTexture(tap, "_side"), blockTexture(tap, "_bottom"), blockTexture(tap, "_top"));
-        Identifier lit = emissiveCube("thermal_vent_tap_lit", faces(blockTexture(tap, "_bottom"), blockTexture(tap, "_top_lit"),
-                blockTexture(tap, "_side_lit"), blockTexture(tap, "_side_lit")), blockTexture(tap, "_side_lit"),
-                glow(null, blockTexture(tap, "_top_lit_emissive"), blockTexture(tap, "_side_lit_emissive")));
+        Identifier idle = existingModelFile(tap);
+        Identifier lit = existingModelFile("thermal_vent_tap_lit");
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(tap)
                 .with(BlockModelGenerators.createBooleanModelDispatch(ThermalVentTapBlock.LIT,
                         BlockModelGenerators.plainVariant(lit), BlockModelGenerators.plainVariant(idle))));

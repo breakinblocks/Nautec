@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "nautec:block/thermal_vent_tap_bottom",
-    "side": "nautec:block/thermal_vent_tap_side",
-    "top": "nautec:block/thermal_vent_tap_top"
-  }
-}

@@ -285,7 +285,7 @@ public final class NTBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.METAL).requiresCorrectToolForDrops());
     public static final DeferredBlock<ThermalVentTapBlock> THERMAL_VENT_TAP = registerBlockAndItem("thermal_vent_tap", ThermalVentTapBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(4.5f, 12.0f).sound(SoundType.METAL).requiresCorrectToolForDrops()
-                    .lightLevel(state -> state.getValue(ThermalVentTapBlock.LIT) ? 9 : 0));
+                    .noOcclusion().lightLevel(state -> state.getValue(ThermalVentTapBlock.LIT) ? 9 : 0));
 
     public static final DeferredBlock<Block> FUSION_CASING = registerBlockAndItem("fusion_casing", Block::new,
             fusionProperties());
