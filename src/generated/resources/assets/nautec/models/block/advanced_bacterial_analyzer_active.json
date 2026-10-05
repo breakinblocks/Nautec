@@ -1,9 +1,13 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "nautec:block/template_emissive_cube_n",
   "textures": {
-    "bottom": "nautec:block/advanced_bacterial_analyzer_bottom",
-    "front": "nautec:block/advanced_bacterial_analyzer_front_active",
-    "side": "nautec:block/advanced_bacterial_analyzer_side",
-    "top": "nautec:block/advanced_bacterial_analyzer_top"
+    "down": "nautec:block/advanced_bacterial_analyzer_bottom",
+    "east": "nautec:block/advanced_bacterial_analyzer_side",
+    "north": "nautec:block/advanced_bacterial_analyzer_front_active",
+    "north_emissive": "nautec:block/advanced_bacterial_analyzer_front_active_emissive",
+    "particle": "nautec:block/advanced_bacterial_analyzer_front_active",
+    "south": "nautec:block/advanced_bacterial_analyzer_side",
+    "up": "nautec:block/advanced_bacterial_analyzer_top",
+    "west": "nautec:block/advanced_bacterial_analyzer_side"
   }
 }

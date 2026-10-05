@@ -327,7 +327,7 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEAGRASS));
     public static final DeferredBlock<HydrothermalVentBlock> HYDROTHERMAL_VENT = registerBlockAndItem("hydrothermal_vent", HydrothermalVentBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.BASALT).lightLevel(state -> 6).isValidSpawn((state, level, pos, type) -> false)
-                    .emissiveRendering((state, level, pos) -> true));
+                    .noOcclusion());
     public static final DeferredBlock<GlowLichenBlock> GLOW_POLYP = registerBlockAndItem("glow_polyp", GlowLichenBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.GLOW_LICHEN).lightLevel(GlowLichenBlock.emission(7)));
 

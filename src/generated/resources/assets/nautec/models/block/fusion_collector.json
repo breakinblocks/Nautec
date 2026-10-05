@@ -1,8 +1,14 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "nautec:block/template_emissive_cube_du",
   "textures": {
-    "bottom": "nautec:block/fusion_collector_lens",
-    "side": "nautec:block/fusion_collector_side",
-    "top": "nautec:block/fusion_collector_lens"
+    "down": "nautec:block/fusion_collector_lens",
+    "down_emissive": "nautec:block/fusion_collector_lens_emissive",
+    "east": "nautec:block/fusion_collector_side",
+    "north": "nautec:block/fusion_collector_side",
+    "particle": "nautec:block/fusion_collector_side",
+    "south": "nautec:block/fusion_collector_side",
+    "up": "nautec:block/fusion_collector_lens",
+    "up_emissive": "nautec:block/fusion_collector_lens_emissive",
+    "west": "nautec:block/fusion_collector_side"
   }
 }

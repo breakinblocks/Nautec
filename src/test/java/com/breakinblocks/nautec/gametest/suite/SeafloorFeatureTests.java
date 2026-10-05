@@ -13,6 +13,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public final class SeafloorFeatureTests {
     private static final Identifier TALL = Nautec.rl("empty_19x11x19");
@@ -51,6 +52,7 @@ public final class SeafloorFeatureTests {
             boolean placed = VentFieldFeature.chimney(helper.getLevel(), RandomSource.create(3), helper.absolutePos(floor), 6);
             helper.assertTrue(placed, "the chimney is built in open water");
             helper.assertTrue(helper.getBlockState(floor.above(5)).is(NTBlocks.HYDROTHERMAL_VENT.get()), "a vent caps the chimney");
+            helper.assertTrue(helper.getBlockState(floor.above(5)).getValue(BlockStateProperties.WATERLOGGED), "the vent cap keeps its water");
             helper.assertTrue(helper.getBlockState(floor.below()).is(Blocks.MAGMA_BLOCK), "magma feeds it from below");
             helper.assertTrue(helper.getBlockState(floor.above(6)).is(Blocks.WATER), "water stays above the vent");
             helper.assertFalse(helper.getBlockState(floor.above(2)).is(Blocks.WATER), "the chimney is solid");

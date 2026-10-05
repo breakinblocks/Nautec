@@ -1,9 +1,14 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "nautec:block/template_emissive_cube_un",
   "textures": {
-    "bottom": "nautec:block/grafting_station_bottom",
-    "front": "nautec:block/grafting_station_front_active",
-    "side": "nautec:block/grafting_station_side",
-    "top": "nautec:block/grafting_station_top_active"
+    "down": "nautec:block/grafting_station_bottom",
+    "east": "nautec:block/grafting_station_side",
+    "north": "nautec:block/grafting_station_front_active",
+    "north_emissive": "nautec:block/grafting_station_front_active_emissive",
+    "particle": "nautec:block/grafting_station_front_active",
+    "south": "nautec:block/grafting_station_side",
+    "up": "nautec:block/grafting_station_top_active",
+    "up_emissive": "nautec:block/grafting_station_top_active_emissive",
+    "west": "nautec:block/grafting_station_side"
   }
 }

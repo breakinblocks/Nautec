@@ -1,8 +1,13 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "nautec:block/template_emissive_cube_u",
   "textures": {
-    "bottom": "nautec:block/laser_injector_back",
-    "side": "nautec:block/laser_injector_side",
-    "top": "nautec:block/laser_injector_front"
+    "down": "nautec:block/laser_injector_back",
+    "east": "nautec:block/laser_injector_side",
+    "north": "nautec:block/laser_injector_side",
+    "particle": "nautec:block/laser_injector_side",
+    "south": "nautec:block/laser_injector_side",
+    "up": "nautec:block/laser_injector_front",
+    "up_emissive": "nautec:block/laser_injector_front_emissive",
+    "west": "nautec:block/laser_injector_side"
   }
 }

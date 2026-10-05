@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cross",
+  "parent": "nautec:block/template_emissive_cross",
   "textures": {
-    "cross": "nautec:block/abyssal_coral"
+    "cross": "nautec:block/abyssal_coral",
+    "cross_emissive": "nautec:block/abyssal_coral_emissive"
   }
 }

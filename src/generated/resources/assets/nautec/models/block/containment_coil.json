@@ -1,8 +1,18 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
+  "parent": "nautec:block/template_emissive_cube_dunswe",
   "textures": {
-    "bottom": "nautec:block/containment_coil_end",
-    "side": "nautec:block/containment_coil_side",
-    "top": "nautec:block/containment_coil_end"
+    "down": "nautec:block/containment_coil_end",
+    "down_emissive": "nautec:block/containment_coil_end_emissive",
+    "east": "nautec:block/containment_coil_side",
+    "east_emissive": "nautec:block/containment_coil_side_emissive",
+    "north": "nautec:block/containment_coil_side",
+    "north_emissive": "nautec:block/containment_coil_side_emissive",
+    "particle": "nautec:block/containment_coil_side",
+    "south": "nautec:block/containment_coil_side",
+    "south_emissive": "nautec:block/containment_coil_side_emissive",
+    "up": "nautec:block/containment_coil_end",
+    "up_emissive": "nautec:block/containment_coil_end_emissive",
+    "west": "nautec:block/containment_coil_side",
+    "west_emissive": "nautec:block/containment_coil_side_emissive"
   }
 }

@@ -1,12 +1,17 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "nautec:block/template_emissive_cube_dnswe",
   "textures": {
     "down": "nautec:block/aquatic_catalyst_bottom_active",
+    "down_emissive": "nautec:block/aquatic_catalyst_bottom_active_emissive",
     "east": "nautec:block/aquatic_catalyst_side_active",
+    "east_emissive": "nautec:block/aquatic_catalyst_side_active_emissive",
     "north": "nautec:block/aquatic_catalyst_side_active",
+    "north_emissive": "nautec:block/aquatic_catalyst_side_active_emissive",
     "particle": "nautec:block/aquatic_catalyst_side",
     "south": "nautec:block/aquatic_catalyst_side_active",
+    "south_emissive": "nautec:block/aquatic_catalyst_side_active_emissive",
     "up": "nautec:block/aquatic_catalyst_top_7",
-    "west": "nautec:block/aquatic_catalyst_side_active"
+    "west": "nautec:block/aquatic_catalyst_side_active",
+    "west_emissive": "nautec:block/aquatic_catalyst_side_active_emissive"
   }
 }

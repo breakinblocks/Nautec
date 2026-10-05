@@ -42,7 +42,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.apache.commons.lang3.IntegerRange;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -51,6 +54,16 @@ public class BlockModelProvider extends ModelProvider {
     private static final TextureSlot SLOT_2 = TextureSlot.create("2");
     private static final TextureSlot SLOT_4 = TextureSlot.create("4");
     private static final TextureSlot SLOT_5 = TextureSlot.create("5");
+    private static final TextureSlot CROSS_EMISSIVE = TextureSlot.create("cross_emissive");
+    private static final Map<Direction, TextureSlot> FACE_SLOTS = new EnumMap<>(Direction.class);
+    private static final Map<Direction, TextureSlot> GLOW_SLOTS = new EnumMap<>(Direction.class);
+
+    static {
+        for (Direction direction : Direction.values()) {
+            FACE_SLOTS.put(direction, TextureSlot.create(direction.getName()));
+            GLOW_SLOTS.put(direction, TextureSlot.create(direction.getName() + "_emissive"));
+        }
+    }
 
     private final Map<Identifier, Identifier> createdModels = new HashMap<>();
     private BlockModelGenerators blockModels;
@@ -92,7 +105,8 @@ public class BlockModelProvider extends ModelProvider {
         prismarineBud(NTBlocks.LARGE_PRISMARINE_BUD.get());
         prismarineBud(NTBlocks.PRISMARINE_CLUSTER.get());
 
-        blockModels.createGrowingPlant(NTBlocks.DEEP_KELP.get(), NTBlocks.DEEP_KELP_PLANT.get(), BlockModelGenerators.PlantType.NOT_TINTED);
+        simpleBlock(NTBlocks.DEEP_KELP.get(), emissiveCross(NTBlocks.DEEP_KELP.get()));
+        simpleBlock(NTBlocks.DEEP_KELP_PLANT.get(), emissiveCross(NTBlocks.DEEP_KELP_PLANT.get()));
         blockModels.registerSimpleFlatItemModel(NTBlocks.DEEP_KELP.get());
         waterPlant(NTBlocks.LUMINESCENT_ALGAE.get());
         waterPlant(NTBlocks.PRISMARINE_FROND.get());
@@ -186,7 +200,9 @@ public class BlockModelProvider extends ModelProvider {
                 blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_bottom"), blockTexture(NTBlocks.TIDAL_ROTOR.get(), "_top")));
         Block tap = NTBlocks.THERMAL_VENT_TAP.get();
         Identifier idle = cubeBottomTop("thermal_vent_tap", blockTexture(tap, "_side"), blockTexture(tap, "_bottom"), blockTexture(tap, "_top"));
-        Identifier lit = cubeBottomTop("thermal_vent_tap_lit", blockTexture(tap, "_side_lit"), blockTexture(tap, "_bottom"), blockTexture(tap, "_top_lit"));
+        Identifier lit = emissiveCube("thermal_vent_tap_lit", faces(blockTexture(tap, "_bottom"), blockTexture(tap, "_top_lit"),
+                blockTexture(tap, "_side_lit"), blockTexture(tap, "_side_lit")), blockTexture(tap, "_side_lit"),
+                glow(null, blockTexture(tap, "_top_lit_emissive"), blockTexture(tap, "_side_lit_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(tap)
                 .with(BlockModelGenerators.createBooleanModelDispatch(ThermalVentTapBlock.LIT,
                         BlockModelGenerators.plainVariant(lit), BlockModelGenerators.plainVariant(idle))));
@@ -196,23 +212,29 @@ public class BlockModelProvider extends ModelProvider {
         Material casing = blockTexture(NTBlocks.FUSION_CASING.get());
         simpleBlock(NTBlocks.FUSION_CASING.get(), cubeAll("fusion_casing", casing));
         simpleBlock(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get(), cubeAll("aquamarine_structural_glass", blockTexture(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.get())));
-        simpleBlock(NTBlocks.CONTAINMENT_COIL.get(), cubeBottomTop("containment_coil", blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_side"),
-                blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_end"), blockTexture(NTBlocks.CONTAINMENT_COIL.get(), "_end")));
-        simpleBlock(NTBlocks.FUSION_PORT.get(), cubeAll("fusion_port", blockTexture(NTBlocks.FUSION_PORT.get())));
-        simpleBlock(NTBlocks.FUSION_COLLECTOR.get(), cubeBottomTop("fusion_collector", blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_side"),
-                blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_lens"), blockTexture(NTBlocks.FUSION_COLLECTOR.get(), "_lens")));
-        facingBlock(NTBlocks.LASER_INJECTOR.get(), cubeBottomTop("laser_injector", blockTexture(NTBlocks.LASER_INJECTOR.get(), "_side"),
-                blockTexture(NTBlocks.LASER_INJECTOR.get(), "_back"), blockTexture(NTBlocks.LASER_INJECTOR.get(), "_front")));
+        Block coil = NTBlocks.CONTAINMENT_COIL.get();
+        simpleBlock(coil, emissiveCube("containment_coil", faces(blockTexture(coil, "_end"), blockTexture(coil, "_end"),
+                blockTexture(coil, "_side"), blockTexture(coil, "_side")), blockTexture(coil, "_side"),
+                glow(blockTexture(coil, "_end_emissive"), blockTexture(coil, "_end_emissive"), blockTexture(coil, "_side_emissive"))));
+        Block port = NTBlocks.FUSION_PORT.get();
+        simpleBlock(port, emissiveCube("fusion_port", faces(blockTexture(port), blockTexture(port), blockTexture(port), blockTexture(port)),
+                blockTexture(port), glow(blockTexture(port, "_emissive"), blockTexture(port, "_emissive"), blockTexture(port, "_emissive"))));
+        Block collector = NTBlocks.FUSION_COLLECTOR.get();
+        simpleBlock(collector, emissiveCube("fusion_collector", faces(blockTexture(collector, "_lens"), blockTexture(collector, "_lens"),
+                blockTexture(collector, "_side"), blockTexture(collector, "_side")), blockTexture(collector, "_side"),
+                glow(blockTexture(collector, "_lens_emissive"), blockTexture(collector, "_lens_emissive"), null)));
+        Block injector = NTBlocks.LASER_INJECTOR.get();
+        facingBlock(injector, emissiveCube("laser_injector", faces(blockTexture(injector, "_back"), blockTexture(injector, "_front"),
+                blockTexture(injector, "_side"), blockTexture(injector, "_side")), blockTexture(injector, "_side"),
+                glow(null, blockTexture(injector, "_front_emissive"), null)));
 
         Block controller = NTBlocks.FUSION_CONTROLLER.get();
         Identifier idle = createdModels.computeIfAbsent(Nautec.rl("block/fusion_controller"), key -> ModelTemplates.CUBE_ORIENTABLE.create(key, new TextureMapping()
                 .put(TextureSlot.FRONT, blockTexture(controller, "_front"))
                 .put(TextureSlot.SIDE, casing)
                 .put(TextureSlot.TOP, casing), blockModels.modelOutput));
-        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/fusion_controller_active"), key -> ModelTemplates.CUBE_ORIENTABLE.create(key, new TextureMapping()
-                .put(TextureSlot.FRONT, blockTexture(controller, "_front_active"))
-                .put(TextureSlot.SIDE, casing)
-                .put(TextureSlot.TOP, casing), blockModels.modelOutput));
+        Identifier active = emissiveCube("fusion_controller_active", faces(casing, casing, blockTexture(controller, "_front_active"), casing),
+                blockTexture(controller, "_front_active"), front(blockTexture(controller, "_front_active_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(controller)
                 .with(BlockModelGenerators.createBooleanModelDispatch(FusionControllerBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
@@ -229,8 +251,7 @@ public class BlockModelProvider extends ModelProvider {
         dishStorage(NTBlocks.DEEP_STEEL_DISH_STORAGE.get());
         dishStorage(NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get());
         biomeTanks();
-        simpleBlock(NTBlocks.HYDROTHERMAL_VENT.get(), cubeBottomTop("hydrothermal_vent", blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_side"),
-                blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_bottom"), blockTexture(NTBlocks.HYDROTHERMAL_VENT.get(), "_top")));
+        simpleBlock(NTBlocks.HYDROTHERMAL_VENT.get(), existingModelFile(NTBlocks.HYDROTHERMAL_VENT.get()));
         simpleBlock(NTBlocks.DISTRIBUTOR.get(), cubeBottomTop("nautechnical_distributor", blockTexture(NTBlocks.DISTRIBUTOR.get(), "_side"),
                 blockTexture(NTBlocks.DISTRIBUTOR.get(), "_bottom"), blockTexture(NTBlocks.DISTRIBUTOR.get(), "_top")));
     }
@@ -241,11 +262,9 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.SIDE, blockTexture(block, "_side"))
                 .put(TextureSlot.TOP, blockTexture(block, "_top"))
                 .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
-        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/colony_replicator_active"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
-                .put(TextureSlot.FRONT, blockTexture(block, "_front_active"))
-                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
-                .put(TextureSlot.TOP, blockTexture(block, "_top"))
-                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        Identifier active = emissiveCube("colony_replicator_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top"),
+                blockTexture(block, "_front_active"), blockTexture(block, "_side")), blockTexture(block, "_front_active"),
+                front(blockTexture(block, "_front_active_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(ColonyReplicatorBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
@@ -280,8 +299,9 @@ public class BlockModelProvider extends ModelProvider {
 
     private void oxygenDiffuser(Block block) {
         Identifier idle = cubeBottomTop("oxygen_diffuser", blockTexture(block, "_side"), blockTexture(block, "_bottom"), blockTexture(block, "_top"));
-        Identifier active = cubeBottomTop("oxygen_diffuser_active", blockTexture(block, "_side_active"), blockTexture(block, "_bottom"),
-                blockTexture(block, "_top_active"));
+        Identifier active = emissiveCube("oxygen_diffuser_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top_active"),
+                blockTexture(block, "_side_active"), blockTexture(block, "_side_active")), blockTexture(block, "_side_active"),
+                glow(null, blockTexture(block, "_top_active_emissive"), blockTexture(block, "_side_active_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(OxygenDiffuserBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle))));
@@ -289,8 +309,9 @@ public class BlockModelProvider extends ModelProvider {
 
     private void bubbleAnchor(Block block) {
         Identifier idle = cubeBottomTop("bubble_anchor", blockTexture(block, "_side"), blockTexture(block, "_bottom"), blockTexture(block, "_top"));
-        Identifier active = cubeBottomTop("bubble_anchor_active", blockTexture(block, "_side_active"), blockTexture(block, "_bottom"),
-                blockTexture(block, "_top_active"));
+        Identifier active = emissiveCube("bubble_anchor_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top_active"),
+                blockTexture(block, "_side_active"), blockTexture(block, "_side_active")), blockTexture(block, "_side_active"),
+                glow(null, blockTexture(block, "_top_active_emissive"), blockTexture(block, "_side_active_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(BubbleAnchorBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle))));
@@ -302,11 +323,9 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.SIDE, blockTexture(block, "_side"))
                 .put(TextureSlot.TOP, blockTexture(block, "_top"))
                 .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
-        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/advanced_bacterial_analyzer_active"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
-                .put(TextureSlot.FRONT, blockTexture(block, "_front_active"))
-                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
-                .put(TextureSlot.TOP, blockTexture(block, "_top"))
-                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        Identifier active = emissiveCube("advanced_bacterial_analyzer_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top"),
+                blockTexture(block, "_front_active"), blockTexture(block, "_side")), blockTexture(block, "_front_active"),
+                front(blockTexture(block, "_front_active_emissive")));
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(AdvancedBacterialAnalyzerBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
@@ -319,11 +338,10 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.SIDE, blockTexture(block, "_side"))
                 .put(TextureSlot.TOP, blockTexture(block, "_top"))
                 .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
-        Identifier active = createdModels.computeIfAbsent(Nautec.rl("block/grafting_station_active"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
-                .put(TextureSlot.FRONT, blockTexture(block, "_front_active"))
-                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
-                .put(TextureSlot.TOP, blockTexture(block, "_top_active"))
-                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
+        Map<Direction, Material> graftingGlow = front(blockTexture(block, "_front_active_emissive"));
+        graftingGlow.put(Direction.UP, blockTexture(block, "_top_active_emissive"));
+        Identifier active = emissiveCube("grafting_station_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top_active"),
+                blockTexture(block, "_front_active"), blockTexture(block, "_side")), blockTexture(block, "_front_active"), graftingGlow);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(GraftingStationBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
@@ -347,13 +365,78 @@ public class BlockModelProvider extends ModelProvider {
     }
 
     private void prismarineBud(Block block) {
-        blockModels.createAmethystCluster(block);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, BlockModelGenerators.plainVariant(emissiveCross(block)))
+                .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING));
         blockModels.registerSimpleFlatItemModel(block);
     }
 
     private void waterPlant(Block block) {
-        blockModels.createCrossBlock(block, BlockModelGenerators.PlantType.NOT_TINTED);
+        simpleBlock(block, emissiveCross(block));
         blockModels.registerSimpleFlatItemModel(block);
+    }
+
+    private Identifier emissiveCross(Block block) {
+        Identifier id = ModelLocationUtils.getModelLocation(block);
+        return createdModels.computeIfAbsent(id, key -> new ModelTemplate(Optional.of(Nautec.rl("block/template_emissive_cross")), Optional.empty(),
+                TextureSlot.CROSS, CROSS_EMISSIVE).create(key, new TextureMapping()
+                .put(TextureSlot.CROSS, blockTexture(block))
+                .put(CROSS_EMISSIVE, blockTexture(block, "_emissive")), blockModels.modelOutput));
+    }
+
+    private static Map<Direction, Material> faces(Material down, Material up, Material north, Material side) {
+        Map<Direction, Material> faces = new EnumMap<>(Direction.class);
+        faces.put(Direction.DOWN, down);
+        faces.put(Direction.UP, up);
+        faces.put(Direction.NORTH, north);
+        faces.put(Direction.SOUTH, side);
+        faces.put(Direction.WEST, side);
+        faces.put(Direction.EAST, side);
+        return faces;
+    }
+
+    private static Map<Direction, Material> glow(Material down, Material up, Material sides) {
+        Map<Direction, Material> glow = new EnumMap<>(Direction.class);
+        if (down != null) {
+            glow.put(Direction.DOWN, down);
+        }
+        if (up != null) {
+            glow.put(Direction.UP, up);
+        }
+        if (sides != null) {
+            for (Direction direction : Direction.Plane.HORIZONTAL) {
+                glow.put(direction, sides);
+            }
+        }
+        return glow;
+    }
+
+    private static Map<Direction, Material> front(Material north) {
+        Map<Direction, Material> glow = new EnumMap<>(Direction.class);
+        glow.put(Direction.NORTH, north);
+        return glow;
+    }
+
+    private Identifier emissiveCube(String name, Map<Direction, Material> faces, Material particle, Map<Direction, Material> glow) {
+        Identifier id = Nautec.rl("block/" + name);
+        return createdModels.computeIfAbsent(id, key -> {
+            StringBuilder letters = new StringBuilder();
+            List<TextureSlot> slots = new ArrayList<>();
+            TextureMapping mapping = new TextureMapping().put(TextureSlot.PARTICLE, particle);
+            slots.add(TextureSlot.PARTICLE);
+            for (Direction direction : Direction.values()) {
+                slots.add(FACE_SLOTS.get(direction));
+                mapping.put(FACE_SLOTS.get(direction), faces.get(direction));
+                Material emissive = glow.get(direction);
+                if (emissive != null) {
+                    letters.append(direction.getName().charAt(0));
+                    slots.add(GLOW_SLOTS.get(direction));
+                    mapping.put(GLOW_SLOTS.get(direction), emissive);
+                }
+            }
+            ModelTemplate template = new ModelTemplate(Optional.of(Nautec.rl("block/template_emissive_cube_" + letters)), Optional.empty(),
+                    slots.toArray(TextureSlot[]::new));
+            return template.create(key, mapping, blockModels.modelOutput);
+        });
     }
 
     private void simpleBlock(Block block, Identifier model) {
@@ -486,6 +569,12 @@ public class BlockModelProvider extends ModelProvider {
 
     private Identifier createActiveACModel(AquaticCatalystBlock block, int stage, boolean active) {
         String suffix = active ? "_active" : "";
+        if (active) {
+            Map<Direction, Material> faces = faces(blockTexture(block, "_bottom_active"), blockTexture(block, "_top_" + stage),
+                    blockTexture(block, "_side_active"), blockTexture(block, "_side_active"));
+            Map<Direction, Material> glow = glow(blockTexture(block, "_bottom_active_emissive"), null, blockTexture(block, "_side_active_emissive"));
+            return emissiveCube(name(block) + suffix + (stage != 0 ? ("_" + stage) : ""), faces, blockTexture(block, "_side"), glow);
+        }
         return cube(name(block) + suffix + (stage != 0 ? ("_" + stage) : ""),
                 blockTexture(block, "_bottom" + suffix),
                 blockTexture(block, "_top_" + stage),

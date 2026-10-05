@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cross",
+  "parent": "nautec:block/template_emissive_cross",
   "textures": {
-    "cross": "nautec:block/medium_prismarine_bud"
+    "cross": "nautec:block/medium_prismarine_bud",
+    "cross_emissive": "nautec:block/medium_prismarine_bud_emissive"
   }
 }

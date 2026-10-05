@@ -1,9 +1,13 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
+  "parent": "nautec:block/template_emissive_cube_n",
   "textures": {
-    "bottom": "nautec:block/colony_replicator_bottom",
-    "front": "nautec:block/colony_replicator_front_active",
-    "side": "nautec:block/colony_replicator_side",
-    "top": "nautec:block/colony_replicator_top"
+    "down": "nautec:block/colony_replicator_bottom",
+    "east": "nautec:block/colony_replicator_side",
+    "north": "nautec:block/colony_replicator_front_active",
+    "north_emissive": "nautec:block/colony_replicator_front_active_emissive",
+    "particle": "nautec:block/colony_replicator_front_active",
+    "south": "nautec:block/colony_replicator_side",
+    "up": "nautec:block/colony_replicator_top",
+    "west": "nautec:block/colony_replicator_side"
   }
 }

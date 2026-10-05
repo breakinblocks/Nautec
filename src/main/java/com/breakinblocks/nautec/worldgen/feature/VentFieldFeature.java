@@ -10,6 +10,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -116,7 +117,8 @@ public class VentFieldFeature extends Feature<NoneFeatureConfiguration> {
                 }
             }
         }
-        level.setBlock(floor.above(height - 1), NTBlocks.HYDROTHERMAL_VENT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+        level.setBlock(floor.above(height - 1), NTBlocks.HYDROTHERMAL_VENT.get().defaultBlockState()
+                .setValue(BlockStateProperties.WATERLOGGED, true), Block.UPDATE_CLIENTS);
         for (int i = 0; i < 12; i++) {
             BlockPos spot = findFloor(level, floor.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3));
             if (spot == null) {

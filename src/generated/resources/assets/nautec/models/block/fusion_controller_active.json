@@ -1,8 +1,13 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "nautec:block/template_emissive_cube_n",
   "textures": {
-    "front": "nautec:block/fusion_controller_front_active",
-    "side": "nautec:block/fusion_casing",
-    "top": "nautec:block/fusion_casing"
+    "down": "nautec:block/fusion_casing",
+    "east": "nautec:block/fusion_casing",
+    "north": "nautec:block/fusion_controller_front_active",
+    "north_emissive": "nautec:block/fusion_controller_front_active_emissive",
+    "particle": "nautec:block/fusion_controller_front_active",
+    "south": "nautec:block/fusion_casing",
+    "up": "nautec:block/fusion_casing",
+    "west": "nautec:block/fusion_casing"
   }
 }

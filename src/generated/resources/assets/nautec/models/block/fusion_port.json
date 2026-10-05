@@ -1,6 +1,18 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "nautec:block/template_emissive_cube_dunswe",
   "textures": {
-    "all": "nautec:block/fusion_port"
+    "down": "nautec:block/fusion_port",
+    "down_emissive": "nautec:block/fusion_port_emissive",
+    "east": "nautec:block/fusion_port",
+    "east_emissive": "nautec:block/fusion_port_emissive",
+    "north": "nautec:block/fusion_port",
+    "north_emissive": "nautec:block/fusion_port_emissive",
+    "particle": "nautec:block/fusion_port",
+    "south": "nautec:block/fusion_port",
+    "south_emissive": "nautec:block/fusion_port_emissive",
+    "up": "nautec:block/fusion_port",
+    "up_emissive": "nautec:block/fusion_port_emissive",
+    "west": "nautec:block/fusion_port",
+    "west_emissive": "nautec:block/fusion_port_emissive"
   }
 }

@@ -73,8 +73,9 @@ public final class NTGameTestRegistration {
         ResearchOutpostTests.register(r);
         ExpansionFeatureTests.register(r);
         HardeningTests.register(r);
-        if (r.registeredCount() != 599) {
-            throw new IllegalStateException("Expected 599 Nautec suite tests, registered " + r.registeredCount());
+        ArtPassTests.register(r);
+        if (r.registeredCount() != 602) {
+            throw new IllegalStateException("Expected 602 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

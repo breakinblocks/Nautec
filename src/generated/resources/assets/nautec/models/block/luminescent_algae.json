@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cross",
+  "parent": "nautec:block/template_emissive_cross",
   "textures": {
-    "cross": "nautec:block/luminescent_algae"
+    "cross": "nautec:block/luminescent_algae",
+    "cross_emissive": "nautec:block/luminescent_algae_emissive"
   }
 }
