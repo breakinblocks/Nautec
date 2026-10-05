@@ -190,6 +190,22 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         sync();
     }
 
+    public boolean hasContents() {
+        if (getFluidTank().getFluidAmount() > 0) {
+            return true;
+        }
+        for (int slot = 0; slot < getItemStackHandler().getSlots(); slot++) {
+            if (!getItemStackHandler().getStackInSlot(slot).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void drop() {
+    }
+
     public boolean release() {
         if (level == null || level.isClientSide() || spawnerTag == null) {
             return false;

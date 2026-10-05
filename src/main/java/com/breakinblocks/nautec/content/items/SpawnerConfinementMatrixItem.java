@@ -87,6 +87,13 @@ public class SpawnerConfinementMatrixItem extends Item {
         if (player != null && !level.mayInteract(player, pos)) {
             return false;
         }
+        if (confined.hasContents()) {
+            if (player != null) {
+                player.sendOverlayMessage(Component.translatable("nautec.confined_spawner.release.not_empty").withStyle(ChatFormatting.RED));
+            }
+            level.playSound(null, pos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 0.6F, 1.0F);
+            return false;
+        }
         if (!confined.release()) {
             return false;
         }

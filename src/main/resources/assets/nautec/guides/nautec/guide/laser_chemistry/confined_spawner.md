@@ -20,9 +20,9 @@ item_ids:
 
 Use a Spawner Confinement Matrix on a spawner. The cage gains a band of glowing runes and a metal frame, and becomes a Confined Spawner. It keeps everything about the original spawner: the mob, how many it spawns at once, how often, and any upgrades. Spawners improved with Apothic Spawners keep their spawn count and delay and run faster for them.
 
-Sneak and use the Confined Spawner with an empty hand, or with a Matrix, to release it. The spawner goes back exactly as it was and the Matrix returns to your inventory. Anything still in the storage drops on the ground.
+Sneak and use the Confined Spawner with an empty hand, or with a Matrix, to release it. The spawner goes back exactly as it was and the Matrix returns to your inventory. It only releases once the storage and the experience tank are both empty; until then a message says to empty them first.
 
-Breaking a Confined Spawner with a pickaxe drops the Confined Spawner itself, with or without Silk Touch. It keeps the mob, the spawner's settings and upgrades, and the filter, so you can move it and place it back exactly as it was. Anything still in the storage drops on the ground. To get a plain spawner back instead, release it first.
+Breaking a Confined Spawner with a pickaxe drops the Confined Spawner itself, with or without Silk Touch. It keeps the mob, the spawner's settings and upgrades, and the filter, so you can move it and place it back exactly as it was. The stored drops and experience go with it too, so nothing spills on the ground. To get a plain spawner back instead, empty it and release it.
 
 ## <Color id="gold">Power</Color>
 

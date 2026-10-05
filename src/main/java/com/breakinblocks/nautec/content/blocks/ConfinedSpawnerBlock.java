@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blocks;
 
+import net.minecraft.world.entity.item.ItemEntity;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -61,15 +62,31 @@ public class ConfinedSpawnerBlock extends LaserBlock {
         }
         for (ItemStack drop : drops) {
             if (drop.is(asItem())) {
-                try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
-                    TagValueOutput out = TagValueOutput.createWithContext(reporter, params.getLevel().registryAccess());
-                    confined.saveCustomOnly(out);
-                    out.discard("itemhandler");
-                    BlockItem.setBlockEntityData(drop, confined.getType(), out);
-                }
+                keepContents(drop, confined, params.getLevel());
             }
         }
         return drops;
+    }
+
+    private static void keepContents(ItemStack stack, ConfinedSpawnerBlockEntity confined, Level level) {
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
+            TagValueOutput out = TagValueOutput.createWithContext(reporter, level.registryAccess());
+            confined.saveCustomOnly(out);
+            BlockItem.setBlockEntityData(stack, confined.getType(), out);
+        }
+    }
+
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide() && player.preventsBlockDrops() && level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined
+                && confined.hasContents()) {
+            ItemStack stack = new ItemStack(asItem());
+            keepContents(stack, confined, level);
+            ItemEntity entity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+            entity.setDefaultPickUpDelay();
+            level.addFreshEntity(entity);
+        }
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override

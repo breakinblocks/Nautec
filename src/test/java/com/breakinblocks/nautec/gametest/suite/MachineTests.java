@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.tags.NTTags;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.registries.BuiltInRegistries;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
@@ -273,6 +276,26 @@ public final class MachineTests {
                 helper.assertValueEqual(1000, mixer.getInputFluidAmount(), "input fluid untouched without power");
                 helper.succeed();
             });
+        });
+
+        r.add("machine/oil_barrel_takes_any_c_oil", 20, helper -> {
+            BlockPos barrelPos = new BlockPos(4, 1, 4);
+            helper.setBlock(barrelPos, NTBlocks.OIL_BARREL.get().defaultBlockState().setValue(OilBarrelBlock.OPEN, true));
+            OilBarrelBlockEntity barrel = helper.getBlockEntity(barrelPos, OilBarrelBlockEntity.class);
+            int oils = 0;
+            for (Fluid fluid : BuiltInRegistries.FLUID) {
+                if (fluid == Fluids.EMPTY) {
+                    continue;
+                }
+                boolean oil = fluid.defaultFluidState().is(NTTags.Fluids.OIL);
+                if (oil) {
+                    oils++;
+                }
+                helper.assertValueEqual(barrel.getFluidTank().isFluidValid(new FluidStack(fluid, 1)), oil,
+                        "barrel accepts " + BuiltInRegistries.FLUID.getKey(fluid) + " exactly when it is c:oil");
+            }
+            helper.assertTrue(oils > 0, "c:oil has at least NauTec's oil in it");
+            helper.succeed();
         });
 
         r.add("machine/oil_barrel_capacity_and_validation", 20, helper -> {

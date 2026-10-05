@@ -745,7 +745,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.reactor_upgrade.fusion.effect", "Counts as one Speed, one Yield and one Efficiency Upgrade in a single slot");
         add("nautec.spawner_confinement_matrix.use", "Use on a spawner to confine it");
         add("nautec.spawner_confinement_matrix.power", "A confined spawner runs on %s AP per tick and stores the drops");
-        add("nautec.spawner_confinement_matrix.release", "Sneak and use on a confined spawner to release it");
+        add("nautec.spawner_confinement_matrix.release", "Sneak and use on a confined spawner to release it. It must be empty first");
+        add("nautec.confined_spawner.release.not_empty", "Empty the stored drops and experience before releasing the spawner");
         add("nautec.confined_spawner.status.running", "Running");
         add("nautec.confined_spawner.status.no_power", "No Power");
         add("nautec.confined_spawner.status.full", "Full");

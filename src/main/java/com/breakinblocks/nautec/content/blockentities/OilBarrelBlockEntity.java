@@ -4,7 +4,7 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
-import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.tags.NTTags;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class OilBarrelBlockEntity extends ContainerBlockEntity {
     public OilBarrelBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.OIL_BARREL.get(), blockPos, blockState);
-        addFluidTank(8000, fluid -> fluid.is(NTFluids.OIL.getStillFluid()));
+        addFluidTank(8000, fluid -> fluid.is(NTTags.Fluids.OIL));
     }
 
     @Override

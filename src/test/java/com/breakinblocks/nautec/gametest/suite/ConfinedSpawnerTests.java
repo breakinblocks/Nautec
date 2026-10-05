@@ -135,11 +135,33 @@ public final class ConfinedSpawnerTests {
             helper.assertValueEqual(6, placed.getSettings().spawnCount(), "spawn count after placing");
             helper.assertTrue(placed.getFilter().isWhitelist(), "filter mode after placing");
             helper.assertTrue(placed.getFilter().get(3) != null && placed.getFilter().get(3).matches(new ItemStack(Items.FEATHER)), "filter entry after placing");
-            helper.assertValueEqual(0, count(placed, Items.FEATHER), "stored items do not travel with the item");
-            helper.assertTrue(SpawnerConfinementMatrixItem.release(level, helper.absolutePos(target), placed, null), "the placed spawner can still be released");
+            helper.assertValueEqual(5, count(placed, Items.FEATHER), "stored items travel with the item");
+            helper.assertTrue(!SpawnerConfinementMatrixItem.release(level, helper.absolutePos(target), placed, null), "a spawner holding drops cannot be released");
+            helper.assertTrue(helper.getBlockState(target).is(NTBlocks.CONFINED_SPAWNER.get()), "a refused release leaves it confined");
+            placed.getItemStackHandler().setStackInSlot(0, ItemStack.EMPTY);
+            helper.assertTrue(SpawnerConfinementMatrixItem.release(level, helper.absolutePos(target), placed, null), "the emptied spawner can be released");
             SpawnerBlockEntity restored = helper.getBlockEntity(target, SpawnerBlockEntity.class);
             helper.assertValueEqual("minecraft:chicken", restored.saveWithoutMetadata(level.registryAccess())
                     .getCompoundOrEmpty("SpawnData").getCompoundOrEmpty("entity").getStringOr("id", ""), "mob after release");
+            helper.succeed();
+        });
+
+        r.add("confined_spawner/stored_experience_blocks_release_and_survives_mining", 40, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
+            confined.getFluidTank().setFluid(new FluidStack(NTFluids.EXPERIENCE_ALGAE.getStillFluid(), 500));
+            helper.assertTrue(!SpawnerConfinementMatrixItem.release(helper.getLevel(), helper.absolutePos(SPAWNER), confined, null),
+                    "stored experience blocks the release");
+            helper.assertTrue(helper.getBlockState(SPAWNER).is(NTBlocks.CONFINED_SPAWNER.get()), "it stays confined");
+            confined.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.FEATHER, 3));
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_PICKAXE));
+            helper.getLevel().destroyBlock(helper.absolutePos(SPAWNER), true, player);
+            AABB around = new AABB(helper.absolutePos(SPAWNER)).inflate(2);
+            List<ItemEntity> items = helper.getLevel().getEntitiesOfClass(ItemEntity.class, around);
+            helper.assertValueEqual(1, items.size(), "mining drops one item, not the stored contents");
+            ItemStack dropped = items.getFirst().getItem();
+            helper.assertTrue(dropped.is(NTBlocks.CONFINED_SPAWNER.get().asItem()), "the one drop is the confined spawner");
+            helper.assertTrue(dropped.has(DataComponents.BLOCK_ENTITY_DATA), "it carries its contents");
             helper.succeed();
         });
 

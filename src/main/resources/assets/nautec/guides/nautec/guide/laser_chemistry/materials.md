@@ -107,7 +107,7 @@ Storage for nine ingots.
   ### <Color id="aqua">Oil Barrel</Color>
 </Row>
 
-A cast iron drum that holds Oil. Right-click it to open or close its lid; pipes can only reach the Oil while the lid is open. Blast it for Cast Iron Ingots. Mine it with a pickaxe to pick it up.
+A cast iron drum that holds up to 8,000 mB of oil, NauTec's or any other mod's (anything in the `c:oil` tag). Right-click it to open or close its lid; pipes can only reach the Oil while the lid is open. Blast it for Cast Iron Ingots. Mine it with a pickaxe to pick it up.
 
 <Recipe id="nautec:oil_barrel"/>
 
