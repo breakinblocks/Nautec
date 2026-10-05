@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import net.minecraft.world.inventory.Slot;
+import com.breakinblocks.nautec.client.screen.PanelStyle;
 import com.breakinblocks.nautec.client.screen.GhostSlots;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
@@ -13,23 +15,40 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTAbstractContainerMenu<T>> implements SideConfigHost {
     private @Nullable SideConfigPanel sidePanel;
 
     public NTAbstractContainerScreen(NTAbstractContainerMenu<T> menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+        this.titleLabelY = 6;
     }
 
     public NTAbstractContainerScreen(NTAbstractContainerMenu<T> menu, Inventory playerInventory, Component title, int imageWidth, int imageHeight) {
         super(menu, playerInventory, title, imageWidth, imageHeight);
+        this.titleLabelY = 6;
     }
 
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getBackgroundTexture(), leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+        Identifier texture = getBackgroundTexture();
+        if (texture != null) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+            return;
+        }
+        PanelStyle.panel(guiGraphics, leftPos, topPos, imageWidth, imageHeight);
+        for (Slot slot : this.menu.slots) {
+            if (slot.isActive()) {
+                PanelStyle.slot(guiGraphics, leftPos + slot.x, topPos + slot.y);
+            }
+        }
+    }
+
+    protected void extractSlotHint(GuiGraphicsExtractor guiGraphics, @Nullable Slot slot, Identifier icon) {
+        if (slot != null && !slot.hasItem()) {
+            PanelStyle.icon(guiGraphics, icon, leftPos + slot.x, topPos + slot.y, 16, 16);
+        }
     }
 
     @Override
@@ -82,5 +101,7 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
         return super.hasClickedOutside(mouseX, mouseY, left, top);
     }
 
-    public abstract @NotNull Identifier getBackgroundTexture();
+    public @Nullable Identifier getBackgroundTexture() {
+        return null;
+    }
 }

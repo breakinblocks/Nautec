@@ -28,17 +28,17 @@ import java.util.List;
 import java.util.Locale;
 
 public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> {
-    private static final int PANEL = 0xFFC8C7B3;
-    private static final int PANEL_LIGHT = 0xFFE7E7D6;
-    private static final int OUTLINE = 0xFF070707;
-    private static final int SLOT_EDGE = 0xFF1E2221;
-    private static final int SLOT_FILL = 0xFF45504A;
-    private static final int SCREEN_FILL = 0xFF16201F;
+    private static final int PANEL = PanelStyle.PANEL;
+    private static final int PANEL_LIGHT = PanelStyle.PANEL_LIGHT;
+    private static final int OUTLINE = PanelStyle.OUTLINE;
+    private static final int SLOT_EDGE = PanelStyle.SLOT_EDGE;
+    private static final int SLOT_FILL = PanelStyle.SLOT_FILL;
+    private static final int SCREEN_FILL = PanelStyle.SCREEN_FILL;
     private static final int ROW_SELECTED = 0xFF2F5C8C;
     private static final int ROW_HOVER = 0xFF2A3634;
-    private static final int LABEL = 0xFF404040;
-    private static final int READOUT = 0xFFB3FCFF;
-    private static final int READOUT_DIM = 0xFF6FA6A8;
+    private static final int LABEL = PanelStyle.LABEL;
+    private static final int READOUT = PanelStyle.READOUT;
+    private static final int READOUT_DIM = PanelStyle.READOUT_DIM;
     private static final int WARNING = 0xFFE36A5C;
 
     private static final int LIST_X = 7;

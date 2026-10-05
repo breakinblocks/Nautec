@@ -3,8 +3,11 @@ package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.NTDataAttachments;
-import com.breakinblocks.nautec.network.OpenAugmentationScreenPayload;
+import com.breakinblocks.nautec.network.AugmentationStationSyncPayload;
+import com.breakinblocks.nautec.registries.NTItems;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -48,6 +51,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class AugmentationStationBlockEntity extends ContainerBlockEntity implements MultiblockEntity {
+    public static final int STATUS_READY = 0;
+    public static final int STATUS_MISSING_EXTENSION = 1;
+    public static final int STATUS_NO_ARM = 2;
+    public static final int STATUS_EMPTY = 3;
+    public static final int STATUS_NO_RECIPE = 4;
+    public static final int STATUS_LOW_POWER = 5;
+    public static final int STATUS_RUNNING = 6;
+    public static final int STATUS_INSTALLED = 7;
+    public static final int OPERATION_TICKS = 80;
+    private static final int SYNC_INTERVAL = 10;
+    private static final int INSTALLED_TICKS = 60;
+
     private MultiblockData multiblockData;
     private UUID playerUUID;
     private int playerOpenMenuInterval;
@@ -59,6 +74,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     private Player player;
     private AugmentationRecipe recipe;
     private AugmentSlot slot;
+    private int installedTicks;
 
     private static final Identifier SURGERY_LOCK = Nautec.rl("augmentation_lock");
     private final Map<BlockPos, ItemStack> operationInputs = new HashMap<>();
@@ -95,7 +111,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         this.player = player;
         this.recipe = candidate.get();
         this.slot = augmentSlot;
-        this.duration = 80;
+        this.duration = OPERATION_TICKS;
         this.isRunning = true;
         player.setData(NTDataAttachments.AUGMENTATION_STATION, Optional.of(GlobalPos.of(level.dimension(), worldPosition)));
         for (var attribute : List.of(Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH)) {
@@ -219,11 +235,25 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                 }
                 cancelAugmentation();
                 AugmentHelper.createAugment(completedRecipe.resultAugment(), recipient, completedSlot);
+                this.installedTicks = INSTALLED_TICKS;
+                if (recipient instanceof ServerPlayer serverPlayer) {
+                    sendStatus(serverPlayer, false);
+                }
+            } else if (duration % SYNC_INTERVAL == 0 && player instanceof ServerPlayer serverPlayer) {
+                sendStatus(serverPlayer, false);
             }
             return;
         }
+        if (installedTicks > 0) {
+            installedTicks--;
+        }
         if (!isFormed()) {
             playerUUID = null;
+            if (level.getGameTime() % 40 == 0) {
+                for (Player standing : level.getEntitiesOfClass(Player.class, new AABB(worldPosition.above()))) {
+                    standing.sendOverlayMessage(Component.translatable("nautec.augmentation_station.unformed").withStyle(ChatFormatting.RED));
+                }
+            }
             return;
         }
         List<Player> occupants = level.getEntitiesOfClass(Player.class, new AABB(worldPosition.above()), this::canOperateOn);
@@ -236,12 +266,79 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
             playerUUID = occupant.getUUID();
             playerOpenMenuInterval = 10;
         }
-        if (playerOpenMenuInterval > 0 && --playerOpenMenuInterval == 0 && occupant instanceof ServerPlayer serverPlayer) {
-            Optional<AugmentationRecipe> available = getRecipe();
-            PacketDistributor.sendToPlayer(serverPlayer, new OpenAugmentationScreenPayload(worldPosition,
-                    available.map(AugmentationRecipe::resultAugment),
-                    available.map(value -> value.augmentItem().getDefaultInstance()).orElse(ItemStack.EMPTY)));
+        if (!(occupant instanceof ServerPlayer serverPlayer)) {
+            return;
         }
+        if (playerOpenMenuInterval > 0) {
+            if (--playerOpenMenuInterval == 0) {
+                sendStatus(serverPlayer, true);
+            }
+        } else if (level.getGameTime() % SYNC_INTERVAL == 0) {
+            sendStatus(serverPlayer, false);
+        }
+    }
+
+    public int getStatus() {
+        if (isRunning) {
+            return STATUS_RUNNING;
+        }
+        if (installedTicks > 0) {
+            return STATUS_INSTALLED;
+        }
+        if (!isFormed() || !extensionsPresent()) {
+            return STATUS_MISSING_EXTENSION;
+        }
+        boolean loaded = false;
+        for (Direction direction : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues()) {
+            var extension = (AugmentationStationExtensionBlockEntity) level.getBlockEntity(worldPosition.relative(direction, 2));
+            if (extension.getItemStackHandler().getStackInSlot(AugmentationStationExtensionBlockEntity.AUGMENT_SLOT).isEmpty()) {
+                continue;
+            }
+            if (!hasArm(extension)) {
+                return STATUS_NO_ARM;
+            }
+            loaded = true;
+        }
+        if (!loaded) {
+            return STATUS_EMPTY;
+        }
+        if (getRecipe().isEmpty()) {
+            return STATUS_NO_RECIPE;
+        }
+        for (BlockPos pos : augmentItems.keySet()) {
+            if (!(level.getBlockEntity(pos) instanceof AugmentationStationExtensionBlockEntity extension)
+                    || extension.getPower() < NTConfig.augmentationStationPower) {
+                return STATUS_LOW_POWER;
+            }
+        }
+        return STATUS_READY;
+    }
+
+    private static boolean hasArm(AugmentationStationExtensionBlockEntity extension) {
+        return extension.getItemStackHandler().getStackInSlot(AugmentationStationExtensionBlockEntity.ROBOT_ARM_SLOT).is(NTItems.CLAW_ROBOT_ARM);
+    }
+
+    private void sendStatus(ServerPlayer player, boolean open) {
+        int status = getStatus();
+        Optional<AugmentationRecipe> available = status == STATUS_RUNNING ? Optional.ofNullable(recipe) : getRecipe();
+        List<AugmentationStationSyncPayload.Extension> extensions = new ArrayList<>();
+        for (Direction direction : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
+            BlockPos pos = worldPosition.relative(direction, 2);
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof AugmentationStationExtensionBlockEntity extension
+                    && extension.getBlockState().getValue(Multiblock.FORMED)) {
+                extensions.add(new AugmentationStationSyncPayload.Extension(direction, true, hasArm(extension),
+                        extension.getItemStackHandler().getStackInSlot(AugmentationStationExtensionBlockEntity.AUGMENT_SLOT).copy(),
+                        extension.getPower()));
+            } else {
+                extensions.add(new AugmentationStationSyncPayload.Extension(direction, false, false, ItemStack.EMPTY, 0));
+            }
+        }
+        PacketDistributor.sendToPlayer(player, new AugmentationStationSyncPayload(worldPosition, open, status,
+                status == STATUS_RUNNING ? OPERATION_TICKS - duration : 0,
+                available.map(AugmentationRecipe::resultAugment),
+                available.map(value -> value.augmentItem().getDefaultInstance()).orElse(ItemStack.EMPTY),
+                available.map(AugmentationRecipe::desc).orElse(""),
+                extensions));
     }
 
     private List<ItemStack> collectInputItems() {
@@ -249,7 +346,9 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         List<ItemStack> items = new ArrayList<>();
         for (Direction direction : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues()) {
             BlockPos pos = worldPosition.relative(direction, 2);
-            var extension = (AugmentationStationExtensionBlockEntity) level.getBlockEntity(pos);
+            if (!(level.getBlockEntity(pos) instanceof AugmentationStationExtensionBlockEntity extension)) {
+                continue;
+            }
             ItemStack augmentItem = extension.getAugmentItem();
             if (!augmentItem.isEmpty()) {
                 augmentItems.put(pos, augmentItem);

@@ -10,11 +10,11 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("9");
+        final PayloadRegistrar registrar = event.registrar("10");
         registrar.playToClient(
-                OpenAugmentationScreenPayload.TYPE,
-                OpenAugmentationScreenPayload.STREAM_CODEC,
-                OpenAugmentationScreenPayload::handle
+                AugmentationStationSyncPayload.TYPE,
+                AugmentationStationSyncPayload.STREAM_CODEC,
+                AugmentationStationSyncPayload::handle
         );
         registrar.playToServer(
                 SetSpawnerFilterPayload.TYPE,

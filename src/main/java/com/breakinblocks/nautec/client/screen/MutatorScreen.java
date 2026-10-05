@@ -11,11 +11,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class MutatorScreen extends NTMachineScreen<MutatorBlockEntity> {
-    public static final Identifier TEXTURE = Nautec.rl("textures/gui/mutator.png");
     public static final Identifier PROGRESS_ARROW = Nautec.rl("container/mutator/progress_arrow");
+    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/mutator/progress_arrow_off");
 
     public MutatorScreen(NTMachineMenu<MutatorBlockEntity> menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -31,11 +30,7 @@ public class MutatorScreen extends NTMachineScreen<MutatorBlockEntity> {
 
         int j1 = Mth.ceil(((float) progress / NTConfig.mutatorCraftingSpeed) * 62f);
 
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, i + 56, j + 36, 62, 14);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 62, 14, 0, 0, i + 56, j + 36, j1, 14);
-    }
-
-    @Override
-    public @NotNull Identifier getBackgroundTexture() {
-        return TEXTURE;
     }
 }

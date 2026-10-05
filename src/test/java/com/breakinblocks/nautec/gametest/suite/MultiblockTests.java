@@ -1,17 +1,22 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AugmentationStationBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.DrainBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -331,6 +336,31 @@ public final class MultiblockTests {
                 AugmentationStationBlockEntity be = helper.getBlockEntity(asPos(2, 2), AugmentationStationBlockEntity.class);
                 helper.assertTrue(be != null, "Formed station should have an AugmentationStationBlockEntity");
                 helper.assertTrue(be.getMultiblockData().valid(), "Controller multiblock data should be valid");
+                helper.succeed();
+            });
+        });
+
+        r.add("multiblock/augmentation_status_explains_problems", 60, helper -> {
+            placeAugmentationStation(helper);
+            helper.runAfterDelay(1, () -> {
+                helper.assertTrue(formAugmentationStation(helper), "Augmentation station should form");
+                AugmentationStationBlockEntity station = helper.getBlockEntity(asPos(2, 2), AugmentationStationBlockEntity.class);
+                helper.assertValueEqual(AugmentationStationBlockEntity.STATUS_EMPTY, station.getStatus(), "status with nothing loaded");
+
+                BlockPos extensionPos = asPos(AS_EXTENSIONS[0][0], AS_EXTENSIONS[0][1]);
+                AugmentationStationExtensionBlockEntity extension = helper.getBlockEntity(extensionPos, AugmentationStationExtensionBlockEntity.class);
+                extension.getItemStackHandler().setStackInSlot(AugmentationStationExtensionBlockEntity.AUGMENT_SLOT, new ItemStack(NTItems.DROWNED_LUNGS.get()));
+                helper.assertValueEqual(AugmentationStationBlockEntity.STATUS_NO_ARM, station.getStatus(), "status with a part but no arm");
+
+                extension.getItemStackHandler().setStackInSlot(AugmentationStationExtensionBlockEntity.ROBOT_ARM_SLOT, new ItemStack(NTItems.CLAW_ROBOT_ARM.get()));
+                helper.assertValueEqual(AugmentationStationBlockEntity.STATUS_LOW_POWER, station.getStatus(), "status with no beam");
+
+                extension.receivePower(NTConfig.augmentationStationPower, Direction.DOWN, helper.absolutePos(extensionPos.below()));
+                extension.commonTick();
+                helper.assertValueEqual(AugmentationStationBlockEntity.STATUS_READY, station.getStatus(), "status once the beam is strong enough");
+
+                extension.getItemStackHandler().setStackInSlot(AugmentationStationExtensionBlockEntity.AUGMENT_SLOT, new ItemStack(Items.STONE));
+                helper.assertValueEqual(AugmentationStationBlockEntity.STATUS_NO_RECIPE, station.getStatus(), "status with a part that makes nothing");
                 helper.succeed();
             });
         });

@@ -10,7 +10,7 @@ import com.breakinblocks.nautec.content.menus.IncubatorMenu;
 import com.breakinblocks.nautec.network.StartAugmentationPayload;
 import com.breakinblocks.nautec.network.ClearAugmentPayload;
 import com.breakinblocks.nautec.network.KeyPressedPayload;
-import com.breakinblocks.nautec.network.OpenAugmentationScreenPayload;
+import com.breakinblocks.nautec.network.AugmentationStationSyncPayload;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.events.NTEvents;
 import com.breakinblocks.nautec.events.AugmentEvents;
@@ -297,13 +297,18 @@ public final class ReviewRegressionTests {
         tests.put("augmentation_screen_snapshot_round_trip", helper -> {
             var station = station(helper);
             var recipe = station.getRecipe().orElseThrow();
-            var payload = new OpenAugmentationScreenPayload(station.getBlockPos(), Optional.of(recipe.resultAugment()), recipe.augmentItem().getDefaultInstance());
+            var payload = new AugmentationStationSyncPayload(station.getBlockPos(), true, station.getStatus(), 0, Optional.of(recipe.resultAugment()),
+                    recipe.augmentItem().getDefaultInstance(), recipe.desc(),
+                    List.of(new AugmentationStationSyncPayload.Extension(Direction.NORTH, true, true, recipe.augmentItem().getDefaultInstance(), 30)));
             var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
             try {
-                OpenAugmentationScreenPayload.STREAM_CODEC.encode(buffer, payload);
-                var decoded = OpenAugmentationScreenPayload.STREAM_CODEC.decode(buffer);
-                helper.assertTrue(decoded.augmentType().orElseThrow().getAugmentSlots().equals(List.of(NTAugmentSlots.LUNG.get())), "screen receives only compatible slots");
+                AugmentationStationSyncPayload.STREAM_CODEC.encode(buffer, payload);
+                var decoded = AugmentationStationSyncPayload.STREAM_CODEC.decode(buffer);
+                helper.assertTrue(decoded.result().orElseThrow().getAugmentSlots().equals(List.of(NTAugmentSlots.LUNG.get())), "screen receives only compatible slots");
                 helper.assertTrue(decoded.preview().is(NTItems.DROWNED_LUNGS), "screen receives recipe preview");
+                helper.assertValueEqual(recipe.desc(), decoded.description(), "screen receives the augment description");
+                helper.assertValueEqual(30, decoded.extensions().getFirst().power(), "screen receives each extension's beam");
+                helper.assertTrue(decoded.extensions().getFirst().part().is(NTItems.DROWNED_LUNGS), "screen receives each extension's part");
             } finally { buffer.release(); }
             helper.succeed();
         });

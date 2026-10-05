@@ -10,15 +10,13 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 public class IncubatorScreen extends NTMachineScreen<IncubatorBlockEntity> {
-    public static final Identifier TEXTURE = Nautec.rl("textures/gui/incubator.png");
     public static final Identifier PROGRESS_ARROW = Nautec.rl("container/incubator/progress_arrow");
+    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/incubator/progress_arrow_off");
 
     public IncubatorScreen(NTMachineMenu<IncubatorBlockEntity> menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.titleLabelY = 4;
     }
 
     @Override
@@ -31,11 +29,7 @@ public class IncubatorScreen extends NTMachineScreen<IncubatorBlockEntity> {
 
         int j1 = (int) Math.ceil(((float) progress / Math.max(1, NTConfig.incubatorCraftingSpeed)) * 29f);
 
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, i + 65, j + 18, 46, 29);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 46, 29, 0, 29 - j1, i + 65, j + 47 - j1, 46, j1);
-    }
-
-    @Override
-    public @NotNull Identifier getBackgroundTexture() {
-        return TEXTURE;
     }
 }

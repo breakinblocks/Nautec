@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class GhostSlots {
-    private static final int FADE = 0x99C8C7B3;
+    private static final int FADE = PanelStyle.GHOST_FADE;
 
     private GhostSlots() {
     }

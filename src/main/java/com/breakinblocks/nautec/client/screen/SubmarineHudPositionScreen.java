@@ -18,13 +18,38 @@ public class SubmarineHudPositionScreen extends Screen {
     private double grabOffsetX;
     private double grabOffsetY;
 
+    private static final double DEFAULT_X = 0.02;
+    private static final double DEFAULT_Y = 0.75;
+    private static final int INFO_W = 220;
+    private static final int INFO_H = 46;
+
     public SubmarineHudPositionScreen() {
         super(Component.translatable("nautec.submarine.hud_position.title"));
     }
 
     @Override
+    protected void init() {
+        super.init();
+        int x = (this.width - INFO_W) / 2;
+        addRenderableWidget(new NTPanelButton(this.font, x + INFO_W - 62, 18 + INFO_H - 20, 54, 14,
+                () -> Component.translatable("nautec.submarine.hud_position.reset"), () -> PanelStyle.NEUTRAL, () -> PanelStyle.NEUTRAL_HOVER,
+                () -> Component.translatable("nautec.submarine.hud_position.reset.desc"), () -> {
+            this.hudX = DEFAULT_X;
+            this.hudY = DEFAULT_Y;
+        }));
+        addRenderableWidget(new NTPanelButton(this.font, x + INFO_W - 120, 18 + INFO_H - 20, 54, 14,
+                () -> Component.translatable("nautec.submarine.hud_position.done"), () -> PanelStyle.SEND_COLOR, () -> PanelStyle.SEND_HOVER,
+                () -> Component.translatable("nautec.submarine.hud_position.done.desc"), this::onClose));
+    }
+
+    @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.fill(0, 0, this.width, this.height, 0x90000000);
+        int infoX = (this.width - INFO_W) / 2;
+        PanelStyle.panel(guiGraphics, infoX, 18, INFO_W, INFO_H);
+        guiGraphics.text(this.font, this.title, infoX + 8, 24, PanelStyle.LABEL, false);
+        guiGraphics.text(this.font, Component.translatable("nautec.submarine.hud_position.drag"), infoX + 8, 36, PanelStyle.LABEL, false);
+        guiGraphics.text(this.font, Component.translatable("nautec.submarine.hud_position.keys"), infoX + 8, 48, PanelStyle.READOUT_DIM, false);
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
 
         int power = 73;
@@ -40,14 +65,17 @@ public class SubmarineHudPositionScreen extends Screen {
         }
 
         long ticks = this.minecraft != null && this.minecraft.level != null ? this.minecraft.level.getGameTime() : 0L;
-        SubmarineHudOverlay.drawPanel(guiGraphics, panelX(), panelY(), power, capacity, health, maxHealth, ticks);
-
-        guiGraphics.text(this.font, "Drag the readout where you want it", centeredX("Drag the readout where you want it"), 20, 0xFFF0F4F5, true);
-        guiGraphics.text(this.font, "ESC or Ctrl+H to save", centeredX("ESC or Ctrl+H to save"), 32, 0xFF3EFDFF, true);
-    }
-
-    private int centeredX(String text) {
-        return (this.width - this.font.width(text)) / 2;
+        int px = panelX();
+        int py = panelY();
+        boolean over = mouseX >= px && mouseX <= px + SubmarineHudOverlay.PANEL_W && mouseY >= py && mouseY <= py + SubmarineHudOverlay.TOTAL_H;
+        if (this.dragging || over) {
+            int edge = this.dragging ? PanelStyle.READOUT : PanelStyle.READOUT_DIM;
+            guiGraphics.fill(px - 2, py - 2, px + SubmarineHudOverlay.PANEL_W + 2, py - 1, edge);
+            guiGraphics.fill(px - 2, py + SubmarineHudOverlay.TOTAL_H + 1, px + SubmarineHudOverlay.PANEL_W + 2, py + SubmarineHudOverlay.TOTAL_H + 2, edge);
+            guiGraphics.fill(px - 2, py - 2, px - 1, py + SubmarineHudOverlay.TOTAL_H + 2, edge);
+            guiGraphics.fill(px + SubmarineHudOverlay.PANEL_W + 1, py - 2, px + SubmarineHudOverlay.PANEL_W + 2, py + SubmarineHudOverlay.TOTAL_H + 2, edge);
+        }
+        SubmarineHudOverlay.drawPanel(guiGraphics, px, py, power, capacity, health, maxHealth, ticks);
     }
 
     private int panelX() {

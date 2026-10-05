@@ -1,11 +1,9 @@
 package com.breakinblocks.nautec.client.screen;
 
-import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.network.SetGatewayAddressPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.BlockPos;
@@ -25,16 +23,13 @@ public class GatewayScreen extends Screen {
     private static final int PANEL_W = LABEL_W + GatewayAddress.PALETTE.size() * (SWATCH + GAP) + GAP * 3;
     private static final int PANEL_H = HEADER_H + GatewayAddress.SLOTS * (SWATCH + GAP) + FOOTER_H;
 
-    private static final int BACKDROP = ArtPalette.GATEWAY_PANEL;
-    private static final int BORDER = ArtPalette.CASING;
-    private static final int ROW_BACKDROP = ArtPalette.ROW_PANEL;
-    private static final int SELECTED = 0xFFFFFFFF;
-    private static final int UNSELECTED = 0x60000000;
+    private static final int SELECTED = PanelStyle.READOUT;
+    private static final int UNSELECTED = 0x70000000;
 
     private final BlockPos pos;
     private final GatewayAddress original;
     private GatewayAddress selected;
-    private Button applyButton;
+    private NTPanelButton applyButton;
 
     private GatewayScreen(BlockPos pos, GatewayAddress address) {
         super(Component.translatable("nautec.gateway.title"));
@@ -67,18 +62,17 @@ public class GatewayScreen extends Screen {
     protected void init() {
         super.init();
 
-        int buttonY = panelY() + PANEL_H - FOOTER_H + 20;
+        int buttonY = panelY() + PANEL_H - FOOTER_H + 22;
         int buttonW = 70;
 
-        this.applyButton = addRenderableWidget(Button.builder(
-                        Component.translatable("nautec.gateway.apply"), button -> apply())
-                .bounds(panelX() + PANEL_W / 2 - buttonW - GAP, buttonY, buttonW, 20)
-                .build());
+        this.applyButton = addRenderableWidget(new NTPanelButton(this.font, panelX() + PANEL_W / 2 - buttonW - GAP, buttonY, buttonW, 16,
+                () -> Component.translatable("nautec.gateway.apply"), () -> PanelStyle.SEND_COLOR, () -> PanelStyle.SEND_HOVER,
+                () -> Component.translatable(this.selected.equals(this.original) ? "nautec.gateway.no_change" : "nautec.gateway.free"),
+                this::apply));
 
-        addRenderableWidget(Button.builder(
-                        Component.translatable("nautec.gateway.cancel"), button -> onClose())
-                .bounds(panelX() + PANEL_W / 2 + GAP, buttonY, buttonW, 20)
-                .build());
+        addRenderableWidget(new NTPanelButton(this.font, panelX() + PANEL_W / 2 + GAP, buttonY, buttonW, 16,
+                () -> Component.translatable("nautec.gateway.cancel"), () -> PanelStyle.NEUTRAL, () -> PanelStyle.NEUTRAL_HOVER,
+                () -> Component.translatable("nautec.gateway.cancel"), this::onClose));
 
         refreshApply();
     }
@@ -102,17 +96,17 @@ public class GatewayScreen extends Screen {
 
         int x = panelX();
         int y = panelY();
-        guiGraphics.fill(x - 1, y - 1, x + PANEL_W + 1, y + PANEL_H + 1, BORDER);
-        guiGraphics.fill(x, y, x + PANEL_W, y + PANEL_H, BACKDROP);
-
-        guiGraphics.centeredText(this.font, this.title, x + PANEL_W / 2, y + 10, ArtPalette.ACCENT);
-        guiGraphics.centeredText(this.font, this.selected.describe(), x + PANEL_W / 2, y + 24, 0xFFFFFFFF);
+        PanelStyle.panel(guiGraphics, x, y, PANEL_W, PANEL_H);
+        guiGraphics.text(this.font, this.title, x + 8, y + 8, PanelStyle.LABEL, false);
+        PanelStyle.screen(guiGraphics, x + GAP * 2, y + 20, PANEL_W - GAP * 4, 16);
+        guiGraphics.centeredText(this.font, this.selected.describe(), x + PANEL_W / 2, y + 24, PanelStyle.READOUT);
+        DyeColor hovered = null;
 
         List<DyeColor> palette = GatewayAddress.PALETTE;
         for (int slot = 0; slot < GatewayAddress.SLOTS; slot++) {
             int rowY = swatchY(slot);
-            guiGraphics.fill(x + GAP, rowY - 2, x + PANEL_W - GAP, rowY + SWATCH + 2, ROW_BACKDROP);
-            guiGraphics.text(this.font, String.valueOf(slot + 1), x + GAP * 2 + 6, rowY + 5, 0xFFB9CCCF, false);
+            PanelStyle.screen(guiGraphics, x + GAP * 2, rowY - 3, PANEL_W - GAP * 4, SWATCH + 6);
+            guiGraphics.text(this.font, String.valueOf(slot + 1), x + GAP * 2 + 6, rowY + 5, PanelStyle.READOUT_DIM, false);
 
             for (int colour = 0; colour < palette.size(); colour++) {
                 DyeColor dye = palette.get(colour);
@@ -126,13 +120,19 @@ public class GatewayScreen extends Screen {
                 if (!chosen) {
                     guiGraphics.fill(sx, rowY, sx + SWATCH, rowY + SWATCH, UNSELECTED);
                 }
+                if (mouseX >= sx && mouseX < sx + SWATCH && mouseY >= rowY && mouseY < rowY + SWATCH) {
+                    hovered = dye;
+                }
             }
         }
 
         guiGraphics.centeredText(this.font, Component.translatable(this.selected.equals(this.original) ? "nautec.gateway.no_change" : "nautec.gateway.free"),
-                x + PANEL_W / 2, y + PANEL_H - FOOTER_H + 6, 0xFFB9CCCF);
+                x + PANEL_W / 2, y + PANEL_H - FOOTER_H + 8, PanelStyle.LABEL);
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        if (hovered != null) {
+            guiGraphics.setTooltipForNextFrame(this.font, Component.translatable("color.minecraft." + hovered.getSerializedName()), mouseX, mouseY);
+        }
     }
 
     @Override

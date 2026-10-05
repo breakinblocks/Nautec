@@ -32,13 +32,13 @@ import java.util.Optional;
 public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawnerMenu> {
     private @Nullable SideConfigPanel sidePanel;
 
-    private static final int PANEL = 0xFFC8C7B3;
-    private static final int PANEL_LIGHT = 0xFFE7E7D6;
-    private static final int OUTLINE = 0xFF070707;
-    private static final int SLOT_EDGE = 0xFF1E2221;
-    private static final int SLOT_FILL = 0xFF45504A;
-    private static final int GHOST_FILL = 0xFF2F3A35;
-    private static final int LABEL = 0xFF404040;
+    private static final int PANEL = PanelStyle.PANEL;
+    private static final int PANEL_LIGHT = PanelStyle.PANEL_LIGHT;
+    private static final int OUTLINE = PanelStyle.OUTLINE;
+    private static final int SLOT_EDGE = PanelStyle.SLOT_EDGE;
+    private static final int SLOT_FILL = PanelStyle.SLOT_FILL;
+    private static final int GHOST_FILL = PanelStyle.GHOST_FILL;
+    private static final int LABEL = PanelStyle.LABEL;
     private static final int POWER_FILL = 0xFF52E8FF;
     private static final int POWER_SHINE = 0xFFB3FCFF;
     private static final int CYCLE_FILL = 0xFF7FD9A0;

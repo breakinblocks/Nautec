@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.client.screen;
 
-import com.breakinblocks.nautec.client.ArtPalette;
 import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.fishing.MinigameKind;
 import com.breakinblocks.nautec.network.FishingMinigameResultPayload;
@@ -25,7 +24,6 @@ public class FishingMinigameScreen extends Screen {
     private static final int PANEL_W = 208;
     private static final int PANEL_H = 60;
     private static final int PANEL_BOTTOM_GAP = 46;
-    private static final int CHAMFER = 4;
 
     private static final int TRACK_W = 176;
     private static final int TRACK_H = 13;
@@ -38,16 +36,12 @@ public class FishingMinigameScreen extends Screen {
     private static final int SHAKE_TICKS = 8;
     private static final int POP_TICKS = 6;
 
-    private static final int PLATE = ArtPalette.PANEL;
-    private static final int PLATE_EDGE = ArtPalette.PANEL_EDGE;
-    private static final int CYAN = ArtPalette.ACCENT;
-    private static final int CYAN_DIM = ArtPalette.ACCENT_DIM;
+    private static final int CYAN = PanelStyle.READOUT;
+    private static final int CYAN_DIM = PanelStyle.READOUT_DIM;
     private static final int GREEN = 0xFF5FE8B0;
     private static final int AMBER = 0xFFFFB03C;
     private static final int RED = 0xFFFF5A3C;
-    private static final int WHITE = ArtPalette.TEXT;
-    private static final int WELL_TOP = 0xE6323A36;
-    private static final int WELL_BOTTOM = 0xE61E2221;
+    private static final int WHITE = 0xFFFFFFFF;
 
     private final MinigameKind kind;
     private final long nonce;
@@ -255,25 +249,8 @@ public class FishingMinigameScreen extends Screen {
     }
 
     private void drawPlate(GuiGraphicsExtractor guiGraphics, int x, int y, boolean onTarget) {
-        for (int row = 0; row < PANEL_H; row++) {
-            int inset = 0;
-            if (row < CHAMFER) {
-                inset = CHAMFER - row;
-            } else if (row >= PANEL_H - CHAMFER) {
-                inset = row - (PANEL_H - CHAMFER) + 1;
-            }
-            guiGraphics.fill(x + inset, y + row, x + PANEL_W - inset, y + row + 1,
-                    row == 0 || row == PANEL_H - 1 ? PLATE_EDGE : PLATE);
-        }
-
-        int trim = accent(onTarget);
-        guiGraphics.fill(x + CHAMFER, y, x + PANEL_W - CHAMFER, y + 1, trim);
-        guiGraphics.fill(x + CHAMFER, y + PANEL_H - 1, x + PANEL_W - CHAMFER, y + PANEL_H, ARGB.multiplyAlpha(trim, 0.5F));
-
-        for (int i = 0; i < 6; i++) {
-            guiGraphics.fill(x + CHAMFER + i, y + 1, x + CHAMFER + i + 1, y + 2, ARGB.multiplyAlpha(trim, 0.7F));
-            guiGraphics.fill(x + PANEL_W - CHAMFER - i - 1, y + 1, x + PANEL_W - CHAMFER - i, y + 2, ARGB.multiplyAlpha(trim, 0.7F));
-        }
+        PanelStyle.panel(guiGraphics, x, y, PANEL_W, PANEL_H);
+        guiGraphics.fill(x + 3, y + 3, x + PANEL_W - 1, y + 4, accent(onTarget));
     }
 
     private void drawHeader(GuiGraphicsExtractor guiGraphics, int x, int y, boolean onTarget) {
@@ -286,12 +263,11 @@ public class FishingMinigameScreen extends Screen {
                 ? Component.translatable("nautec.fishing_minigame.missed")
                 : Component.translatable("nautec.fishing_minigame.prompt." + this.kind.name().toLowerCase(Locale.ROOT));
         guiGraphics.centeredText(this.font, status, centreX, y + STATUS_ROW,
-                this.won ? GREEN : this.missed ? RED : onTarget ? WHITE : CYAN_DIM);
+                this.won ? PanelStyle.SEND_COLOR : this.missed ? PanelStyle.DANGER : onTarget ? PanelStyle.SEND_COLOR : PanelStyle.LABEL);
     }
 
     private void drawTrack(GuiGraphicsExtractor guiGraphics, int x, int y, float progress, boolean onTarget) {
-        guiGraphics.fill(x - 1, y - 1, x + TRACK_W + 1, y + TRACK_H + 1, PLATE_EDGE);
-        guiGraphics.fillGradient(x, y, x + TRACK_W, y + TRACK_H, WELL_TOP, WELL_BOTTOM);
+        PanelStyle.screen(guiGraphics, x, y, TRACK_W, TRACK_H);
 
         for (int i = 1; i < 12; i++) {
             int tickX = x + i * TRACK_W / 12;
@@ -403,7 +379,7 @@ public class FishingMinigameScreen extends Screen {
             colour = ARGB.multiplyAlpha(colour, 0.45F);
         }
 
-        guiGraphics.fill(barX, y, barX + TRACK_W, y + 1, ARGB.multiplyAlpha(CYAN_DIM, 0.5F));
+        guiGraphics.fill(barX - 1, y - 1, barX + TRACK_W + 1, y + 2, PanelStyle.SLOT_EDGE);
         guiGraphics.fill(barX, y, barX + width, y + 1, colour);
     }
 
@@ -431,9 +407,9 @@ public class FishingMinigameScreen extends Screen {
 
     private int headline() {
         if (this.won) {
-            return GREEN;
+            return PanelStyle.SEND_COLOR;
         }
-        return this.missed ? RED : CYAN;
+        return this.missed ? PanelStyle.DANGER : PanelStyle.LABEL;
     }
 
     private int windowAt(float tick) {

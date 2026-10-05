@@ -7,12 +7,9 @@ import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.network.ResonanceSyncPayload;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,25 +25,25 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?>> extends AbstractContainerScreen<M> {
-    protected static final int PANEL = 0xFFC8C7B3;
-    protected static final int PANEL_LIGHT = 0xFFE7E7D6;
-    protected static final int OUTLINE = 0xFF070707;
-    protected static final int SLOT_EDGE = 0xFF1E2221;
-    protected static final int SCREEN_FILL = 0xFF16201F;
-    protected static final int SCREEN_EDGE = 0xFF2E3A37;
-    protected static final int LABEL = 0xFF404040;
-    protected static final int READOUT = 0xFFB3FCFF;
-    protected static final int READOUT_DIM = 0xFF6FA6A8;
-    protected static final int ENERGY_FILL = 0xFFD8443C;
-    protected static final int ENERGY_SHINE = 0xFFF29A8C;
-    protected static final int SEND_COLOR = 0xFF2E7D4F;
-    protected static final int SEND_HOVER = 0xFF3C9A63;
-    protected static final int RECEIVE_COLOR = 0xFF2F5C8C;
-    protected static final int RECEIVE_HOVER = 0xFF3C73A8;
-    protected static final int NEUTRAL = 0xFF45504A;
-    protected static final int NEUTRAL_HOVER = 0xFF5A6A62;
-    protected static final int DANGER = 0xFF8C2F2F;
-    protected static final int DANGER_HOVER = 0xFFA83C3C;
+    protected static final int PANEL = PanelStyle.PANEL;
+    protected static final int PANEL_LIGHT = PanelStyle.PANEL_LIGHT;
+    protected static final int OUTLINE = PanelStyle.OUTLINE;
+    protected static final int SLOT_EDGE = PanelStyle.SLOT_EDGE;
+    protected static final int SCREEN_FILL = PanelStyle.SCREEN_FILL;
+    protected static final int SCREEN_EDGE = PanelStyle.SCREEN_EDGE;
+    protected static final int LABEL = PanelStyle.LABEL;
+    protected static final int READOUT = PanelStyle.READOUT;
+    protected static final int READOUT_DIM = PanelStyle.READOUT_DIM;
+    protected static final int ENERGY_FILL = PanelStyle.ENERGY_FILL;
+    protected static final int ENERGY_SHINE = PanelStyle.ENERGY_SHINE;
+    protected static final int SEND_COLOR = PanelStyle.SEND_COLOR;
+    protected static final int SEND_HOVER = PanelStyle.SEND_HOVER;
+    protected static final int RECEIVE_COLOR = PanelStyle.RECEIVE_COLOR;
+    protected static final int RECEIVE_HOVER = PanelStyle.RECEIVE_HOVER;
+    protected static final int NEUTRAL = PanelStyle.NEUTRAL;
+    protected static final int NEUTRAL_HOVER = PanelStyle.NEUTRAL_HOVER;
+    protected static final int DANGER = PanelStyle.DANGER;
+    protected static final int DANGER_HOVER = PanelStyle.DANGER_HOVER;
 
     protected static final int IMAGE_WIDTH = 232;
     protected static final int IMAGE_HEIGHT = 206;
@@ -333,54 +330,10 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    protected final class PanelButton extends AbstractButton {
-        private final Supplier<Component> label;
-        private final Supplier<Integer> color;
-        private final Supplier<Integer> hover;
-        private final Supplier<Component> tooltip;
-        private final Runnable action;
-        private @Nullable Component lastTooltip;
-
+    protected final class PanelButton extends NTPanelButton {
         protected PanelButton(int x, int y, int width, int height, Supplier<Component> label, Supplier<Integer> color,
-                            Supplier<Integer> hover, Supplier<Component> tooltip, Runnable action) {
-            super(x, y, width, height, label.get());
-            this.label = label;
-            this.color = color;
-            this.hover = hover;
-            this.tooltip = tooltip;
-            this.action = action;
-        }
-
-        @Override
-        public void onPress(InputWithModifiers input) {
-            action.run();
-        }
-
-        @Override
-        public Component getMessage() {
-            return label.get();
-        }
-
-        @Override
-        protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-            Component tip = tooltip.get();
-            if (!tip.equals(lastTooltip)) {
-                lastTooltip = tip;
-                setTooltip(Tooltip.create(tip));
-            }
-            int x = getX();
-            int y = getY();
-            graphics.fill(x, y, x + getWidth(), y + getHeight(), OUTLINE);
-            int fill = !this.active ? SLOT_EDGE : isHoveredOrFocused() ? hover.get() : color.get();
-            graphics.fill(x + 1, y + 1, x + getWidth() - 1, y + getHeight() - 1, fill);
-            Component message = getMessage();
-            graphics.text(ResonanceNetworkScreen.this.font, message, x + (getWidth() - ResonanceNetworkScreen.this.font.width(message)) / 2,
-                    y + (getHeight() - 8) / 2, this.active ? 0xFFFFFFFF : 0xFF808080, true);
-        }
-
-        @Override
-        protected void updateWidgetNarration(NarrationElementOutput output) {
-            defaultButtonNarrationText(output);
+                              Supplier<Integer> hover, Supplier<Component> tooltip, Runnable action) {
+            super(ResonanceNetworkScreen.this.font, x, y, width, height, label, color, hover, tooltip, action);
         }
     }
 }

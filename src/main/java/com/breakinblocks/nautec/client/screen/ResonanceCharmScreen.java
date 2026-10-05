@@ -16,14 +16,14 @@ import java.text.NumberFormat;
 public class ResonanceCharmScreen extends Screen {
     private static final int WIDTH = 196;
     private static final int HEIGHT = 128;
-    private static final int OUTLINE = 0xFF070707;
-    private static final int PANEL = 0xFFC8C7B3;
-    private static final int PANEL_LIGHT = 0xFFE7E7D6;
-    private static final int SCREEN_FILL = 0xFF16201F;
-    private static final int SCREEN_EDGE = 0xFF2E3A37;
-    private static final int LABEL = 0xFF404040;
-    private static final int READOUT = 0xFFB3FCFF;
-    private static final int READOUT_DIM = 0xFF6FA6A8;
+    private static final int OUTLINE = PanelStyle.OUTLINE;
+    private static final int PANEL = PanelStyle.PANEL;
+    private static final int PANEL_LIGHT = PanelStyle.PANEL_LIGHT;
+    private static final int SCREEN_FILL = PanelStyle.SCREEN_FILL;
+    private static final int SCREEN_EDGE = PanelStyle.SCREEN_EDGE;
+    private static final int LABEL = PanelStyle.LABEL;
+    private static final int READOUT = PanelStyle.READOUT;
+    private static final int READOUT_DIM = PanelStyle.READOUT_DIM;
     private static final int WARNING = 0xFFE36A5C;
 
     private final int hand;

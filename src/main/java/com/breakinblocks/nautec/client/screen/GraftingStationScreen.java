@@ -14,13 +14,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class GraftingStationScreen extends NTMachineScreen<GraftingStationBlockEntity> {
-    public static final Identifier TEXTURE = Nautec.rl("textures/gui/grafting_station.png");
     public static final Identifier PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
+    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
 
     public GraftingStationScreen(NTMachineMenu<GraftingStationBlockEntity> menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -34,6 +33,7 @@ public class GraftingStationScreen extends NTMachineScreen<GraftingStationBlockE
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
         int width = Mth.ceil((float) station().getProgress() / station().getDuration() * 24.0F);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, leftPos + 76, topPos + 25, 24, 24);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + 76, topPos + 25, width, 24);
     }
 
@@ -49,10 +49,5 @@ public class GraftingStationScreen extends NTMachineScreen<GraftingStationBlockE
                             String.format("%.1f", NTConfig.graftingStationPurity), NTConfig.graftingStationSaltWaterUsage).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
-    }
-
-    @Override
-    public @NotNull Identifier getBackgroundTexture() {
-        return TEXTURE;
     }
 }

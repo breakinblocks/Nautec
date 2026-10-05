@@ -14,14 +14,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBacterialAnalyzerBlockEntity> {
-    public static final Identifier TEXTURE = Nautec.rl("textures/gui/advanced_bacterial_analyzer.png");
     public static final Identifier PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
+    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
     private static final int PROGRESS_FILL = 0x8046E8C8;
 
     public AdvancedBacterialAnalyzerScreen(NTMachineMenu<AdvancedBacterialAnalyzerBlockEntity> menu, Inventory playerInventory, Component title) {
@@ -35,11 +33,6 @@ public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBac
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
-        for (Slot slot : this.menu.slots) {
-            if (slot.container != this.menu.getInv()) {
-                extractSlotFrame(guiGraphics, slot.x, slot.y);
-            }
-        }
         int duration = analyzer().getDuration();
         int best = 0;
         for (int dish = 0; dish < AdvancedBacterialAnalyzerBlockEntity.DISHES; dish++) {
@@ -53,6 +46,7 @@ public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBac
             }
         }
         int width = Mth.ceil((float) best / duration * 24.0F);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, leftPos + 76, topPos + 25, 24, 24);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + 76, topPos + 25, width, 24);
     }
 
@@ -68,10 +62,5 @@ public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBac
                             String.format("%.1f", NTConfig.advancedAnalyzerPurity)).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         }
-    }
-
-    @Override
-    public @NotNull Identifier getBackgroundTexture() {
-        return TEXTURE;
     }
 }

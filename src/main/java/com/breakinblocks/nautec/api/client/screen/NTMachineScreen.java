@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import com.breakinblocks.nautec.client.screen.PanelStyle;
 import com.breakinblocks.nautec.client.screen.GhostSlots;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.renderer.Rect2i;
@@ -29,7 +30,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -37,9 +37,6 @@ import java.util.List;
 public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTMachineMenu<T>> implements SideConfigHost {
     private static final Identifier BACTERIA_OVERLAY_TEXTURE = Nautec.rl("textures/item/petri_dish_overlay.png");
     private static final Identifier DISH_TEXTURE = Nautec.rl("textures/item/petri_dish.png");
-    private static final int SLOT_DARK = 0xFF1E2221;
-    private static final int SLOT_FILL = 0xFF45504A;
-    private static final int SLOT_LIGHT = 0xFFE7E7D6;
     private static final int DISH_GHOST = 0x66FFFFFF;
 
     private SlotFluidHandler hoveredFluidHandlerSlot;
@@ -55,7 +52,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     public NTMachineScreen(NTMachineMenu<T> menu, Inventory playerInventory, Component title, int imageWidth, int imageHeight) {
         super(menu, playerInventory, title, imageWidth, imageHeight);
 
-        this.titleLabelY = 4;
+        this.titleLabelY = 6;
     }
 
     @Override
@@ -69,8 +66,34 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getBackgroundTexture(), leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+        Identifier texture = getBackgroundTexture();
+        if (texture != null) {
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+        } else {
+            extractPanel(guiGraphics);
+        }
         extractDishPort(guiGraphics);
+    }
+
+    protected void extractPanel(GuiGraphicsExtractor guiGraphics) {
+        PanelStyle.panel(guiGraphics, leftPos, topPos, imageWidth, imageHeight);
+        for (Slot slot : this.menu.slots) {
+            if (slot.isActive()) {
+                PanelStyle.slot(guiGraphics, leftPos + slot.x, topPos + slot.y);
+            }
+        }
+        for (SlotBacteriaStorage slot : this.menu.getBacteriaStorageSlots()) {
+            PanelStyle.bacteriaSlot(guiGraphics, leftPos + slot.getX(), topPos + slot.getY());
+        }
+        for (SlotFluidHandler slot : this.menu.getFluidTankSlots()) {
+            PanelStyle.tank(guiGraphics, leftPos + slot.getX(), topPos + slot.getY(), slot.getWidth(), slot.getHeight());
+        }
+    }
+
+    protected void extractSlotHint(GuiGraphicsExtractor guiGraphics, @Nullable Slot slot, Identifier icon) {
+        if (slot != null && !slot.hasItem()) {
+            PanelStyle.icon(guiGraphics, icon, leftPos + slot.x, topPos + slot.y, 16, 16);
+        }
     }
 
     protected void extractDishPort(GuiGraphicsExtractor guiGraphics) {
@@ -80,10 +103,12 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         if (in == null || out == null) {
             return;
         }
-        extractSlotFrame(guiGraphics, in.x, in.y);
-        extractSlotFrame(guiGraphics, out.x, out.y);
-        if (emptyOut != null) {
-            extractSlotFrame(guiGraphics, emptyOut.x, emptyOut.y);
+        if (getBackgroundTexture() != null) {
+            extractSlotFrame(guiGraphics, in.x, in.y);
+            extractSlotFrame(guiGraphics, out.x, out.y);
+            if (emptyOut != null) {
+                extractSlotFrame(guiGraphics, emptyOut.x, emptyOut.y);
+            }
         }
         if (!in.hasItem()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, DISH_TEXTURE, leftPos + in.x, topPos + in.y, 0F, 0F, 16, 16, 16, 16, DISH_GHOST);
@@ -91,13 +116,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
     }
 
     protected void extractSlotFrame(GuiGraphicsExtractor guiGraphics, int slotX, int slotY) {
-        int x = leftPos + slotX - 1;
-        int y = topPos + slotY - 1;
-        guiGraphics.fill(x, y, x + 18, y + 18, SLOT_FILL);
-        guiGraphics.fill(x, y, x + 17, y + 1, SLOT_DARK);
-        guiGraphics.fill(x, y, x + 1, y + 17, SLOT_DARK);
-        guiGraphics.fill(x + 1, y + 17, x + 18, y + 18, SLOT_LIGHT);
-        guiGraphics.fill(x + 17, y + 1, x + 18, y + 18, SLOT_LIGHT);
+        PanelStyle.slot(guiGraphics, leftPos + slotX, topPos + slotY);
     }
 
     private void dishPortTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
@@ -171,6 +190,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
 
         for (SlotFluidHandler fSlot : this.menu.getFluidTankSlots()) {
             fSlot.getRenderer().render(guiGraphics, this.leftPos + fSlot.getX(), this.topPos + fSlot.getY(), fSlot.getFluidStack());
+            PanelStyle.tankTicks(guiGraphics, this.leftPos + fSlot.getX(), this.topPos + fSlot.getY(), fSlot.getWidth(), fSlot.getHeight());
         }
 
         GhostSlots.extract(guiGraphics, this.menu, this.menu.blockEntity, this.leftPos, this.topPos);
@@ -230,7 +250,9 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         this.hoveredBacteriaStorageSlot = null;
     }
 
-    public abstract @NotNull Identifier getBackgroundTexture();
+    public @Nullable Identifier getBackgroundTexture() {
+        return null;
+    }
 
     public SlotFluidHandler getHoveredFluidHandlerSlot() {
         return hoveredFluidHandlerSlot;

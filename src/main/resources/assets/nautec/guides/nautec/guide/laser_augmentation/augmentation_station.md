@@ -74,11 +74,16 @@ The 25 AP threshold is configurable (`augmentationPowerRequirement`).
 
 ## <Color id="gold">Using It</Color>
 
-Stand on the middle block. After half a second a screen opens showing the part and the body slots it fits. Pick a slot and press Apply. If you closed the screen, step off and back on to open it again.
+Stand on the middle block. After half a second the station's screen opens. It updates live while you stand there, so you can load parts or fix the beam with it open:
 
-For the next four seconds you are held in place while the robot arms work. Stepping off, the beam dropping below 25 AP, or the part being taken out cancels the install and nothing is used. When it finishes, the part is used up, the Claw Robot Arm stays, and the augment is in your chosen slot.
+* The status bar at the top says whether the station is ready, and if not, what is wrong. Hover over it for the full explanation.
+* The augment box names the augment the loaded parts make and what it does.
+* The four extension columns show each extension's part, with a red frame if the part has no Claw Robot Arm, and the beam it gets. The number turns green at 25 AP or more and red below it. Hover over a column for details.
+* Hover over yourself on the left to see the augments you already have.
 
-If the screen opens with no slots listed, the station does not recognise what is loaded. Check that each part sits in a bottom slot, that the number of loaded extensions matches the augment, and that each loaded extension has its arm in the top slot.
+Pick a body slot along the bottom and press Apply. If that slot already holds an augment, the Apply button turns red and its tooltip says what will be replaced. If you closed the screen, step off and back on to open it again. Standing on a station that is not formed shows a reminder above your hotbar instead.
+
+For the next four seconds you are held in place while the robot arms work, and a bar shows the progress. Stepping off, the beam dropping below 25 AP, or the part being taken out cancels the install and nothing is used. When it finishes, the part is used up, the Claw Robot Arm stays, and the augment is in your chosen slot.
 
 [Player Augmentation](augmentation.md) lists what each slot takes and how replacing an augment works.
 
