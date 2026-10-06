@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "nautec:filter",
+    "minecraft:emerald"
+  ],
+  "result": {
+    "id": "nautec:intricate_filter"
+  }
+}

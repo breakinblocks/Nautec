@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.content.conduits.TapRates;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -359,6 +360,19 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue DISTRIBUTOR_INTERVAL = BUILDER
             .comment("How many ticks a Nautechnical Distributor waits between moves. Each move has no amount limit")
             .defineInRange("distributorInterval", 4, 1, 200);
+
+    private static final String[] CONDUIT_TIERS = {"Base", "Eddy", "Surge", "Riptide", "Maelstrom"};
+    private static final ModConfigSpec.IntValue[] CONDUIT_ITEM_INTERVALS = conduitValues("conduitItemInterval",
+            "Ticks between item moves on a Conduit Tap face with %s upgrade", new int[]{20, 10, 5, 2, 1}, 1, 1200);
+    private static final ModConfigSpec.IntValue[] CONDUIT_ITEMS_PER_OP = conduitValues("conduitItemsPerOp",
+            "Items moved per move on a Conduit Tap face with %s upgrade", new int[]{8, 16, 32, 64, 64}, 1, 4096);
+    private static final ModConfigSpec.IntValue[] CONDUIT_FLUID_RATES = conduitValues("conduitFluidRate",
+            "mB per tick a Conduit Tap face moves with %s upgrade", new int[]{1_000, 5_000, 30_000, 200_000, 1_000_000}, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue[] CONDUIT_ENERGY_RATES = conduitValues("conduitEnergyRate",
+            "FE per tick a Conduit Tap face moves with %s upgrade. 0 means no limit", new int[]{5_000, 25_000, 150_000, 1_000_000, 5_000_000}, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue CONDUIT_MAX_NETWORK_SIZE = BUILDER
+            .comment("The most Current Conduit and Conduit Tap blocks one network can hold. Blocks past this are not reached")
+            .defineInRange("conduitMaxNetworkSize", 4096, 2, 65536);
 
     private static final ModConfigSpec.IntValue SATELLITE_AP_BUFFER = BUILDER
             .comment("The AP each Uplink and Downlink Array stores")
@@ -1039,6 +1053,11 @@ public final class NTConfig {
     public static int distributorRange = 256;
     public static int distributorMaxLinks = 64;
     public static int distributorInterval = 4;
+    public static int[] conduitItemIntervals = {20, 10, 5, 2, 1};
+    public static int[] conduitItemsPerOp = {8, 16, 32, 64, 64};
+    public static int[] conduitFluidRates = {250, 1_000, 4_000, 16_000, 64_000};
+    public static int[] conduitEnergyRates = {2_000, 8_000, 32_000, 128_000, 0};
+    public static int conduitMaxNetworkSize = 4096;
     public static int satelliteApBuffer = 5_000_000;
     public static int satelliteFeBuffer = 5_000_000;
     public static int satelliteTransferLimit = 100_000;
@@ -1205,6 +1224,23 @@ public final class NTConfig {
         loadValues();
     }
 
+    private static ModConfigSpec.IntValue[] conduitValues(String key, String comment, int[] defaults, int min, int max) {
+        ModConfigSpec.IntValue[] values = new ModConfigSpec.IntValue[CONDUIT_TIERS.length];
+        for (int i = 0; i < values.length; i++) {
+            String tier = i == 0 ? "no" : "the " + CONDUIT_TIERS[i];
+            values[i] = BUILDER.comment(String.format(comment, tier)).defineInRange(key + CONDUIT_TIERS[i], defaults[i], min, max);
+        }
+        return values;
+    }
+
+    private static int[] values(ModConfigSpec.IntValue[] values) {
+        int[] result = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            result[i] = value(values[i]);
+        }
+        return result;
+    }
+
     private static <T> T value(ModConfigSpec.ConfigValue<T> value) {
         return SPEC.isLoaded() ? value.get() : value.getDefault();
     }
@@ -1321,6 +1357,12 @@ public final class NTConfig {
         distributorRange = value(DISTRIBUTOR_RANGE);
         distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
         distributorInterval = value(DISTRIBUTOR_INTERVAL);
+        conduitItemIntervals = values(CONDUIT_ITEM_INTERVALS);
+        conduitItemsPerOp = values(CONDUIT_ITEMS_PER_OP);
+        conduitFluidRates = values(CONDUIT_FLUID_RATES);
+        conduitEnergyRates = values(CONDUIT_ENERGY_RATES);
+        conduitMaxNetworkSize = value(CONDUIT_MAX_NETWORK_SIZE);
+        TapRates.reload();
         satelliteApBuffer = value(SATELLITE_AP_BUFFER);
         satelliteFeBuffer = value(SATELLITE_FE_BUFFER);
         satelliteTransferLimit = value(SATELLITE_TRANSFER_LIMIT);

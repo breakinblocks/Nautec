@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStackTemplate resultTemplate, int duration,
-                                       float purity) implements Recipe<ItemTransformationRecipeInput> {
+                                       float purity, int power) implements Recipe<ItemTransformationRecipeInput> {
     public static final String NAME = "item_transformation";
 
     public @NotNull ItemStack result() {
@@ -40,7 +40,7 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
 
     @Override
     public boolean matches(@NotNull ItemTransformationRecipeInput recipeInput, @NotNull Level level) {
-        return ingredient.test(recipeInput.item()) && purity <= recipeInput.purity();
+        return ingredient.test(recipeInput.item()) && purity <= recipeInput.purity() && power <= recipeInput.power();
     }
 
     @Override
@@ -107,7 +107,8 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
                 IngredientWithCount.CODEC.fieldOf("ingredient").forGetter(ItemTransformationRecipe::ingredient),
                 ItemStackTemplate.CODEC.fieldOf("result").forGetter(ItemTransformationRecipe::resultTemplate),
                 Codec.INT.fieldOf("duration").forGetter(ItemTransformationRecipe::duration),
-                Codec.FLOAT.fieldOf("purity").forGetter(ItemTransformationRecipe::purity)
+                Codec.FLOAT.fieldOf("purity").forGetter(ItemTransformationRecipe::purity),
+                Codec.INT.optionalFieldOf("power", 0).forGetter(ItemTransformationRecipe::power)
         ).apply(builder, ItemTransformationRecipe::new));
         private static final StreamCodec<RegistryFriendlyByteBuf, ItemTransformationRecipe> STREAM_CODEC = StreamCodec.composite(
                 IngredientWithCount.STREAM_CODEC,
@@ -118,6 +119,8 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
                 ItemTransformationRecipe::duration,
                 ByteBufCodecs.FLOAT,
                 ItemTransformationRecipe::purity,
+                ByteBufCodecs.VAR_INT,
+                ItemTransformationRecipe::power,
                 ItemTransformationRecipe::new
         );
         public static final RecipeSerializer<ItemTransformationRecipe> INSTANCE = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);

@@ -28,6 +28,12 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
     protected void addTags(HolderLookup.Provider provider) {
         tag(NTTags.Items.AQUATIC_CATALYST, Items.HEART_OF_THE_SEA);
         tag(NTTags.Items.AQUARINE_STEEL, NTItems.AQUARINE_STEEL_INGOT);
+        tag(NTTags.Items.INGOTS_AQUARINE_COPPER, NTItems.AQUARINE_COPPER_INGOT);
+        tag(Tags.Items.INGOTS, NTTags.Items.INGOTS_AQUARINE_COPPER);
+        tag(NTTags.Items.NUGGETS_AQUARINE_COPPER, NTItems.AQUARINE_COPPER_NUGGET);
+        tag(Tags.Items.NUGGETS, NTTags.Items.NUGGETS_AQUARINE_COPPER);
+        tag(NTTags.Items.STORAGE_BLOCKS_AQUARINE_COPPER, NTBlocks.AQUARINE_COPPER_BLOCK.asItem());
+        tag(Tags.Items.STORAGE_BLOCKS, NTTags.Items.STORAGE_BLOCKS_AQUARINE_COPPER);
         tag(NTTags.Items.DUSTS_SALT, NTItems.SALT);
         tag(Tags.Items.DUSTS, NTTags.Items.DUSTS_SALT);
         tag(ItemTags.DOORS, NTBlocks.PRESSURE_HATCH.asItem());

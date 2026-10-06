@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "nautec:flawless_prismarine_crystal",
+    "P": "nautec:riptide_upgrade",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    " M ",
+    "RPR"
+  ],
+  "result": {
+    "id": "nautec:maelstrom_upgrade"
+  }
+}

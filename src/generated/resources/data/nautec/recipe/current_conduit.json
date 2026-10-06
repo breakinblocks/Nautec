@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_copper_ingot",
+    "G": "nautec:clay_gasket"
+  },
+  "pattern": [
+    "AAA",
+    " G "
+  ],
+  "result": {
+    "count": 8,
+    "id": "nautec:current_conduit"
+  }
+}

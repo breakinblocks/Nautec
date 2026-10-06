@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
 import com.breakinblocks.nautec.content.recipes.inputs.MixingRecipeInput;
+import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -14,6 +15,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -51,11 +53,24 @@ public final class GuaranteedPartTests {
     public static void register(NTTestRegistrar r) {
         r.add("guaranteed_parts/gears_from_a_pure_beam", 20, helper -> {
             ItemStack block = new ItemStack(NTBlocks.CAST_IRON_BLOCK.get());
-            Optional<ItemTransformationRecipe> pure = ItemTransformationRecipe.findBest(helper.getLevel(), new ItemTransformationRecipeInput(block, 2.5F));
+            Optional<ItemTransformationRecipe> pure = ItemTransformationRecipe.findBest(helper.getLevel(), new ItemTransformationRecipeInput(block, 2.5F, Integer.MAX_VALUE));
             helper.assertTrue(pure.isPresent(), "a purity 2.5 beam transforms a Cast Iron Block");
             helper.assertTrue(pure.get().result().is(NTItems.GEAR.get()) && pure.get().result().getCount() == 4, "it gives four Gears, got " + pure.get().result());
-            Optional<ItemTransformationRecipe> weak = ItemTransformationRecipe.findBest(helper.getLevel(), new ItemTransformationRecipeInput(block, 2.0F));
+            Optional<ItemTransformationRecipe> weak = ItemTransformationRecipe.findBest(helper.getLevel(), new ItemTransformationRecipeInput(block, 2.0F, Integer.MAX_VALUE));
             helper.assertTrue(weak.isEmpty() || !weak.get().result().is(NTItems.GEAR.get()), "a purity 2.0 beam does not make Gears");
+            helper.succeed();
+        });
+
+        r.add("guaranteed_parts/transformation_minimum_power", 5, helper -> {
+            ItemTransformationRecipe recipe = new ItemTransformationRecipe(IngredientWithCount.fromItemLike(Items.STONE),
+                    new ItemStackTemplate(Items.DIRT, 1), 20, 1.0F, 40);
+            ItemStack stone = new ItemStack(Items.STONE);
+            helper.assertFalse(recipe.matches(new ItemTransformationRecipeInput(stone, 2.0F, 39), helper.getLevel()), "a 39 AP beam ran a 40 AP recipe");
+            helper.assertTrue(recipe.matches(new ItemTransformationRecipeInput(stone, 2.0F, 40), helper.getLevel()), "a 40 AP beam did not run a 40 AP recipe");
+            Optional<ItemTransformationRecipe> copper = ItemTransformationRecipe.findBest(helper.getLevel(),
+                    new ItemTransformationRecipeInput(new ItemStack(NTItems.AQUARINE_COPPER_COMPOUND.get()), 2.1F, 1));
+            helper.assertTrue(copper.isPresent() && copper.get().result().is(NTItems.AQUARINE_COPPER_INGOT.get()) && copper.get().result().getCount() == 4,
+                    "a purity 2.1 beam turns Aquarine Copper Compound into 4 ingots");
             helper.succeed();
         });
 

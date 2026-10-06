@@ -29,7 +29,7 @@ public class ItemTransformationRecipeCategory extends AbstractRecipeCategory<Ite
                 Component.translatable("nautec.jei.category.item_transformation"),
                 helper.createDrawableItemStack(new ItemStack(NTBlocks.PRISMARINE_RELAY.get())),
                 80,
-                28);
+                38);
     }
 
     @Override
@@ -49,6 +49,13 @@ public class ItemTransformationRecipeCategory extends AbstractRecipeCategory<Ite
                 .setTextAlignment(HorizontalAlignment.RIGHT)
                 .setColor(0xFF808080)
                 .setShadow(false);
+        if (recipe.power() > 0) {
+            builder.addText(Component.translatable("nautec.jei.min_power", recipe.power()), getWidth(), fontSize)
+                    .setPosition(0, 30)
+                    .setTextAlignment(HorizontalAlignment.RIGHT)
+                    .setColor(0xFF808080)
+                    .setShadow(false);
+        }
     }
 
     @Override

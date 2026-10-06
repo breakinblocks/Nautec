@@ -1,0 +1,149 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_core"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm"
+      },
+      "when": {
+        "down": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap"
+      },
+      "when": {
+        "down": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 180
+      },
+      "when": {
+        "up": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap",
+        "x": 180
+      },
+      "when": {
+        "up": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 180
+      },
+      "when": {
+        "up": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 180
+      },
+      "when": {
+        "north": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap",
+        "x": 90,
+        "y": 180
+      },
+      "when": {
+        "north": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90
+      },
+      "when": {
+        "south": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap",
+        "x": 90
+      },
+      "when": {
+        "south": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 90
+      },
+      "when": {
+        "south": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "west": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "west": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "connected"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_cap",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "blocked|none"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "connected"
+      }
+    }
+  ]
+}

@@ -38,6 +38,9 @@ public final class NTTags {
         public static final TagKey<Item> REPAIRS_PRISMARINE_ARMOR = ntTag("repairs_prismarine_armor");
         public static final TagKey<Item> SUBMARINE_MODULE = ntTag("submarine_module");
         public static final TagKey<Item> DUSTS_SALT = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/salt"));
+        public static final TagKey<Item> INGOTS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "ingots/aquarine_copper"));
+        public static final TagKey<Item> NUGGETS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "nuggets/aquarine_copper"));
+        public static final TagKey<Item> STORAGE_BLOCKS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "storage_blocks/aquarine_copper"));
 
         private static TagKey<Item> ntTag(String name) {
             return TagKey.create(Registries.ITEM, Nautec.rl(name));

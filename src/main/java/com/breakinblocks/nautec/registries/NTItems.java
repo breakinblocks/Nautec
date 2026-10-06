@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.conduits.ConduitUpgradeItem;
+import com.breakinblocks.nautec.content.conduits.FilterItem;
 import com.breakinblocks.nautec.content.items.GraftingAnchorItem;
 import com.breakinblocks.nautec.content.resonance.PrismSatelliteItem;
 import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
@@ -250,6 +252,22 @@ public final class NTItems {
             SpawnerConfinementMatrixItem::new, () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<ReactorUpgradeItem> REACTOR_FUSION_UPGRADE = bacteriaItem(registerItem("reactor_fusion_upgrade",
             props -> new ReactorUpgradeItem(props, ReactorUpgradeItem.Type.FUSION), () -> new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> AQUARINE_COPPER_COMPOUND = registerItem("aquarine_copper_compound", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> AQUARINE_COPPER_INGOT = registerItem("aquarine_copper_ingot", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> AQUARINE_COPPER_NUGGET = registerItem("aquarine_copper_nugget", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> CLAY_GASKET = registerItem("clay_gasket", Item::new, new Item.Properties());
+    public static final DeferredItem<ConduitUpgradeItem> EDDY_UPGRADE = registerItem("eddy_upgrade",
+            props -> new ConduitUpgradeItem(props, 1), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<ConduitUpgradeItem> SURGE_UPGRADE = registerItem("surge_upgrade",
+            props -> new ConduitUpgradeItem(props, 2), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<ConduitUpgradeItem> RIPTIDE_UPGRADE = registerItem("riptide_upgrade",
+            props -> new ConduitUpgradeItem(props, 3), () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<ConduitUpgradeItem> MAELSTROM_UPGRADE = registerItem("maelstrom_upgrade",
+            props -> new ConduitUpgradeItem(props, 4), () -> new Item.Properties().stacksTo(16).rarity(Rarity.EPIC));
+    public static final DeferredItem<FilterItem> FILTER = registerItem("filter",
+            props -> new FilterItem(props, false), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<FilterItem> INTRICATE_FILTER = registerItem("intricate_filter",
+            props -> new FilterItem(props, true), () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<EnergyConversionUpgradeItem> ENERGY_CONVERSION_UPGRADE = registerItem("energy_conversion_upgrade",
             props -> new EnergyConversionUpgradeItem(props, EnergyConversionUpgradeItem.Tier.BASIC),
             () -> new Item.Properties().stacksTo(EnergyConversionUpgradeItem.MAX_PER_SLOT));

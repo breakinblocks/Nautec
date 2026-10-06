@@ -1,0 +1,78 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "1": "nautec:block/current_conduit_collar",
+    "particle": "nautec:block/current_conduit_collar"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        0,
+        4
+      ],
+      "to": [
+        12,
+        1,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            4,
+            0,
+            12,
+            1
+          ],
+          "texture": "#1"
+        },
+        "east": {
+          "uv": [
+            4,
+            0,
+            12,
+            1
+          ],
+          "texture": "#1"
+        },
+        "south": {
+          "uv": [
+            4,
+            0,
+            12,
+            1
+          ],
+          "texture": "#1"
+        },
+        "west": {
+          "uv": [
+            4,
+            0,
+            12,
+            1
+          ],
+          "texture": "#1"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#1"
+        },
+        "down": {
+          "uv": [
+            4,
+            4,
+            12,
+            12
+          ],
+          "texture": "#1",
+          "cullface": "down"
+        }
+      }
+    }
+  ]
+}

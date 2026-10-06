@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:clay_ball",
+    "minecraft:clay_ball",
+    "minecraft:dried_kelp"
+  ],
+  "result": {
+    "count": 8,
+    "id": "nautec:clay_gasket"
+  }
+}
