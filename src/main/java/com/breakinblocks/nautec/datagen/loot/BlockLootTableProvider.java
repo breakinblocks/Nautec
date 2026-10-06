@@ -126,6 +126,9 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.MUTATOR.get());
         dropSelf(NTBlocks.GRAFTING_STATION.get());
         dropSelf(NTBlocks.DISTRIBUTOR.get());
+        dropSelf(NTBlocks.AQUARINE_COPPER_BLOCK.get());
+        dropSelf(NTBlocks.CURRENT_CONDUIT.get());
+        dropOther(NTBlocks.CONDUIT_TAP.get(), NTBlocks.CURRENT_CONDUIT.get());
         dropSelf(NTBlocks.BUBBLE_ANCHOR.get());
         dropSelf(NTBlocks.COLONY_REPLICATOR.get());
         dropSelf(NTBlocks.HYDROTHERMAL_VENT.get());

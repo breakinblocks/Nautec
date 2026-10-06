@@ -52,6 +52,16 @@ public class NetworkEvents {
                 DistributorEditPayload::handle
         );
         registrar.playToServer(
+                ConduitTapEditPayload.TYPE,
+                ConduitTapEditPayload.STREAM_CODEC,
+                ConduitTapEditPayload::handle
+        );
+        registrar.playToClient(
+                ConduitTapSyncPayload.TYPE,
+                ConduitTapSyncPayload.STREAM_CODEC,
+                ConduitTapSyncPayload::handle
+        );
+        registrar.playToServer(
                 SetGhostInputPayload.TYPE,
                 SetGhostInputPayload.STREAM_CODEC,
                 SetGhostInputPayload::handle

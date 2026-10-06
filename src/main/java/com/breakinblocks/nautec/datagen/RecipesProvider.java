@@ -46,6 +46,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,6 +97,8 @@ public class RecipesProvider extends RecipeProvider {
         utilityRecipes(pRecipeOutput);
 
         castIronRecipes(pRecipeOutput);
+
+        conduitRecipes(pRecipeOutput);
 
         miscItemsRecipes(pRecipeOutput);
 
@@ -175,6 +178,105 @@ public class RecipesProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, CookingBookCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 200)
                 .unlockedBy("has_item", has(Items.IRON_INGOT))
                 .save(pRecipeOutput, key("cast_iron_ingot_smelting"));
+    }
+
+    private void conduitRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shapeless(RecipeCategory.MISC, NTItems.AQUARINE_COPPER_COMPOUND.get(), 2)
+                .requires(Items.COPPER_INGOT)
+                .requires(Items.COPPER_INGOT)
+                .requires(Items.PRISMARINE_CRYSTALS)
+                .requires(Items.DRIED_KELP)
+                .unlockedBy("has_item", has(Items.COPPER_INGOT))
+                .save(pRecipeOutput, key("aquarine_copper_compound"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUARINE_COPPER_COMPOUND.get(), 6))
+                .ingredients(iwcFromItemLike(Items.COPPER_INGOT, 3),
+                        iwcFromItemLike(NTItems.KELP_SLURRY.get(), 1))
+                .duration(100)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 500))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("aquarine_copper_compound_mixing"));
+
+        ItemTransformationRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUARINE_COPPER_INGOT.get(), 4))
+                .ingredient(NTItems.AQUARINE_COPPER_COMPOUND.get())
+                .purity(2.1f)
+                .duration(100)
+                .save(pRecipeOutput, key("aquarine_copper_ingot"));
+
+        shapeless(RecipeCategory.MISC, NTItems.AQUARINE_COPPER_NUGGET.get(), 9)
+                .requires(NTItems.AQUARINE_COPPER_INGOT)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_COPPER_INGOT))
+                .save(pRecipeOutput, key("aquarine_copper_nugget"));
+        shaped(RecipeCategory.MISC, NTItems.AQUARINE_COPPER_INGOT.get())
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', NTItems.AQUARINE_COPPER_NUGGET)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_COPPER_NUGGET))
+                .save(pRecipeOutput, key("aquarine_copper_ingot_from_nuggets"));
+        shaped(RecipeCategory.BUILDING_BLOCKS, NTBlocks.AQUARINE_COPPER_BLOCK.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .define('I', NTItems.AQUARINE_COPPER_INGOT)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_COPPER_INGOT))
+                .save(pRecipeOutput, key("aquarine_copper_block"));
+        shapeless(RecipeCategory.MISC, NTItems.AQUARINE_COPPER_INGOT.get(), 9)
+                .requires(NTBlocks.AQUARINE_COPPER_BLOCK)
+                .unlockedBy("has_item", has(NTBlocks.AQUARINE_COPPER_BLOCK))
+                .save(pRecipeOutput, key("aquarine_copper_ingot_from_block"));
+
+        shapeless(RecipeCategory.MISC, NTItems.CLAY_GASKET.get(), 8)
+                .requires(Items.CLAY_BALL)
+                .requires(Items.CLAY_BALL)
+                .requires(Items.DRIED_KELP)
+                .unlockedBy("has_item", has(Items.CLAY_BALL))
+                .save(pRecipeOutput, key("clay_gasket"));
+
+        shaped(RecipeCategory.TRANSPORTATION, NTBlocks.CURRENT_CONDUIT.get(), 8)
+                .pattern("AAA")
+                .pattern(" G ")
+                .define('A', NTItems.AQUARINE_COPPER_INGOT)
+                .define('G', NTItems.CLAY_GASKET)
+                .unlockedBy("has_item", has(NTItems.AQUARINE_COPPER_INGOT))
+                .save(pRecipeOutput, key("current_conduit"));
+
+        shaped(RecipeCategory.MISC, NTItems.EDDY_UPGRADE.get())
+                .pattern(" A ")
+                .pattern("ARA")
+                .pattern(" I ")
+                .define('A', NTItems.AQUARINE_COPPER_INGOT)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_item", has(NTBlocks.CURRENT_CONDUIT))
+                .save(pRecipeOutput, key("eddy_upgrade"));
+        upgrade(pRecipeOutput, NTItems.SURGE_UPGRADE.get(), NTItems.EDDY_UPGRADE.get(), Ingredient.of(Items.EMERALD), "surge_upgrade");
+        upgrade(pRecipeOutput, NTItems.RIPTIDE_UPGRADE.get(), NTItems.SURGE_UPGRADE.get(), Ingredient.of(Items.DIAMOND), "riptide_upgrade");
+        upgrade(pRecipeOutput, NTItems.MAELSTROM_UPGRADE.get(), NTItems.RIPTIDE_UPGRADE.get(),
+                Ingredient.of(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get()), "maelstrom_upgrade");
+
+        shapeless(RecipeCategory.MISC, NTItems.FILTER.get())
+                .requires(Items.PAPER)
+                .requires(NTItems.CAST_IRON_NUGGET)
+                .requires(Tags.Items.DUSTS_REDSTONE)
+                .unlockedBy("has_item", has(NTBlocks.CURRENT_CONDUIT))
+                .save(pRecipeOutput, key("filter"));
+        shapeless(RecipeCategory.MISC, NTItems.INTRICATE_FILTER.get())
+                .requires(NTItems.FILTER)
+                .requires(Items.EMERALD)
+                .unlockedBy("has_item", has(NTItems.FILTER))
+                .save(pRecipeOutput, key("intricate_filter"));
+    }
+
+    private void upgrade(RecipeOutput pRecipeOutput, ItemLike result, ItemLike previous, Ingredient material, String name) {
+        shaped(RecipeCategory.MISC, result)
+                .pattern(" M ")
+                .pattern("RPR")
+                .define('M', material)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('P', previous)
+                .unlockedBy("has_item", has(previous))
+                .save(pRecipeOutput, key(name));
     }
 
     private void aquaticCatalystRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -425,6 +527,14 @@ public class RecipesProvider extends RecipeProvider {
                 .purity(2.0f)
                 .duration(20)
                 .save(pRecipeOutput, key("laser_crafting/aquarine_steel_ingot_dense"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(NTItems.AQUARINE_COPPER_COMPOUND.get()))
+                .result(new ItemStackTemplate(NTItems.AQUARINE_COPPER_INGOT.get(), 4))
+                .power(20)
+                .purity(2.1f)
+                .duration(20)
+                .save(pRecipeOutput, key("laser_crafting/aquarine_copper_ingot"));
 
         LaserCraftingRecipeBuilder.newRecipe()
                 .ingredient(IngredientWithCount.fromItemLike(NTItems.BURNT_COIL.get()))

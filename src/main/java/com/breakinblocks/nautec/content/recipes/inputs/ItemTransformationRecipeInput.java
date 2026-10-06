@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.content.recipes.inputs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 
-public record ItemTransformationRecipeInput(ItemStack item, float purity) implements RecipeInput {
+public record ItemTransformationRecipeInput(ItemStack item, float purity, int power) implements RecipeInput {
     @Override
     public ItemStack getItem(int index) {
         return index == 0 ? item : ItemStack.EMPTY;

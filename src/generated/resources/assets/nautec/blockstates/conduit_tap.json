@@ -1,0 +1,149 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_core"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm"
+      },
+      "when": {
+        "down": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange"
+      },
+      "when": {
+        "down": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 180
+      },
+      "when": {
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange",
+        "x": 180
+      },
+      "when": {
+        "up": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 180
+      },
+      "when": {
+        "up": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 180
+      },
+      "when": {
+        "north": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange",
+        "x": 90,
+        "y": 180
+      },
+      "when": {
+        "north": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90
+      },
+      "when": {
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange",
+        "x": 90
+      },
+      "when": {
+        "south": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 90
+      },
+      "when": {
+        "south": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "west": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange",
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "west": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_arm",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "conduit"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/conduit_tap_flange",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "machine"
+      }
+    },
+    {
+      "apply": {
+        "model": "nautec:block/current_conduit_collar",
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "conduit"
+      }
+    }
+  ]
+}

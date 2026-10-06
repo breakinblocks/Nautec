@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.compat.jei;
 
 import com.breakinblocks.nautec.client.screen.DistributorScreen;
+import com.breakinblocks.nautec.client.screen.ConduitTapScreen;
 import com.breakinblocks.nautec.api.client.screen.NTAbstractContainerScreen;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.NTConfig;
@@ -263,6 +264,7 @@ public class NTJeiPlugin implements IModPlugin {
         ConfinedSpawnerGhostHandler handler = new ConfinedSpawnerGhostHandler();
         registration.addGhostIngredientHandler(ConfinedSpawnerScreen.class, handler);
         registration.addGhostIngredientHandler(DistributorScreen.class, new DistributorJeiHandler());
+        registration.addGhostIngredientHandler(ConduitTapScreen.class, new ConduitTapJeiHandler());
         registerGhostInputs(registration, NTMachineScreen.class);
         registerGhostInputs(registration, NTAbstractContainerScreen.class);
         registration.addGuiContainerHandler(ConfinedSpawnerScreen.class, handler);

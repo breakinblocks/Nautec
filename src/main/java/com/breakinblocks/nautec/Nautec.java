@@ -246,6 +246,10 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
                 (blockEntity, dir) -> blockEntity.getFuel());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
+                (blockEntity, dir) -> blockEntity.fluidSink(dir));
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
+                (blockEntity, dir) -> blockEntity.energySink(dir));
 
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : NTBlockEntityTypes.BLOCK_ENTITIES.getEntries()) {
             Block validBlock = be.get().getValidBlocks().stream().iterator().next();

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_copper_ingot",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    " A ",
+    "ARA",
+    " I "
+  ],
+  "result": {
+    "id": "nautec:eddy_upgrade"
+  }
+}

@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.registries;
 
 import java.util.Map;
+import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
+import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
 import java.util.EnumMap;
 import java.util.Collections;
 import com.breakinblocks.nautec.content.biometank.BiomeTankType;
@@ -193,6 +195,12 @@ public final class NTBlocks {
             () -> BlockBehaviour.Properties.of().strength(-1.0F, 3_600_000.0F));
     public static final DeferredBlock<DistributorBlock> DISTRIBUTOR = registerBlockAndItem("nautechnical_distributor", DistributorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> AQUARINE_COPPER_BLOCK = registerBlockAndItem("aquarine_copper_block", Block::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK));
+    public static final DeferredBlock<CurrentConduitBlock> CURRENT_CONDUIT = registerBlockAndItem("current_conduit", CurrentConduitBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).strength(1.0F, 6.0F).noOcclusion(), true, false);
+    public static final DeferredBlock<ConduitTapBlock> CONDUIT_TAP = BLOCKS.registerBlock("conduit_tap", ConduitTapBlock::new,
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).strength(1.5F, 6.0F).noOcclusion());
     public static final DeferredBlock<AdvancedBacterialAnalyzerBlock> ADVANCED_BACTERIAL_ANALYZER = bacteriaBlock(registerBlockAndItem("advanced_bacterial_analyzer",
             AdvancedBacterialAnalyzerBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<GraftingStationBlock> GRAFTING_STATION = bacteriaBlock(registerBlockAndItem("grafting_station", GraftingStationBlock::new,

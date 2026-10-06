@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.client.screen.ConduitTapScreen;
 import com.breakinblocks.nautec.client.screen.DishStorageScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonanceNodeBERenderer;
 import com.breakinblocks.nautec.client.screen.ResonanceNodeScreen;
@@ -406,6 +407,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.GRAFTING_STATION.get(), GraftingStationScreen::new);
         event.register(NTMenuTypes.ADVANCED_BACTERIAL_ANALYZER.get(), AdvancedBacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.DISTRIBUTOR.get(), DistributorScreen::new);
+        event.register(NTMenuTypes.CONDUIT_TAP.get(), ConduitTapScreen::new);
         event.register(NTMenuTypes.BUBBLE_ANCHOR.get(), BubbleAnchorScreen::new);
         event.register(NTMenuTypes.ENERGY_CONVERTER.get(), EnergyConverterScreen::new);
         event.register(NTMenuTypes.COLONY_REPLICATOR.get(), ColonyReplicatorScreen::new);

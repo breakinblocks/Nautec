@@ -80,6 +80,17 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.GRAFTING_ANCHOR.get());
         basicItem(NTItems.ADVANCED_GRAFTING_ANCHOR.get());
         basicItem(NTItems.ENERGY_CONVERSION_UPGRADE.get());
+        basicItem(NTItems.AQUARINE_COPPER_COMPOUND.get());
+        basicItem(NTItems.AQUARINE_COPPER_INGOT.get());
+        basicItem(NTItems.AQUARINE_COPPER_NUGGET.get());
+        basicItem(NTItems.CLAY_GASKET.get());
+        basicItem(NTItems.EDDY_UPGRADE.get());
+        basicItem(NTItems.SURGE_UPGRADE.get());
+        basicItem(NTItems.RIPTIDE_UPGRADE.get());
+        basicItem(NTItems.MAELSTROM_UPGRADE.get());
+        basicItem(NTItems.FILTER.get());
+        basicItem(NTItems.INTRICATE_FILTER.get());
+        handAuthoredItem(NTBlocks.CURRENT_CONDUIT.asItem());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
         basicItem(NTItems.ULTIMATE_ENERGY_CONVERSION_UPGRADE.get());
         basicItem(NTItems.REACTOR_YIELD_UPGRADE.get());

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "minecraft:emerald",
+    "P": "nautec:eddy_upgrade",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    " M ",
+    "RPR"
+  ],
+  "result": {
+    "id": "nautec:surge_upgrade"
+  }
+}

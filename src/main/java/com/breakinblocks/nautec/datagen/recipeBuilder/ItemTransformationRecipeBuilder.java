@@ -23,6 +23,7 @@ public class ItemTransformationRecipeBuilder implements NTRecipeBuilder {
     private IngredientWithCount ingredient;
     private float purity;
     private int duration;
+    private int power;
 
     private ItemTransformationRecipeBuilder(ItemStackTemplate result) {
         this.result = result;
@@ -57,6 +58,11 @@ public class ItemTransformationRecipeBuilder implements NTRecipeBuilder {
         return this;
     }
 
+    public ItemTransformationRecipeBuilder power(int power) {
+        this.power = power;
+        return this;
+    }
+
     public ItemTransformationRecipeBuilder purity(float purity) {
         this.purity = purity;
         return this;
@@ -79,7 +85,7 @@ public class ItemTransformationRecipeBuilder implements NTRecipeBuilder {
 
     @Override
     public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
-        ItemTransformationRecipe recipe = new ItemTransformationRecipe(this.ingredient, this.result, this.duration, this.purity);
+        ItemTransformationRecipe recipe = new ItemTransformationRecipe(this.ingredient, this.result, this.duration, this.purity, this.power);
         recipeOutput.accept(key, recipe, null);
     }
 

@@ -239,11 +239,11 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return highest - (highest - average) * (float) NTConfig.beamMergePurityDrop;
     }
 
-    private Optional<ItemTransformationRecipe> getCurrentRecipe(ItemStack itemStack, float beamPurity) {
+    private Optional<ItemTransformationRecipe> getCurrentRecipe(ItemStack itemStack, float beamPurity, int beamPower) {
         if (!(this.level instanceof ServerLevel serverLevel)) {
             return Optional.empty();
         }
-        return ItemTransformationRecipe.findBest(serverLevel, new ItemTransformationRecipeInput(itemStack, beamPurity));
+        return ItemTransformationRecipe.findBest(serverLevel, new ItemTransformationRecipeInput(itemStack, beamPurity, beamPower));
     }
 
     private void spawnTransformationResult(ItemEntity cookingItem, ItemTransformationRecipe recipe) {
@@ -271,6 +271,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     private void processBeam(AABB box, Direction direction) {
         Map<ItemEntity, Transformation> tracked = activeTransformations.get(direction);
         float beamPurity = outgoingPurity(direction);
+        int beamPower = outgoingPower(direction);
         for (Entity entity : level.getEntities((Entity) null, box, candidate -> candidate instanceof LivingEntity || candidate instanceof ItemEntity)) {
             if (entity instanceof LivingEntity livingEntity) {
                 livingEntity.hurt(level.damageSources().inFire(), 3);
@@ -297,7 +298,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                 continue;
             }
 
-            ItemTransformationRecipe recipe = transformation.recipe(cookingItem.getItem(), beamPurity);
+            ItemTransformationRecipe recipe = transformation.recipe(cookingItem.getItem(), beamPurity, beamPower);
             if (recipe == null) {
                 continue;
             }
@@ -323,15 +324,17 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     private final class Transformation {
         private ItemStack key = ItemStack.EMPTY;
         private float purity = Float.NaN;
+        private int power = -1;
         private @Nullable ItemTransformationRecipe recipe;
         private boolean started;
         private int progress;
 
-        private @Nullable ItemTransformationRecipe recipe(ItemStack stack, float beamPurity) {
-            if (purity != beamPurity || !ItemStack.matches(key, stack)) {
+        private @Nullable ItemTransformationRecipe recipe(ItemStack stack, float beamPurity, int beamPower) {
+            if (purity != beamPurity || power != beamPower || !ItemStack.matches(key, stack)) {
                 key = stack.copy();
                 purity = beamPurity;
-                recipe = getCurrentRecipe(stack, beamPurity).orElse(null);
+                power = beamPower;
+                recipe = getCurrentRecipe(stack, beamPurity, beamPower).orElse(null);
             }
             return recipe;
         }

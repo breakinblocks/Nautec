@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import com.breakinblocks.nautec.content.biometank.BiomeTankBlockEntity;
@@ -164,6 +165,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<DistributorBlockEntity>> DISTRIBUTOR = BLOCK_ENTITIES.register("nautechnical_distributor",
             () -> new BlockEntityType<>(DistributorBlockEntity::new,
                     NTBlocks.DISTRIBUTOR.get()));
+    public static final Supplier<BlockEntityType<ConduitTapBlockEntity>> CONDUIT_TAP = BLOCK_ENTITIES.register("conduit_tap",
+            () -> new BlockEntityType<>(ConduitTapBlockEntity::new,
+                    NTBlocks.CONDUIT_TAP.get()));
     public static final Supplier<BlockEntityType<AdvancedBacterialAnalyzerBlockEntity>> ADVANCED_BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("advanced_bacterial_analyzer",
             () -> new BlockEntityType<>(AdvancedBacterialAnalyzerBlockEntity::new,
                     NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get()));

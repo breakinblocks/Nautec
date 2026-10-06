@@ -1,0 +1,17 @@
+{
+  "type": "nautec:laser_crafting",
+  "duration": 20,
+  "ingredients": [
+    {
+      "ingredient": "nautec:aquarine_copper_compound"
+    }
+  ],
+  "power": 20,
+  "purity": 2.1,
+  "results": [
+    {
+      "count": 4,
+      "id": "nautec:aquarine_copper_ingot"
+    }
+  ]
+}

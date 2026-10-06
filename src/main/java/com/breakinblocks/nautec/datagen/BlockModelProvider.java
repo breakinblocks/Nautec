@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.conduits.ConduitArm;
+import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
+import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
+import com.breakinblocks.nautec.content.conduits.TapArm;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import com.breakinblocks.nautec.content.biometank.BiomeTankType;
 import com.breakinblocks.nautec.content.biometank.BiomeTankBlock;
@@ -151,6 +155,9 @@ public class BlockModelProvider extends ModelProvider {
         facingBlock(NTBlocks.FOCUSING_LENS.get(), artModel(NTBlocks.FOCUSING_LENS.get()));
         longDistanceLaser(NTBlocks.LONG_DISTANCE_LASER.get());
         laserJunction(NTBlocks.LASER_JUNCTION.get());
+        currentConduit(NTBlocks.CURRENT_CONDUIT.get());
+        conduitTap(NTBlocks.CONDUIT_TAP.get());
+        simpleBlock(NTBlocks.AQUARINE_COPPER_BLOCK.get());
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
@@ -474,6 +481,43 @@ public class BlockModelProvider extends ModelProvider {
                                 .term(BlockStateProperties.FACING, dir)
                                 .term(AquaticCatalystBlock.LINKED, linked),
                         rotated(BlockModelGenerators.plainVariant(existingModelFile(linked ? "aquatic_catalyst_lamp_linked" : "aquatic_catalyst_lamp_unlinked")), xRot, yRot));
+            }
+        }
+        blockModels.blockStateOutput.accept(builder);
+    }
+
+    private static final int[][] ARM_ROTATIONS = {{0, 0}, {180, 0}, {90, 180}, {90, 0}, {90, 90}, {90, 270}};
+
+    private void currentConduit(Block block) {
+        MultiPartGenerator builder = MultiPartGenerator.multiPart(block)
+                .with(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_core")));
+        for (Direction direction : Direction.values()) {
+            int[] rotation = ARM_ROTATIONS[direction.ordinal()];
+            builder = builder.with(BlockModelGenerators.condition(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.CONNECTED),
+                            rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm")), rotation[0], rotation[1]));
+            builder = builder.with(BlockModelGenerators.condition().term(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.NONE, ConduitArm.BLOCKED),
+                    rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_cap")), rotation[0], rotation[1]));
+            if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                builder = builder.with(BlockModelGenerators.condition(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.CONNECTED),
+                        rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_collar")), rotation[0], rotation[1]));
+            }
+        }
+        blockModels.blockStateOutput.accept(builder);
+    }
+
+    private void conduitTap(Block block) {
+        MultiPartGenerator builder = MultiPartGenerator.multiPart(block)
+                .with(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_core")));
+        for (Direction direction : Direction.values()) {
+            int[] rotation = ARM_ROTATIONS[direction.ordinal()];
+            builder = builder
+                    .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT),
+                            rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm")), rotation[0], rotation[1]))
+                    .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.MACHINE),
+                            rotated(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_flange")), rotation[0], rotation[1]));
+            if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
+                builder = builder.with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT),
+                        rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_collar")), rotation[0], rotation[1]));
             }
         }
         blockModels.blockStateOutput.accept(builder);

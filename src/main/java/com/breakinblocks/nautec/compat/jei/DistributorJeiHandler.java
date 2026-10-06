@@ -26,37 +26,23 @@ public final class DistributorJeiHandler implements IGhostIngredientHandler<Dist
             for (int slot = 0; slot < DistributorLink.ITEM_REQUESTS; slot++) {
                 int index = slot;
                 Rect2i area = screen.itemSlotArea(slot);
-                targets.add(target(area, () -> screen.setItemRequest(index, item.get())));
+                targets.add(GhostTargets.of(area, () -> screen.setItemRequest(index, item.get())));
             }
             FluidStack contained = DistributorScreen.contained(item.get());
             if (!contained.isEmpty()) {
                 for (int slot = 0; slot < DistributorLink.FLUID_REQUESTS; slot++) {
                     int index = slot;
-                    targets.add(target(screen.fluidSlotArea(slot), () -> screen.setFluidRequest(index, contained)));
+                    targets.add(GhostTargets.of(screen.fluidSlotArea(slot), () -> screen.setFluidRequest(index, contained)));
                 }
             }
         }
         if (fluid.isPresent() && !fluid.get().isEmpty()) {
             for (int slot = 0; slot < DistributorLink.FLUID_REQUESTS; slot++) {
                 int index = slot;
-                targets.add(target(screen.fluidSlotArea(slot), () -> screen.setFluidRequest(index, fluid.get())));
+                targets.add(GhostTargets.of(screen.fluidSlotArea(slot), () -> screen.setFluidRequest(index, fluid.get())));
             }
         }
         return targets;
-    }
-
-    private static <I> Target<I> target(Rect2i area, Runnable action) {
-        return new Target<>() {
-            @Override
-            public Rect2i getArea() {
-                return area;
-            }
-
-            @Override
-            public void accept(I value) {
-                action.run();
-            }
-        };
     }
 
     @Override
