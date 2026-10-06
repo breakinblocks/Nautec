@@ -10,8 +10,7 @@
         "model": "nautec:block/current_conduit_arm"
       },
       "when": {
-        "down": "connected",
-        "waterlogged": "false"
+        "down": "connected"
       }
     },
     {
@@ -19,26 +18,7 @@
         "model": "nautec:block/current_conduit_cap"
       },
       "when": {
-        "down": "blocked|none",
-        "waterlogged": "false"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet"
-      },
-      "when": {
-        "down": "connected",
-        "waterlogged": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet"
-      },
-      "when": {
-        "down": "blocked|none",
-        "waterlogged": "true"
+        "down": "blocked|none"
       }
     },
     {
@@ -47,8 +27,7 @@
         "x": 180
       },
       "when": {
-        "up": "connected",
-        "waterlogged": "false"
+        "up": "connected"
       }
     },
     {
@@ -57,28 +36,7 @@
         "x": 180
       },
       "when": {
-        "up": "blocked|none",
-        "waterlogged": "false"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet",
-        "x": 180
-      },
-      "when": {
-        "up": "connected",
-        "waterlogged": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet",
-        "x": 180
-      },
-      "when": {
-        "up": "blocked|none",
-        "waterlogged": "true"
+        "up": "blocked|none"
       }
     },
     {
@@ -97,8 +55,7 @@
         "y": 180
       },
       "when": {
-        "north": "connected",
-        "waterlogged": "false"
+        "north": "connected"
       }
     },
     {
@@ -108,30 +65,7 @@
         "y": 180
       },
       "when": {
-        "north": "blocked|none",
-        "waterlogged": "false"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet",
-        "x": 90,
-        "y": 180
-      },
-      "when": {
-        "north": "connected",
-        "waterlogged": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet",
-        "x": 90,
-        "y": 180
-      },
-      "when": {
-        "north": "blocked|none",
-        "waterlogged": "true"
+        "north": "blocked|none"
       }
     },
     {
@@ -140,8 +74,7 @@
         "x": 90
       },
       "when": {
-        "south": "connected",
-        "waterlogged": "false"
+        "south": "connected"
       }
     },
     {
@@ -150,28 +83,7 @@
         "x": 90
       },
       "when": {
-        "south": "blocked|none",
-        "waterlogged": "false"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet",
-        "x": 90
-      },
-      "when": {
-        "south": "connected",
-        "waterlogged": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet",
-        "x": 90
-      },
-      "when": {
-        "south": "blocked|none",
-        "waterlogged": "true"
+        "south": "blocked|none"
       }
     },
     {
@@ -190,7 +102,6 @@
         "y": 90
       },
       "when": {
-        "waterlogged": "false",
         "west": "connected"
       }
     },
@@ -201,29 +112,6 @@
         "y": 90
       },
       "when": {
-        "waterlogged": "false",
-        "west": "blocked|none"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet",
-        "x": 90,
-        "y": 90
-      },
-      "when": {
-        "waterlogged": "true",
-        "west": "connected"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet",
-        "x": 90,
-        "y": 90
-      },
-      "when": {
-        "waterlogged": "true",
         "west": "blocked|none"
       }
     },
@@ -234,8 +122,7 @@
         "y": 270
       },
       "when": {
-        "east": "connected",
-        "waterlogged": "false"
+        "east": "connected"
       }
     },
     {
@@ -245,30 +132,7 @@
         "y": 270
       },
       "when": {
-        "east": "blocked|none",
-        "waterlogged": "false"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_arm_wet",
-        "x": 90,
-        "y": 270
-      },
-      "when": {
-        "east": "connected",
-        "waterlogged": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "nautec:block/current_conduit_cap_wet",
-        "x": 90,
-        "y": 270
-      },
-      "when": {
-        "east": "blocked|none",
-        "waterlogged": "true"
+        "east": "blocked|none"
       }
     },
     {
