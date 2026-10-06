@@ -1,0 +1,17 @@
+{
+  "type": "nautec:laser_crafting",
+  "duration": 80,
+  "ingredients": [
+    {
+      "ingredient": "nautec:cast_iron_block"
+    }
+  ],
+  "power": 40,
+  "purity": 2.5,
+  "results": [
+    {
+      "count": 4,
+      "id": "nautec:gear"
+    }
+  ]
+}

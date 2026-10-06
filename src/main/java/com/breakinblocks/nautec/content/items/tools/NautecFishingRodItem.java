@@ -27,17 +27,7 @@ public class NautecFishingRodItem extends FishingRodItem {
         ItemStack rod = player.getItemInHand(hand);
 
         if (player.fishing != null) {
-            if (!level.isClientSide()) {
-                int damage = player.fishing.retrieve(rod);
-                ItemStack original = rod.copy();
-                rod.hurtAndBreak(damage, player, hand.asEquipmentSlot());
-                if (rod.isEmpty()) {
-                    EventHooks.onPlayerDestroyItem(player, original, hand);
-                }
-            }
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_RETRIEVE,
-                    SoundSource.NEUTRAL, 1.0F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-            rod.causeUseVibration(player, GameEvent.ITEM_INTERACT_FINISH);
+            reel(level, player, hand);
         } else {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_THROW,
                     SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
@@ -51,5 +41,20 @@ public class NautecFishingRodItem extends FishingRodItem {
         }
 
         return InteractionResult.SUCCESS;
+    }
+
+    public static void reel(Level level, Player player, InteractionHand hand) {
+        ItemStack rod = player.getItemInHand(hand);
+        if (!level.isClientSide() && player.fishing != null) {
+            int damage = player.fishing.retrieve(rod);
+            ItemStack original = rod.copy();
+            rod.hurtAndBreak(damage, player, hand.asEquipmentSlot());
+            if (rod.isEmpty()) {
+                EventHooks.onPlayerDestroyItem(player, original, hand);
+            }
+        }
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_RETRIEVE,
+                SoundSource.NEUTRAL, 1.0F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        rod.causeUseVibration(player, GameEvent.ITEM_INTERACT_FINISH);
     }
 }

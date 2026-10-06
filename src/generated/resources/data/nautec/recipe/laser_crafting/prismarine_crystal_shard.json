@@ -1,0 +1,17 @@
+{
+  "type": "nautec:laser_crafting",
+  "duration": 40,
+  "ingredients": [
+    {
+      "ingredient": "minecraft:prismarine_crystals"
+    }
+  ],
+  "power": 20,
+  "purity": 2.0,
+  "results": [
+    {
+      "count": 2,
+      "id": "nautec:prismarine_crystal_shard"
+    }
+  ]
+}

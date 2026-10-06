@@ -33,6 +33,8 @@ When more than one recipe matches, the beam uses the one with the highest purity
 
 JEI lists every transformation, including ones added by other mods or datapacks, under Item Transformation.
 
+To automate these, the [Laser Crafting Matrix](laser_crafting_matrix.md) does every transformation on this page inside a machine, fed by pipes.
+
 ***
 
 ## <Color id="gold">Aquarine Steel</Color>

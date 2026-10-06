@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "C": "nautec:aquatic_chip",
+    "D": "minecraft:diamond",
+    "L": "nautec:prismarine_lens",
+    "O": "nautec:laser_channeling_coil"
+  },
+  "pattern": [
+    "ALA",
+    "DCD",
+    "AOA"
+  ],
+  "result": {
+    "id": "nautec:laser_crafting_matrix"
+  }
+}

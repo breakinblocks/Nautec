@@ -33,6 +33,7 @@ import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LongDistanceLaserBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
@@ -86,6 +87,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<MixerBlockEntity>> MIXER = BLOCK_ENTITIES.register("mixer",
             () -> new BlockEntityType<>(MixerBlockEntity::new,
                     NTBlocks.MIXER.get()));
+    public static final Supplier<BlockEntityType<LaserCraftingMatrixBlockEntity>> LASER_CRAFTING_MATRIX = BLOCK_ENTITIES.register("laser_crafting_matrix",
+            () -> new BlockEntityType<>(LaserCraftingMatrixBlockEntity::new,
+                    NTBlocks.LASER_CRAFTING_MATRIX.get()));
     public static final Supplier<BlockEntityType<LuckyFishingZoneBlockEntity>> LUCKY_FISHING_ZONE = BLOCK_ENTITIES.register("lucky_fishing_zone",
             () -> new BlockEntityType<>(LuckyFishingZoneBlockEntity::new,
                     NTBlocks.LUCKY_FISHING_ZONE.get()));

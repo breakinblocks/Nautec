@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
+import com.breakinblocks.nautec.content.items.tools.NautecFishingRodItem;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.breakinblocks.nautec.content.fishing.FishingMinigame;
@@ -104,7 +105,7 @@ public final class NavalFishingFixTests {
             });
         });
 
-        r.add("naval_fix/minigame_win_keeps_the_fish_on_the_line", 40, 1, helper -> {
+        r.add("naval_fix/minigame_win_reels_in_the_catch", 40, 1, helper -> {
             BlockPos surface = pool(helper);
             NautecFishingHook hook = cast(helper, surface);
             FishingHookAccessor accessor = (FishingHookAccessor) hook;
@@ -129,23 +130,26 @@ public final class NavalFishingFixTests {
                 return;
             }
 
-            int afterWin = probe(hook, accessor, start, 110);
-            if (hook.isRemoved() || afterWin < 2) {
-                helper.fail("After a late win the fish was let go before the player could reel it in (nibble " + afterWin + ")");
+            int beforeReel = probe(hook, accessor, start, 70 + NautecFishingHook.WIN_SCREEN_TICKS - 1);
+            if (hook.isRemoved() || beforeReel < 2) {
+                helper.fail("After a late win the fish was let go before the win screen finished (nibble " + beforeReel + ")");
                 return;
             }
 
-            int released = probe(hook, accessor, start,
-                    70 + NautecFishingHook.WIN_SCREEN_TICKS + NautecFishingHook.REEL_WINDOW_TICKS + 5);
-            if (released != 1) {
-                helper.fail("The bite was still being held after the reel window closed (nibble " + released + ")");
-                return;
+            hook.tickCount = start + 70 + NautecFishingHook.WIN_SCREEN_TICKS;
+            boolean reeled = false;
+            try {
+                hook.tick();
+            } catch (ClassCastException e) {
+                for (StackTraceElement frame : e.getStackTrace()) {
+                    if (frame.getClassName().equals(NautecFishingRodItem.class.getName()) && frame.getMethodName().equals("reel")) {
+                        reeled = true;
+                        break;
+                    }
+                }
             }
-
-            accessor.nautec$setNibble(0);
-            hook.tick();
-            if (hook.minigameSucceeded()) {
-                helper.fail("A win carried over past the bite it was won on");
+            if (!reeled && !hook.isRemoved()) {
+                helper.fail("The catch was not reeled in automatically after the win screen");
                 return;
             }
             hook.discard();

@@ -1,0 +1,16 @@
+{
+  "type": "nautec:laser_crafting",
+  "duration": 100,
+  "ingredients": [
+    {
+      "ingredient": "nautec:burnt_coil"
+    }
+  ],
+  "power": 20,
+  "purity": 1.5,
+  "results": [
+    {
+      "id": "nautec:laser_channeling_coil"
+    }
+  ]
+}

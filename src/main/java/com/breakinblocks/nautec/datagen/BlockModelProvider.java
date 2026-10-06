@@ -153,6 +153,7 @@ public class BlockModelProvider extends ModelProvider {
         laserJunction(NTBlocks.LASER_JUNCTION.get());
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
+        simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.CHARGER.get(), existingModelFile(NTBlocks.CHARGER.get()));
         simpleBlock(NTBlocks.CONFINED_SPAWNER.get(), existingModelFile(NTBlocks.CONFINED_SPAWNER.get()));
         simpleBlock(NTBlocks.CRYSTAL_CRADLE.get(), existingModelFile(NTBlocks.CRYSTAL_CRADLE.get()));

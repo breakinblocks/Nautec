@@ -21,6 +21,7 @@ import com.breakinblocks.nautec.compat.jei.categories.ColonyFeedingCategory;
 import com.breakinblocks.nautec.compat.jei.categories.EasInfusionCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemEtchingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ItemTransformationRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.LaserCraftingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
@@ -32,6 +33,7 @@ import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
+import com.breakinblocks.nautec.content.recipes.LaserCraftingRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
@@ -89,6 +91,7 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(CombustionAdditiveRecipe.Type.INSTANCE, CombustionAdditiveCategory.RECIPE_TYPE),
             new RecipeBinding<>(ItemEtchingRecipe.Type.INSTANCE, ItemEtchingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(LaserCraftingRecipe.Type.INSTANCE, LaserCraftingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE),
             new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE),
@@ -167,6 +170,9 @@ public class NTJeiPlugin implements IModPlugin {
                 registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new MixingRecipeCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new LaserCraftingRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new EasInfusionCategory(
@@ -273,6 +279,8 @@ public class NTJeiPlugin implements IModPlugin {
                 new ItemStack(NTFluids.ETCHING_ACID.getBucket()));
         registration.addCraftingStation(MixingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MIXER.get()));
+        registration.addCraftingStation(LaserCraftingRecipeCategory.RECIPE_TYPE,
+                new ItemStack(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         registration.addCraftingStation(EasInfusionCategory.RECIPE_TYPE,
                 new ItemStack(NTFluids.EAS.getBucket()));
         registration.addCraftingStation(AugmentationRecipeCategory.RECIPE_TYPE,

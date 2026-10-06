@@ -428,6 +428,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock("rusty_crate", "Rusty Crate");
         addBlock("polished_prismarine", "Polished Prismarine");
         addBlock("mixer", "Mixer");
+        addBlock("laser_crafting_matrix", "Laser Crafting Matrix");
         addBlock("long_distance_laser", "Long Distance Laser");
         addBlock("laser_junction", "Laser Junction");
         addBlock("prismarine_crystal", "Prismarine Crystal");
@@ -1152,6 +1153,22 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jade.fluid_input", "Fluid Input: %s - %s mB");
         add("nautec.jade.fluid_output", "Fluid Output: %s - %s mB");
         add("nautec.jade.mixing_progress", "Mixing Progress: %s / %s ticks");
+        add("nautec.jade.laser_crafting_matrix.no_recipe", "No matching recipe");
+        add("nautec.jade.laser_crafting_matrix.working", "Working");
+        add("nautec.jade.laser_crafting_matrix.no_power", "No laser on the top");
+        add("nautec.jade.laser_crafting_matrix.low_power", "Beam too weak: %s AP, needs %s AP");
+        add("nautec.jade.laser_crafting_matrix.low_purity", "Beam purity too low: %s, needs %s");
+        add("nautec.jade.laser_crafting_matrix.output_full", "Output full");
+        add("nautec.jade.laser_crafting_matrix.result", "Makes %s x %s");
+        add("nautec.jade.laser_crafting_matrix.fluid_result", "Makes %s mB %s");
+        add("nautec.jade.laser_crafting_matrix.progress", "Progress: %s%% (%s / %s ticks)");
+        add("nautec.jade.laser_crafting_matrix.purity", "Purity: %s / %s");
+        add("nautec.jade.laser_crafting_matrix.beam", "Beam: %s AP at %s purity");
+        add("nautec.laser_crafting_matrix.no_recipe", "No matching recipe");
+        add("nautec.laser_crafting_matrix.progress", "Progress: %s / %s ticks");
+        add("nautec.laser_crafting_matrix.power", "Beam: %s AP (needs %s)");
+        add("nautec.laser_crafting_matrix.purity", "Purity: %s (needs %s)");
+        add("nautec.laser_crafting_matrix.top_only", "Takes a laser from the top only");
         add("nautec.jade.energy", "Energy: %s AP");
 
         add("nautec.jei.power_per_tick", "Power per tick: %s AP/t");
@@ -1280,6 +1297,7 @@ public class EnUsProvider extends LanguageProvider {
         add("block.nautec.brown_polymer_block", "Brown Polymer Block");
 
         add("config.jade.plugin_nautec.mixer", "Mixer");
+        add("config.jade.plugin_nautec.laser_crafting_matrix", "Laser Crafting Matrix");
         add("config.jade.plugin_nautec.aquatic_catalyst", "Aquatic Catalyst");
         add("config.jade.plugin_nautec.laser_junction", "Laser Junction");
 
@@ -1293,6 +1311,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.category.item_etching", "Item Etching");
         add("nautec.jei.category.item_transformation", "Item Transformation");
         add("nautec.jei.category.mixing", "Mixing");
+        add("nautec.jei.category.laser_crafting", "Laser Crafting");
+        add("nautec.jei.laser_crafting.power", "%s AP");
         add("nautec.jei.category.eas_infusion", "EAS Infusion");
         add("nautec.jei.eas_infusion.hint", "Leave in an EAS source for %ss");
         add("nautec.jei.info.eas", "EAS is made in the Mixer from Salt Water. Leave an Aquarine Steel tool in an EAS source block for 7.5 seconds to infuse it and unlock its ability; this uses up the source block. An EAS Bucket and three Glass Vials craft into three EAS Vials.");

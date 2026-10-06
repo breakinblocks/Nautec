@@ -1,0 +1,44 @@
+{
+  "type": "nautec:laser_crafting",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:barrier"
+    },
+    {
+      "count": 2,
+      "ingredient": "minecraft:structure_void"
+    }
+  ],
+  "fluid_ingredients": [
+    {
+      "ingredient": "minecraft:water",
+      "amount": 500
+    },
+    {
+      "ingredient": "minecraft:lava",
+      "amount": 250
+    }
+  ],
+  "results": [
+    {
+      "id": "minecraft:bedrock"
+    },
+    {
+      "id": "minecraft:command_block",
+      "count": 2
+    }
+  ],
+  "fluid_results": [
+    {
+      "id": "minecraft:lava",
+      "amount": 100
+    },
+    {
+      "id": "minecraft:water",
+      "amount": 200
+    }
+  ],
+  "power": 30,
+  "purity": 1.0,
+  "duration": 10
+}

@@ -17,6 +17,8 @@ import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
 import com.breakinblocks.nautec.content.blocks.MixerBlock;
+import com.breakinblocks.nautec.content.blocks.LaserCraftingMatrixBlock;
+import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -45,6 +47,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, ThermalVentTapBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, CombustionDynamoBlockEntity.class);
         registration.registerBlockDataProvider(EnergyConverterComponentProvider.INSTANCE, EnergyConverterBlockEntity.class);
+        registration.registerBlockDataProvider(LaserCraftingMatrixComponentProvider.INSTANCE, LaserCraftingMatrixBlockEntity.class);
     }
 
     @Override
@@ -64,5 +67,6 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, ThermalVentTapBlock.class);
         registration.registerBlockComponent(GeneratorComponentProvider.Client.INSTANCE, CombustionDynamoBlock.class);
         registration.registerBlockComponent(EnergyConverterComponentProvider.Client.INSTANCE, EnergyConverterBlock.class);
+        registration.registerBlockComponent(LaserCraftingMatrixComponentProvider.Client.INSTANCE, LaserCraftingMatrixBlock.class);
     }
 }

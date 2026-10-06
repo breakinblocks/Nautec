@@ -164,6 +164,9 @@ public class ItemModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(NTItems.WAVE_JET.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/wave_jet_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
+        itemModels.itemModelOutput.accept(NTBlocks.LASER_CRAFTING_MATRIX.asItem(), ItemModelUtils.specialModel(
+                Nautec.rl("block/laser_crafting_matrix"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+
         itemModels.itemModelOutput.accept(NTItems.ATLANTEAN_RIFLE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/atlantean_rifle_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
@@ -237,6 +240,7 @@ public class ItemModelProvider extends ModelProvider {
             BlockItem item = blockItem.get();
             if (item == NTBlocks.LASER_JUNCTION.asItem()
                     || item == NTBlocks.ANCHOR.asItem()
+                    || item == NTBlocks.LASER_CRAFTING_MATRIX.asItem()
                     || item == NTBlocks.PRISMARINE_CRYSTAL.asItem()
                     || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()) {
                 continue;

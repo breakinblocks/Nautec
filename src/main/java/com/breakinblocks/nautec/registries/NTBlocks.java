@@ -42,7 +42,9 @@ import com.breakinblocks.nautec.content.blocks.IncubatorBlock;
 import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.content.blocks.LongDistanceLaserBlock;
 import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
+import com.breakinblocks.nautec.content.blocks.LaserCraftingMatrixBlock;
 import com.breakinblocks.nautec.content.blocks.MixerBlock;
+import com.breakinblocks.nautec.content.items.blocks.LaserCraftingMatrixItem;
 import com.breakinblocks.nautec.content.blocks.MutatorBlock;
 import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
 import com.breakinblocks.nautec.content.blocks.PressureForgeBlock;
@@ -128,6 +130,8 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS));
     public static final DeferredBlock<MixerBlock> MIXER = registerBlockAndItem("mixer", MixerBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS).noOcclusion());
+    public static final DeferredBlock<LaserCraftingMatrixBlock> LASER_CRAFTING_MATRIX = registerBlockAndItem("laser_crafting_matrix", LaserCraftingMatrixBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion(), LaserCraftingMatrixItem::new);
     public static final DeferredBlock<LongDistanceLaserBlock> LONG_DISTANCE_LASER = registerBlockAndItem("long_distance_laser", LongDistanceLaserBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).noOcclusion());
     public static final DeferredBlock<LaserJunctionBlock> LASER_JUNCTION = registerBlockAndItem("laser_junction", props -> new LaserJunctionBlock(props, 8),

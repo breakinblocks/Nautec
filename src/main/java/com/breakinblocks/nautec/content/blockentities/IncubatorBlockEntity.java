@@ -58,7 +58,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
 
     public IncubatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.INCUBATOR.get(), blockPos, blockState);
-        addItemHandler(4, 1, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
+        addItemHandler(4, slot -> slot == 0 ? 64 : 1, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
         addBacteriaStorage(1);
     }
 

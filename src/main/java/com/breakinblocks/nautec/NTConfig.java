@@ -68,6 +68,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue MIXER_OUTPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Output Tank")
             .defineInRange("mixerOutputCapacity", 32_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue LASER_CRAFTING_MATRIX_TANK_CAPACITY = BUILDER
+            .comment("The capacity in mB of each of the Laser Crafting Matrix's four tanks: two inputs and two outputs")
+            .defineInRange("laserCraftingMatrixTankCapacity", 16_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue DRAIN_SALT_WATER_AMOUNT = BUILDER
             .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. It scales with the square root of the beam, so four times the beam pumps twice as much")
@@ -950,6 +953,7 @@ public final class NTConfig {
 
     public static int mixerInputCapacity;
     public static int mixerOutputCapacity;
+    public static int laserCraftingMatrixTankCapacity = 16_000;
 
     public static int drainSaltWaterAmount;
     public static int drainCapacity;
@@ -1230,6 +1234,7 @@ public final class NTConfig {
 
         mixerInputCapacity = value(MIXER_INPUT_CAPACITY);
         mixerOutputCapacity = value(MIXER_OUTPUT_CAPACITY);
+        laserCraftingMatrixTankCapacity = value(LASER_CRAFTING_MATRIX_TANK_CAPACITY);
 
         drainSaltWaterAmount = value(DRAIN_SALT_WATER_AMOUNT);
         drainCapacity = value(DRAIN_CAPACITY);

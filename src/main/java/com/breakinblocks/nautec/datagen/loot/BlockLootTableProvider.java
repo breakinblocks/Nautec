@@ -94,6 +94,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.CHISELED_DARK_PRISMARINE.get());
         dropSelf(NTBlocks.POLISHED_PRISMARINE.get());
         dropSelf(NTBlocks.MIXER.get());
+        dropSelf(NTBlocks.LASER_CRAFTING_MATRIX.get());
         dropSelf(NTBlocks.CHARGER.get());
         dropSelf(NTBlocks.CONFINED_SPAWNER.get());
         dropSelf(NTBlocks.CRYSTAL_CRADLE.get());

@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "nautec:block/laser_crafting_matrix",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
+  }
+}

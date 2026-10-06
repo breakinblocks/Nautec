@@ -223,7 +223,7 @@ public final class BiologyFixTests {
                 }
 
                 ResourceHandler<ItemResource> incubatorSide = itemsOn(helper, incubatorPos, Direction.NORTH);
-                helper.assertValueEqual(1, insert(incubatorSide, 0, new ItemStack(Items.STONE, 4)), "nutrient inserted into the incubator");
+                helper.assertValueEqual(64, insert(incubatorSide, 0, new ItemStack(Items.STONE, 64)), "nutrient inserted into the incubator");
                 helper.assertTrue(incubator.getItemStackHandler().getStackInSlot(0).is(Items.STONE), "Incubator should hold the nutrient");
                 helper.assertValueEqual(0, extract(incubatorSide, 0, new ItemStack(Items.STONE, 1)), "extracted from an input-only side");
 

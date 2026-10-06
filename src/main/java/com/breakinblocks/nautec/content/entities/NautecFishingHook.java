@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.entities;
 import com.breakinblocks.nautec.content.fishing.CaughtEntitySpawner;
 import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.fishing.MinigameKind;
+import com.breakinblocks.nautec.content.items.tools.NautecFishingRodItem;
 import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.network.OpenFishingMinigamePayload;
 import com.breakinblocks.nautec.registries.NTEntities;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -44,6 +46,7 @@ public class NautecFishingHook extends FishingHook {
     private long seed;
     private int challengeStartedAt = -1;
     private boolean minigameSucceeded;
+    private int autoReelAt = -1;
 
     public NautecFishingHook(EntityType<? extends NautecFishingHook> type, Level level) {
         super(type, level);
@@ -90,6 +93,12 @@ public class NautecFishingHook extends FishingHook {
             return;
         }
 
+        if (this.autoReelAt >= 0 && this.tickCount >= this.autoReelAt) {
+            this.autoReelAt = -1;
+            autoReel(player);
+            return;
+        }
+
         FishingHookAccessor accessor = (FishingHookAccessor) this;
         int nibble = accessor.nautec$getNibble();
         if (nibble <= 0) {
@@ -121,6 +130,17 @@ public class NautecFishingHook extends FishingHook {
         this.challengeStartedAt = -1;
         this.holdBiteUntil = -1;
         this.minigameSucceeded = false;
+        this.autoReelAt = -1;
+    }
+
+    private void autoReel(Player player) {
+        for (InteractionHand hand : InteractionHand.values()) {
+            if (player.getItemInHand(hand).getItem() instanceof NautecFishingRodItem && player.fishing == this) {
+                NautecFishingRodItem.reel(this.level(), player, hand);
+                player.swing(hand, true);
+                return;
+            }
+        }
     }
 
     public MinigameKind minigameKind() {
@@ -165,6 +185,7 @@ public class NautecFishingHook extends FishingHook {
         }
 
         this.minigameSucceeded = true;
+        this.autoReelAt = this.tickCount + WIN_SCREEN_TICKS;
         this.holdBiteUntil = Math.max(this.holdBiteUntil, this.tickCount + WIN_SCREEN_TICKS + REEL_WINDOW_TICKS);
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.playSound(null, this.getX(), this.getY(), this.getZ(),

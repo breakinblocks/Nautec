@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
+import com.breakinblocks.nautec.content.recipes.LaserCraftingRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
@@ -35,6 +36,7 @@ public final class NTRecipes {
         register(BacteriaIncubationRecipe.NAME, BacteriaIncubationRecipe.Serializer.INSTANCE, BacteriaIncubationRecipe.TYPE);
         register(ResonanceCraftingRecipe.NAME, ResonanceCraftingRecipe.Serializer.INSTANCE, ResonanceCraftingRecipe.Type.INSTANCE);
         register(PressureForgingRecipe.NAME, PressureForgingRecipe.Serializer.INSTANCE, PressureForgingRecipe.Type.INSTANCE);
+        register(LaserCraftingRecipe.NAME, LaserCraftingRecipe.Serializer.INSTANCE, LaserCraftingRecipe.Type.INSTANCE);
         register(ColonyFeedingRecipe.NAME, ColonyFeedingRecipe.Serializer.INSTANCE, ColonyFeedingRecipe.TYPE);
     }
 

@@ -22,6 +22,7 @@ import com.breakinblocks.nautec.content.menus.ResonancePylonMenu;
 import com.breakinblocks.nautec.content.menus.SatelliteArrayMenu;
 import com.breakinblocks.nautec.content.menus.IncubatorMenu;
 import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
+import com.breakinblocks.nautec.content.menus.LaserCraftingMatrixMenu;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.menus.MutatorMenu;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
@@ -40,6 +41,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<CrateMenu>> CRATE = registerMenuType(CrateMenu::new, "crate");
     public static final Supplier<MenuType<FishingStationMenu>> FISHING_STATION = registerMenuType(FishingStationMenu::new, "fishing_station");
     public static final Supplier<MenuType<MixerMenu>> MIXER = registerMenuType(MixerMenu::new, "mixer");
+    public static final Supplier<MenuType<LaserCraftingMatrixMenu>> LASER_CRAFTING_MATRIX = registerMenuType(LaserCraftingMatrixMenu::new, "laser_crafting_matrix");
     public static final Supplier<MenuType<AugmentMenu>> AUGMENTS = registerMenuType(AugmentMenu::new, "augments");
     public static final Supplier<MenuType<AugmentationStationExtensionMenu>> AUGMENT_STATION_EXTENSION = registerMenuType(AugmentationStationExtensionMenu::new, "augment_station_extension");
     public static final Supplier<MenuType<BioReactorMenu>> BIO_REACTOR = registerMenuType(BioReactorMenu::new, "bio_reactor");

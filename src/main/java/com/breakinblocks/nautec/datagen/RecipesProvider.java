@@ -15,6 +15,7 @@ import com.breakinblocks.nautec.datagen.recipeBuilder.ColonyFeedingRecipeBuilder
 import com.breakinblocks.nautec.datagen.recipeBuilder.IncubationRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.ItemEtchingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.ItemTransformationRecipeBuilder;
+import com.breakinblocks.nautec.datagen.recipeBuilder.LaserCraftingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.MixingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.MutationRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.PressureForgingRecipeBuilder;
@@ -70,6 +71,7 @@ public class RecipesProvider extends RecipeProvider {
         neptunesTridentRecipes(pRecipeOutput);
 
         aquarineSteelRecipes(pRecipeOutput);
+        laserCraftingRecipes(pRecipeOutput);
 
         ancientItemsRecipes(pRecipeOutput);
         guaranteedPartRecipes(pRecipeOutput);
@@ -407,6 +409,48 @@ public class RecipesProvider extends RecipeProvider {
                 Nautec.MODID + ":atlantic_gold_ingot_from_nuggets", null, Nautec.MODID + ":atlantic_gold_nuggets_from_ingot", null);
     }
 
+    private void laserCraftingRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(NTItems.AQUARINE_STEEL_COMPOUND.get()))
+                .result(new ItemStackTemplate(NTItems.AQUARINE_STEEL_INGOT.get(), 1))
+                .power(10)
+                .purity(0)
+                .duration(20)
+                .save(pRecipeOutput, key("laser_crafting/aquarine_steel_ingot"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(NTItems.AQUARINE_STEEL_COMPOUND.get()))
+                .result(new ItemStackTemplate(NTItems.AQUARINE_STEEL_INGOT.get(), 2))
+                .power(20)
+                .purity(2.0f)
+                .duration(20)
+                .save(pRecipeOutput, key("laser_crafting/aquarine_steel_ingot_dense"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(NTItems.BURNT_COIL.get()))
+                .result(new ItemStackTemplate(NTItems.LASER_CHANNELING_COIL.get(), 1))
+                .power(20)
+                .purity(1.5f)
+                .duration(100)
+                .save(pRecipeOutput, key("laser_crafting/laser_channeling_coil"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(Items.PRISMARINE_CRYSTALS))
+                .result(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2))
+                .power(20)
+                .purity(2.0f)
+                .duration(40)
+                .save(pRecipeOutput, key("laser_crafting/prismarine_crystal_shard"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(IngredientWithCount.fromItemLike(NTBlocks.CAST_IRON_BLOCK.get()))
+                .result(new ItemStackTemplate(NTItems.GEAR.get(), 4))
+                .power(40)
+                .purity(2.5f)
+                .duration(80)
+                .save(pRecipeOutput, key("laser_crafting/gear"));
+    }
+
     private void augmentationStationRecipes(@NotNull RecipeOutput pRecipeOutput) {
         shaped(RecipeCategory.MISC, NTBlocks.AUGMENTATION_STATION.asItem(), 1)
                 .pattern("ACA")
@@ -505,6 +549,18 @@ public class RecipesProvider extends RecipeProvider {
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("mixer"));
+
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.LASER_CRAFTING_MATRIX.asItem())
+                .pattern("ALA")
+                .pattern("DCD")
+                .pattern("AOA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('L', NTItems.PRISMARINE_LENS)
+                .define('D', Items.DIAMOND)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('O', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
+                .save(pRecipeOutput, key("laser_crafting_matrix"));
 
         shaped(RecipeCategory.DECORATIONS, NTBlocks.FISHING_STATION.asItem())
                 .pattern("DAD")
