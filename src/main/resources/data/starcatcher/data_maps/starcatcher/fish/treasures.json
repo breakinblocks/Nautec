@@ -1,0 +1,15 @@
+{
+  "values": {
+    "nautec:silt_skipper": {
+      "blacklist": [
+        "minecraft:ink_sac",
+        "nautec:luminous_membrane"
+      ],
+      "loot_tables": [
+        {
+          "loot_table": "nautec:gameplay/lucky_fishing_zone/treasure"
+        }
+      ]
+    }
+  }
+}

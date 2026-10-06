@@ -48,6 +48,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
+import net.neoforged.fml.ModList;
 
 public final class ContentIntegrityTests {
     private static JsonObject readJson(String path) {
@@ -176,6 +180,30 @@ public final class ContentIntegrityTests {
             if (pools.get(ResourceKey.create(Registries.TEMPLATE_POOL, Nautec.rl("underwater_gateway"))).isEmpty()) {
                 helper.fail("The underwater gateway template pool did not load");
             }
+            helper.succeed();
+        });
+
+        r.add("content/starcatcher_compat_loads", 5, helper -> {
+            if (!ModList.get().isLoaded("starcatcher")) {
+                helper.succeed();
+                return;
+            }
+            ResourceKey<Registry<Object>> fishKey =
+                    ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("starcatcher", "fish"));
+            Optional<Registry<Object>> fish = helper.getLevel().registryAccess().lookup(fishKey);
+            if (fish.isEmpty() || !fish.get().containsKey(Nautec.rl("silt_skipper"))) {
+                helper.fail("Starcatcher is loaded but nautec:silt_skipper is missing from the starcatcher:fish registry");
+                return;
+            }
+
+            TagKey<Item> fishable = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("starcatcher", "fishable"));
+            helper.assertTrue(NTItems.SILT_SKIPPER.toStack().is(fishable), "silt skipper in starcatcher:fishable");
+
+            TagKey<Biome> warmOcean = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("starcatcher", "is_warm_ocean"));
+            helper.assertTrue(helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME)
+                            .getOrThrow(ResourceKey.create(Registries.BIOME, Nautec.rl("prismarine_reef")))
+                            .is(warmOcean),
+                    "prismarine reef in starcatcher:is_warm_ocean");
             helper.succeed();
         });
 

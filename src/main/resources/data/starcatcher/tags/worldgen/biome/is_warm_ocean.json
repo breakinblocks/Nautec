@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "nautec:prismarine_reef",
+      "required": false
+    },
+    {
+      "id": "nautec:hydrothermal_vents",
+      "required": false
+    }
+  ]
+}

@@ -2,6 +2,8 @@ package com.breakinblocks.nautec.events;
 
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.compat.starcatcher.StarcatcherCompat;
+import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
@@ -12,6 +14,7 @@ import com.breakinblocks.nautec.registries.NTLootTables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
@@ -34,6 +37,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -252,8 +256,13 @@ public final class LuckyFishingZoneEvents {
                 .withParameter(LootContextParams.THIS_ENTITY, hook)
                 .withLuck(player.getLuck())
                 .create(LootContextParamSets.FISHING);
-        LootTable table = level.getServer().reloadableRegistries().getLootTable(NTLootTables.LUCKY_ZONE);
-        NautecFishingHook.deliverCatch(level, player, hook, table.getRandomItems(params),
-                hook.getX(), hook.getY() + 1.2, hook.getZ());
+        List<ResourceKey<LootTable>> tables = StarcatcherCompat.isStarcatcherCatch(player)
+                ? FishingMinigame.rewardTables(true, RANDOM.nextInt(100) < FishingMinigame.TREASURE_CHANCE)
+                : List.of(NTLootTables.LUCKY_ZONE);
+        for (ResourceKey<LootTable> key : tables) {
+            LootTable table = level.getServer().reloadableRegistries().getLootTable(key);
+            NautecFishingHook.deliverCatch(level, player, hook, table.getRandomItems(params),
+                    hook.getX(), hook.getY() + 1.2, hook.getZ());
+        }
     }
 }

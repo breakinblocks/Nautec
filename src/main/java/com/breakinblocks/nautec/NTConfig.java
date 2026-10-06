@@ -856,6 +856,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue LUCKY_ZONE_BITE_SPEED = BUILDER
             .comment("How many times faster fish bite while the bobber floats in a lucky fishing zone")
             .defineInRange("luckyZoneBiteSpeed", 2, 1, 10);
+    private static final ModConfigSpec.BooleanValue STARCATCHER_FISH_ON_NAUTEC_ROD = BUILDER
+            .comment("With Starcatcher installed, the NauTec Fishing Rod catches Starcatcher fish instead of vanilla fishing loot")
+            .define("starcatcherFishOnNautecRod", true);
 
     private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_SEARCH_RADIUS = BUILDER
             .comment("How many chunks around the player the Eye of the Sea searches for its target structure. The Eye of Ender uses 100")
@@ -1126,6 +1129,7 @@ public final class NTConfig {
     public static int luckyZoneMaxRadius;
     public static boolean luckyZoneConsumedOnCatch;
     public static int luckyZoneBiteSpeed;
+    public static boolean starcatcherFishOnNautecRod = true;
     public static int eyeOfTheSeaSearchRadius = 100;
     public static int eyeOfTheSeaCooldownTicks = 40;
     public static int eyeOfTheSeaLuckyBoostSeconds = 300;
@@ -1407,6 +1411,7 @@ public final class NTConfig {
         luckyZoneMaxRadius = Math.max(value(LUCKY_ZONE_MIN_RADIUS), value(LUCKY_ZONE_MAX_RADIUS));
         luckyZoneConsumedOnCatch = value(LUCKY_ZONE_CONSUMED);
         luckyZoneBiteSpeed = value(LUCKY_ZONE_BITE_SPEED);
+        starcatcherFishOnNautecRod = value(STARCATCHER_FISH_ON_NAUTEC_ROD);
         eyeOfTheSeaSearchRadius = value(EYE_OF_THE_SEA_SEARCH_RADIUS);
         eyeOfTheSeaCooldownTicks = value(EYE_OF_THE_SEA_COOLDOWN);
         eyeOfTheSeaLuckyBoostSeconds = value(EYE_OF_THE_SEA_LUCKY_BOOST);

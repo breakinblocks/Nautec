@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -88,9 +89,9 @@ public final class FishingHookFlowTests {
         }
 
         AABB area = new AABB(zonePos).inflate(6);
-        int before = level.getEntitiesOfClass(ItemEntity.class, area).size();
+        int before = level.getEntitiesOfClass(ItemEntity.class, area, FishingHookFlowTests::notStarcatcherGift).size();
         NeoForge.EVENT_BUS.post(new ItemFishedEvent(List.of(new ItemStack(Items.COD)), 0, hook));
-        int dropped = level.getEntitiesOfClass(ItemEntity.class, area).size() - before;
+        int dropped = level.getEntitiesOfClass(ItemEntity.class, area, FishingHookFlowTests::notStarcatcherGift).size() - before;
         hook.discard();
 
         if (hookInWorld && dropped != 0) {
@@ -102,6 +103,10 @@ public final class FishingHookFlowTests {
             return;
         }
         helper.succeed();
+    }
+
+    private static boolean notStarcatcherGift(ItemEntity item) {
+        return !BuiltInRegistries.ITEM.getKey(item.getItem().getItem()).getNamespace().equals("starcatcher");
     }
 
     private static void liveBite(GameTestHelper helper, boolean withZone) {
