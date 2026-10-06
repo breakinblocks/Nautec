@@ -11,8 +11,8 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-def releaseBuild = (providers.gradleProperty('release')
-        .orElse(providers.environmentVariable('RELEASE'))
+def releaseBuild = !(providers.gradleProperty('snapshot')
+        .orElse(providers.environmentVariable('SNAPSHOT'))
         .getOrElse('false')).toBoolean()
 
 version = releaseBuild ? mod_version : "${mod_version}-SNAPSHOT.${new Date().format('yyyyMMdd-HHmmss')}"
@@ -248,7 +248,7 @@ publishMods {
 tasks.named('publishMods') {
     if (!releaseBuild && !publishDryRun) {
         doFirst {
-            throw new GradleException("publishMods uploads to CurseForge, so it needs -Prelease=true. "
+            throw new GradleException("publishMods uploads to CurseForge, so it cannot run on a snapshot build. Drop -Psnapshot=true. "
                     + "Pass -PdryRun=true to test without uploading.")
         }
     }
