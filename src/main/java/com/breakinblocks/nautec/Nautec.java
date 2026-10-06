@@ -246,6 +246,10 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
                 (blockEntity, dir) -> blockEntity.getFuel());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, NTBlockEntityTypes.RESONANT_VAULT.get(),
+                (blockEntity, dir) -> blockEntity.itemHandler(dir));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.RESONANT_CISTERN.get(),
+                (blockEntity, dir) -> blockEntity.fluidHandler(dir));
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.fluidSink(dir));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),

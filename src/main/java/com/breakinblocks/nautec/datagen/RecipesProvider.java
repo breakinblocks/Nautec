@@ -100,6 +100,8 @@ public class RecipesProvider extends RecipeProvider {
 
         conduitRecipes(pRecipeOutput);
 
+        resonantStorageRecipes(pRecipeOutput);
+
         miscItemsRecipes(pRecipeOutput);
 
         machineRecipes(pRecipeOutput);
@@ -266,6 +268,40 @@ public class RecipesProvider extends RecipeProvider {
                 .requires(Items.EMERALD)
                 .unlockedBy("has_item", has(NTItems.FILTER))
                 .save(pRecipeOutput, key("intricate_filter"));
+    }
+
+    private void resonantStorageRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.MISC, NTBlocks.RESONANT_VAULT.get())
+                .pattern("AEA")
+                .pattern("PCP")
+                .pattern("ASA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('E', NTItems.EYE_OF_THE_SEA)
+                .define('P', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('C', Tags.Items.CHESTS)
+                .define('S', NTItems.RESONANT_SHARD)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("resonant_vault"));
+        shaped(RecipeCategory.MISC, NTBlocks.RESONANT_CISTERN.get())
+                .pattern("AEA")
+                .pattern("GBG")
+                .pattern("ASA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('E', NTItems.EYE_OF_THE_SEA)
+                .define('G', Tags.Items.GLASS_BLOCKS)
+                .define('B', Items.BUCKET)
+                .define('S', NTItems.RESONANT_SHARD)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("resonant_cistern"));
+        shaped(RecipeCategory.MISC, NTItems.RESONANT_EXPANSION.get())
+                .pattern("CPC")
+                .pattern("PSP")
+                .pattern("CPC")
+                .define('C', NTItems.AQUARINE_COPPER_INGOT)
+                .define('P', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('S', NTItems.RESONANT_SHARD)
+                .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
+                .save(pRecipeOutput, key("resonant_expansion"));
     }
 
     private void upgrade(RecipeOutput pRecipeOutput, ItemLike result, ItemLike previous, Ingredient material, String name) {

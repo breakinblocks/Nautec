@@ -161,6 +161,8 @@ public class BlockModelProvider extends ModelProvider {
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
+        simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
+        simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
         simpleBlock(NTBlocks.CHARGER.get(), existingModelFile(NTBlocks.CHARGER.get()));
         simpleBlock(NTBlocks.CONFINED_SPAWNER.get(), existingModelFile(NTBlocks.CONFINED_SPAWNER.get()));
         simpleBlock(NTBlocks.CRYSTAL_CRADLE.get(), existingModelFile(NTBlocks.CRYSTAL_CRADLE.get()));
@@ -493,10 +495,15 @@ public class BlockModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_core")));
         for (Direction direction : Direction.values()) {
             int[] rotation = ARM_ROTATIONS[direction.ordinal()];
-            builder = builder.with(BlockModelGenerators.condition(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.CONNECTED),
-                            rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm")), rotation[0], rotation[1]));
-            builder = builder.with(BlockModelGenerators.condition().term(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.NONE, ConduitArm.BLOCKED),
-                    rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_cap")), rotation[0], rotation[1]));
+            for (boolean wet : new boolean[]{false, true}) {
+                String suffix = wet ? "_wet" : "";
+                builder = builder.with(BlockModelGenerators.condition().term(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.CONNECTED)
+                                        .term(BlockStateProperties.WATERLOGGED, wet),
+                                rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm" + suffix)), rotation[0], rotation[1]))
+                        .with(BlockModelGenerators.condition().term(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.NONE, ConduitArm.BLOCKED)
+                                        .term(BlockStateProperties.WATERLOGGED, wet),
+                                rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_cap" + suffix)), rotation[0], rotation[1]));
+            }
             if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                 builder = builder.with(BlockModelGenerators.condition(CurrentConduitBlock.ARMS[direction.ordinal()], ConduitArm.CONNECTED),
                         rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_collar")), rotation[0], rotation[1]));
@@ -510,9 +517,12 @@ public class BlockModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_core")));
         for (Direction direction : Direction.values()) {
             int[] rotation = ARM_ROTATIONS[direction.ordinal()];
+            for (boolean wet : new boolean[]{false, true}) {
+                builder = builder.with(BlockModelGenerators.condition().term(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT)
+                                .term(BlockStateProperties.WATERLOGGED, wet),
+                        rotated(BlockModelGenerators.plainVariant(existingModelFile(wet ? "current_conduit_arm_wet" : "current_conduit_arm")), rotation[0], rotation[1]));
+            }
             builder = builder
-                    .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT),
-                            rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm")), rotation[0], rotation[1]))
                     .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.MACHINE),
                             rotated(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_flange")), rotation[0], rotation[1]));
             if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {

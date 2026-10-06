@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.menus.ConduitTapMenu;
+import com.breakinblocks.nautec.content.menus.ResonantCisternMenu;
+import com.breakinblocks.nautec.content.menus.ResonantVaultMenu;
 import com.breakinblocks.nautec.content.dishstorage.DishStorageMenu;
 import com.breakinblocks.nautec.content.menus.ResonanceNodeMenu;
 import com.breakinblocks.nautec.content.menus.ColonyReplicatorMenu;
@@ -65,6 +67,8 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<ResonanceNodeMenu>> RESONANCE_NODE = registerMenuType(ResonanceNodeMenu::new, "resonance_node");
     public static final Supplier<MenuType<DishStorageMenu>> DISH_STORAGE = registerMenuType(DishStorageMenu::new, "dish_storage");
     public static final Supplier<MenuType<ConduitTapMenu>> CONDUIT_TAP = registerMenuType(ConduitTapMenu::new, "conduit_tap");
+    public static final Supplier<MenuType<ResonantVaultMenu>> RESONANT_VAULT = registerMenuType(ResonantVaultMenu::new, "resonant_vault");
+    public static final Supplier<MenuType<ResonantCisternMenu>> RESONANT_CISTERN = registerMenuType(ResonantCisternMenu::new, "resonant_cistern");
 
 
     private static <T extends AbstractContainerMenu> Supplier<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {

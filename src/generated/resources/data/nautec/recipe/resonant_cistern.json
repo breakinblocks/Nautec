@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "nautec:aquarine_steel_ingot",
+    "B": "minecraft:bucket",
+    "E": "nautec:eye_of_the_sea",
+    "G": "#c:glass_blocks",
+    "S": "nautec:resonant_shard"
+  },
+  "pattern": [
+    "AEA",
+    "GBG",
+    "ASA"
+  ],
+  "result": {
+    "id": "nautec:resonant_cistern"
+  }
+}

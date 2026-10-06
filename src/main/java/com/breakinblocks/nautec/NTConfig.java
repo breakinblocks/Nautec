@@ -373,6 +373,18 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue CONDUIT_MAX_NETWORK_SIZE = BUILDER
             .comment("The most Current Conduit and Conduit Tap blocks one network can hold. Blocks past this are not reached")
             .defineInRange("conduitMaxNetworkSize", 4096, 2, 65536);
+    private static final ModConfigSpec.IntValue RESONANT_CISTERN_TIER_CAPACITY = BUILDER
+            .comment("mB a Resonant Cistern channel holds, and the mB each Resonant Expansion adds")
+            .defineInRange("resonantCisternTierCapacity", 16_000, 1_000, 100_000_000);
+    private static final ModConfigSpec.IntValue RESONANT_TRANSFER_INTERVAL = BUILDER
+            .comment("Ticks between automatic pushes and pulls on a Resonant Vault or Cistern face")
+            .defineInRange("resonantTransferInterval", 10, 1, 1200);
+    private static final ModConfigSpec.IntValue RESONANT_ITEMS_PER_TRANSFER = BUILDER
+            .comment("Items a Resonant Vault face pushes or pulls each transfer")
+            .defineInRange("resonantItemsPerTransfer", 16, 1, 4096);
+    private static final ModConfigSpec.IntValue RESONANT_FLUID_PER_TRANSFER = BUILDER
+            .comment("mB a Resonant Cistern face pushes or pulls each transfer")
+            .defineInRange("resonantFluidPerTransfer", 1_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue SATELLITE_AP_BUFFER = BUILDER
             .comment("The AP each Uplink and Downlink Array stores")
@@ -1058,6 +1070,10 @@ public final class NTConfig {
     public static int[] conduitFluidRates = {250, 1_000, 4_000, 16_000, 64_000};
     public static int[] conduitEnergyRates = {2_000, 8_000, 32_000, 128_000, 0};
     public static int conduitMaxNetworkSize = 4096;
+    public static int resonantCisternTierCapacity = 16_000;
+    public static int resonantTransferInterval = 10;
+    public static int resonantItemsPerTransfer = 16;
+    public static int resonantFluidPerTransfer = 1_000;
     public static int satelliteApBuffer = 5_000_000;
     public static int satelliteFeBuffer = 5_000_000;
     public static int satelliteTransferLimit = 100_000;
@@ -1362,6 +1378,10 @@ public final class NTConfig {
         conduitFluidRates = values(CONDUIT_FLUID_RATES);
         conduitEnergyRates = values(CONDUIT_ENERGY_RATES);
         conduitMaxNetworkSize = value(CONDUIT_MAX_NETWORK_SIZE);
+        resonantCisternTierCapacity = value(RESONANT_CISTERN_TIER_CAPACITY);
+        resonantTransferInterval = value(RESONANT_TRANSFER_INTERVAL);
+        resonantItemsPerTransfer = value(RESONANT_ITEMS_PER_TRANSFER);
+        resonantFluidPerTransfer = value(RESONANT_FLUID_PER_TRANSFER);
         TapRates.reload();
         satelliteApBuffer = value(SATELLITE_AP_BUFFER);
         satelliteFeBuffer = value(SATELLITE_FE_BUFFER);

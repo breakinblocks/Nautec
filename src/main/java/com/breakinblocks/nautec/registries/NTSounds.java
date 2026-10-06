@@ -29,6 +29,11 @@ public final class NTSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> GATEWAY_RECODE = sound("gateway.recode");
     public static final DeferredHolder<SoundEvent, SoundEvent> GATEWAY_UNLINKED = sound("gateway.unlinked");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_VAULT_OPEN = sound("resonant_vault.open");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_VAULT_CLOSE = sound("resonant_vault.close");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_CISTERN_OPEN = sound("resonant_cistern.open");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_STORAGE_RECODE = sound("resonant_storage.recode");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CHARGE = sound("resonance.charge");
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CRAFT = sound("resonance.craft");
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_VENT = sound("resonance.vent");

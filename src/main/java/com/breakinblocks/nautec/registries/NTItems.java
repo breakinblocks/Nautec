@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.conduits.ConduitUpgradeItem;
 import com.breakinblocks.nautec.content.conduits.FilterItem;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantExpansionItem;
 import com.breakinblocks.nautec.content.items.GraftingAnchorItem;
 import com.breakinblocks.nautec.content.resonance.PrismSatelliteItem;
 import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
@@ -268,6 +269,8 @@ public final class NTItems {
             props -> new FilterItem(props, false), () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<FilterItem> INTRICATE_FILTER = registerItem("intricate_filter",
             props -> new FilterItem(props, true), () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<ResonantExpansionItem> RESONANT_EXPANSION = registerItem("resonant_expansion",
+            ResonantExpansionItem::new, () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<EnergyConversionUpgradeItem> ENERGY_CONVERSION_UPGRADE = registerItem("energy_conversion_upgrade",
             props -> new EnergyConversionUpgradeItem(props, EnergyConversionUpgradeItem.Tier.BASIC),
             () -> new Item.Properties().stacksTo(EnergyConversionUpgradeItem.MAX_PER_SLOT));

@@ -38,6 +38,8 @@ public class BlockTagProvider extends BlockTagsProvider {
                 AQUARINE_COPPER_BLOCK,
                 CURRENT_CONDUIT,
                 CONDUIT_TAP,
+                RESONANT_VAULT,
+                RESONANT_CISTERN,
                 AQUATIC_CATALYST,
                 SUBMARINE_DOCK,
                 PRESSURE_FORGE,

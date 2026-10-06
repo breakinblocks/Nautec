@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantVaultBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import com.breakinblocks.nautec.content.biometank.BiomeTankBlockEntity;
@@ -168,6 +170,12 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ConduitTapBlockEntity>> CONDUIT_TAP = BLOCK_ENTITIES.register("conduit_tap",
             () -> new BlockEntityType<>(ConduitTapBlockEntity::new,
                     NTBlocks.CONDUIT_TAP.get()));
+    public static final Supplier<BlockEntityType<ResonantVaultBlockEntity>> RESONANT_VAULT = BLOCK_ENTITIES.register("resonant_vault",
+            () -> new BlockEntityType<>(ResonantVaultBlockEntity::new,
+                    NTBlocks.RESONANT_VAULT.get()));
+    public static final Supplier<BlockEntityType<ResonantCisternBlockEntity>> RESONANT_CISTERN = BLOCK_ENTITIES.register("resonant_cistern",
+            () -> new BlockEntityType<>(ResonantCisternBlockEntity::new,
+                    NTBlocks.RESONANT_CISTERN.get()));
     public static final Supplier<BlockEntityType<AdvancedBacterialAnalyzerBlockEntity>> ADVANCED_BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("advanced_bacterial_analyzer",
             () -> new BlockEntityType<>(AdvancedBacterialAnalyzerBlockEntity::new,
                     NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get()));

@@ -2,307 +2,642 @@
   "submarine.engine": {
     "subtitle": "subtitles.nautec.submarine.engine",
     "sounds": [
-      { "name": "minecraft:entity.minecart.riding", "type": "event", "volume": 0.5, "pitch": 0.65 }
+      {
+        "name": "minecraft:entity.minecart.riding",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 0.65
+      }
     ]
   },
   "submarine.ambient": {
     "subtitle": "subtitles.nautec.submarine.ambient",
     "sounds": [
-      { "name": "minecraft:block.conduit.ambient", "type": "event", "volume": 0.6, "pitch": 0.9 }
+      {
+        "name": "minecraft:block.conduit.ambient",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 0.9
+      }
     ]
   },
   "submarine.deploy": {
     "subtitle": "subtitles.nautec.submarine.deploy",
     "sounds": [
-      { "name": "minecraft:block.respawn_anchor.charge", "type": "event", "volume": 0.7, "pitch": 1.1 }
+      {
+        "name": "minecraft:block.respawn_anchor.charge",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 1.1
+      }
     ]
   },
   "submarine.stow": {
     "subtitle": "subtitles.nautec.submarine.stow",
     "sounds": [
-      { "name": "minecraft:block.respawn_anchor.deplete", "type": "event", "volume": 0.7, "pitch": 1.1 }
+      {
+        "name": "minecraft:block.respawn_anchor.deplete",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 1.1
+      }
     ]
   },
   "submarine.sonar_ping": {
     "subtitle": "subtitles.nautec.submarine.sonar_ping",
     "sounds": [
-      { "name": "minecraft:block.conduit.activate", "type": "event", "volume": 0.8, "pitch": 1.35 },
-      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.7, "pitch": 1.6 }
+      {
+        "name": "minecraft:block.conduit.activate",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 1.35
+      },
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 1.6
+      }
     ]
   },
   "submarine.boost": {
     "subtitle": "subtitles.nautec.submarine.boost",
     "sounds": [
-      { "name": "minecraft:entity.firework_rocket.launch", "type": "event", "volume": 0.6, "pitch": 0.8 },
-      { "name": "minecraft:entity.wind_charge.wind_burst", "type": "event", "volume": 0.7, "pitch": 0.7 }
+      {
+        "name": "minecraft:entity.firework_rocket.launch",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity.wind_charge.wind_burst",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 0.7
+      }
     ]
   },
   "submarine.shield_pulse": {
     "subtitle": "subtitles.nautec.submarine.shield_pulse",
     "sounds": [
-      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.9, "pitch": 0.6 },
-      { "name": "minecraft:item.trident.return", "type": "event", "volume": 0.7, "pitch": 0.7 }
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event",
+        "volume": 0.9,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:item.trident.return",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 0.7
+      }
     ]
   },
   "submarine.stealth": {
     "subtitle": "subtitles.nautec.submarine.stealth",
     "sounds": [
-      { "name": "minecraft:entity.illusioner.mirror_move", "type": "event", "volume": 0.8, "pitch": 0.8 }
+      {
+        "name": "minecraft:entity.illusioner.mirror_move",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 0.8
+      }
     ]
   },
   "submarine.laser_loop": {
     "subtitle": "subtitles.nautec.submarine.laser_loop",
     "sounds": [
-      { "name": "minecraft:entity.guardian.attack", "type": "event", "volume": 0.9, "pitch": 1.15 }
+      {
+        "name": "minecraft:entity.guardian.attack",
+        "type": "event",
+        "volume": 0.9,
+        "pitch": 1.15
+      }
     ]
   },
   "submarine.teleport_charge": {
     "subtitle": "subtitles.nautec.submarine.teleport_charge",
     "sounds": [
-      { "name": "minecraft:block.portal.trigger", "type": "event", "volume": 0.5, "pitch": 1.3 }
+      {
+        "name": "minecraft:block.portal.trigger",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 1.3
+      }
     ]
   },
   "submarine.teleport_whoosh": {
     "subtitle": "subtitles.nautec.submarine.teleport_whoosh",
     "sounds": [
-      { "name": "minecraft:entity.enderman.teleport", "type": "event", "volume": 0.9, "pitch": 0.7 },
-      { "name": "minecraft:block.portal.travel", "type": "event", "volume": 0.4, "pitch": 1.2 }
+      {
+        "name": "minecraft:entity.enderman.teleport",
+        "type": "event",
+        "volume": 0.9,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block.portal.travel",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 1.2
+      }
     ]
   },
   "submarine.module_install": {
     "subtitle": "subtitles.nautec.submarine.module_install",
     "sounds": [
-      { "name": "minecraft:block.smithing_table.use", "type": "event", "volume": 0.8, "pitch": 1.2 }
+      {
+        "name": "minecraft:block.smithing_table.use",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 1.2
+      }
     ]
   },
   "submarine.hull_damage": {
     "subtitle": "subtitles.nautec.submarine.hull_damage",
     "sounds": [
-      { "name": "minecraft:entity.zombie.attack_iron_door", "type": "event", "volume": 0.8, "pitch": 0.9 },
-      { "name": "minecraft:block.anvil.land", "type": "event", "volume": 0.25, "pitch": 1.4 }
+      {
+        "name": "minecraft:entity.zombie.attack_iron_door",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block.anvil.land",
+        "type": "event",
+        "volume": 0.25,
+        "pitch": 1.4
+      }
     ]
   },
   "submarine.low_power": {
     "subtitle": "subtitles.nautec.submarine.low_power",
     "sounds": [
-      { "name": "minecraft:block.bell.use", "type": "event", "volume": 0.7, "pitch": 0.55 }
+      {
+        "name": "minecraft:block.bell.use",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 0.55
+      }
     ]
   },
   "gateway.ambient": {
     "subtitle": "subtitles.nautec.gateway.ambient",
     "sounds": [
-      { "name": "minecraft:block.portal.ambient", "type": "event", "volume": 0.25, "pitch": 0.8 }
+      {
+        "name": "minecraft:block.portal.ambient",
+        "type": "event",
+        "volume": 0.25,
+        "pitch": 0.8
+      }
     ]
   },
   "gateway.travel": {
     "subtitle": "subtitles.nautec.gateway.travel",
     "sounds": [
-      { "name": "minecraft:entity.enderman.teleport", "type": "event", "volume": 0.9, "pitch": 0.8 },
-      { "name": "minecraft:block.beacon.power_select", "type": "event", "volume": 0.5, "pitch": 1.4 }
+      {
+        "name": "minecraft:entity.enderman.teleport",
+        "type": "event",
+        "volume": 0.9,
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block.beacon.power_select",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 1.4
+      }
     ]
   },
   "gateway.recode": {
     "subtitle": "subtitles.nautec.gateway.recode",
     "sounds": [
-      { "name": "minecraft:block.amethyst_block.chime", "type": "event", "volume": 0.8, "pitch": 1.2 }
+      {
+        "name": "minecraft:block.amethyst_block.chime",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 1.2
+      }
     ]
   },
   "gateway.unlinked": {
     "subtitle": "subtitles.nautec.gateway.unlinked",
     "sounds": [
-      { "name": "minecraft:block.note_block.didgeridoo", "type": "event", "volume": 0.5, "pitch": 0.6 }
+      {
+        "name": "minecraft:block.note_block.didgeridoo",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 0.6
+      }
     ]
   },
   "resonance.charge": {
     "subtitle": "subtitles.nautec.resonance.charge",
     "sounds": [
-      { "name": "minecraft:block.amethyst_block.resonate", "type": "event", "volume": 0.4, "pitch": 1.0 }
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 1.0
+      }
     ]
   },
   "resonance.craft": {
     "subtitle": "subtitles.nautec.resonance.craft",
     "sounds": [
-      { "name": "minecraft:block.amethyst_cluster.place", "type": "event", "volume": 0.9, "pitch": 1.3 },
-      { "name": "minecraft:block.beacon.activate", "type": "event", "volume": 0.4, "pitch": 1.5 }
+      {
+        "name": "minecraft:block.amethyst_cluster.place",
+        "type": "event",
+        "volume": 0.9,
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block.beacon.activate",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 1.5
+      }
     ]
   },
   "resonance.vent": {
     "subtitle": "subtitles.nautec.resonance.vent",
     "sounds": [
-      { "name": "minecraft:entity.wind_charge.wind_burst", "type": "event", "volume": 1.0, "pitch": 0.6 },
-      { "name": "minecraft:block.conduit.deactivate", "type": "event", "volume": 0.7, "pitch": 0.6 }
+      {
+        "name": "minecraft:entity.wind_charge.wind_burst",
+        "type": "event",
+        "volume": 1.0,
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block.conduit.deactivate",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 0.6
+      }
     ]
   },
   "pressure_forge.work": {
     "subtitle": "subtitles.nautec.pressure_forge.work",
     "sounds": [
-      { "name": "minecraft:block.blastfurnace.fire_crackle", "type": "event", "volume": 0.45, "pitch": 0.7 }
+      {
+        "name": "minecraft:block.blastfurnace.fire_crackle",
+        "type": "event",
+        "volume": 0.45,
+        "pitch": 0.7
+      }
     ]
   },
   "pressure_forge.complete": {
     "subtitle": "subtitles.nautec.pressure_forge.complete",
     "sounds": [
-      { "name": "minecraft:block.anvil.use", "type": "event", "volume": 0.7, "pitch": 0.9 },
-      { "name": "minecraft:block.smithing_table.use", "type": "event", "volume": 0.6, "pitch": 0.8 }
+      {
+        "name": "minecraft:block.anvil.use",
+        "type": "event",
+        "volume": 0.7,
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block.smithing_table.use",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 0.8
+      }
     ]
   },
   "dock.clamp": {
     "subtitle": "subtitles.nautec.dock.clamp",
     "sounds": [
-      { "name": "minecraft:block.piston.contract", "type": "event", "volume": 0.8, "pitch": 0.7 },
-      { "name": "minecraft:block.iron_door.close", "type": "event", "volume": 0.4, "pitch": 0.8 }
+      {
+        "name": "minecraft:block.piston.contract",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block.iron_door.close",
+        "type": "event",
+        "volume": 0.4,
+        "pitch": 0.8
+      }
     ]
   },
   "dock.release": {
     "subtitle": "subtitles.nautec.dock.release",
     "sounds": [
-      { "name": "minecraft:block.piston.extend", "type": "event", "volume": 0.8, "pitch": 0.8 }
+      {
+        "name": "minecraft:block.piston.extend",
+        "type": "event",
+        "volume": 0.8,
+        "pitch": 0.8
+      }
     ]
   },
   "optics.hum": {
     "subtitle": "subtitles.nautec.optics.hum",
     "sounds": [
-      { "name": "minecraft:block.beacon.ambient", "type": "event", "volume": 0.15, "pitch": 1.5 }
+      {
+        "name": "minecraft:block.beacon.ambient",
+        "type": "event",
+        "volume": 0.15,
+        "pitch": 1.5
+      }
     ]
   },
   "fuel_cell.burn": {
     "subtitle": "subtitles.nautec.fuel_cell.burn",
     "sounds": [
-      { "name": "minecraft:block.brewing_stand.brew", "type": "event", "volume": 0.35, "pitch": 0.8 }
+      {
+        "name": "minecraft:block.brewing_stand.brew",
+        "type": "event",
+        "volume": 0.35,
+        "pitch": 0.8
+      }
     ]
   },
   "wave_jet.start": {
     "subtitle": "subtitles.nautec.wave_jet.start",
     "sounds": [
-      { "name": "minecraft:item.trident.riptide_1", "type": "event", "volume": 0.6, "pitch": 1.3 }
+      {
+        "name": "minecraft:item.trident.riptide_1",
+        "type": "event",
+        "volume": 0.6,
+        "pitch": 1.3
+      }
     ]
   },
   "wave_jet.loop": {
     "subtitle": "subtitles.nautec.wave_jet.loop",
     "sounds": [
-      { "name": "minecraft:entity.minecart.riding", "type": "event", "volume": 0.5, "pitch": 1.5 }
+      {
+        "name": "minecraft:entity.minecart.riding",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 1.5
+      }
     ]
   },
   "wave_jet.stop": {
     "subtitle": "subtitles.nautec.wave_jet.stop",
     "sounds": [
-      { "name": "minecraft:item.trident.return", "type": "event", "volume": 0.5, "pitch": 1.4 }
+      {
+        "name": "minecraft:item.trident.return",
+        "type": "event",
+        "volume": 0.5,
+        "pitch": 1.4
+      }
     ]
   },
   "atlantean_rifle.charge": {
     "subtitle": "subtitles.nautec.atlantean_rifle.charge",
     "sounds": [
-      { "name": "nautec:atlantean_rifle/charge", "volume": 1.0, "pitch": 1.0 }
+      {
+        "name": "nautec:atlantean_rifle/charge",
+        "volume": 1.0,
+        "pitch": 1.0
+      }
     ]
   },
   "atlantean_rifle.fire": {
     "subtitle": "subtitles.nautec.atlantean_rifle.fire",
     "sounds": [
-      { "name": "nautec:atlantean_rifle/fire", "volume": 1.0, "pitch": 1.0 }
+      {
+        "name": "nautec:atlantean_rifle/fire",
+        "volume": 1.0,
+        "pitch": 1.0
+      }
     ]
   },
   "atlantean_rifle.spark": {
     "subtitle": "subtitles.nautec.atlantean_rifle.spark",
     "sounds": [
-      { "name": "minecraft:block.redstone_torch.burnout", "type": "event", "volume": 0.45, "pitch": 1.5 },
-      { "name": "minecraft:block.redstone_torch.burnout", "type": "event", "volume": 0.45, "pitch": 1.9 },
-      { "name": "minecraft:block.fire.extinguish", "type": "event", "volume": 0.3, "pitch": 1.8 }
+      {
+        "name": "minecraft:block.redstone_torch.burnout",
+        "type": "event",
+        "volume": 0.45,
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:block.redstone_torch.burnout",
+        "type": "event",
+        "volume": 0.45,
+        "pitch": 1.9
+      },
+      {
+        "name": "minecraft:block.fire.extinguish",
+        "type": "event",
+        "volume": 0.3,
+        "pitch": 1.8
+      }
     ]
   },
   "silt_skipper.ambient": {
     "subtitle": "subtitles.nautec.silt_skipper.ambient",
     "sounds": [
-      { "name": "nautec:entity/silt_skipper/ambient", "volume": 0.55, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/silt_skipper/ambient",
+        "volume": 0.55,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "silt_skipper.hurt": {
     "subtitle": "subtitles.nautec.silt_skipper.hurt",
     "sounds": [
-      { "name": "nautec:entity/silt_skipper/hurt", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/silt_skipper/hurt",
+        "volume": 0.8,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "silt_skipper.death": {
     "subtitle": "subtitles.nautec.silt_skipper.death",
     "sounds": [
-      { "name": "nautec:entity/silt_skipper/death", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/silt_skipper/death",
+        "volume": 0.8,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "silt_skipper.flop": {
     "subtitle": "subtitles.nautec.silt_skipper.flop",
     "sounds": [
-      { "name": "nautec:entity/silt_skipper/flop", "volume": 0.45, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/silt_skipper/flop",
+        "volume": 0.45,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "lantern_jelly.ambient": {
     "subtitle": "subtitles.nautec.lantern_jelly.ambient",
     "sounds": [
-      { "name": "nautec:entity/lantern_jelly/ambient", "volume": 0.55, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/lantern_jelly/ambient",
+        "volume": 0.55,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "lantern_jelly.hurt": {
     "subtitle": "subtitles.nautec.lantern_jelly.hurt",
     "sounds": [
-      { "name": "nautec:entity/lantern_jelly/hurt", "volume": 0.75, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/lantern_jelly/hurt",
+        "volume": 0.75,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "lantern_jelly.death": {
     "subtitle": "subtitles.nautec.lantern_jelly.death",
     "sounds": [
-      { "name": "nautec:entity/lantern_jelly/death", "volume": 0.8, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/lantern_jelly/death",
+        "volume": 0.8,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "lantern_jelly.pulse": {
     "subtitle": "subtitles.nautec.lantern_jelly.pulse",
     "sounds": [
-      { "name": "nautec:entity/lantern_jelly/pulse", "volume": 0.65, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/lantern_jelly/pulse",
+        "volume": 0.65,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "vent_crawler.ambient": {
     "subtitle": "subtitles.nautec.vent_crawler.ambient",
     "sounds": [
-      { "name": "nautec:entity/vent_crawler/ambient", "volume": 0.65, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/vent_crawler/ambient",
+        "volume": 0.65,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "vent_crawler.hurt": {
     "subtitle": "subtitles.nautec.vent_crawler.hurt",
     "sounds": [
-      { "name": "nautec:entity/vent_crawler/hurt", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/vent_crawler/hurt",
+        "volume": 0.9,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "vent_crawler.death": {
     "subtitle": "subtitles.nautec.vent_crawler.death",
     "sounds": [
-      { "name": "nautec:entity/vent_crawler/death", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/vent_crawler/death",
+        "volume": 0.9,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "vent_crawler.step": {
     "subtitle": "subtitles.nautec.vent_crawler.step",
     "sounds": [
-      { "name": "nautec:entity/vent_crawler/step", "volume": 0.7, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/vent_crawler/step",
+        "volume": 0.7,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "abyssal_maw.ambient": {
     "subtitle": "subtitles.nautec.abyssal_maw.ambient",
     "sounds": [
-      { "name": "nautec:entity/abyssal_maw/ambient", "volume": 0.75, "pitch": 1.0, "attenuation_distance": 12 }
+      {
+        "name": "nautec:entity/abyssal_maw/ambient",
+        "volume": 0.75,
+        "pitch": 1.0,
+        "attenuation_distance": 12
+      }
     ]
   },
   "abyssal_maw.hurt": {
     "subtitle": "subtitles.nautec.abyssal_maw.hurt",
     "sounds": [
-      { "name": "nautec:entity/abyssal_maw/hurt", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/abyssal_maw/hurt",
+        "volume": 0.9,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "abyssal_maw.death": {
     "subtitle": "subtitles.nautec.abyssal_maw.death",
     "sounds": [
-      { "name": "nautec:entity/abyssal_maw/death", "volume": 0.9, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/abyssal_maw/death",
+        "volume": 0.9,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
     ]
   },
   "abyssal_maw.attack": {
     "subtitle": "subtitles.nautec.abyssal_maw.attack",
     "sounds": [
-      { "name": "nautec:entity/abyssal_maw/attack", "volume": 0.85, "pitch": 1.0, "attenuation_distance": 16 }
+      {
+        "name": "nautec:entity/abyssal_maw/attack",
+        "volume": 0.85,
+        "pitch": 1.0,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "resonant_vault.open": {
+    "subtitle": "subtitles.nautec.resonant_vault.open",
+    "sounds": [
+      {
+        "name": "nautec:resonant/vault_open"
+      }
+    ]
+  },
+  "resonant_vault.close": {
+    "subtitle": "subtitles.nautec.resonant_vault.close",
+    "sounds": [
+      {
+        "name": "nautec:resonant/vault_close"
+      }
+    ]
+  },
+  "resonant_cistern.open": {
+    "subtitle": "subtitles.nautec.resonant_cistern.open",
+    "sounds": [
+      {
+        "name": "nautec:resonant/cistern_open"
+      }
+    ]
+  },
+  "resonant_storage.recode": {
+    "subtitle": "subtitles.nautec.resonant_storage.recode",
+    "sounds": [
+      {
+        "name": "nautec:resonant/recode"
+      }
     ]
   }
 }

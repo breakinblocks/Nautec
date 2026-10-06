@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.data;
 
+import com.breakinblocks.nautec.content.resonantstorage.ResonantLink;
 import net.minecraft.world.item.component.ItemContainerContents;
 import com.breakinblocks.nautec.content.items.MachineSettings;
 import com.mojang.serialization.Codec;
@@ -81,6 +82,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<GatewayAddress>> GATEWAY_ADDRESS = registerDataComponentType("gateway_address",
             () -> builder -> builder.persistent(GatewayAddress.CODEC).networkSynchronized(GatewayAddress.STREAM_CODEC));
+
+    public static final Supplier<DataComponentType<ResonantLink>> RESONANT_LINK = registerDataComponentType("resonant_link",
+            () -> builder -> builder.persistent(ResonantLink.CODEC).networkSynchronized(ResonantLink.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<PackedGateway>> GATEWAY_PACKED = registerDataComponentType("gateway_packed",
             () -> builder -> builder.persistent(PackedGateway.CODEC).networkSynchronized(PackedGateway.STREAM_CODEC));

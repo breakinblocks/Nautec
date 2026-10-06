@@ -89,6 +89,7 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.RIPTIDE_UPGRADE.get());
         basicItem(NTItems.MAELSTROM_UPGRADE.get());
         basicItem(NTItems.FILTER.get());
+        basicItem(NTItems.RESONANT_EXPANSION.get());
         basicItem(NTItems.INTRICATE_FILTER.get());
         handAuthoredItem(NTBlocks.CURRENT_CONDUIT.asItem());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
@@ -177,6 +178,8 @@ public class ItemModelProvider extends ModelProvider {
 
         itemModels.itemModelOutput.accept(NTBlocks.LASER_CRAFTING_MATRIX.asItem(), ItemModelUtils.specialModel(
                 Nautec.rl("block/laser_crafting_matrix"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+        itemModels.itemModelOutput.accept(NTBlocks.RESONANT_VAULT.asItem(), ItemModelUtils.specialModel(
+                Nautec.rl("block/resonant_vault"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
         itemModels.itemModelOutput.accept(NTItems.ATLANTEAN_RIFLE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/atlantean_rifle_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
@@ -252,6 +255,7 @@ public class ItemModelProvider extends ModelProvider {
             if (item == NTBlocks.LASER_JUNCTION.asItem()
                     || item == NTBlocks.ANCHOR.asItem()
                     || item == NTBlocks.LASER_CRAFTING_MATRIX.asItem()
+                    || item == NTBlocks.RESONANT_VAULT.asItem()
                     || item == NTBlocks.PRISMARINE_CRYSTAL.asItem()
                     || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()) {
                 continue;

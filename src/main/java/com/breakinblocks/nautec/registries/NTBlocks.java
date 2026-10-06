@@ -3,6 +3,10 @@ package com.breakinblocks.nautec.registries;
 import java.util.Map;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
 import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlock;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantStorageItem;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantVaultBlock;
+import com.breakinblocks.nautec.content.resonantstorage.ResonantVaultItem;
 import java.util.EnumMap;
 import java.util.Collections;
 import com.breakinblocks.nautec.content.biometank.BiomeTankType;
@@ -201,6 +205,10 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).strength(1.0F, 6.0F).noOcclusion(), true, false);
     public static final DeferredBlock<ConduitTapBlock> CONDUIT_TAP = BLOCKS.registerBlock("conduit_tap", ConduitTapBlock::new,
             () -> BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).strength(1.5F, 6.0F).noOcclusion());
+    public static final DeferredBlock<ResonantVaultBlock> RESONANT_VAULT = registerBlockAndItem("resonant_vault", ResonantVaultBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(3.0F, 1200.0F).noOcclusion(), ResonantVaultItem::new);
+    public static final DeferredBlock<ResonantCisternBlock> RESONANT_CISTERN = registerBlockAndItem("resonant_cistern", ResonantCisternBlock::new,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(3.0F, 1200.0F).noOcclusion(), ResonantStorageItem::new);
     public static final DeferredBlock<AdvancedBacterialAnalyzerBlock> ADVANCED_BACTERIAL_ANALYZER = bacteriaBlock(registerBlockAndItem("advanced_bacterial_analyzer",
             AdvancedBacterialAnalyzerBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<GraftingStationBlock> GRAFTING_STATION = bacteriaBlock(registerBlockAndItem("grafting_station", GraftingStationBlock::new,

@@ -33,6 +33,7 @@ public final class NTGameTestRegistration {
         FishingHookFlowTests.register(r);
         StarcatcherCompatTests.register(r);
         ConduitTests.register(r);
+        ResonantStorageTests.register(r);
         WaveJetTests.register(r);
         AtlanteanRifleTests.register(r);
         NeptunesTridentTests.register(r);
@@ -79,8 +80,8 @@ public final class NTGameTestRegistration {
         CombustionDynamoTests.register(r);
         BeamOverclockTests.register(r);
         LaserCraftingMatrixTests.register(r);
-        if (r.registeredCount() != 650) {
-            throw new IllegalStateException("Expected 650 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 663) {
+            throw new IllegalStateException("Expected 663 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

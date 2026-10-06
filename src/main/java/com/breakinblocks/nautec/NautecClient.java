@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.client.renderer.blockentities.ResonantCisternRenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.ResonantVaultRenderer;
+import com.breakinblocks.nautec.client.screen.ResonantCisternScreen;
+import com.breakinblocks.nautec.client.screen.ResonantVaultScreen;
 import com.breakinblocks.nautec.client.screen.ConduitTapScreen;
 import com.breakinblocks.nautec.client.screen.DishStorageScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonanceNodeBERenderer;
@@ -334,6 +338,8 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_INJECTOR.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_CRAFTING_MATRIX.get(), LaserCraftingMatrixRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_VAULT.get(), ResonantVaultRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_CISTERN.get(), ResonantCisternRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CRYSTAL_CRADLE.get(), CrystalCradleBERenderer::new);
@@ -408,6 +414,8 @@ public final class NautecClient {
         event.register(NTMenuTypes.ADVANCED_BACTERIAL_ANALYZER.get(), AdvancedBacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.DISTRIBUTOR.get(), DistributorScreen::new);
         event.register(NTMenuTypes.CONDUIT_TAP.get(), ConduitTapScreen::new);
+        event.register(NTMenuTypes.RESONANT_VAULT.get(), ResonantVaultScreen::new);
+        event.register(NTMenuTypes.RESONANT_CISTERN.get(), ResonantCisternScreen::new);
         event.register(NTMenuTypes.BUBBLE_ANCHOR.get(), BubbleAnchorScreen::new);
         event.register(NTMenuTypes.ENERGY_CONVERTER.get(), EnergyConverterScreen::new);
         event.register(NTMenuTypes.COLONY_REPLICATOR.get(), ColonyReplicatorScreen::new);

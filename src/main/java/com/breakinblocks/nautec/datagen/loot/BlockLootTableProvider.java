@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.datagen.loot;
 
+import com.breakinblocks.nautec.data.NTDataComponents;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
@@ -52,6 +55,13 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         knownBlocks.add(block);
     }
 
+    private void dropKeepingLink(Block block) {
+        add(block, LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(block)
+                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                                .include(NTDataComponents.RESONANT_LINK.get()))))));
+    }
+
     @Override
     protected void generate() {
         prismarineSand(NTBlocks.PRISMARINE_SAND.get());
@@ -62,6 +72,8 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.ABYSSAL_PYLON.get());
         dropSelf(NTBlocks.RESONANCE_NODE.get());
         dropSelf(NTBlocks.CONDUIT_BEACON.get());
+        dropKeepingLink(NTBlocks.RESONANT_VAULT.get());
+        dropKeepingLink(NTBlocks.RESONANT_CISTERN.get());
         dropSelf(NTBlocks.AQUARINE_DISH_STORAGE.get());
         dropSelf(NTBlocks.DEEP_STEEL_DISH_STORAGE.get());
         dropSelf(NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get());
