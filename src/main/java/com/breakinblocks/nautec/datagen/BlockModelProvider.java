@@ -516,7 +516,7 @@ public class BlockModelProvider extends ModelProvider {
                     .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT),
                             rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_arm")), rotation[0], rotation[1]))
                     .with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.MACHINE),
-                            rotated(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_flange")), rotation[0], rotation[1]));
+                            rotated(BlockModelGenerators.plainVariant(existingModelFile("conduit_tap_flange_" + direction.getSerializedName())), rotation[0], rotation[1]));
             if (direction.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                 builder = builder.with(BlockModelGenerators.condition(ConduitTapBlock.ARMS[direction.ordinal()], TapArm.CONDUIT),
                         rotated(BlockModelGenerators.plainVariant(existingModelFile("current_conduit_collar")), rotation[0], rotation[1]));

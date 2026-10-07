@@ -1,0 +1,138 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "3": "nautec:block/conduit_tap_flange",
+    "particle": "nautec:block/conduit_tap_flange"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        0,
+        3
+      ],
+      "to": [
+        13,
+        2,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3,
+            0,
+            13,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "east": {
+          "uv": [
+            3,
+            0,
+            13,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "south": {
+          "uv": [
+            3,
+            0,
+            13,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "west": {
+          "uv": [
+            3,
+            0,
+            13,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "up": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "down": {
+          "uv": [
+            3,
+            3,
+            13,
+            13
+          ],
+          "texture": "#3",
+          "cullface": "down",
+          "tintindex": 3
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        2,
+        5
+      ],
+      "to": [
+        11,
+        4,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            0,
+            11,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            11,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            11,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            11,
+            2
+          ],
+          "texture": "#3",
+          "tintindex": 3
+        }
+      }
+    }
+  ]
+}

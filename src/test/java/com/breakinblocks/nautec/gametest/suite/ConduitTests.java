@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.content.conduits.RedstoneMode;
 import com.breakinblocks.nautec.content.conduits.TapArm;
 import com.breakinblocks.nautec.content.conduits.TapFace;
 import com.breakinblocks.nautec.content.conduits.TapFilter;
+import com.breakinblocks.nautec.content.conduits.TapFlow;
 import com.breakinblocks.nautec.content.conduits.TapSide;
 import com.breakinblocks.nautec.network.ConduitTapEditPayload;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -40,6 +41,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import java.util.Set;
 
 public final class ConduitTests {
     private static final int Y = 1;
@@ -104,9 +107,31 @@ public final class ConduitTests {
             for (int slot = 0; slot < TapFilter.ITEM_SLOTS; slot++) {
                 tap.face(Direction.NORTH).filter(TapSide.INPUT).setItem(slot, new ItemStack(Items.ENCHANTED_BOOK));
             }
-            helper.assertTrue(tap.getUpdateTag(helper.getLevel().registryAccess()).isEmpty(), "the update tag is empty");
-            helper.assertTrue(tap.getUpdatePacket() == null, "the tap sends no block entity update packet");
+            helper.assertValueEqual(Set.of("flow"), tap.getUpdateTag(helper.getLevel().registryAccess()).keySet(), "the update tag only carries the flange colours");
             helper.succeed();
+        });
+
+        r.add("conduit/flange_colour_follows_the_face_modes", 60, helper -> {
+            chestLine(helper);
+            ConduitTapBlockEntity tap = tap(helper, 1);
+            helper.runAfterDelay(5, () -> {
+                helper.assertValueEqual(TapFlow.OUTPUT, tap.flow(Direction.WEST), "a new face puts items into the chest");
+                helper.assertValueEqual(TapFlow.IDLE, tap.flow(Direction.EAST), "the conduit side has no flange");
+                setMode(tap, Direction.WEST, ConduitChannel.ITEMS, FlowMode.EXTRACT);
+            });
+            helper.runAfterDelay(10, () -> {
+                helper.assertValueEqual(TapFlow.INPUT, tap.flow(Direction.WEST), "taking items from the chest");
+                setMode(tap, Direction.WEST, ConduitChannel.ITEMS, FlowMode.BOTH);
+            });
+            helper.runAfterDelay(15, () -> {
+                helper.assertValueEqual(TapFlow.BOTH, tap.flow(Direction.WEST), "taking and giving items");
+                setMode(tap, Direction.WEST, ConduitChannel.ITEMS, FlowMode.OFF);
+                setMode(tap, Direction.WEST, ConduitChannel.ENERGY, FlowMode.EXTRACT);
+            });
+            helper.runAfterDelay(20, () -> {
+                helper.assertValueEqual(TapFlow.IDLE, tap.flow(Direction.WEST), "a chest has no energy, so the energy setting does not colour it");
+                helper.succeed();
+            });
         });
 
         r.add("conduit/edits_respect_the_filter_upgrade_on_the_server", 5, helper -> {

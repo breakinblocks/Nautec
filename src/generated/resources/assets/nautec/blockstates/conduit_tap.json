@@ -15,7 +15,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange"
+        "model": "nautec:block/conduit_tap_flange_down"
       },
       "when": {
         "down": "machine"
@@ -32,7 +32,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange",
+        "model": "nautec:block/conduit_tap_flange_up",
         "x": 180
       },
       "when": {
@@ -60,7 +60,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange",
+        "model": "nautec:block/conduit_tap_flange_north",
         "x": 90,
         "y": 180
       },
@@ -79,7 +79,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange",
+        "model": "nautec:block/conduit_tap_flange_south",
         "x": 90
       },
       "when": {
@@ -107,7 +107,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange",
+        "model": "nautec:block/conduit_tap_flange_west",
         "x": 90,
         "y": 90
       },
@@ -127,7 +127,7 @@
     },
     {
       "apply": {
-        "model": "nautec:block/conduit_tap_flange",
+        "model": "nautec:block/conduit_tap_flange_east",
         "x": 90,
         "y": 270
       },

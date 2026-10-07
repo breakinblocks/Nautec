@@ -17,6 +17,7 @@ import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemRenderer;
 import com.breakinblocks.nautec.api.fluids.BaseFluidType;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
+import com.breakinblocks.nautec.client.render.ConduitTapTint;
 import com.breakinblocks.nautec.client.render.BioReactorRenderer;
 import com.breakinblocks.nautec.client.render.IndustrialBioReactorRenderer;
 import com.breakinblocks.nautec.client.render.JsonMesh;
@@ -94,6 +95,7 @@ import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentSlotsRend
 import com.breakinblocks.nautec.registries.NTAugmentSlots;
 import com.breakinblocks.nautec.registries.NTAugments;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -172,6 +174,7 @@ public final class NautecClient {
         modEventBus.addListener(this::registerLayerDefinitions);
         modEventBus.addListener(this::registerMenus);
         modEventBus.addListener(this::registerColorHandlers);
+        modEventBus.addListener(this::registerBlockTints);
         modEventBus.addListener(this::onLayersAdded);
         modEventBus.addListener(this::registerSpecialModelRenderers);
         modEventBus.addListener(this::registerConditionalItemModelProperties);
@@ -431,6 +434,10 @@ public final class NautecClient {
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
         event.register(Nautec.rl("bacteria_color"), BacteriaColorTintSource.MAP_CODEC);
+    }
+
+    private void registerBlockTints(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(ConduitTapTint.sources(), NTBlocks.CONDUIT_TAP.get());
     }
 
 }

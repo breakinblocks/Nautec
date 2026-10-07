@@ -16,8 +16,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -187,6 +189,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
     private final int tickOffset;
     private @Nullable ConduitNetwork network;
     private int machineMask;
+    private int flow;
     private int syncMask;
     private boolean configDirty;
     private boolean armsDirty;
@@ -360,14 +363,52 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             return;
         }
         BlockState next = state;
+        int nextFlow = 0;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (Direction direction : DIRECTIONS) {
             cursor.setWithOffset(worldPosition, direction);
-            next = next.setValue(ConduitTapBlock.ARMS[direction.ordinal()], computeArm(direction, cursor));
+            TapArm arm = computeArm(direction, cursor);
+            next = next.setValue(ConduitTapBlock.ARMS[direction.ordinal()], arm);
+            if (arm == TapArm.MACHINE) {
+                nextFlow |= computeFlow(direction).ordinal() << (direction.ordinal() * 2);
+            }
         }
+        boolean flowChanged = nextFlow != flow;
+        flow = nextFlow;
         if (next != state) {
             level.setBlock(worldPosition, next, Block.UPDATE_ALL);
+        } else if (flowChanged) {
+            level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_CLIENTS);
         }
+        if (flowChanged) {
+            setChanged();
+        }
+    }
+
+    private TapFlow computeFlow(Direction direction) {
+        TapFace face = faces[direction.ordinal()];
+        boolean input = false;
+        boolean output = false;
+        if (target(Capabilities.Item.BLOCK, itemCaches, direction) != null) {
+            FlowMode mode = face.mode(ConduitChannel.ITEMS);
+            input = mode.extracts();
+            output = mode.inserts();
+        }
+        if (target(Capabilities.Fluid.BLOCK, fluidCaches, direction) != null) {
+            FlowMode mode = face.mode(ConduitChannel.FLUIDS);
+            input |= mode.extracts();
+            output |= mode.inserts();
+        }
+        if (target(Capabilities.Energy.BLOCK, energyCaches, direction) != null) {
+            FlowMode mode = face.mode(ConduitChannel.ENERGY);
+            input |= mode.extracts();
+            output |= mode.inserts();
+        }
+        return TapFlow.of(input, output);
+    }
+
+    public TapFlow flow(Direction direction) {
+        return TapFlow.ALL[(flow >>> (direction.ordinal() * 2)) & 3];
     }
 
     private TapArm computeArm(Direction direction, BlockPos neighbourPos) {
@@ -742,6 +783,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         writeFaces(out, "faces");
+        out.putInt("flow", flow);
     }
 
     @Override
@@ -749,15 +791,40 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
         super.loadData(in);
         readFaces(in, "faces");
         readSlots();
+        flow = in.getIntOr("flow", 0);
     }
 
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return null;
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        return new CompoundTag();
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("flow", flow);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(ValueInput input) {
+        readFlow(input);
+    }
+
+    @Override
+    public void onDataPacket(Connection connection, ValueInput input) {
+        readFlow(input);
+    }
+
+    private void readFlow(ValueInput input) {
+        int next = input.getIntOr("flow", 0);
+        if (next == flow) {
+            return;
+        }
+        flow = next;
+        if (level != null && level.isClientSide()) {
+            BlockState state = getBlockState();
+            level.sendBlockUpdated(worldPosition, state, state, Block.UPDATE_CLIENTS);
+        }
     }
 }

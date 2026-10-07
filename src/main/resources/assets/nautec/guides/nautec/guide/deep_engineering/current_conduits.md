@@ -53,6 +53,8 @@ Right-click a tap with an empty hand to open it. Pick a face on the left, then s
 
 New taps start with every face on Insert, so set the source faces to Extract.
 
+The connector on each block a tap touches shows how that face is set: orange when it only inserts, blue when it only extracts, purple when it does both, and plain copper when it does neither. Only resources the block can hold count, so a chest's connector ignores the energy setting.
+
 **Priority** runs from -99 to 99. Higher priority destinations fill first. **Distribution** decides what happens between destinations of the same priority: Round Robin takes turns, Nearest First fills the closest, Random picks a different start each move. **Redstone** can make a face run only while the tap is powered, or only while it is not.
 
 A <ItemLink id="configuration_card"/> copies every face of one tap onto another.
