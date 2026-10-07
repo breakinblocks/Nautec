@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.network.SetSideConfigPayload;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -64,8 +65,43 @@ public final class SideConfigPanel {
         return gridTop() + 3 * PITCH + 2;
     }
 
+    private static Component kindLabel(SideKind option) {
+        return Component.translatable(option.translationKey() + ".short");
+    }
+
+    private static int tabWidth(Font font, SideKind option) {
+        return font.width(kindLabel(option)) + 5;
+    }
+
+    private static int tabX(Font font, SideKind option) {
+        int bx = 4;
+        for (SideKind other : SideKind.values()) {
+            if (other == option) {
+                break;
+            }
+            bx += tabWidth(font, other) + 2;
+        }
+        return bx;
+    }
+
+    private int width() {
+        if (!bothKinds()) {
+            return WIDTH;
+        }
+        Font font = Minecraft.getInstance().font;
+        int total = 6;
+        for (SideKind option : SideKind.values()) {
+            total += tabWidth(font, option) + 2;
+        }
+        return Math.max(WIDTH, total);
+    }
+
+    private int gridLeft() {
+        return (width() - 2 * PITCH - CELL) / 2;
+    }
+
     public Rect2i area(int anchorX, int anchorY) {
-        int w = open ? WIDTH : TAB;
+        int w = open ? width() : TAB;
         int h = open ? height() : TAB;
         return new Rect2i(leftward ? anchorX - w : anchorX, anchorY, w, h);
     }
@@ -106,29 +142,30 @@ public final class SideConfigPanel {
             return;
         }
 
-        box(g, x, y, WIDTH, height());
+        box(g, x, y, area.getWidth(), height());
         icon(g, x, y);
         g.text(font, Component.translatable("nautec.side_config.short"), x + 20, y + 6, TEXT, false);
 
         if (bothKinds()) {
             for (SideKind option : SideKind.values()) {
-                int bx = x + 4 + option.ordinal() * 28;
+                int bx = x + tabX(font, option);
                 int by = y + 20;
+                int bw = tabWidth(font, option);
                 boolean selected = option == kind;
-                g.fill(bx, by, bx + 26, by + 11, OUTLINE);
-                g.fill(bx + 1, by + 1, bx + 25, by + 10, selected ? 0xFF45504A : LIGHT);
-                Component label = Component.translatable(option.translationKey() + ".short");
-                g.text(font, label, bx + 13 - font.width(label) / 2, by + 2, selected ? LIGHT : TEXT, false);
+                g.fill(bx, by, bx + bw, by + 11, OUTLINE);
+                g.fill(bx + 1, by + 1, bx + bw - 1, by + 10, selected ? 0xFF45504A : LIGHT);
+                g.text(font, kindLabel(option), bx + 3, by + 2, selected ? LIGHT : TEXT, false);
             }
         }
 
+        int left = gridLeft();
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
                 RelativeFace face = GRID[row][column];
                 if (face == null) {
                     continue;
                 }
-                int cx = x + 5 + column * PITCH;
+                int cx = x + left + column * PITCH;
                 int cy = y + gridTop() + row * PITCH;
                 SideMode mode = machine.getSideConfig().get(kind, face);
                 g.fill(cx, cy, cx + CELL, cy + CELL, OUTLINE);
@@ -164,17 +201,19 @@ public final class SideConfigPanel {
             return true;
         }
         if (bothKinds()) {
+            Font font = Minecraft.getInstance().font;
             for (SideKind option : SideKind.values()) {
-                if (inside(mouseX, mouseY, x + 4 + option.ordinal() * 28, y + 20, 26, 11)) {
+                if (inside(mouseX, mouseY, x + tabX(font, option), y + 20, tabWidth(font, option), 11)) {
                     kind = option;
                     return true;
                 }
             }
         }
+        int left = gridLeft();
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
                 RelativeFace face = GRID[row][column];
-                if (face != null && inside(mouseX, mouseY, x + 5 + column * PITCH, y + gridTop() + row * PITCH, CELL, CELL)) {
+                if (face != null && inside(mouseX, mouseY, x + left + column * PITCH, y + gridTop() + row * PITCH, CELL, CELL)) {
                     SideMode current = machine.getSideConfig().get(kind, face);
                     SideMode next = event.button() == 1 ? current.previous() : current.next();
                     machine.getSideConfig().set(kind, face, next);
