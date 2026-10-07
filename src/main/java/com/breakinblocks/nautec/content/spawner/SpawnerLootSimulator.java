@@ -31,14 +31,20 @@ public final class SpawnerLootSimulator {
         mobs.clear();
     }
 
-    public void roll(ServerLevel level, BlockPos pos, SpawnData data, Consumer<ItemStack> output, IntConsumer experience) {
+    public void roll(ServerLevel level, BlockPos pos, SpawnData data, int times, Consumer<ItemStack> output, IntConsumer experience) {
+        if (times <= 0) {
+            return;
+        }
         Optional<LivingEntity> mob = mobs.computeIfAbsent(data, key -> Optional.ofNullable(create(level, pos, key)));
         if (mob.isEmpty()) {
             return;
         }
         LivingEntity living = mob.get();
         FakePlayer killer = FakePlayerFactory.getMinecraft(level);
-        int xp = living.getExperienceReward(level, killer);
+        int xp = 0;
+        for (int i = 0; i < times; i++) {
+            xp += living.getExperienceReward(level, killer);
+        }
         if (xp > 0) {
             experience.accept(xp);
         }
@@ -59,7 +65,9 @@ public final class SpawnerLootSimulator {
                 .withParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, killer)
                 .withParameter(LootContextParams.LAST_DAMAGE_PLAYER, killer)
                 .create(LootContextParamSets.ENTITY);
-        table.getRandomItems(params, output);
+        for (int i = 0; i < times; i++) {
+            table.getRandomItems(params, output);
+        }
     }
 
     private static @Nullable LivingEntity create(ServerLevel level, BlockPos pos, SpawnData data) {

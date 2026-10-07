@@ -24,6 +24,7 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,7 +70,12 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     public static final int DATA_STATUS = 1;
     public static final int DATA_PROGRESS = 2;
     public static final int DATA_CYCLE = 3;
-    public static final int DATA_COUNT = 4;
+    public static final int DATA_XP_LOW = 4;
+    public static final int DATA_XP_HIGH = 5;
+    public static final int DATA_XP_CAPACITY_LOW = 6;
+    public static final int DATA_XP_CAPACITY_HIGH = 7;
+    public static final int DATA_XP_FLUID = 8;
+    public static final int DATA_COUNT = 9;
 
     private static final int ACTIVE_WINDOW = 40;
     private static final int SAVE_INTERVAL = 100;
@@ -81,6 +87,8 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     private @Nullable SpawnerSettings settings;
     private final SpawnerFilter filter = new SpawnerFilter();
     private final SpawnerLootSimulator simulator = new SpawnerLootSimulator();
+    private final ObjectArrayList<ItemStack> cycleDrops = new ObjectArrayList<>();
+    private int cycleExperience;
 
     private int bufferedPower;
     private int progress;
@@ -108,6 +116,11 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
                 case DATA_STATUS -> status.ordinal();
                 case DATA_PROGRESS -> progress;
                 case DATA_CYCLE -> cycleLength;
+                case DATA_XP_LOW -> getFluidTank().getFluidAmount() & 0xFFFF;
+                case DATA_XP_HIGH -> getFluidTank().getFluidAmount() >>> 16;
+                case DATA_XP_CAPACITY_LOW -> getFluidTank().getCapacity() & 0xFFFF;
+                case DATA_XP_CAPACITY_HIGH -> getFluidTank().getCapacity() >>> 16;
+                case DATA_XP_FLUID -> BuiltInRegistries.FLUID.getId(storedExperienceFluid());
                 default -> 0;
             };
         }
@@ -142,6 +155,11 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
             }
         }
         return NTFluids.EXPERIENCE_ALGAE.getStillFluid();
+    }
+
+    private Fluid storedExperienceFluid() {
+        FluidStack stored = getFluidTank().getFluid();
+        return stored.isEmpty() ? experienceFluid() : stored.getFluid();
     }
 
     private void storeExperience(int points) {
@@ -296,21 +314,57 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     }
 
     private void runCycle(ServerLevel serverLevel, RandomSource random) {
+        int spawnCount = settings.spawnCount();
+        SpawnData[] kinds = new SpawnData[spawnCount];
+        int[] times = new int[spawnCount];
+        int distinct = 0;
+        for (int i = 0; i < spawnCount; i++) {
+            SpawnData data = settings.pick(random);
+            if (data == null) {
+                continue;
+            }
+            int kind = 0;
+            while (kind < distinct && kinds[kind] != data) {
+                kind++;
+            }
+            if (kind == distinct) {
+                kinds[distinct++] = data;
+            }
+            times[kind]++;
+        }
+
+        cycleExperience = 0;
         batching = true;
         try {
-            for (int i = 0; i < settings.spawnCount(); i++) {
-                SpawnData data = settings.pick(random);
-                if (data != null) {
-                    simulator.roll(serverLevel, worldPosition, data, this::store, this::storeExperience);
-                }
+            for (int kind = 0; kind < distinct; kind++) {
+                simulator.roll(serverLevel, worldPosition, kinds[kind], times[kind], this::collect, xp -> cycleExperience += xp);
             }
+            for (int i = 0; i < cycleDrops.size(); i++) {
+                store(cycleDrops.get(i));
+            }
+            storeExperience(cycleExperience);
         } finally {
             batching = false;
+            cycleDrops.clear();
         }
         if (pendingSave) {
             pendingSave = false;
             setChanged();
         }
+    }
+
+    private void collect(ItemStack generated) {
+        if (generated.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < cycleDrops.size(); i++) {
+            ItemStack collected = cycleDrops.get(i);
+            if (ItemStack.isSameItemSameComponents(collected, generated)) {
+                collected.grow(generated.getCount());
+                return;
+            }
+        }
+        cycleDrops.add(generated.copy());
     }
 
     private void store(ItemStack generated) {
@@ -364,11 +418,6 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
     @Override
     protected void onItemsChanged(int slot) {
         freeSlotKnown = false;
-    }
-
-    @Override
-    protected void onFluidChanged() {
-        requestSync();
     }
 
     private void sync() {
@@ -526,7 +575,6 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
             TagValueOutput out = TagValueOutput.createWithContext(reporter, registries);
             writeClientData(out);
-            getFluidTank().serialize(out.child("fluid_tank"));
             getSideConfig().save(out.child("side_config"));
             return out.buildResult();
         }

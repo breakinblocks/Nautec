@@ -31,6 +31,7 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
     private static final int BAND_RGB = 0x52E8FF;
     private static final float IDLE_ENERGY = 0.3F;
     private static final float DISPLAY_SCALE = 0.53125F;
+    private static final double MOB_DISTANCE_SQR = 20.0 * 20.0;
 
     public ConfinedSpawnerBERenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -46,6 +47,14 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
                                    ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
         BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
         state.energy = blockEntity.isActive() ? 1.0F : IDLE_ENERGY;
+        BlockPos pos = blockEntity.getBlockPos();
+        double dx = pos.getX() + 0.5 - cameraPos.x;
+        double dy = pos.getY() + 0.5 - cameraPos.y;
+        double dz = pos.getZ() + 0.5 - cameraPos.z;
+        if (dx * dx + dy * dy + dz * dz > MOB_DISTANCE_SQR) {
+            state.displayEntity = null;
+            return;
+        }
         Entity display = blockEntity.getOrCreateDisplayEntity();
         if (display == null) {
             state.displayEntity = null;

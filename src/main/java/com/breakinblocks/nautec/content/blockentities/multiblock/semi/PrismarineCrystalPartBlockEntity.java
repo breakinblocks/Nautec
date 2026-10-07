@@ -41,7 +41,7 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
 
     @Override
     public boolean shouldRender(Direction direction) {
-        return getLaserOutputs().contains(direction) && getPowerToTransfer() > 0;
+        return getLaserOutputs().contains(direction) && getPowerToTransfer() > 0 && !loopsBack(direction);
     }
 
     @Override
@@ -57,6 +57,7 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
         if (crystalBE != null) {
             if (canTransmitPower()) {
                 transmitPower(crystalBE.getPower());
+                extendTrail(crystalBE);
             }
             setPurity(3);
         }

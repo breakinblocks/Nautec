@@ -4,12 +4,14 @@ import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,6 +74,22 @@ public class ConfinedSpawnerMenu extends NTAbstractContainerMenu<ConfinedSpawner
     public float getCycleProgress() {
         int cycle = data.get(ConfinedSpawnerBlockEntity.DATA_CYCLE);
         return cycle <= 0 ? 0.0F : Math.min(1.0F, data.get(ConfinedSpawnerBlockEntity.DATA_PROGRESS) / (float) cycle);
+    }
+
+    public int getExperience() {
+        return joined(ConfinedSpawnerBlockEntity.DATA_XP_LOW, ConfinedSpawnerBlockEntity.DATA_XP_HIGH);
+    }
+
+    public int getExperienceCapacity() {
+        return joined(ConfinedSpawnerBlockEntity.DATA_XP_CAPACITY_LOW, ConfinedSpawnerBlockEntity.DATA_XP_CAPACITY_HIGH);
+    }
+
+    public Fluid getExperienceFluid() {
+        return BuiltInRegistries.FLUID.byId(data.get(ConfinedSpawnerBlockEntity.DATA_XP_FLUID));
+    }
+
+    private int joined(int low, int high) {
+        return (data.get(low) & 0xFFFF) | ((data.get(high) & 0xFFFF) << 16);
     }
 
     private static final class OutputSlot extends ResourceHandlerSlot {

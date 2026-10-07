@@ -5,6 +5,10 @@ import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
 import com.breakinblocks.nautec.utils.RecipeRevision;
+import it.unimi.dsi.fastutil.floats.FloatCollection;
+import it.unimi.dsi.fastutil.floats.FloatIterator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -32,7 +36,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,6 +60,9 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
     private float clientLaserTime;
 
+    private LongOpenHashSet beamTrail = new LongOpenHashSet();
+    private LongOpenHashSet incomingTrail = new LongOpenHashSet();
+
     public LaserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.laserDistances = new Object2IntOpenHashMap<>();
@@ -80,6 +86,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         BlockPos pos = worldPosition.relative(direction, this.laserDistances.getInt(direction));
         return getLaserOutputs().contains(direction)
                 && !pos.equals(worldPosition)
+                && !beamTrail.contains(pos.asLong())
                 && level.getBlockEntity(pos) instanceof LaserBlockEntity be
                 && be.getLaserInputs().contains(direction.getOpposite())
                 && (power > 0 || powerToTransfer > 0);
@@ -132,11 +139,25 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     protected int connectedOutputs() {
         int connected = 0;
         for (Direction direction : getLaserOutputs()) {
-            if (this.laserDistances.getInt(direction) > 0) {
+            if (this.laserDistances.getInt(direction) > 0 && !loopsBack(direction)) {
                 connected++;
             }
         }
         return connected;
+    }
+
+    public boolean loopsBack(Direction direction) {
+        int distance = this.laserDistances.getInt(direction);
+        if (distance <= 0) {
+            return false;
+        }
+        long target = BlockPos.offset(worldPosition.asLong(),
+                direction.getStepX() * distance, direction.getStepY() * distance, direction.getStepZ() * distance);
+        return beamTrail.contains(target);
+    }
+
+    protected void extendTrail(LaserBlockEntity upstream) {
+        beamTrail.addAll(upstream.beamTrail);
     }
 
     public void receivePower(int amount, Direction direction, BlockPos originPos) {
@@ -187,23 +208,33 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         for (Direction direction : getLaserOutputs()) {
             int distance = this.laserDistances.getInt(direction);
             if (distance > 0) {
+                BlockPos targetPos = worldPosition.relative(direction, distance);
+                if (beamTrail.contains(targetPos.asLong())) {
+                    activeTransformations.remove(direction);
+                    continue;
+                }
+
                 if (!level.isClientSide() && outgoingPower(direction) <= 0) {
                     activeTransformations.remove(direction);
                 } else if (processing) {
                     processBeam(createLaserBeamAABB(direction, distance), direction);
                 }
 
-                BlockPos targetPos = worldPosition.relative(direction, distance);
                 if (level.isLoaded(targetPos) && level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
-                    laserBE.receivePower(outgoingPower(direction), direction, worldPosition);
+                    int amount = outgoingPower(direction);
+                    laserBE.receivePower(amount, direction, worldPosition);
                     laserBE.receiveNewPurity(outgoingPurity(direction), direction, worldPosition);
+                    if (amount > 0 && !laserBE.getLaserOutputs().isEmpty()) {
+                        laserBE.incomingTrail.addAll(beamTrail);
+                    }
                 }
             }
         }
 
         int power = 0;
-        for (int pps : this.powerPerSide.values()) {
-            power += pps;
+        IntIterator powers = this.powerPerSide.values().iterator();
+        while (powers.hasNext()) {
+            power += powers.nextInt();
         }
         this.power = power;
 
@@ -211,15 +242,23 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
         this.powerPerSide.clear();
         this.purityPerSide.clear();
+
+        LongOpenHashSet previousTrail = beamTrail;
+        beamTrail = incomingTrail;
+        beamTrail.add(worldPosition.asLong());
+        incomingTrail = previousTrail;
+        incomingTrail.clear();
     }
 
-    public static float mergedPurity(Collection<Float> purities) {
+    public static float mergedPurity(FloatCollection purities) {
         if (purities.isEmpty()) {
             return 0;
         }
         float sum = 0;
         float highest = 0;
-        for (float purity : purities) {
+        FloatIterator iterator = purities.iterator();
+        while (iterator.hasNext()) {
+            float purity = iterator.nextFloat();
             sum += purity;
             highest = Math.max(highest, purity);
         }

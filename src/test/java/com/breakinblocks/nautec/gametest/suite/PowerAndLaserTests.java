@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEn
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.PrismaticMirrorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.LiquidSetting
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import java.util.List;
 import java.util.Set;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -71,6 +73,25 @@ public final class PowerAndLaserTests {
             throw helper.assertionException("Expected MixerBlockEntity at " + pos);
         }
         return mixer;
+    }
+
+    private static void placeMirror(GameTestHelper helper, BlockPos pos, Direction facing) {
+        helper.setBlock(pos, NTBlocks.PRISMATIC_MIRROR.get().defaultBlockState().setValue(OpticsBlock.FACING, facing));
+    }
+
+    private static void placeMirrorLoop(GameTestHelper helper, BlockPos entry) {
+        placeMirror(helper, entry, Direction.SOUTH);
+        placeMirror(helper, entry.south(3), Direction.EAST);
+        placeMirror(helper, entry.south(3).east(3), Direction.NORTH);
+        placeMirror(helper, entry.east(3), Direction.WEST);
+    }
+
+    private static PrismaticMirrorBlockEntity mirror(GameTestHelper helper, BlockPos pos) {
+        PrismaticMirrorBlockEntity mirror = helper.getBlockEntity(pos, PrismaticMirrorBlockEntity.class);
+        if (mirror == null) {
+            throw helper.assertionException("Expected PrismaticMirrorBlockEntity at " + pos);
+        }
+        return mirror;
     }
 
     private static IPowerStorage batteryStorage(GameTestHelper helper, ItemStack stack) {
@@ -343,6 +364,62 @@ public final class PowerAndLaserTests {
                 helper.assertValueEqual(0, mixer.getPower(), "power after the source is gone");
                 assertPurityNear(helper, 0f, mixer.getPurity(),
                         "purity should fall to zero once the source is removed, not stick at the old value");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/mirror_loop_does_not_amplify", 200, helper -> {
+            BlockPos entry = new BlockPos(4, 1, 4);
+            BlockPos last = new BlockPos(7, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            placeMirrorLoop(helper, entry);
+
+            helper.runAfterDelay(80, () -> {
+                helper.assertValueEqual(100, mirror(helper, entry).getPower(), "entry mirror carries only the source");
+                helper.assertValueEqual(100, mirror(helper, last).getPower(), "last mirror in the loop");
+                helper.assertTrue(mirror(helper, last).loopsBack(Direction.WEST), "beam back into the entry mirror is cut");
+                helper.assertFalse(mirror(helper, last).shouldRender(Direction.WEST), "cut beam is not drawn");
+            });
+
+            helper.runAfterDelay(160, () -> {
+                helper.assertValueEqual(100, mirror(helper, entry).getPower(), "entry mirror after many more laps");
+                helper.assertValueEqual(100, mirror(helper, last).getPower(), "last mirror after many more laps");
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/mirror_loop_empties_without_its_source", 200, helper -> {
+            BlockPos entry = new BlockPos(4, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            placeMirrorLoop(helper, entry);
+
+            helper.runAfterDelay(80, () -> {
+                helper.assertValueEqual(100, mirror(helper, entry).getPower(), "loop is powered while the source runs");
+                helper.setBlock(SOURCE_POS, Blocks.AIR.defaultBlockState());
+            });
+
+            helper.runAfterDelay(160, () -> {
+                for (BlockPos pos : List.of(entry, new BlockPos(4, 1, 7), new BlockPos(7, 1, 7), new BlockPos(7, 1, 4))) {
+                    helper.assertValueEqual(0, mirror(helper, pos).getPower(), "mirror at " + pos + " after the source is gone");
+                }
+                helper.succeed();
+            });
+        });
+
+        r.add("laser/split_beams_merge_back_together", 200, helper -> {
+            BlockPos mixerPos = new BlockPos(8, 1, 4);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            helper.setBlock(new BlockPos(4, 1, 4), NTBlocks.BEAM_SPLITTER.get().defaultBlockState()
+                    .setValue(OpticsBlock.FACING, Direction.EAST));
+            placeMirror(helper, new BlockPos(4, 1, 2), Direction.EAST);
+            placeMirror(helper, new BlockPos(4, 1, 6), Direction.EAST);
+            placeMirror(helper, new BlockPos(6, 1, 2), Direction.SOUTH);
+            placeMirror(helper, new BlockPos(6, 1, 6), Direction.NORTH);
+            placeMirror(helper, new BlockPos(6, 1, 4), Direction.EAST);
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            helper.runAfterDelay(120, () -> {
+                helper.assertValueEqual(100, mixer(helper, mixerPos).getPower(), "both halves of the split beam arrive");
                 helper.succeed();
             });
         });

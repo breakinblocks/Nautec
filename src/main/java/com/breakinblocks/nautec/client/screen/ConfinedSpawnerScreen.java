@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
 import net.neoforged.neoforge.fluids.FluidStack;
-import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
@@ -234,8 +233,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         int xpX = x + XP_BAR_X;
         graphics.fill(xpX - 1, barTop - 1, xpX + XP_BAR_WIDTH + 1, barBottom + 1, OUTLINE);
         graphics.fill(xpX, barTop, xpX + XP_BAR_WIDTH, barBottom, SLOT_EDGE);
-        FluidTank tank = this.menu.getBlockEntity().getFluidTank();
-        int xp = Math.round(BAR_HEIGHT * Math.min(1.0F, tank.getFluidAmount() / (float) Math.max(1, tank.getCapacity())));
+        int xp = Math.round(BAR_HEIGHT * Math.min(1.0F, this.menu.getExperience() / (float) Math.max(1, this.menu.getExperienceCapacity())));
         if (xp > 0) {
             graphics.fill(xpX, barBottom - xp, xpX + XP_BAR_WIDTH, barBottom, XP_FILL);
             graphics.fill(xpX + 1, barBottom - xp, xpX + 2, barBottom, XP_SHINE);
@@ -300,11 +298,8 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
             return lines;
         }
         if (inside(mouseX, mouseY, tabX() + XP_BAR_X - 1, barTop - 1, XP_BAR_WIDTH + 2, BAR_HEIGHT + 2)) {
-            FluidTank tank = this.menu.getBlockEntity().getFluidTank();
-            Component fluid = tank.getFluid().isEmpty()
-                    ? new FluidStack(ConfinedSpawnerBlockEntity.experienceFluid(), 1).getHoverName()
-                    : tank.getFluid().getHoverName();
-            lines.add(Component.translatable("nautec.confined_spawner.xp", fluid, tank.getFluidAmount(), tank.getCapacity()));
+            Component fluid = new FluidStack(this.menu.getExperienceFluid(), 1).getHoverName();
+            lines.add(Component.translatable("nautec.confined_spawner.xp", fluid, this.menu.getExperience(), this.menu.getExperienceCapacity()));
             lines.add(Component.translatable("nautec.confined_spawner.xp.desc", NTConfig.confinedSpawnerXpRatio).withStyle(ChatFormatting.GRAY));
             lines.add(Component.translatable("nautec.confined_spawner.xp.drain").withStyle(ChatFormatting.DARK_GRAY));
             return lines;

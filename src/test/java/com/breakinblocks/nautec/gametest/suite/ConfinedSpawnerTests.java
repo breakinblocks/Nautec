@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import io.netty.buffer.Unpooled;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import com.breakinblocks.nautec.registries.NTFluids;
@@ -7,6 +8,7 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
+import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.spawner.SpawnerFilterEntry;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -15,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ProblemReporter;
@@ -23,6 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -199,6 +203,31 @@ public final class ConfinedSpawnerTests {
                 helper.assertTrue(stored.is(NTFluids.EXPERIENCE_ALGAE.getStillFluid()), "the default experience fluid is Experience Algae");
                 helper.assertValueEqual(0, stored.getAmount() % NTConfig.confinedSpawnerXpRatio, "whole experience points only");
             });
+        });
+
+        r.add("confined_spawner/menu_carries_experience_through_the_short_packet", 40, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+            buffer.writeBlockPos(confined.getBlockPos());
+            ConfinedSpawnerMenu client = new ConfinedSpawnerMenu(1, player.getInventory(), buffer);
+            ContainerData data = confined.getData();
+
+            confined.getFluidTank().setFluid(new FluidStack(NTFluids.EXPERIENCE_ALGAE.getStillFluid(), 50_000));
+            for (int i = 0; i < data.getCount(); i++) {
+                client.setData(i, (short) data.get(i));
+            }
+            helper.assertValueEqual(50_000, client.getExperience(), "experience above 32767 after the packet");
+            helper.assertValueEqual(confined.getFluidTank().getCapacity(), client.getExperienceCapacity(), "tank capacity after the packet");
+            helper.assertTrue(client.getExperienceFluid() == NTFluids.EXPERIENCE_ALGAE.getStillFluid(), "stored fluid after the packet");
+
+            confined.getFluidTank().setFluid(FluidStack.EMPTY);
+            for (int i = 0; i < data.getCount(); i++) {
+                client.setData(i, (short) data.get(i));
+            }
+            helper.assertValueEqual(0, client.getExperience(), "empty tank after the packet");
+            helper.assertTrue(client.getExperienceFluid() == ConfinedSpawnerBlockEntity.experienceFluid(), "an empty tank names the configured fluid");
+            helper.succeed();
         });
 
         r.add("confined_spawner/experience_fluid_follows_the_config_order", 20, helper -> {
