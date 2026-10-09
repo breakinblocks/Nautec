@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.BioReactorBlockEntity;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
+import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.registries.NTBacterias;
@@ -29,6 +30,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.Optional;
 import java.util.Set;
 
 public final class BacteriaMachineTests {
@@ -230,11 +232,12 @@ public final class BacteriaMachineTests {
                 long slowDelta = slow.getBacteriaStorage().getBacteria(0).getSize() - startSize;
                 long fastDelta = fast.getBacteriaStorage().getBacteria(0).getSize() - startSize;
 
-                helper.assertTrue(slowDelta >= Math.round(recipe.growth().getMin() * 0.5f)
-                                && slowDelta <= Math.round(recipe.growth().getMax() * 0.5f),
+                double sizeGrowth = startSize * NTConfig.incubatorSizeGrowth;
+                helper.assertTrue(slowDelta >= Math.round((recipe.growth().getMin() + sizeGrowth) * 0.5)
+                                && slowDelta <= Math.round((recipe.growth().getMax() + sizeGrowth) * 0.5),
                         "Slow colony grew " + slowDelta + ", outside the growth range scaled by 0.5");
-                helper.assertTrue(fastDelta >= Math.round(recipe.growth().getMin() * 2.0f)
-                                && fastDelta <= Math.round(recipe.growth().getMax() * 2.0f),
+                helper.assertTrue(fastDelta >= Math.round((recipe.growth().getMin() + sizeGrowth) * 2.0)
+                                && fastDelta <= Math.round((recipe.growth().getMax() + sizeGrowth) * 2.0),
                         "Fast colony grew " + fastDelta + ", outside the growth range scaled by 2.0");
                 helper.assertTrue(fastDelta > slowDelta, "A high growth rate should out-grow a low one");
                 helper.succeed();
@@ -262,8 +265,40 @@ public final class BacteriaMachineTests {
                     colony(NTBacterias.LITHOPHILES, 100, stats(1f, cap, 1f, 2000), 0)), "failure shrink at max resistance");
             helper.assertValueEqual(0L, MutatorBlockEntity.computeFailureShrink(
                     colony(NTBacterias.LITHOPHILES, 1, stats(1f, 0f, 1f, 2000), 0)), "failure shrink never empties a colony");
+            helper.assertValueEqual(0L, MutatorBlockEntity.computeFailureShrink(
+                    colony(NTBacterias.LITHOPHILES, 100, stats(1f, 0f, 1f, 2000), 0), true), "a boosted failure costs nothing");
             helper.succeed();
         }));
+
+        r.add("bacteria/mutator_refines_on_own_block_with_booster", 20, helper -> {
+            BlockPos mutatorPos = new BlockPos(4, 1, 4);
+            helper.setBlock(mutatorPos, NTBlocks.MUTATOR.get().defaultBlockState());
+            MutatorBlockEntity mutator = helper.getBlockEntity(mutatorPos, MutatorBlockEntity.class);
+            long startSize = 5000;
+            BacteriaInstance input = colony(NTBacterias.FERROPHILES, startSize, stats(1f, NTConfig.bacteriaMutationResistanceCap, 1f, 2000), 0);
+            Optional<BacteriaMutationRecipe> refine = BacteriaMutationRecipe.find(helper.getLevel(),
+                    new BacteriaRecipeInput(input, new ItemStack(Items.IRON_BLOCK)));
+            helper.assertTrue(refine.isPresent() && refine.get().refines(), "an Iron Block refines Ferrophiles");
+            helper.assertTrue(MutatorBlockEntity.computeSuccessChance(refine.get(), input, true)
+                    > MutatorBlockEntity.computeSuccessChance(refine.get(), input, false), "the booster raises the chance");
+
+            mutator.getBacteriaStorage().setBacteria(0, input);
+            mutator.getBacteriaStorage().onBacteriaChanged(0);
+            mutator.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.IRON_BLOCK));
+            mutator.getItemStackHandler().setStackInSlot(MutatorBlockEntity.BOOSTER, new ItemStack(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.get(), 64));
+            BlockPos origin = helper.absolutePos(mutatorPos.above());
+            for (int tick = 0; tick < 40_000 && mutator.getBacteriaStorage().getBacteria(1).isEmpty(); tick++) {
+                mutator.receivePower(NTConfig.mutatorPowerUsage * 16, Direction.UP, origin);
+                mutator.commonTick();
+            }
+            BacteriaInstance output = mutator.getBacteriaStorage().getBacteria(1);
+            helper.assertFalse(output.isEmpty(), "a refine eventually succeeds");
+            helper.assertValueEqual(output.getBacteria(), NTBacterias.FERROPHILES, "refining keeps the strain");
+            helper.assertValueEqual(output.getSize(), startSize, "refining keeps the size");
+            helper.assertValueEqual(mutator.getItemStackHandler().getStackInSlot(MutatorBlockEntity.BOOSTER).getCount(), 63, "only the successful attempt used a vial");
+            helper.assertValueEqual(mutator.getItemStackHandler().getStackInSlot(0).getCount(), 1, "the catalyst block is kept");
+            helper.succeed();
+        });
 
         r.add("bacteria/mutator_outcome_invariant", 400, helper -> {
             BlockPos mutatorPos = new BlockPos(4, 1, 4);

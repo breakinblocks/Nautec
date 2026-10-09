@@ -4,15 +4,19 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
+import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.blockentities.ColonyReplicatorBlockEntity;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
+import com.breakinblocks.nautec.utils.BacteriaHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public final class ColonyReplicatorTests {
     private static final BlockPos REPLICATOR = new BlockPos(4, 1, 4);
@@ -52,6 +56,32 @@ public final class ColonyReplicatorTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("replicator/product_items_become_biomass_and_copies_start_large", 20, helper -> {
+            ColonyReplicatorBlockEntity replicator = place(helper);
+            IBacteriaStorage storage = replicator.getBacteriaStorage();
+            storage.setBacteria(ColonyReplicatorBlockEntity.TEMPLATE,
+                    colony(helper, NTBacterias.FERROPHILES, NTConfig.bacteriaMutationResistanceCap, 5_000, true));
+            Bacteria strain = BacteriaHelper.getBacteria(helper.getLevel().registryAccess(), NTBacterias.FERROPHILES);
+            long ingot = ProductNutrients.biomass(strain, new ItemStack(Items.IRON_INGOT));
+            long block = ProductNutrients.biomass(strain, new ItemStack(Items.IRON_BLOCK));
+            helper.assertTrue(ingot > NTConfig.replicatorBiomassPerItem, "iron is rarer than stone, so an ingot gives more than the base amount");
+            helper.assertValueEqual(block, ingot * 9, "a block gives nine ingots' worth");
+            helper.assertValueEqual(ProductNutrients.biomass(strain, new ItemStack(Items.STONE)), 0L, "other items are not fodder");
+
+            replicator.getItemStackHandler().setStackInSlot(ColonyReplicatorBlockEntity.FODDER_ITEM, new ItemStack(Items.IRON_INGOT, 3));
+            replicator.commonTick();
+            helper.assertValueEqual(replicator.getBiomass(), ingot * 3, "three ingots become biomass");
+            helper.assertTrue(replicator.getItemStackHandler().getStackInSlot(ColonyReplicatorBlockEntity.FODDER_ITEM).isEmpty(), "the ingots are used up");
+
+            int blocks = (int) ((NTConfig.replicatorBiomassCost + block - 1) / block);
+            replicator.getItemStackHandler().setStackInSlot(ColonyReplicatorBlockEntity.FODDER_ITEM, new ItemStack(Items.IRON_BLOCK, blocks));
+            run(helper, replicator, NTConfig.replicatorPowerUsage, 3F, NTConfig.replicatorDuration + 2);
+            BacteriaInstance copy = storage.getBacteria(ColonyReplicatorBlockEntity.RESULT);
+            helper.assertFalse(copy.isEmpty(), "iron blocks alone pay for a copy");
+            helper.assertValueEqual(copy.getSize(), Math.round(NTConfig.replicatorBiomassCost * NTConfig.replicatorCopySize), "the copy starts large");
+            helper.succeed();
+        });
+
         r.add("replicator/perfect_copy_at_resistance_cap", 20, helper -> {
             ColonyReplicatorBlockEntity replicator = place(helper);
             IBacteriaStorage storage = replicator.getBacteriaStorage();

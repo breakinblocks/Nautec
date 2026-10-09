@@ -46,7 +46,7 @@ On a success the whole input colony is used up and the new strain appears in the
 
 ## <Color id="gold">Failure</Color>
 
-A failed attempt kills a quarter of the colony, reduced by its Mutation Resistance: a colony at the resistance cap loses nothing. A failure never takes the last of a colony, so the Mutator always keeps trying.
+A failed attempt kills a quarter of the colony, reduced by its Mutation Resistance: a colony at the resistance cap loses nothing. A failure never takes the last of a colony, so the Mutator always keeps trying. A filled [booster](#booster) slot stops failures from costing anything.
 
 Since the new colony's size does not depend on the parent, mutate colonies while they are small. Growing a colony first only lowers the chance and gives failures more to eat.
 
@@ -54,7 +54,15 @@ Since the new colony's size does not depend on the parent, mutate colonies while
 
 ## <Color id="gold">Stat Breeding</Color>
 
-Mutation is the only thing that changes a colony's stats, and a colony keeps its stats through each step. A long chain of mutations is how you build a colony worth putting in the [Bio Reactor](bio_reactor.md). Analyze each result in the [Bacterial Analyzer](bacterial_analyzer.md) before you commit to it.
+Mutation is the only thing that changes a colony's stats, and a colony keeps its stats through each step. Analyze each result in the [Bacterial Analyzer](bacterial_analyzer.md) before you commit to it.
+
+You do not have to change strain to breed stats. Use the storage block of the item a colony makes as the catalyst (Iron Blocks for Ferrophiles, Hay Bales for Rhizobacteria), or the item itself if it has no storage block, and the Mutator refines the colony instead. A refine has a 25% base chance, lowered by size and Mutation Resistance like any other attempt. A success keeps the strain and the colony's size and shifts the stats the same way a mutation does, and a failure costs the same as a failed mutation. JEI lists each refine in the Bacteria Mutations category as a strain turning into itself.
+
+***
+
+## <Color id="gold">Booster</Color>
+
+The slot to the right of the catalyst takes Electrolyte Algae Serum Vials. While it holds one, every attempt is three times as likely to succeed, whether it mutates or refines, and a failed attempt does not shrink the colony. A vial is only used up when an attempt succeeds, so each new colony costs one vial however many tries it took. Hoppers and pipes can fill it.
 
 ***
 

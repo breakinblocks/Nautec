@@ -721,14 +721,17 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.replicator.mode.splice.desc", "Makes a child of the template and the partner. Each stat usually comes from the better parent. Neither parent is used up.");
         add("nautec.replicator.biomass", "Biomass: %s");
         add("nautec.replicator.biomass.bar", "Biomass: %s / %s");
-        add("nautec.replicator.biomass.desc", "Fodder colonies of the template's strain are broken down into biomass. Each new colony uses this much.");
-        add("nautec.replicator.label.fodder", "Fodder");
+        add("nautec.replicator.biomass.desc", "Fodder colonies and fodder items of the template's strain are broken down into biomass. Each new colony uses this much.");
         add("nautec.replicator.slot.template", "Template");
         add("nautec.replicator.slot.template.desc", "Your best colony, analyzed. It is copied, never used up.");
         add("nautec.replicator.slot.partner", "Partner");
         add("nautec.replicator.slot.partner.desc", "Splice mode only: a second analyzed colony of the same strain. It is never used up.");
         add("nautec.replicator.slot.fodder", "Fodder");
         add("nautec.replicator.slot.fodder.desc", "Any colony of the template's strain, whatever its stats. It is broken down into biomass straight away.");
+        add("nautec.replicator.slot.fodder_item", "Fodder Items");
+        add("nautec.replicator.slot.fodder_item.desc", "The item the template's strain makes, or its storage block. They are broken down into biomass, and rarer items give more.");
+        add("nautec.mutator.slot.booster", "Booster");
+        add("nautec.mutator.slot.booster.desc", "Electrolyte Algae Serum Vials. Every attempt is %sx as likely to succeed, a failed attempt costs the colony nothing, and a vial is only used up on a success.");
         add("nautec.replicator.requirements", "Needs a beam of %s AP at purity %s or higher");
         addBlock(NTBlocks.HELD_WATER, "Held Water");
         addBlock(NTBlocks.AIR_POCKET, "Air Pocket");
@@ -760,6 +763,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.ghost_input.how", "Sneak and click with an item, or drag one from JEI, to ask a linked Nautechnical Distributor to keep this slot stocked.");
         add("nautec.ghost_input.set", "Kept stocked with %s");
         add("nautec.ghost_input.clear", "Sneak and click with an empty hand to clear it.");
+        add("nautec.ghost_input.refused", "This slot can never take %s");
         add("nautec.ghost_input.distributor", "Only a linked Nautechnical Distributor fills ghost inputs. The slot takes only that item.");
         add("nautec.distributor.link.started", "Linking: sneak and right-click blocks within %s blocks to link or unlink them. Sneak and right-click the Distributor again to stop.");
         add("nautec.distributor.link.stopped", "Stopped linking");

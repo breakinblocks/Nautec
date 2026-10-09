@@ -1,12 +1,17 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
+import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorLink;
+import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
@@ -80,6 +85,30 @@ public final class DistributorTests {
             distributor.cycle(helper.getLevel());
             helper.assertValueEqual(forge.getItemStackHandler().getStackInSlot(0).getCount(), 40, "the ghost slot fills from the chest");
             helper.assertValueEqual(count(chest(helper), Items.DIRT), 10, "nothing else is taken");
+            helper.succeed();
+        });
+
+        r.add("distributor/analyzer_ghost_takes_any_dish", 20, helper -> {
+            DistributorBlockEntity distributor = distributor(helper);
+            BlockPos analyzerPos = new BlockPos(1, 1, 1);
+            helper.setBlock(analyzerPos, NTBlocks.BACTERIAL_ANALYZER.get());
+            BacterialAnalyzerBlockEntity analyzer = helper.getBlockEntity(analyzerPos, BacterialAnalyzerBlockEntity.class);
+            BacteriaInstance analyzed = DishPortTests.colony(helper, NTBacterias.LITHOPHILES, 100);
+            analyzed.setAnalyzed(true);
+            helper.assertTrue(analyzer.setGhost(0, DishPortTests.dish(analyzed)), "an analyzed dish sets a ghost");
+            helper.assertTrue(analyzer.setGhost(0, new ItemStack(NTItems.PETRI_DISH.get())), "an empty dish sets a ghost");
+            helper.assertFalse(analyzer.setGhost(0, new ItemStack(Items.DIRT)), "a non-dish is refused");
+            chest(helper).setItem(0, DishPortTests.dish(analyzed));
+            chest(helper).setItem(1, DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.CALCIOPHILES, 100)));
+            link(helper, distributor, analyzerPos, Direction.NORTH);
+            distributor.cycle(helper.getLevel());
+            ItemStack loaded = analyzer.getItemStackHandler().getStackInSlot(0);
+            helper.assertTrue(DishPort.colonyOf(loaded).is(NTBacterias.CALCIOPHILES), "the colony that needs analysis is loaded");
+            helper.assertFalse(chest(helper).getItem(0).isEmpty(), "the analyzed dish stays in the chest");
+            BlockPos incubatorPos = new BlockPos(7, 1, 1);
+            helper.setBlock(incubatorPos, NTBlocks.INCUBATOR.get());
+            IncubatorBlockEntity incubator = helper.getBlockEntity(incubatorPos, IncubatorBlockEntity.class);
+            helper.assertTrue(incubator.setGhost(IncubatorBlockEntity.DISH_IN, DishPortTests.dish(analyzed)), "a colony dish sets a ghost on any dish slot");
             helper.succeed();
         });
 

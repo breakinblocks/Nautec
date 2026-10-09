@@ -27,11 +27,11 @@ Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mut
 
 A cycle takes 5 seconds. At the end of it:
 
-* The colony grows by a roll from the recipe's growth range, multiplied by its Growth Rate.
+* The colony grows by a roll from the recipe's growth range plus 3% of its current size, all multiplied by its Growth Rate. A bigger colony grows faster.
 * The nutrient has the recipe's consume chance of being used up. Growth happens either way.
 * The colony's age resets, so its Vitality is back to 100%.
 
-Lithophiles on stone, for example, grows 8 to 25 per cycle with a 5% consume chance. A colony with a Growth Rate of 1 gains about 16 every 5 seconds and eats about one stone every 20 cycles. At Growth Rate 5 it gains five times as much from the same stone.
+Lithophiles on stone, for example, rolls 8 to 25 per cycle with a 5% consume chance. A colony of 400 with a Growth Rate of 1 gains about 28 in its first cycle, and one of 10,000 gains about 316. Growing from 400 to the size cap takes around 150 cycles, about 13 minutes on a 20 AP beam, and eats about one stone every 20 cycles. At Growth Rate 2 it takes about half as long.
 
 Growth stops exactly at the size cap of 40,000 (configurable). A colony at the cap still runs: each cycle leaves its size at the cap and resets its age.
 

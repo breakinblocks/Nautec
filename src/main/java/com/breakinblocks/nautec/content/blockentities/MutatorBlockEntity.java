@@ -16,6 +16,7 @@ import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
+import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -29,7 +30,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -51,6 +51,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
     public static final int DISH_EMPTY_OUT = 3;
+    public static final int BOOSTER = 4;
     private static final int[] LOAD_SLOTS = {0};
 
     private final RecipeRevision recipeRevision = new RecipeRevision();
@@ -58,12 +59,14 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     private boolean active;
     private int progress;
 
-    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN, BOOSTER}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
     public MutatorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.MUTATOR.get(), blockPos, blockState);
         addBacteriaStorage(2);
-        addItemHandler(4, (slot, stack) -> slot == 0 || (slot == DISH_IN && DishPort.isDish(stack)));
+        addItemHandler(5, slot -> slot == 0 || slot == BOOSTER ? 64 : 1, (slot, stack) -> slot == 0
+                || (slot == DISH_IN && DishPort.isDish(stack))
+                || (slot == BOOSTER && stack.is(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.get())));
     }
 
     @Override
@@ -88,7 +91,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         ItemStack catalyst = getItemStackHandler().getStackInSlot(0);
         BacteriaInstance inputBacteria = getBacteriaStorage().getBacteria(0);
         BacteriaInstance resultBacteria = getBacteriaStorage().getBacteria(1);
-        BacteriaMutationRecipe recipe1 = serverLevel.recipeAccess().getRecipeFor(BacteriaMutationRecipe.TYPE, new BacteriaRecipeInput(inputBacteria, catalyst), level).map(RecipeHolder::value).orElse(null);
+        BacteriaMutationRecipe recipe1 = BacteriaMutationRecipe.find(serverLevel, new BacteriaRecipeInput(inputBacteria, catalyst)).orElse(null);
         this.recipe = (recipe1 != null && resultBacteria.isEmpty()) ? recipe1 : null;
 
         if (this.active != (this.recipe != null)) {
@@ -121,8 +124,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
             return true;
         }
         ItemStack catalyst = getItemStackHandler().getStackInSlot(0);
-        return !catalyst.isEmpty() && serverLevel.recipeAccess()
-                .getRecipeFor(BacteriaMutationRecipe.TYPE, new BacteriaRecipeInput(colony, catalyst), level).isPresent();
+        return !catalyst.isEmpty() && BacteriaMutationRecipe.find(serverLevel, new BacteriaRecipeInput(colony, catalyst)).isPresent();
     }
 
     public static float computeSuccessChance(BacteriaMutationRecipe recipe, BacteriaInstance input) {
@@ -135,6 +137,15 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         return Math.max(0f, (recipe.chance() / 100f) * resistanceFactor * sizeFactor);
     }
 
+    public static float computeSuccessChance(BacteriaMutationRecipe recipe, BacteriaInstance input, boolean boosted) {
+        float chance = computeSuccessChance(recipe, input);
+        return boosted ? Math.min(1f, (float) (chance * NTConfig.mutatorBoosterMultiplier)) : chance;
+    }
+
+    public boolean isBoosted() {
+        return !getItemStackHandler().getStackInSlot(BOOSTER).isEmpty();
+    }
+
     public static long computeFailureShrink(BacteriaInstance input) {
         float resistanceFactor = NTConfig.bacteriaMutationResistanceCap <= 0
                 ? 1f
@@ -142,6 +153,11 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         long shrink = (long) Math.ceil(input.getSize() * NTConfig.mutatorFailureShrink * Math.max(0f, resistanceFactor));
 
         return Math.max(0, Math.min(shrink, input.getSize() - 1));
+    }
+
+    public static long computeFailureShrink(BacteriaInstance input, boolean boosted) {
+        long shrink = computeFailureShrink(input);
+        return boosted ? (long) Math.floor(shrink * NTConfig.mutatorBoostedFailureShrink) : shrink;
     }
 
     @Override
@@ -179,27 +195,31 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
 
     private void mutate() {
         BacteriaInstance inputBacteria = getBacteriaStorage().getBacteria(0);
+        boolean boosted = isBoosted();
 
-        if (level.getRandom().nextFloat() < computeSuccessChance(recipe, inputBacteria)) {
-            BacteriaInstance result = buildResult(recipe.resultBacteria(), inputBacteria);
+        if (level.getRandom().nextFloat() < computeSuccessChance(recipe, inputBacteria, boosted)) {
+            if (boosted) {
+                getItemStackHandler().extractItem(BOOSTER, 1, false);
+            }
+            BacteriaInstance result = buildResult(recipe.resultBacteria(), inputBacteria, recipe.refines());
             getBacteriaStorage().extractBacteria(0, inputBacteria.getSize(), false);
             getBacteriaStorage().insertBacteria(1, result, false);
             if (level instanceof ServerLevel serverLevel) {
                 NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.BACTERIA_MUTATED.get(), serverLevel, worldPosition, 16.0);
             }
         } else {
-            getBacteriaStorage().extractBacteria(0, computeFailureShrink(inputBacteria), false);
+            getBacteriaStorage().extractBacteria(0, computeFailureShrink(inputBacteria, boosted), false);
         }
     }
 
-    private BacteriaInstance buildResult(ResourceKey<Bacteria> resultBacteria, BacteriaInstance input) {
+    private BacteriaInstance buildResult(ResourceKey<Bacteria> resultBacteria, BacteriaInstance input, boolean refine) {
         Bacteria result = BacteriaHelper.getBacteria(level.registryAccess(), resultBacteria);
 
         if (input.getStats() instanceof SimpleCollapsedStats simpleStats && result.stats() instanceof SimpleBacteriaStats resultBase) {
             SimpleCollapsedStats drift = simpleStats.rollStats();
             return new BacteriaInstance(
                     resultBacteria,
-                    result.rollSize(),
+                    refine ? input.getSize() : result.rollSize(),
                     new SimpleCollapsedStats(resultBase, drift.growthRate(), drift.mutationResistance(), drift.productionRate(), drift.lifespan(), resultBase.color()),
                     false,
                     0
@@ -250,7 +270,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
-        getItemStackHandler().ensureSize(4);
+        getItemStackHandler().ensureSize(5);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
     }

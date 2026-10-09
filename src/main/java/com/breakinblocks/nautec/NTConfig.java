@@ -160,6 +160,19 @@ public final class NTConfig {
             .comment("The fraction of a colony lost when a mutation attempt fails, before mutation resistance reduces it")
             .defineInRange("mutatorFailureShrink", 0.25, 0, 1);
 
+    private static final ModConfigSpec.DoubleValue MUTATOR_REFINE_CHANCE = BUILDER
+            .comment("The percent chance a Mutator attempt succeeds when a colony is given its own product's storage block (or the product, if it has no block).",
+                    "A success keeps the strain and size and shifts the stats as a mutation does. 0 turns this off")
+            .defineInRange("mutatorRefineChance", 25.0, 0, 100);
+
+    private static final ModConfigSpec.DoubleValue MUTATOR_BOOSTER_MULTIPLIER = BUILDER
+            .comment("Multiplies a Mutator attempt's success chance while an Electrolyte Algae Serum Vial is in its booster slot. A vial is used only when an attempt succeeds")
+            .defineInRange("mutatorBoosterMultiplier", 3.0, 1.0, 100.0);
+
+    private static final ModConfigSpec.DoubleValue MUTATOR_BOOSTED_FAILURE_SHRINK = BUILDER
+            .comment("The share of the normal failure loss a colony still takes when a boosted Mutator attempt fails. 0 means a boosted failure costs nothing, 1 means it costs the same as an unboosted one")
+            .defineInRange("mutatorBoostedFailureShrink", 0.0, 0, 1);
+
     private static final ModConfigSpec.IntValue INCUBATOR_CRAFTING_SPEED = BUILDER
             .comment("The amount of ticks it takes for the Incubator to complete one growth cycle")
             .defineInRange("incubatorCraftingSpeed", 100, 0, Integer.MAX_VALUE);
@@ -167,6 +180,10 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue INCUBATOR_POWER_USAGE = BUILDER
             .comment("The amount of power used by the Incubator each tick")
             .defineInRange("incubatorPowerUsage", 20, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue INCUBATOR_SIZE_GROWTH = BUILDER
+            .comment("The fraction of a colony's current size an Incubator cycle adds on top of its growth roll, multiplied by Growth Rate. 0 turns this off")
+            .defineInRange("incubatorSizeGrowth", 0.03, 0, 1);
 
     private static final ModConfigSpec.DoubleValue BIO_REACTOR_BASE_SPEED = BUILDER
             .comment("The base amount of progress a Bio Reactor colony makes each tick, before production rate and colony size scale it")
@@ -320,6 +337,15 @@ public final class NTConfig {
     private static final ModConfigSpec.DoubleValue REPLICATOR_SPLICE_CHANCE = BUILDER
             .comment("The chance a spliced colony takes the better parent's value for each stat")
             .defineInRange("replicatorSpliceChance", 0.7, 0.0, 1.0);
+
+    private static final ModConfigSpec.DoubleValue REPLICATOR_BIOMASS_PER_ITEM = BUILDER
+            .comment("The biomass a Colony Replicator gets from one of the item its template's strain makes, divided by the strain's Strain Yield.",
+                    "The item's storage block gives nine times as much")
+            .defineInRange("replicatorBiomassPerItem", 100.0, 0.0, 1_000_000.0);
+
+    private static final ModConfigSpec.DoubleValue REPLICATOR_COPY_SIZE = BUILDER
+            .comment("The size a Colony Replicator copy starts at, as a fraction of replicatorBiomassCost. 0 starts copies at a fresh graft's size")
+            .defineInRange("replicatorCopySize", 0.5, 0.0, 1.0);
 
     private static final ModConfigSpec.IntValue OXYGEN_DIFFUSER_POWER = BUILDER
             .comment("The beam power in AP an Oxygen Diffuser needs. Any purity works")
@@ -1023,8 +1049,12 @@ public final class NTConfig {
     public static int mutatorCraftingSpeed;
     public static int mutatorPowerUsage;
     public static double mutatorFailureShrink = 0.25;
+    public static double mutatorRefineChance = 25.0;
+    public static double mutatorBoosterMultiplier = 3.0;
+    public static double mutatorBoostedFailureShrink = 0.0;
 
     public static int incubatorCraftingSpeed = 100;
+    public static double incubatorSizeGrowth = 0.03;
     public static int incubatorPowerUsage = 20;
 
     public static double bioReactorBaseSpeed = 16.8;
@@ -1069,6 +1099,8 @@ public final class NTConfig {
     public static long replicatorBiomassCap = 200_000L;
     public static double replicatorErrorChance = 0.5;
     public static double replicatorSpliceChance = 0.7;
+    public static double replicatorBiomassPerItem = 100.0;
+    public static double replicatorCopySize = 0.5;
     public static int oxygenDiffuserPower = 10;
     public static int oxygenDiffuserRadius = 12;
     public static int bubbleAnchorRadius = 7;
@@ -1335,8 +1367,12 @@ public final class NTConfig {
         mutatorCraftingSpeed = value(MUTATOR_CRAFTING_SPEED);
         mutatorPowerUsage = value(MUTATOR_POWER_USAGE);
         mutatorFailureShrink = value(MUTATOR_FAILURE_SHRINK);
+        mutatorRefineChance = value(MUTATOR_REFINE_CHANCE);
+        mutatorBoosterMultiplier = value(MUTATOR_BOOSTER_MULTIPLIER);
+        mutatorBoostedFailureShrink = value(MUTATOR_BOOSTED_FAILURE_SHRINK);
 
         incubatorCraftingSpeed = value(INCUBATOR_CRAFTING_SPEED);
+        incubatorSizeGrowth = value(INCUBATOR_SIZE_GROWTH);
         incubatorPowerUsage = value(INCUBATOR_POWER_USAGE);
 
         bioReactorBaseSpeed = value(BIO_REACTOR_BASE_SPEED);
@@ -1381,6 +1417,8 @@ public final class NTConfig {
         replicatorBiomassCap = value(REPLICATOR_BIOMASS_CAP);
         replicatorErrorChance = value(REPLICATOR_ERROR_CHANCE);
         replicatorSpliceChance = value(REPLICATOR_SPLICE_CHANCE);
+        replicatorBiomassPerItem = value(REPLICATOR_BIOMASS_PER_ITEM);
+        replicatorCopySize = value(REPLICATOR_COPY_SIZE);
         oxygenDiffuserPower = value(OXYGEN_DIFFUSER_POWER);
         oxygenDiffuserRadius = value(OXYGEN_DIFFUSER_RADIUS);
         bubbleAnchorRadius = value(BUBBLE_ANCHOR_RADIUS);

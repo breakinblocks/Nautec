@@ -22,7 +22,11 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
 
     @Override
     public Set<Direction> getLaserInputs() {
-        return ObjectSet.of();
+        return ObjectSet.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+    }
+
+    @Override
+    public void receiveNewPurity(float amount, Direction direction, BlockPos originPos) {
     }
 
     @Override

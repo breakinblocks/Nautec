@@ -7,12 +7,14 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.content.blocks.AdvancedBacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.content.menus.AdvancedBacterialAnalyzerMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
+import com.breakinblocks.nautec.utils.ItemTemplates;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -90,6 +93,20 @@ public class AdvancedBacterialAnalyzerBlockEntity extends LaserBlockEntity imple
     public AdvancedBacterialAnalyzerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.ADVANCED_BACTERIAL_ANALYZER.get(), blockPos, blockState);
         addItemHandler(DISHES * 2, 1, (slot, stack) -> slot < DISHES && needsAnalysis(stack));
+    }
+
+    public static boolean analysisGhostMatches(ItemStack ghost, ItemResource resource) {
+        return DishPort.colonyOf(ghost).isEmpty() ? resource.getItem() instanceof PetriDishItem : ItemTemplates.matches(ghost, resource);
+    }
+
+    @Override
+    public boolean ghostMatches(int slot, ItemStack ghost, ItemResource resource) {
+        return analysisGhostMatches(ghost, resource);
+    }
+
+    @Override
+    protected boolean acceptsGhost(int slot, ItemStack stack) {
+        return slot < DISHES && DishPort.isDish(stack);
     }
 
     public static boolean needsAnalysis(ItemStack stack) {

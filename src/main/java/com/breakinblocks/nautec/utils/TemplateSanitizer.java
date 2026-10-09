@@ -11,6 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class TemplateSanitizer {
     public static final int MAX_TEMPLATE_BYTES = 1024;
+    public static final int MAX_DISH_TEMPLATE_BYTES = 8192;
 
     private TemplateSanitizer() {
     }
@@ -47,7 +48,7 @@ public final class TemplateSanitizer {
     public static boolean fits(ItemStack template, HolderLookup.Provider registries) {
         return ItemStack.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), template)
                 .result()
-                .map(tag -> tag.sizeInBytes() <= MAX_TEMPLATE_BYTES)
+                .map(tag -> tag.sizeInBytes() <= (DishPort.isDish(template) ? MAX_DISH_TEMPLATE_BYTES : MAX_TEMPLATE_BYTES))
                 .orElse(false);
     }
 }

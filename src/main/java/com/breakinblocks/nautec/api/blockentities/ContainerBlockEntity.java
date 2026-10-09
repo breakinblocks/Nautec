@@ -216,7 +216,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             @Override
             public boolean isValid(int slot, @NotNull ItemResource resource) {
                 ItemStack ghost = ghostInputs.get(slot);
-                return (ghost == null || ItemTemplates.matches(ghost, resource)) && validation.test(slot, resource.toStack())
+                return (ghost == null || ghostMatches(slot, ghost, resource)) && validation.test(slot, resource.toStack())
                         && acceptsNow(slot, resource);
             }
 
@@ -511,13 +511,21 @@ public abstract class ContainerBlockEntity extends BlockEntity {
         return ghostInputs;
     }
 
+    public boolean ghostMatches(int slot, ItemStack ghost, ItemResource resource) {
+        return ItemTemplates.matches(ghost, resource);
+    }
+
+    protected boolean acceptsGhost(int slot, ItemStack stack) {
+        return itemValidation.test(slot, stack);
+    }
+
     public boolean setGhost(int slot, ItemStack stack) {
         if (itemHandler == null || !isGhostSlot(slot) || slot < 0 || slot >= itemHandler.size()) {
             return false;
         }
         ItemStack previous = ghostInputs.remove(slot);
         if (!stack.isEmpty()) {
-            if (!itemValidation.test(slot, stack)) {
+            if (!acceptsGhost(slot, stack)) {
                 if (previous != null) {
                     ghostInputs.put(slot, previous);
                 }

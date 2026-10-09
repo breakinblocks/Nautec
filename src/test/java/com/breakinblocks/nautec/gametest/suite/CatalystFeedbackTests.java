@@ -2,8 +2,10 @@ package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.api.blockentities.BeamScan;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
+import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -65,6 +67,20 @@ public final class CatalystFeedbackTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("catalyst_feedback/crystal_takes_a_beam_at_any_height", 120, helper -> {
+            AquaticCatalystBlockEntity catalyst = placeCatalyst(helper);
+            BlockPos core = new BlockPos(5, 4, 4);
+            PrismarineCrystalBlock.build(helper.getLevel(), helper.absolutePos(core), false);
+            PrismarineCrystalBlockEntity crystal = helper.getBlockEntity(core, PrismarineCrystalBlockEntity.class);
+            helper.runAfterDelay(1, () -> catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.PRISMARINE_CRYSTALS, 4)));
+            helper.runAfterDelay(60, () -> {
+                helper.assertValueEqual(BeamScan.Status.CONNECTED, catalyst.getBeamScan().status(), "a beam into the bottom of the crystal connects");
+                helper.assertTrue(catalyst.isActive(), "the catalyst burns into the crystal");
+                helper.assertTrue(crystal.getPower() > 0, "the crystal core counts the beam its part took");
+                helper.succeed();
+            });
+        });
+
         r.add("catalyst_feedback/waits_and_holds_fuel_without_receiver", 80, helper -> {
             AquaticCatalystBlockEntity catalyst = placeCatalyst(helper);
             helper.runAfterDelay(1, () -> catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.PRISMARINE_CRYSTALS, 4)));

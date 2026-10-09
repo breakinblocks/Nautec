@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.content.menus.BacterialAnalyzerMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -120,6 +122,16 @@ public class BacterialAnalyzerBlockEntity extends LaserBlockEntity implements Me
     @Override
     public Set<Direction> getLaserOutputs() {
         return ObjectSet.of();
+    }
+
+    @Override
+    public boolean ghostMatches(int slot, ItemStack ghost, ItemResource resource) {
+        return AdvancedBacterialAnalyzerBlockEntity.analysisGhostMatches(ghost, resource);
+    }
+
+    @Override
+    protected boolean acceptsGhost(int slot, ItemStack stack) {
+        return slot == 0 && DishPort.isDish(stack);
     }
 
     @Override

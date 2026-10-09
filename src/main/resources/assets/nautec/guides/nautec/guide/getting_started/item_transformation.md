@@ -64,7 +64,7 @@ An item is judged by the purity of the beam it lies in. In a beam leaving a lens
 
 Every Crystal Geode (see [Structures](structures.md)) has a Prismarine Crystal standing over an open gap (one block in a stone geode, two in a deepslate geode), which is the setup this needs.
 
-* Place an Aquatic Catalyst level with the crystal's core, the fourth crystal block up from the bottom, facing the core from the side. Keep it within 16 blocks with nothing solid in between.
+* Place an Aquatic Catalyst level with any block of the crystal, facing it from the side. Keep it within 16 blocks with nothing solid in between.
 * Load the catalyst with any fuel. The crystal's bottom block now fires a purity 3.0 beam straight down into the floor.
 * Drop your items into the gap under the crystal so they lie on the floor inside that beam.
 

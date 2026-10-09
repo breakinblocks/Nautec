@@ -9,6 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEntity> {
@@ -18,6 +19,8 @@ public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEnt
     public static final int PARTNER_Y = 40;
     public static final int FODDER_X = 64;
     public static final int FODDER_Y = 40;
+    public static final int FODDER_ITEM_X = 64;
+    public static final int FODDER_ITEM_Y = 18;
     public static final int RESULT_X = 134;
     public static final int RESULT_Y = 27;
 
@@ -40,12 +43,14 @@ public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEnt
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.PARTNER, PARTNER_X, PARTNER_Y));
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.FODDER, FODDER_X, FODDER_Y));
         addBacteriaStorageSlot(new SlotBacteriaStorage(blockEntity.getBacteriaStorage(), ColonyReplicatorBlockEntity.RESULT, RESULT_X, RESULT_Y));
+        addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set,
+                ColonyReplicatorBlockEntity.FODDER_ITEM, FODDER_ITEM_X, FODDER_ITEM_Y));
         addDishPort(ColonyReplicatorBlockEntity.DISH_IN, 7, 61, ColonyReplicatorBlockEntity.DISH_OUT, 27, 61, ColonyReplicatorBlockEntity.DISH_EMPTY_OUT, 47, 61);
     }
 
     @Override
     protected int getMergeableSlotCount() {
-        return 1;
+        return 2;
     }
 
     public int getProgress() {

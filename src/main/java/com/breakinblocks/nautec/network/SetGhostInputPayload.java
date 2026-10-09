@@ -2,7 +2,9 @@ package com.breakinblocks.nautec.network;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,7 +35,9 @@ public record SetGhostInputPayload(int containerId, int slot, ItemStack stack) i
                     || !menu.stillValid(player)) {
                 return;
             }
-            menu.blockEntity.setGhost(payload.slot(), payload.stack());
+            if (!menu.blockEntity.setGhost(payload.slot(), payload.stack()) && !payload.stack().isEmpty()) {
+                player.sendOverlayMessage(Component.translatable("nautec.ghost_input.refused", payload.stack().getHoverName()).withStyle(ChatFormatting.RED));
+            }
         });
     }
 }

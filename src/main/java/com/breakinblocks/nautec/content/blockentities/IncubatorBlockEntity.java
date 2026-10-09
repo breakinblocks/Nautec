@@ -134,7 +134,8 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         }
 
         BacteriaInstance bacteria = getBacteriaStorage().getBacteria(0);
-        long rolled = Math.round(RNGUtils.uniformRandInt(growth) * (double) bacteria.getStats().growthRate());
+        double growthRate = bacteria.getStats().growthRate();
+        long rolled = Math.round((RNGUtils.uniformRandInt(growth) + bacteria.getSize() * NTConfig.incubatorSizeGrowth) * growthRate);
         long headroom = NTConfig.bacteriaColonySizeCap - bacteria.getSize();
         long grown = Math.max(0, Math.min(rolled, headroom));
 

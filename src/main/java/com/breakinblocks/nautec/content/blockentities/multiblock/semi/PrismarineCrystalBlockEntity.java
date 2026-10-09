@@ -48,6 +48,11 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     @Override
     public void commonTick() {
         super.commonTick();
+        for (int offset = -3; offset <= 2; offset++) {
+            if (offset != 0 && level.getBlockEntity(worldPosition.above(offset)) instanceof PrismarineCrystalPartBlockEntity part) {
+                power += part.getPower();
+            }
+        }
 
         setPurity(3f);
 

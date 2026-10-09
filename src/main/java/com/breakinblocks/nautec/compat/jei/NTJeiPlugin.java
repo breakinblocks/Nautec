@@ -99,7 +99,7 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(LaserCraftingRecipe.Type.INSTANCE, LaserCraftingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE),
+            new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE, ProductNutrients.Derived::mutation),
             new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE, ProductNutrients.Derived::incubation),
             new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
     private IJeiRuntime runtime;

@@ -81,8 +81,6 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
         Component text = Component.translatable(ColonyReplicatorBlock.statusKey(status));
         graphics.text(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY,
                 status == ColonyReplicatorBlockEntity.STATUS_RUNNING ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
-        graphics.text(this.font, Component.translatable("nautec.replicator.label.fodder"), ColonyReplicatorMenu.FODDER_X - 2,
-                ColonyReplicatorMenu.FODDER_Y - 10, PanelStyle.LABEL, false);
     }
 
     private boolean over(int mouseX, int mouseY, int x, int y, int w, int h) {
@@ -102,6 +100,10 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
                 && machine.getBacteriaStorage().getBacteria(ColonyReplicatorBlockEntity.PARTNER).isEmpty()) {
             lines.add(Component.translatable("nautec.replicator.slot.partner"));
             lines.add(Component.translatable("nautec.replicator.slot.partner.desc").withStyle(ChatFormatting.GRAY));
+        } else if (over(mouseX, mouseY, ColonyReplicatorMenu.FODDER_ITEM_X, ColonyReplicatorMenu.FODDER_ITEM_Y, 16, 16)
+                && machine.getItemStackHandler().getStackInSlot(ColonyReplicatorBlockEntity.FODDER_ITEM).isEmpty()) {
+            lines.add(Component.translatable("nautec.replicator.slot.fodder_item"));
+            lines.add(Component.translatable("nautec.replicator.slot.fodder_item.desc").withStyle(ChatFormatting.GRAY));
         } else if (over(mouseX, mouseY, ColonyReplicatorMenu.FODDER_X, ColonyReplicatorMenu.FODDER_Y, 16, 16)
                 && machine.getBacteriaStorage().getBacteria(ColonyReplicatorBlockEntity.FODDER).isEmpty()) {
             lines.add(Component.translatable("nautec.replicator.slot.fodder"));

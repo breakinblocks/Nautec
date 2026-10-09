@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
+import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.bacteria.SimpleCollapsedStats;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.menus.ColonyReplicatorMenu;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -56,6 +58,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public static final int DISH_IN = 0;
     public static final int DISH_OUT = 1;
     public static final int DISH_EMPTY_OUT = 2;
+    public static final int FODDER_ITEM = 3;
     private static final int[] LOAD_SLOTS = {FODDER};
 
     public static final int STATUS_RUNNING = 0;
@@ -76,7 +79,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public static final int DATA_BIOMASS = 6;
     public static final int DATA_COUNT = 8;
 
-    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
+    private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{DISH_IN, FODDER_ITEM}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
     private boolean splice;
     private int progress;
@@ -114,7 +117,8 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     public ColonyReplicatorBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.COLONY_REPLICATOR.get(), pos, state);
         addBacteriaStorage(4);
-        addItemHandler(3, 1, (slot, stack) -> slot == DISH_IN && DishPort.isDish(stack));
+        addItemHandler(4, slot -> slot == FODDER_ITEM ? 64 : 1,
+                (slot, stack) -> (slot == DISH_IN && DishPort.isDish(stack)) || (slot == FODDER_ITEM && fodderBiomass(stack) > 0));
     }
 
     public ContainerData getData() {
@@ -192,8 +196,20 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         }
     }
 
+    public long fodderBiomass(ItemStack stack) {
+        BacteriaInstance template = getBacteriaStorage().getBacteria(TEMPLATE);
+        if (level == null || template.isEmpty() || stack.isEmpty()) {
+            return 0;
+        }
+        Bacteria strain = BacteriaHelper.getBacteria(level.registryAccess(), template.getBacteria());
+        return strain == null ? 0 : ProductNutrients.biomass(strain, stack);
+    }
+
     @Override
     protected boolean acceptsNow(int slot, ItemResource resource) {
+        if (slot == FODDER_ITEM) {
+            return fodderBiomass(resource.toStack()) > 0;
+        }
         if (slot != DISH_IN) {
             return true;
         }
@@ -221,6 +237,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
             biomassStrain = null;
             setChanged();
         }
+        absorbFodderItems(template);
         if (fodder.isEmpty() || !fodder.is(template.getBacteria()) || biomass >= NTConfig.replicatorBiomassCap) {
             return;
         }
@@ -228,6 +245,20 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         biomassStrain = template.getBacteria();
         storage.setBacteria(FODDER, BacteriaInstance.EMPTY);
         storage.onBacteriaChanged(FODDER);
+        setChanged();
+    }
+
+    private void absorbFodderItems(BacteriaInstance template) {
+        ItemStack stack = getItemStackHandler().getStackInSlot(FODDER_ITEM);
+        long each = fodderBiomass(stack);
+        if (each <= 0 || biomass >= NTConfig.replicatorBiomassCap) {
+            return;
+        }
+        long room = NTConfig.replicatorBiomassCap - biomass;
+        int count = (int) Math.min(stack.getCount(), (room + each - 1) / each);
+        getItemStackHandler().extractItem(FODDER_ITEM, count, false);
+        biomass = Math.min(NTConfig.replicatorBiomassCap, biomass + each * count);
+        biomassStrain = template.getBacteria();
         setChanged();
     }
 
@@ -283,7 +314,9 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         }
         stats = copy(stats, random);
         Bacteria strain = BacteriaHelper.getBacteria(level.registryAccess(), template.getBacteria());
-        BacteriaInstance child = new BacteriaInstance(template.getBacteria(), strain.rollSize(), stats, true, 0);
+        long size = Math.max(strain.rollSize(), Math.min(NTConfig.bacteriaColonySizeCap,
+                Math.round(NTConfig.replicatorBiomassCost * NTConfig.replicatorCopySize)));
+        BacteriaInstance child = new BacteriaInstance(template.getBacteria(), size, stats, true, 0);
         biomass -= NTConfig.replicatorBiomassCost;
         storage.setBacteria(RESULT, child);
         storage.onBacteriaChanged(RESULT);
@@ -365,7 +398,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
-        getItemStackHandler().ensureSize(3);
+        getItemStackHandler().ensureSize(4);
         this.splice = in.getBooleanOr("splice", false);
         this.progress = in.getIntOr("progress", 0);
         this.status = in.getIntOr("status", STATUS_NO_TEMPLATE);

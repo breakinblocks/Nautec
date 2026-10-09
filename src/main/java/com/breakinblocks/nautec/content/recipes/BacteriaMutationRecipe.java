@@ -5,21 +5,26 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public record BacteriaMutationRecipe(ResourceKey<Bacteria> inputBacteria, ResourceKey<Bacteria> resultBacteria,
                                      Ingredient catalyst, float chance) implements Recipe<BacteriaRecipeInput> {
@@ -29,6 +34,23 @@ public record BacteriaMutationRecipe(ResourceKey<Bacteria> inputBacteria, Resour
     @Override
     public boolean matches(BacteriaRecipeInput input, Level level) {
         return input.input().is(inputBacteria) && catalyst.test(input.catalyst());
+    }
+
+    public boolean refines() {
+        return inputBacteria.equals(resultBacteria);
+    }
+
+    public static Optional<BacteriaMutationRecipe> find(ServerLevel level, BacteriaRecipeInput input) {
+        Optional<BacteriaMutationRecipe> recipe = level.recipeAccess().getRecipeFor(TYPE, input, level).map(RecipeHolder::value);
+        if (recipe.isPresent()) {
+            return recipe;
+        }
+        for (BacteriaMutationRecipe derived : ProductNutrients.get(level).mutation()) {
+            if (derived.matches(input, level)) {
+                return Optional.of(derived);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

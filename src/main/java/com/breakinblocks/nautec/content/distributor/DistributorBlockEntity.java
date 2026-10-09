@@ -243,7 +243,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
             for (Int2ObjectMap.Entry<ItemStack> ghost : machine.ghosts().int2ObjectEntrySet()) {
                 ResourceHandler<ItemResource> slot = new SingleSlotHandler<>(machine.getItemHandler(), ghost.getIntKey());
                 ItemStack template = ghost.getValue();
-                moved += fillItems(slot, resource -> ItemTemplates.matches(template, resource), Integer.MAX_VALUE, endpoint, endpoints, neighbours);
+                int index = ghost.getIntKey();
+                moved += fillItems(slot, resource -> machine.ghostMatches(index, template, resource), Integer.MAX_VALUE, endpoint, endpoints, neighbours);
             }
             backOff.result(BackOff.GHOSTS, moved > 0, maxDelay);
         }

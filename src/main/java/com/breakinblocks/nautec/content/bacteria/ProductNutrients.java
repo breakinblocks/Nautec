@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaSelector;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
+import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataMaps;
@@ -42,14 +43,11 @@ public final class ProductNutrients {
     private ProductNutrients() {
     }
 
-    public record Derived(List<BacteriaIncubationRecipe> incubation, List<ColonyFeedingRecipe> feeding) {
-        public static final Derived EMPTY = new Derived(List.of(), List.of());
+    public record Derived(List<BacteriaIncubationRecipe> incubation, List<ColonyFeedingRecipe> feeding, List<BacteriaMutationRecipe> mutation) {
+        public static final Derived EMPTY = new Derived(List.of(), List.of(), List.of());
     }
 
     public static Derived get(ServerLevel level) {
-        if (!NTConfig.bacteriaProductNutrients) {
-            return Derived.EMPTY;
-        }
         RecipeMap map = level.getServer().getRecipeManager().recipeMap();
         if (map != cachedMap) {
             cached = derive(map, level.registryAccess());
@@ -59,11 +57,9 @@ public final class ProductNutrients {
     }
 
     public static Derived derive(RecipeMap map, HolderLookup.Provider registries) {
-        if (!NTConfig.bacteriaProductNutrients) {
-            return Derived.EMPTY;
-        }
         List<BacteriaIncubationRecipe> incubation = new ArrayList<>();
         List<ColonyFeedingRecipe> feeding = new ArrayList<>();
+        List<BacteriaMutationRecipe> mutation = new ArrayList<>();
         Optional<? extends HolderLookup.RegistryLookup<Bacteria>> lookup = registries.lookup(NTRegistries.BACTERIA_KEY);
         if (lookup.isEmpty()) {
             return Derived.EMPTY;
@@ -78,6 +74,23 @@ public final class ProductNutrients {
                 continue;
             }
             Ingredient block = storageBlock(strain.value().resource());
+
+            if (NTConfig.mutatorRefineChance > 0) {
+                Ingredient catalyst = block != null ? block : product;
+                boolean taken = false;
+                for (RecipeHolder<BacteriaMutationRecipe> holder : map.byType(BacteriaMutationRecipe.TYPE)) {
+                    if (holder.value().inputBacteria().equals(key) && overlaps(List.of(holder.value().catalyst()), catalyst)) {
+                        taken = true;
+                        break;
+                    }
+                }
+                if (!taken) {
+                    mutation.add(new BacteriaMutationRecipe(key, key, catalyst, (float) NTConfig.mutatorRefineChance));
+                }
+            }
+            if (!NTConfig.bacteriaProductNutrients) {
+                continue;
+            }
 
             BacteriaIncubationRecipe base = null;
             List<Ingredient> eaten = new ArrayList<>();
@@ -118,7 +131,7 @@ public final class ProductNutrients {
                 }
             }
         }
-        return new Derived(List.copyOf(incubation), List.copyOf(feeding));
+        return new Derived(List.copyOf(incubation), List.copyOf(feeding), List.copyOf(mutation));
     }
 
     private static boolean overlaps(List<Ingredient> existing, Ingredient candidate) {
@@ -133,7 +146,23 @@ public final class ProductNutrients {
         });
     }
 
-    private static @Nullable Ingredient product(Bacteria.Resource resource) {
+    public static long biomass(Bacteria strain, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return 0;
+        }
+        long perItem = Math.max(1, Math.round(NTConfig.replicatorBiomassPerItem / Math.max(0.01, strain.productionMultiplier())));
+        Ingredient product = product(strain.resource());
+        if (product != null && product.test(stack)) {
+            return perItem;
+        }
+        Ingredient block = storageBlock(strain.resource());
+        if (block != null && block.test(stack)) {
+            return perItem * BLOCK_SIZE;
+        }
+        return 0;
+    }
+
+    public static @Nullable Ingredient product(Bacteria.Resource resource) {
         if (resource instanceof Bacteria.Resource.ItemTagResource(TagKey<Item> tag)) {
             return tagIngredient(tag);
         }
@@ -141,7 +170,7 @@ public final class ProductNutrients {
         return item == null || item == Items.AIR ? null : Ingredient.of(item);
     }
 
-    private static @Nullable Ingredient storageBlock(Bacteria.Resource resource) {
+    public static @Nullable Ingredient storageBlock(Bacteria.Resource resource) {
         Item item = resource.resolve();
         if (item == null || item == Items.AIR) {
             return null;
