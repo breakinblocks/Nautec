@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("10");
+        final PayloadRegistrar registrar = event.registrar("11");
         registrar.playToClient(
                 AugmentationStationSyncPayload.TYPE,
                 AugmentationStationSyncPayload.STREAM_CODEC,
@@ -30,6 +30,11 @@ public class NetworkEvents {
                 SetCharmPriorityPayload.TYPE,
                 SetCharmPriorityPayload.STREAM_CODEC,
                 SetCharmPriorityPayload::handle
+        );
+        registrar.playToServer(
+                OpenResonanceAugmentPayload.TYPE,
+                OpenResonanceAugmentPayload.STREAM_CODEC,
+                OpenResonanceAugmentPayload::handle
         );
         registrar.playToServer(
                 ReplicatorModePayload.TYPE,

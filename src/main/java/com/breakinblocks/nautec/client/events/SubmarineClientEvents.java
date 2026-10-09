@@ -169,9 +169,8 @@ public final class SubmarineClientEvents {
             return;
         }
 
-        float yaw = Mth.rotLerp(event.getPartialTick(), submarine.yRotO, submarine.getYRot());
-        state.bodyRot = yaw;
-        state.yRot = yaw;
+        state.bodyRot = Mth.rotLerp(event.getPartialTick(), submarine.yRotO, submarine.getYRot());
+        state.yRot = 0F;
         state.xRot = Mth.lerp(event.getPartialTick(), submarine.xRotO, submarine.getXRot());
     }
 

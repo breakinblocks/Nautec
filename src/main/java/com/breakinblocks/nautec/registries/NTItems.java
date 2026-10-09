@@ -9,6 +9,7 @@ import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
 import com.breakinblocks.nautec.content.resonance.TuningForkItem;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.items.AirBottleItem;
+import com.breakinblocks.nautec.content.items.BubbleCapsuleItem;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.breakinblocks.nautec.content.items.AquarineArmorItem;
 import com.breakinblocks.nautec.content.items.NautecGuideItem;
@@ -111,6 +112,8 @@ public final class NTItems {
             Item::new, new Item.Properties().stacksTo(1));
     public static final DeferredItem<AirBottleItem> AIR_BOTTLE = registerItem("air_bottle",
             AirBottleItem::new, new Item.Properties().stacksTo(16));
+    public static final DeferredItem<BubbleCapsuleItem> BUBBLE_CAPSULE = registerItem("bubble_capsule",
+            BubbleCapsuleItem::new, new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> AQUARINE_STEEL_COMPOUND = registerItem("aquarine_steel_compound",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> CAST_IRON_COMPOUND = registerItem("cast_iron_compound",

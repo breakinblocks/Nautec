@@ -10,9 +10,11 @@ import com.breakinblocks.nautec.network.SyncAugmentPayload;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class AugmentHelper {
@@ -57,12 +59,17 @@ public final class AugmentHelper {
     }
 
     public static Augment createAugment(AugmentType<?> augmentType, Player player, AugmentSlot augmentSlot) {
+        return createAugment(augmentType, player, augmentSlot, List.of());
+    }
+
+    public static Augment createAugment(AugmentType<?> augmentType, Player player, AugmentSlot augmentSlot, List<ItemStack> parts) {
         Augment previous = getAugmentBySlot(player, augmentSlot);
         if (previous != null) {
             previous.onRemoved(player);
         }
         Augment augment = augmentType.create(augmentSlot);
         augment.setPlayer(player);
+        augment.readParts(parts);
         AugmentHelper.setAugment(player, augmentSlot, augment);
         reapplyEffects(player);
         syncAugment(player, augment);

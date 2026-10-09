@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": "nautec:air_bottle",
+    "K": "minecraft:dried_kelp",
+    "S": "minecraft:prismarine_shard"
+  },
+  "pattern": [
+    " K ",
+    "SBS",
+    " K "
+  ],
+  "result": {
+    "count": 2,
+    "id": "nautec:bubble_capsule"
+  }
+}

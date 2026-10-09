@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.network;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.augments.ResonanceAugment;
 import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
 import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlockEntity;
 import com.breakinblocks.nautec.data.NTDataComponents;
@@ -30,13 +31,23 @@ public record SetCharmPriorityPayload(int hand, int priority) implements CustomP
 
     public static void handle(SetCharmPriorityPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (!(context.player() instanceof ServerPlayer player) || payload.hand() < 0 || payload.hand() >= InteractionHand.values().length) {
+            if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            int priority = Mth.clamp(payload.priority(), SatelliteArrayBlockEntity.MIN_PRIORITY, SatelliteArrayBlockEntity.MAX_PRIORITY);
+            if (payload.hand() == OpenCharmScreenPayload.AUGMENT) {
+                ResonanceAugment augment = ResonanceAugment.installed(player);
+                if (augment != null) {
+                    augment.setPriority(priority);
+                }
+                return;
+            }
+            if (payload.hand() < 0 || payload.hand() >= InteractionHand.values().length) {
                 return;
             }
             ItemStack stack = player.getItemInHand(InteractionHand.values()[payload.hand()]);
             if (stack.getItem() instanceof ResonanceCharmItem) {
-                stack.set(NTDataComponents.RESONANCE_PRIORITY.get(),
-                        Mth.clamp(payload.priority(), SatelliteArrayBlockEntity.MIN_PRIORITY, SatelliteArrayBlockEntity.MAX_PRIORITY));
+                stack.set(NTDataComponents.RESONANCE_PRIORITY.get(), priority);
             }
         });
     }

@@ -354,7 +354,13 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
     }
 
     private void clear(ServerLevel serverLevel, BlockPos pos) {
-        if (pos.equals(worldPosition) || !serverLevel.isLoaded(pos)) {
+        if (!pos.equals(worldPosition)) {
+            hold(serverLevel, pos);
+        }
+    }
+
+    static void hold(ServerLevel serverLevel, BlockPos pos) {
+        if (!serverLevel.isLoaded(pos)) {
             return;
         }
         BlockState state = serverLevel.getBlockState(pos);
@@ -384,7 +390,7 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
         return cursor >= offsets.length;
     }
 
-    private static void release(Level world, BlockPos pos, boolean fillWater, @Nullable BubbleAnchorBlockEntity self) {
+    static void release(Level world, BlockPos pos, boolean fillWater, @Nullable Object self) {
         if (!world.isLoaded(pos) || !world.getBlockState(pos).is(NTBlocks.HELD_WATER.get())) {
             return;
         }
@@ -392,6 +398,9 @@ public class BubbleAnchorBlockEntity extends LaserBlockEntity implements MenuPro
             if (other != self && !other.isRemoved() && other.level == world && other.covers(pos)) {
                 return;
             }
+        }
+        if (AirPocketBlockEntity.covered(world, pos, self)) {
+            return;
         }
         world.setBlock(pos, fillWater ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
     }

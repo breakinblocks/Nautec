@@ -7,6 +7,7 @@ import java.util.function.IntUnaryOperator;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.api.items.ICurioItem;
+import com.breakinblocks.nautec.content.augments.ResonanceAugment;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTParticles;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ResonanceCharmItem extends Item implements ICurioItem {
@@ -104,9 +106,14 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         }
     }
 
+    public record Tuning(ItemStack charm, UUID network, int priority) {
+    }
+
     public static OpenCharmScreenPayload.Info info(ServerPlayer player, ItemStack charm) {
-        ResonanceBinding binding = charm.get(NTDataComponents.RESONANCE_BINDING.get());
-        int priority = priority(charm);
+        return info(player, charm.get(NTDataComponents.RESONANCE_BINDING.get()), priority(charm));
+    }
+
+    public static OpenCharmScreenPayload.Info info(ServerPlayer player, @Nullable ResonanceBinding binding, int priority) {
         if (binding == null) {
             return new OpenCharmScreenPayload.Info(false, "", "", false, 0, 0, 0, 0, priority);
         }
@@ -153,18 +160,31 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
                 .orElse(ItemStack.EMPTY);
     }
 
-    public static @Nullable ResonanceNetwork network(ServerPlayer player, ItemStack charm) {
+    public static @Nullable Tuning tuning(ItemStack charm) {
         ResonanceBinding binding = charm.get(NTDataComponents.RESONANCE_BINDING.get());
-        if (binding == null) {
-            return null;
+        return binding == null ? null : new Tuning(charm, binding.network(), priority(charm));
+    }
+
+    public static @Nullable Tuning tuning(ServerPlayer player) {
+        Tuning worn = tuning(equipped(player));
+        if (worn != null) {
+            return worn;
         }
-        ResonanceNetwork network = ResonanceNetworks.get(player.level().getServer()).get(binding.network());
+        ResonanceAugment augment = ResonanceAugment.installed(player);
+        if (augment != null && augment.getBinding() != null) {
+            return new Tuning(ItemStack.EMPTY, augment.getBinding().network(), augment.getPriority());
+        }
+        return null;
+    }
+
+    public static @Nullable ResonanceNetwork network(ServerPlayer player, Tuning tuning) {
+        ResonanceNetwork network = ResonanceNetworks.get(player.level().getServer()).get(tuning.network());
         return network != null && ResonanceNetworks.canUse(player, network) ? network : null;
     }
 
-    public static int demand(ServerPlayer player, ItemStack charm, int cap) {
+    public static int demand(ServerPlayer player, Tuning tuning, int cap) {
         int total = 0;
-        for (ItemStack target : targets(player, charm)) {
+        for (ItemStack target : targets(player, tuning.charm())) {
             if (total >= cap) {
                 break;
             }
@@ -173,12 +193,12 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         return total;
     }
 
-    public static int deliver(ServerPlayer player, ItemStack charm, int amount) {
-        return charge(player, charm, amount, available -> available);
+    public static int deliver(ServerPlayer player, Tuning tuning, int amount) {
+        return charge(player, tuning.charm(), amount, available -> available);
     }
 
-    public static int chargeFromPylons(ServerPlayer player, ItemStack charm, int budget) {
-        ResonanceNetwork network = network(player, charm);
+    public static int chargeFromPylons(ServerPlayer player, Tuning tuning, int budget) {
+        ResonanceNetwork network = network(player, tuning);
         if (network == null) {
             return 0;
         }
@@ -186,7 +206,7 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         if (sources.isEmpty()) {
             return 0;
         }
-        return charge(player, charm, budget, demand -> draw(sources, demand));
+        return charge(player, tuning.charm(), budget, demand -> draw(sources, demand));
     }
 
     public static void charged(ServerPlayer player) {

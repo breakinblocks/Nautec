@@ -199,6 +199,19 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         return weakest;
     }
 
+    private int agedColony() {
+        IBacteriaStorage storage = getBacteriaStorage();
+        int aged = -1;
+        for (int i = 0; i < colonies; i++) {
+            BacteriaInstance bacteria = storage.getBacteria(i);
+            if (!bacteria.isEmpty() && bacteria.isSenescent()
+                    && (aged < 0 || bacteria.getVitality() < storage.getBacteria(aged).getVitality())) {
+                aged = i;
+            }
+        }
+        return aged;
+    }
+
     private void clearColony(int slot) {
         this.vitality[slot] = 0;
         this.vitalityCapacity[slot] = 0;
@@ -288,7 +301,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
 
         boolean server = !level.isClientSide();
         if (server && level.getGameTime() % DishPort.INTERVAL == 0) {
-            DishPort.tick(this, dishInSlot(), dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony, true);
+            DishPort.tick(this, dishInSlot(), dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, this::clearColony, this::agedColony);
         }
         if (level instanceof ServerLevel serverLevel && recipeRevision.changed(serverLevel)) {
             Arrays.fill(this.productCache, null);
@@ -506,7 +519,7 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         if (slot != dishInSlot()) {
             return true;
         }
-        return DishPort.accepts(this, resource, dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, colony -> true, true);
+        return DishPort.accepts(this, resource, dishEmptyOutSlot(), dishOutSlot(), colonySlots(), this::weakestColony, colony -> true, this::agedColony);
     }
 
     @Override

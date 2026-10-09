@@ -32,7 +32,8 @@ public class ResonanceCharmScreen extends Screen {
     private int priority;
 
     public ResonanceCharmScreen(OpenCharmScreenPayload payload) {
-        super(Component.translatable("nautec.resonance_charm.screen.title"));
+        super(Component.translatable(payload.hand() == OpenCharmScreenPayload.AUGMENT
+                ? "nautec.resonance_augment.screen.title" : "nautec.resonance_charm.screen.title"));
         this.hand = payload.hand();
         this.info = payload.info();
         this.priority = info.priority();
@@ -84,7 +85,8 @@ public class ResonanceCharmScreen extends Screen {
         int ty = y + 25;
         if (!info.bound()) {
             graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.unbound"), tx, ty, WARNING, false);
-            graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.unbound.hint"), tx, ty + 12, READOUT_DIM, false);
+            graphics.text(this.font, Component.translatable(hand == OpenCharmScreenPayload.AUGMENT
+                    ? "nautec.resonance_augment.screen.unbound.hint" : "nautec.resonance_charm.screen.unbound.hint"), tx, ty + 12, READOUT_DIM, false);
         } else {
             graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.network", info.network()), tx, ty, READOUT, false);
             graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.owner", info.owner()), tx, ty + 11, READOUT_DIM, false);

@@ -15,6 +15,7 @@ import com.breakinblocks.nautec.content.augments.LeapAugment;
 import com.breakinblocks.nautec.content.augments.MagnetAugment;
 import com.breakinblocks.nautec.content.augments.PhotophoreSkinAugment;
 import com.breakinblocks.nautec.content.augments.PreventFallDamageAugment;
+import com.breakinblocks.nautec.content.augments.ResonanceAugment;
 import com.breakinblocks.nautec.content.augments.StepUpAugment;
 import com.breakinblocks.nautec.content.augments.ThrowBouncingTridentAugment;
 import com.breakinblocks.nautec.content.augments.ThrowRandomPotionAugments;
@@ -68,4 +69,6 @@ public final class NTAugments {
             () -> AugmentType.of(PhotophoreSkinAugment::new, NTAugmentSlots.BODY.get()));
     public static final Supplier<AugmentType<VentCarapaceAugment>> VENT_CARAPACE = AUGMENTS.register("vent_carapace",
             () -> AugmentType.of(VentCarapaceAugment::new, NTAugmentSlots.HEAD.get(), NTAugmentSlots.BODY.get()));
+    public static final Supplier<AugmentType<ResonanceAugment>> RESONANCE = AUGMENTS.register("resonance",
+            () -> AugmentType.of(ResonanceAugment::new, NTAugmentSlots.HEAD.get()));
 }

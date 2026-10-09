@@ -328,7 +328,7 @@ public final class SatelliteTests {
             ServerPlayer owner = player(helper, "SatCharm");
             ItemStack battery = new ItemStack(NTItems.PRISMATIC_BATTERY.get());
             owner.getInventory().setItem(0, battery);
-            ItemStack charm = new ItemStack(NTItems.RESONANCE_CHARM.get());
+            ResonanceCharmItem.Tuning charm = new ResonanceCharmItem.Tuning(new ItemStack(NTItems.RESONANCE_CHARM.get()), UUID.randomUUID(), 0);
             int demand = ResonanceCharmItem.demand(owner, charm, 5_000);
             helper.assertTrue(demand > 0 && demand <= 5_000, "an empty battery wants power, wants " + demand);
             int used = ResonanceCharmItem.deliver(owner, charm, demand);

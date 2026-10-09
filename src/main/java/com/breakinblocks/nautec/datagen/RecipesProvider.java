@@ -787,6 +787,16 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.AIR_BOTTLE))
                 .save(pRecipeOutput, key("oxygen_diffuser"));
 
+        shaped(RecipeCategory.TOOLS, NTItems.BUBBLE_CAPSULE.get(), 2)
+                .pattern(" K ")
+                .pattern("SBS")
+                .pattern(" K ")
+                .define('K', Items.DRIED_KELP)
+                .define('S', Items.PRISMARINE_SHARD)
+                .define('B', NTItems.AIR_BOTTLE)
+                .unlockedBy("has_item", has(NTItems.AIR_BOTTLE))
+                .save(pRecipeOutput, key("bubble_capsule"));
+
         shaped(RecipeCategory.REDSTONE, NTBlocks.PRESSURE_HATCH.asItem(), 2)
                 .pattern("SV")
                 .pattern("GS")
@@ -1939,6 +1949,11 @@ public class RecipesProvider extends RecipeProvider {
                         IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()),
                         IngredientWithCount.fromItemLike(NTItems.CHITIN_PLATE.get()))
                 .save(pRecipeOutput, key("vent_carapace"));
+
+        AugmentationRecipeBuilder.newRecipe(NTAugments.RESONANCE.get())
+                .augmentItem(NTItems.RESONANCE_CHARM.get(), "Charges your items from a resonance network without a charm slot")
+                .ingredients(IngredientWithCount.fromItemLike(NTItems.RESONANCE_CHARM.get()))
+                .save(pRecipeOutput, key("resonance_augment"));
     }
 
     private void nautecFishingRodRecipe(@NotNull RecipeOutput pRecipeOutput) {

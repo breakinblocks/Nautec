@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OxygenDiffuserBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ColonyReplicatorBlockEntity;
+import com.breakinblocks.nautec.content.bubble.AirPocketBlockEntity;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
 import com.breakinblocks.nautec.Nautec;
@@ -161,6 +162,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ColonyReplicatorBlockEntity>> COLONY_REPLICATOR = BLOCK_ENTITIES.register("colony_replicator",
             () -> new BlockEntityType<>(ColonyReplicatorBlockEntity::new,
                     NTBlocks.COLONY_REPLICATOR.get()));
+    public static final Supplier<BlockEntityType<AirPocketBlockEntity>> AIR_POCKET = BLOCK_ENTITIES.register("air_pocket",
+            () -> new BlockEntityType<>(AirPocketBlockEntity::new,
+                    NTBlocks.AIR_POCKET.get()));
     public static final Supplier<BlockEntityType<BubbleAnchorBlockEntity>> BUBBLE_ANCHOR = BLOCK_ENTITIES.register("bubble_anchor",
             () -> new BlockEntityType<>(BubbleAnchorBlockEntity::new,
                     NTBlocks.BUBBLE_ANCHOR.get()));

@@ -18,6 +18,7 @@ import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
 import com.breakinblocks.nautec.content.blocks.HydrothermalVentBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
+import com.breakinblocks.nautec.content.bubble.AirPocketBlock;
 import com.breakinblocks.nautec.content.bubble.HeldWaterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.content.distributor.DistributorBlock;
@@ -196,6 +197,8 @@ public final class NTBlocks {
     public static final DeferredBlock<BubbleAnchorBlock> BUBBLE_ANCHOR = registerBlockAndItem("bubble_anchor", BubbleAnchorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).lightLevel(state -> state.getValue(BubbleAnchorBlock.ACTIVE) ? 12 : 4));
     public static final DeferredBlock<HeldWaterBlock> HELD_WATER = BLOCKS.registerBlock("held_water", HeldWaterBlock::new,
+            () -> BlockBehaviour.Properties.of().strength(-1.0F, 3_600_000.0F));
+    public static final DeferredBlock<AirPocketBlock> AIR_POCKET = BLOCKS.registerBlock("air_pocket", AirPocketBlock::new,
             () -> BlockBehaviour.Properties.of().strength(-1.0F, 3_600_000.0F));
     public static final DeferredBlock<DistributorBlock> DISTRIBUTOR = registerBlockAndItem("nautechnical_distributor", DistributorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));

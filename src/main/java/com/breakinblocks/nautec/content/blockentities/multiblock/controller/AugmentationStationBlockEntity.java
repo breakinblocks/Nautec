@@ -237,12 +237,13 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                 Player recipient = player;
                 AugmentationRecipe completedRecipe = recipe;
                 AugmentSlot completedSlot = slot;
+                List<ItemStack> parts = List.copyOf(operationInputs.values());
                 for (BlockPos pos : operationInputs.keySet()) {
                     var extension = (AugmentationStationExtensionBlockEntity) level.getBlockEntity(pos);
                     extension.getItemStackHandler().extractItem(0, 1, false);
                 }
                 cancelAugmentation();
-                AugmentHelper.createAugment(completedRecipe.resultAugment(), recipient, completedSlot);
+                AugmentHelper.createAugment(completedRecipe.resultAugment(), recipient, completedSlot, parts);
                 this.installedTicks = INSTALLED_TICKS;
                 if (recipient instanceof ServerPlayer serverPlayer) {
                     sendStatus(serverPlayer, false);

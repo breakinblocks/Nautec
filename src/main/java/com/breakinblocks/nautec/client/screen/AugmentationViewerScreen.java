@@ -3,14 +3,18 @@ package com.breakinblocks.nautec.client.screen;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
+import com.breakinblocks.nautec.content.augments.ResonanceAugment;
+import com.breakinblocks.nautec.network.OpenResonanceAugmentPayload;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +120,9 @@ public class AugmentationViewerScreen extends Screen {
                 lines.add(Component.translatable("nautec.augment_viewer.empty.desc").withStyle(ChatFormatting.DARK_GRAY));
             } else {
                 lines.add(hoverName);
+                if (hoverAugment instanceof ResonanceAugment) {
+                    lines.add(Component.translatable("nautec.augment_viewer.resonance").withStyle(ChatFormatting.DARK_GRAY));
+                }
                 if (hoverAugment.isOnCooldown()) {
                     lines.add(Component.translatable("nautec.augment_viewer.cooldown",
                             String.format(Locale.ROOT, "%.1f", hoverAugment.getCooldown() / 20f)).withStyle(ChatFormatting.YELLOW));
@@ -123,6 +130,21 @@ public class AugmentationViewerScreen extends Screen {
             }
             graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
         }
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        List<AugmentSlot> slots = slots();
+        for (int i = 0; i < slots.size(); i++) {
+            int x = leftPos + LIST_X + 2;
+            int y = topPos + LIST_Y + 2 + i * ROW;
+            if (PanelStyle.inside(event.x(), event.y(), x, y, LIST_WIDTH - 4, ROW)
+                    && AugmentHelper.getAugmentBySlot(player, slots.get(i)) instanceof ResonanceAugment) {
+                ClientPacketDistributor.sendToServer(new OpenResonanceAugmentPayload());
+                return true;
+            }
+        }
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override

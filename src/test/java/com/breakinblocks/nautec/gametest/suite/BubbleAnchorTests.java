@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.content.bubble.AirPocketBlockEntity;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
@@ -76,6 +77,39 @@ public final class BubbleAnchorTests {
     }
 
     public static void register(NTTestRegistrar r) {
+        r.add("bubble_capsule/holds_then_lets_the_sea_back", 20, helper -> {
+            int cube = (RADIUS * 2 + 1) * (RADIUS * 2 + 1) * (RADIUS * 2 + 1) - 1;
+            flood(helper);
+            helper.setBlock(ANCHOR, NTBlocks.AIR_POCKET.get());
+            AirPocketBlockEntity pocket = helper.getBlockEntity(ANCHOR, AirPocketBlockEntity.class);
+            pocket.start(helper.getLevel(), RADIUS, 3);
+            helper.assertValueEqual(countIn(helper, NTBlocks.HELD_WATER.get()), cube, "every water block around the capsule is held");
+            helper.setBlock(ANCHOR.east(), Blocks.STONE.defaultBlockState());
+            for (int i = 0; i < 4; i++) {
+                pocket.serverTick(helper.getLevel());
+            }
+            helper.assertValueEqual(countIn(helper, NTBlocks.HELD_WATER.get()), 0, "nothing is held once the pocket ends");
+            helper.assertValueEqual(countIn(helper, Blocks.WATER), cube, "the sea comes back into every open space");
+            helper.assertTrue(helper.getBlockState(ANCHOR.east()).is(Blocks.STONE), "blocks built inside the pocket stay");
+            helper.succeed();
+        });
+
+        r.add("bubble_capsule/anchor_release_skips_a_live_pocket", 20, helper -> withSmallField(() -> {
+            flood(helper);
+            BubbleAnchorBlockEntity anchor = anchor(helper);
+            ticks(anchor, 3);
+            BlockPos center = ANCHOR.offset(1, 1, 1);
+            helper.setBlock(center, NTBlocks.AIR_POCKET.get());
+            helper.getBlockEntity(center, AirPocketBlockEntity.class).start(helper.getLevel(), 1, 600);
+            anchor.setEnabled(false);
+            ticks(anchor, 3);
+            helper.assertTrue(helper.getBlockState(ANCHOR.offset(2, 2, 2)).is(NTBlocks.HELD_WATER.get()), "the pocket keeps its water held");
+            helper.assertTrue(helper.getBlockState(ANCHOR.offset(-2, -2, -2)).is(Blocks.WATER), "the rest of the field refills");
+            helper.setBlock(center, Blocks.STONE.defaultBlockState());
+            helper.assertTrue(helper.getBlockState(ANCHOR.offset(2, 2, 2)).is(Blocks.WATER), "replacing the core lets the water back");
+            helper.succeed();
+        }));
+
         r.add("bubble_anchor/clears_holds_and_refills", 40, helper -> withSmallField(() -> {
             int cube = (RADIUS * 2 + 1) * (RADIUS * 2 + 1) * (RADIUS * 2 + 1) - 1;
             flood(helper);

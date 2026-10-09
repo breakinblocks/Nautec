@@ -21,7 +21,7 @@ Every augment fits only certain slots. The station screen lists the slots a part
 
 | Slot | Augments that fit |
 |---|---|
-| Head | Vent Carapace |
+| Head | Vent Carapace, Resonance (Resonance Charm) |
 | Eyes | Guardian Eye, Abyssal Eyes |
 | Body | Dolphin Fin, Creative Flight (Buoyancy Tank), Photophore Skin, Vent Carapace |
 | Lungs | Drowned Lung |
@@ -29,7 +29,9 @@ Every augment fits only certain slots. The station screen lists the slots a part
 | Left Arm, Right Arm | Magnet, Ender Magnet, Underwater Mining Speed, Bouncing Trident, Spreading Trident, Random Potion Throwing |
 | Left Leg, Right Leg | Leap, Step Up, Prevent Fall Damage, Walking Speed |
 
-Flight, the Dolphin Fin and Photophore Skin all need the Body slot, so you get one of the three. Vent Carapace can go in Head instead, which keeps the Body slot free.
+Flight, the Dolphin Fin and Photophore Skin all need the Body slot, so you get one of the three. Vent Carapace can go in Head instead, which keeps the Body slot free, but then it competes with the Resonance augment.
+
+The Resonance augment is a [Resonance Charm](nautec:deep_engineering/resonance_network.md) installed as a part, so it charges your items without taking a charm slot.
 
 Two copies of the same leg part do nothing more than one, so fit two different legs. The same goes for Vent Carapace in both Head and Body.
 

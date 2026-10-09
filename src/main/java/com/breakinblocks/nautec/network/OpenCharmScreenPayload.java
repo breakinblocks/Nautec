@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record OpenCharmScreenPayload(int hand, Info info) implements CustomPacketPayload {
+    public static final int AUGMENT = -1;
     public static final Type<OpenCharmScreenPayload> TYPE = new Type<>(Nautec.rl("open_charm_screen"));
 
     public record Info(boolean bound, String network, String owner, boolean access, int uplinks, int downlinks, int stored, int pylons,

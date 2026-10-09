@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -202,13 +201,13 @@ public final class SatelliteGrid {
         if (charmTick) {
             for (Map.Entry<UUID, ServerPlayer> charm : charmPlayers.entrySet()) {
                 ServerPlayer player = charm.getValue();
-                ItemStack stack = ResonanceCharmItem.equipped(player);
-                if (stack.isEmpty()) {
+                ResonanceCharmItem.Tuning tuning = ResonanceCharmItem.tuning(player);
+                if (tuning == null) {
                     continue;
                 }
                 int satellite = charmDelivered.getOrDefault(charm.getKey(), 0);
                 int budget = NTConfig.charmTransferRate * ResonanceCharmItem.INTERVAL - satellite;
-                int pylons = budget > 0 ? ResonanceCharmItem.chargeFromPylons(player, stack, budget) : 0;
+                int pylons = budget > 0 ? ResonanceCharmItem.chargeFromPylons(player, tuning, budget) : 0;
                 if (satellite + pylons > 0) {
                     ResonanceCharmItem.charged(player);
                     NTCriteriaTriggers.CHARM_CHARGED.get().trigger(player);
@@ -351,14 +350,13 @@ public final class SatelliteGrid {
             }));
         }
         for (ServerPlayer player : players) {
-            ItemStack charm = ResonanceCharmItem.equipped(player);
-            ResonanceNetwork network = ResonanceCharmItem.network(player, charm);
-            if (charm.isEmpty() || network == null) {
+            ResonanceCharmItem.Tuning tuning = ResonanceCharmItem.tuning(player);
+            if (tuning == null || ResonanceCharmItem.network(player, tuning) == null) {
                 continue;
             }
-            int demand = ResonanceCharmItem.demand(player, charm, NTConfig.charmTransferRate * ResonanceCharmItem.INTERVAL);
-            receivers.add(receiver(ResonanceCharmItem.priority(charm), demand, amount -> {
-                int used = ResonanceCharmItem.deliver(player, charm, amount);
+            int demand = ResonanceCharmItem.demand(player, tuning, NTConfig.charmTransferRate * ResonanceCharmItem.INTERVAL);
+            receivers.add(receiver(tuning.priority(), demand, amount -> {
+                int used = ResonanceCharmItem.deliver(player, tuning, amount);
                 charmDelivered.merge(player.getUUID(), used, Integer::sum);
                 return used;
             }));

@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.items;
 
 import com.breakinblocks.nautec.api.items.ICurioItem;
 import com.breakinblocks.nautec.compat.curio.CurioCompat;
+import com.breakinblocks.nautec.content.augments.ResonanceAugment;
 import com.breakinblocks.nautec.content.items.tiers.NTArmorMaterials;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.component.DataComponents;
@@ -32,6 +33,7 @@ public class PrismMonocleItem extends Item implements ICurioItem {
     public static boolean isWorn(Player player) {
         return player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof PrismMonocleItem
                 || !CurioCompat.getStackInSlot(player, NTItems.PRISM_MONOCLE.get()).isEmpty()
-                || !CurioCompat.getStackInSlot(player, NTItems.RESONANCE_CHARM.get()).isEmpty();
+                || !CurioCompat.getStackInSlot(player, NTItems.RESONANCE_CHARM.get()).isEmpty()
+                || ResonanceAugment.installed(player) != null;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "type": "nautec:augmentation",
+  "augmentItem": "nautec:resonance_charm",
+  "desc": "Charges your items from a resonance network without a charm slot",
+  "ingredients": [
+    {
+      "ingredient": "nautec:resonance_charm"
+    }
+  ],
+  "resultAugment": "nautec:resonance"
+}

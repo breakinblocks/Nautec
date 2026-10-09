@@ -44,6 +44,7 @@ public class EnUsProvider extends LanguageProvider {
         add("augment_type.nautec.abyssal_eyes", "Abyssal Eyes");
         add("augment_type.nautec.photophore_skin", "Photophore Skin");
         add("augment_type.nautec.vent_carapace", "Vent Carapace");
+        add("augment_type.nautec.resonance", "Resonance");
 
         addItem(WAVE_JET, "Wave Jet");
         add("nautec.wave_jet.needs_water", "The Wave Jet only bites under water");
@@ -392,6 +393,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem("whisk", "Whisk");
         addItem("prismatic_battery", "Prismatic Battery");
         addItem("air_bottle", "Pressurized Air Bottle");
+        addItem("bubble_capsule", "Bubble Capsule");
         addItem("aquarine_steel_compound", "Aquarine Steel Compound");
         addItem("prismarine_crystal_shard", "Prismarine Crystal Shard");
         addItem("claw_robot_arm", "Claw Robot Arm");
@@ -729,6 +731,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.replicator.slot.fodder.desc", "Any colony of the template's strain, whatever its stats. It is broken down into biomass straight away.");
         add("nautec.replicator.requirements", "Needs a beam of %s AP at purity %s or higher");
         addBlock(NTBlocks.HELD_WATER, "Held Water");
+        addBlock(NTBlocks.AIR_POCKET, "Air Pocket");
         add("nautec.bubble_anchor.status.off", "Off");
         add("nautec.bubble_anchor.status.no_fuel", "No fuel");
         add("nautec.bubble_anchor.status.fuel", "Holding");
@@ -738,6 +741,9 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bubble_anchor.mode.water", "Refills with water when it ends");
         add("nautec.bubble_anchor.mode.air", "Leaves air when it ends");
         add("nautec.bubble_anchor.warning", "Bubble Anchor: 10 seconds of fuel left");
+        add("nautec.bubble_capsule.warning", "The air pocket collapses in 5 seconds");
+        add("nautec.bubble_capsule.not_underwater", "Use it with your head under water");
+        add("nautec.bubble_capsule.tooltip", "Use with your head under water to push the sea back from a %s x %s x %s pocket for %s seconds.");
         add("nautec.bubble_anchor.fuel.desc", "Burns Dried Kelp Blocks (2 min), Sea Pickles (30 s), Dried Kelp (12 s) or Kelp (6 s).");
         add("nautec.bubble_anchor.laser.desc", "A laser beam of %s AP or more runs it with no fuel, and higher purity makes the field larger.");
         add("nautec.bubble_anchor.button.on", "Field: On");
@@ -983,6 +989,9 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.resonance_charm.screen.pylons", "Sending Energy Nodes: %s");
         add("nautec.resonance_charm.screen.rate", "Charges up to %s FE per tick");
         add("nautec.resonance_charm.screen.priority", "Priority");
+        add("nautec.resonance_augment.bound", "Resonance augment tuned to %s.");
+        add("nautec.resonance_augment.screen.title", "Resonance Augment");
+        add("nautec.resonance_augment.screen.unbound.hint", "Sneak-click a node with an empty hand.");
         add("nautec.resonance_charm.screen.priority.desc", "Higher priorities draw from the network's uplinks before downlinks and other charms.");
         add("nautec.satellite.kind.downlink", "Downlink");
         add("nautec.satellite.sending", "Sending %s AP, purity %s");
@@ -1349,6 +1358,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.augment_viewer.empty.desc", "Install an augment here at an Augmentation Station.");
         add("nautec.augment_viewer.count", "%s of %s installed");
         add("nautec.augment_viewer.cooldown", "Recharging: %ss");
+        add("nautec.augment_viewer.resonance", "Click to see its network and set its priority");
         add("nautec.augmentation_station.unformed", "Augmentation Station is not formed: right-click it with an Aquarine Steel Wrench");
         add("nautec.augmentation_station.apply.pick", "Pick a body slot first");
         add("nautec.augmentation_station.apply.desc", "Install %s into your %s. You are held in place for %s seconds; stepping off cancels it and nothing is used.");

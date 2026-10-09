@@ -5,10 +5,13 @@ import com.breakinblocks.nautec.data.NTDataAttachments;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
+
+import java.util.List;
 
 public abstract class Augment {
     protected final AugmentType<?> augmentType;
@@ -64,6 +67,9 @@ public abstract class Augment {
     }
 
     public void onRemoved(Player player) {
+    }
+
+    public void readParts(List<ItemStack> parts) {
     }
 
     public void commonTick(PlayerTickEvent.Post event) {

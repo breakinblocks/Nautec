@@ -6,6 +6,7 @@ navigation:
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:bubble_anchor
+  - nautec:bubble_capsule
 ---
 
 # <Color id="light_purple">Bubble Anchor</Color>
@@ -65,3 +66,20 @@ This turns it into a permanent dry dock for bigger underwater builds. A [Prismar
 The size, the beam power, the fuel times and how fast it works are in `config/nautec-common.toml`.
 
 <RecipeFor id="bubble_anchor"/>
+
+***
+
+## <Color id="gold">Bubble Capsule</Color>
+
+<Row>
+  <ItemImage id="bubble_capsule"/>
+  ### <Color id="aqua">For When You Are Out of Air</Color>
+</Row>
+
+A single-use pocket of air for emergencies. Use it with your head under water and it pushes the sea back from a 5 x 5 x 5 cube around your head for 30 seconds, and fills your air bar straight away.
+
+The pocket works like a small anchor field: water outside stays out, and anything you build inside stays when it ends. Five seconds before it collapses you get a warning, then the sea comes back into every space you left open. Placing a block where your head was when you used it ends the pocket early.
+
+The size and the time are in `config/nautec-common.toml`.
+
+<RecipeFor id="bubble_capsule"/>

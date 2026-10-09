@@ -93,4 +93,10 @@ Its crystal also does the work of a <ItemLink id="prism_monocle"/>: while it is 
 
 It works in any dimension where the network has a sending pylon, losing 5% like a pylon link. In other dimensions it can still draw from the network's Abyssal Pylons, losing 15%. If the owner stops trusting you, the charm stops working until you are trusted again. Right-click the air with it to open its screen. The screen shows the network it is bound to, its owner, how many uplinks and downlinks the network has in your dimension, how much FE the uplinks hold, and how many sending pylons it has. It also sets the charm's priority: on the uplinks, a charm with a higher priority charges before downlinks and charms with a lower one. Sneak-right-click the air with it to unbind it.
 
+### <Color id="aqua">Resonance Augment</Color>
+
+To free up the charm slot, install the charm as an augment instead. Load it into an [Augmentation Station](nautec:laser_augmentation/augmentation_station.md) like any other part and fit it in your Head slot. The augment keeps the charm's network and priority and charges your items exactly as the worn charm does, including the monocle readouts. It is kept when you die.
+
+To tune it to a different network, sneak-right-click a pylon, Uplink Array or Downlink Array with an empty hand. To see its network or change its priority, open the Augmentation Screen (B by default) and click the Head row. If you wear a bound charm as well, the charm is used and the augment waits.
+
 The same networks connect Uplink and Downlink Arrays and [Resonance Nodes](resonance_node.md), which carry laser power as well as FE. See <ItemLink id="prism_satellite"/>.

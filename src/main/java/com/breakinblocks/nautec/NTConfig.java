@@ -349,6 +349,14 @@ public final class NTConfig {
             .comment("How many blocks a Bubble Anchor checks each tick while clearing or refilling")
             .defineInRange("bubbleAnchorBlocksPerTick", 1024, 16, 65536);
 
+    private static final ModConfigSpec.IntValue BUBBLE_CAPSULE_RADIUS = BUILDER
+            .comment("How far a Bubble Capsule's pocket reaches from the user's head. 2 gives a 5x5x5 cube")
+            .defineInRange("bubbleCapsuleRadius", 2, 1, 8);
+
+    private static final ModConfigSpec.IntValue BUBBLE_CAPSULE_SECONDS = BUILDER
+            .comment("How long a Bubble Capsule's pocket holds before the water returns, in seconds")
+            .defineInRange("bubbleCapsuleSeconds", 30, 5, 600);
+
     private static final ModConfigSpec.IntValue DISTRIBUTOR_RANGE = BUILDER
             .comment("How far in blocks a Nautechnical Distributor can link to a block")
             .defineInRange("distributorRange", 256, 1, 4096);
@@ -1062,6 +1070,8 @@ public final class NTConfig {
     public static int bubbleAnchorLaserPower = 20;
     public static double bubbleAnchorFuelMultiplier = 1.0;
     public static int bubbleAnchorBlocksPerTick = 1024;
+    public static int bubbleCapsuleRadius = 2;
+    public static int bubbleCapsuleSeconds = 30;
     public static int distributorRange = 256;
     public static int distributorMaxLinks = 64;
     public static int distributorInterval = 4;
@@ -1370,6 +1380,8 @@ public final class NTConfig {
         bubbleAnchorLaserPower = value(BUBBLE_ANCHOR_LASER_POWER);
         bubbleAnchorFuelMultiplier = value(BUBBLE_ANCHOR_FUEL_MULTIPLIER);
         bubbleAnchorBlocksPerTick = value(BUBBLE_ANCHOR_BLOCKS_PER_TICK);
+        bubbleCapsuleRadius = value(BUBBLE_CAPSULE_RADIUS);
+        bubbleCapsuleSeconds = value(BUBBLE_CAPSULE_SECONDS);
         distributorRange = value(DISTRIBUTOR_RANGE);
         distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
         distributorInterval = value(DISTRIBUTOR_INTERVAL);
