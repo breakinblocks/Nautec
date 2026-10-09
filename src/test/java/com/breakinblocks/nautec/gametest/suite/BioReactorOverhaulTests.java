@@ -19,6 +19,7 @@ import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
+import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -662,6 +663,47 @@ public final class BioReactorOverhaulTests {
                 helper.assertValueEqual(0.0f, target.getVitality(0), "vitality of a legacy save");
                 helper.succeed();
             });
+        });
+
+        r.add("bio_overhaul/ore_strains_eat_their_product_and_its_block", 20, helper -> {
+            BacteriaInstance colony = BacteriaMachineTests.colony(NTBacterias.FERROPHILES, 400, stats(1.0f, 2000), 0);
+            float[] chances = new float[3];
+            int[] ticks = new int[3];
+            ItemStack[] nutrients = {new ItemStack(Items.IRON_ORE), new ItemStack(Items.IRON_INGOT), new ItemStack(Items.IRON_BLOCK)};
+            for (int i = 0; i < nutrients.length; i++) {
+                Optional<BacteriaIncubationRecipe> incubation = BacteriaIncubationRecipe.find(helper.getLevel(), new BacteriaRecipeInput(colony, nutrients[i]));
+                Optional<ColonyFeedingRecipe> feeding = ColonyFeedingRecipe.find(helper.getLevel(), colony, nutrients[i]);
+                helper.assertTrue(incubation.isPresent(), "Ferrophiles incubate on " + nutrients[i].getHoverName().getString());
+                helper.assertTrue(feeding.isPresent(), "Ferrophiles are fed by " + nutrients[i].getHoverName().getString());
+                chances[i] = incubation.get().consumeChance();
+                ticks[i] = feeding.get().vitalityTicks();
+            }
+            helper.assertValueEqual(chances[0], 0.1f, "ore consume chance");
+            helper.assertTrue(chances[1] > chances[0], "an ingot is used up more often than ore");
+            helper.assertTrue(chances[2] < chances[1] / 8, "a block lasts about nine times as long as an ingot");
+            helper.assertValueEqual(ticks[2], ticks[1] * 9, "a block feeds a reactor nine times as long as an ingot");
+            helper.succeed();
+        });
+
+        r.add("bio_overhaul/every_strain_eats_its_product_block", 20, helper -> {
+            BacteriaInstance wheat = BacteriaMachineTests.colony(NTBacterias.RHIZOBACTERIA, 400, stats(1.0f, 2000), 0);
+            ItemStack hay = new ItemStack(Items.HAY_BLOCK);
+            Optional<BacteriaIncubationRecipe> incubation = BacteriaIncubationRecipe.find(helper.getLevel(), new BacteriaRecipeInput(wheat, hay));
+            Optional<ColonyFeedingRecipe> feeding = ColonyFeedingRecipe.find(helper.getLevel(), wheat, hay);
+            Optional<ColonyFeedingRecipe> base = ColonyFeedingRecipe.find(helper.getLevel(), wheat, new ItemStack(Items.WHEAT));
+            helper.assertTrue(incubation.isPresent(), "Rhizobacteria incubate on a Hay Bale through the storage block data map");
+            helper.assertTrue(feeding.isPresent() && base.isPresent(), "Rhizobacteria are fed by wheat and by a Hay Bale");
+            helper.assertValueEqual(feeding.get().vitalityTicks(), base.get().vitalityTicks() * 9, "a Hay Bale feeds nine times as long as wheat");
+            helper.assertTrue(ColonyFeedingRecipe.isNutrient(helper.getLevel(), hay), "a reactor's nutrient slot takes a Hay Bale");
+
+            BacteriaInstance bone = BacteriaMachineTests.colony(NTBacterias.CALCIOPHILES, 400, stats(1.0f, 2000), 0);
+            helper.assertTrue(BacteriaIncubationRecipe.find(helper.getLevel(), new BacteriaRecipeInput(bone, new ItemStack(Items.BONE_MEAL))).isPresent(),
+                    "Calciophiles also eat the Bone Meal they make");
+
+            BacteriaInstance cyano = BacteriaMachineTests.colony(NTBacterias.CYANOBACTERIA, 400, stats(1.0f, 2000), 0);
+            helper.assertTrue(BacteriaIncubationRecipe.find(helper.getLevel(), new BacteriaRecipeInput(cyano, new ItemStack(Items.STONE))).isEmpty(),
+                    "a strain with no nutrient of its own gets none");
+            helper.succeed();
         });
 
         r.add("bio_overhaul/feeding_recipes_cover_incubated_strains", 20, helper -> {

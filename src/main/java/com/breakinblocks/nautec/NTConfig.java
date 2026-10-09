@@ -910,6 +910,12 @@ public final class NTConfig {
     private static final ModConfigSpec.BooleanValue DIVING_SUIT_ACCEPTS_OXYGEN_FLUID = BUILDER
             .comment("Determines whether the Diving Chestplate can be filled with any fluid in the c:oxygen tag, such as Stellaris oxygen. 1 mB fills 1 second of air")
             .define("divingSuitAcceptsOxygenFluid", true);
+    private static final ModConfigSpec.BooleanValue BACTERIA_PRODUCT_NUTRIENTS = BUILDER
+            .comment("Determines whether every strain with an incubation recipe also eats the item it makes and that item's storage block, in the Incubator and in Bio Reactors")
+            .define("bacteriaProductNutrients", true);
+    private static final ModConfigSpec.DoubleValue BACTERIA_PRODUCT_CONSUME_MULTIPLIER = BUILDER
+            .comment("Multiplies a strain's incubation consume chance when it is fed the item it makes. A storage block is used up a ninth as often as that")
+            .defineInRange("bacteriaProductConsumeMultiplier", 1.5, 0.01, 100.0);
     private static final ModConfigSpec.BooleanValue AIR_BOTTLES_FILL_OXYGEN_HELMETS = BUILDER
             .comment("Determines whether drinking an Air Bottle also adds oxygen to a worn helmet from another mod that holds c:oxygen fluid, such as a Stellaris space suit helmet")
             .define("airBottlesFillOxygenHelmets", true);
@@ -1180,6 +1186,8 @@ public final class NTConfig {
     public static int eyeOfTheSeaLuckyBoostSeconds = 300;
     public static int eyeOfTheSeaLuckyZoneMultiplier = 2;
     public static boolean divingSuitAcceptsOxygenFluid = true;
+    public static boolean bacteriaProductNutrients = true;
+    public static double bacteriaProductConsumeMultiplier = 1.5;
     public static boolean airBottlesFillOxygenHelmets = true;
     public static boolean divingSuitProtectsInSpace = true;
 
@@ -1491,6 +1499,8 @@ public final class NTConfig {
         eyeOfTheSeaLuckyBoostSeconds = value(EYE_OF_THE_SEA_LUCKY_BOOST);
         eyeOfTheSeaLuckyZoneMultiplier = value(EYE_OF_THE_SEA_LUCKY_MULTIPLIER);
         divingSuitAcceptsOxygenFluid = value(DIVING_SUIT_ACCEPTS_OXYGEN_FLUID);
+        bacteriaProductNutrients = value(BACTERIA_PRODUCT_NUTRIENTS);
+        bacteriaProductConsumeMultiplier = value(BACTERIA_PRODUCT_CONSUME_MULTIPLIER);
         airBottlesFillOxygenHelmets = value(AIR_BOTTLES_FILL_OXYGEN_HELMETS);
         divingSuitProtectsInSpace = value(DIVING_SUIT_PROTECTS_IN_SPACE);
 

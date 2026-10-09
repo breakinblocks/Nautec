@@ -17,6 +17,8 @@ item_ids:
 
 Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
 
+Every strain that has a nutrient also takes the item it makes and that item's storage block. Ferrophiles, for example, take iron ore, Iron Ingots or Iron Blocks. The item it makes has one and a half times the consume chance of the strain's own nutrient, and a storage block a ninth of that, so one block lasts as long as nine of the item. See [Colony Feeding](colony_feeding.md) for how the block is found.
+
 Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient. [Mutate](mutator.md) them first.
 
 ***

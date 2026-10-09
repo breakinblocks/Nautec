@@ -1,0 +1,13 @@
+{
+  "values": {
+    "minecraft:bamboo": "minecraft:bamboo_block",
+    "minecraft:bone_meal": "minecraft:bone_block",
+    "minecraft:coal": "minecraft:coal_block",
+    "minecraft:dried_kelp": "minecraft:dried_kelp_block",
+    "minecraft:honeycomb": "minecraft:honeycomb_block",
+    "minecraft:ice": "minecraft:packed_ice",
+    "minecraft:melon_slice": "minecraft:melon",
+    "minecraft:slime_ball": "minecraft:slime_block",
+    "minecraft:wheat": "minecraft:hay_block"
+  }
+}

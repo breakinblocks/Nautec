@@ -13,6 +13,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +39,20 @@ public class NTDataMapProvider extends DataMapProvider {
         obtainBacteria(NTBlocks.ABYSSAL_CORAL.get(), NTBacterias.CALCIOPHILES, BiomeTagProvider.ABYSSAL, 0.30f);
         obtainBacteria(NTBlocks.PRISMARINE_FROND.get(), NTBacterias.PHOTOTROPHS, BiomeTagProvider.REEF, 0.35f);
         obtainBacteria(NTBlocks.BUDDING_PRISMARINE.get(), NTBacterias.LITHOPHILES, BiomeTagProvider.REEF, 0.30f);
+
+        storageBlock(Items.COAL, Items.COAL_BLOCK);
+        storageBlock(Items.BONE_MEAL, Items.BONE_BLOCK);
+        storageBlock(Items.WHEAT, Items.HAY_BLOCK);
+        storageBlock(Items.MELON_SLICE, Items.MELON);
+        storageBlock(Items.BAMBOO, Items.BAMBOO_BLOCK);
+        storageBlock(Items.ICE, Items.PACKED_ICE);
+        storageBlock(Items.DRIED_KELP, Items.DRIED_KELP_BLOCK);
+        storageBlock(Items.SLIME_BALL, Items.SLIME_BLOCK);
+        storageBlock(Items.HONEYCOMB, Items.HONEYCOMB_BLOCK);
+    }
+
+    private void storageBlock(Item product, Item block) {
+        builder(NTDataMaps.STORAGE_BLOCKS).add(product.builtInRegistryHolder(), block, false);
     }
 
     private void obtainBacteria(Block block, ResourceKey<Bacteria> bacteria, TagKey<Biome> biome, float chance) {

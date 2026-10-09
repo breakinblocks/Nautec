@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.content.recipes;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.bacteria.BacteriaSelector;
+import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.recipes.inputs.BacteriaRecipeInput;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.mojang.serialization.MapCodec;
@@ -52,6 +53,13 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
                 best = recipe;
             }
         }
+        if (best == null) {
+            for (ColonyFeedingRecipe recipe : ProductNutrients.get(serverLevel).feeding()) {
+                if (recipe.ingredient().test(stack) && recipe.accepts(colony, level)) {
+                    return Optional.of(recipe);
+                }
+            }
+        }
         return Optional.ofNullable(best);
     }
 
@@ -64,6 +72,11 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
         }
         for (RecipeHolder<ColonyFeedingRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(TYPE)) {
             if (holder.value().ingredient().ingredient().test(stack)) {
+                return true;
+            }
+        }
+        for (ColonyFeedingRecipe recipe : ProductNutrients.get(serverLevel).feeding()) {
+            if (recipe.ingredient().ingredient().test(stack)) {
                 return true;
             }
         }

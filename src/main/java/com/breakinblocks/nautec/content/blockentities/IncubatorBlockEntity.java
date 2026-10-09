@@ -87,7 +87,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         }
         ItemStack stack = getItemStackHandler().getStackInSlot(0);
         BacteriaInstance instance = getBacteriaStorage().getBacteria(0);
-        this.recipe = serverLevel.recipeAccess().getRecipeFor(BacteriaIncubationRecipe.TYPE, new BacteriaRecipeInput(instance, stack), level).map(RecipeHolder::value).orElse(null);
+        this.recipe = BacteriaIncubationRecipe.find(serverLevel, new BacteriaRecipeInput(instance, stack)).orElse(null);
 
         if (this.active != (this.recipe != null)) {
             this.active = this.recipe != null;

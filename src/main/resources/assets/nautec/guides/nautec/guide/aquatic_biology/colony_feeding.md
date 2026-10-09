@@ -19,7 +19,7 @@ This works the same in the [Bio Reactor](bio_reactor.md) and the [Industrial Bio
 
 ## <Color id="gold">The Nutrient Buffer</Color>
 
-Every colony slot has a nutrient buffer, shown as the thin bar beside the colony. While the colony works it spends one tick of buffer per tick instead of aging. When the buffer is empty, the reactor takes one matching nutrient from its nutrient slots and adds that recipe's ticks to the buffer. Every shipped strain gets 1,200 ticks, one minute of work, from each item.
+Every colony slot has a nutrient buffer, shown as the thin bar beside the colony. While the colony works it spends one tick of buffer per tick instead of aging. When the buffer is empty, the reactor takes one matching nutrient from its nutrient slots and adds that recipe's ticks to the buffer. Every shipped strain gets 1,200 ticks, one minute of work, from each item, except that a storage block gives nine times that.
 
 So each working colony eats one nutrient a minute. The buffer only drains while the colony works: a reactor without enough power, or a colony whose output slot is full, spends nothing. A [Reactor Efficiency Upgrade](reactor_upgrades.md) makes each item last longer.
 
@@ -44,6 +44,8 @@ Each strain has its own nutrient, and by default it is the same item that strain
 | Plumbophiles | lead ingots |
 
 Strains for other mods' metals and gems eat the ingot or gem they make, so you can send a small share of a reactor's output back into its nutrient slot.
+
+On top of its own nutrient, every strain that has one also eats the item it makes and that item's storage block. Ferrophiles take Iron Ingots and Iron Blocks as well as iron ore, Rhizobacteria take Hay Bales as well as wheat, and a tin strain takes tin blocks. The item it makes feeds as long as its own nutrient, and a storage block nine times as long. This covers strains from other mods and ones made with `/nautec bacteria generate` too. JEI lists these alongside the rest.
 
 Cyanobacteria, Halobacteria, Methanogens and Thermophiles have no nutrient, so they always age while they work.
 
@@ -78,4 +80,6 @@ Feeding is data. Each rule is a recipe of type `nautec:colony_feeding`, and the 
 | `ingredient` | An object holding the item `ingredient` and an optional `count` (default 1). The slot must hold at least that many, and one feeding takes them all. |
 | `vitality_ticks` | Ticks of buffer one feeding adds. |
 
-When more than one recipe accepts the same item for a colony, a recipe naming the strain wins over a tag, and a tag wins over a recipe for every strain. `/nautec bacteria generate` writes a feeding recipe for each strain it makes, see [Custom Bacteria](custom_bacteria.md).
+When more than one recipe accepts the same item for a colony, a recipe naming the strain wins over a tag, and a tag wins over a recipe for every strain. A written recipe always wins over the automatic product and storage block rule.
+
+The storage block is found from the `c:storage_blocks/<material>` tag that matches the item's `c:ingots`, `c:gems` or `c:dusts` tag. Items without one, such as Wheat and Bone Meal, name their block in the `nautec:storage_blocks` item data map, which a datapack can add to. `bacteriaProductNutrients` in `config/nautec-common.toml` turns the rule off. `/nautec bacteria generate` writes a feeding recipe for each strain it makes, see [Custom Bacteria](custom_bacteria.md).

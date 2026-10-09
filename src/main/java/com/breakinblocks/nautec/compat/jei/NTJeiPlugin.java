@@ -29,6 +29,7 @@ import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCat
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
+import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
 import com.breakinblocks.nautec.content.recipes.ColonyFeedingRecipe;
@@ -58,6 +59,7 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -75,11 +77,14 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 @JeiPlugin
 public class NTJeiPlugin implements IModPlugin {
@@ -95,8 +100,8 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(LaserCraftingRecipe.Type.INSTANCE, LaserCraftingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE),
-            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE),
-            new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE));
+            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE, ProductNutrients.Derived::incubation),
+            new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
     private IJeiRuntime runtime;
 
     public NTJeiPlugin() {
@@ -125,15 +130,26 @@ public class NTJeiPlugin implements IModPlugin {
     private static final class RecipeBinding<I extends RecipeInput, R extends Recipe<I>> {
         private final RecipeType<R> minecraftType;
         private final IRecipeType<R> jeiType;
+        private final @Nullable Function<ProductNutrients.Derived, List<R>> derived;
         private List<R> registered = List.of();
 
         private RecipeBinding(RecipeType<R> minecraftType, IRecipeType<R> jeiType) {
+            this(minecraftType, jeiType, null);
+        }
+
+        private RecipeBinding(RecipeType<R> minecraftType, IRecipeType<R> jeiType, @Nullable Function<ProductNutrients.Derived, List<R>> derived) {
             this.minecraftType = minecraftType;
             this.jeiType = jeiType;
+            this.derived = derived;
         }
 
         private List<R> recipes(RecipeMap map) {
-            return map.byType(minecraftType).stream().map(RecipeHolder::value).toList();
+            List<R> recipes = new ArrayList<>(map.byType(minecraftType).stream().map(RecipeHolder::value).toList());
+            ClientPacketListener connection = Minecraft.getInstance().getConnection();
+            if (derived != null && connection != null) {
+                recipes.addAll(derived.apply(ProductNutrients.derive(map, connection.registryAccess())));
+            }
+            return recipes;
         }
 
         private void register(IRecipeRegistration registration, RecipeMap map) {
