@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#nautec:has_budding_prismarine",
+  "features": "nautec:warm_ocean_budding_prismarine",
+  "step": "underground_decoration"
+}

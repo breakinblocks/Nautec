@@ -129,6 +129,26 @@ public final class WorldgenInjectionTests {
             helper.succeed();
         });
 
+        r.add("worldgen/warm_oceans_grow_budding_prismarine", 20, helper -> {
+            HolderLookup.RegistryLookup<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+            String feature = Nautec.rl("warm_ocean_budding_prismarine").toString();
+            for (ResourceKey<Biome> key : List.of(Biomes.WARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN)) {
+                boolean found = false;
+                for (HolderSet<PlacedFeature> step : biomes.getOrThrow(key).value().getGenerationSettings().features()) {
+                    found |= featureNames(step).contains(feature);
+                }
+                if (!found) {
+                    helper.fail(key.identifier() + " has no " + feature + " feature");
+                }
+            }
+            for (HolderSet<PlacedFeature> step : biomes.getOrThrow(Biomes.COLD_OCEAN).value().getGenerationSettings().features()) {
+                if (featureNames(step).contains(feature)) {
+                    helper.fail("minecraft:cold_ocean should not grow Budding Prismarine");
+                }
+            }
+            helper.succeed();
+        });
+
         r.add("worldgen/biomes_invent_no_feature_ordering", 20, helper -> {
             HolderLookup.RegistryLookup<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
 

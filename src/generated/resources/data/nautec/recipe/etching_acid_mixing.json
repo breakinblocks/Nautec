@@ -14,7 +14,7 @@
       "ingredient": "minecraft:pufferfish"
     },
     {
-      "ingredient": "minecraft:gunpowder"
+      "ingredient": "#c:gunpowders"
     },
     {
       "ingredient": "minecraft:bone_meal"

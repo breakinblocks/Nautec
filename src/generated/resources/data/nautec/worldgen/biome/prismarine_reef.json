@@ -60,7 +60,9 @@
       "minecraft:disk_gravel",
       "nautec:reef_prismarine"
     ],
-    [],
+    [
+      "nautec:reef_budding_prismarine"
+    ],
     [
       "minecraft:spring_water",
       "minecraft:spring_lava"

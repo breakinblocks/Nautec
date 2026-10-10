@@ -4,14 +4,14 @@
   "parameters": {
     "continentalness": [
       -0.455,
-      -0.3
+      -0.33
     ],
     "depth": [
       0.0,
       1.0
     ],
     "temperature": [
-      0.55,
+      -0.15,
       1.0
     ]
   },

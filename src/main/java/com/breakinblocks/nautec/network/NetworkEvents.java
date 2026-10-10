@@ -67,6 +67,11 @@ public class NetworkEvents {
                 ConduitTapSyncPayload::handle
         );
         registrar.playToServer(
+                RecipeTransferPayload.TYPE,
+                RecipeTransferPayload.STREAM_CODEC,
+                RecipeTransferPayload::handle
+        );
+        registrar.playToServer(
                 SetGhostInputPayload.TYPE,
                 SetGhostInputPayload.STREAM_CODEC,
                 SetGhostInputPayload::handle

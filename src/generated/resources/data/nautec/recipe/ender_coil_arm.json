@@ -4,7 +4,7 @@
   "key": {
     "E": "minecraft:ender_eye",
     "M": "nautec:magnetic_coil_arm",
-    "P": "minecraft:ender_pearl"
+    "P": "#c:ender_pearls"
   },
   "pattern": [
     " E ",

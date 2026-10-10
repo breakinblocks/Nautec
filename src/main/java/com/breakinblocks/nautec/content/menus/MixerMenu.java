@@ -18,12 +18,12 @@ public class MixerMenu extends NTMachineMenu<MixerBlockEntity> {
         super(NTMenuTypes.MIXER.get(), containerId, inv, blockEntity);
 
         for (int i = 0; i < 4; i++) {
-            addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, i, 29 + i * (4 + 18), 12));
+            addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, i, 29 + i * (4 + 18), 17));
         }
 
         addSlot(new ResourceHandlerSlot(blockEntity.getItemStackHandler(), blockEntity.getItemStackHandler()::set, 4, 29 + 2 * (4 + 18) - 11, 67));
 
-        addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, 122, 11, 18, 18));
+        addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, 122, 16, 18, 18));
         addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getSecondaryFluidTank(), 0, 122, 66, 18, 18));
     }
 

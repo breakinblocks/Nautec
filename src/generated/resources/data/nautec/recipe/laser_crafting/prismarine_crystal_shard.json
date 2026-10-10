@@ -3,7 +3,7 @@
   "duration": 40,
   "ingredients": [
     {
-      "ingredient": "minecraft:prismarine_crystals"
+      "ingredient": "#c:gems/prismarine"
     }
   ],
   "power": 20,

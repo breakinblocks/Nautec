@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": "nautec:aquatic_chip",
-    "R": "minecraft:redstone",
+    "R": "#c:dusts/redstone",
     "S": "nautec:aquarine_steel_ingot"
   },
   "pattern": [

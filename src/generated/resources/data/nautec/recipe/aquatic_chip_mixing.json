@@ -8,11 +8,11 @@
   "ingredients": [
     {
       "count": 2,
-      "ingredient": "minecraft:gold_ingot"
+      "ingredient": "#c:ingots/gold"
     },
     {
       "count": 4,
-      "ingredient": "minecraft:redstone"
+      "ingredient": "#c:dusts/redstone"
     },
     {
       "count": 2,

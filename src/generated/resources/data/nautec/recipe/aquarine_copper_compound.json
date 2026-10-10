@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:copper_ingot",
-    "minecraft:copper_ingot",
-    "minecraft:prismarine_crystals",
+    "#c:ingots/copper",
+    "#c:ingots/copper",
+    "#c:gems/prismarine",
     "minecraft:dried_kelp"
   ],
   "result": {

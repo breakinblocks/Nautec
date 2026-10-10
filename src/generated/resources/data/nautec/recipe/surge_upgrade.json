@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": "minecraft:emerald",
+    "M": "#c:gems/emerald",
     "P": "nautec:eddy_upgrade",
     "R": "#c:dusts/redstone"
   },

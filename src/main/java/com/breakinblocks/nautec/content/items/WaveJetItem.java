@@ -245,4 +245,9 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     private static @Nullable IPowerStorage storage(ItemStack stack) {
         return stack.getCapability(NTCapabilities.PowerStorage.ITEM);
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || oldStack.getItem() != newStack.getItem();
+    }
 }

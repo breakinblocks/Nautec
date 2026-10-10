@@ -88,4 +88,9 @@ public class BatteryItem extends Item implements IPowerItem, ICurioItem {
             }
         }
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || oldStack.getItem() != newStack.getItem();
+    }
 }

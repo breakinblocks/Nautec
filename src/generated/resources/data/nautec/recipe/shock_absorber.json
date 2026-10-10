@@ -5,7 +5,7 @@
     "B": "nautec:brown_polymer",
     "I": "nautec:cast_iron_ingot",
     "R": "nautec:cast_iron_rod",
-    "S": "minecraft:slime_ball"
+    "S": "#c:slime_balls"
   },
   "pattern": [
     " S ",

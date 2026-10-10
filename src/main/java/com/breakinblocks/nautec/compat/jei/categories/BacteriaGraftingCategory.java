@@ -17,8 +17,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 
 public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGraftingCategory.GraftingRecipe> {
     public static final Identifier UID = Nautec.rl(GraftingRecipe.NAME);
@@ -45,7 +45,7 @@ public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGra
         builder.addOutputSlot(getWidth() - 18, getHeight() / 2 - 9 + y).add(stack);
 
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, getWidth() / 2 - 9, getHeight() / 2 - 18 + y).add(NTItems.GRAFTING_TOOL);
-        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 9, getHeight() / 2 + y).add(recipe.block());
+        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 9, getHeight() / 2 + y).add(recipe.sample());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGra
                 .setShadow(false);
     }
 
-    public record GraftingRecipe(Block block, BacteriaObtainValue val) {
+    public record GraftingRecipe(Item sample, BacteriaObtainValue val) {
         public static final String NAME = "grafting";
     }
 }

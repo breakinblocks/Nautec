@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitChannel;
 import com.breakinblocks.nautec.content.conduits.ConduitNetwork;
@@ -16,8 +17,10 @@ import com.breakinblocks.nautec.content.conduits.TapFilter;
 import com.breakinblocks.nautec.content.conduits.TapFlow;
 import com.breakinblocks.nautec.content.conduits.TapSide;
 import com.breakinblocks.nautec.network.ConduitTapEditPayload;
+import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.utils.TemplateSanitizer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
@@ -36,9 +39,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -111,6 +116,33 @@ public final class ConduitTests {
             helper.succeed();
         });
 
+        r.add("conduit/filter_sorts_dishes_by_strain", 5, helper -> {
+            RegistryAccess registries = helper.getLevel().registryAccess();
+            ItemStack lithophiles = DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.LITHOPHILES, 40000));
+            ItemStack calciophiles = DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.CALCIOPHILES, 100));
+            ItemStack empty = new ItemStack(NTItems.PETRI_DISH.get());
+            TapFilter filter = new TapFilter();
+            filter.setItem(0, TemplateSanitizer.item(lithophiles, registries));
+            helper.assertTrue(filter.exact(0), "a colony dish matches by strain as soon as it is set");
+            helper.assertTrue(filter.passes(ItemResource.of(DishPortTests.dish(DishPortTests.colony(helper, NTBacterias.LITHOPHILES, 400))), 9),
+                    "a dish of the same strain at another size passes");
+            helper.assertFalse(filter.passes(ItemResource.of(calciophiles), 9), "a dish of another strain is held back");
+            helper.assertFalse(filter.passes(ItemResource.of(empty), 9), "an empty dish is held back");
+            filter.setWhitelist(false);
+            helper.assertTrue(filter.passes(ItemResource.of(calciophiles), 9), "a blacklist lets other strains through");
+            helper.assertFalse(filter.passes(ItemResource.of(lithophiles), 9), "a blacklist holds back the listed strain");
+            filter.setWhitelist(true);
+            filter.setExact(0, false);
+            helper.assertTrue(filter.passes(ItemResource.of(calciophiles), 9), "loose matching takes any dish");
+            TapFilter emptyFilter = new TapFilter();
+            emptyFilter.setItem(0, empty);
+            helper.assertFalse(emptyFilter.exact(0), "an empty dish starts out loose");
+            emptyFilter.setExact(0, true);
+            helper.assertTrue(emptyFilter.passes(ItemResource.of(empty), 9), "an exact empty dish takes empty dishes");
+            helper.assertFalse(emptyFilter.passes(ItemResource.of(calciophiles), 9), "an exact empty dish holds back colonies");
+            helper.succeed();
+        });
+
         r.add("conduit/flange_colour_follows_the_face_modes", 60, helper -> {
             chestLine(helper);
             ConduitTapBlockEntity tap = tap(helper, 1);
@@ -172,6 +204,42 @@ public final class ConduitTests {
             setMode(source, Direction.WEST, ConduitChannel.ITEMS, FlowMode.EXTRACT);
             chests[0].setItem(0, new ItemStack(Items.COBBLESTONE, 16));
             helper.succeedWhen(() -> helper.assertTrue(count(chests[1], Items.COBBLESTONE) >= 16, "two moves of cobblestone reached the far chest"));
+        });
+
+        r.add("conduit/items_move_out_of_a_confined_spawner", 120, helper -> {
+            ServerLevel level = helper.getLevel();
+            BlockPos spawnerPos = helper.absolutePos(new BlockPos(0, Y, 4));
+            level.setBlock(spawnerPos, NTBlocks.CONFINED_SPAWNER.get().defaultBlockState(), Block.UPDATE_ALL);
+            ConfinedSpawnerBlockEntity spawner = (ConfinedSpawnerBlockEntity) level.getBlockEntity(spawnerPos);
+            spawner.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.BONE, 16));
+            ChestBlockEntity target = chest(helper, 8, 4);
+            line(helper, 1, 7);
+            ConduitTapBlockEntity source = tap(helper, 1);
+            tapAt(helper, 7);
+            setMode(source, Direction.WEST, ConduitChannel.ITEMS, FlowMode.EXTRACT);
+            helper.succeedWhen(() -> helper.assertTrue(count(target, Items.BONE) >= 16, "bones from the confined spawner reached the chest"));
+        });
+
+        r.add("conduit/plain_containers_are_reached_through_their_faces", 5, helper -> {
+            ServerLevel level = helper.getLevel();
+            BlockPos furnacePos = helper.absolutePos(new BlockPos(4, Y, 4));
+            level.setBlock(furnacePos, Blocks.FURNACE.defaultBlockState(), Block.UPDATE_ALL);
+            FurnaceBlockEntity furnace = (FurnaceBlockEntity) level.getBlockEntity(furnacePos);
+            furnace.setItem(0, new ItemStack(Items.RAW_IRON, 4));
+            furnace.setItem(2, new ItemStack(Items.IRON_INGOT, 3));
+            ResourceHandler<ItemResource> bottom = ConduitTapBlockEntity.containerAt(level, furnacePos, Direction.DOWN);
+            ResourceHandler<ItemResource> top = ConduitTapBlockEntity.containerAt(level, furnacePos, Direction.UP);
+            helper.assertTrue(bottom != null && top != null, "a furnace is found as a container");
+            try (Transaction transaction = Transaction.openRoot()) {
+                helper.assertValueEqual(3, ResourceHandlerUtil.extractFirst(bottom, resource -> true, 64, transaction).amount(), "ingots taken from below");
+            }
+            try (Transaction transaction = Transaction.openRoot()) {
+                helper.assertTrue(ResourceHandlerUtil.extractFirst(top, resource -> resource.is(Items.IRON_INGOT), 64, transaction) == null,
+                        "the top face cannot reach the result slot");
+            }
+            helper.assertTrue(ConduitTapBlockEntity.containerAt(level, helper.absolutePos(new BlockPos(5, Y, 4)), Direction.DOWN) == null,
+                    "air is not a container");
+            helper.succeed();
         });
 
         r.add("conduit/whitelist_only_passes_listed_items", 120, helper -> {

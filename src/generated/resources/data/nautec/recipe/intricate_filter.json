@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "nautec:filter",
-    "minecraft:emerald"
+    "#c:gems/emerald"
   ],
   "result": {
     "id": "nautec:intricate_filter"

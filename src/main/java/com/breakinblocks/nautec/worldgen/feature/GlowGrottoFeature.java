@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -26,6 +27,9 @@ import java.util.List;
 import java.util.Set;
 
 public class GlowGrottoFeature extends Feature<NoneFeatureConfiguration> {
+    private static final int ATTEMPTS = 4;
+    private static final int SPREAD = 4;
+
     public GlowGrottoFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
@@ -40,11 +44,20 @@ public class GlowGrottoFeature extends Feature<NoneFeatureConfiguration> {
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel level = context.level();
         RandomSource random = context.random();
-        BlockPos floor = VentFieldFeature.findFloor(level, context.origin());
-        if (floor == null) {
-            return false;
+        BlockPos origin = context.origin();
+        for (int attempt = 0; attempt < ATTEMPTS; attempt++) {
+            BlockPos column = origin;
+            if (attempt > 0) {
+                int x = origin.getX() + random.nextInt(SPREAD * 2 + 1) - SPREAD;
+                int z = origin.getZ() + random.nextInt(SPREAD * 2 + 1) - SPREAD;
+                column = new BlockPos(x, level.getHeight(Heightmap.Types.OCEAN_FLOOR, x, z), z);
+            }
+            BlockPos floor = VentFieldFeature.findFloor(level, column);
+            if (floor != null && carve(level, random, floor, 4 + random.nextInt(3), 3 + random.nextInt(2), 4 + random.nextInt(3))) {
+                return true;
+            }
         }
-        return carve(level, random, floor, 4 + random.nextInt(3), 3 + random.nextInt(2), 4 + random.nextInt(3));
+        return false;
     }
 
     public static boolean carve(WorldGenLevel level, RandomSource random, BlockPos floor, int rx, int ry, int rz) {

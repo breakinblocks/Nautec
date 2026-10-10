@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     "minecraft:prismarine_shard",
-    "minecraft:ender_pearl"
+    "#c:ender_pearls"
   ],
   "result": {
     "id": "nautec:eye_of_the_sea"

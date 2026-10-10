@@ -3,7 +3,7 @@
   "category": "building",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "C": "minecraft:prismarine_crystals",
+    "C": "#c:gems/prismarine",
     "P": "nautec:polished_prismarine"
   },
   "pattern": [

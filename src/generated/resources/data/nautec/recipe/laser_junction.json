@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "R": "nautec:prismarine_laser_relay"
   },
   "pattern": [

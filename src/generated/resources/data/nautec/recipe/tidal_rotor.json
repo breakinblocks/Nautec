@@ -2,10 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "minecraft:copper_block",
+    "C": "#c:storage_blocks/copper",
     "I": "nautec:cast_iron_ingot",
     "R": "nautec:cast_iron_rod",
-    "X": "minecraft:redstone"
+    "X": "#c:dusts/redstone"
   },
   "pattern": [
     "RIR",

@@ -8,10 +8,10 @@
   "ingredients": [
     {
       "count": 2,
-      "ingredient": "minecraft:raw_iron"
+      "ingredient": "#c:raw_materials/iron"
     },
     {
-      "ingredient": "minecraft:prismarine_crystals"
+      "ingredient": "#c:gems/prismarine"
     }
   ],
   "result": {

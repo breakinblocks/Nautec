@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:raw_iron",
-    "minecraft:prismarine_crystals"
+    "#c:raw_materials/iron",
+    "#c:gems/prismarine"
   ],
   "result": {
     "count": 2,

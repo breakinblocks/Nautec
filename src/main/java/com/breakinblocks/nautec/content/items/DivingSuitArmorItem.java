@@ -9,7 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -67,11 +69,25 @@ public class DivingSuitArmorItem extends Item {
                 player.getItemBySlot(EquipmentSlot.FEET).is(NTItems.DIVING_BOOTS);
     }
 
+    public static float withoutWaterPenalties(Player player, float speed) {
+        if (!player.isInWater() || !isWearingFullSuit(player)) {
+            return speed;
+        }
+        if (player.isEyeInFluid(FluidTags.WATER)) {
+            float submerged = (float) player.getAttributeValue(Attributes.SUBMERGED_MINING_SPEED);
+            if (submerged > 0 && submerged < 1) {
+                speed /= submerged;
+            }
+        }
+        return player.onGround() ? speed : speed * 5.0F;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (stack.is(NTItems.DIVING_HELMET.get())) {
             Tooltips.trans(tooltipComponents, "nautec.helm.desc", ChatFormatting.GRAY);
         }
+        Tooltips.trans(tooltipComponents, "nautec.diving_suit.mining", ChatFormatting.GRAY);
 
         if (stack.is(NTItems.DIVING_CHESTPLATE.get())) {
             int oxygen = NTDataComponentsUtils.getOxygenLevels(stack);

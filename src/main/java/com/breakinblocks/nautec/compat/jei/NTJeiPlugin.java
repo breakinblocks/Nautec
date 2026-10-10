@@ -8,6 +8,7 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
+import com.breakinblocks.nautec.api.items.IBacteriaItem;
 import com.breakinblocks.nautec.client.ClientRecipes;
 import com.breakinblocks.nautec.client.screen.ConfinedSpawnerScreen;
 import com.breakinblocks.nautec.compat.jei.categories.AquaticCatalystChannelingRecipeCategory;
@@ -45,6 +46,30 @@ import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.content.menus.RecipeTransfer;
+import com.breakinblocks.nautec.content.menus.MixerMenu;
+import com.breakinblocks.nautec.content.menus.LaserCraftingMatrixMenu;
+import com.breakinblocks.nautec.content.menus.IncubatorMenu;
+import com.breakinblocks.nautec.content.menus.MutatorMenu;
+import com.breakinblocks.nautec.content.menus.BioReactorMenu;
+import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
+import com.breakinblocks.nautec.content.menus.CombustionDynamoMenu;
+import com.breakinblocks.nautec.content.menus.GraftingStationMenu;
+import com.breakinblocks.nautec.registries.NTMenuTypes;
+import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.IncubatorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.GraftingStationBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.generators.CombustionDynamoBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
+import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -60,6 +85,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -72,6 +98,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
@@ -174,6 +201,15 @@ public class NTJeiPlugin implements IModPlugin {
     }
 
     @Override
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
+        for (ItemLike item : NTItems.bacteriaItems()) {
+            if (item.asItem() instanceof IBacteriaItem) {
+                registration.registerSubtypeInterpreter(item.asItem(), BacteriaSubtypeInterpreter.INSTANCE);
+            }
+        }
+    }
+
+    @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new PressureForgingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
         registration.addRecipeCategories(new ResonanceCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -242,9 +278,18 @@ public class NTJeiPlugin implements IModPlugin {
                 .toList();
 
         Map<ResourceKey<Block>, BacteriaObtainValue> dataMap = BuiltInRegistries.BLOCK.getDataMap(NTDataMaps.BACTERIA_OBTAINING);
-        List<BacteriaGraftingCategory.GraftingRecipe> graftingRecipes = dataMap.entrySet().stream()
-                .map(entry -> new BacteriaGraftingCategory.GraftingRecipe(BuiltInRegistries.BLOCK.getValueOrThrow(entry.getKey()), entry.getValue()))
-                .toList();
+        List<BacteriaGraftingCategory.GraftingRecipe> graftingRecipes = new ArrayList<>();
+        for (Map.Entry<ResourceKey<Block>, BacteriaObtainValue> entry : dataMap.entrySet()) {
+            Block block = BuiltInRegistries.BLOCK.getValueOrThrow(entry.getKey());
+            Item sample = block.defaultBlockState().getCloneItemStack(level, BlockPos.ZERO, false).getItem();
+            if (sample == Items.AIR) {
+                sample = block.asItem();
+            }
+            BacteriaGraftingCategory.GraftingRecipe recipe = new BacteriaGraftingCategory.GraftingRecipe(sample, entry.getValue());
+            if (sample != Items.AIR && !graftingRecipes.contains(recipe)) {
+                graftingRecipes.add(recipe);
+            }
+        }
 
         registration.addRecipes(BioReactorCategory.RECIPE_TYPE, bioReactorRecipes);
         registration.addRecipes(EasInfusionCategory.RECIPE_TYPE, EasInfusionCategory.recipes());
@@ -285,6 +330,53 @@ public class NTJeiPlugin implements IModPlugin {
         registerGhostInputs(registration, NTAbstractContainerScreen.class);
         registration.addGuiContainerHandler(ConfinedSpawnerScreen.class, handler);
         registration.addGenericGuiContainerHandler(AbstractContainerScreen.class, new SideConfigJeiHandler());
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        IRecipeTransferHandlerHelper helper = registration.getTransferHelper();
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, MixerMenu.class, NTMenuTypes.MIXER, MixingRecipeCategory.RECIPE_TYPE,
+                (menu, recipe) -> counted(recipe.ingredients(), MixerBlockEntity.INPUT_SLOTS)), MixingRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, LaserCraftingMatrixMenu.class, NTMenuTypes.LASER_CRAFTING_MATRIX,
+                LaserCraftingRecipeCategory.RECIPE_TYPE, (menu, recipe) -> counted(recipe.ingredients(), LaserCraftingMatrixBlockEntity.INPUT_SLOTS)),
+                LaserCraftingRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, IncubatorMenu.class, NTMenuTypes.INCUBATOR, BacteriaIncubationCategory.RECIPE_TYPE,
+                (menu, recipe) -> List.of(new RecipeTransfer.Entry(IncubatorBlockEntity.NUTRIENT_SLOT, recipe.nutrient(), 1))), BacteriaIncubationCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, MutatorMenu.class, NTMenuTypes.MUTATOR, BacteriaMutationsCategory.RECIPE_TYPE,
+                (menu, recipe) -> List.of(new RecipeTransfer.Entry(MutatorBlockEntity.CATALYST, recipe.catalyst(), 1))), BacteriaMutationsCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, BioReactorMenu.class, NTMenuTypes.BIO_REACTOR, ColonyFeedingCategory.RECIPE_TYPE,
+                (menu, recipe) -> feeding(menu.blockEntity, recipe)), ColonyFeedingCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, IndustrialBioReactorMenu.class, NTMenuTypes.INDUSTRIAL_BIO_REACTOR,
+                ColonyFeedingCategory.RECIPE_TYPE, (menu, recipe) -> feeding(menu.blockEntity, recipe)), ColonyFeedingCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, CombustionDynamoMenu.class, NTMenuTypes.COMBUSTION_DYNAMO,
+                CombustionAdditiveCategory.RECIPE_TYPE, (menu, recipe) -> List.of(new RecipeTransfer.Entry(CombustionDynamoBlockEntity.ADDITIVE_SLOT, recipe.ingredient(), 1))),
+                CombustionAdditiveCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, GraftingStationMenu.class, NTMenuTypes.GRAFTING_STATION,
+                BacteriaGraftingCategory.RECIPE_TYPE, (menu, recipe) -> grafting(recipe)), BacteriaGraftingCategory.RECIPE_TYPE);
+    }
+
+    private static List<RecipeTransfer.Entry> counted(List<IngredientWithCount> ingredients, int slots) {
+        List<RecipeTransfer.Entry> entries = new ArrayList<>();
+        for (int i = 0; i < ingredients.size() && i < slots; i++) {
+            IngredientWithCount ingredient = ingredients.get(i);
+            if (!ingredient.ingredient().isEmpty()) {
+                entries.add(new RecipeTransfer.Entry(i, ingredient.ingredient(), ingredient.count()));
+            }
+        }
+        return entries;
+    }
+
+    private static List<RecipeTransfer.Entry> feeding(AbstractBioReactorBlockEntity reactor, ColonyFeedingRecipe recipe) {
+        if (reactor.getNutrientSlotCount() == 0) {
+            return List.of();
+        }
+        return List.of(new RecipeTransfer.Entry(reactor.nutrientSlot(0), recipe.ingredient().ingredient(), recipe.ingredient().count()));
+    }
+
+    private static List<RecipeTransfer.Entry> grafting(BacteriaGraftingCategory.GraftingRecipe recipe) {
+        Item sample = recipe.sample();
+        return List.of(new RecipeTransfer.Entry(GraftingStationBlockEntity.DISH_SLOT, Ingredient.of(NTItems.PETRI_DISH.get()), 1),
+                new RecipeTransfer.Entry(GraftingStationBlockEntity.SAMPLE_SLOT, Ingredient.of(sample), 1));
     }
 
     @Override

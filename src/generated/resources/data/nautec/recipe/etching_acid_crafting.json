@@ -3,11 +3,11 @@
   "category": "misc",
   "ingredients": [
     "minecraft:poisonous_potato",
-    "minecraft:gunpowder",
+    "#c:gunpowders",
     "minecraft:bone_meal",
     "minecraft:snow_block",
     "minecraft:pufferfish",
-    "minecraft:bucket"
+    "#c:buckets/empty"
   ],
   "result": {
     "id": "nautec:etching_acid_bucket"

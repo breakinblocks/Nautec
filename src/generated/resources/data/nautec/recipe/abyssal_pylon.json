@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "D": "nautec:deep_steel_plating",
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "F": "nautec:flawless_prismarine_crystal",
     "G": "nautec:atlantic_gold_ingot",
-    "N": "minecraft:nether_star",
+    "N": "#c:nether_stars",
     "P": "nautec:resonance_pylon"
   },
   "pattern": [

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": "nautec:aquatic_chip",
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "G": "nautec:atlantic_gold_ingot",
     "L": "nautec:laser_channeling_coil"
   },

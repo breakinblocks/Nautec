@@ -22,11 +22,15 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -41,6 +45,8 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -71,7 +77,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
 
         @Override
         public int insert(ConduitTapBlockEntity tap, Direction face, ItemResource resource, int amount, TransactionContext transaction) {
-            return ResourceHandlerUtil.insertStacking(tap.target(Capabilities.Item.BLOCK, tap.itemCaches, face), resource, amount, transaction);
+            return ResourceHandlerUtil.insertStacking(tap.items(face), resource, amount, transaction);
         }
     };
     private static final Channel<FluidResource> FLUIDS = new Channel<>() {
@@ -389,7 +395,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
         TapFace face = faces[direction.ordinal()];
         boolean input = false;
         boolean output = false;
-        if (target(Capabilities.Item.BLOCK, itemCaches, direction) != null) {
+        if (items(direction) != null) {
             FlowMode mode = face.mode(ConduitChannel.ITEMS);
             input = mode.extracts();
             output = mode.inserts();
@@ -422,7 +428,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
         if (ConduitTapBlock.isConduitPart(neighbour)) {
             return CurrentConduitBlock.joins(level, neighbourPos, direction.getOpposite(), neighbour) ? TapArm.CONDUIT : TapArm.NONE;
         }
-        boolean machine = target(Capabilities.Item.BLOCK, itemCaches, direction) != null
+        boolean machine = items(direction) != null
                 || target(Capabilities.Fluid.BLOCK, fluidCaches, direction) != null
                 || target(Capabilities.Energy.BLOCK, energyCaches, direction) != null;
         return machine ? TapArm.MACHINE : TapArm.NONE;
@@ -473,7 +479,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             int item = index(ConduitChannel.ITEMS, direction);
             if (face.mode(ConduitChannel.ITEMS).extracts() && (time + tickOffset) % rates.itemInterval() == 0 && ready(item, time)
                     && routesFor(ConduitChannel.ITEMS) != null) {
-                ResourceHandler<ItemResource> source = target(Capabilities.Item.BLOCK, itemCaches, direction);
+                ResourceHandler<ItemResource> source = items(direction);
                 if (source != null) {
                     backOff(item, ResourceHandlerUtil.move(source, itemSinks[d], itemFilters[d], rates.itemsPerOp(), null) > 0, MAX_IDLE, time);
                 }
@@ -515,6 +521,25 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             caches[d] = cache;
         }
         return cache.getCapability();
+    }
+
+    private @Nullable ResourceHandler<ItemResource> items(Direction direction) {
+        ResourceHandler<ItemResource> handler = target(Capabilities.Item.BLOCK, itemCaches, direction);
+        return handler != null || level == null ? handler : containerAt(level, worldPosition.relative(direction), direction.getOpposite());
+    }
+
+    public static @Nullable ResourceHandler<ItemResource> containerAt(Level level, BlockPos pos, Direction side) {
+        BlockState state = level.getBlockState(pos);
+        Container container = null;
+        if (state.getBlock() instanceof WorldlyContainerHolder holder) {
+            container = holder.getContainer(state, level, pos);
+        } else if (state.hasBlockEntity() && level.getBlockEntity(pos) instanceof Container blockContainer) {
+            container = blockContainer;
+        }
+        if (container == null) {
+            return null;
+        }
+        return container instanceof WorldlyContainer worldly ? new WorldlyContainerWrapper(worldly, side) : VanillaContainerWrapper.of(container);
     }
 
     public @Nullable ResourceHandler<ItemResource> itemSink(@Nullable Direction direction) {

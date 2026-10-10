@@ -4,7 +4,7 @@
   "key": {
     "D": "nautec:deep_steel_plating",
     "F": "nautec:flawless_prismarine_crystal",
-    "N": "minecraft:nether_star",
+    "N": "#c:nether_stars",
     "R": "nautec:resonant_shard"
   },
   "pattern": [

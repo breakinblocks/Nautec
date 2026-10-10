@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": "minecraft:diamond",
+    "M": "#c:gems/diamond",
     "P": "nautec:surge_upgrade",
     "R": "#c:dusts/redstone"
   },

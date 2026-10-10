@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": "nautec:laser_channeling_coil",
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "G": "nautec:atlantic_gold_ingot",
     "L": "nautec:prismarine_lens",
     "P": "nautec:deep_steel_plating"

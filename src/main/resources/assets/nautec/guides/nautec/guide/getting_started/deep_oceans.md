@@ -26,7 +26,7 @@ NauTec also makes oceans deeper than vanilla. With Tectonic installed, Tectonic 
 | Abyssal Trench | farthest from land, cold climates | about 20 blocks |
 | Bioluminescent Grove | deep ocean, temperate climates | about 130 blocks |
 | Hydrothermal Vents | deep ocean, warm climates | about 50 blocks |
-| Prismarine Reef | shallow water near the coast, hot climates | about 145 blocks |
+| Prismarine Reef | shallow water off the coast, temperate to hot climates | about 145 blocks |
 
 ***
 
@@ -36,7 +36,7 @@ The deepest and darkest of the four, with near-black water and drifting motes.
 
 * Drowned spawn far more often than in other oceans, and the Abyssal Maw hunts in the dark below y 40.
 * Abyssal Coral grows on the floor. Silt Skippers, cod, squid and glow squid swim here.
-* <ItemLink id="budding_prismarine"/> forms rarely in the rock 4 to 16 blocks under the floor.
+* <ItemLink id="budding_prismarine"/> forms in the rock 2 to 10 blocks under the floor.
 * The best place for the [Abyssal Pressure Forge](nautec:deep_engineering/pressure_forge.md), which needs depth and a column of water above it.
 
 ***
@@ -47,7 +47,7 @@ Clear teal water with glowing spores drifting through it.
 
 * Deep Kelp, Luminescent Algae, seagrass and sea pickles on the floor, and Glow Polyp spreading over stone on floors, walls and ceilings.
 * Lantern Jellies, Silt Skippers and extra glow squid.
-* Budding Prismarine forms rarely in the rock under the floor, as in the Trench.
+* Budding Prismarine forms in the rock under the floor, as in the Trench.
 
 ### Glow Grottos
 
@@ -82,6 +82,7 @@ Clusters of two to five black chimneys of basalt and blackstone rising from the 
 Bright, clear shallow water.
 
 * Coral, sea pickles and patches of prismarine in the sea floor, with Prismarine Fronds growing between them.
+* <ItemLink id="budding_prismarine"/> sits in the top of the sea floor and in the prismarine patches. It is the easiest place to find one.
 * Tropical fish, Silt Skippers, squid and dolphins.
 
 ***
@@ -89,5 +90,7 @@ Bright, clear shallow water.
 ## <Color id="gold">For Pack Makers</Color>
 
 `enableBiomeInjection` in `config/nautec-worldgen.toml` turns the biomes off. Packs using a custom overworld preset should add it to `injectableWorldPresets`. With Lithostitched installed, placement comes from the biome injector files in `data/nautec/lithostitched/biome_injector` instead, which also covers Terralith and Tectonic.
+
+The biome tag `nautec:has_budding_prismarine` lists the non-NauTec biomes that get the odd Budding Prismarine in their sea floor, Warm Ocean and Deep Lukewarm Ocean by default. Add another mod's warm oceans to it to give them the same. `nautec:budding_prismarine_grafting` lists where Lithophiles can be grafted from it, and already includes the first tag.
 
 Plants and creatures are covered in [Life in the Deep](deep_life.md).

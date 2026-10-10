@@ -4,9 +4,9 @@
   "key": {
     "A": "nautec:aquatic_chip",
     "C": "nautec:fusion_casing",
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "F": "nautec:flawless_prismarine_crystal",
-    "N": "minecraft:nether_star",
+    "N": "#c:nether_stars",
     "P": "nautec:deep_steel_plating"
   },
   "pattern": [

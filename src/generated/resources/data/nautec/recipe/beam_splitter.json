@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "minecraft:prismarine_crystals",
+    "C": "#c:gems/prismarine",
     "D": "nautec:dark_prismarine_pillar",
     "S": "nautec:prismarine_crystal_shard"
   },

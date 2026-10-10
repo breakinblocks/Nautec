@@ -37,6 +37,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -122,8 +123,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("G G")
                 .pattern("G G")
                 .pattern(" G ")
-                .define('G', Items.GLASS)
-                .unlockedBy("has_item", has(Items.GLASS))
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .unlockedBy("has_item", has(Tags.Items.GLASS_BLOCKS_COLORLESS))
                 .save(pRecipeOutput, key("glass_vial"));
 
         shaped(RecipeCategory.MISC, NTItems.CLAW_ROBOT_ARM.asItem(), 1)
@@ -139,14 +140,14 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("AAA")
                 .pattern("AP ")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
-                .define('P', Items.PRISMARINE_CRYSTALS)
+                .define('P', Tags.Items.GEMS_PRISMARINE)
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
                 .save(pRecipeOutput, key("prism_monocle"));
 
         shapeless(RecipeCategory.MISC, NTItems.EYE_OF_THE_SEA.get(), 1)
                 .requires(Items.PRISMARINE_SHARD)
-                .requires(Items.ENDER_PEARL)
-                .unlockedBy("has_item", has(Items.ENDER_PEARL))
+                .requires(Tags.Items.ENDER_PEARLS)
+                .unlockedBy("has_item", has(Tags.Items.ENDER_PEARLS))
                 .save(pRecipeOutput, key("eye_of_the_sea"));
 
         brownPolymerRecipes(pRecipeOutput);
@@ -161,38 +162,38 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("CCC")
                 .pattern("CPC")
                 .pattern("CCC")
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('P', Items.PRISMARINE_SHARD)
-                .unlockedBy("has_item", has(Items.PRISMARINE_CRYSTALS))
+                .unlockedBy("has_item", has(Tags.Items.GEMS_PRISMARINE))
                 .save(pRecipeOutput, key("decorative_prismarine_crystal"));
 
 
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.ANCHOR), RecipeCategory.MISC, CookingBookCategory.MISC, new ItemStackTemplate(NTItems.CAST_IRON_INGOT.get(), 11), 0.2f, 400)
-                .unlockedBy("has_item", has(Items.IRON_INGOT))
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_from_anchor_blasting"));
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.OIL_BARREL), RecipeCategory.MISC, CookingBookCategory.MISC, new ItemStackTemplate(NTItems.CAST_IRON_INGOT.get(), 5), 0.2f, 400)
-                .unlockedBy("has_item", has(Items.IRON_INGOT))
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_from_oil_barrel_blasting"));
 
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, CookingBookCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 100)
-                .unlockedBy("has_item", has(Items.IRON_INGOT))
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_blasting"));
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, CookingBookCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 200)
-                .unlockedBy("has_item", has(Items.IRON_INGOT))
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_smelting"));
     }
 
     private void conduitRecipes(@NotNull RecipeOutput pRecipeOutput) {
         shapeless(RecipeCategory.MISC, NTItems.AQUARINE_COPPER_COMPOUND.get(), 2)
-                .requires(Items.COPPER_INGOT)
-                .requires(Items.COPPER_INGOT)
-                .requires(Items.PRISMARINE_CRYSTALS)
+                .requires(Tags.Items.INGOTS_COPPER)
+                .requires(Tags.Items.INGOTS_COPPER)
+                .requires(Tags.Items.GEMS_PRISMARINE)
                 .requires(Items.DRIED_KELP)
-                .unlockedBy("has_item", has(Items.COPPER_INGOT))
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_COPPER))
                 .save(pRecipeOutput, key("aquarine_copper_compound"));
 
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUARINE_COPPER_COMPOUND.get(), 6))
-                .ingredients(iwcFromItemLike(Items.COPPER_INGOT, 3),
+                .ingredients(iwcFromTag(Tags.Items.INGOTS_COPPER, 3),
                         iwcFromItemLike(NTItems.KELP_SLURRY.get(), 1))
                 .duration(100)
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 500))
@@ -252,8 +253,8 @@ public class RecipesProvider extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS_IRON)
                 .unlockedBy("has_item", has(NTBlocks.CURRENT_CONDUIT))
                 .save(pRecipeOutput, key("eddy_upgrade"));
-        upgrade(pRecipeOutput, NTItems.SURGE_UPGRADE.get(), NTItems.EDDY_UPGRADE.get(), Ingredient.of(Items.EMERALD), "surge_upgrade");
-        upgrade(pRecipeOutput, NTItems.RIPTIDE_UPGRADE.get(), NTItems.SURGE_UPGRADE.get(), Ingredient.of(Items.DIAMOND), "riptide_upgrade");
+        upgrade(pRecipeOutput, NTItems.SURGE_UPGRADE.get(), NTItems.EDDY_UPGRADE.get(), tag(Tags.Items.GEMS_EMERALD), "surge_upgrade");
+        upgrade(pRecipeOutput, NTItems.RIPTIDE_UPGRADE.get(), NTItems.SURGE_UPGRADE.get(), tag(Tags.Items.GEMS_DIAMOND), "riptide_upgrade");
         upgrade(pRecipeOutput, NTItems.MAELSTROM_UPGRADE.get(), NTItems.RIPTIDE_UPGRADE.get(),
                 Ingredient.of(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get()), "maelstrom_upgrade");
 
@@ -265,7 +266,7 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("filter"));
         shapeless(RecipeCategory.MISC, NTItems.INTRICATE_FILTER.get())
                 .requires(NTItems.FILTER)
-                .requires(Items.EMERALD)
+                .requires(Tags.Items.GEMS_EMERALD)
                 .unlockedBy("has_item", has(NTItems.FILTER))
                 .save(pRecipeOutput, key("intricate_filter"));
     }
@@ -289,7 +290,7 @@ public class RecipesProvider extends RecipeProvider {
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('E', NTItems.EYE_OF_THE_SEA)
                 .define('G', Tags.Items.GLASS_BLOCKS)
-                .define('B', Items.BUCKET)
+                .define('B', Tags.Items.BUCKETS_EMPTY)
                 .define('S', NTItems.RESONANT_SHARD)
                 .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
                 .save(pRecipeOutput, key("resonant_cistern"));
@@ -316,7 +317,7 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void aquaticCatalystRecipes(@NotNull RecipeOutput pRecipeOutput) {
-        AquaticCatalystChannelingRecipeBuilder.newRecipe(Ingredient.of(Items.PRISMARINE_CRYSTALS))
+        AquaticCatalystChannelingRecipeBuilder.newRecipe(tag(Tags.Items.GEMS_PRISMARINE))
                 .powerAmount(1000)
                 .purity(0.8f)
                 .duration(160)
@@ -387,7 +388,7 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("resonant_shard"));
 
         ItemTransformationRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2))
-                .ingredient(Items.PRISMARINE_CRYSTALS)
+                .ingredient(iwcFromTag(Tags.Items.GEMS_PRISMARINE, 1))
                 .purity(2.0f)
                 .duration(160)
                 .save(pRecipeOutput, key("prismarine_crystal_shard_from_crystals"));
@@ -487,7 +488,7 @@ public class RecipesProvider extends RecipeProvider {
                 .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
                 .define('D', NTItems.DEEP_STEEL_PLATING)
                 .define('R', NTItems.RESONANT_SHARD)
-                .define('N', Items.NETHER_STAR)
+                .define('N', Tags.Items.NETHER_STARS)
                 .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
                 .save(pRecipeOutput, key("gateway"));
 
@@ -508,7 +509,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("CSC")
                 .pattern("PCP")
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("prismatic_mirror"));
@@ -518,7 +519,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("CSC")
                 .pattern("DCD")
                 .define('D', NTBlocks.DARK_PRISMARINE_PILLAR)
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("beam_splitter"));
@@ -581,7 +582,7 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("laser_crafting/laser_channeling_coil"));
 
         LaserCraftingRecipeBuilder.newRecipe()
-                .ingredient(IngredientWithCount.fromItemLike(Items.PRISMARINE_CRYSTALS))
+                .ingredient(iwcFromTag(Tags.Items.GEMS_PRISMARINE, 1))
                 .result(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2))
                 .power(20)
                 .purity(2.0f)
@@ -658,7 +659,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ARA")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('R', NTBlocks.PRISMARINE_RELAY)
-                .define('D', Items.DIAMOND)
+                .define('D', Tags.Items.GEMS_DIAMOND)
                 .unlockedBy("has_item", has(NTBlocks.PRISMARINE_RELAY))
                 .save(pRecipeOutput, key("laser_junction"));
 
@@ -677,7 +678,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PCP")
                 .pattern("P P")
                 .pattern("PCP")
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
                 .unlockedBy("has_item", has(NTBlocks.POLISHED_PRISMARINE))
                 .save(pRecipeOutput, key("aquatic_catalyst"));
@@ -702,7 +703,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("AOA")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('L', NTItems.PRISMARINE_LENS)
-                .define('D', Items.DIAMOND)
+                .define('D', Tags.Items.GEMS_DIAMOND)
                 .define('C', NTItems.AQUATIC_CHIP)
                 .define('O', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
@@ -726,7 +727,7 @@ public class RecipesProvider extends RecipeProvider {
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('R', NTItems.RESONANT_SHARD)
                 .define('C', NTItems.AQUATIC_CHIP)
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
                 .save(pRecipeOutput, key("spawner_confinement_matrix"));
 
@@ -746,7 +747,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PLP")
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
                 .define('G', Tags.Items.GLASS_BLOCKS)
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('A', NTItems.AQUATIC_CHIP)
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
@@ -780,10 +781,10 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("BVB")
                 .pattern("CKC")
                 .define('C', NTItems.CAST_IRON_INGOT)
-                .define('G', Items.GLASS)
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
                 .define('B', NTItems.AIR_BOTTLE)
                 .define('V', NTItems.VALVE)
-                .define('K', Items.DRIED_KELP_BLOCK)
+                .define('K', Tags.Items.STORAGE_BLOCKS_DRIED_KELP)
                 .unlockedBy("has_item", has(NTItems.AIR_BOTTLE))
                 .save(pRecipeOutput, key("oxygen_diffuser"));
 
@@ -803,7 +804,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("SS")
                 .define('S', NTItems.AQUARINE_STEEL_INGOT)
                 .define('V', NTItems.VALVE)
-                .define('G', Items.GLASS)
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT))
                 .save(pRecipeOutput, key("pressure_hatch"));
 
@@ -812,9 +813,9 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("GKG")
                 .pattern("PCP")
                 .define('P', Items.PRISMARINE_SHARD)
-                .define('G', Items.GLASS)
-                .define('K', Items.DRIED_KELP_BLOCK)
-                .define('C', Items.COPPER_INGOT)
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .define('K', Tags.Items.STORAGE_BLOCKS_DRIED_KELP)
+                .define('C', Tags.Items.INGOTS_COPPER)
                 .unlockedBy("has_item", has(Items.PRISMARINE_SHARD))
                 .save(pRecipeOutput, key("bubble_anchor"));
 
@@ -825,7 +826,7 @@ public class RecipesProvider extends RecipeProvider {
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('C', NTItems.AQUATIC_CHIP)
                 .define('H', Items.HOPPER)
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
                 .save(pRecipeOutput, key("nautechnical_distributor"));
 
@@ -881,7 +882,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PLP")
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
                 .define('A', NTItems.AQUATIC_CHIP)
-                .define('C', Items.PRISMARINE_CRYSTALS)
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
                 .save(pRecipeOutput, key("bio_reactor"));
@@ -891,7 +892,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ACA")
                 .pattern("PRP")
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
-                .define('R', Items.REDSTONE)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('C', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
@@ -901,7 +902,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern(" R ")
                 .pattern("SCS")
                 .pattern(" R ")
-                .define('R', Items.REDSTONE)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('S', NTItems.AQUARINE_STEEL_INGOT)
                 .define('C', NTItems.AQUATIC_CHIP)
                 .unlockedBy("has_item", has(NTBlocks.ENERGY_CONVERTER))
@@ -1023,7 +1024,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("SRS")
                 .pattern("ACA")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
-                .define('R', Items.REDSTONE)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
                 .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD.get())
                 .define('C', NTItems.LASER_CHANNELING_COIL.get())
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
@@ -1036,7 +1037,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ATA")
                 .define('A', NTItems.ATLANTIC_GOLD_INGOT.get())
                 .define('C', NTItems.ELDRITCH_HEART.get())
-                .define('G', Items.TINTED_GLASS)
+                .define('G', Tags.Items.GLASS_BLOCKS_TINTED)
                 .define('B', NTItems.PRISMATIC_BATTERY.get())
                 .define('T', NTItems.BUOYANCY_TANK.get())
                 .unlockedBy("has_item", has(NTItems.ELDRITCH_HEART))
@@ -1093,8 +1094,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("DND")
                 .pattern("NPN")
                 .pattern("ACA")
-                .define('D', Items.DIAMOND)
-                .define('N', Items.NETHERITE_INGOT)
+                .define('D', Tags.Items.GEMS_DIAMOND)
+                .define('N', Tags.Items.INGOTS_NETHERITE)
                 .define('P', NTItems.CHITIN_PLATE.get())
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
                 .define('C', NTItems.AQUATIC_CHIP.get())
@@ -1143,7 +1144,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PXP")
                 .pattern("XHX")
                 .pattern("ACA")
-                .define('P', Items.ENDER_PEARL)
+                .define('P', Tags.Items.ENDER_PEARLS)
                 .define('X', Items.CHORUS_FRUIT)
                 .define('H', NTItems.ELDRITCH_HEART.get())
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
@@ -1157,7 +1158,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("CRC")
                 .define('M', Items.PHANTOM_MEMBRANE)
                 .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get())
-                .define('D', Items.DIAMOND)
+                .define('D', Tags.Items.GEMS_DIAMOND)
                 .define('P', NTItems.DEEP_STEEL_PLATING.get())
                 .define('C', Items.CHORUS_FRUIT)
                 .define('R', NTItems.RESONANT_SHARD.get())
@@ -1169,8 +1170,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("CPC")
                 .pattern("AVA")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.get())
-                .define('B', Items.BARREL)
-                .define('C', Items.CHEST)
+                .define('B', Tags.Items.BARRELS_WOODEN)
+                .define('C', Tags.Items.CHESTS_WOODEN)
                 .define('P', NTItems.DEEP_STEEL_PLATING.get())
                 .define('V', NTItems.VALVE.get())
                 .unlockedBy("has_item", has(NTItems.SUBMARINE))
@@ -1185,16 +1186,16 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("brown_polymer"));
 
         shapeless(RecipeCategory.MISC, NTItems.AQUARINE_STEEL_COMPOUND.get(), 2)
-                .requires(Items.RAW_IRON)
-                .requires(Items.PRISMARINE_CRYSTALS)
-                .unlockedBy("has_item", has(Items.PRISMARINE_CRYSTALS))
+                .requires(Tags.Items.RAW_MATERIALS_IRON)
+                .requires(Tags.Items.GEMS_PRISMARINE)
+                .unlockedBy("has_item", has(Tags.Items.GEMS_PRISMARINE))
                 .save(pRecipeOutput, key("aquarine_steel_compound"));
 
         shapeless(RecipeCategory.MISC, NTItems.CAST_IRON_COMPOUND.get(), 2)
-                .requires(Items.RAW_IRON)
+                .requires(Tags.Items.RAW_MATERIALS_IRON)
                 .requires(ItemTags.COALS)
                 .requires(ItemTags.COALS)
-                .unlockedBy("has_raw_rion", has(Items.RAW_IRON))
+                .unlockedBy("has_raw_rion", has(Tags.Items.RAW_MATERIALS_IRON))
                 .save(pRecipeOutput, key("cast_iron_compound"));
 
         shaped(RecipeCategory.MISC, NTItems.PRISMARINE_LENS.get())
@@ -1245,7 +1246,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("APA")
                 .define('P', NTBlocks.POLISHED_PRISMARINE.asItem())
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.asItem())
-                .define('C', Items.PRISMARINE_CRYSTALS.asItem())
+                .define('C', Tags.Items.GEMS_PRISMARINE)
                 .unlockedBy("has_item", has(NTItems.AQUARINE_STEEL_INGOT.asItem()))
                 .save(pRecipeOutput, key("bacteria_containment_shield_from_prismarine_crystals"));
 
@@ -1369,9 +1370,9 @@ public class RecipesProvider extends RecipeProvider {
         shaped(RecipeCategory.MISC, NTItems.DIVING_HELMET.get())
                 .pattern("CCC")
                 .pattern("CGC")
-                .define('C', Items.COPPER_INGOT.asItem())
-                .define('G', Items.GLASS_PANE.asItem())
-                .unlockedBy("has_item", has(Items.COPPER_INGOT))
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .unlockedBy("has_item", has(Tags.Items.INGOTS_COPPER))
                 .save(pRecipeOutput, key("diving_helmet"));
 
         shaped(RecipeCategory.MISC, NTItems.DIVING_CHESTPLATE.get())
@@ -1417,11 +1418,11 @@ public class RecipesProvider extends RecipeProvider {
 
         shapeless(RecipeCategory.MISC, NTFluids.ETCHING_ACID.getBucket())
                 .requires(Items.POISONOUS_POTATO)
-                .requires(Items.GUNPOWDER)
+                .requires(Tags.Items.GUNPOWDERS)
                 .requires(Items.BONE_MEAL)
                 .requires(Items.SNOW_BLOCK)
                 .requires(Items.PUFFERFISH)
-                .requires(Items.BUCKET)
+                .requires(Tags.Items.BUCKETS_EMPTY)
                 .unlockedBy("has_item", has(Items.POISONOUS_POTATO))
                 .save(pRecipeOutput, key("etching_acid_crafting"));
     }
@@ -1429,8 +1430,8 @@ public class RecipesProvider extends RecipeProvider {
     private void chemistryRecipes(@NotNull RecipeOutput pRecipeOutput) {
         MixingRecipeBuilder.newRecipe()
                 .ingredients(iwcFromItemLike(Items.DRIED_KELP, 4),
-                        iwcFromItemLike(Items.SLIME_BALL, 2),
-                        iwcFromItemLike(Items.PRISMARINE_CRYSTALS, 1),
+                        iwcFromTag(Tags.Items.SLIME_BALLS, 2),
+                        iwcFromTag(Tags.Items.GEMS_PRISMARINE, 1),
                         iwcFromItemLike(Items.SEAGRASS, 5))
                 .duration(200)
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
@@ -1439,7 +1440,7 @@ public class RecipesProvider extends RecipeProvider {
 
         MixingRecipeBuilder.newRecipe()
                 .ingredients(iwcFromItemLike(Items.PUFFERFISH, 1),
-                        iwcFromItemLike(Items.GUNPOWDER, 1),
+                        iwcFromTag(Tags.Items.GUNPOWDERS, 1),
                         iwcFromItemLike(Items.BONE_MEAL, 1))
                 .duration(150)
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
@@ -1447,8 +1448,8 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("etching_acid_mixing"));
 
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUARINE_STEEL_COMPOUND.get(), 5))
-                .ingredients(iwcFromItemLike(Items.RAW_IRON, 2),
-                        iwcFromItemLike(Items.PRISMARINE_CRYSTALS, 1))
+                .ingredients(iwcFromTag(Tags.Items.RAW_MATERIALS_IRON, 2),
+                        iwcFromTag(Tags.Items.GEMS_PRISMARINE, 1))
                 .duration(100)
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
                 .fluidResult(null)
@@ -1485,8 +1486,8 @@ public class RecipesProvider extends RecipeProvider {
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.ATLANTEAN_PRESSURE_SYNTHESIZER.get(), 1))
                 .ingredients(iwcFromItemLike(NTItems.PRESSURE_SYNTHESIZER.get(), 1),
                         iwcFromItemLike(Items.HEART_OF_THE_SEA, 1),
-                        iwcFromItemLike(Items.NETHER_STAR, 1),
-                        iwcFromItemLike(Items.ENDER_PEARL, 4))
+                        iwcFromTag(Tags.Items.NETHER_STARS, 1),
+                        iwcFromTag(Tags.Items.ENDER_PEARLS, 4))
                 .duration(600)
                 .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 8000))
                 .fluidResult(null)
@@ -1500,7 +1501,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ALA")
                 .define('R', NTItems.RESONANT_SHARD)
                 .define('C', NTItems.AQUATIC_CHIP)
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.RESONANT_SHARD))
@@ -1598,7 +1599,7 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.AQUATIC_CHIP)
                 .define('L', NTItems.PRISMARINE_LENS)
                 .define('A', NTItems.AQUARINE_STEEL_INGOT)
-                .define('R', Items.REDSTONE_BLOCK)
+                .define('R', Tags.Items.STORAGE_BLOCKS_REDSTONE)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
                 .save(pRecipeOutput, key("prismatic_emitter"));
 
@@ -1606,8 +1607,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern(" S ")
                 .pattern("ERE")
                 .pattern(" G ")
-                .define('S', Items.STRING)
-                .define('E', Items.ENDER_PEARL)
+                .define('S', Tags.Items.STRINGS)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('R', NTItems.RESONANT_SHARD)
                 .define('G', NTItems.ATLANTIC_GOLD_INGOT)
                 .unlockedBy("has_item", has(NTBlocks.RESONANCE_PYLON))
@@ -1654,7 +1655,7 @@ public class RecipesProvider extends RecipeProvider {
         shapeless(RecipeCategory.TOOLS, NTItems.CONFIGURATION_CARD.get(), 1)
                 .requires(Items.PAPER)
                 .requires(NTItems.AQUATIC_CHIP.get())
-                .requires(Items.PRISMARINE_CRYSTALS)
+                .requires(Tags.Items.GEMS_PRISMARINE)
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP.get()))
                 .save(pRecipeOutput, key("configuration_card"));
 
@@ -1672,8 +1673,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("EPE")
                 .pattern("DGD")
                 .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
-                .define('N', Items.NETHER_STAR)
-                .define('E', Items.ENDER_PEARL)
+                .define('N', Tags.Items.NETHER_STARS)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('P', NTBlocks.RESONANCE_PYLON)
                 .define('D', NTItems.DEEP_STEEL_PLATING)
                 .define('G', NTItems.ATLANTIC_GOLD_INGOT)
@@ -1686,8 +1687,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("RXR")
                 .define('R', NTItems.CAST_IRON_ROD)
                 .define('I', NTItems.CAST_IRON_INGOT)
-                .define('C', Items.COPPER_BLOCK)
-                .define('X', Items.REDSTONE)
+                .define('C', Tags.Items.STORAGE_BLOCKS_COPPER)
+                .define('X', Tags.Items.DUSTS_REDSTONE)
                 .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
                 .save(pRecipeOutput, key("tidal_rotor"));
 
@@ -1740,7 +1741,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ELE")
                 .pattern("GCG")
                 .pattern("ELE")
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .define('G', NTItems.ATLANTIC_GOLD_INGOT)
                 .define('C', NTItems.AQUATIC_CHIP)
@@ -1753,7 +1754,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PFP")
                 .define('P', NTItems.DEEP_STEEL_PLATING)
                 .define('R', NTItems.RESONANT_SHARD)
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('L', NTItems.PRISMARINE_LENS)
                 .define('F', NTBlocks.FOCUSING_LENS)
                 .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
@@ -1765,7 +1766,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PGP")
                 .define('P', NTItems.DEEP_STEEL_PLATING)
                 .define('L', NTItems.PRISMARINE_LENS)
-                .define('E', Items.ENDER_PEARL)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('C', NTItems.LASER_CHANNELING_COIL)
                 .define('G', NTItems.ATLANTIC_GOLD_INGOT)
                 .unlockedBy("has_item", has(NTBlocks.FUSION_CASING))
@@ -1786,8 +1787,8 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("ECE")
                 .pattern("PAP")
                 .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
-                .define('N', Items.NETHER_STAR)
-                .define('E', Items.ENDER_PEARL)
+                .define('N', Tags.Items.NETHER_STARS)
+                .define('E', Tags.Items.ENDER_PEARLS)
                 .define('C', NTBlocks.FUSION_CASING)
                 .define('P', NTItems.DEEP_STEEL_PLATING)
                 .define('A', NTItems.AQUATIC_CHIP)
@@ -1824,8 +1825,8 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("whisk_from_cast_iron"));
 
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.BURNT_COIL.get(), 1))
-                .ingredients(iwcFromItemLike(Items.COPPER_INGOT, 4),
-                        iwcFromItemLike(Items.REDSTONE, 2),
+                .ingredients(iwcFromTag(Tags.Items.INGOTS_COPPER, 4),
+                        iwcFromTag(Tags.Items.DUSTS_REDSTONE, 2),
                         iwcFromItemLike(NTItems.AQUARINE_STEEL_INGOT.get(), 1),
                         iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 1))
                 .duration(200)
@@ -1834,8 +1835,8 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("burnt_coil_mixing"));
 
         MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.AQUATIC_CHIP.get(), 2))
-                .ingredients(iwcFromItemLike(Items.GOLD_INGOT, 2),
-                        iwcFromItemLike(Items.REDSTONE, 4),
+                .ingredients(iwcFromTag(Tags.Items.INGOTS_GOLD, 2),
+                        iwcFromTag(Tags.Items.DUSTS_REDSTONE, 4),
                         iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2),
                         iwcFromItemLike(NTItems.LASER_CHANNELING_COIL.get(), 1))
                 .duration(200)
@@ -1844,7 +1845,7 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("aquatic_chip_mixing"));
 
         PressureForgingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.ATLANTIC_GOLD_INGOT.get(), 2))
-                .ingredient(Items.GOLD_BLOCK)
+                .ingredient(tag(Tags.Items.STORAGE_BLOCKS_GOLD))
                 .minDepth(-20)
                 .purity(2.0f)
                 .duration(300)
@@ -1962,7 +1963,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern(" AL")
                 .pattern("A C")
                 .define('A', NTItems.AQUARINE_STEEL_INGOT.asItem())
-                .define('L', Items.STRING)
+                .define('L', Tags.Items.STRINGS)
                 .define('C', NTItems.PRISMARINE_CRYSTAL_SHARD.asItem())
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("nautec_fishing_rod"));
@@ -1994,7 +1995,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern(" S ")
                 .pattern("BIB")
                 .pattern(" R ")
-                .define('S', Items.SLIME_BALL)
+                .define('S', Tags.Items.SLIME_BALLS)
                 .define('B', NTItems.BROWN_POLYMER.asItem())
                 .define('I', NTItems.CAST_IRON_INGOT.asItem())
                 .define('R', NTItems.CAST_IRON_ROD.asItem())
@@ -2005,7 +2006,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("TBT")
                 .pattern("BCB")
                 .pattern("TBT")
-                .define('T', Items.STRING)
+                .define('T', Tags.Items.STRINGS)
                 .define('B', NTItems.BROWN_POLYMER.asItem())
                 .define('C', NTItems.AQUATIC_CHIP.asItem())
                 .unlockedBy("has_item", has(NTItems.AQUATIC_CHIP))
@@ -2027,7 +2028,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("PMP")
                 .pattern(" E ")
                 .define('E', Items.ENDER_EYE)
-                .define('P', Items.ENDER_PEARL)
+                .define('P', Tags.Items.ENDER_PEARLS)
                 .define('M', NTItems.MAGNETIC_COIL_ARM.asItem())
                 .unlockedBy("has_item", has(NTItems.MAGNETIC_COIL_ARM))
                 .save(pRecipeOutput, key("ender_coil_arm"));
@@ -2303,6 +2304,10 @@ public class RecipesProvider extends RecipeProvider {
 
     private static @NotNull IngredientWithCount iwcFromItemLike(Item item, int count) {
         return IngredientWithCount.fromItemLike(item, count);
+    }
+
+    private @NotNull IngredientWithCount iwcFromTag(TagKey<Item> item, int count) {
+        return new IngredientWithCount(tag(item), count);
     }
 
     private static ResourceKey<Recipe<?>> key(String path) {

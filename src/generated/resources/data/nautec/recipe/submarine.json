@@ -5,7 +5,7 @@
     "A": "nautec:atlantic_gold_ingot",
     "B": "nautec:prismatic_battery",
     "C": "nautec:eldritch_heart",
-    "G": "minecraft:tinted_glass",
+    "G": "#c:glass_blocks/tinted",
     "T": "nautec:buoyancy_tank"
   },
   "pattern": [

@@ -112,6 +112,7 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEA_PICKLE);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.PRISMARINE_FROND_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.REEF_PRISMARINE_PLACE_KEY);
+        generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.REEF_BUDDING_PRISMARINE_PLACE_KEY);
 
         return baseOceanBiome(0.9F, 0x25C4B4)
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x1B9A90))

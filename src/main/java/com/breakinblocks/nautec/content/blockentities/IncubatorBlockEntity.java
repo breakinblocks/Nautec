@@ -44,6 +44,7 @@ public class IncubatorBlockEntity extends LaserBlockEntity implements MenuProvid
         return NTConfig.incubatorPowerUsage;
     }
 
+    public static final int NUTRIENT_SLOT = 0;
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
     public static final int DISH_EMPTY_OUT = 3;

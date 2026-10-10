@@ -4,7 +4,7 @@
   "key": {
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:prismarine_crystal_shard",
-    "L": "minecraft:string"
+    "L": "#c:strings"
   },
   "pattern": [
     "  A",

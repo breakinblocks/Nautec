@@ -3,8 +3,8 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "B": "minecraft:barrel",
-    "C": "minecraft:chest",
+    "B": "#c:barrels/wooden",
+    "C": "#c:chests/wooden",
     "P": "nautec:deep_steel_plating",
     "V": "nautec:valve"
   },

@@ -5,7 +5,7 @@
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:laser_channeling_coil",
     "P": "nautec:polished_prismarine",
-    "R": "minecraft:redstone"
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "PRP",

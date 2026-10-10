@@ -72,7 +72,13 @@ public final class TapFilter {
         items[slot] = template;
         exactResources[slot] = ItemResource.of(template);
         itemMask |= bit;
-        dishMask = DishPort.isDish(template) ? dishMask | bit : dishMask & ~bit;
+        boolean dish = DishPort.isDish(template);
+        dishMask = dish ? dishMask | bit : dishMask & ~bit;
+        exactMask = dish && !DishPort.colonyOf(template).isEmpty() ? exactMask | bit : exactMask & ~bit;
+    }
+
+    public boolean dish(int slot) {
+        return (dishMask & (1 << slot)) != 0;
     }
 
     public FluidStack fluid(int slot) {

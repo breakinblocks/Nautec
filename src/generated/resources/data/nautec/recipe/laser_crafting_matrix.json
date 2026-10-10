@@ -4,7 +4,7 @@
   "key": {
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:aquatic_chip",
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "L": "nautec:prismarine_lens",
     "O": "nautec:laser_channeling_coil"
   },

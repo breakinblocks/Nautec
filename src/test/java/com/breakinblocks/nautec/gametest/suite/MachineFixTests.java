@@ -14,6 +14,11 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.controller.Drai
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.registries.NTAugmentSlots;
+import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.menus.MixerMenu;
+import com.breakinblocks.nautec.content.menus.RecipeTransfer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.Ingredient;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
@@ -22,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -342,6 +348,62 @@ public final class MachineFixTests {
             another.getItem().finishUsingItem(another, helper.getLevel(), player);
             helper.assertValueEqual(600, NTDataComponentsUtils.getOxygenLevels(player.getItemBySlot(EquipmentSlot.CHEST)),
                     "oxygen is capped at a full tank");
+            helper.succeed();
+        });
+
+        r.add("machinefix/recipe_transfer_fills_machine_inputs", 10, helper -> {
+            BlockPos mixerPos = new BlockPos(2, 1, 2);
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get());
+            MixerBlockEntity mixer = helper.getBlockEntity(mixerPos, MixerBlockEntity.class);
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            Inventory inventory = player.getInventory();
+            inventory.setItem(0, new ItemStack(Items.COPPER_INGOT, 40));
+            inventory.setItem(1, new ItemStack(Items.REDSTONE, 3));
+            inventory.setItem(2, new ItemStack(Items.REDSTONE, 3));
+            MixerMenu menu = new MixerMenu(1, inventory, mixer);
+            mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.DIRT, 5));
+            List<RecipeTransfer.Entry> entries = List.of(
+                    new RecipeTransfer.Entry(0, Ingredient.of(Items.COPPER_INGOT), 4),
+                    new RecipeTransfer.Entry(1, Ingredient.of(Items.REDSTONE), 2));
+            helper.assertValueEqual(RecipeTransfer.transfer(player, menu, mixer, entries, false), 1, "one click moves one set");
+            helper.assertValueEqual(mixer.getItemStackHandler().getStackInSlot(0).getCount(), 4, "copper moved at the recipe count");
+            helper.assertTrue(mixer.getItemStackHandler().getStackInSlot(1).is(Items.REDSTONE), "the wrong item made way for redstone");
+            helper.assertValueEqual(inventory.countItem(Items.DIRT), 5, "the displaced dirt went back to the player");
+            helper.assertValueEqual(RecipeTransfer.transfer(player, menu, mixer, entries, true), 2, "a max transfer stops when redstone runs out");
+            helper.assertValueEqual(mixer.getItemStackHandler().getStackInSlot(1).getCount(), 6, "every redstone was moved in");
+            helper.assertValueEqual(mixer.getItemStackHandler().getStackInSlot(0).getCount(), 12, "copper kept to complete sets");
+            helper.assertValueEqual(inventory.countItem(Items.COPPER_INGOT), 28, "the rest of the copper stayed with the player");
+            RecipeTransfer.Plan missing = RecipeTransfer.plan(player, menu, mixer, entries, false);
+            helper.assertTrue(missing != null && missing.sets() == 0 && missing.missing()[1] && !missing.missing()[0], "the plan names the missing ingredient");
+            helper.assertValueEqual(RecipeTransfer.transfer(player, menu, mixer,
+                    List.of(new RecipeTransfer.Entry(MixerBlockEntity.OUTPUT_SLOT, Ingredient.of(Items.COPPER_INGOT), 1)), false), 0, "the output slot never takes a transfer");
+            helper.assertValueEqual(RecipeTransfer.transfer(player, menu, mixer, List.of(
+                    new RecipeTransfer.Entry(2, Ingredient.of(Items.COPPER_INGOT), 1),
+                    new RecipeTransfer.Entry(2, Ingredient.of(Items.COPPER_INGOT), 1)), false), 0, "two entries for one slot are refused");
+            helper.succeed();
+        });
+
+        r.add("machinefix/full_diving_suit_mines_underwater_at_land_speed", 20, helper -> {
+            for (BlockPos pos : BlockPos.betweenClosed(1, 1, 1, 7, 6, 7)) {
+                helper.setBlock(pos, Blocks.WATER);
+            }
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            Vec3 at = helper.absoluteVec(new Vec3(4.5, 3.0, 4.5));
+            player.snapTo(at.x, at.y, at.z, 0.0F, 0.0F);
+            player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_PICKAXE));
+            player.tick();
+            helper.assertTrue(player.isEyeInFluid(FluidTags.WATER) && !player.onGround(), "the diver floats under water");
+            BlockState stone = Blocks.STONE.defaultBlockState();
+            float land = new ItemStack(Items.DIAMOND_PICKAXE).getDestroySpeed(stone);
+            float bare = player.getDestroySpeed(stone);
+            helper.assertTrue(bare < land / 10, "without the suit both penalties apply, speed " + bare);
+            player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(NTItems.DIVING_HELMET.get()));
+            player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(NTItems.DIVING_CHESTPLATE.get()));
+            player.setItemSlot(EquipmentSlot.LEGS, new ItemStack(NTItems.DIVING_LEGGINGS.get()));
+            helper.assertValueEqual(player.getDestroySpeed(stone), bare, "three pieces change nothing");
+            player.setItemSlot(EquipmentSlot.FEET, new ItemStack(NTItems.DIVING_BOOTS.get()));
+            float suited = player.getDestroySpeed(stone);
+            helper.assertTrue(Math.abs(suited - land) < 0.001F, "a full suit mines at land speed, " + suited + " vs " + land);
             helper.succeed();
         });
 

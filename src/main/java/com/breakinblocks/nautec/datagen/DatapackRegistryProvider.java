@@ -18,6 +18,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -39,6 +40,9 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.List;
 import java.util.Set;
@@ -85,7 +89,12 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<PlacedFeature> GLOW_POLYP_PLACE_KEY = registerPlaceKey("glow_polyp");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> BUDDING_PRISMARINE_KEY = registerConfigKey("budding_prismarine");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> REEF_BUDDING_PRISMARINE_KEY = registerConfigKey("reef_budding_prismarine");
     public static final ResourceKey<PlacedFeature> BUDDING_PRISMARINE_PLACE_KEY = registerPlaceKey("budding_prismarine");
+    public static final ResourceKey<PlacedFeature> REEF_BUDDING_PRISMARINE_PLACE_KEY = registerPlaceKey("reef_budding_prismarine");
+    public static final ResourceKey<PlacedFeature> WARM_OCEAN_BUDDING_PRISMARINE_PLACE_KEY = registerPlaceKey("warm_ocean_budding_prismarine");
+    public static final ResourceKey<BiomeModifier> WARM_OCEAN_BUDDING_PRISMARINE_MODIFIER_KEY =
+            ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Nautec.rl("warm_ocean_budding_prismarine"));
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> VENT_FIELD_KEY = registerConfigKey("vent_field");
     public static final ResourceKey<PlacedFeature> VENT_FIELD_PLACE_KEY = registerPlaceKey("vent_field");
@@ -145,6 +154,14 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                         OreConfiguration.target(GRAVEL_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState())
                 );
                 context.register(BUDDING_PRISMARINE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(budding_prismarine_config, 3)));
+
+                List<OreConfiguration.TargetBlockState> reef_budding_prismarine_config = List.of(
+                        OreConfiguration.target(new BlockMatchTest(Blocks.PRISMARINE), NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState()),
+                        OreConfiguration.target(OCEAN_FLOOR_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState()),
+                        OreConfiguration.target(SAND_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState()),
+                        OreConfiguration.target(GRAVEL_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState())
+                );
+                context.register(REEF_BUDDING_PRISMARINE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(reef_budding_prismarine_config, 3)));
             })
             .add(Registries.PLACED_FEATURE, context -> {
                 HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
@@ -186,10 +203,28 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
                 context.register(BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(BUDDING_PRISMARINE_KEY),
                         List.of(
-                                RarityFilter.onAverageOnceEvery(26),
+                                RarityFilter.onAverageOnceEvery(10),
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-                                RandomOffsetPlacement.vertical(UniformInt.of(-16, -4)),
+                                RandomOffsetPlacement.vertical(UniformInt.of(-10, -2)),
+                                BiomeFilter.biome()
+                        )
+                ));
+                context.register(REEF_BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(REEF_BUDDING_PRISMARINE_KEY),
+                        List.of(
+                                RarityFilter.onAverageOnceEvery(4),
+                                InSquarePlacement.spread(),
+                                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                                RandomOffsetPlacement.vertical(UniformInt.of(-2, -1)),
+                                BiomeFilter.biome()
+                        )
+                ));
+                context.register(WARM_OCEAN_BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(REEF_BUDDING_PRISMARINE_KEY),
+                        List.of(
+                                RarityFilter.onAverageOnceEvery(24),
+                                InSquarePlacement.spread(),
+                                PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
+                                RandomOffsetPlacement.vertical(UniformInt.of(-2, -1)),
                                 BiomeFilter.biome()
                         )
                 ));
@@ -204,7 +239,7 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                 ));
                 context.register(GLOW_GROTTO_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(GLOW_GROTTO_KEY),
                         List.of(
-                                RarityFilter.onAverageOnceEvery(6),
+                                RarityFilter.onAverageOnceEvery(3),
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
                                 BiomeFilter.biome()
@@ -214,7 +249,12 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                 Nautec.LOGGER.info("Registered Prismarine Sand Generation as a placed feature.");
             })
             .add(Registries.BIOME, NTBiomes::bootstrap)
-            .add(Registries.DAMAGE_TYPE, NTDamageTypes::bootstrap);
+            .add(Registries.DAMAGE_TYPE, NTDamageTypes::bootstrap)
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> context.register(WARM_OCEAN_BUDDING_PRISMARINE_MODIFIER_KEY,
+                    new BiomeModifiers.AddFeaturesBiomeModifier(
+                            context.lookup(Registries.BIOME).getOrThrow(BiomeTagProvider.HAS_BUDDING_PRISMARINE),
+                            HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(WARM_OCEAN_BUDDING_PRISMARINE_PLACE_KEY)),
+                            GenerationStep.Decoration.UNDERGROUND_DECORATION)));
 
     private static ConfiguredFeature<?, ?> simpleBlockFeature(Block block) {
         return new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(block)));

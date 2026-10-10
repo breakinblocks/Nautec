@@ -2,7 +2,7 @@
   "type": "nautec:item_transformation",
   "duration": 160,
   "ingredient": {
-    "ingredient": "minecraft:prismarine_crystals"
+    "ingredient": "#c:gems/prismarine"
   },
   "purity": 2.0,
   "result": {

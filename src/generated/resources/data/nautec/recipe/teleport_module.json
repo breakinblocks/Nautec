@@ -5,7 +5,7 @@
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:aquatic_chip",
     "H": "nautec:eldritch_heart",
-    "P": "minecraft:ender_pearl",
+    "P": "#c:ender_pearls",
     "X": "minecraft:chorus_fruit"
   },
   "pattern": [

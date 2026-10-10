@@ -13,11 +13,11 @@
       "ingredient": "minecraft:heart_of_the_sea"
     },
     {
-      "ingredient": "minecraft:nether_star"
+      "ingredient": "#c:nether_stars"
     },
     {
       "count": 4,
-      "ingredient": "minecraft:ender_pearl"
+      "ingredient": "#c:ender_pearls"
     }
   ],
   "result": {

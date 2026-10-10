@@ -35,6 +35,11 @@ public class PressureForgingRecipeBuilder implements NTRecipeBuilder {
         return this;
     }
 
+    public PressureForgingRecipeBuilder ingredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+        return this;
+    }
+
     public PressureForgingRecipeBuilder minDepth(int minDepth) {
         this.minDepth = minDepth;
         return this;

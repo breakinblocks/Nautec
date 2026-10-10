@@ -16,10 +16,10 @@
     },
     {
       "count": 2,
-      "ingredient": "minecraft:slime_ball"
+      "ingredient": "#c:slime_balls"
     },
     {
-      "ingredient": "minecraft:prismarine_crystals"
+      "ingredient": "#c:gems/prismarine"
     },
     {
       "count": 5,

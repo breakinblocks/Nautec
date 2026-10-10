@@ -61,7 +61,7 @@ The tool has 80 durability.
 | Deep Kelp | Bioluminescent Grove | Halotrophs | 30% |
 | Luminescent Algae | Bioluminescent Grove | Algaeformers | 30% |
 | Prismarine Frond | Prismarine Reef | Phototrophs | 35% |
-| <ItemLink id="budding_prismarine"/> | Prismarine Reef | Lithophiles | 30% |
+| <ItemLink id="budding_prismarine"/> | Prismarine Reef, Bioluminescent Grove, Abyssal Trench, Warm Ocean, Deep Lukewarm Ocean | Lithophiles | 30% |
 | Abyssal Coral | Abyssal Trench | Calciophiles | 30% |
 | Vent Tubeworm | Hydrothermal Vents | Sulfurophiles | 25% |
 

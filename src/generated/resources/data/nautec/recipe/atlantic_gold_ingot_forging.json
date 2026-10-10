@@ -1,7 +1,7 @@
 {
   "type": "nautec:pressure_forging",
   "duration": 300,
-  "ingredient": "minecraft:gold_block",
+  "ingredient": "#c:storage_blocks/gold",
   "min_depth": -20,
   "purity": 2.0,
   "result": {

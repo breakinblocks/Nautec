@@ -48,6 +48,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         return NTConfig.mutatorPowerUsage;
     }
 
+    public static final int CATALYST = 0;
     public static final int DISH_IN = 1;
     public static final int DISH_OUT = 2;
     public static final int DISH_EMPTY_OUT = 3;

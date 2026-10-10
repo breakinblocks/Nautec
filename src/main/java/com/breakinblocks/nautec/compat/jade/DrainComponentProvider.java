@@ -24,10 +24,11 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
 
     private static final Identifier UID = Nautec.rl("drain");
 
-    public record Data(int status, int power) {
+    public record Data(int status, int power, int blocker) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Data::status,
                 ByteBufCodecs.VAR_INT, Data::power,
+                ByteBufCodecs.VAR_INT, Data::blocker,
                 Data::new
         );
     }
@@ -38,7 +39,8 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
         if (drain == null) {
             return null;
         }
-        return new Data(drain.getStatus().ordinal(), drain.getPower());
+        DrainBlockEntity.Status blocker = drain.isFormed() ? drain.pumpBlocker() : null;
+        return new Data(drain.getStatus().ordinal(), drain.getPower(), blocker != null ? blocker.ordinal() : -1);
     }
 
     private static @Nullable DrainBlockEntity controller(BlockAccessor accessor) {
@@ -76,10 +78,17 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
                 if (!status.isGood()) {
                     tooltip.add(Component.translatable(status.translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
                 }
+                if (data.blocker() >= 0 && (status == DrainBlockEntity.Status.CLOSED || status == DrainBlockEntity.Status.OPENING)) {
+                    DrainBlockEntity.Status blocker = DrainBlockEntity.Status.byId(data.blocker());
+                    tooltip.add(Component.translatable("nautec.jade.drain.blocked", Component.translatable(blocker.translationKey()))
+                            .withStyle(ChatFormatting.RED));
+                    tooltip.add(Component.translatable(blocker.translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
+                }
                 tooltip.add(Component.translatable("nautec.jade.drain.power", data.power(), NTConfig.drainPower)
                         .withStyle(data.power() > NTConfig.drainPower ? ChatFormatting.WHITE : ChatFormatting.RED));
                 if (data.power() > NTConfig.drainPower) {
-                    tooltip.add(Component.translatable("nautec.jade.drain.rate", DrainBlockEntity.saltWaterPerSecond(data.power()))
+                    String rate = status == DrainBlockEntity.Status.PUMPING ? "nautec.jade.drain.rate" : "nautec.jade.drain.rate_idle";
+                    tooltip.add(Component.translatable(rate, DrainBlockEntity.saltWaterPerSecond(data.power()))
                             .withStyle(ChatFormatting.AQUA));
                 }
             });

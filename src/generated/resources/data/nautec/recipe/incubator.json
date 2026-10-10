@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquatic_chip",
-    "C": "minecraft:prismarine_crystals",
+    "C": "#c:gems/prismarine",
     "G": "#c:glass_blocks",
     "L": "nautec:laser_channeling_coil",
     "P": "nautec:polished_prismarine"

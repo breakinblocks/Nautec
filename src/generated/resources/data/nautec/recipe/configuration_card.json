@@ -4,7 +4,7 @@
   "ingredients": [
     "minecraft:paper",
     "nautec:aquatic_chip",
-    "minecraft:prismarine_crystals"
+    "#c:gems/prismarine"
   ],
   "result": {
     "id": "nautec:configuration_card"

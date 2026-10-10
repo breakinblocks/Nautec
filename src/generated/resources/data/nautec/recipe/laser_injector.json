@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "F": "nautec:focusing_lens",
     "L": "nautec:prismarine_lens",
     "P": "nautec:deep_steel_plating",

@@ -22,6 +22,8 @@ item_ids:
 
 Wear all four pieces and the chestplate's air tank keeps your breath full under water. Each second you are submerged it spends one second of air and tops your air bar back up. When the tank runs out, your air drains as normal.
 
+With all four pieces on you also mine under water as fast as on dry land, even while swimming or floating: the suit cancels both the underwater slowdown and the slowdown for not standing on the ground.
+
 The suit's armor is close to a full set of iron, and it repairs with Copper Ingots on an anvil.
 
 ***

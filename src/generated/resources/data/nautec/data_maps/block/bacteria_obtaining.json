@@ -27,7 +27,7 @@
     },
     "nautec:budding_prismarine": {
       "bacteria": "nautec:lithophiles",
-      "biome": "nautec:reef",
+      "biome": "nautec:budding_prismarine_grafting",
       "chance": 0.3
     },
     "nautec:deep_kelp": {

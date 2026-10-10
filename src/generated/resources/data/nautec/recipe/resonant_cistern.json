@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "B": "minecraft:bucket",
+    "B": "#c:buckets/empty",
     "E": "nautec:eye_of_the_sea",
     "G": "#c:glass_blocks",
     "S": "nautec:resonant_shard"

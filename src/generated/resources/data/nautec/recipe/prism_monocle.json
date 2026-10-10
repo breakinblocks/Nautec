@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": "nautec:aquarine_steel_ingot",
-    "P": "minecraft:prismarine_crystals"
+    "P": "#c:gems/prismarine"
   },
   "pattern": [
     "AAA",

@@ -175,4 +175,9 @@ public class AquarineShovelItem extends ShovelItem implements IPowerItem {
         powerStorage.tryDrainPower(POWER_PER_BLOCK, false);
         return --blocksToBreak;
     }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || oldStack.getItem() != newStack.getItem();
+    }
 }

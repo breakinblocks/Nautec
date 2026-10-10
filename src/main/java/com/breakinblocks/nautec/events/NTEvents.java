@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.events;
 
+import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
@@ -214,6 +215,7 @@ public final class NTEvents {
         @SubscribeEvent
         public static void onBreakBlock(PlayerEvent.BreakSpeed event) {
             Player player = event.getEntity();
+            event.setNewSpeed(DivingSuitArmorItem.withoutWaterPenalties(player, event.getNewSpeed()));
             ItemStack stack = player.getMainHandItem();
             if (stack.getItem() instanceof IPowerItem powerItem) {
                 IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);

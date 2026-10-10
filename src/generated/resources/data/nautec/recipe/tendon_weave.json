@@ -4,7 +4,7 @@
   "key": {
     "B": "nautec:brown_polymer",
     "C": "nautec:aquatic_chip",
-    "T": "minecraft:string"
+    "T": "#c:strings"
   },
   "pattern": [
     "TBT",

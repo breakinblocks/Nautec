@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.client.screen;
 
 import com.breakinblocks.nautec.api.client.screen.FluidTankRenderer;
+import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.content.conduits.ConduitChannel;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
@@ -322,6 +323,16 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
         ClientPacketDistributor.sendToServer(ConduitTapEditPayload.fluid(this.menu.containerId, selected, side(), slot, stack));
     }
 
+    private static String matchKey(TapFilter filter, int slot) {
+        if (!filter.exact(slot)) {
+            return "nautec.conduit.filter.loose";
+        }
+        if (!filter.dish(slot)) {
+            return "nautec.conduit.filter.exact";
+        }
+        return DishPort.colonyOf(filter.item(slot)).isEmpty() ? "nautec.conduit.filter.dish_empty" : "nautec.conduit.filter.dish_strain";
+    }
+
     private void toggleExact(int slot) {
         TapFilter filter = filter();
         if (filter.item(slot).isEmpty()) {
@@ -480,8 +491,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
                     tooltip.add(Component.translatable("nautec.conduit.filter.item.how").withStyle(ChatFormatting.GRAY));
                 } else {
                     tooltip.add(template.getHoverName());
-                    tooltip.add(Component.translatable(filter.exact(slot) ? "nautec.conduit.filter.exact" : "nautec.conduit.filter.loose")
-                            .withStyle(filter.exact(slot) ? ChatFormatting.GOLD : ChatFormatting.AQUA));
+                    tooltip.add(Component.translatable(matchKey(filter, slot)).withStyle(filter.exact(slot) ? ChatFormatting.GOLD : ChatFormatting.AQUA));
                     tooltip.add(Component.translatable("nautec.conduit.filter.exact.toggle").withStyle(ChatFormatting.DARK_GRAY));
                     tooltip.add(Component.translatable("nautec.conduit.filter.clear").withStyle(ChatFormatting.DARK_GRAY));
                 }

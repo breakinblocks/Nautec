@@ -38,7 +38,7 @@ public class NTDataMapProvider extends DataMapProvider {
         obtainBacteria(NTBlocks.VENT_TUBEWORM.get(), NTBacterias.SULFUROPHILES, BiomeTagProvider.VENTS, 0.25f);
         obtainBacteria(NTBlocks.ABYSSAL_CORAL.get(), NTBacterias.CALCIOPHILES, BiomeTagProvider.ABYSSAL, 0.30f);
         obtainBacteria(NTBlocks.PRISMARINE_FROND.get(), NTBacterias.PHOTOTROPHS, BiomeTagProvider.REEF, 0.35f);
-        obtainBacteria(NTBlocks.BUDDING_PRISMARINE.get(), NTBacterias.LITHOPHILES, BiomeTagProvider.REEF, 0.30f);
+        obtainBacteria(NTBlocks.BUDDING_PRISMARINE.get(), NTBacterias.LITHOPHILES, BiomeTagProvider.BUDDING_PRISMARINE_GRAFTING, 0.30f);
 
         storageBlock(Items.COAL, Items.COAL_BLOCK);
         storageBlock(Items.BONE_MEAL, Items.BONE_BLOCK);

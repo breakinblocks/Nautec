@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": "minecraft:chorus_fruit",
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "F": "nautec:flawless_prismarine_crystal",
     "M": "minecraft:phantom_membrane",
     "P": "nautec:deep_steel_plating",

@@ -52,6 +52,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         return NTConfig.mixerPower;
     }
 
+    public static final int INPUT_SLOTS = 4;
     public static final int OUTPUT_SLOT = 4;
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private boolean running;

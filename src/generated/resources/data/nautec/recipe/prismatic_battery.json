@@ -4,7 +4,7 @@
   "key": {
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:laser_channeling_coil",
-    "R": "minecraft:redstone",
+    "R": "#c:dusts/redstone",
     "S": "nautec:prismarine_crystal_shard"
   },
   "pattern": [

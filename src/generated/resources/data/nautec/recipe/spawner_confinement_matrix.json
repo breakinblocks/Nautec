@@ -4,7 +4,7 @@
   "key": {
     "A": "nautec:aquarine_steel_ingot",
     "C": "nautec:aquatic_chip",
-    "E": "minecraft:ender_pearl",
+    "E": "#c:ender_pearls",
     "R": "nautec:resonant_shard"
   },
   "pattern": [

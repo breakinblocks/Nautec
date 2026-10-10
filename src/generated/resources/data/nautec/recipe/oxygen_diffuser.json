@@ -4,8 +4,8 @@
   "key": {
     "B": "nautec:air_bottle",
     "C": "nautec:cast_iron_ingot",
-    "G": "minecraft:glass",
-    "K": "minecraft:dried_kelp_block",
+    "G": "#c:glass_blocks/colorless",
+    "K": "#c:storage_blocks/dried_kelp",
     "V": "nautec:valve"
   },
   "pattern": [

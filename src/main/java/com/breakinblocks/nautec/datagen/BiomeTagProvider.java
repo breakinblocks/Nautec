@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,8 @@ public class BiomeTagProvider extends TagsProvider<Biome> {
     public static final TagKey<Biome> VENTS = modTag("vents");
     public static final TagKey<Biome> BIOLUMINESCENT = modTag("bioluminescent");
     public static final TagKey<Biome> REEF = modTag("reef");
+    public static final TagKey<Biome> HAS_BUDDING_PRISMARINE = modTag("has_budding_prismarine");
+    public static final TagKey<Biome> BUDDING_PRISMARINE_GRAFTING = modTag("budding_prismarine_grafting");
 
     public BiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, Registries.BIOME, registries, Nautec.MODID);
@@ -57,6 +60,9 @@ public class BiomeTagProvider extends TagsProvider<Biome> {
         tag(VENTS).add(NTBiomeKeys.HYDROTHERMAL_VENTS);
         tag(BIOLUMINESCENT).add(NTBiomeKeys.BIOLUMINESCENT_GROVE);
         tag(REEF).add(NTBiomeKeys.PRISMARINE_REEF);
+        tag(HAS_BUDDING_PRISMARINE).add(Biomes.WARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN);
+        tag(BUDDING_PRISMARINE_GRAFTING).addTag(HAS_BUDDING_PRISMARINE)
+                .add(NTBiomeKeys.PRISMARINE_REEF, NTBiomeKeys.BIOLUMINESCENT_GROVE, NTBiomeKeys.ABYSSAL_TRENCH);
     }
 
     private TagAppender<ResourceKey<Biome>, Biome> tag(TagKey<Biome> tag) {

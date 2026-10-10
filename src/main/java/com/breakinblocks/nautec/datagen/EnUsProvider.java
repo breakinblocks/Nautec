@@ -687,6 +687,12 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.conduit.filter.fluid.how", "Click with a bucket or tank, or drag a fluid in from JEI");
         add("nautec.conduit.filter.exact", "Matches components exactly");
         add("nautec.conduit.filter.loose", "Matches any of this item");
+        add("nautec.jei.transfer.nothing", "Nothing in this recipe can be moved into this machine");
+        add("nautec.jei.transfer.full", "The machine has no room for another set");
+        add("nautec.mixer.progress", "Mixing: %s%%");
+        add("nautec.mixer.idle", "Not mixing");
+        add("nautec.conduit.filter.dish_strain", "Matches dishes holding this strain");
+        add("nautec.conduit.filter.dish_empty", "Matches empty dishes only");
         add("nautec.conduit.filter.exact.toggle", "Shift-click to switch component matching");
         add("nautec.conduit.filter.clear", "Right-click to clear");
         add("nautec.conduit.readout.items", "Items: %s per %st");
@@ -1179,6 +1185,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.drain.status.pumping.desc", "Pumping Salt Water into its tank");
         add("nautec.jade.drain.power", "Power: %s AP (needs more than %s)");
         add("nautec.jade.drain.rate", "Pumps %s mB of Salt Water a second");
+        add("nautec.jade.drain.rate_idle", "Would pump %s mB of Salt Water a second while running");
+        add("nautec.jade.drain.blocked", "Once open it still will not pump: %s");
         add("nautec.jade.beam_speed", "Speed x%s on a %s AP beam (needs %s)");
         add("nautec.jade.beam_speed.low", "Beam too weak: %s AP, needs %s");
         add("nautec.crystal_seed.dormant.tooltip", "Awaken it in a Resonance Chamber at purity 3.0");
@@ -1427,6 +1435,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.submarine.hud_position.done", "Done");
         add("nautec.submarine.hud_position.done.desc", "Save this position and close.");
         add("nautec.diving_suit.oxygen", "Oxygen: %s minutes %s seconds");
+        add("nautec.diving_suit.mining", "Full set: mine underwater as fast as on land, even while swimming");
         add("nautec.diving_suit.refill", "Can be filled up using Bottles of pressurized air");
         add("nautec.tool.no_power", "Not enough power");
         add("nautec.tool.ability_enabled", "Ability Enabled");

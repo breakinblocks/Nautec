@@ -81,6 +81,7 @@ Put a <ItemLink id="filter"/> in the tap to open filters on every face: 9 item s
 
 * Click a slot with an item, bucket or tank, or drag one in from JEI. Right-click clears it.
 * Shift-click an item slot to make it match components exactly, such as an enchanted book or a filled dish. A gold corner marks those slots.
+* A Petri Dish holding a colony starts out matching its strain, at any colony size. Shift-click it to take any dish instead. An empty dish set to match exactly takes only empty dishes.
 * **Whitelist** lets only the listed things through that face, **Blacklist** blocks them. A face with no filter set lets everything through.
 
 Filters apply both ways: they limit what an Extract face sends out and what an Insert face accepts.

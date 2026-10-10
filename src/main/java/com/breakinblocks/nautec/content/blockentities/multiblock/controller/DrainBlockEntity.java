@@ -152,7 +152,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         return blocker != null ? blocker : Status.PUMPING;
     }
 
-    private @Nullable Status pumpBlocker() {
+    public @Nullable Status pumpBlocker() {
         if (!hasWater()) {
             return Status.NO_WATER;
         }
