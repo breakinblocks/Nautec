@@ -40,10 +40,19 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": "#minecraft:is_ocean"
-              }
+              "condition": "minecraft:any_of",
+              "terms": [
+                {
+                  "condition": "minecraft:location_check",
+                  "predicate": {
+                    "biomes": "#minecraft:is_ocean"
+                  }
+                },
+                {
+                  "condition": "nautec:skyblock_option",
+                  "option": "skyblockFishingLoot"
+                }
+              ]
             }
           ],
           "name": "minecraft:nautilus_shell",
@@ -53,10 +62,19 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": "#minecraft:is_ocean"
-              }
+              "condition": "minecraft:any_of",
+              "terms": [
+                {
+                  "condition": "minecraft:location_check",
+                  "predicate": {
+                    "biomes": "#minecraft:is_ocean"
+                  }
+                },
+                {
+                  "condition": "nautec:skyblock_option",
+                  "option": "skyblockFishingLoot"
+                }
+              ]
             }
           ],
           "functions": [
@@ -72,6 +90,17 @@
           ],
           "name": "nautec:atlantic_gold_nugget",
           "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "nautec:skyblock_option",
+              "option": "skyblockFishingLoot"
+            }
+          ],
+          "name": "minecraft:heart_of_the_sea",
+          "weight": 4
         },
         {
           "type": "minecraft:item",

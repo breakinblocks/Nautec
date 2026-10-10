@@ -81,10 +81,19 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": "#minecraft:is_ocean"
-              }
+              "condition": "minecraft:any_of",
+              "terms": [
+                {
+                  "condition": "minecraft:location_check",
+                  "predicate": {
+                    "biomes": "#minecraft:is_ocean"
+                  }
+                },
+                {
+                  "condition": "nautec:skyblock_option",
+                  "option": "skyblockFishingLoot"
+                }
+              ]
             }
           ],
           "name": "minecraft:tropical_fish",
@@ -94,10 +103,19 @@
           "type": "minecraft:item",
           "conditions": [
             {
-              "condition": "minecraft:location_check",
-              "predicate": {
-                "biomes": "#minecraft:is_ocean"
-              }
+              "condition": "minecraft:any_of",
+              "terms": [
+                {
+                  "condition": "minecraft:location_check",
+                  "predicate": {
+                    "biomes": "#minecraft:is_ocean"
+                  }
+                },
+                {
+                  "condition": "nautec:skyblock_option",
+                  "option": "skyblockFishingLoot"
+                }
+              ]
             }
           ],
           "functions": [
@@ -113,6 +131,50 @@
           ],
           "name": "minecraft:kelp",
           "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "nautec:skyblock_option",
+              "option": "skyblockFishingLoot"
+            }
+          ],
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "nautec:prismarine_sand",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "nautec:skyblock_option",
+              "option": "skyblockFishingLoot"
+            }
+          ],
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:prismarine_shard",
+          "weight": 6
         },
         {
           "type": "minecraft:item",

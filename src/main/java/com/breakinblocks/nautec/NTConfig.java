@@ -959,6 +959,42 @@ public final class NTConfig {
                     "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
 
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_LUCKY_ZONES_ANY_BIOME = WORLDGEN_BUILDER
+            .comment("Options for skyblock and void-world packs, where NauTec's oceans, structures and ocean mobs do not exist. Every option is off by default and each one can be turned on alone",
+                    "The recipe options take effect on the next world load or /reload. Datapacks can check any of them with the nautec:skyblock_option recipe condition or loot condition",
+                    "The Deep Sea Drain and Tidal Rotor ocean check is a separate per-world setting, drainRequiresOcean in nautec-common.toml")
+            .push("skyblock")
+            .comment("Determines whether lucky fishing zones can appear on any open water instead of only in ocean and river biomes. Zones still need a ring of open water around them, so a player-built pool works and a bigger pool gets more zones")
+            .define("luckyZonesAnyBiome", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_FISHING_LOOT = WORLDGEN_BUILDER
+            .comment("Determines whether lucky fishing zone catches count as ocean catches in any biome, and adds Prismarine Sand, Prismarine Shards and the Heart of the Sea to the zone loot. Catches from NauTec's own biomes are unchanged")
+            .define("skyblockFishingLoot", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_GRAFTING_ANY_BIOME = WORLDGEN_BUILDER
+            .comment("Determines whether the Grafting Tool ignores the biome listed in the nautec:bacteria_obtaining data map. The block and the chance still apply")
+            .define("graftingAnyBiome", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_PRISMARINE_SAND_MIXING = WORLDGEN_BUILDER
+            .comment("Enables a Mixer recipe that makes Prismarine Sand from sand, a Prismarine Crystal Shard and Salt Water")
+            .define("prismarineSandMixing", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_BUDDING_PRISMARINE_MIXING = WORLDGEN_BUILDER
+            .comment("Enables a Mixer recipe that makes Budding Prismarine from Prismarine Bricks, Prismarine Crystals, Prismarine Crystal Shards and Salt Water")
+            .define("buddingPrismarineMixing", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_FUEL_CELL_RESONANCE = WORLDGEN_BUILDER
+            .comment("Enables Laser Crafting Matrix recipes that make Resonant Shards and Prismarine Crystal Seeds at purity 2.5, which a Bacterial Fuel Cell can reach without a Prismarine Crystal. The colony needs full mutation resistance to get there")
+            .define("fuelCellResonance", false);
+
+    private static final ModConfigSpec.BooleanValue SKYBLOCK_ELDRITCH_HEART_MIXING = WORLDGEN_BUILDER
+            .comment("Enables a Mixer recipe that makes an Eldritch Heart from a Heart of the Sea, Resonant Shards, Prismarine Crystal Shards and EAS")
+            .define("eldritchHeartMixing", false);
+
+    static {
+        WORLDGEN_BUILDER.pop();
+    }
+
     private static final ModConfigSpec.DoubleValue CATALYST_BUDDING_OUTPUT_BONUS = BUILDER
             .comment("The extra AP output an Aquatic Catalyst gets for each Budding Prismarine block touching it, as a fraction of its normal output")
             .defineInRange("catalystBuddingOutputBonus", 0.25, 0.0, 10.0);
@@ -991,6 +1027,14 @@ public final class NTConfig {
     static final ModConfigSpec WORLDGEN_SPEC = WORLDGEN_BUILDER.build();
 
     public static int biomeTankTicks = 600;
+
+    public static boolean skyblockLuckyZonesAnyBiome;
+    public static boolean skyblockFishingLoot;
+    public static boolean skyblockGraftingAnyBiome;
+    public static boolean skyblockPrismarineSandMixing;
+    public static boolean skyblockBuddingPrismarineMixing;
+    public static boolean skyblockFuelCellResonance;
+    public static boolean skyblockEldritchHeartMixing;
 
     public static int conduitBeaconPowerUsage = 50;
     public static int conduitBeaconBuffer = 5000;
@@ -1288,6 +1332,7 @@ public final class NTConfig {
 
     static {
         loadValues();
+        loadWorldgenValues();
     }
 
     private static ModConfigSpec.IntValue[] conduitValues(String key, String comment, int[] defaults, int min, int max) {
@@ -1311,9 +1356,24 @@ public final class NTConfig {
         return SPEC.isLoaded() ? value.get() : value.getDefault();
     }
 
+    private static <T> T worldgenValue(ModConfigSpec.ConfigValue<T> value) {
+        return WORLDGEN_SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         if (event.getConfig().getSpec() == SPEC) loadValues();
+        if (event.getConfig().getSpec() == WORLDGEN_SPEC) loadWorldgenValues();
+    }
+
+    private static void loadWorldgenValues() {
+        skyblockLuckyZonesAnyBiome = worldgenValue(SKYBLOCK_LUCKY_ZONES_ANY_BIOME);
+        skyblockFishingLoot = worldgenValue(SKYBLOCK_FISHING_LOOT);
+        skyblockGraftingAnyBiome = worldgenValue(SKYBLOCK_GRAFTING_ANY_BIOME);
+        skyblockPrismarineSandMixing = worldgenValue(SKYBLOCK_PRISMARINE_SAND_MIXING);
+        skyblockBuddingPrismarineMixing = worldgenValue(SKYBLOCK_BUDDING_PRISMARINE_MIXING);
+        skyblockFuelCellResonance = worldgenValue(SKYBLOCK_FUEL_CELL_RESONANCE);
+        skyblockEldritchHeartMixing = worldgenValue(SKYBLOCK_ELDRITCH_HEART_MIXING);
     }
 
     private static void loadValues() {

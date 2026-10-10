@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.registries;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.loot.InLuckyFishingZoneCondition;
+import com.breakinblocks.nautec.loot.SkyblockOptionLootCondition;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -15,6 +16,10 @@ public final class NTLootConditions {
     public static final DeferredHolder<MapCodec<? extends LootItemCondition>, MapCodec<InLuckyFishingZoneCondition>>
             IN_LUCKY_FISHING_ZONE = LOOT_CONDITIONS.register("in_lucky_fishing_zone",
             () -> InLuckyFishingZoneCondition.CODEC);
+
+    public static final DeferredHolder<MapCodec<? extends LootItemCondition>, MapCodec<SkyblockOptionLootCondition>>
+            SKYBLOCK_OPTION = LOOT_CONDITIONS.register("skyblock_option",
+            () -> SkyblockOptionLootCondition.CODEC);
 
     private NTLootConditions() {
     }

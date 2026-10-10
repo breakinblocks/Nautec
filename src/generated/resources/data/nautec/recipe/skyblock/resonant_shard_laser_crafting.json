@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "nautec:skyblock_option",
+      "option": "fuelCellResonance"
+    }
+  ],
+  "type": "nautec:laser_crafting",
+  "duration": 400,
+  "ingredients": [
+    {
+      "count": 4,
+      "ingredient": "nautec:prismarine_crystal_shard"
+    }
+  ],
+  "power": 20,
+  "purity": 2.5,
+  "results": [
+    {
+      "id": "nautec:resonant_shard"
+    }
+  ]
+}

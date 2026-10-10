@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "nautec:skyblock_option",
+      "option": "eldritchHeartMixing"
+    }
+  ],
+  "type": "nautec:mixing",
+  "duration": 400,
+  "fluid_ingredient": {
+    "amount": 1000,
+    "id": "nautec:eas"
+  },
+  "ingredients": [
+    {
+      "ingredient": "minecraft:heart_of_the_sea"
+    },
+    {
+      "count": 2,
+      "ingredient": "nautec:resonant_shard"
+    },
+    {
+      "count": 4,
+      "ingredient": "nautec:prismarine_crystal_shard"
+    }
+  ],
+  "result": {
+    "id": "nautec:eldritch_heart"
+  }
+}

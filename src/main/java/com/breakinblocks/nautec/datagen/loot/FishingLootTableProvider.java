@@ -1,7 +1,9 @@
 package com.breakinblocks.nautec.datagen.loot;
 
+import com.breakinblocks.nautec.data.conditions.SkyblockOption;
 import com.breakinblocks.nautec.datagen.BiomeTagProvider;
 import com.breakinblocks.nautec.loot.CatchAsEntityFunction;
+import com.breakinblocks.nautec.loot.SkyblockOptionLootCondition;
 import com.breakinblocks.nautec.registries.NTEntities;
 import net.minecraft.world.entity.EntityType;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetContainerLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -57,8 +60,10 @@ public record FishingLootTableProvider(HolderLookup.Provider registries) impleme
 
                 .add(inBiome(Items.CLAY_BALL, 12, 1, 3, BiomeTags.IS_RIVER))
                 .add(inBiome(Items.LILY_PAD, 8, BiomeTags.IS_RIVER))
-                .add(inBiome(Items.TROPICAL_FISH, 10, BiomeTags.IS_OCEAN))
-                .add(inBiome(Items.KELP, 8, 1, 4, BiomeTags.IS_OCEAN))
+                .add(oceanOrSkyblock(anywhere(Items.TROPICAL_FISH, 10)))
+                .add(oceanOrSkyblock(anywhere(Items.KELP, 8, 1, 4)))
+                .add(skyblock(anywhere(NTBlocks.PRISMARINE_SAND.asItem(), 10, 1, 2)))
+                .add(skyblock(anywhere(Items.PRISMARINE_SHARD, 6, 1, 3)))
 
                 .add(inBiome(NTItems.LUMINOUS_MEMBRANE.get(), 10, BiomeTagProvider.BIOLUMINESCENT))
                 .add(inBiome(NTBlocks.LUMINESCENT_ALGAE.asItem(), 12, 1, 3, BiomeTagProvider.BIOLUMINESCENT))
@@ -94,8 +99,9 @@ public record FishingLootTableProvider(HolderLookup.Provider registries) impleme
                 .add(anywhere(NTBlocks.CRATE.asItem(), 4)
                         .apply(SetContainerLootTable.withLootTable(NTBlockEntityTypes.CRATE.get(), NTLootTables.CRATE)))
 
-                .add(inBiome(Items.NAUTILUS_SHELL, 10, BiomeTags.IS_OCEAN))
-                .add(inBiome(NTItems.ATLANTIC_GOLD_NUGGET.get(), 10, 1, 4, BiomeTags.IS_OCEAN))
+                .add(oceanOrSkyblock(anywhere(Items.NAUTILUS_SHELL, 10)))
+                .add(oceanOrSkyblock(anywhere(NTItems.ATLANTIC_GOLD_NUGGET.get(), 10, 1, 4)))
+                .add(skyblock(anywhere(Items.HEART_OF_THE_SEA, 4)))
 
                 .add(inBiome(NTItems.ABYSSAL_ORGAN.get(), 4, BiomeTagProvider.ABYSSAL))
                 .add(inBiome(NTBlocks.BUDDING_PRISMARINE.asItem(), 2, BiomeTagProvider.ABYSSAL))
@@ -130,6 +136,15 @@ public record FishingLootTableProvider(HolderLookup.Provider registries) impleme
 
     private LootPoolSingletonContainer.Builder<?> inBiome(ItemLike item, int weight, int min, int max, TagKey<Biome> biomes) {
         return anywhere(item, weight, min, max).when(biomeCheck(biomes));
+    }
+
+    private LootPoolSingletonContainer.Builder<?> oceanOrSkyblock(LootPoolSingletonContainer.Builder<?> entry) {
+        return entry.when(AnyOfCondition.anyOf(biomeCheck(BiomeTags.IS_OCEAN),
+                SkyblockOptionLootCondition.builder(SkyblockOption.FISHING_LOOT)));
+    }
+
+    private static LootPoolSingletonContainer.Builder<?> skyblock(LootPoolSingletonContainer.Builder<?> entry) {
+        return entry.when(SkyblockOptionLootCondition.builder(SkyblockOption.FISHING_LOOT));
     }
 
     private LocationCheck.Builder biomeCheck(TagKey<Biome> biomes) {

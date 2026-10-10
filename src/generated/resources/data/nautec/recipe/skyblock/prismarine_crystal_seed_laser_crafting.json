@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "nautec:skyblock_option",
+      "option": "fuelCellResonance"
+    }
+  ],
+  "type": "nautec:laser_crafting",
+  "duration": 2400,
+  "ingredients": [
+    {
+      "ingredient": "nautec:dormant_crystal_seed"
+    }
+  ],
+  "power": 20,
+  "purity": 2.5,
+  "results": [
+    {
+      "id": "nautec:prismarine_crystal_seed"
+    }
+  ]
+}

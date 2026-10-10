@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "nautec:skyblock_option",
+      "option": "prismarineSandMixing"
+    }
+  ],
+  "type": "nautec:mixing",
+  "duration": 200,
+  "fluid_ingredient": {
+    "amount": 1000,
+    "id": "nautec:saltwater"
+  },
+  "ingredients": [
+    {
+      "count": 4,
+      "ingredient": "#c:sands/colorless"
+    },
+    {
+      "ingredient": "nautec:prismarine_crystal_shard"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "nautec:prismarine_sand"
+  }
+}

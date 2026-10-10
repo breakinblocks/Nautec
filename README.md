@@ -120,7 +120,7 @@ any NauTec item jumps to that item's page.
 
 ## Configuration
 
-Gameplay values are synchronized from the server in `nautec-common.toml`; biome injection settings live in `nautec-worldgen.toml`. Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance), and Wave Jet tuning (thrust, top speed, power draw, spotlight range, brightness and power draw). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
+Gameplay values are synchronized from the server in `nautec-common.toml`; biome injection and skyblock settings are in `nautec-worldgen.toml`. Most numbers are able to be tweaked in the config files, including laser range, per-machine power draw and speed, bacteria stat caps, drain capacity and rate, augment tuning (Abyssal Eyes depth, Photophore Skin radius, Guardian augment damage), biome injection, the full lucky fishing zone set (interval, spacing, per-chunk cap, lifetime, radius), submarine tuning (power capacity, idle/movement/oxygen draw, thrust, top speed, third person camera distance), and Wave Jet tuning (thrust, top speed, power draw, spotlight range, brightness and power draw). The submarine's power HUD position is client config, repositionable in game with Ctrl+H.
 
 ## For pack developers
 
@@ -187,6 +187,52 @@ biome family without hardcoding biome ids.
 **Worldgen.** Biome injection is on by default and can be turned off with `enableBiomeInjection`. A
 pack running a custom overworld preset needs to add that preset to `injectableWorldPresets` for the
 biomes to appear.
+
+**Skyblock packs.** NauTec expects oceans, so in a void world progression stops at the first step. The
+`[skyblock]` section of `nautec-worldgen.toml` holds opt-in settings for that. Every option is off by
+default and each one works on its own:
+
+| Option | What it does |
+| --- | --- |
+| `luckyZonesAnyBiome` | Lucky fishing zones appear on any open water, not only in oceans and rivers. A player-built pool works, and a bigger pool gets more zones. |
+| `skyblockFishingLoot` | Zone catches count as ocean catches in any biome, and zone loot gains Prismarine Sand, Prismarine Shards and the Heart of the Sea. Together with `luckyZonesAnyBiome` this is the early source of prismarine, salt and salvage parts. |
+| `graftingAnyBiome` | The Grafting Tool ignores the biome in `nautec:bacteria_obtaining`. The block and the chance still apply. |
+| `prismarineSandMixing` | Mixer: 4 sand, 1 Prismarine Crystal Shard and 1000 mB Salt Water make 2 Prismarine Sand. |
+| `buddingPrismarineMixing` | Mixer: 1 Prismarine Bricks, 4 Prismarine Crystals, 2 Prismarine Crystal Shards and 1000 mB Salt Water make 1 Budding Prismarine. |
+| `fuelCellResonance` | Laser Crafting Matrix at purity 2.5: 4 Prismarine Crystal Shards make a Resonant Shard, and a Dormant Crystal Seed becomes a Prismarine Crystal Seed for the Crystal Cradle. Without a crystal, only a Bacterial Fuel Cell burning a colony with full mutation resistance reaches 2.5. |
+| `eldritchHeartMixing` | Mixer: a Heart of the Sea, 2 Resonant Shards, 4 Prismarine Crystal Shards and 1000 mB EAS make an Eldritch Heart. |
+
+These options are in a common config rather than `nautec-common.toml` because recipe conditions are
+checked when a world's datapacks load, which is before per-world server configs are read. Recipe options
+take effect on the next world load or `/reload`. Datapacks can check the same options with the
+`nautec:skyblock_option` recipe condition or loot condition:
+
+```json
+"neoforge:conditions": [
+  { "type": "nautec:skyblock_option", "option": "prismarineSandMixing" }
+]
+```
+
+The skyblock recipes are plain JSON under `data/nautec/recipe/skyblock/`, so a datapack can rebalance
+them by overriding the file.
+
+Two other settings matter in a void world. Set `drainRequiresOcean = false` in `nautec-common.toml` so
+the Deep Sea Drain and Tidal Rotor work outside ocean biomes. The Abyssal Pressure Forge needs Y 0 or
+lower with 8 water source blocks above it, and its recipes ask for Y -20 and Y -40, so players build down
+into the void. `pressureForgeDepth` and each recipe's `minDepth` are the values to change for a shallower
+dimension.
+
+A pack can also give out a crystal geode, alongside the Fuel Cell route or in place of it.
+`/place template nautec:stone_crystal_geode` (or `nautec:deepslate_crystal_geode`) places the
+20 by 18 by 20 geode with a natural Prismarine Crystal that works as soon as it is placed. `/place structure`
+does not work in a void, because geodes only generate under terrain below sea level.
+
+Some exploration content stays out of reach in a skyblock world by design: NauTec's four ocean biomes
+with their plants, mobs and drops, so the Abyssal Eyes, Photophore Skin and Vent Carapace augments and
+the Stealth and Armour modules; the Guardian Eye and Dolphin Fin augments and the Impulse Laser Module,
+unless the pack supplies those mobs; structures, Research Logs and wild Gateways; and the biome-specific
+fishing loot. Vanilla items NauTec uses, such as Nether Stars, Echo Shards and Phantom Membranes, are up
+to the pack.
 
 **Guide book.** The in-game guide is a GuideMe guide (`nautec:guide`). Its pages are Markdown files under
 `assets/nautec/guides/nautec/guide/`, so a resource pack can add or replace pages.

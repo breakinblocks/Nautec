@@ -12,6 +12,7 @@ import com.breakinblocks.nautec.mixin.FishingHookAccessor;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTLootTables;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -95,7 +97,7 @@ public final class LuckyFishingZoneEvents {
         BlockPos candidate = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE,
                 player.blockPosition().offset(offsetX, 0, offsetZ));
 
-        if (!level.getBiome(candidate).is(BiomeTags.IS_OCEAN) && !level.getBiome(candidate).is(BiomeTags.IS_RIVER)) {
+        if (!zoneAllowedIn(level.getBiome(candidate))) {
             return false;
         }
 
@@ -117,6 +119,10 @@ public final class LuckyFishingZoneEvents {
 
         place(level, candidate, radius, index);
         return true;
+    }
+
+    public static boolean zoneAllowedIn(Holder<Biome> biome) {
+        return NTConfig.skyblockLuckyZonesAnyBiome || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_RIVER);
     }
 
     public static int largestOpenRadius(ServerLevel level, BlockPos centre) {

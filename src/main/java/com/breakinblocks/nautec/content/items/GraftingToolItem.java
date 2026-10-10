@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.items;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
@@ -36,7 +37,7 @@ public class GraftingToolItem extends Item {
         BlockState blockState = level.getBlockState(pos);
         BacteriaObtainValue data = blockState.typeHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
         Player player = context.getPlayer();
-        if (player != null && data != null && level.getBiome(pos).is(data.biome())) {
+        if (player != null && data != null && (NTConfig.skyblockGraftingAnyBiome || level.getBiome(pos).is(data.biome()))) {
             ItemStack offhandItem = player.getOffhandItem();
             if (offhandItem.is(NTItems.PETRI_DISH.get())) {
                 IBacteriaStorage bacteriaStorage = offhandItem.getCapability(NTCapabilities.BacteriaStorage.ITEM);

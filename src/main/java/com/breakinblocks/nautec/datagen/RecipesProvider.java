@@ -8,6 +8,8 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.data.NTDataComponents;
+import com.breakinblocks.nautec.data.conditions.SkyblockOption;
+import com.breakinblocks.nautec.data.conditions.SkyblockOptionCondition;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AquaticCatalystChannelingRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.CombustionAdditiveRecipeBuilder;
 import com.breakinblocks.nautec.datagen.recipeBuilder.AugmentationRecipeBuilder;
@@ -118,6 +120,8 @@ public class RecipesProvider extends RecipeProvider {
         incubationRecipes(pRecipeOutput);
 
         bioReactorRecipes(pRecipeOutput);
+
+        skyblockRecipes(pRecipeOutput);
 
         shaped(RecipeCategory.MISC, NTItems.GLASS_VIAL.asItem(), 3)
                 .pattern("G G")
@@ -2300,6 +2304,54 @@ public class RecipesProvider extends RecipeProvider {
                 .define('B', NTBlocks.BIO_REACTOR)
                 .unlockedBy("has_item", has(NTBlocks.BIO_REACTOR))
                 .save(pRecipeOutput, key("industrial_bio_reactor"));
+    }
+
+    private void skyblockRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTBlocks.PRISMARINE_SAND.asItem(), 2))
+                .ingredients(iwcFromTag(Tags.Items.SANDS_COLORLESS, 4),
+                        iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(skyblock(pRecipeOutput, SkyblockOption.PRISMARINE_SAND_MIXING), key("skyblock/prismarine_sand_mixing"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTBlocks.BUDDING_PRISMARINE.asItem(), 1))
+                .ingredients(iwcFromItemLike(Items.PRISMARINE_BRICKS, 1),
+                        iwcFromTag(Tags.Items.GEMS_PRISMARINE, 4),
+                        iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 2))
+                .duration(600)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.SALT_WATER.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(skyblock(pRecipeOutput, SkyblockOption.BUDDING_PRISMARINE_MIXING), key("skyblock/budding_prismarine_mixing"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 4))
+                .result(new ItemStackTemplate(NTItems.RESONANT_SHARD.get(), 1))
+                .power(20)
+                .purity(2.5f)
+                .duration(400)
+                .save(skyblock(pRecipeOutput, SkyblockOption.FUEL_CELL_RESONANCE), key("skyblock/resonant_shard_laser_crafting"));
+
+        LaserCraftingRecipeBuilder.newRecipe()
+                .ingredient(iwcFromItemLike(NTItems.DORMANT_CRYSTAL_SEED.get(), 1))
+                .result(new ItemStackTemplate(NTItems.PRISMARINE_CRYSTAL_SEED.get(), 1))
+                .power(20)
+                .purity(2.5f)
+                .duration(2400)
+                .save(skyblock(pRecipeOutput, SkyblockOption.FUEL_CELL_RESONANCE), key("skyblock/prismarine_crystal_seed_laser_crafting"));
+
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.ELDRITCH_HEART.get(), 1))
+                .ingredients(iwcFromItemLike(Items.HEART_OF_THE_SEA, 1),
+                        iwcFromItemLike(NTItems.RESONANT_SHARD.get(), 2),
+                        iwcFromItemLike(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 4))
+                .duration(400)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.EAS.getStillFluid(), 1000))
+                .fluidResult(null)
+                .save(skyblock(pRecipeOutput, SkyblockOption.ELDRITCH_HEART_MIXING), key("skyblock/eldritch_heart_mixing"));
+    }
+
+    private static RecipeOutput skyblock(RecipeOutput output, SkyblockOption option) {
+        return output.withConditions(new SkyblockOptionCondition(option));
     }
 
     private static @NotNull IngredientWithCount iwcFromItemLike(Item item, int count) {
