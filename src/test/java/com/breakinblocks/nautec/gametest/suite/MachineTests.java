@@ -15,14 +15,13 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +35,7 @@ public final class MachineTests {
     private MachineTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    private static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -47,7 +46,7 @@ public final class MachineTests {
         }
     }
 
-    private static int batteryPower(GameTestHelper helper, ItemStack stack) {
+    private static int batteryPower(NTGameTestHelper helper, ItemStack stack) {
         IPowerStorage storage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (storage == null) {
             throw helper.assertionException("Battery stack lost its power capability");

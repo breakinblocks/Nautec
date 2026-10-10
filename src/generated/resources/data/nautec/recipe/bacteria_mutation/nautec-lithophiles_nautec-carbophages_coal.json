@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:coal",
+  "catalyst": {
+    "item": "minecraft:coal"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:lithophiles",
   "result_bacteria": "nautec:carbophages"

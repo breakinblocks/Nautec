@@ -1,17 +1,19 @@
 package com.breakinblocks.nautec.compat.starcatcher;
 
 import com.breakinblocks.nautec.content.entities.NautecFishingHook;
+import com.wdiscute.starcatcher.bobentity.FishingBobEntity;
 import com.wdiscute.starcatcher.data.FishCaughtCounter;
 import com.wdiscute.starcatcher.data.attachments.FishingGuideAttachment;
 import com.wdiscute.starcatcher.fish.FishApi;
 import com.wdiscute.starcatcher.fish.FishProperties;
 import com.wdiscute.starcatcher.registry.SCCriterionTriggers;
 import com.wdiscute.starcatcher.registry.SCDataAttachments;
+import com.wdiscute.starcatcher.registry.SCEntities;
 import com.wdiscute.starcatcher.registry.fishrestrictions.AbstractFishRestriction;
 import com.wdiscute.starcatcher.tournament.TournamentHandler;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -34,7 +36,7 @@ final class StarcatcherCatches {
             return null;
         }
         ServerLevel level = params.getLevel();
-        ItemStack rod = params.contextMap().getOptional(LootContextParams.TOOL) instanceof ItemStack stack ? stack : ItemStack.EMPTY;
+        ItemStack rod = params.getOptionalParameter(LootContextParams.TOOL) instanceof ItemStack stack ? stack : ItemStack.EMPTY;
 
         FishProperties fp = pick(hook, level, rod, hook.getRandom());
         if (fp == null) {
@@ -47,7 +49,7 @@ final class StarcatcherCatches {
         boolean golden = perfect
                 && FishCaughtCounter.canCatchGolden(fp, player)
                 && random.nextFloat() < fp.sizeWeight().goldenChance();
-        Identifier id = FishApi.getKey(level, fp);
+        ResourceLocation id = FishApi.getKey(level, fp);
         boolean firstCatch = id != null && !FishingGuideAttachment.getFishesCaught(player).containsKey(id);
 
         if (id != null) {
@@ -58,7 +60,10 @@ final class StarcatcherCatches {
         player.giveExperiencePoints(fp.rarity().getXp());
 
         List<ItemStack> caught = new ArrayList<>();
-        caught.add(FishApi.makeItemStackNonBucket(fp, percentile, golden, player, perfect));
+        FishingBobEntity bob = new FishingBobEntity(SCEntities.FISHING_BOB.get(), level);
+        bob.rod = rod;
+        bob.fpToFish = fp;
+        caught.add(FishApi.makeItemStackNonBucket(bob, fp, percentile, golden, player, perfect));
         return caught;
     }
 

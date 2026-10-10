@@ -1,26 +1,79 @@
 {
-    "ambientocclusion": false,
-    "textures": {
-        "particle": "nautec:block/glow_polyp",
-        "glow_polyp": "nautec:block/glow_polyp",
-        "glow_polyp_emissive": "nautec:block/glow_polyp_emissive"
-    },
-    "elements": [
-        {   "from": [ 0, 0, 0.1 ],
-            "to": [ 16, 16, 0.1 ],
-            "faces": {
-                "north": { "uv": [ 16, 0, 0, 16 ], "texture": "#glow_polyp" },
-                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#glow_polyp" }
-            }
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "nautec:block/glow_polyp",
+    "glow_polyp": "nautec:block/glow_polyp",
+    "glow_polyp_emissive": "nautec:block/glow_polyp_emissive"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0.1
+      ],
+      "to": [
+        16,
+        16,
+        0.1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#glow_polyp"
         },
-        {   "from": [ 0, 0, 0.1 ],
-            "to": [ 16, 16, 0.1 ],
-            "shade": false,
-            "light_emission": 15,
-            "faces": {
-                "north": { "uv": [ 16, 0, 0, 16 ], "texture": "#glow_polyp_emissive" },
-                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#glow_polyp_emissive" }
-            }
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow_polyp"
         }
-    ]
+      }
+    },
+    {
+      "from": [
+        0,
+        0,
+        0.1
+      ],
+      "to": [
+        16,
+        16,
+        0.1
+      ],
+      "shade": false,
+      "faces": {
+        "north": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#glow_polyp_emissive"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow_polyp_emissive"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    }
+  ],
+  "render_type": "minecraft:cutout"
 }

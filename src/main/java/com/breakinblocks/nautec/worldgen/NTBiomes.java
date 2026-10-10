@@ -7,13 +7,12 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.biome.OverworldBiomes;
 import net.minecraft.data.worldgen.placement.AquaticPlacements;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.attribute.AmbientParticle;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.AmbientMoodSettings;
+import net.minecraft.world.level.biome.AmbientParticleSettings;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -23,6 +22,8 @@ import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public final class NTBiomes {
+    private static final int DEFAULT_FOG_COLOR = 0xC0D8FF;
+
     public static void bootstrap(BootstrapContext<Biome> context) {
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carvers = context.lookup(Registries.CONFIGURED_CARVER);
@@ -36,19 +37,16 @@ public final class NTBiomes {
     private static Biome abyssalTrench(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 3, 4, 4);
-        mobs.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(EntityType.DROWNED, 1, 3));
-        mobs.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 1, 2));
-        mobs.addSpawn(MobCategory.WATER_AMBIENT, 8, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 3, 6));
+        mobs.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.DROWNED, 20, 1, 3));
+        mobs.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 25, 1, 2));
+        mobs.addSpawn(MobCategory.WATER_AMBIENT, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 8, 3, 6));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.ABYSSAL_CORAL_PLACE_KEY);
 
-        return baseOceanBiome(0.3F, 0x081A2B)
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x03080F))
-                .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 22.0F)
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x0A1520))
-                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(NTParticles.ABYSSAL_MOTE.get(), 0.004F))
+        return baseOceanBiome(0.3F, effects(0.3F, 0x081A2B, 0x03080F, 0x0A1520)
+                .ambientParticle(new AmbientParticleSettings(NTParticles.ABYSSAL_MOTE.get(), 0.004F)))
                 .mobSpawnSettings(mobs.build())
                 .generationSettings(generation.build())
                 .build();
@@ -57,9 +55,9 @@ public final class NTBiomes {
     private static Biome bioluminescentGrove(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 6, 4, 12);
-        mobs.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.GLOW_SQUID, 2, 4));
-        mobs.addSpawn(MobCategory.WATER_CREATURE, 12, new MobSpawnSettings.SpawnerData(NTEntities.LANTERN_JELLY.get(), 1, 3));
-        mobs.addSpawn(MobCategory.WATER_AMBIENT, 15, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 4, 8));
+        mobs.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GLOW_SQUID, 20, 2, 4));
+        mobs.addSpawn(MobCategory.WATER_CREATURE, new MobSpawnSettings.SpawnerData(NTEntities.LANTERN_JELLY.get(), 12, 1, 3));
+        mobs.addSpawn(MobCategory.WATER_AMBIENT, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 15, 4, 8));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.SEAGRASS_DEEP);
@@ -70,10 +68,8 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.BUDDING_PRISMARINE_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.GLOW_GROTTO_PLACE_KEY);
 
-        return baseOceanBiome(0.5F, 0x1C8C81)
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x0B4F4A))
-                .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 130.0F)
-                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(NTParticles.GLOW_SPORE.get(), 0.0035F))
+        return baseOceanBiome(0.5F, effects(0.5F, 0x1C8C81, 0x0B4F4A, DEFAULT_FOG_COLOR)
+                .ambientParticle(new AmbientParticleSettings(NTParticles.GLOW_SPORE.get(), 0.0035F)))
                 .mobSpawnSettings(mobs.build())
                 .generationSettings(generation.build())
                 .build();
@@ -82,7 +78,7 @@ public final class NTBiomes {
     private static Biome hydrothermalVents(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 4, 3, 6);
-        mobs.addSpawn(MobCategory.WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(NTEntities.VENT_CRAWLER.get(), 1, 3));
+        mobs.addSpawn(MobCategory.WATER_CREATURE, new MobSpawnSettings.SpawnerData(NTEntities.VENT_CRAWLER.get(), 20, 1, 3));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.VENT_BASALT_PLACE_KEY);
@@ -90,10 +86,8 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, DatapackRegistryProvider.VENT_FIELD_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, DatapackRegistryProvider.VENT_TUBEWORM_PLACE_KEY);
 
-        return baseOceanBiome(0.85F, 0x4A3527)
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x2B1C12))
-                .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 48.0F)
-                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(NTParticles.VENT_BUBBLE.get(), 0.012F))
+        return baseOceanBiome(0.85F, effects(0.85F, 0x4A3527, 0x2B1C12, DEFAULT_FOG_COLOR)
+                .ambientParticle(new AmbientParticleSettings(NTParticles.VENT_BUBBLE.get(), 0.012F)))
                 .mobSpawnSettings(mobs.build())
                 .generationSettings(generation.build())
                 .build();
@@ -102,9 +96,9 @@ public final class NTBiomes {
     private static Biome prismarineReef(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.warmOceanSpawns(mobs, 10, 4);
-        mobs.addSpawn(MobCategory.WATER_AMBIENT, 25, new MobSpawnSettings.SpawnerData(EntityType.TROPICAL_FISH, 8, 8))
-                .addSpawn(MobCategory.WATER_CREATURE, 3, new MobSpawnSettings.SpawnerData(EntityType.DOLPHIN, 1, 2))
-                .addSpawn(MobCategory.WATER_AMBIENT, 12, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 4, 8));
+        mobs.addSpawn(MobCategory.WATER_AMBIENT, new MobSpawnSettings.SpawnerData(EntityType.TROPICAL_FISH, 25, 8, 8))
+                .addSpawn(MobCategory.WATER_CREATURE, new MobSpawnSettings.SpawnerData(EntityType.DOLPHIN, 3, 1, 2))
+                .addSpawn(MobCategory.WATER_AMBIENT, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 12, 4, 8));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, AquaticPlacements.WARM_OCEAN_VEGETATION);
@@ -114,21 +108,32 @@ public final class NTBiomes {
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.REEF_PRISMARINE_PLACE_KEY);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, DatapackRegistryProvider.REEF_BUDDING_PRISMARINE_PLACE_KEY);
 
-        return baseOceanBiome(0.9F, 0x25C4B4)
-                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x1B9A90))
-                .setAttribute(EnvironmentAttributes.WATER_FOG_END_DISTANCE, 145.0F)
+        return baseOceanBiome(0.9F, effects(0.9F, 0x25C4B4, 0x1B9A90, DEFAULT_FOG_COLOR))
                 .mobSpawnSettings(mobs.build())
                 .generationSettings(generation.build())
                 .build();
     }
 
-    private static Biome.BiomeBuilder baseOceanBiome(float temperature, int waterColor) {
+    private static Biome.BiomeBuilder baseOceanBiome(float temperature, BiomeSpecialEffects.Builder effects) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)
                 .temperature(temperature)
                 .downfall(0.5F)
-                .setAttribute(EnvironmentAttributes.SKY_COLOR, OverworldBiomes.calculateSkyColor(temperature))
-                .specialEffects(new BiomeSpecialEffects.Builder().waterColor(waterColor).build());
+                .specialEffects(effects.build());
+    }
+
+    private static BiomeSpecialEffects.Builder effects(float temperature, int waterColor, int waterFogColor, int fogColor) {
+        return new BiomeSpecialEffects.Builder()
+                .waterColor(waterColor)
+                .waterFogColor(waterFogColor)
+                .fogColor(fogColor)
+                .skyColor(calculateSkyColor(temperature))
+                .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
+    }
+
+    private static int calculateSkyColor(float temperature) {
+        float t = Mth.clamp(temperature / 3.0F, -1.0F, 1.0F);
+        return Mth.hsvToRgb(0.62222224F - t * 0.05F, 0.5F + t * 0.1F, 1.0F);
     }
 
     private static BiomeGenerationSettings.Builder baseOceanGeneration(HolderGetter<PlacedFeature> placedFeatures,
@@ -146,8 +151,7 @@ public final class NTBiomes {
         BiomeDefaultFeatures.addDefaultFlowers(generation);
         BiomeDefaultFeatures.addDefaultGrass(generation);
         BiomeDefaultFeatures.addDefaultMushrooms(generation);
-        BiomeDefaultFeatures.addDefaultExtraVegetation(generation, false);
-        BiomeDefaultFeatures.addNearWaterVegetation(generation);
+        BiomeDefaultFeatures.addDefaultExtraVegetation(generation);
         return generation;
     }
 

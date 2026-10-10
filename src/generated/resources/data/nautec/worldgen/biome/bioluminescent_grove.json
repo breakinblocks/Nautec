@@ -1,25 +1,29 @@
 {
-  "attributes": {
-    "minecraft:visual/ambient_particles": [
-      {
-        "particle": {
-          "type": "nautec:glow_spore"
-        },
-        "probability": 0.0035
-      }
-    ],
-    "minecraft:visual/sky_color": "#7ba4ff",
-    "minecraft:visual/water_fog_color": "#0b4f4a",
-    "minecraft:visual/water_fog_end_distance": 130.0
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#1c8c81"
+    "fog_color": 12638463,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "particle": {
+      "options": {
+        "type": "nautec:glow_spore"
+      },
+      "probability": 0.0035
+    },
+    "sky_color": 8103167,
+    "water_color": 1870977,
+    "water_fog_color": 741194
   },
   "features": [
     [],
@@ -83,9 +87,8 @@
       "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_pumpkin",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_firefly_bush_near_water",
+      "minecraft:patch_pumpkin",
       "minecraft:seagrass_deep",
       "nautec:deep_kelp",
       "nautec:luminescent_algae",

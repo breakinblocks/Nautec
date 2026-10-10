@@ -11,17 +11,17 @@ import com.breakinblocks.nautec.network.StartAugmentationPayload;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public class AugmentationStationScreen extends Screen {
             return;
         }
         this.pending = true;
-        ClientPacketDistributor.sendToServer(new StartAugmentationPayload(this.status.pos(), this.selected));
+        PacketDistributor.sendToServer(new StartAugmentationPayload(this.status.pos(), this.selected));
         updateApply();
     }
 
@@ -149,12 +149,12 @@ public class AugmentationStationScreen extends Screen {
     }
 
     private static Component slotName(AugmentSlot slot) {
-        Identifier id = NTRegistries.AUGMENT_SLOT.getKey(slot);
+        ResourceLocation id = NTRegistries.AUGMENT_SLOT.getKey(slot);
         return id == null ? Component.literal("?") : Component.translatable("augment_slot." + id.getNamespace() + "." + id.getPath());
     }
 
     private static Component typeName(AugmentType<?> type) {
-        Identifier id = NTRegistries.AUGMENT_TYPE.getKey(type);
+        ResourceLocation id = NTRegistries.AUGMENT_TYPE.getKey(type);
         return id == null ? Component.literal("?") : Component.translatable("augment_type." + id.getNamespace() + "." + id.getPath());
     }
 
@@ -217,8 +217,8 @@ public class AugmentationStationScreen extends Screen {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        extractTransparentBackground(graphics);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        renderTransparentBackground(graphics);
         int x = this.left;
         int y = this.top;
         PanelStyle.panel(graphics, x, y, WIDTH, HEIGHT);
@@ -227,7 +227,7 @@ public class AugmentationStationScreen extends Screen {
         graphics.fill(x + 13, y + STATUS_Y + 5, x + 17, y + STATUS_Y + 9, statusColor());
 
         PanelStyle.screen(graphics, x + 8, y + BODY_Y, VIEW_WIDTH, VIEW_HEIGHT);
-        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, x + 9, y + BODY_Y + 1, x + 8 + VIEW_WIDTH - 1,
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, x + 9, y + BODY_Y + 1, x + 8 + VIEW_WIDTH - 1,
                 y + BODY_Y + VIEW_HEIGHT - 1, 34, 0.0625f, mouseX, mouseY, this.player);
 
         PanelStyle.screen(graphics, x + RIGHT_X, y + BODY_Y, RIGHT_WIDTH, AUGMENT_HEIGHT);
@@ -245,17 +245,17 @@ public class AugmentationStationScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         int x = this.left;
         int y = this.top;
         int code = this.status.status();
 
-        graphics.text(this.font, this.title, x + 8, y + 8, PanelStyle.LABEL, false);
-        graphics.text(this.font, Component.translatable(statusKey(code)), x + 21, y + STATUS_Y + 3, PanelStyle.READOUT, false);
+        graphics.drawString(this.font, this.title, x + 8, y + 8, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, Component.translatable(statusKey(code)), x + 21, y + STATUS_Y + 3, PanelStyle.READOUT, false);
         List<FormattedCharSequence> hint = this.font.split(Component.translatable(statusKey(code) + ".short"), WIDTH - 30);
         if (!hint.isEmpty()) {
-            graphics.text(this.font, hint.getFirst(), x + 13, y + STATUS_Y + 13, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, hint.getFirst(), x + 13, y + STATUS_Y + 13, PanelStyle.READOUT_DIM, false);
         }
 
         extractAugment(graphics, x + RIGHT_X, y + BODY_Y);
@@ -264,39 +264,39 @@ public class AugmentationStationScreen extends Screen {
         if (code == AugmentationStationBlockEntity.STATUS_RUNNING) {
             Component progress = Component.translatable("nautec.augmentation_station.progress",
                     String.format(Locale.ROOT, "%.1f", Math.max(0, AugmentationStationBlockEntity.OPERATION_TICKS - this.status.progress()) / 20f));
-            graphics.text(this.font, progress, x + (WIDTH - this.font.width(progress)) / 2, y + FOOTER_Y + 3, 0xFFFFFFFF, true);
+            graphics.drawString(this.font, progress, x + (WIDTH - this.font.width(progress)) / 2, y + FOOTER_Y + 3, 0xFFFFFFFF, true);
         } else if (slots().isEmpty()) {
-            graphics.text(this.font, Component.translatable("nautec.augmentation_station.slots.none"), x + 9, y + FOOTER_Y + 3,
+            graphics.drawString(this.font, Component.translatable("nautec.augmentation_station.slots.none"), x + 9, y + FOOTER_Y + 3,
                     PanelStyle.LABEL, false);
         }
 
         tooltips(graphics, mouseX, mouseY);
     }
 
-    private void extractAugment(GuiGraphicsExtractor graphics, int bx, int by) {
+    private void extractAugment(GuiGraphics graphics, int bx, int by) {
         ItemStack preview = this.status.preview();
         PanelStyle.slot(graphics, bx + 5, by + 5);
         if (!preview.isEmpty()) {
-            graphics.item(preview, bx + 5, by + 5);
+            graphics.renderItem(preview, bx + 5, by + 5);
         }
         if (this.builtFor == null) {
-            graphics.text(this.font, Component.translatable("nautec.augmentation_station.augment.none"), bx + 27, by + 5, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.augmentation_station.augment.none"), bx + 27, by + 5, PanelStyle.READOUT_DIM, false);
             return;
         }
-        graphics.text(this.font, typeName(this.builtFor), bx + 27, by + 5, PanelStyle.READOUT, false);
+        graphics.drawString(this.font, typeName(this.builtFor), bx + 27, by + 5, PanelStyle.READOUT, false);
         List<FormattedCharSequence> lines = this.font.split(Component.literal(this.status.description()), RIGHT_WIDTH - 32);
         for (int i = 0; i < Math.min(2, lines.size()); i++) {
-            graphics.text(this.font, lines.get(i), bx + 27, by + 16 + i * 10, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, lines.get(i), bx + 27, by + 16 + i * 10, PanelStyle.READOUT_DIM, false);
         }
     }
 
-    private void extractExtensions(GuiGraphicsExtractor graphics, int bx, int by) {
+    private void extractExtensions(GuiGraphics graphics, int bx, int by) {
         List<AugmentationStationSyncPayload.Extension> extensions = this.status.extensions();
         for (int i = 0; i < extensions.size(); i++) {
             AugmentationStationSyncPayload.Extension extension = extensions.get(i);
             int cx = bx + i * COLUMN;
             Component side = Component.translatable("nautec.augmentation_station.side." + extension.side().getSerializedName());
-            graphics.text(this.font, side, cx + (COLUMN - this.font.width(side)) / 2, by + 3, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, side, cx + (COLUMN - this.font.width(side)) / 2, by + 3, PanelStyle.READOUT_DIM, false);
             int sx = cx + (COLUMN - 16) / 2;
             int sy = by + 13;
             boolean loaded = !extension.part().isEmpty();
@@ -305,20 +305,20 @@ public class AugmentationStationScreen extends Screen {
             }
             PanelStyle.slot(graphics, sx, sy);
             if (loaded) {
-                graphics.item(extension.part(), sx, sy);
+                graphics.renderItem(extension.part(), sx, sy);
             } else if (extension.arm()) {
-                graphics.fakeItem(NTItems.CLAW_ROBOT_ARM.toStack(), sx, sy);
+                graphics.renderFakeItem(NTItems.CLAW_ROBOT_ARM.toStack(), sx, sy);
                 graphics.fill(sx, sy, sx + 16, sy + 16, 0xA016201F);
             }
             Component power = !extension.present() ? Component.literal("--")
                     : Component.translatable("nautec.augmentation_station.power", extension.power());
             int color = !extension.present() || !loaded ? PanelStyle.READOUT_DIM
                     : extension.power() >= NTConfig.augmentationStationPower ? PanelStyle.ONLINE : PanelStyle.OFFLINE;
-            graphics.text(this.font, power, cx + (COLUMN - this.font.width(power)) / 2, by + 34, color, false);
+            graphics.drawString(this.font, power, cx + (COLUMN - this.font.width(power)) / 2, by + 34, color, false);
         }
     }
 
-    private void tooltips(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+    private void tooltips(GuiGraphics graphics, int mouseX, int mouseY) {
         int x = this.left;
         int y = this.top;
         List<Component> lines = new ArrayList<>();
@@ -362,7 +362,7 @@ public class AugmentationStationScreen extends Screen {
             }
         }
         if (!lines.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 

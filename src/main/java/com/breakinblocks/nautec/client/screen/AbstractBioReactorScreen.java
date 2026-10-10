@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
@@ -7,10 +8,9 @@ import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.menus.BioReactorLayout;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Locale;
 
 public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlockEntity> extends NTMachineScreen<T> {
-    public static final Identifier PROGRESS_ARROW = Nautec.rl("container/bio_reactor/progress_arrow");
-    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/bio_reactor/progress_arrow_off");
+    public static final ResourceLocation PROGRESS_ARROW = Nautec.rl("container/bio_reactor/progress_arrow");
+    public static final ResourceLocation PROGRESS_ARROW_OFF = Nautec.rl("container/bio_reactor/progress_arrow_off");
     private static final int VITALITY_FILL = 0xFF4FE0C8;
     private static final int STARVING_FILL = 0xFFB8483E;
     private static final int PROGRESS_FILL = 0xFF7FD9A0;
@@ -32,8 +32,8 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         T reactor = this.menu.blockEntity;
         int x0 = this.leftPos;
         int y0 = this.topPos;
@@ -49,12 +49,12 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         }
         if (this.layout.progressArrows() != null) {
             for (int[] arrow : this.layout.progressArrows()) {
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, x0 + arrow[0], y0 + arrow[1],
+                NTGui.blitSprite(guiGraphics, PROGRESS_ARROW_OFF, x0 + arrow[0], y0 + arrow[1],
                         BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT);
             }
         }
         if (this.layout.summaryArrow() != null) {
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, x0 + this.layout.summaryArrow()[0], y0 + this.layout.summaryArrow()[1],
+            NTGui.blitSprite(guiGraphics, PROGRESS_ARROW_OFF, x0 + this.layout.summaryArrow()[0], y0 + this.layout.summaryArrow()[1],
                     BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT);
         }
         for (int[] bar : this.layout.vitalityBars()) {
@@ -64,8 +64,8 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         T reactor = this.menu.blockEntity;
         int colonies = reactor.getColonySlots();
@@ -83,7 +83,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
             if (this.layout.progressArrows() != null && i < this.layout.progressArrows().length) {
                 int[] arrow = this.layout.progressArrows()[i];
                 int width = (int) (progress * BioReactorLayout.ARROW_WIDTH);
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT,
+                NTGui.blitSprite(guiGraphics, PROGRESS_ARROW, BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT,
                         0, 0, this.leftPos + arrow[0], this.topPos + arrow[1], width, BioReactorLayout.ARROW_HEIGHT);
             }
 
@@ -110,7 +110,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
                     }
                 }
                 if (isHovering(bar[0] - 1, bar[1] - 1, bar[2] + 2, bar[3] + 2, mouseX, mouseY) && !colony.isEmpty()) {
-                    guiGraphics.setComponentTooltipForNextFrame(this.font, vitalityTooltip(reactor, i), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(this.font, vitalityTooltip(reactor, i), mouseX, mouseY);
                 }
             }
         }
@@ -119,16 +119,16 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
             int[] arrow = this.layout.summaryArrow();
             float average = activeCount == 0 ? 0 : activeProgress / activeCount;
             int width = (int) (average * BioReactorLayout.ARROW_WIDTH);
-            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT,
+            NTGui.blitSprite(guiGraphics, PROGRESS_ARROW, BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT,
                     0, 0, this.leftPos + arrow[0], this.topPos + arrow[1], width, BioReactorLayout.ARROW_HEIGHT);
             if (isHovering(arrow[0], arrow[1], BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT, mouseX, mouseY)) {
-                guiGraphics.setComponentTooltipForNextFrame(this.font, statusTooltip(reactor), mouseX, mouseY);
+                guiGraphics.renderComponentTooltip(this.font, statusTooltip(reactor), mouseX, mouseY);
             }
         }
         if (this.layout.progressArrows() != null) {
             for (int[] arrow : this.layout.progressArrows()) {
                 if (isHovering(arrow[0], arrow[1], BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT, mouseX, mouseY)) {
-                    guiGraphics.setComponentTooltipForNextFrame(this.font, statusTooltip(reactor), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(this.font, statusTooltip(reactor), mouseX, mouseY);
                 }
             }
         }

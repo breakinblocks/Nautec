@@ -4,8 +4,8 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.SidedResourceHandler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
 
 public final class SidedFluidHandler extends SidedResourceHandler<FluidResource> {
     public SidedFluidHandler(ResourceHandler<FluidResource> inner, IOActions action, IntList slots) {

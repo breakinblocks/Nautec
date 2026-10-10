@@ -1,19 +1,16 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.blockentities.DecorativePrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.DecorativePrismarineCrystalBlock;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class DecorativePrismarineCrystalBERenderer extends NTBERenderer<DecorativePrismarineCrystalBlockEntity, DecorativePrismarineCrystalBERenderer.DecorativeCrystalRenderState> {
     public DecorativePrismarineCrystalBERenderer(BlockEntityRendererProvider.Context ctx) {
@@ -26,19 +23,19 @@ public class DecorativePrismarineCrystalBERenderer extends NTBERenderer<Decorati
     }
 
     @Override
-    public void extractRenderState(DecorativePrismarineCrystalBlockEntity blockEntity, DecorativeCrystalRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void extractRenderState(DecorativePrismarineCrystalBlockEntity blockEntity, DecorativeCrystalRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         long gameTime = blockEntity.getLevel() == null ? 0L : blockEntity.getLevel().getGameTime();
         state.ticks = (float) (gameTime % PrismarineCrystalRenderer.TICK_WRAP) + partialTick;
         state.seed = PrismarineCrystalRenderer.seed(blockEntity.getBlockPos());
     }
 
     @Override
-    public void submit(DecorativeCrystalRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(DecorativeCrystalRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         poseStack.pushPose();
         {
             poseStack.translate(0.5, DecorativePrismarineCrystalBlock.HEIGHT / 2.0, 0.5);
-            PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks, state.seed, 0F, true);
+            PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks, state.seed, 0F, true);
         }
         poseStack.popPose();
     }
@@ -50,7 +47,7 @@ public class DecorativePrismarineCrystalBERenderer extends NTBERenderer<Decorati
                 .inflate(1.5, 0, 1.5);
     }
 
-    public static class DecorativeCrystalRenderState extends BlockEntityRenderState {
+    public static class DecorativeCrystalRenderState extends BERenderState {
         public float ticks;
         public long seed;
     }

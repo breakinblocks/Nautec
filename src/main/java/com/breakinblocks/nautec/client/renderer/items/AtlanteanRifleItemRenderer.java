@@ -7,107 +7,115 @@ import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleBeam;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.model.DefaultedItemGeoModel;
-import com.geckolib.renderer.GeoItemRenderer;
-import com.geckolib.renderer.base.BoneSnapshots;
-import com.geckolib.renderer.base.GeoRenderState;
-import com.geckolib.renderer.base.GeoRenderer;
-import com.geckolib.renderer.base.RenderPassInfo;
-import com.geckolib.renderer.layer.builtin.TextureLayerGeoLayer;
+import com.breakinblocks.nautec.utils.ARGB;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleItem> {
-    public static final DataTicket<Integer> OWNER_ID = DataTicket.create("nautec:atlantean_rifle_owner", Integer.class);
-    public static final DataTicket<Float> CHARGE_TICKS = DataTicket.create("nautec:atlantean_rifle_charge_ticks", Float.class);
-    public static final DataTicket<Float> RAMP_TICKS = DataTicket.create("nautec:atlantean_rifle_ramp_ticks", Float.class);
-    public static final DataTicket<Float> SHAKE_SCALE = DataTicket.create("nautec:atlantean_rifle_shake_scale", Float.class);
-
-    private static final Identifier CORE_MASK = Nautec.rl("textures/item/atlantean_rifle_core.png");
+    private static final ResourceLocation CORE_MASK = Nautec.rl("textures/item/atlantean_rifle_core.png");
     private static final String CORE_BONE = "core";
     private static final String ROOT_BONE = "root";
     private static final Vector3f MUZZLE_LOCAL = new Vector3f(0F, 4F / 16F, -22F / 16F);
     private static final float SPIN_RADIANS_PER_TICK = (float) Math.toRadians(36.0D);
     private static final float TWO_PI = (float) (Math.PI * 2.0D);
-    private static final int FULL_BRIGHT = 15728880;
     private static final float SHAKE_TRANSLATION = 0.32F;
     private static final float SHAKE_ROTATION = (float) Math.toRadians(1.0D);
 
+    private @Nullable LivingEntity holder;
+    private float useTicks = -1F;
+    private float chargeTicks = NTConfig.rifleChargeTicks;
+    private float rampTicks = NTConfig.rifleRampTicks;
+    private float shakeScale = 1F;
+
     public AtlanteanRifleItemRenderer() {
-        super(new DefaultedItemGeoModel<>(Nautec.rl("atlantean_rifle")));
-        withRenderLayer(new CoreChargeLayer(this));
+        super(new Model());
+        ((Model) this.model).renderer = this;
+        addRenderLayer(new CoreChargeLayer(this));
+        addRenderLayer(new MuzzleLayer(this));
     }
 
     @Override
-    public void addRenderData(AtlanteanRifleItem item, RenderData data, GeoRenderState state, float partialTick) {
-        super.addRenderData(item, data, state, partialTick);
-        LivingEntity holder = data.itemOwner() == null ? null : data.itemOwner().asLivingEntity();
-        float ticks = holder != null && AtlanteanRifleItem.isUsing(holder) ? holder.getTicksUsingItem(partialTick) : -1F;
-        state.addGeckolibData(AtlanteanRifleItem.USE_TICKS, ticks);
-        state.addGeckolibData(OWNER_ID, holder == null ? -1 : holder.getId());
-        state.addGeckolibData(CHARGE_TICKS, (float) (holder == null ? NTConfig.rifleChargeTicks : AtlanteanRifleItem.chargeTicks(holder)));
-        state.addGeckolibData(RAMP_TICKS, holder == null ? (float) NTConfig.rifleRampTicks : AtlanteanRifleItem.rampTicks(holder));
-        state.addGeckolibData(SHAKE_SCALE, holder == null ? 1F : Math.max(0F, AtlanteanRifleItem.shakeScale(holder)));
-    }
-
-    @Override
-    public void preRenderPass(RenderPassInfo<GeoRenderState> pass, SubmitNodeCollector tasks) {
-        super.preRenderPass(pass, tasks);
-        ItemDisplayContext perspective = pass.renderState().getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
-        if (!isHeld(perspective) || pass.getOrDefaultGeckolibData(OWNER_ID, -1) < 0) {
-            return;
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        LivingEntity owner = HeldItemOwner.of(stack, displayContext);
+        this.holder = owner;
+        this.useTicks = owner != null && AtlanteanRifleItem.isUsing(owner) && owner.isUsingItem() ? owner.getTicksUsingItem() + partialTick : -1F;
+        this.chargeTicks = owner == null ? NTConfig.rifleChargeTicks : AtlanteanRifleItem.chargeTicks(owner);
+        this.rampTicks = owner == null ? (float) NTConfig.rifleRampTicks : AtlanteanRifleItem.rampTicks(owner);
+        this.shakeScale = owner == null ? 1F : Math.max(0F, AtlanteanRifleItem.shakeScale(owner));
+        try {
+            super.renderByItem(stack, displayContext, poseStack, buffers, packedLight, packedOverlay);
+        } finally {
+            this.holder = null;
         }
-        pass.model().getBone(ROOT_BONE).ifPresent(bone -> pass.addPerBoneRender(bone, AtlanteanRifleItemRenderer::renderBeamFromMuzzle));
     }
 
-    private static boolean isHeld(ItemDisplayContext perspective) {
-        return perspective.firstPerson()
+    private static boolean isHeld(@Nullable ItemDisplayContext perspective) {
+        return perspective != null && (perspective.firstPerson()
                 || perspective == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
-                || perspective == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                || perspective == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
     }
 
-    private static void renderBeamFromMuzzle(RenderPassInfo<GeoRenderState> pass, GeoBone bone, SubmitNodeCollector tasks) {
+    private float rampProgress() {
+        return AtlanteanRifleItem.rampProgress(this.useTicks - this.chargeTicks, this.rampTicks);
+    }
+
+    private void renderBeamFromMuzzle(PoseStack poseStack, MultiBufferSource buffers, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
-        if (level == null || !(level.getEntity(pass.getOrDefaultGeckolibData(OWNER_ID, -1)) instanceof LivingEntity holder)) {
+        LivingEntity owner = this.holder;
+        ItemDisplayContext perspective = this.renderPerspective;
+        if (level == null || owner == null || !isHeld(perspective)) {
             return;
         }
 
-        Matrix4f pose = pass.poseStack().last().pose();
-        Matrix4f worldToRoot = worldToRoot(pass);
-        Vec3 cameraPos = pass.cameraState().pos;
+        Camera camera = minecraft.gameRenderer.getMainCamera();
+        Matrix4f pose = poseStack.last().pose();
+        Matrix4f worldToRoot = worldToRoot(perspective, camera);
+        Vec3 cameraPos = camera.getPosition();
         Vector3f muzzleRelative = worldToRoot.invert(new Matrix4f()).transformPosition(pose.transformPosition(new Vector3f(MUZZLE_LOCAL)));
-        AtlanteanRifleBeamRenderer.trackMuzzle(holder.getId(), cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z));
+        AtlanteanRifleBeamRenderer.trackMuzzle(owner.getId(), cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z));
 
-        float partialTick = pass.getOrDefaultGeckolibData(DataTickets.PARTIAL_TICK, 1.0F);
-        float firing = AtlanteanRifleItem.firingTicks(holder, partialTick);
+        float firing = AtlanteanRifleItem.firingTicks(owner, partialTick);
         if (firing < 0F) {
             return;
         }
 
-        float ramp = AtlanteanRifleItem.rampProgress(holder, firing);
-        List<AtlanteanRifleBeam.Hit> segments = AtlanteanRifleBeamRenderer.trace(level, holder, partialTick);
-        ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
+        float ramp = AtlanteanRifleItem.rampProgress(owner, firing);
+        List<AtlanteanRifleBeam.Hit> segments = AtlanteanRifleBeamRenderer.trace(level, owner, partialTick);
         if (ShaderPackOverlay.shaderPackActive() && perspective.firstPerson()) {
             Vec3 muzzleWorld = cameraPos.add(muzzleRelative.x, muzzleRelative.y, muzzleRelative.z);
             for (int i = 0; i < segments.size(); i++) {
                 AtlanteanRifleBeam.Hit hit = segments.get(i);
-                AtlanteanRifleBeamRenderer.submitWorldBeam(cameraPos, tasks, i == 0 ? muzzleWorld : hit.origin(), hit.end(), ramp, hit.impact());
+                AtlanteanRifleBeamRenderer.submitWorldBeam(cameraPos, buffers, i == 0 ? muzzleWorld : hit.origin(), hit.end(), ramp, hit.impact());
             }
             return;
         }
@@ -118,7 +126,7 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
             Vec3 from = i == 0
                     ? new Vec3(MUZZLE_LOCAL.x, MUZZLE_LOCAL.y, MUZZLE_LOCAL.z)
                     : toLocal(hit.origin(), cameraPos, worldToRoot, rootToLocal);
-            AtlanteanRifleBeamRenderer.submitBeam(pass.poseStack(), tasks, from,
+            AtlanteanRifleBeamRenderer.submitBeam(poseStack, buffers, from,
                     toLocal(hit.end(), cameraPos, worldToRoot, rootToLocal), ramp, hit.impact(), true);
         }
     }
@@ -130,43 +138,37 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         return new Vec3(local.x, local.y, local.z);
     }
 
-    private static Matrix4f worldToRoot(RenderPassInfo<GeoRenderState> pass) {
-        ItemDisplayContext perspective = pass.getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.NONE);
+    private static Matrix4f worldToRoot(ItemDisplayContext perspective, Camera camera) {
         if (!perspective.firstPerson()) {
             return new Matrix4f();
         }
-        return new Matrix4f(RenderSystem.getModelViewStack()).invert().mul(pass.cameraState().viewRotationMatrix);
+        Matrix4f viewRotation = new Matrix4f().rotation(camera.rotation().conjugate(new Quaternionf()));
+        return new Matrix4f(RenderSystem.getModelViewMatrix()).invert().mul(viewRotation);
     }
 
-    @Override
-    public void adjustModelBonesForRender(RenderPassInfo<GeoRenderState> pass, BoneSnapshots snapshots) {
-        super.adjustModelBonesForRender(pass, snapshots);
-        float ticks = pass.getOrDefaultGeckolibData(AtlanteanRifleItem.USE_TICKS, -1F);
+    private void adjustBones(Model model) {
+        GeoBone core = model.getBone(CORE_BONE).orElse(null);
+        GeoBone root = model.getBone(ROOT_BONE).orElse(null);
+        float ticks = this.useTicks;
         if (ticks < 0F) {
             return;
         }
-        float charge = pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks);
-        float angle = spinAngle(ticks, charge);
-        snapshots.ifPresent(CORE_BONE, snapshot -> snapshot.setRotX(angle));
+        float charge = this.chargeTicks;
+        if (core != null) {
+            core.setRotX(core.getInitialSnapshot().getRotX() + spinAngle(ticks, charge));
+        }
 
-        float ramp = AtlanteanRifleItem.rampProgress(ticks - charge, rampTicks(pass));
-        if (ramp <= 0F) {
+        float ramp = AtlanteanRifleItem.rampProgress(ticks - charge, this.rampTicks);
+        if (ramp <= 0F || root == null) {
             return;
         }
-        float shake = ramp * ramp * pass.getOrDefaultGeckolibData(SHAKE_SCALE, 1F);
-        snapshots.ifPresent(ROOT_BONE, snapshot -> snapshot
-                .setTranslation(
-                        SHAKE_TRANSLATION * shake * wobble(ticks, 7.3F, 13.1F),
-                        SHAKE_TRANSLATION * shake * wobble(ticks, 9.7F, 15.9F),
-                        SHAKE_TRANSLATION * shake * 0.5F * wobble(ticks, 5.9F, 11.3F))
-                .setRotation(
-                        SHAKE_ROTATION * shake * wobble(ticks, 8.1F, 14.7F),
-                        SHAKE_ROTATION * shake * wobble(ticks, 6.7F, 12.5F),
-                        SHAKE_ROTATION * shake * wobble(ticks, 10.3F, 16.3F)));
-    }
-
-    private static float rampTicks(RenderPassInfo<GeoRenderState> pass) {
-        return pass.getOrDefaultGeckolibData(RAMP_TICKS, (float) NTConfig.rifleRampTicks);
+        float shake = ramp * ramp * this.shakeScale;
+        root.setPosX(root.getInitialSnapshot().getOffsetX() + SHAKE_TRANSLATION * shake * wobble(ticks, 7.3F, 13.1F));
+        root.setPosY(root.getInitialSnapshot().getOffsetY() + SHAKE_TRANSLATION * shake * wobble(ticks, 9.7F, 15.9F));
+        root.setPosZ(root.getInitialSnapshot().getOffsetZ() + SHAKE_TRANSLATION * shake * 0.5F * wobble(ticks, 5.9F, 11.3F));
+        root.setRotX(root.getInitialSnapshot().getRotX() + SHAKE_ROTATION * shake * wobble(ticks, 8.1F, 14.7F));
+        root.setRotY(root.getInitialSnapshot().getRotY() + SHAKE_ROTATION * shake * wobble(ticks, 6.7F, 12.5F));
+        root.setRotZ(root.getInitialSnapshot().getRotZ() + SHAKE_ROTATION * shake * wobble(ticks, 10.3F, 16.3F));
     }
 
     private static float wobble(float ticks, float slow, float fast) {
@@ -180,27 +182,67 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         return angle % TWO_PI;
     }
 
-    private static class CoreChargeLayer extends TextureLayerGeoLayer<AtlanteanRifleItem, GeoItemRenderer.RenderData, GeoRenderState> {
-        CoreChargeLayer(GeoRenderer<AtlanteanRifleItem, GeoItemRenderer.RenderData, GeoRenderState> renderer) {
-            super(renderer, CORE_MASK, NTRenderTypes::emissiveOverlay);
+    private static final class Model extends DefaultedItemGeoModel<AtlanteanRifleItem> {
+        private @Nullable AtlanteanRifleItemRenderer renderer;
+
+        private Model() {
+            super(Nautec.rl("atlantean_rifle"));
         }
 
         @Override
-        public void submitRenderTask(RenderPassInfo<GeoRenderState> pass, SubmitNodeCollector tasks) {
-            float ticks = pass.getOrDefaultGeckolibData(AtlanteanRifleItem.USE_TICKS, -1F);
-            float ramp = AtlanteanRifleItem.rampProgress(ticks - pass.getOrDefaultGeckolibData(CHARGE_TICKS, (float) NTConfig.rifleChargeTicks), rampTicks(pass));
+        public void addAdditionalStateData(AtlanteanRifleItem animatable, long instanceId, BiConsumer<DataTicket<AtlanteanRifleItem>, AtlanteanRifleItem> dataConsumer) {
+            super.addAdditionalStateData(animatable, instanceId, dataConsumer);
+            GeoStateData.put(dataConsumer, AtlanteanRifleItem.USE_TICKS, this.renderer == null ? -1F : this.renderer.useTicks);
+        }
+
+        @Override
+        public void setCustomAnimations(AtlanteanRifleItem animatable, long instanceId, AnimationState<AtlanteanRifleItem> animationState) {
+            super.setCustomAnimations(animatable, instanceId, animationState);
+            if (this.renderer != null) {
+                this.renderer.adjustBones(this);
+            }
+        }
+    }
+
+    private static final class CoreChargeLayer extends GeoRenderLayer<AtlanteanRifleItem> {
+        private final AtlanteanRifleItemRenderer rifle;
+
+        CoreChargeLayer(AtlanteanRifleItemRenderer renderer) {
+            super(renderer);
+            this.rifle = renderer;
+        }
+
+        @Override
+        public void render(PoseStack poseStack, AtlanteanRifleItem animatable, BakedGeoModel bakedModel, @Nullable RenderType renderType,
+                           MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            if (this.rifle.useTicks < 0F) {
+                return;
+            }
+            float ramp = this.rifle.rampProgress();
             if (ramp <= 0F) {
                 return;
             }
+            int color = getRenderer().getRenderColor(animatable, partialTick, packedLight).argbInt();
+            RenderType glow = NTRenderTypes.emissiveOverlay(CORE_MASK);
+            getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable, glow, bufferSource.getBuffer(glow), partialTick,
+                    LightTexture.FULL_BRIGHT, packedOverlay, ARGB.color(Math.round(ramp * 255F), color));
+        }
+    }
 
-            GeoRenderState state = pass.renderState();
-            int color = pass.renderColor();
-            int light = pass.packedLight();
-            state.addGeckolibData(DataTickets.RENDER_COLOR, ARGB.color(Math.round(ramp * 255F), color));
-            state.addGeckolibData(DataTickets.PACKED_LIGHT, FULL_BRIGHT);
-            super.submitRenderTask(pass, tasks);
-            state.addGeckolibData(DataTickets.RENDER_COLOR, color);
-            state.addGeckolibData(DataTickets.PACKED_LIGHT, light);
+    private static final class MuzzleLayer extends GeoRenderLayer<AtlanteanRifleItem> {
+        private final AtlanteanRifleItemRenderer rifle;
+
+        MuzzleLayer(GeoRenderer<AtlanteanRifleItem> renderer) {
+            super(renderer);
+            this.rifle = (AtlanteanRifleItemRenderer) renderer;
+        }
+
+        @Override
+        public void renderForBone(PoseStack poseStack, AtlanteanRifleItem animatable, GeoBone bone, RenderType renderType,
+                                  MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            if (ROOT_BONE.equals(bone.getName())) {
+                this.rifle.renderBeamFromMuzzle(poseStack, bufferSource, partialTick);
+            }
         }
     }
 }

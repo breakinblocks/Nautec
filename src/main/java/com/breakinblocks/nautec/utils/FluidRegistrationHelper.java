@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.utils;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -46,10 +45,10 @@ public final class FluidRegistrationHelper {
         fluid.fluidType = getFluidTypeRegister().register(fluid.getName(), fluid.fluidType);
 
         fluid.block = getBlockRegister().register(fluid(fluid.getName()),
-                id -> new LiquidBlock(fluid.stillFluid.get(), fluid.blockProperties().setId(ResourceKey.create(Registries.BLOCK, id))));
+                () -> new LiquidBlock(fluid.stillFluid.get(), fluid.blockProperties()));
 
         fluid.deferredBucket = getItemRegister().register(bucket(fluid.getName()),
-                id -> new BucketItem(fluid.stillFluid.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).setId(ResourceKey.create(Registries.ITEM, id))));
+                () -> new BucketItem(fluid.stillFluid.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
         this.fluids.add(fluid);
         return fluid;

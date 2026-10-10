@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -57,9 +57,9 @@ public final class EyeOfTheSeaTests {
                     || !contains(structures, SeaEyeTarget.NAUTEC_RUINS, Nautec.rl("ruins_1"))
                     || !contains(structures, SeaEyeTarget.RESEARCH_OUTPOSTS, Nautec.rl("research_outpost"))
                     || !contains(structures, SeaEyeTarget.GATEWAYS, Nautec.rl("underwater_gateway"))
-                    || !contains(structures, SeaEyeTarget.OCEAN_RUINS, Identifier.withDefaultNamespace("ocean_ruin_cold"))
-                    || !contains(structures, SeaEyeTarget.OCEAN_RUINS, Identifier.withDefaultNamespace("ocean_ruin_warm"))
-                    || !contains(structures, SeaEyeTarget.OCEAN_MONUMENTS, Identifier.withDefaultNamespace("monument"))) {
+                    || !contains(structures, SeaEyeTarget.OCEAN_RUINS, ResourceLocation.withDefaultNamespace("ocean_ruin_cold"))
+                    || !contains(structures, SeaEyeTarget.OCEAN_RUINS, ResourceLocation.withDefaultNamespace("ocean_ruin_warm"))
+                    || !contains(structures, SeaEyeTarget.OCEAN_MONUMENTS, ResourceLocation.withDefaultNamespace("monument"))) {
                 helper.fail("An Eye of the Sea structure tag is missing one of its structures");
                 return;
             }
@@ -75,7 +75,7 @@ public final class EyeOfTheSeaTests {
                 helper.succeed();
                 return;
             }
-            InteractionResult result = stack.getItem().use(level, player, InteractionHand.MAIN_HAND);
+            InteractionResult result = stack.getItem().use(level, player, InteractionHand.MAIN_HAND).getResult();
             if (!result.consumesAction()) {
                 helper.fail("Using the eye should start a search, got " + result);
                 return;
@@ -136,7 +136,7 @@ public final class EyeOfTheSeaTests {
         });
     }
 
-    private static boolean contains(HolderLookup.RegistryLookup<Structure> structures, SeaEyeTarget target, Identifier id) {
+    private static boolean contains(HolderLookup.RegistryLookup<Structure> structures, SeaEyeTarget target, ResourceLocation id) {
         Optional<HolderSet.Named<Structure>> tag = structures.get(target.structures());
         return tag.isPresent() && tag.get().stream()
                 .anyMatch(holder -> holder.is(ResourceKey.create(Registries.STRUCTURE, id)));

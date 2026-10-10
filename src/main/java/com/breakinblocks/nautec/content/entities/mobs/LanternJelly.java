@@ -8,12 +8,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class LanternJelly extends WaterAnimal {
@@ -21,7 +22,7 @@ public class LanternJelly extends WaterAnimal {
 
     public LanternJelly(EntityType<? extends LanternJelly> type, Level level) {
         super(type, level);
-        this.moveControl = new MoveControl(this);
+        this.moveControl = new SwimmingMoveControl(this);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -41,8 +42,8 @@ public class LanternJelly extends WaterAnimal {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
+    public boolean canDrownInFluidType(FluidType type) {
+        return type != NeoForgeMod.WATER_TYPE.value() && super.canDrownInFluidType(type);
     }
 
     @Override

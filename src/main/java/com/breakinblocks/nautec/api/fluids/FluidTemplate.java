@@ -1,11 +1,11 @@
 package com.breakinblocks.nautec.api.fluids;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface FluidTemplate {
-    Identifier getStillTexture();
+    ResourceLocation getStillTexture();
 
-    Identifier getFlowingTexture();
+    ResourceLocation getFlowingTexture();
 
-    Identifier getOverlayTexture();
+    ResourceLocation getOverlayTexture();
 }

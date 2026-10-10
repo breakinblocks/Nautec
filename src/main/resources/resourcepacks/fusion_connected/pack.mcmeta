@@ -3,7 +3,6 @@
     "description": {
       "text": "Connected textures for NauTec Fusion Plant blocks"
     },
-    "min_format": 84,
-    "max_format": [101, 1]
+    "pack_format": 34
   }
 }

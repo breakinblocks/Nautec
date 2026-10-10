@@ -4,9 +4,9 @@ import com.breakinblocks.nautec.Nautec;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -15,7 +15,7 @@ import org.joml.Vector3fc;
 import java.util.function.Consumer;
 
 public final class PrismarineCrystalRenderer {
-    public static final Identifier TEXTURE = Nautec.rl("textures/entity/prismarine_crystal.png");
+    public static final ResourceLocation TEXTURE = Nautec.rl("textures/entity/prismarine_crystal.png");
 
     public static final float MIN_Y = -2.7F;
     public static final float MAX_Y = 2.95F;
@@ -39,14 +39,14 @@ public final class PrismarineCrystalRenderer {
     private PrismarineCrystalRenderer() {
     }
 
-    public static void submit(PoseStack poseStack, SubmitNodeCollector collector, float ticks, long seed, float flash, boolean world) {
+    public static void submit(PoseStack poseStack, MultiBufferSource buffers, float ticks, long seed, float flash, boolean world) {
         float phase = (seed & 0xFFFF) / 65535F * Mth.TWO_PI;
         float bob = Mth.sin(ticks * 0.045F + phase) * 0.045F;
         float shellYaw = phase * Mth.RAD_TO_DEG + ticks * 0.22F;
         int shellColor = tint(SHELL_COLOR, flash);
 
         if (world) {
-            submitHalo(poseStack, collector, ticks, phase);
+            submitHalo(poseStack, buffers, ticks, phase);
         }
 
         poseStack.pushPose();
@@ -54,7 +54,7 @@ public final class PrismarineCrystalRenderer {
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(shellYaw));
-        JsonMesh.submitTranslucent(poseStack, collector, JsonMesh.PRISMARINE_CRYSTAL.part("shell"), NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
+        JsonMesh.submitTranslucent(poseStack, buffers, JsonMesh.PRISMARINE_CRYSTAL.part("shell"), NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
         poseStack.popPose();
 
         JsonMesh.Part core = JsonMesh.PRISMARINE_CRYSTAL.part("core");
@@ -63,7 +63,7 @@ public final class PrismarineCrystalRenderer {
         poseStack.mulPose(Axis.YP.rotationDegrees(-ticks * 1.1F - phase * Mth.RAD_TO_DEG));
         float pulse = 1F + Mth.sin(ticks * 0.11F + phase) * 0.04F;
         poseStack.scale(pulse, 1F, pulse);
-        JsonMesh.submitTranslucent(poseStack, collector, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash), world);
+        JsonMesh.submitTranslucent(poseStack, buffers, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash), world);
         poseStack.popPose();
 
         if (world && farAway(poseStack.last().pose())) {
@@ -79,7 +79,7 @@ public final class PrismarineCrystalRenderer {
             poseStack.mulPose(Axis.YP.rotation(ticks * 0.04F * s.spin));
             poseStack.mulPose(Axis.ZP.rotation(s.tilt));
             poseStack.scale(s.scale, s.scale, s.scale);
-            JsonMesh.submitTranslucent(poseStack, collector, shard, NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
+            JsonMesh.submitTranslucent(poseStack, buffers, shard, NTRenderTypes.crystalShell(TEXTURE), shellColor, world);
             poseStack.popPose();
         }
 
@@ -116,10 +116,10 @@ public final class PrismarineCrystalRenderer {
         return (color & 0xFF000000) | r << 16 | g << 8 | b;
     }
 
-    private static void submitHalo(PoseStack poseStack, SubmitNodeCollector collector, float ticks, float phase) {
+    private static void submitHalo(PoseStack poseStack, MultiBufferSource buffers, float ticks, float phase) {
         float strength = 0.8F + 0.2F * Mth.sin(ticks * 0.11F + phase);
         int color = ((int) (((HALO_COLOR >>> 24) & 0xFF) * strength) << 24) | (HALO_COLOR & 0xFFFFFF);
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
             glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, -HALO_RADIUS, 0F, 0F, color);
             glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 0F, 1F, color);
             glowVertex(buffer, pose, HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 1F, 1F, color);

@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.content.fishing;
 
+
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.Nautec;
@@ -9,7 +13,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import com.breakinblocks.nautec.utils.SavedDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +54,7 @@ public class LuckyZoneIndex extends SavedData {
     }
 
     public static LuckyZoneIndex get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return TYPE.get(level.getDataStorage());
     }
 
     public void add(Zone zone) {
@@ -114,5 +118,10 @@ public class LuckyZoneIndex extends SavedData {
             }
         }
         return stale;
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return TYPE.save(this, tag, registries);
     }
 }

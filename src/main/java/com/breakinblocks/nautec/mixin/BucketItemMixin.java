@@ -10,7 +10,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ import static net.minecraft.world.item.Item.getPlayerPOVHitResult;
 public abstract class BucketItemMixin {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    private void onUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void onUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
         if (NTConfig.collectSaltWater) {
 
             ItemStack itemStack = player.getItemInHand(hand);
@@ -48,7 +48,7 @@ public abstract class BucketItemMixin {
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 if (!level.mayInteract(player, blockPos)
                         || !player.mayUseItemAt(blockPos.relative(blockHitResult.getDirection()), blockHitResult.getDirection(), itemStack)) {
-                    cir.setReturnValue(InteractionResult.FAIL);
+                    cir.setReturnValue(InteractionResultHolder.fail(itemStack));
                     return;
                 }
                 BlockState blockState = level.getBlockState(blockPos);
@@ -71,7 +71,7 @@ public abstract class BucketItemMixin {
                                 CriteriaTriggers.FILLED_BUCKET.trigger(serverPlayer, filledBucket);
                             }
 
-                            cir.setReturnValue(InteractionResult.SUCCESS.heldItemTransformedTo(ItemUtils.createFilledResult(itemStack, player, filledBucket)));
+                            cir.setReturnValue(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(itemStack, player, filledBucket), level.isClientSide()));
                             cir.cancel();
                         }
                     }

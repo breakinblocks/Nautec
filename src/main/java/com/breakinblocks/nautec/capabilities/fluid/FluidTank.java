@@ -1,9 +1,9 @@
 package com.breakinblocks.nautec.capabilities.fluid;
 
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.fluid.FluidStacksResourceHandler;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidTank extends FluidStacksResourceHandler {

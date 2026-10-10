@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.datagen.loot;
 
 import com.breakinblocks.nautec.data.NTDataComponents;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import com.breakinblocks.nautec.content.multiblocks.AugmentationStationMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.BioReactorMultiblock;
 import com.breakinblocks.nautec.content.multiblocks.IndustrialBioReactorMultiblock;
@@ -10,7 +9,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -58,7 +57,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
     private void dropKeepingLink(Block block) {
         add(block, LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                 .add(LootItem.lootTableItem(block)
-                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
                                 .include(NTDataComponents.RESONANT_LINK.get()))))));
     }
 
@@ -179,13 +178,13 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         add(NTBlocks.MEDIUM_PRISMARINE_BUD.get(), this::createSilkTouchOnlyTable);
         add(NTBlocks.LARGE_PRISMARINE_BUD.get(), this::createSilkTouchOnlyTable);
 
-        add(NTBlocks.DEEP_KELP.get(), this::createShearsOnlyDrop);
+        add(NTBlocks.DEEP_KELP.get(), block -> createShearsOnlyDrop(block));
         add(NTBlocks.DEEP_KELP_PLANT.get(), noDrop());
-        add(NTBlocks.LUMINESCENT_ALGAE.get(), this::createShearsOnlyDrop);
-        add(NTBlocks.PRISMARINE_FROND.get(), this::createShearsOnlyDrop);
-        add(NTBlocks.VENT_TUBEWORM.get(), this::createShearsOnlyDrop);
-        add(NTBlocks.ABYSSAL_CORAL.get(), this::createShearsOnlyDrop);
-        add(NTBlocks.GLOW_POLYP.get(), this::createShearsOnlyDrop);
+        add(NTBlocks.LUMINESCENT_ALGAE.get(), block -> createShearsOnlyDrop(block));
+        add(NTBlocks.PRISMARINE_FROND.get(), block -> createShearsOnlyDrop(block));
+        add(NTBlocks.VENT_TUBEWORM.get(), block -> createShearsOnlyDrop(block));
+        add(NTBlocks.ABYSSAL_CORAL.get(), block -> createShearsOnlyDrop(block));
+        add(NTBlocks.GLOW_POLYP.get(), block -> createShearsOnlyDrop(block));
     }
 
     protected LootTable.Builder industrialBioReactorPartDrop(Block block) {

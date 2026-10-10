@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:cast_iron_ingot",
-    "G": "nautec:gear",
-    "V": "nautec:valve"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:cast_iron_ingot"
+    },
+    "G": {
+      "item": "nautec:gear"
+    },
+    "V": {
+      "item": "nautec:valve"
+    }
   },
   "pattern": [
     "CVC",
@@ -13,6 +21,7 @@
     "CCC"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:deep_sea_drain"
   }
 }

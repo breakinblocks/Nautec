@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.content.resonance;
 
+
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.mojang.serialization.Codec;
@@ -8,7 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import com.breakinblocks.nautec.utils.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,7 +42,7 @@ public final class ResonanceNetworks extends SavedData {
     }
 
     public static ResonanceNetworks get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+        return TYPE.get(server.overworld().getDataStorage());
     }
 
     public @Nullable ResonanceNetwork get(@Nullable UUID id) {
@@ -75,14 +79,14 @@ public final class ResonanceNetworks extends SavedData {
             return Result.fail("nautec.resonance.error.too_many");
         }
         ResonanceNetwork network = new ResonanceNetwork(UUID.randomUUID(), clean, owner.getUUID(),
-                owner.getGameProfile().name(), Map.of(), false);
+                owner.getGameProfile().getName(), Map.of(), false);
         networks.put(network.id(), network);
         setDirty();
         return Result.ok(network);
     }
 
     public static boolean canManage(ServerPlayer player, ResonanceNetwork network) {
-        return network.isOwner(player.getUUID()) || Commands.LEVEL_GAMEMASTERS.check(player.createCommandSourceStack().permissions());
+        return network.isOwner(player.getUUID()) || player.hasPermissions(Commands.LEVEL_GAMEMASTERS);
     }
 
     public static boolean canUse(ServerPlayer player, ResonanceNetwork network) {
@@ -149,8 +153,8 @@ public final class ResonanceNetworks extends SavedData {
     public void refreshOwnerName(ServerPlayer player) {
         boolean changed = false;
         for (ResonanceNetwork network : networks.values()) {
-            if (network.isOwner(player.getUUID()) && !network.ownerName().equals(player.getGameProfile().name())) {
-                network.setOwnerName(player.getGameProfile().name());
+            if (network.isOwner(player.getUUID()) && !network.ownerName().equals(player.getGameProfile().getName())) {
+                network.setOwnerName(player.getGameProfile().getName());
                 changed = true;
             }
         }
@@ -171,5 +175,10 @@ public final class ResonanceNetworks extends SavedData {
         public boolean success() {
             return error == null;
         }
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return TYPE.save(this, tag, registries);
     }
 }

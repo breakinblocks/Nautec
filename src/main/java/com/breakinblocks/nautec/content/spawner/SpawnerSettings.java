@@ -3,18 +3,19 @@ package com.breakinblocks.nautec.content.spawner;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weighted;
-import net.minecraft.util.random.WeightedList;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.level.SpawnData;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, WeightedList<SpawnData> potentials,
+public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, SimpleWeightedRandomList<SpawnData> potentials,
                               @Nullable SpawnData next) {
     public static final int DEFAULT_MIN_DELAY = 200;
     public static final int DEFAULT_MAX_DELAY = 800;
@@ -24,7 +25,7 @@ public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, Weight
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
             ValueInput in = TagValueInput.create(reporter, registries, spawnerTag);
             SpawnData next = in.read("SpawnData", SpawnData.CODEC).orElse(null);
-            WeightedList<SpawnData> potentials = in.read("SpawnPotentials", SpawnData.LIST_CODEC).orElse(WeightedList.of());
+            SimpleWeightedRandomList<SpawnData> potentials = in.read("SpawnPotentials", SpawnData.LIST_CODEC).orElse(SimpleWeightedRandomList.empty());
             int minDelay = Math.max(1, in.getIntOr("MinSpawnDelay", DEFAULT_MIN_DELAY));
             int maxDelay = Math.max(minDelay, in.getIntOr("MaxSpawnDelay", DEFAULT_MAX_DELAY));
             int spawnCount = Math.max(0, in.getIntOr("SpawnCount", DEFAULT_SPAWN_COUNT));
@@ -33,7 +34,7 @@ public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, Weight
     }
 
     public @Nullable SpawnData pick(RandomSource random) {
-        return potentials.getRandom(random).orElse(next);
+        return potentials.getRandomValue(random).orElse(next);
     }
 
     public int nextDelay(RandomSource random) {
@@ -44,10 +45,10 @@ public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, Weight
         if (next != null && hasId(next)) {
             return next.getEntityToSpawn();
         }
-        List<Weighted<SpawnData>> entries = potentials.unwrap();
-        for (Weighted<SpawnData> entry : entries) {
-            if (hasId(entry.value())) {
-                return entry.value().getEntityToSpawn();
+        List<WeightedEntry.Wrapper<SpawnData>> entries = potentials.unwrap();
+        for (WeightedEntry.Wrapper<SpawnData> entry : entries) {
+            if (hasId(entry.data())) {
+                return entry.data().getEntityToSpawn();
             }
         }
         return new CompoundTag();
@@ -58,6 +59,6 @@ public record SpawnerSettings(int minDelay, int maxDelay, int spawnCount, Weight
     }
 
     private static boolean hasId(SpawnData data) {
-        return data.getEntityToSpawn().getString("id").isPresent();
+        return data.getEntityToSpawn().contains("id", Tag.TAG_STRING);
     }
 }

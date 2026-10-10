@@ -12,18 +12,18 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class PressureForgingRecipeCategory extends AbstractRecipeCategory<PressureForgingRecipe> {
-    static final Identifier BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
-    public static final Identifier UID = Nautec.rl("pressure_forging");
-    public static final IRecipeType<PressureForgingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, PressureForgingRecipe.class);
+    static final ResourceLocation BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
+    public static final ResourceLocation UID = Nautec.rl("pressure_forging");
+    public static final RecipeType<PressureForgingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, PressureForgingRecipe.class);
 
     public PressureForgingRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -34,7 +34,7 @@ public class PressureForgingRecipeCategory extends AbstractRecipeCategory<Pressu
     }
 
     @Override
-    public void draw(PressureForgingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(PressureForgingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, BURN_PROGRESS_SPRITE, 28, 0, 24, 16);
     }
 
@@ -53,12 +53,12 @@ public class PressureForgingRecipeCategory extends AbstractRecipeCategory<Pressu
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, PressureForgingRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).add(recipe.ingredient());
+        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).addIngredients(recipe.ingredient());
         if (NTConfig.pressureForgeAcidUsage > 0) {
             builder.addSlot(RecipeIngredientRole.INPUT, 100, 0)
-                    .add(NTFluids.ETCHING_ACID.getStillFluid(), NTConfig.pressureForgeAcidUsage)
+                    .addFluidStack(NTFluids.ETCHING_ACID.getStillFluid(), NTConfig.pressureForgeAcidUsage)
                     .setFluidRenderer(NTConfig.pressureForgeAcidUsage, true, 16, 16);
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).add(recipe.result());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).addItemStack(recipe.result());
     }
 }

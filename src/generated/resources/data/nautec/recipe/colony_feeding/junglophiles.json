@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:junglophiles",
   "ingredient": {
-    "ingredient": "minecraft:jungle_log"
+    "ingredient": {
+      "item": "minecraft:jungle_log"
+    }
   },
   "vitality_ticks": 1200
 }

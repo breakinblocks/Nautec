@@ -22,8 +22,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -137,7 +137,7 @@ public class CombustionDynamoBlockEntity extends FeGeneratorBlockEntity implemen
     }
 
     public static Optional<RecipeHolder<CombustionAdditiveRecipe>> findAdditive(ServerLevel level, ItemStack stack) {
-        return level.recipeAccess().getRecipeFor(CombustionAdditiveRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level);
+        return level.getRecipeManager().getRecipeFor(CombustionAdditiveRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level);
     }
 
     public static int baseRate() {

@@ -11,9 +11,8 @@ import com.breakinblocks.nautec.worldgen.injection.ParameterListMerger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -32,17 +31,17 @@ import java.util.stream.Collectors;
 
 public final class WorldgenInjectionTests {
     private static final float OCEAN_CONTINENTALNESS_MAX = -0.19F;
-    private static final ResourceKey<Biome> VANILLA = ResourceKey.create(Registries.BIOME, Identifier.withDefaultNamespace("deep_ocean"));
+    private static final ResourceKey<Biome> VANILLA = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("deep_ocean"));
 
     private static List<String> featureNames(HolderSet<PlacedFeature> step) {
         List<String> names = new ArrayList<>();
         for (Holder<PlacedFeature> feature : step) {
-            feature.unwrapKey().ifPresent(key -> names.add(key.identifier().toString()));
+            feature.unwrapKey().ifPresent(key -> names.add(key.location().toString()));
         }
         return names;
     }
 
-    private static void assertParameter(GameTestHelper helper,
+    private static void assertParameter(NTGameTestHelper helper,
                                         JsonObject parameters, String key,
                                         NTOceanRegion.Slice slice, Climate.Parameter parameter, String biome) {
         if (!slice.constrains(parameter)) {
@@ -69,7 +68,7 @@ public final class WorldgenInjectionTests {
 
             for (ResourceKey<Biome> key : NTOceanRegion.biomes()) {
                 if (biomes.get(key).isEmpty()) {
-                    helper.fail("Biome " + key.identifier() + " is not loaded, its datapack entry is missing");
+                    helper.fail("Biome " + key.location() + " is not loaded, its datapack entry is missing");
                 }
             }
 
@@ -83,7 +82,7 @@ public final class WorldgenInjectionTests {
 
             for (ResourceKey<Biome> key : NTOceanRegion.biomes()) {
                 if (!present.contains(key)) {
-                    helper.fail("The overworld preset does not contain " + key.identifier() + " after injection");
+                    helper.fail("The overworld preset does not contain " + key.location() + " after injection");
                 }
             }
 
@@ -95,8 +94,8 @@ public final class WorldgenInjectionTests {
 
         r.add("worldgen/lithostitched_injectors_match_our_slices", 20, helper -> {
             for (NTOceanRegion.Slice slice : NTOceanRegion.slices()) {
-                String name = slice.biome().identifier().getPath();
-                Identifier id = Identifier.fromNamespaceAndPath(Nautec.MODID,
+                String name = slice.biome().location().getPath();
+                ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Nautec.MODID,
                         "lithostitched/biome_injector/" + name + ".json");
 
                 var resource = helper.getLevel().getServer().getResourceManager().getResource(id);
@@ -114,7 +113,7 @@ public final class WorldgenInjectionTests {
                     return;
                 }
 
-                helper.assertValueEqual(slice.biome().identifier().toString(),
+                helper.assertValueEqual(slice.biome().location().toString(),
                         json.get("replacement").getAsString(), "injector replacement for " + name);
                 helper.assertValueEqual("minecraft:overworld",
                         json.get("dimension").getAsString(), "injector dimension for " + name);
@@ -138,7 +137,7 @@ public final class WorldgenInjectionTests {
                     found |= featureNames(step).contains(feature);
                 }
                 if (!found) {
-                    helper.fail(key.identifier() + " has no " + feature + " feature");
+                    helper.fail(key.location() + " has no " + feature + " feature");
                 }
             }
             for (HolderSet<PlacedFeature> step : biomes.getOrThrow(Biomes.COLD_OCEAN).value().getGenerationSettings().features()) {
@@ -155,7 +154,7 @@ public final class WorldgenInjectionTests {
             Set<String> foreignAdjacencies = new HashSet<>();
             List<Holder.Reference<Biome>> all = biomes.listElements().toList();
             for (Holder.Reference<Biome> holder : all) {
-                if (holder.key().identifier().getNamespace().equals(Nautec.MODID)) {
+                if (holder.key().location().getNamespace().equals(Nautec.MODID)) {
                     continue;
                 }
                 List<HolderSet<PlacedFeature>> steps =
@@ -181,7 +180,7 @@ public final class WorldgenInjectionTests {
                             continue;
                         }
                         if (!foreignAdjacencies.contains(step + "|" + a + "|" + b)) {
-                            helper.fail(key.identifier() + " orders " + a + " before " + b + " at generation step "
+                            helper.fail(key.location() + " orders " + a + " before " + b + " at generation step "
                                     + step + ", an ordering no other biome establishes. Two non-Nautec features must "
                                     + "only appear adjacent in an order vanilla already uses, otherwise a biome mod "
                                     + "that disagrees produces a feature order cycle and the world fails to generate.");
@@ -222,7 +221,7 @@ public final class WorldgenInjectionTests {
             after.entrySet().stream()
                     .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
                     .forEach(e -> Nautec.LOGGER.info(String.format("  %-42s %5.2f%%  (was %5.2f%%)",
-                            e.getKey().identifier(),
+                            e.getKey().location(),
                             100.0 * e.getValue() / samples,
                             100.0 * before.getOrDefault(e.getKey(), 0) / samples)));
 
@@ -231,11 +230,11 @@ public final class WorldgenInjectionTests {
                 double share = 100.0 * after.getOrDefault(key, 0) / samples;
                 injectedTotal += after.getOrDefault(key, 0);
                 if (share < 2.0) {
-                    helper.fail(key.identifier() + " claims only " + String.format("%.2f", share)
+                    helper.fail(key.location() + " claims only " + String.format("%.2f", share)
                             + "% of ocean surface climate space, players will rarely find it (want 3-6%)");
                 }
                 if (share > 10.0) {
-                    helper.fail(key.identifier() + " claims " + String.format("%.2f", share)
+                    helper.fail(key.location() + " claims " + String.format("%.2f", share)
                             + "% of ocean surface climate space, it is crowding out vanilla oceans (want 3-6%)");
                 }
             }
@@ -318,7 +317,7 @@ public final class WorldgenInjectionTests {
             for (Pair<Climate.ParameterPoint, ResourceKey<Biome>> slice : injected) {
                 ResourceKey<Biome> found = merged.findValue(centre(slice.getFirst()));
                 if (!slice.getSecond().equals(found)) {
-                    helper.fail("The centre of " + slice.getSecond().identifier() + "'s slice resolved to " + found.identifier());
+                    helper.fail("The centre of " + slice.getSecond().location() + "'s slice resolved to " + found.location());
                 }
             }
 

@@ -62,7 +62,7 @@ public class GlowGrottoFeature extends Feature<NoneFeatureConfiguration> {
 
     public static boolean carve(WorldGenLevel level, RandomSource random, BlockPos floor, int rx, int ry, int rz) {
         BlockPos center = floor.below(ry + 3 + random.nextInt(3));
-        if (level.isOutsideBuildHeight(center.below(ry + 1)) || center.getY() - ry <= level.getMinY() + 4) {
+        if (level.isOutsideBuildHeight(center.below(ry + 1)) || center.getY() - ry <= level.getMinBuildHeight() + 4) {
             return false;
         }
 
@@ -112,10 +112,10 @@ public class GlowGrottoFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         List<BlockPos> floorSpots = new ArrayList<>();
-        BlockState polyp = NTBlocks.GLOW_POLYP.get().defaultBlockState().setValue(MultifaceBlock.WATERLOGGED, true);
+        BlockState polyp = NTBlocks.GLOW_POLYP.get().defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, true);
         for (BlockPos pos : cavity) {
             BlockState below = level.getBlockState(pos.below());
-            if (below.isSolidRender() && !cavity.contains(pos.below())) {
+            if (below.isSolidRender(level, pos.below()) && !cavity.contains(pos.below())) {
                 floorSpots.add(pos);
                 if (random.nextInt(3) == 0 && carvable(below)) {
                     level.setBlock(pos.below(), NTBlocks.PRISMARINE_SAND.get().defaultBlockState(), Block.UPDATE_CLIENTS);
@@ -132,7 +132,7 @@ public class GlowGrottoFeature extends Feature<NoneFeatureConfiguration> {
                     continue;
                 }
                 BlockPos side = pos.relative(direction);
-                if (!cavity.contains(side) && level.getBlockState(side).isSolidRender()) {
+                if (!cavity.contains(side) && level.getBlockState(side).isSolidRender(level, side)) {
                     state = state.setValue(MultifaceBlock.getFaceProperty(direction), true);
                     any = true;
                 }

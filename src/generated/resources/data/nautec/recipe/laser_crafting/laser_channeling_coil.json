@@ -3,7 +3,9 @@
   "duration": 100,
   "ingredients": [
     {
-      "ingredient": "nautec:burnt_coil"
+      "ingredient": {
+        "item": "nautec:burnt_coil"
+      }
     }
   ],
   "power": 20,

@@ -18,16 +18,16 @@ import com.breakinblocks.nautec.client.AugmentClientHelper;
 public final class AugmentClientEvents {
 
     @SubscribeEvent
-    public static void renderPlayerPart(RenderPlayerEvent.Pre<?> event) {
+    public static void renderPlayerPart(RenderPlayerEvent.Pre event) {
         AugmentSlotsRenderer.render(event);
     }
 
     @SubscribeEvent
-    public static void onRenderPlayer(RenderPlayerEvent.Post<?> event) {
-        Map<AugmentSlot, Augment> augments = AugmentClientHelper.forState(event.getRenderState());
+    public static void onRenderPlayer(RenderPlayerEvent.Post event) {
+        Map<AugmentSlot, Augment> augments = AugmentClientHelper.forEntity(event.getEntity());
         for (Augment augment : augments.values()) {
             if (augment != null && augment instanceof GuardianEyeAugment eyeAugment && eyeAugment.getTargetEntity() != null) {
-                GuardianEyeRenderHelper.render(eyeAugment.getPlayer(), eyeAugment, event.getPartialTick(), event.getPoseStack(), event.getSubmitNodeCollector());
+                GuardianEyeRenderHelper.render(eyeAugment.getPlayer(), eyeAugment, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource());
                 return;
             }
         }

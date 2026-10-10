@@ -9,7 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,7 +42,7 @@ public class ResonanceChamberBlock extends LaserBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof ResonanceChamberBlockEntity be)) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
@@ -51,7 +51,7 @@ public class ResonanceChamberBlock extends LaserBlock {
         if (!stack.isEmpty()) {
             if (handler.isItemValid(0, stack)) {
                 player.setItemInHand(hand, handler.insertItem(0, stack, false));
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
@@ -61,10 +61,10 @@ public class ResonanceChamberBlock extends LaserBlock {
             result = handler.extractItem(0, handler.getSlotLimit(0), false);
         }
         if (result.isEmpty()) {
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
-        ItemUtils.giveItemToPlayer(player, result, player.getInventory().getSelectedSlot());
-        return InteractionResult.SUCCESS;
+        ItemUtils.giveItemToPlayer(player, result, player.getInventory().selected);
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

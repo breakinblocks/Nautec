@@ -21,7 +21,7 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -33,10 +33,10 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -391,7 +391,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         out.putInt("status", status);
         out.putLong("biomass", biomass);
         if (biomassStrain != null) {
-            out.store("biomass_strain", Identifier.CODEC, biomassStrain.identifier());
+            out.store("biomass_strain", ResourceLocation.CODEC, biomassStrain.location());
         }
     }
 
@@ -403,7 +403,7 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         this.progress = in.getIntOr("progress", 0);
         this.status = in.getIntOr("status", STATUS_NO_TEMPLATE);
         this.biomass = in.getLongOr("biomass", 0L);
-        this.biomassStrain = in.read("biomass_strain", Identifier.CODEC)
+        this.biomassStrain = in.read("biomass_strain", ResourceLocation.CODEC)
                 .map(id -> ResourceKey.create(NTRegistries.BACTERIA_KEY, id)).orElse(null);
     }
 }

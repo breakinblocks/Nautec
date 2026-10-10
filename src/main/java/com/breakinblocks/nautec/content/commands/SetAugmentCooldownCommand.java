@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 public class SetAugmentCooldownCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> nautecCommand = Commands.literal(Nautec.MODID)
-                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()));
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS));
 
         dispatcher.register(nautecCommand
                 .then(Commands.literal("augments")

@@ -1,17 +1,21 @@
 package com.breakinblocks.nautec.client.model.entity;
 
 import com.breakinblocks.nautec.content.entities.mobs.LanternJelly;
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
 
-public class LanternJellyModel extends EntityModel<LivingEntityRenderState> {
+import java.util.List;
+
+public class LanternJellyModel<T extends Entity> extends HierarchicalModel<T> {
+    private final ModelPart root;
+    private final List<ModelPart> parts;
     private static final int TENDRIL_COUNT = 8;
 
     private final ModelPart bell;
@@ -20,7 +24,8 @@ public class LanternJellyModel extends EntityModel<LivingEntityRenderState> {
     private final ModelPart[] tendrilTips = new ModelPart[TENDRIL_COUNT];
 
     public LanternJellyModel(ModelPart root) {
-        super(root);
+        this.root = root;
+        this.parts = root.getAllParts().toList();
         this.bell = root.getChild("bell");
         this.skirt = this.bell.getChild("skirt");
         for (int i = 0; i < TENDRIL_COUNT; i++) {
@@ -144,20 +149,27 @@ public class LanternJellyModel extends EntityModel<LivingEntityRenderState> {
     }
 
     @Override
-    public void setupAnim(LivingEntityRenderState state) {
-        super.setupAnim(state);
-        float pulse = swimPulse(state.ageInTicks);
+    public ModelPart root() {
+        return this.root;
+    }
+
+    @Override
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        for (int i = 0; i < this.parts.size(); i++) {
+            this.parts.get(i).resetPose();
+        }
+        float pulse = swimPulse(ageInTicks);
         this.bell.y += pulse * 0.5F;
         this.bell.xScale = 1.0F - pulse * 0.06F;
         this.bell.zScale = 1.0F - pulse * 0.06F;
         this.bell.yScale = 1.0F + pulse * 0.08F;
         for (int i = 0; i < TENDRIL_COUNT; i++) {
             float angle = i * Mth.TWO_PI / TENDRIL_COUNT - 3.0F * Mth.PI / 4.0F;
-            float drift = Mth.sin(0.09F * state.ageInTicks - 0.55F + i * 0.2F);
+            float drift = Mth.sin(0.09F * ageInTicks - 0.55F + i * 0.2F);
             this.tendrils[i].xRot += drift * 0.16F * Mth.sin(angle);
             this.tendrils[i].zRot -= drift * 0.16F * Mth.cos(angle);
-            this.tendrilTips[i].xRot += 0.2F * Mth.sin(0.09F * state.ageInTicks - 1.1F + i * 0.2F);
-            this.tendrilTips[i].zRot += 0.12F * Mth.cos(0.07F * state.ageInTicks + i);
+            this.tendrilTips[i].xRot += 0.2F * Mth.sin(0.09F * ageInTicks - 1.1F + i * 0.2F);
+            this.tendrilTips[i].zRot += 0.12F * Mth.cos(0.07F * ageInTicks + i);
         }
     }
 
@@ -165,9 +177,9 @@ public class LanternJellyModel extends EntityModel<LivingEntityRenderState> {
         return Mth.sin(LanternJelly.SWIM_PULSE_SPEED * ageInTicks);
     }
 
-    public static float glowBrightness(LivingEntityRenderState state, float ageInTicks) {
+    public static float glowBrightness(Entity entity, float ageInTicks) {
         // A short, smooth flash at the contracted end of the swimming stroke.
-        float flash = state.isInWater ? Mth.clamp((swimPulse(ageInTicks) - 0.6F) / 0.4F, 0.0F, 1.0F) : 0.0F;
+        float flash = entity.isInWater() ? Mth.clamp((swimPulse(ageInTicks) - 0.6F) / 0.4F, 0.0F, 1.0F) : 0.0F;
         return 0.12F + 0.88F * flash * flash * (3.0F - 2.0F * flash);
     }
 }

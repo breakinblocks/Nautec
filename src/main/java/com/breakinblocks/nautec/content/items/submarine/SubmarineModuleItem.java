@@ -1,12 +1,13 @@
 package com.breakinblocks.nautec.content.items.submarine;
 
+
+import java.util.List;
 import com.breakinblocks.nautec.utils.Tooltips;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -28,7 +29,7 @@ public class SubmarineModuleItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         Tooltips.trans(tooltipComponents, this.moduleType.translationKey() + ".desc", ChatFormatting.GRAY);
 
         if (this.moduleType.isPassive()) {

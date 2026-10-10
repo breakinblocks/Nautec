@@ -7,12 +7,11 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.UUID;
 
@@ -22,26 +21,26 @@ public final class PrismaticEmitterTests {
     private PrismaticEmitterTests() {
     }
 
-    private static PrismaticEmitterBlockEntity emitter(GameTestHelper helper) {
+    private static PrismaticEmitterBlockEntity emitter(NTGameTestHelper helper) {
         return emitter(helper, EMITTER);
     }
 
-    private static PrismaticEmitterBlockEntity emitter(GameTestHelper helper, BlockPos relative) {
+    private static PrismaticEmitterBlockEntity emitter(NTGameTestHelper helper, BlockPos relative) {
         helper.getLevel().setBlock(helper.absolutePos(relative), NTBlocks.PRISMATIC_EMITTER.get().defaultBlockState(), Block.UPDATE_ALL);
         return (PrismaticEmitterBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
     }
 
-    private static BlockPos converter(GameTestHelper helper, BlockPos relative) {
+    private static BlockPos converter(NTGameTestHelper helper, BlockPos relative) {
         BlockPos pos = helper.absolutePos(relative);
         helper.getLevel().setBlock(pos, NTBlocks.ENERGY_CONVERTER.get().defaultBlockState(), Block.UPDATE_ALL);
         return pos;
     }
 
-    private static int stored(GameTestHelper helper, BlockPos pos) {
+    private static int stored(NTGameTestHelper helper, BlockPos pos) {
         return ((EnergyConverterBlockEntity) helper.getLevel().getBlockEntity(pos)).getFeBuffer().getAmountAsInt();
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }

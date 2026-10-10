@@ -1,8 +1,8 @@
 package com.breakinblocks.nautec.content.bubble;
 
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -29,7 +29,7 @@ public class HeldWaterBlock extends Block implements LiquidBlockContainer {
     public static final MapCodec<HeldWaterBlock> CODEC = simpleCodec(HeldWaterBlock::new);
 
     public HeldWaterBlock(Properties properties) {
-        super(properties.noCollision().noOcclusion().noLootTable().replaceable().pushReaction(PushReaction.DESTROY));
+        super(properties.noCollission().noOcclusion().noLootTable().replaceable().pushReaction(PushReaction.DESTROY));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class HeldWaterBlock extends Block implements LiquidBlockContainer {
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable LivingEntity entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    public boolean canPlaceLiquid(@Nullable Player entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
         return false;
     }
 
@@ -68,12 +68,12 @@ public class HeldWaterBlock extends Block implements LiquidBlockContainer {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return ItemStack.EMPTY;
     }
 

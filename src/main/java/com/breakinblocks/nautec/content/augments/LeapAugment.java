@@ -49,7 +49,7 @@ public class LeapAugment extends Augment {
         double coefficient = 1.6d - map(Math.abs(leapPitch), 0.0d, 90.0d, 0.6d, 1.0d);
         leapVector = leapVector.scale(magnitude * coefficient);
         player.setDeltaMovement(leapVector);
-        player.needsSync = true;
+        player.hasImpulse = true;
         setCooldown(25);
         player.playSound(SoundEvents.UI_TOAST_IN, 2.0f, 1.0f);
         player.playSound(SoundEvents.UI_TOAST_IN, 1.5f, .8f);

@@ -70,7 +70,7 @@ public class BacterialAnalyzerTopBlock extends Block {
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return NTBlocks.BACTERIAL_ANALYZER.toStack();
     }
 
@@ -91,8 +91,10 @@ public class BacterialAnalyzerTopBlock extends Block {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        level.removeBlock(pos.below(), false);
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, world, pos, newState, movedByPiston);
+        if (!state.is(newState.getBlock()) && world instanceof ServerLevel level) {
+            level.removeBlock(pos.below(), false);
+        }
     }
 }

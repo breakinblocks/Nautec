@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "nautec:atlantic_gold_ingot"
+    {
+      "item": "nautec:atlantic_gold_ingot"
+    }
   ],
   "result": {
     "count": 9,

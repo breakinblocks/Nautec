@@ -18,6 +18,7 @@
       "translate": "advancements.nautec.augmentation_station.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:augmentation_station"
     },
     "title": {

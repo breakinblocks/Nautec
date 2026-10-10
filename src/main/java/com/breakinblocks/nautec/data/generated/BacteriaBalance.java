@@ -12,9 +12,9 @@ import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.utils.ranges.FloatRange;
 import com.breakinblocks.nautec.utils.ranges.IntRange;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -123,7 +123,7 @@ public final class BacteriaBalance {
         }
     }
 
-    public static int colorFor(Identifier id) {
+    public static int colorFor(ResourceLocation id) {
         int hash = id.toString().hashCode();
         float hue = 0.45f + 0.30f * unit(hash);
         float saturation = 0.55f + 0.30f * unit(hash >>> 10);
@@ -136,11 +136,11 @@ public final class BacteriaBalance {
         return (bits & 0x3FF) / 1023.0f;
     }
 
-    public static SimpleBacteria buildBacteria(Item resource, Rarity rarity, Identifier id) {
+    public static SimpleBacteria buildBacteria(Item resource, Rarity rarity, ResourceLocation id) {
         return buildBacteria(new Bacteria.Resource.ItemResource(resource), rarity, id);
     }
 
-    public static SimpleBacteria buildBacteria(Bacteria.Resource resource, Rarity rarity, Identifier id) {
+    public static SimpleBacteria buildBacteria(Bacteria.Resource resource, Rarity rarity, ResourceLocation id) {
         return SimpleBacteria.of()
                 .initialSize(rarity.initialSize())
                 .resource(resource)

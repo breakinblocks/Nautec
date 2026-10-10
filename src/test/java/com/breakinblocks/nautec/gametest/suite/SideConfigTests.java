@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ClientInformation;
@@ -28,7 +29,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -41,10 +41,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.UUID;
 
@@ -55,13 +55,13 @@ public final class SideConfigTests {
     private SideConfigTests() {
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }
 
-    private static ResourceHandler<ItemResource> items(GameTestHelper helper, BlockPos pos, Direction side) {
-        return helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
+    private static ResourceHandler<ItemResource> items(NTGameTestHelper helper, BlockPos pos, Direction side) {
+        return helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(pos), side);
     }
 
     private static int insert(ResourceHandler<ItemResource> handler, int slot, ItemStack stack) {
@@ -213,7 +213,7 @@ public final class SideConfigTests {
         });
     }
 
-    private static ConfinedSpawnerBlockEntity confined(GameTestHelper helper, BlockPos pos) {
+    private static ConfinedSpawnerBlockEntity confined(NTGameTestHelper helper, BlockPos pos) {
         helper.setBlock(pos, Blocks.SPAWNER.defaultBlockState());
         helper.getBlockEntity(pos, SpawnerBlockEntity.class).setEntityId(EntityType.CHICKEN, helper.getLevel().getRandom());
         helper.assertTrue(SpawnerConfinementMatrixItem.confine(helper.getLevel(), helper.absolutePos(pos)), "matrix should confine a spawner");

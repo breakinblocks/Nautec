@@ -4,7 +4,6 @@ import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
@@ -17,7 +16,7 @@ public final class PressureHatchTests {
     private PressureHatchTests() {
     }
 
-    private static void build(GameTestHelper helper) {
+    private static void build(NTGameTestHelper helper) {
         for (int x = 0; x < 9; x++) {
             for (int z = 0; z < 9; z++) {
                 helper.setBlock(new BlockPos(x, 0, z), Blocks.STONE);
@@ -34,7 +33,7 @@ public final class PressureHatchTests {
         helper.setBlock(HATCH.south(2), Blocks.WATER);
     }
 
-    private static void setOpen(GameTestHelper helper, boolean open) {
+    private static void setOpen(NTGameTestHelper helper, boolean open) {
         BlockPos pos = helper.absolutePos(HATCH);
         BlockState state = helper.getLevel().getBlockState(pos);
         ((PressureHatchBlock) state.getBlock()).setOpen(null, helper.getLevel(), state, pos, open);

@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import snownee.jade.api.BlockAccessor;
@@ -22,22 +22,35 @@ import java.util.Locale;
 public enum LaserCraftingMatrixComponentProvider implements StreamServerDataProvider<BlockAccessor, LaserCraftingMatrixComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("laser_crafting_matrix");
+    private static final ResourceLocation UID = Nautec.rl("laser_crafting_matrix");
 
     public record Data(int status, int progress, int maxProgress, int power, int requiredPower, float purity,
                        float requiredPurity, List<ItemStack> results, List<FluidStack> fluidResults) {
-        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT, Data::status,
-                ByteBufCodecs.VAR_INT, Data::progress,
-                ByteBufCodecs.VAR_INT, Data::maxProgress,
-                ByteBufCodecs.VAR_INT, Data::power,
-                ByteBufCodecs.VAR_INT, Data::requiredPower,
-                ByteBufCodecs.FLOAT, Data::purity,
-                ByteBufCodecs.FLOAT, Data::requiredPurity,
-                ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(3)), Data::results,
-                FluidStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(2)), Data::fluidResults,
-                Data::new
-        );
+        private static final StreamCodec<? super RegistryFriendlyByteBuf, List<ItemStack>> RESULTS_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(3));
+        private static final StreamCodec<? super RegistryFriendlyByteBuf, List<FluidStack>> FLUIDRESULTS_CODEC = FluidStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(2));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.of(
+                (buf, data) -> {
+                    ByteBufCodecs.VAR_INT.encode(buf, data.status());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.progress());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.maxProgress());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.power());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.requiredPower());
+                    ByteBufCodecs.FLOAT.encode(buf, data.purity());
+                    ByteBufCodecs.FLOAT.encode(buf, data.requiredPurity());
+                    RESULTS_CODEC.encode(buf, data.results());
+                    FLUIDRESULTS_CODEC.encode(buf, data.fluidResults());
+                },
+                buf -> new Data(
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.FLOAT.decode(buf),
+                    ByteBufCodecs.FLOAT.decode(buf),
+                    RESULTS_CODEC.decode(buf),
+                    FLUIDRESULTS_CODEC.decode(buf)
+                ));
     }
 
     @Override
@@ -55,7 +68,7 @@ public enum LaserCraftingMatrixComponentProvider implements StreamServerDataProv
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -98,7 +111,7 @@ public enum LaserCraftingMatrixComponentProvider implements StreamServerDataProv
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

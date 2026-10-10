@@ -1,9 +1,7 @@
-#version 330
+#version 150
 
 uniform sampler2D SceneSampler;
-layout(std140) uniform BlurInfo {
-    vec4 Params; // strength, width/max dimension, height/max dimension, unused
-};
+uniform vec4 Params; // strength, width/max dimension, height/max dimension, unused
 in vec2 texCoord;
 out vec4 fragColor;
 

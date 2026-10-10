@@ -7,16 +7,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,11 +48,11 @@ public abstract class LaserBlock extends ContainerBlock implements DisplayBlock,
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (waterloggable() && state.getValue(BlockStateProperties.WATERLOGGED)) {
-            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -83,7 +79,7 @@ public abstract class LaserBlock extends ContainerBlock implements DisplayBlock,
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable LivingEntity entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    public boolean canPlaceLiquid(@Nullable Player entity, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
         if (waterloggable()) {
             return SimpleWaterloggedBlock.super.canPlaceLiquid(entity, level, pos, state, fluid);
         }
@@ -99,7 +95,7 @@ public abstract class LaserBlock extends ContainerBlock implements DisplayBlock,
     }
 
     @Override
-    public ItemStack pickupBlock(@Nullable LivingEntity entity, LevelAccessor level, BlockPos pos, BlockState state) {
+    public ItemStack pickupBlock(@Nullable Player entity, LevelAccessor level, BlockPos pos, BlockState state) {
         if (waterloggable()) {
             return SimpleWaterloggedBlock.super.pickupBlock(entity, level, pos, state);
         }

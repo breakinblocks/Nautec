@@ -1,11 +1,10 @@
 package com.breakinblocks.nautec.client.screen;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +31,7 @@ public class NTPanelButton extends AbstractButton {
     }
 
     @Override
-    public void onPress(InputWithModifiers input) {
+    public void onPress() {
         action.run();
     }
 
@@ -42,7 +41,7 @@ public class NTPanelButton extends AbstractButton {
     }
 
     @Override
-    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
         Component tip = tooltip.get();
         if (!tip.equals(lastTooltip)) {
             lastTooltip = tip;
@@ -54,7 +53,7 @@ public class NTPanelButton extends AbstractButton {
         int fill = !this.active ? PanelStyle.SLOT_EDGE : isHoveredOrFocused() ? hover.get() : color.get();
         graphics.fill(x + 1, y + 1, x + getWidth() - 1, y + getHeight() - 1, fill);
         Component message = getMessage();
-        graphics.text(this.font, message, x + (getWidth() - this.font.width(message)) / 2, y + (getHeight() - 8) / 2,
+        graphics.drawString(this.font, message, x + (getWidth() - this.font.width(message)) / 2, y + (getHeight() - 8) / 2,
                 this.active ? 0xFFFFFFFF : 0xFF808080, true);
     }
 

@@ -2,6 +2,8 @@
   "type": "nautec:combustion_additive",
   "duration": 1200,
   "fuel_multiplier": 1.1,
-  "ingredient": "#c:dusts/redstone",
+  "ingredient": {
+    "tag": "c:dusts/redstone"
+  },
   "output_multiplier": 1.5
 }

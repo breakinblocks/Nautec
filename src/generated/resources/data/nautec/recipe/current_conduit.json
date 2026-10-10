@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_copper_ingot",
-    "G": "nautec:clay_gasket"
+    "A": {
+      "item": "nautec:aquarine_copper_ingot"
+    },
+    "G": {
+      "item": "nautec:clay_gasket"
+    }
   },
   "pattern": [
     "AAA",

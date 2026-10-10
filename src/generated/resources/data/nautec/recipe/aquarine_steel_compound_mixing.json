@@ -8,10 +8,14 @@
   "ingredients": [
     {
       "count": 2,
-      "ingredient": "#c:raw_materials/iron"
+      "ingredient": {
+        "tag": "c:raw_materials/iron"
+      }
     },
     {
-      "ingredient": "#c:gems/prismarine"
+      "ingredient": {
+        "tag": "c:gems/prismarine"
+      }
     }
   ],
   "result": {

@@ -13,16 +13,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.golem.IronGolem;
-import net.minecraft.world.entity.animal.wolf.Wolf;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -58,13 +57,13 @@ public final class NeptunesTridentTests {
             Player thrower = thrower(helper, stack);
             NeptunesTridentItem trident = NTItems.NEPTUNES_TRIDENT.get();
 
-            boolean thrown = trident.releaseUsing(stack, level, thrower, trident.getUseDuration(stack, thrower) - 20);
+            trident.releaseUsing(stack, level, thrower, trident.getUseDuration(stack, thrower) - 20);
 
             List<ThrownNeptunesTrident> flying = level.getEntities(NTEntities.NEPTUNES_TRIDENT.get(),
                     AABB.ofSize(thrower.position(), 8.0, 8.0, 8.0), entity -> true);
             flying.forEach(ThrownNeptunesTrident::discard);
-            if (!thrown || flying.size() != 1) {
-                helper.fail("Releasing the throw returned " + thrown + " and launched " + flying.size() + " Neptune's Tridents");
+            if (flying.size() != 1) {
+                helper.fail("Releasing the throw launched " + flying.size() + " Neptune's Tridents");
                 return;
             }
             if (!flying.getFirst().getWeaponItem().is(NTItems.NEPTUNES_TRIDENT.get())) {
@@ -83,7 +82,7 @@ public final class NeptunesTridentTests {
             for (ResourceKey<Enchantment> key : SUPPORTED) {
                 Holder<Enchantment> enchantment = enchantment(helper.getLevel(), key);
                 if (!stack.supportsEnchantment(enchantment) || !stack.isPrimaryItemFor(enchantment)) {
-                    helper.fail("Neptune's Trident does not take " + key.identifier() + " at the anvil and the table");
+                    helper.fail("Neptune's Trident does not take " + key.location() + " at the anvil and the table");
                     return;
                 }
             }
@@ -105,8 +104,13 @@ public final class NeptunesTridentTests {
                 helper.fail("Neptune's Trident should both sweep like a sword and throw like a trident");
                 return;
             }
-            double attack = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
-                    .compute(Attributes.ATTACK_DAMAGE, 1.0, EquipmentSlot.MAINHAND);
+            ItemAttributeModifiers.Builder damageOnly = ItemAttributeModifiers.builder();
+            for (ItemAttributeModifiers.Entry entry : stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers()) {
+                if (entry.attribute().equals(Attributes.ATTACK_DAMAGE)) {
+                    damageOnly.add(entry.attribute(), entry.modifier(), entry.slot());
+                }
+            }
+            double attack = damageOnly.build().compute(1.0, EquipmentSlot.MAINHAND);
             if (Math.abs(attack - (1.0 + NeptunesTridentItem.DAMAGE)) > 0.001 || NeptunesTridentItem.DAMAGE != 18.0F) {
                 helper.fail("Neptune's Trident melee damage is " + attack + ", expected 19 from an 18 point bonus");
                 return;
@@ -266,7 +270,7 @@ public final class NeptunesTridentTests {
             }
 
             stack.set(NTDataComponents.SHOCKWAVE_COOLDOWN.get(), new ShockwaveCooldown(now - 1, NTConfig.tridentShockwaveCooldown));
-            NTItems.NEPTUNES_TRIDENT.get().inventoryTick(stack, level, thrower(helper, ItemStack.EMPTY), null);
+            NTItems.NEPTUNES_TRIDENT.get().inventoryTick(stack, level, thrower(helper, ItemStack.EMPTY), 0, false);
             if (stack.has(NTDataComponents.SHOCKWAVE_COOLDOWN.get())) {
                 helper.fail("An expired shockwave cooldown was left on the trident");
                 return;
@@ -275,8 +279,8 @@ public final class NeptunesTridentTests {
         });
 
         r.add("neptunes_trident/crafted_from_pressure_forged_parts", 20, 1, helper -> {
-            RecipeHolder<?> holder = helper.getLevel().recipeAccess()
-                    .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl("neptunes_trident")))
+            RecipeHolder<?> holder = helper.getLevel().getRecipeManager()
+                    .byKey(Nautec.rl("neptunes_trident"))
                     .orElse(null);
             if (holder == null || !(holder.value() instanceof ShapedRecipe recipe)) {
                 helper.fail("nautec:neptunes_trident is not a loaded shaped recipe: " + holder);
@@ -296,7 +300,7 @@ public final class NeptunesTridentTests {
                 helper.fail("The trident recipe does not match a crystal, two shards, a Heart of the Sea and three platings");
                 return;
             }
-            ItemStack result = recipe.assemble(grid);
+            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
             if (!result.is(NTItems.NEPTUNES_TRIDENT.get()) || result.getCount() != 1) {
                 helper.fail("Crafting produced " + result + " instead of one Neptune's Trident");
                 return;
@@ -313,7 +317,7 @@ public final class NeptunesTridentTests {
         return new ThrownNeptunesTrident(level, center.x, center.y, center.z, stack.copy());
     }
 
-    private static Player thrower(GameTestHelper helper, ItemStack stack) {
+    private static Player thrower(NTGameTestHelper helper, ItemStack stack) {
         Player thrower = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 at = helper.absoluteVec(new Vec3(4.5D, 1D, 1.5D));
         thrower.setPos(at.x, at.y, at.z);

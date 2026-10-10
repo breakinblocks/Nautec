@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.content.items.tools;
 
+
+
+import net.minecraft.world.item.Item;
+import java.util.List;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
@@ -22,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -34,7 +37,7 @@ public class AquarineHoeItem extends HoeItem implements IPowerItem {
     private static final int POWER_PER_BLOCK = 2;
 
     public AquarineHoeItem(Properties properties) {
-        super(NTToolMaterials.AQUARINE, -3.0f, -3.0f, properties.stacksTo(1).component(NTDataComponents.ABILITY_ENABLED, false)
+        super(NTToolMaterials.AQUARINE, properties.attributes(HoeItem.createAttributes(NTToolMaterials.AQUARINE, -3.0f, -3.0f)).stacksTo(1).component(NTDataComponents.ABILITY_ENABLED, false)
                 .component(NTDataComponents.IS_INFUSED,false).component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(700)));
     }
 
@@ -93,10 +96,10 @@ public class AquarineHoeItem extends HoeItem implements IPowerItem {
     }
 
     @Override
-    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         IPowerStorage powerStorage = attacker.getItemInHand(InteractionHand.MAIN_HAND).getCapability(NTCapabilities.PowerStorage.ITEM);
         powerStorage.tryDrainPower(1, false);
-        super.hurtEnemy(stack, target, attacker);
+        return super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
@@ -140,8 +143,8 @@ public class AquarineHoeItem extends HoeItem implements IPowerItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         Tooltips.trans(tooltipComponents, "nautec.tool.hoe.ability", ChatFormatting.DARK_PURPLE);
         if(!NTDataComponentsUtils.isInfused(stack)){

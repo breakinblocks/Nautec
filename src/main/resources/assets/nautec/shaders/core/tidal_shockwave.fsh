@@ -1,16 +1,12 @@
-#version 330
+#version 150
 
 uniform sampler2D DepthSampler;
 
-layout(std140) uniform Projection {
-    mat4 ProjMat;
-};
+uniform mat4 ProjMat;
 
-layout(std140) uniform ShockwaveInfo {
-    mat4 InvViewMat;
-    vec4 Center;
-    vec4 Params;
-};
+uniform mat4 InvViewMat;
+uniform vec4 Center;
+uniform vec4 Params;
 
 in vec2 texCoord;
 

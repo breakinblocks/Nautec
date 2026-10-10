@@ -3,11 +3,10 @@ package com.breakinblocks.nautec.datagen.recipeBuilder;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +57,7 @@ public class CombustionAdditiveRecipeBuilder implements NTRecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         recipeOutput.accept(key, new CombustionAdditiveRecipe(ingredient, outputMultiplier, fuelMultiplier, duration), null);
     }
 

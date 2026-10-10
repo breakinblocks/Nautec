@@ -6,14 +6,13 @@ import com.breakinblocks.nautec.content.resonance.ResonanceClientState;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.network.ResonanceSyncPayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -61,16 +60,19 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     private boolean confirmDelete;
 
     protected ResonanceNetworkScreen(M menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, IMAGE_WIDTH, IMAGE_HEIGHT);
+        super(menu, playerInventory, title);
+        this.imageWidth = IMAGE_WIDTH;
+        this.imageHeight = IMAGE_HEIGHT;
+        this.inventoryLabelY = this.imageHeight - 94;
     }
 
     protected abstract void addHeaderWidgets(int x, int y);
 
     protected abstract int chunkState();
 
-    protected abstract void extractReadoutBackground(GuiGraphicsExtractor graphics, int x, int y, int width);
+    protected abstract void extractReadoutBackground(GuiGraphics graphics, int x, int y, int width);
 
-    protected abstract void extractReadout(GuiGraphicsExtractor graphics, int x, int y, ResonanceSyncPayload.@Nullable NetworkView view);
+    protected abstract void extractReadout(GuiGraphics graphics, int x, int y, ResonanceSyncPayload.@Nullable NetworkView view);
 
     protected abstract boolean readoutTooltip(List<Component> lines, int mouseX, int mouseY, int x, int y);
 
@@ -93,7 +95,7 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     }
 
     protected void send(int action, @Nullable UUID network, String text) {
-        ClientPacketDistributor.sendToServer(new ResonanceActionPayload(this.menu.getBlockEntity().getBlockPos(), action,
+        PacketDistributor.sendToServer(new ResonanceActionPayload(this.menu.getBlockEntity().getBlockPos(), action,
                 Optional.ofNullable(network), text));
     }
 
@@ -220,18 +222,18 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         EditBox focused = this.nameBox != null && this.nameBox.isFocused() ? this.nameBox
                 : this.trustBox != null && this.trustBox.isFocused() ? this.trustBox : null;
-        if (focused != null && event.key() != GLFW.GLFW_KEY_ESCAPE) {
-            if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
+        if (focused != null && keyCode != GLFW.GLFW_KEY_ESCAPE) {
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 focused.setFocused(false);
                 return true;
             }
-            focused.keyPressed(event);
+            focused.keyPressed(keyCode, scanCode, modifiers);
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     protected static String number(long value) {
@@ -249,8 +251,7 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
         graphics.fill(x, y, x + this.imageWidth, y + this.imageHeight, OUTLINE);
@@ -277,42 +278,48 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.title, 8, 8, LABEL, false);
-        graphics.text(this.font, Component.translatable("nautec.resonance.network"), 8, 22, LABEL, false);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(this.font, this.title, 8, 8, LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.resonance.network"), 8, 22, LABEL, false);
 
         ResonanceSyncPayload.NetworkView view = current();
         Component name = view == null ? Component.translatable("nautec.resonance.none") : Component.literal(view.name());
         int nameWidth = this.font.width(name);
-        graphics.text(this.font, name, (IMAGE_WIDTH - nameWidth) / 2, 35, view == null ? READOUT_DIM : READOUT, false);
+        graphics.drawString(this.font, name, (IMAGE_WIDTH - nameWidth) / 2, 35, view == null ? READOUT_DIM : READOUT, false);
         if (view != null) {
             Component owner = Component.translatable("nautec.resonance.owner", view.ownerName());
-            graphics.text(this.font, owner, IMAGE_WIDTH - 24 - this.font.width(owner), 22, LABEL, false);
+            graphics.drawString(this.font, owner, IMAGE_WIDTH - 24 - this.font.width(owner), 22, LABEL, false);
         }
 
         extractReadout(graphics, 13, READOUT_Y + 14, view);
 
         if (view != null && view.manage()) {
-            graphics.text(this.font, Component.translatable("nautec.resonance.trusted"), 8, MANAGE_Y + 3, LABEL, false);
+            graphics.drawString(this.font, Component.translatable("nautec.resonance.trusted"), 8, MANAGE_Y + 3, LABEL, false);
             List<ResonanceSyncPayload.Member> trusted = view.trusted();
             if (trusted.isEmpty()) {
-                graphics.text(this.font, Component.translatable("nautec.resonance.trusted.none"), 12, MANAGE_Y + 19, READOUT_DIM, false);
+                graphics.drawString(this.font, Component.translatable("nautec.resonance.trusted.none"), 12, MANAGE_Y + 19, READOUT_DIM, false);
             }
             for (int i = 0; i < Math.min(TRUSTED_ROWS, trusted.size()); i++) {
-                graphics.text(this.font, trusted.get(i).name(), 12, MANAGE_Y + 19 + i * ROW, READOUT, false);
+                graphics.drawString(this.font, trusted.get(i).name(), 12, MANAGE_Y + 19 + i * ROW, READOUT, false);
             }
             if (trusted.size() > TRUSTED_ROWS) {
                 Component more = Component.translatable("nautec.resonance.trusted.more", trusted.size() - TRUSTED_ROWS);
-                graphics.text(this.font, more, IMAGE_WIDTH - 30 - this.font.width(more), MANAGE_Y + 19 + (TRUSTED_ROWS - 1) * ROW, READOUT_DIM, false);
+                graphics.drawString(this.font, more, IMAGE_WIDTH - 30 - this.font.width(more), MANAGE_Y + 19 + (TRUSTED_ROWS - 1) * ROW, READOUT_DIM, false);
             }
         } else if (view != null) {
-            graphics.text(this.font, Component.translatable("nautec.resonance.member"), 8, MANAGE_Y + 3, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.resonance.member"), 8, MANAGE_Y + 3, READOUT_DIM, false);
         }
     }
 
     @Override
-    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractTooltip(graphics, mouseX, mouseY);
+    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderTooltip(graphics, mouseX, mouseY);
         List<Component> lines = new ArrayList<>();
         int rx = this.leftPos + 8;
         int ry = this.topPos + READOUT_Y;
@@ -322,7 +329,7 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
             lines.add(Component.translatable(view == null ? "nautec.resonance.none.desc" : "nautec.resonance.network.desc").withStyle(ChatFormatting.GRAY));
         }
         if (!lines.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 

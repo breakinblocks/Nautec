@@ -10,7 +10,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -36,7 +35,7 @@ public final class ResearchOutpostTests {
         }
     }
 
-    private static void check(GameTestHelper helper, Rotation rotation) {
+    private static void check(NTGameTestHelper helper, Rotation rotation) {
         ServerLevel level = helper.getLevel();
         BlockPos origin = helper.absolutePos(new BlockPos(0, 40, 0));
         ResearchOutpostPiece piece = new ResearchOutpostPiece(origin, rotation, 12345L);
@@ -73,13 +72,13 @@ public final class ResearchOutpostTests {
         });
 
         r.add("worldgen/research_outpost_is_registered_and_findable", 20, helper -> {
-            Registry<Structure> structures = helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE);
+            Registry<Structure> structures = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE);
             ResourceKey<Structure> key = ResourceKey.create(Registries.STRUCTURE, Nautec.rl("research_outpost"));
-            Holder<Structure> outpost = structures.get(key).orElse(null);
+            Holder<Structure> outpost = structures.getHolder(key).orElse(null);
             helper.assertTrue(outpost != null, "the outpost structure is registered");
             helper.assertTrue(outpost.is(SeaEyeTarget.RESEARCH_OUTPOSTS.structures()), "the Eye of the Sea can point to outposts");
-            Registry<StructureSet> sets = helper.getLevel().registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
-            helper.assertTrue(sets.get(ResourceKey.create(Registries.STRUCTURE_SET, Nautec.rl("research_outposts"))).isPresent(), "outposts have a structure set");
+            Registry<StructureSet> sets = helper.getLevel().registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
+            helper.assertTrue(sets.getHolder(ResourceKey.create(Registries.STRUCTURE_SET, Nautec.rl("research_outposts"))).isPresent(), "outposts have a structure set");
             ItemStack log = ResearchOutpostPiece.researchLog(2);
             helper.assertValueEqual(log.get(DataComponents.WRITTEN_BOOK_CONTENT).pages().size(), ResearchOutpostPiece.LOG_PAGES, "a log has its pages");
             helper.succeed();

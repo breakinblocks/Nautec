@@ -7,19 +7,19 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 
 import java.util.Optional;
 
-public record BacteriaSelector(Identifier id, boolean tag) {
+public record BacteriaSelector(ResourceLocation id, boolean tag) {
     public static final Codec<BacteriaSelector> CODEC = Codec.STRING.comapFlatMap(BacteriaSelector::parse, BacteriaSelector::asString);
     public static final StreamCodec<ByteBuf, BacteriaSelector> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(
             raw -> parse(raw).getOrThrow(), BacteriaSelector::asString);
 
     public static BacteriaSelector of(ResourceKey<Bacteria> bacteria) {
-        return new BacteriaSelector(bacteria.identifier(), false);
+        return new BacteriaSelector(bacteria.location(), false);
     }
 
     public static BacteriaSelector of(TagKey<Bacteria> tag) {
@@ -28,9 +28,9 @@ public record BacteriaSelector(Identifier id, boolean tag) {
 
     public static DataResult<BacteriaSelector> parse(String raw) {
         if (raw.startsWith("#")) {
-            return Identifier.read(raw.substring(1)).map(id -> new BacteriaSelector(id, true));
+            return ResourceLocation.read(raw.substring(1)).map(id -> new BacteriaSelector(id, true));
         }
-        return Identifier.read(raw).map(id -> new BacteriaSelector(id, false));
+        return ResourceLocation.read(raw).map(id -> new BacteriaSelector(id, false));
     }
 
     public String asString() {
@@ -47,7 +47,7 @@ public record BacteriaSelector(Identifier id, boolean tag) {
 
     public boolean matches(ResourceKey<Bacteria> bacteria, HolderLookup.Provider registries) {
         if (!tag) {
-            return bacteria.identifier().equals(id);
+            return bacteria.location().equals(id);
         }
         if (registries == null) {
             return false;

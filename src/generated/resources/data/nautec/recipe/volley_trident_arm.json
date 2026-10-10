@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:aquatic_chip",
-    "L": "nautec:trident_launcher_arm",
-    "N": "minecraft:nautilus_shell",
-    "T": "minecraft:trident"
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "L": {
+      "item": "nautec:trident_launcher_arm"
+    },
+    "N": {
+      "item": "minecraft:nautilus_shell"
+    },
+    "T": {
+      "item": "minecraft:trident"
+    }
   },
   "pattern": [
     " T ",
@@ -13,6 +21,7 @@
     " C "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:volley_trident_arm"
   }
 }

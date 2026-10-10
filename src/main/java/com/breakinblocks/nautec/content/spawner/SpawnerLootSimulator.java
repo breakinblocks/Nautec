@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -48,11 +48,8 @@ public final class SpawnerLootSimulator {
         if (xp > 0) {
             experience.accept(xp);
         }
-        Optional<ResourceKey<LootTable>> key = living.getLootTable();
-        if (key.isEmpty()) {
-            return;
-        }
-        LootTable table = level.getServer().reloadableRegistries().getLootTable(key.get());
+        ResourceKey<LootTable> key = living.getLootTable();
+        LootTable table = level.getServer().reloadableRegistries().getLootTable(key);
         if (table == LootTable.EMPTY) {
             return;
         }
@@ -71,11 +68,11 @@ public final class SpawnerLootSimulator {
     }
 
     private static @Nullable LivingEntity create(ServerLevel level, BlockPos pos, SpawnData data) {
-        if (data.getEntityToSpawn().getString("id").isEmpty()) {
+        if (!data.getEntityToSpawn().contains("id", Tag.TAG_STRING)) {
             return null;
         }
-        Entity entity = EntityType.loadEntityRecursive(data.getEntityToSpawn(), level, EntitySpawnReason.SPAWNER, loaded -> {
-            loaded.snapTo(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 0.0F, 0.0F);
+        Entity entity = EntityType.loadEntityRecursive(data.getEntityToSpawn(), level, loaded -> {
+            loaded.moveTo(pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 0.0F, 0.0F);
             return loaded;
         });
         return entity instanceof LivingEntity living ? living : null;

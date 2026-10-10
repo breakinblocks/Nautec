@@ -19,8 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         if (stack.isEmpty() || !(level instanceof ServerLevel serverLevel)) {
             return false;
         }
-        for (RecipeHolder<ResonanceCraftingRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(ResonanceCraftingRecipe.Type.INSTANCE)) {
+        for (RecipeHolder<ResonanceCraftingRecipe> holder : serverLevel.getRecipeManager().getAllRecipesFor(ResonanceCraftingRecipe.Type.INSTANCE)) {
             if (holder.value().ingredient().test(stack)) {
                 return true;
             }
@@ -157,7 +157,7 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
-        return serverLevel.recipeAccess()
+        return serverLevel.getRecipeManager()
                 .getRecipeFor(ResonanceCraftingRecipe.Type.INSTANCE, new ResonanceRecipeInput(input, getPurity()), level)
                 .map(RecipeHolder::value)
                 .orElse(null);

@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:potato",
+  "catalyst": {
+    "item": "minecraft:potato"
+  },
   "chance": 10.0,
   "input_bacteria": "nautec:rhizobacteria",
   "result_bacteria": "nautec:solanophiles"

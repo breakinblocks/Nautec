@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:lithophiles",
   "ingredient": {
-    "ingredient": "minecraft:stone"
+    "ingredient": {
+      "item": "minecraft:stone"
+    }
   },
   "vitality_ticks": 1200
 }

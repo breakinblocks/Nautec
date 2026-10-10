@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:rhizobacteria",
   "ingredient": {
-    "ingredient": "minecraft:wheat"
+    "ingredient": {
+      "item": "minecraft:wheat"
+    }
   },
   "vitality_ticks": 1200
 }

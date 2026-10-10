@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.data.generated;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.fml.loading.FMLPaths;
 
@@ -63,8 +63,8 @@ public final class GeneratedPackPaths {
         return dataRoot().resolve(Nautec.MODID).resolve("data_maps").resolve("block").resolve("bacteria_obtaining" + JSON_SUFFIX);
     }
 
-    public static Identifier bacteriaId(String name) {
-        return Identifier.fromNamespaceAndPath(GENERATED_NAMESPACE, name);
+    public static ResourceLocation bacteriaId(String name) {
+        return ResourceLocation.fromNamespaceAndPath(GENERATED_NAMESPACE, name);
     }
 
     public static ResourceKey<Bacteria> bacteriaKey(String name) {
@@ -72,7 +72,7 @@ public final class GeneratedPackPaths {
     }
 
     public static boolean isValidName(String name) {
-        return !name.isEmpty() && Identifier.isValidPath(name) && name.indexOf('/') < 0;
+        return !name.isEmpty() && ResourceLocation.isValidPath(name) && name.indexOf('/') < 0;
     }
 
     public static List<String> listGeneratedNames() {

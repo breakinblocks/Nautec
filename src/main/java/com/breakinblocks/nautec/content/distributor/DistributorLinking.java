@@ -41,11 +41,11 @@ public final class DistributorLinking {
         Pending current = PENDING.get(player.getUUID());
         if (current != null && current.distributor().equals(target)) {
             PENDING.remove(player.getUUID());
-            player.sendOverlayMessage(Component.translatable("nautec.distributor.link.stopped").withStyle(ChatFormatting.GRAY));
+            player.displayClientMessage(Component.translatable("nautec.distributor.link.stopped").withStyle(ChatFormatting.GRAY), true);
             return false;
         }
         PENDING.put(player.getUUID(), new Pending(target, player.level().getGameTime() + TIMEOUT));
-        player.sendOverlayMessage(Component.translatable("nautec.distributor.link.started", NTConfig.distributorRange).withStyle(ChatFormatting.AQUA));
+        player.displayClientMessage(Component.translatable("nautec.distributor.link.started", NTConfig.distributorRange).withStyle(ChatFormatting.AQUA), true);
         return true;
     }
 
@@ -102,31 +102,31 @@ public final class DistributorLinking {
         }
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         if (!source.dimension().equals(level.dimension())) {
-            player.sendOverlayMessage(Component.translatable("nautec.distributor.link.other_dimension").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("nautec.distributor.link.other_dimension").withStyle(ChatFormatting.RED), true);
             return;
         }
         if (!(level.getBlockEntity(source.pos()) instanceof DistributorBlockEntity distributor)) {
             PENDING.remove(player.getUUID());
-            player.sendOverlayMessage(Component.translatable("nautec.distributor.link.missing").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("nautec.distributor.link.missing").withStyle(ChatFormatting.RED), true);
             return;
         }
         Component name = level.getBlockState(event.getPos()).getBlock().getName();
         DistributorBlockEntity.LinkResult result = distributor.toggle(event.getPos(), event.getFace() == null ? Direction.UP : event.getFace());
         switch (result) {
             case LINKED -> {
-                player.sendOverlayMessage(Component.translatable("nautec.distributor.link.linked", name).withStyle(ChatFormatting.AQUA));
+                player.displayClientMessage(Component.translatable("nautec.distributor.link.linked", name).withStyle(ChatFormatting.AQUA), true);
                 level.playSound(null, event.getPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.8F, 1.4F);
             }
             case UNLINKED -> {
-                player.sendOverlayMessage(Component.translatable("nautec.distributor.link.unlinked", name).withStyle(ChatFormatting.GRAY));
+                player.displayClientMessage(Component.translatable("nautec.distributor.link.unlinked", name).withStyle(ChatFormatting.GRAY), true);
                 level.playSound(null, event.getPos(), SoundEvents.AMETHYST_BLOCK_HIT, SoundSource.BLOCKS, 0.8F, 0.8F);
             }
-            case TOO_FAR -> player.sendOverlayMessage(Component.translatable("nautec.distributor.link.too_far", NTConfig.distributorRange)
-                    .withStyle(ChatFormatting.RED));
-            case FULL -> player.sendOverlayMessage(Component.translatable("nautec.distributor.link.full", NTConfig.distributorMaxLinks)
-                    .withStyle(ChatFormatting.RED));
+            case TOO_FAR -> player.displayClientMessage(Component.translatable("nautec.distributor.link.too_far", NTConfig.distributorRange)
+                    .withStyle(ChatFormatting.RED), true);
+            case FULL -> player.displayClientMessage(Component.translatable("nautec.distributor.link.full", NTConfig.distributorMaxLinks)
+                    .withStyle(ChatFormatting.RED), true);
             case SELF -> {
             }
         }

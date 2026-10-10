@@ -8,12 +8,12 @@ import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 
 import java.util.ArrayList;
@@ -22,17 +22,17 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BacteriaCategory<T> extends AbstractRecipeCategory<T> {
-    private static final Identifier BACTERIA_SLOT_SPRITE = Nautec.rl("container/bacteria_slot");
+    private static final ResourceLocation BACTERIA_SLOT_SPRITE = Nautec.rl("container/bacteria_slot");
     private final Map<T, List<BacteriaSlot>> slots;
     private RegistryAccess slotsAccess;
 
-    protected BacteriaCategory(IRecipeType<T> recipeType, Component title, IDrawable icon, int width, int height) {
+    protected BacteriaCategory(RecipeType<T> recipeType, Component title, IDrawable icon, int width, int height) {
         super(recipeType, title, icon, width, height);
         this.slots = new HashMap<>();
     }
 
     @Override
-    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         List<BacteriaSlot> slots = this.slots.get(recipe);
         if (slots != null) {
             for (BacteriaSlot slot : slots) {

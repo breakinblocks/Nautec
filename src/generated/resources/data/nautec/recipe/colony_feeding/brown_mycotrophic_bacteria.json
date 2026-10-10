@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:brown_mycotrophic_bacteria",
   "ingredient": {
-    "ingredient": "minecraft:brown_mushroom_block"
+    "ingredient": {
+      "item": "minecraft:brown_mushroom_block"
+    }
   },
   "vitality_ticks": 1200
 }

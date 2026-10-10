@@ -6,7 +6,6 @@ import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
@@ -17,7 +16,7 @@ public final class OxygenDiffuserTests {
     private OxygenDiffuserTests() {
     }
 
-    private static void beam(GameTestHelper helper, OxygenDiffuserBlockEntity diffuser, int power, float purity) {
+    private static void beam(NTGameTestHelper helper, OxygenDiffuserBlockEntity diffuser, int power, float purity) {
         BlockPos origin = helper.absolutePos(DIFFUSER.above());
         diffuser.receivePower(power, Direction.UP, origin);
         diffuser.receiveNewPurity(purity, Direction.UP, origin);
@@ -41,7 +40,7 @@ public final class OxygenDiffuserTests {
             helper.setBlock(DIFFUSER, NTBlocks.OXYGEN_DIFFUSER.get());
             OxygenDiffuserBlockEntity diffuser = helper.getBlockEntity(DIFFUSER, OxygenDiffuserBlockEntity.class);
             Player near = helper.makeMockPlayer(GameType.SURVIVAL);
-            near.snapTo(helper.absoluteVec(DIFFUSER.above(2).getCenter()));
+            near.moveTo(helper.absoluteVec(DIFFUSER.above(2).getCenter()));
             near.setAirSupply(0);
             helper.getLevel().addFreshEntity(near);
             beam(helper, diffuser, NTConfig.oxygenDiffuserPower, 1.0F);

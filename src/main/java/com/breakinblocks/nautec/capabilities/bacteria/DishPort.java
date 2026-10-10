@@ -6,7 +6,7 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;

@@ -3,11 +3,10 @@ package com.breakinblocks.nautec.client.render;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -16,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity> implements BlockEntityRenderer<T, ReactorFxRenderer.State> {
+public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity> implements BlockEntityRenderer<T> {
     protected static final int CULTURE_CYAN = 0x38E4FF;
     protected static final float TINT_MIX = 0.7F;
     private static final long TIME_WRAP = 24000L;
@@ -27,14 +26,21 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
 
     protected abstract AABB bounds(T blockEntity, ReactorCultureTracker tracker);
 
-    @Override
     public State createRenderState() {
         return new State(this);
     }
 
     @Override
-    public void extractRenderState(T blockEntity, State state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        State state = createRenderState();
+        extractRenderState(blockEntity, state, partialTick, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition());
+        state.lightCoords = packedLight;
+        state.overlayCoords = packedOverlay;
+        submit(state, poseStack, buffers);
+    }
+
+    public void extractRenderState(T blockEntity, State state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         state.visible = false;
         Level level = blockEntity.getLevel();
         if (level == null || !blockEntity.isFormed()) {
@@ -60,15 +66,14 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
         state.front = blockEntity.front();
     }
 
-    @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(State state, PoseStack poseStack, MultiBufferSource buffers) {
         if (state.visible && state.tracker != null) {
-            ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.reactorGlow(), state);
+            ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.reactorGlow(), state);
         }
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(T blockEntity) {
         return true;
     }
 
@@ -81,7 +86,7 @@ public abstract class ReactorFxRenderer<T extends AbstractBioReactorBlockEntity>
         return ReactorFx.mix(CULTURE_CYAN, tracker.averageColor(), TINT_MIX);
     }
 
-    public static final class State extends BlockEntityRenderState implements SubmitNodeCollector.CustomGeometryRenderer {
+    public static final class State extends BERenderState implements ShaderPackOverlay.Geometry {
         private final ReactorFxRenderer<?> renderer;
         public @Nullable ReactorCultureTracker tracker;
         public boolean visible;

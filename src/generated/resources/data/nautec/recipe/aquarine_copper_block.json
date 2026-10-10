@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "I": "nautec:aquarine_copper_ingot"
+    "I": {
+      "item": "nautec:aquarine_copper_ingot"
+    }
   },
   "pattern": [
     "III",
@@ -10,6 +12,7 @@
     "III"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:aquarine_copper_block"
   }
 }

@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "D": "#c:gems/diamond",
-    "R": "nautec:prismarine_laser_relay"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "R": {
+      "item": "nautec:prismarine_laser_relay"
+    }
   },
   "pattern": [
     "ARA",

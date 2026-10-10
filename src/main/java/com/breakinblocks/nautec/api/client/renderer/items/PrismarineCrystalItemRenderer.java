@@ -1,45 +1,50 @@
 package com.breakinblocks.nautec.api.client.renderer.items;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.util.Util;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
-public class PrismarineCrystalItemRenderer implements NoDataSpecialModelRenderer {
+public class PrismarineCrystalItemRenderer extends BlockEntityWithoutLevelRenderer {
     private static final float ITEM_LIFT = 2.0F;
+    private static @Nullable PrismarineCrystalItemRenderer instance;
+
+    public static final IClientItemExtensions EXTENSIONS = new IClientItemExtensions() {
+        @Override
+        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return get();
+        }
+    };
+
+    public PrismarineCrystalItemRenderer() {
+        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+    }
+
+    public static PrismarineCrystalItemRenderer get() {
+        if (instance == null) {
+            instance = new PrismarineCrystalItemRenderer();
+        }
+        return instance;
+    }
 
     @Override
-    public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+    }
+
+    @Override
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         poseStack.translate(0.5F, ITEM_LIFT, 0.5F);
-        float ticks = (Util.getMillis() / 50L % PrismarineCrystalRenderer.TICK_WRAP) + (Util.getMillis() % 50L) / 50F;
-        PrismarineCrystalRenderer.submit(poseStack, collector, ticks, 0L, 0F, false);
+        long millis = Util.getMillis();
+        float ticks = (millis / 50L % PrismarineCrystalRenderer.TICK_WRAP) + (millis % 50L) / 50F;
+        PrismarineCrystalRenderer.submit(poseStack, buffers, ticks, 0L, 0F, false);
         poseStack.popPose();
-    }
-
-    @Override
-    public void getExtents(Consumer<Vector3fc> output) {
-        PrismarineCrystalRenderer.extents(corner -> output.accept(new Vector3f(corner).add(0F, ITEM_LIFT, 0F)));
-    }
-
-    public record Unbaked() implements NoDataSpecialModelRenderer.Unbaked {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
-
-        @Override
-        public MapCodec<Unbaked> type() {
-            return MAP_CODEC;
-        }
-
-        @Override
-        public PrismarineCrystalItemRenderer bake(SpecialModelRenderer.BakingContext context) {
-            return new PrismarineCrystalItemRenderer();
-        }
     }
 }

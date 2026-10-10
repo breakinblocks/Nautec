@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:laser_channeling_coil",
-    "D": "nautec:deep_steel_plating",
-    "F": "nautec:flawless_prismarine_crystal",
-    "G": "nautec:atlantic_gold_ingot"
+    "C": {
+      "item": "nautec:laser_channeling_coil"
+    },
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "G": {
+      "item": "nautec:atlantic_gold_ingot"
+    }
   },
   "pattern": [
     "GFG",
@@ -13,6 +21,7 @@
     "DDD"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:crystal_cradle"
   }
 }

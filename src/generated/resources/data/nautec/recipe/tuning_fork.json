@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "S": "nautec:prismarine_crystal_shard"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "S": {
+      "item": "nautec:prismarine_crystal_shard"
+    }
   },
   "pattern": [
     "A A",
@@ -11,6 +15,7 @@
     " S "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:tuning_fork"
   }
 }

@@ -8,7 +8,7 @@ import com.breakinblocks.nautec.content.items.submarine.TeleportModuleItem;
 import com.breakinblocks.nautec.data.components.TeleportAnchor;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +29,7 @@ public final class SubmarineAbilityBarOverlay {
     private SubmarineAbilityBarOverlay() {
     }
 
-    public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui) {
             return;
@@ -52,7 +52,7 @@ public final class SubmarineAbilityBarOverlay {
         drawSelectionLabel(guiGraphics, submarine, selected, guiGraphics.guiWidth() / 2, y - 12);
     }
 
-    private static void drawCell(GuiGraphicsExtractor guiGraphics, SubmarineEntity submarine, int slot, int x, int y, boolean selected) {
+    private static void drawCell(GuiGraphics guiGraphics, SubmarineEntity submarine, int slot, int x, int y, boolean selected) {
         guiGraphics.fill(x, y, x + CELL, y + CELL, PLATE);
 
         int border = selected ? CYAN : EDGE;
@@ -66,11 +66,11 @@ public final class SubmarineAbilityBarOverlay {
             Minecraft minecraft = Minecraft.getInstance();
             String label = String.valueOf(slot + 1);
             int labelX = x + (CELL - minecraft.font.width(label)) / 2;
-            guiGraphics.text(minecraft.font, label, labelX, y + 7, CYAN_DIM, false);
+            guiGraphics.drawString(minecraft.font, label, labelX, y + 7, CYAN_DIM, false);
             return;
         }
 
-        guiGraphics.item(module, x + 2, y + 2);
+        guiGraphics.renderItem(module, x + 2, y + 2);
 
         SubmarineModuleType type = SubmarineModuleItem.typeOf(module);
         if (type != null && type.isPassive()) {
@@ -89,7 +89,7 @@ public final class SubmarineAbilityBarOverlay {
         }
     }
 
-    private static void drawSelectionLabel(GuiGraphicsExtractor guiGraphics, SubmarineEntity submarine, int selected, int centerX, int y) {
+    private static void drawSelectionLabel(GuiGraphics guiGraphics, SubmarineEntity submarine, int selected, int centerX, int y) {
         ItemStack module = submarine.getModule(selected);
         SubmarineModuleType type = SubmarineModuleItem.typeOf(module);
         if (type == null) {
@@ -98,7 +98,7 @@ public final class SubmarineAbilityBarOverlay {
 
         Minecraft minecraft = Minecraft.getInstance();
         Component label = type.displayName();
-        guiGraphics.text(minecraft.font, label, centerX - minecraft.font.width(label) / 2, y, WHITE, true);
+        guiGraphics.drawString(minecraft.font, label, centerX - minecraft.font.width(label) / 2, y, WHITE, true);
 
         TeleportAnchor anchor = TeleportModuleItem.anchorOf(module);
         if (anchor == null) {
@@ -106,6 +106,6 @@ public final class SubmarineAbilityBarOverlay {
         }
 
         Component destination = Component.literal(anchor.pos().pos().toShortString());
-        guiGraphics.text(minecraft.font, destination, centerX - minecraft.font.width(destination) / 2, y - 10, CYAN, true);
+        guiGraphics.drawString(minecraft.font, destination, centerX - minecraft.font.width(destination) / 2, y - 10, CYAN, true);
     }
 }

@@ -23,8 +23,8 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.world.inventory.StackCopySlot;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.StackCopySlot;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ResonantStorageMenu<T extends ResonantStorageBlockEntity> extends AbstractContainerMenu {

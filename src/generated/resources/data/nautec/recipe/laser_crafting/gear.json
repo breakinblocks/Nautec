@@ -3,7 +3,9 @@
   "duration": 80,
   "ingredients": [
     {
-      "ingredient": "nautec:cast_iron_block"
+      "ingredient": {
+        "item": "nautec:cast_iron_block"
+      }
     }
   ],
   "power": 40,

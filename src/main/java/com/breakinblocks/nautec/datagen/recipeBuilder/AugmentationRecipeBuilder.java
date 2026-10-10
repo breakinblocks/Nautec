@@ -7,11 +7,10 @@ import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -65,7 +64,7 @@ public class AugmentationRecipeBuilder implements NTRecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         recipeOutput.accept(key, new AugmentationRecipe(augmentItem, description, ingredients, augmentType), null);
     }
 }

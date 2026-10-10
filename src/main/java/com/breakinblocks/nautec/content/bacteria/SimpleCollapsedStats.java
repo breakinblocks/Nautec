@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.content.bacteria;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.breakinblocks.nautec.api.bacteria.BacteriaStats;
 import com.breakinblocks.nautec.api.bacteria.CollapsedBacteriaStats;
 import com.breakinblocks.nautec.utils.ComponentUtils;
 import com.breakinblocks.nautec.utils.MathUtils;

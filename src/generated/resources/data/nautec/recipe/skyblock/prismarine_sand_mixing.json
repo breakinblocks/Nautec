@@ -14,10 +14,14 @@
   "ingredients": [
     {
       "count": 4,
-      "ingredient": "#c:sands/colorless"
+      "ingredient": {
+        "tag": "c:sands/colorless"
+      }
     },
     {
-      "ingredient": "nautec:prismarine_crystal_shard"
+      "ingredient": {
+        "item": "nautec:prismarine_crystal_shard"
+      }
     }
   ],
   "result": {

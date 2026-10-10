@@ -4,14 +4,15 @@ import com.breakinblocks.nautec.content.menus.CrateMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,10 +23,6 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-
-import java.util.List;
 
 public class CrateBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
@@ -63,23 +60,19 @@ public class CrateBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.items);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.items, registries);
         }
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        if (!this.tryLoadLootTable(input)) {
-            ContainerHelper.loadAllItems(input, this.items);
+        if (!this.tryLoadLootTable(tag)) {
+            ContainerHelper.loadAllItems(tag, this.items, registries);
         }
     }
 
@@ -109,22 +102,17 @@ public class CrateBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void startOpen(ContainerUser containerUser) {
-        if (!this.remove && !containerUser.getLivingEntity().isSpectator() && this.level != null) {
-            this.openersCounter.incrementOpeners(containerUser.getLivingEntity(), this.level, this.getBlockPos(), this.getBlockState(), containerUser.getContainerInteractionRange());
+    public void startOpen(Player player) {
+        if (!this.remove && !player.isSpectator() && this.level != null) {
+            this.openersCounter.incrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
         }
     }
 
     @Override
-    public void stopOpen(ContainerUser containerUser) {
-        if (!this.remove && !containerUser.getLivingEntity().isSpectator() && this.level != null) {
-            this.openersCounter.decrementOpeners(containerUser.getLivingEntity(), this.level, this.getBlockPos(), this.getBlockState());
+    public void stopOpen(Player player) {
+        if (!this.remove && !player.isSpectator() && this.level != null) {
+            this.openersCounter.decrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
         }
-    }
-
-    @Override
-    public List<ContainerUser> getEntitiesWithContainerOpen() {
-        return this.openersCounter.getEntitiesWithContainerOpen(this.getLevel(), this.getBlockPos());
     }
 
     public void recheckOpen() {

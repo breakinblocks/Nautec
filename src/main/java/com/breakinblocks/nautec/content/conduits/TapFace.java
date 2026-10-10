@@ -4,8 +4,8 @@ import java.util.Arrays;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 
 public final class TapFace {
     public static final int MIN_PRIORITY = -99;

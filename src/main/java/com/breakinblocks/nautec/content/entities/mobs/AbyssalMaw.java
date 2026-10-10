@@ -16,11 +16,14 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class AbyssalMaw extends Monster {
     public AbyssalMaw(EntityType<? extends AbyssalMaw> type, Level level) {
         super(type, level);
+        this.moveControl = new SwimmingMoveControl(this);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
@@ -45,8 +48,8 @@ public class AbyssalMaw extends Monster {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
+    public boolean canDrownInFluidType(FluidType type) {
+        return type != NeoForgeMod.WATER_TYPE.value() && super.canDrownInFluidType(type);
     }
 
     @Override

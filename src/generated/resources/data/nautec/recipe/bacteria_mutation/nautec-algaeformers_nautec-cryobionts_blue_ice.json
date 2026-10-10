@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:blue_ice",
+  "catalyst": {
+    "item": "minecraft:blue_ice"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:algaeformers",
   "result_bacteria": "nautec:cryobionts"

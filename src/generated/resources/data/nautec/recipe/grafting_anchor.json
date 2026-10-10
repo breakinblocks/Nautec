@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "nautec:deep_steel_plating",
-    "E": "minecraft:end_crystal",
-    "R": "nautec:resonant_shard",
-    "T": "nautec:grafting_tool"
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    },
+    "T": {
+      "item": "nautec:grafting_tool"
+    }
   },
   "pattern": [
     " R ",
@@ -13,6 +21,7 @@
     " T "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:grafting_anchor"
   }
 }

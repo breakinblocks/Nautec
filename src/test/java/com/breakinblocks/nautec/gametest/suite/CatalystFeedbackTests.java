@@ -9,7 +9,6 @@ import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystal
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.InteractionHand;
@@ -31,17 +30,17 @@ public final class CatalystFeedbackTests {
     private CatalystFeedbackTests() {
     }
 
-    private static AquaticCatalystBlockEntity placeCatalyst(GameTestHelper helper) {
+    private static AquaticCatalystBlockEntity placeCatalyst(NTGameTestHelper helper) {
         helper.setBlock(CATALYST_POS, NTBlocks.AQUATIC_CATALYST.get().defaultBlockState()
                 .setValue(BlockStateProperties.FACING, Direction.WEST));
         return helper.getBlockEntity(CATALYST_POS, AquaticCatalystBlockEntity.class);
     }
 
-    private static void placeRelay(GameTestHelper helper, BlockPos pos, Direction facing) {
+    private static void placeRelay(NTGameTestHelper helper, BlockPos pos, Direction facing) {
         helper.setBlock(pos, NTBlocks.PRISMARINE_RELAY.get().defaultBlockState().setValue(PrismarineLaserRelayBlock.FACING, facing));
     }
 
-    private static BlockState catalystState(GameTestHelper helper) {
+    private static BlockState catalystState(NTGameTestHelper helper) {
         return helper.getBlockState(CATALYST_POS);
     }
 
@@ -49,7 +48,7 @@ public final class CatalystFeedbackTests {
         return lines.stream().anyMatch(line -> line.getContents() instanceof TranslatableContents contents && contents.getKey().equals(key));
     }
 
-    private static Direction placeRelayAgainst(GameTestHelper helper, BlockPos against, Direction face, float yRot, float xRot) {
+    private static Direction placeRelayAgainst(NTGameTestHelper helper, BlockPos against, Direction face, float yRot, float xRot) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setYRot(yRot);
         player.setYHeadRot(yRot);

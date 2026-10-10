@@ -6,7 +6,7 @@ import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import com.breakinblocks.nautec.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractBioReactorMenu<T extends AbstractBioReactorBlockEntity> extends NTMachineMenu<T> {

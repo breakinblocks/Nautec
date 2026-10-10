@@ -1,26 +1,29 @@
 {
-  "attributes": {
-    "minecraft:visual/ambient_particles": [
-      {
-        "particle": {
-          "type": "nautec:abyssal_mote"
-        },
-        "probability": 0.004
-      }
-    ],
-    "minecraft:visual/fog_color": "#0a1520",
-    "minecraft:visual/sky_color": "#7ca3ff",
-    "minecraft:visual/water_fog_color": "#03080f",
-    "minecraft:visual/water_fog_end_distance": 22.0
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#081a2b"
+    "fog_color": 660768,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "particle": {
+      "options": {
+        "type": "nautec:abyssal_mote"
+      },
+      "probability": 0.004
+    },
+    "sky_color": 8168447,
+    "water_color": 530987,
+    "water_fog_color": 198671
   },
   "features": [
     [],
@@ -82,9 +85,8 @@
       "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_pumpkin",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_firefly_bush_near_water",
+      "minecraft:patch_pumpkin",
       "nautec:abyssal_coral"
     ],
     [

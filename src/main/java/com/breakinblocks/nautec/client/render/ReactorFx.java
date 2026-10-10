@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

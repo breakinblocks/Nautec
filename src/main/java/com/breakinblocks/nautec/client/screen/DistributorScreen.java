@@ -1,13 +1,14 @@
 package com.breakinblocks.nautec.client.screen;
 
+import net.minecraft.client.gui.screens.Screen;
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.api.client.screen.FluidTankRenderer;
 import com.breakinblocks.nautec.content.distributor.DistributorLink;
 import com.breakinblocks.nautec.content.menus.DistributorMenu;
 import com.breakinblocks.nautec.network.DistributorEditPayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -16,11 +17,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -55,7 +54,10 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     private int scroll;
 
     public DistributorScreen(DistributorMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, 176, 222);
+        super(menu, playerInventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 222;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.titleLabelY = 6;
         this.inventoryLabelY = DistributorMenu.INVENTORY_Y - 11;
     }
@@ -87,14 +89,14 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
 
     public void setItemRequest(int slot, ItemStack stack) {
         if (current() != null) {
-            ClientPacketDistributor.sendToServer(DistributorEditPayload.item(this.menu.containerId, selected, slot,
+            PacketDistributor.sendToServer(DistributorEditPayload.item(this.menu.containerId, selected, slot,
                     stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(stack.getMaxStackSize())));
         }
     }
 
     public void setFluidRequest(int slot, FluidStack stack) {
         if (current() != null) {
-            ClientPacketDistributor.sendToServer(DistributorEditPayload.fluid(this.menu.containerId, selected, slot,
+            PacketDistributor.sendToServer(DistributorEditPayload.fluid(this.menu.containerId, selected, slot,
                     stack.isEmpty() ? FluidStack.EMPTY : stack.copyWithAmount(Math.max(1000, stack.getAmount()))));
         }
     }
@@ -103,20 +105,19 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         return mouseX >= area.getX() && mouseX < area.getX() + area.getWidth() && mouseY >= area.getY() && mouseY < area.getY() + area.getHeight();
     }
 
-    private void frame(GuiGraphicsExtractor graphics, int x, int y, int w, int h) {
+    private void frame(GuiGraphics graphics, int x, int y, int w, int h) {
         graphics.fill(x, y, x + w, y + h, OUTLINE);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, PANEL_LIGHT);
         graphics.fill(x + 3, y + 3, x + w - 1, y + h - 1, PANEL);
     }
 
-    private void slotFrame(GuiGraphicsExtractor graphics, int x, int y) {
+    private void slotFrame(GuiGraphics graphics, int x, int y) {
         graphics.fill(x - 1, y - 1, x + 17, y + 17, SLOT_EDGE);
         graphics.fill(x, y, x + 16, y + 16, SLOT_FILL);
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         frame(graphics, leftPos, topPos, imageWidth, imageHeight);
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
@@ -136,8 +137,9 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
         List<DistributorLink> links = links();
         scroll = Math.max(0, Math.min(scroll, Math.max(0, links.size() - ROWS)));
         int lx = leftPos + LIST_X;
@@ -155,12 +157,12 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             }
             BlockState state = this.minecraft.level.getBlockState(link.pos());
             ItemStack icon = new ItemStack(state.getBlock().asItem());
-            graphics.item(icon, lx + 1, y + 1);
+            graphics.renderItem(icon, lx + 1, y + 1);
             Component name = state.isAir() ? Component.translatable("nautec.distributor.missing") : state.getBlock().getName();
             String text = this.font.plainSubstrByWidth(name.getString(), LIST_WIDTH - 32);
-            graphics.text(this.font, text, lx + 19, y + 5, state.isAir() ? WARNING : READOUT, false);
+            graphics.drawString(this.font, text, lx + 19, y + 5, state.isAir() ? WARNING : READOUT, false);
             boolean overUnlink = mouseX >= lx + LIST_WIDTH - 11 && mouseX < lx + LIST_WIDTH - 2 && mouseY >= y + 4 && mouseY < y + 14;
-            graphics.text(this.font, "x", lx + LIST_WIDTH - 9, y + 5, overUnlink ? WARNING : READOUT_DIM, false);
+            graphics.drawString(this.font, "x", lx + LIST_WIDTH - 9, y + 5, overUnlink ? WARNING : READOUT_DIM, false);
             if (overUnlink) {
                 tooltip.add(Component.translatable("nautec.distributor.unlink"));
             } else if (hover) {
@@ -173,9 +175,9 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             }
         }
         if (links.isEmpty()) {
-            graphics.text(this.font, Component.translatable("nautec.distributor.empty"), lx + 4, ly + 4, READOUT_DIM, false);
-            graphics.text(this.font, Component.translatable("nautec.distributor.empty.hint1"), lx + 4, ly + 16, READOUT_DIM, false);
-            graphics.text(this.font, Component.translatable("nautec.distributor.empty.hint2"), lx + 4, ly + 28, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty"), lx + 4, ly + 4, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty.hint1"), lx + 4, ly + 16, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty.hint2"), lx + 4, ly + 28, READOUT_DIM, false);
         }
 
         DistributorLink link = current();
@@ -184,10 +186,11 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
                 Rect2i area = itemSlotArea(i);
                 ItemStack request = link.item(i);
                 if (!request.isEmpty()) {
-                    graphics.item(request, area.getX(), area.getY());
-                    graphics.nextStratum();
+                    graphics.renderItem(request, area.getX(), area.getY());
+                    NTGui.pushOverItems(graphics);
                     String amount = compact(link.itemAmount(i));
-                    graphics.text(this.font, amount, area.getX() + 17 - this.font.width(amount), area.getY() + 9, 0xFFFFFFFF, true);
+                    graphics.drawString(this.font, amount, area.getX() + 17 - this.font.width(amount), area.getY() + 9, 0xFFFFFFFF, true);
+                    NTGui.popOverItems(graphics);
                 }
                 if (inside(mouseX, mouseY, area)) {
                     tooltip.addAll(requestTooltip(request.isEmpty() ? null : request.getHoverName(), link.itemAmount(i), false));
@@ -198,9 +201,10 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
                 FluidStack request = link.fluid(i);
                 if (!request.isEmpty()) {
                     fluidRenderer.render(graphics, area.getX(), area.getY(), request.copyWithAmount(1));
-                    graphics.nextStratum();
+                    NTGui.pushOverItems(graphics);
                     String amount = compact(link.fluidAmount(i));
-                    graphics.text(this.font, amount, area.getX() + 17 - this.font.width(amount), area.getY() + 9, 0xFFFFFFFF, true);
+                    graphics.drawString(this.font, amount, area.getX() + 17 - this.font.width(amount), area.getY() + 9, 0xFFFFFFFF, true);
+                    NTGui.popOverItems(graphics);
                 }
                 if (inside(mouseX, mouseY, area)) {
                     tooltip.addAll(requestTooltip(request.isEmpty() ? null : request.getHoverName(), link.fluidAmount(i), true));
@@ -208,7 +212,7 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             }
         }
         if (!tooltip.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, tooltip, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
 
@@ -243,16 +247,14 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, LABEL, false);
-        graphics.text(this.font, Component.translatable("nautec.distributor.fluids"), GRID_X, FLUID_Y - 10, LABEL, false);
-        graphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, LABEL, false);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.distributor.fluids"), GRID_X, FLUID_Y - 10, LABEL, false);
+        graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, LABEL, false);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        double mouseX = event.x();
-        double mouseY = event.y();
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         List<DistributorLink> links = links();
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
@@ -261,7 +263,7 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             if (index < links.size()) {
                 int rowY = ly + (index - scroll) * ROW_HEIGHT;
                 if (mouseX >= lx + LIST_WIDTH - 11 && mouseX < lx + LIST_WIDTH - 2 && mouseY >= rowY + 4 && mouseY < rowY + 14) {
-                    ClientPacketDistributor.sendToServer(DistributorEditPayload.unlink(this.menu.containerId, index));
+                    PacketDistributor.sendToServer(DistributorEditPayload.unlink(this.menu.containerId, index));
                 } else {
                     selected = index;
                 }
@@ -270,7 +272,7 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         }
         if (current() != null) {
             ItemStack carried = this.menu.getCarried();
-            boolean right = event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+            boolean right = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
             for (int i = 0; i < DistributorLink.ITEM_REQUESTS; i++) {
                 if (inside(mouseX, mouseY, itemSlotArea(i))) {
                     if (right) {
@@ -295,21 +297,21 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
                 }
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     public static FluidStack contained(ItemStack stack) {
         if (stack.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        ResourceHandler<FluidResource> handler = ItemAccess.forStack(stack.copyWithCount(1)).getCapability(Capabilities.Fluid.ITEM);
+        IFluidHandlerItem handler = stack.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM);
         if (handler == null) {
             return FluidStack.EMPTY;
         }
-        for (int i = 0; i < handler.size(); i++) {
-            FluidResource resource = handler.getResource(i);
+        for (int i = 0; i < handler.getTanks(); i++) {
+            FluidStack resource = handler.getFluidInTank(i);
             if (!resource.isEmpty()) {
-                return resource.toStack(1000);
+                return resource.copyWithAmount(1000);
             }
         }
         return FluidStack.EMPTY;
@@ -325,12 +327,12 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         }
         DistributorLink link = current();
         if (link != null && scrollY != 0) {
-            boolean shift = this.minecraft.hasShiftDown();
+            boolean shift = Screen.hasShiftDown();
             int direction = scrollY > 0 ? 1 : -1;
             for (int i = 0; i < DistributorLink.ITEM_REQUESTS; i++) {
                 if (inside(mouseX, mouseY, itemSlotArea(i)) && !link.item(i).isEmpty()) {
                     int step = shift ? 16 : 1;
-                    ClientPacketDistributor.sendToServer(DistributorEditPayload.amount(this.menu.containerId, false, selected, i,
+                    PacketDistributor.sendToServer(DistributorEditPayload.amount(this.menu.containerId, false, selected, i,
                             link.itemAmount(i) + direction * step));
                     return true;
                 }
@@ -338,7 +340,7 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             for (int i = 0; i < DistributorLink.FLUID_REQUESTS; i++) {
                 if (inside(mouseX, mouseY, fluidSlotArea(i)) && !link.fluid(i).isEmpty()) {
                     int step = shift ? 10_000 : 1_000;
-                    ClientPacketDistributor.sendToServer(DistributorEditPayload.amount(this.menu.containerId, true, selected, i,
+                    PacketDistributor.sendToServer(DistributorEditPayload.amount(this.menu.containerId, true, selected, i,
                             Math.max(1_000, link.fluidAmount(i) + direction * step)));
                     return true;
                 }

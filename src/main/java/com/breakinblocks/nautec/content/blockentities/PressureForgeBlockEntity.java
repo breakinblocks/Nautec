@@ -26,8 +26,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
@@ -200,7 +200,7 @@ public class PressureForgeBlockEntity extends LaserBlockEntity {
         if (recipeRevision.changed(level) || recipeDirty || purity != cachedPurity) {
             recipeDirty = false;
             cachedPurity = purity;
-            cachedRecipe = level.recipeAccess()
+            cachedRecipe = level.getRecipeManager()
                     .getRecipeFor(PressureForgingRecipe.Type.INSTANCE,
                             new PressureForgingRecipeInput(input, purity,
                                     synthesizer == Synthesizer.ATLANTEAN ? Integer.MIN_VALUE : worldPosition.getY()), level)

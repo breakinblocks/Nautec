@@ -6,13 +6,13 @@ import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -28,7 +28,10 @@ public final class SubmarineWorldFx {
     }
 
     @SubscribeEvent
-    public static void onSubmitGeometry(SubmitCustomGeometryEvent event) {
+    public static void onSubmitGeometry(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
         if (level == null) {
@@ -36,21 +39,23 @@ public final class SubmarineWorldFx {
         }
 
         PoseStack poseStack = event.getPoseStack();
-        SubmitNodeCollector collector = event.getSubmitNodeCollector();
-        Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
-        float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
+        Vec3 cameraPos = event.getCamera().getPosition();
+        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
-        PortalRenderer.render(poseStack, collector, cameraPos, partialTick);
+        PortalRenderer.render(poseStack, buffers, cameraPos, partialTick);
 
         if (SUBMARINES.isEmpty()) {
+            buffers.endLastBatch();
             return;
         }
         SUBMARINES.removeIf(Entity::isRemoved);
         for (SubmarineEntity submarine : SUBMARINES) {
             if (submarine.level() == level && submarine.isLaserEngaged()) {
-                SubmarineLaserRenderer.render(submarine, poseStack, collector, cameraPos, partialTick);
+                SubmarineLaserRenderer.render(submarine, poseStack, buffers, cameraPos, partialTick);
             }
         }
+        buffers.endLastBatch();
     }
 
     @SubscribeEvent

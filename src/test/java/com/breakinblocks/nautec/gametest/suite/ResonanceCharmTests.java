@@ -18,7 +18,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -33,12 +32,12 @@ public final class ResonanceCharmTests {
     private ResonanceCharmTests() {
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }
 
-    private static ResonancePylonBlockEntity sender(GameTestHelper helper, ResonanceNetwork network, int energy) {
+    private static ResonancePylonBlockEntity sender(NTGameTestHelper helper, ResonanceNetwork network, int energy) {
         BlockPos pos = helper.absolutePos(new BlockPos(4, 1, 4));
         helper.getLevel().setBlock(pos, NTBlocks.RESONANCE_PYLON.get().defaultBlockState(), Block.UPDATE_ALL);
         ResonancePylonBlockEntity pylon = (ResonancePylonBlockEntity) helper.getLevel().getBlockEntity(pos);

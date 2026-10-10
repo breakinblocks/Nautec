@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:boreophiles",
   "ingredient": {
-    "ingredient": "minecraft:spruce_log"
+    "ingredient": {
+      "item": "minecraft:spruce_log"
+    }
   },
   "vitality_ticks": 1200
 }

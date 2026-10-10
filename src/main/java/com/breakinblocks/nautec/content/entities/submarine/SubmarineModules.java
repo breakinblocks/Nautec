@@ -30,9 +30,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.TeleportTransition;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.portal.DimensionTransition;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -238,7 +238,7 @@ public class SubmarineModules {
     }
 
     public boolean hasPowerFor(SubmarineModuleType type, Player pilot) {
-        return pilot.gameMode().isCreative() || this.submarine.getPowerStored() >= type.powerCost();
+        return pilot.isCreative() || this.submarine.getPowerStored() >= type.powerCost();
     }
 
     private boolean applyAbility(SubmarineModuleType type, int slot, Player pilot) {
@@ -287,7 +287,7 @@ public class SubmarineModules {
         }
 
         Level level = this.submarine.level();
-        if (!level.isBrightOutside() || !level.canSeeSkyFromBelowWater(this.submarine.blockPosition())) {
+        if (!level.isDay() || !level.canSeeSkyFromBelowWater(this.submarine.blockPosition())) {
             return;
         }
 
@@ -403,7 +403,7 @@ public class SubmarineModules {
     }
 
     private boolean drainForLaser(Player pilot, int cost) {
-        if (pilot.gameMode().isCreative()) {
+        if (pilot.isCreative()) {
             return true;
         }
         if (this.submarine.getPowerStored() < cost) {
@@ -455,7 +455,7 @@ public class SubmarineModules {
         }
 
         int minimum = (int) (NTConfig.submarinePowerCapacity * NTConfig.submarineTeleportMinPowerPercent);
-        if (!pilot.gameMode().isCreative() && this.submarine.getPowerStored() < minimum) {
+        if (!pilot.isCreative() && this.submarine.getPowerStored() < minimum) {
             refuse(pilot, "no_power");
             return false;
         }
@@ -506,8 +506,8 @@ public class SubmarineModules {
         }
 
         Vec3 target = Vec3.atCenterOf(anchor.pos().pos());
-        Entity teleported = this.submarine.teleport(new TeleportTransition(destination, target, Vec3.ZERO,
-                anchor.yaw(), 0F, TeleportTransition.DO_NOTHING));
+        Entity teleported = this.submarine.changeDimension(new DimensionTransition(destination, target, Vec3.ZERO,
+                anchor.yaw(), 0F, DimensionTransition.DO_NOTHING));
         if (teleported == null) {
             abortTeleport();
             return;
@@ -555,7 +555,7 @@ public class SubmarineModules {
     }
 
     private void drain(int amount, Player pilot) {
-        if (pilot.gameMode().isCreative()) {
+        if (pilot.isCreative()) {
             return;
         }
         this.submarine.setPowerStored(this.submarine.getPowerStored() - amount);
@@ -566,8 +566,8 @@ public class SubmarineModules {
     }
 
     private void refuse(Player pilot, String reason) {
-        pilot.sendOverlayMessage(Component.translatable("nautec.submarine.ability." + reason)
-                .withStyle(ChatFormatting.RED));
+        pilot.displayClientMessage(Component.translatable("nautec.submarine.ability." + reason)
+                .withStyle(ChatFormatting.RED), true);
     }
 
     private void broadcast(SubmarineCooldownPayload payload) {

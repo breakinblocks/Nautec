@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.content.blockentities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import com.breakinblocks.nautec.registries.NTFluids;
 import java.util.Optional;
@@ -14,7 +14,6 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
-import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.spawner.SpawnerFilter;
 import com.breakinblocks.nautec.content.spawner.SpawnerFilterEntry;
@@ -22,8 +21,6 @@ import com.breakinblocks.nautec.content.spawner.SpawnerLootSimulator;
 import com.breakinblocks.nautec.content.spawner.SpawnerSettings;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
@@ -33,11 +30,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -50,13 +46,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -146,7 +139,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
 
     public static Fluid experienceFluid() {
         for (String id : NTConfig.confinedSpawnerXpFluids) {
-            Identifier key = Identifier.tryParse(id);
+            ResourceLocation key = ResourceLocation.tryParse(id);
             if (key != null) {
                 Optional<Fluid> fluid = BuiltInRegistries.FLUID.getOptional(key);
                 if (fluid.isPresent() && fluid.get() != Fluids.EMPTY) {
@@ -237,9 +230,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
         }
         BlockEntity restored = world.getBlockEntity(pos);
         if (restored != null) {
-            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
-                restored.loadWithComponents(TagValueInput.create(reporter, world.registryAccess(), data));
-            }
+            restored.loadWithComponents(data, world.registryAccess());
             restored.setChanged();
             world.sendBlockUpdated(pos, original, original, Block.UPDATE_ALL);
         }
@@ -441,7 +432,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
 
     public @Nullable Entity getOrCreateDisplayEntity() {
         if (displayEntity == null && !displayEntityFailed && level != null && !displayEntityTag.isEmpty()) {
-            displayEntity = EntityType.loadEntityRecursive(displayEntityTag.copy(), level, EntitySpawnReason.SPAWNER, entity -> entity);
+            displayEntity = EntityType.loadEntityRecursive(displayEntityTag.copy(), level, entity -> entity);
             displayEntityFailed = displayEntity == null;
         }
         return displayEntity;

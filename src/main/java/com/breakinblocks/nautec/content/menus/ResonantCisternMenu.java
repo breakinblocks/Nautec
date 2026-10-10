@@ -14,13 +14,21 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.resource.ResourceStack;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.resource.ResourceStack;
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 public class ResonantCisternMenu extends ResonantStorageMenu<ResonantCisternBlockEntity> {
@@ -69,9 +77,13 @@ public class ResonantCisternMenu extends ResonantStorageMenu<ResonantCisternBloc
         if (cistern == null) {
             return false;
         }
-        ItemAccess cursor = ItemAccess.forPlayerCursor(player, this).oneByOne();
-        ResourceHandler<FluidResource> held = cursor.getCapability(Capabilities.Fluid.ITEM);
-        if (held == null) {
+        ItemStack carried = getCarried();
+        if (carried.isEmpty()) {
+            return false;
+        }
+        IFluidHandlerItem item = carried.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM);
+        ResourceHandler<FluidResource> held = TransferCapabilities.wrapFluids(item);
+        if (item == null || held == null) {
             return false;
         }
         boolean pickup = true;
@@ -87,7 +99,26 @@ public class ResonantCisternMenu extends ResonantStorageMenu<ResonantCisternBloc
         if (moved == null) {
             return false;
         }
-        FluidUtil.triggerSoundAndGameEvent(moved.resource(), player.level(), Vec3.atCenterOf(blockEntity.getBlockPos()), player, pickup);
+        ItemStack result = item.getContainer();
+        if (carried.getCount() == 1) {
+            setCarried(result);
+        } else {
+            carried.shrink(1);
+            setCarried(carried);
+            if (!player.getInventory().add(result)) {
+                player.drop(result, false);
+            }
+        }
+        triggerSoundAndGameEvent(moved.resource(), player.level(), Vec3.atCenterOf(blockEntity.getBlockPos()), player, pickup);
         return true;
+    }
+
+    private static void triggerSoundAndGameEvent(FluidResource resource, Level level, Vec3 position, Player player, boolean pickup) {
+        FluidStack stack = resource.toStack(FluidType.BUCKET_VOLUME);
+        SoundEvent soundEvent = resource.getFluidType().getSound(stack, pickup ? SoundActions.BUCKET_FILL : SoundActions.BUCKET_EMPTY);
+        if (soundEvent != null) {
+            level.playSound(null, position.x, position.y, position.z, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        level.gameEvent(player, pickup ? GameEvent.FLUID_PICKUP : GameEvent.FLUID_PLACE, position);
     }
 }

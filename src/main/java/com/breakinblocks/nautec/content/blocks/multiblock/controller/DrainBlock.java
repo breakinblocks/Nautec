@@ -17,7 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,11 +33,9 @@ import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 
 public class DrainBlock extends ContainerBlock {
     public DrainBlock(Properties properties) {
@@ -76,13 +73,13 @@ public class DrainBlock extends ContainerBlock {
             if (player.isShiftKeyDown()) {
                 if (!level.isClientSide()) {
                     if (drainBlockEntity.isMoving()) {
-                        player.sendOverlayMessage(Component.translatable("nautec.drain.message.moving").withStyle(ChatFormatting.YELLOW));
+                        player.displayClientMessage(Component.translatable("nautec.drain.message.moving").withStyle(ChatFormatting.YELLOW), true);
                     } else if (p_60503_.getValue(DrainPartBlock.OPEN)) {
                         drainBlockEntity.close();
                     } else {
                         Component message = drainBlockEntity.open();
                         if (message != null) {
-                            player.sendOverlayMessage(message.copy().withStyle(ChatFormatting.GOLD));
+                            player.displayClientMessage(message.copy().withStyle(ChatFormatting.GOLD), true);
                         }
                     }
                 }
@@ -91,7 +88,7 @@ public class DrainBlock extends ContainerBlock {
 
             if (p_60503_.getValue(Multiblock.FORMED)) {
                 ItemStack stack = player.getMainHandItem();
-                var itemFluidCap = stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
+                IFluidHandlerItem itemFluidCap = stack.isEmpty() ? null : stack.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM);
                 if (itemFluidCap != null) {
                     extractFluid(player, level, InteractionHand.MAIN_HAND, drainBlockEntity.getFluidTank(), itemFluidCap);
                     return InteractionResult.SUCCESS;
@@ -104,7 +101,7 @@ public class DrainBlock extends ContainerBlock {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrimaryCollision) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (state.getValue(DrainPartBlock.OPEN) && state.getValue(DrainPartBlock.HAS_POWER)) {
             entity.hurt(level.damageSources().drown(), 4.0F);
         }
@@ -119,7 +116,7 @@ public class DrainBlock extends ContainerBlock {
     }
 
     private static void extractFluid(Player player, Level level, InteractionHand interactionHand, FluidTank fluidHandler,
-                                     ResourceHandler<FluidResource> fluidHandlerItem) {
+                                     IFluidHandlerItem fluidHandlerItem) {
         FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
         if (player.getItemInHand(interactionHand).is(Items.BUCKET)) {
             if (fluidInTank.isEmpty() || fluidInTank.getAmount() < FluidType.BUCKET_VOLUME) {
@@ -139,10 +136,16 @@ public class DrainBlock extends ContainerBlock {
             fluidHandler.drain(FluidType.BUCKET_VOLUME);
         } else {
             FluidStack fluidStack = fluidHandler.drain(fluidInTank.getAmount());
-            int inserted;
-            try (Transaction tx = Transaction.openRoot()) {
-                inserted = fluidHandlerItem.insert(FluidResource.of(fluidStack), fluidStack.getAmount(), tx);
-                tx.commit();
+            int inserted = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+            if (inserted > 0) {
+                ItemStack held = player.getItemInHand(interactionHand);
+                ItemStack filled = fluidHandlerItem.getContainer();
+                if (held.getCount() <= 1) {
+                    player.setItemInHand(interactionHand, filled);
+                } else {
+                    held.shrink(1);
+                    ItemUtils.giveItemToPlayerNoSound(player, filled);
+                }
             }
             FluidStack remainder = fluidStack.copy();
             remainder.setAmount(fluidStack.getAmount() - inserted);

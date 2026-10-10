@@ -11,7 +11,9 @@
   },
   "ingredients": [
     {
-      "ingredient": "nautec:algal_lipid"
+      "ingredient": {
+        "item": "nautec:algal_lipid"
+      }
     }
   ]
 }

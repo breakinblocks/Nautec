@@ -72,6 +72,7 @@
     },
     "frame": "challenge",
     "icon": {
+      "count": 1,
       "id": "nautec:prismarine_frond"
     },
     "title": {

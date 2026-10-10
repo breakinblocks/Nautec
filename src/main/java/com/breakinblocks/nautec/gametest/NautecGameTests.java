@@ -1,109 +1,57 @@
 package com.breakinblocks.nautec.gametest;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.gametest.framework.GameTestInstance;
-import net.minecraft.gametest.framework.TestData;
-import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.gametest.framework.TestFunction;
+import net.minecraft.world.level.block.Rotation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
-@EventBusSubscriber(modid = Nautec.MODID)
+@EventBusSubscriber(modid = Nautec.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class NautecGameTests {
-
-    @SubscribeEvent
-    public static void registerTestInstanceTypes(RegisterEvent event) {
-        event.register(Registries.TEST_INSTANCE_TYPE, Nautec.rl("direct"), () -> DirectGameTestInstance.CODEC);
-    }
+    public static final String BATCH = Nautec.MODID;
 
     @SubscribeEvent
     public static void registerTests(RegisterGameTestsEvent event) {
-        Holder<TestEnvironmentDefinition<?>> env = event.registerEnvironment(
-                Nautec.rl("default"),
-                new TestEnvironmentDefinition.AllOf());
+        event.register(NautecGameTests.class);
+    }
 
-        reg(event, "all_guide_references_resolve", GuideReferencesGameTest::allGuideReferencesResolve, env, 100);
+    @GameTestGenerator
+    public static Collection<TestFunction> generateTests() {
+        List<TestFunction> tests = new ArrayList<>();
+        tests.add(function("all_guide_references_resolve", Nautec.rl("empty_9x9x9").toString(), 100, 0,
+                GuideReferencesGameTest::allGuideReferencesResolve));
 
         try {
             Class<?> suite = Class.forName("com.breakinblocks.nautec.gametest.suite.NTGameTestRegistration");
-            suite.getMethod("registerTests", RegisterGameTestsEvent.class).invoke(null, event);
+            Object registered = suite.getMethod("registerTests").invoke(null);
+            if (registered instanceof Collection<?> functions) {
+                for (Object function : functions) {
+                    tests.add((TestFunction) function);
+                }
+            }
         } catch (ClassNotFoundException missing) {
-            if (Boolean.getBoolean("nautec.requireGameTests")) throw new IllegalStateException("GameTest suites are missing", missing);
+            if (Boolean.getBoolean("nautec.requireGameTests")) {
+                throw new IllegalStateException("GameTest suites are missing", missing);
+            }
         } catch (Throwable t) {
             throw new IllegalStateException("Failed to register nautec gametest suite", t);
         }
+        return tests;
     }
 
-    private static void reg(RegisterGameTestsEvent event, String name,
-                            Consumer<GameTestHelper> function,
-                            Holder<TestEnvironmentDefinition<?>> environment,
-                            int timeoutTicks) {
-        TestData<Holder<TestEnvironmentDefinition<?>>> testData = new TestData<>(
-                environment, Nautec.rl("test_empty"), timeoutTicks, 0, true);
-        GameTestInstance instance = new DirectGameTestInstance(name, function, testData);
-        event.registerTest(Nautec.rl(name), instance);
+    public static String testName(String name) {
+        return Nautec.MODID + "." + name.replace('/', '.');
     }
 
-    public static class DirectGameTestInstance extends GameTestInstance {
-        private static final Map<String, Consumer<GameTestHelper>> FUNCTIONS = new ConcurrentHashMap<>();
-
-        static final MapCodec<DirectGameTestInstance> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-                Codec.STRING.fieldOf("name").forGetter(d -> d.name),
-                TestData.CODEC.forGetter(d -> d.testData)
-        ).apply(i, DirectGameTestInstance::fromCodec));
-
-        private final Consumer<GameTestHelper> testFunction;
-        private final String name;
-        private final TestData<Holder<TestEnvironmentDefinition<?>>> testData;
-
-        public DirectGameTestInstance(String name, Consumer<GameTestHelper> testFunction,
-                                      TestData<Holder<TestEnvironmentDefinition<?>>> info) {
-            this(name, testFunction, info, true);
-        }
-
-        private DirectGameTestInstance(String name, Consumer<GameTestHelper> testFunction,
-                                       TestData<Holder<TestEnvironmentDefinition<?>>> info, boolean register) {
-            super(info);
-            this.name = name;
-            this.testFunction = testFunction;
-            this.testData = info;
-            if (register) FUNCTIONS.put(name, testFunction);
-        }
-
-        private static DirectGameTestInstance fromCodec(String name, TestData<Holder<TestEnvironmentDefinition<?>>> info) {
-            return new DirectGameTestInstance(name, helper -> {
-                Consumer<GameTestHelper> function = FUNCTIONS.get(name);
-                if (function == null) throw new IllegalStateException("Unknown GameTest function: " + name);
-                function.accept(helper);
-            }, info, false);
-        }
-
-        @Override
-        public void run(GameTestHelper helper) {
-            testFunction.accept(helper);
-        }
-
-        @Override
-        public MapCodec<? extends GameTestInstance> codec() {
-            return CODEC;
-        }
-
-        @Override
-        protected MutableComponent typeDescription() {
-            return Component.literal(name);
-        }
+    public static TestFunction function(String name, String structure, int maxTicks, long setupTicks, Consumer<GameTestHelper> body) {
+        return new TestFunction(BATCH, testName(name), structure, Rotation.NONE, maxTicks, setupTicks, true, body);
     }
 }

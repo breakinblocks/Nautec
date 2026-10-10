@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:adamantophiles",
   "ingredient": {
-    "ingredient": "#c:ores/diamond"
+    "ingredient": {
+      "tag": "c:ores/diamond"
+    }
   },
   "vitality_ticks": 1200
 }

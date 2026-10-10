@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:aquarine_copper_ingot",
-    "P": "nautec:prismarine_crystal_shard",
-    "S": "nautec:resonant_shard"
+    "C": {
+      "item": "nautec:aquarine_copper_ingot"
+    },
+    "P": {
+      "item": "nautec:prismarine_crystal_shard"
+    },
+    "S": {
+      "item": "nautec:resonant_shard"
+    }
   },
   "pattern": [
     "CPC",
@@ -12,6 +18,7 @@
     "CPC"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:resonant_expansion"
   }
 }

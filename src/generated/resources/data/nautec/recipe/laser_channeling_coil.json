@@ -2,7 +2,9 @@
   "type": "nautec:item_transformation",
   "duration": 200,
   "ingredient": {
-    "ingredient": "nautec:burnt_coil"
+    "ingredient": {
+      "item": "nautec:burnt_coil"
+    }
   },
   "purity": 1.5,
   "result": {

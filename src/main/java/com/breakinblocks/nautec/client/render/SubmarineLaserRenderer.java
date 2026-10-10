@@ -4,8 +4,8 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -24,7 +24,7 @@ public final class SubmarineLaserRenderer {
     private SubmarineLaserRenderer() {
     }
 
-    public static void render(SubmarineEntity submarine, PoseStack poseStack, SubmitNodeCollector collector,
+    public static void render(SubmarineEntity submarine, PoseStack poseStack, MultiBufferSource buffers,
                               Vec3 cameraPos, float partialTick) {
         if (!submarine.isLaserEngaged()) {
             return;
@@ -44,7 +44,7 @@ public final class SubmarineLaserRenderer {
             if (firing < 0F) {
                 float charge = Mth.clamp(1F + firing / Math.max(1, NTConfig.submarineLaserChargeTicks), 0F, 1F);
                 int glow = ARGB.color(Math.round(charge * 255F), LaserBeamRenderer.CYAN);
-                LaserBeamRenderer.submitFlare(poseStack, collector, muzzle, CHARGE_FLARE * charge, glow, true);
+                LaserBeamRenderer.submitFlare(poseStack, buffers, muzzle, CHARGE_FLARE * charge, glow, true);
                 continue;
             }
 
@@ -55,10 +55,10 @@ public final class SubmarineLaserRenderer {
             float ramp = SubmarineEntity.laserRamp(firing);
             int color = ARGB.color(Math.round(Mth.lerp(ramp, INTENSITY_COLD, INTENSITY_HOT) * 255F), LaserBeamRenderer.CYAN);
             Vector3f end = muzzleWorld.add(forward.scale(length)).subtract(cameraPos).toVector3f();
-            LaserBeamRenderer.submitBeam(poseStack, collector, muzzle, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, true);
-            LaserBeamRenderer.submitFlare(poseStack, collector, muzzle, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, true);
+            LaserBeamRenderer.submitBeam(poseStack, buffers, muzzle, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, true);
+            LaserBeamRenderer.submitFlare(poseStack, buffers, muzzle, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, true);
             if (length < NTConfig.submarineLaserRange - 0.01D) {
-                LaserBeamRenderer.submitFlare(poseStack, collector, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color, true);
+                LaserBeamRenderer.submitFlare(poseStack, buffers, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color, true);
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.bubble;
 
+
+import com.breakinblocks.nautec.api.blockentities.NTBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -11,10 +13,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-public class AirPocketBlockEntity extends BlockEntity {
+public class AirPocketBlockEntity extends NTBlockEntity {
     private static final Set<AirPocketBlockEntity> ACTIVE = Collections.newSetFromMap(new WeakHashMap<>());
     private static final int WARNING_TICKS = 100;
     private static final int HOLD_INTERVAL = 20;
@@ -68,7 +69,7 @@ public class AirPocketBlockEntity extends BlockEntity {
         }
         if (ticks == WARNING_TICKS) {
             for (Player player : serverLevel.getEntitiesOfClass(Player.class, new AABB(worldPosition).inflate(radius + 4))) {
-                player.sendOverlayMessage(Component.translatable("nautec.bubble_capsule.warning").withStyle(ChatFormatting.GOLD));
+                player.displayClientMessage(Component.translatable("nautec.bubble_capsule.warning").withStyle(ChatFormatting.GOLD), true);
             }
         }
         ticks--;

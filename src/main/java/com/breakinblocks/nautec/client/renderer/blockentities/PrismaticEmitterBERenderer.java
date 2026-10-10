@@ -1,18 +1,16 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.LaserBeamRenderer;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.resonance.PrismaticEmitterBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -40,9 +38,8 @@ public class PrismaticEmitterBERenderer extends NTBERenderer<PrismaticEmitterBlo
     }
 
     @Override
-    public void extractRenderState(PrismaticEmitterBlockEntity emitter, EmitterRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(emitter, state, crumbling);
+    public void extractRenderState(PrismaticEmitterBlockEntity emitter, EmitterRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(emitter, state);
         state.active = emitter.isVisualActive();
         state.ticks = emitter.getLevel() == null ? 0F : (float) (emitter.getLevel().getGameTime() % PrismarineCrystalRenderer.TICK_WRAP) + partialTick;
         state.seed = PrismarineCrystalRenderer.seed(emitter.getBlockPos());
@@ -56,12 +53,12 @@ public class PrismaticEmitterBERenderer extends NTBERenderer<PrismaticEmitterBlo
     }
 
     @Override
-    public void submit(EmitterRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(EmitterRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         float hover = HOVER + Mth.sin(state.ticks * 0.06F) * 0.04F;
         poseStack.pushPose();
         poseStack.translate(0.5F, hover, 0.5F);
         poseStack.scale(CRYSTAL_SCALE, CRYSTAL_SCALE, CRYSTAL_SCALE);
-        PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks * (state.active ? 2.5F : 1F), state.seed,
+        PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks * (state.active ? 2.5F : 1F), state.seed,
                 state.active ? 0.4F : 0.05F, true);
         poseStack.popPose();
 
@@ -73,9 +70,9 @@ public class PrismaticEmitterBERenderer extends NTBERenderer<PrismaticEmitterBlo
         int color = ARGB.color(alpha, TETHER_COLOR);
         Vector3f from = new Vector3f(0.5F, hover, 0.5F);
         for (Vector3f target : state.targets) {
-            LaserBeamRenderer.submitBeam(poseStack, collector, from, target, TETHER_HALF_WIDTH, color, true);
+            LaserBeamRenderer.submitBeam(poseStack, buffers, from, target, TETHER_HALF_WIDTH, color, true);
             if (state.active) {
-                LaserBeamRenderer.submitFlare(poseStack, collector, target, TARGET_FLARE * (0.7F + 0.3F * pulse), color, true);
+                LaserBeamRenderer.submitFlare(poseStack, buffers, target, TARGET_FLARE * (0.7F + 0.3F * pulse), color, true);
             }
         }
     }
@@ -86,11 +83,11 @@ public class PrismaticEmitterBERenderer extends NTBERenderer<PrismaticEmitterBlo
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(PrismaticEmitterBlockEntity blockEntity) {
         return true;
     }
 
-    public static class EmitterRenderState extends BlockEntityRenderState {
+    public static class EmitterRenderState extends BERenderState {
         public boolean active;
         public float ticks;
         public long seed;

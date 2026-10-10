@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:silicophiles",
   "ingredient": {
-    "ingredient": "minecraft:sand"
+    "ingredient": {
+      "item": "minecraft:sand"
+    }
   },
   "vitality_ticks": 1200
 }

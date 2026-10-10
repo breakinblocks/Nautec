@@ -18,8 +18,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BiomeTags;
@@ -37,7 +36,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class GeneratedPackTests {
     private static final String PROBE = "gametest_probe";
@@ -72,7 +70,7 @@ public final class GeneratedPackTests {
             RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, helper.getLevel().registryAccess());
 
             for (BacteriaBalance.Rarity rarity : BacteriaBalance.Rarity.values()) {
-                Identifier id = GeneratedPackPaths.bacteriaId(PROBE + "_" + rarity.lowerName());
+                ResourceLocation id = GeneratedPackPaths.bacteriaId(PROBE + "_" + rarity.lowerName());
                 Bacteria bacteria = BacteriaBalance.buildBacteria(Items.IRON_INGOT, rarity, id);
                 JsonElement json = BacteriaJsonWriter.encodeBacteria(bacteria, helper.getLevel().registryAccess());
 
@@ -106,11 +104,10 @@ public final class GeneratedPackTests {
 
             JsonElement tagged = BacteriaJsonWriter.encodeRecipe(
                     BacteriaBalance.incubationRecipe(GeneratedPackPaths.bacteriaKey(PROBE),
-                            Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(
-                                    TagKey.create(Registries.ITEM, Identifier.parse("c:ingots/iron")))),
+                            Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.parse("c:ingots/iron"))),
                             rarity),
                     helper.getLevel().registryAccess());
-            helper.assertValueEqual("#c:ingots/iron", tagged.getAsJsonObject().get("nutrient").getAsString(),
+            helper.assertValueEqual("c:ingots/iron", tagged.getAsJsonObject().getAsJsonObject("nutrient").get("tag").getAsString(),
                     "A tag nutrient must stay a tag so it follows whichever mod fills it");
 
             Recipe<?> decoded = Recipe.CODEC.parse(ops, mutation).getOrThrow();
@@ -142,7 +139,7 @@ public final class GeneratedPackTests {
                 helper.assertTrue(values.has(FOREIGN_KEY), "remove dropped a foreign entry");
                 helper.assertFalse(values.has("minecraft:dirt"), "remove kept the generated entry");
 
-                BacteriaJsonWriter.removeObtainingFor(NTBacterias.LITHOPHILES.identifier());
+                BacteriaJsonWriter.removeObtainingFor(NTBacterias.LITHOPHILES.location());
                 helper.assertFalse(Files.exists(file), "The obtaining file should be deleted once it is empty");
                 helper.assertTrue(listTempFiles(file.getParent()).isEmpty(), "Atomic writes left .tmp files behind");
             } catch (IOException e) {
@@ -223,7 +220,7 @@ public final class GeneratedPackTests {
         }));
     }
 
-    private static JsonElement readJson(GameTestHelper helper, Path file) {
+    private static JsonElement readJson(NTGameTestHelper helper, Path file) {
         try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
             return JsonParser.parseReader(reader);
         } catch (IOException e) {

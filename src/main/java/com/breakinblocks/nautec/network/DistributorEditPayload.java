@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.network;
 
+
+import com.breakinblocks.nautec.utils.codec.StreamCodecs;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.distributor.DistributorLink;
 import com.breakinblocks.nautec.content.menus.DistributorMenu;
@@ -23,7 +25,7 @@ public record DistributorEditPayload(int containerId, int action, int link, int 
     public static final int FLUID_AMOUNT = 3;
     public static final int UNLINK = 4;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, DistributorEditPayload> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, DistributorEditPayload> STREAM_CODEC = StreamCodecs.composite(
             ByteBufCodecs.VAR_INT, DistributorEditPayload::containerId,
             ByteBufCodecs.VAR_INT, DistributorEditPayload::action,
             ByteBufCodecs.VAR_INT, DistributorEditPayload::link,

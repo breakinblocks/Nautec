@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:aquatic_chip",
-    "R": "nautec:resonant_shard",
-    "S": "nautec:prismarine_crystal_shard"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    },
+    "S": {
+      "item": "nautec:prismarine_crystal_shard"
+    }
   },
   "pattern": [
     " S ",

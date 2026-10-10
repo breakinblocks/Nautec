@@ -8,6 +8,8 @@ import com.breakinblocks.nautec.content.resonance.SatelliteGrid;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTAugments;
 import com.breakinblocks.nautec.utils.AugmentHelper;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -78,7 +80,7 @@ public class ResonanceAugment extends Augment {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = super.serializeNBT(provider);
         if (binding != null) {
-            tag.store("binding", ResonanceBinding.CODEC, binding);
+            TagValueOutput.wrap(provider, tag).store("binding", ResonanceBinding.CODEC, binding);
         }
         tag.putInt("priority", priority);
         return tag;
@@ -87,7 +89,7 @@ public class ResonanceAugment extends Augment {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.deserializeNBT(provider, tag);
-        binding = tag.read("binding", ResonanceBinding.CODEC).orElse(null);
-        priority = tag.getIntOr("priority", 0);
+        binding = TagValueInput.create(provider, tag).read("binding", ResonanceBinding.CODEC).orElse(null);
+        priority = tag.getInt("priority");
     }
 }

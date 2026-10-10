@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.recipes;
 
+
+import com.breakinblocks.nautec.content.recipes.utils.SimpleRecipeSerializer;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.inputs.LaserCraftingRecipeInput;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
@@ -13,21 +15,19 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import com.breakinblocks.nautec.utils.codec.StreamCodecs;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import com.breakinblocks.nautec.utils.templates.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +88,7 @@ public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<Si
 
     public static Optional<RecipeHolder<LaserCraftingRecipe>> findBest(ServerLevel level, LaserCraftingRecipeInput input) {
         RecipeHolder<LaserCraftingRecipe> best = null;
-        for (RecipeHolder<LaserCraftingRecipe> holder : level.getServer().getRecipeManager().recipeMap().byType(Type.INSTANCE)) {
+        for (RecipeHolder<LaserCraftingRecipe> holder : level.getServer().getRecipeManager().getAllRecipesFor(Type.INSTANCE)) {
             LaserCraftingRecipe recipe = holder.value();
             if (recipe.matches(input, level) && (best == null || recipe.purity() > best.value().purity())) {
                 best = holder;
@@ -98,22 +98,28 @@ public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<Si
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull LaserCraftingRecipeInput input) {
+    public @NotNull ItemStack assemble(@NotNull LaserCraftingRecipeInput input, HolderLookup.@NotNull Provider registries) {
         return resultTemplates.isEmpty() ? ItemStack.EMPTY : resultTemplates.getFirst().create();
     }
 
+    @Override
     public @NotNull ItemStack getResultItem(HolderLookup.@Nullable Provider registries) {
-        return assemble(new LaserCraftingRecipeInput(List.of(), List.of(), 0));
+        return assemble(new LaserCraftingRecipeInput(List.of(), List.of(), 0), registries);
     }
 
     @Override
-    public @NotNull String group() {
+    public @NotNull String getGroup() {
         return "";
     }
 
     @Override
     public boolean showNotification() {
         return false;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
     }
 
     @Override
@@ -132,15 +138,6 @@ public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<Si
     }
 
     @Override
-    public @NotNull PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public @NotNull RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
     public @NotNull NonNullList<Ingredient> getIngredients() {
         return RecipeUtils.listToNonNullList(RecipeUtils.iWCToIngredientsSaveCount(ingredients));
     }
@@ -158,14 +155,14 @@ public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<Si
     public static class Serializer {
         private static final MapCodec<LaserCraftingRecipe> MAP_CODEC = RecordCodecBuilder.<LaserCraftingRecipe>mapCodec(builder -> builder.group(
                 IngredientWithCount.CODEC.listOf(0, MAX_ITEM_INPUTS).optionalFieldOf("ingredients", List.of()).forGetter(LaserCraftingRecipe::ingredients),
-                SizedFluidIngredient.CODEC.listOf(0, MAX_FLUID_INPUTS).optionalFieldOf("fluid_ingredients", List.of()).forGetter(LaserCraftingRecipe::fluidIngredients),
+                SizedFluidIngredient.NESTED_CODEC.listOf(0, MAX_FLUID_INPUTS).optionalFieldOf("fluid_ingredients", List.of()).forGetter(LaserCraftingRecipe::fluidIngredients),
                 ItemStackTemplate.CODEC.listOf(0, MAX_ITEM_OUTPUTS).optionalFieldOf("results", List.of()).forGetter(LaserCraftingRecipe::resultTemplates),
                 FluidStackTemplate.CODEC.listOf(0, MAX_FLUID_OUTPUTS).optionalFieldOf("fluid_results", List.of()).forGetter(LaserCraftingRecipe::fluidResultTemplates),
                 ExtraCodecs.NON_NEGATIVE_INT.fieldOf("power").forGetter(LaserCraftingRecipe::power),
                 Codec.floatRange(0, Float.MAX_VALUE).optionalFieldOf("purity", 0F).forGetter(LaserCraftingRecipe::purity),
                 ExtraCodecs.POSITIVE_INT.fieldOf("duration").forGetter(LaserCraftingRecipe::duration)
         ).apply(builder, LaserCraftingRecipe::new)).validate(LaserCraftingRecipe::validate);
-        private static final StreamCodec<RegistryFriendlyByteBuf, LaserCraftingRecipe> STREAM_CODEC = StreamCodec.composite(
+        private static final StreamCodec<RegistryFriendlyByteBuf, LaserCraftingRecipe> STREAM_CODEC = StreamCodecs.composite(
                 IngredientWithCount.STREAM_CODEC.apply(ByteBufCodecs.list(MAX_ITEM_INPUTS)),
                 LaserCraftingRecipe::ingredients,
                 SizedFluidIngredient.STREAM_CODEC.apply(ByteBufCodecs.list(MAX_FLUID_INPUTS)),
@@ -182,7 +179,7 @@ public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<Si
                 LaserCraftingRecipe::duration,
                 LaserCraftingRecipe::new
         );
-        public static final RecipeSerializer<LaserCraftingRecipe> INSTANCE = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+        public static final RecipeSerializer<LaserCraftingRecipe> INSTANCE = new SimpleRecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
         private Serializer() {
         }

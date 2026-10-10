@@ -3,18 +3,20 @@ package com.breakinblocks.nautec.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
 
-public class DriftingMoteParticle extends SingleQuadParticle {
+public class DriftingMoteParticle extends TextureSheetParticle {
     private final float wobble;
 
     protected DriftingMoteParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite,
                                    float rise, float size, int lifetime) {
-        super(level, x, y, z, 0.0, 0.0, 0.0, sprite);
+        super(level, x, y, z, 0.0, 0.0, 0.0);
+        this.setSprite(sprite);
         this.setSize(0.02F, 0.02F);
         this.quadSize = size * (this.random.nextFloat() * 0.4F + 0.8F);
         this.lifetime = lifetime;
@@ -26,8 +28,8 @@ public class DriftingMoteParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -52,7 +54,8 @@ public class DriftingMoteParticle extends SingleQuadParticle {
                            float rise, float size, int minLifetime, int maxLifetime) implements ParticleProvider<SimpleParticleType> {
         @Override
         public Particle createParticle(SimpleParticleType options, ClientLevel level,
-                                       double x, double y, double z, double xa, double ya, double za, RandomSource random) {
+                                       double x, double y, double z, double xa, double ya, double za) {
+            RandomSource random = level.random;
             int lifetime = minLifetime + random.nextInt(Math.max(1, maxLifetime - minLifetime));
             DriftingMoteParticle particle = new DriftingMoteParticle(level, x, y, z, sprites.get(random), rise, size, lifetime);
             particle.setColor(red, green, blue);

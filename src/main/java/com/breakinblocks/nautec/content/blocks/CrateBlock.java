@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.content.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.content.blockentities.CrateBlockEntity;
-import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -62,11 +61,11 @@ public class CrateBlock extends BaseEntityBlock {
         } else if (level.getBlockEntity(pos) instanceof CrateBlockEntity be) {
             if (be.isRustedShut()) {
                 be.playSound(state, SoundEvents.CHEST_LOCKED);
-                player.sendOverlayMessage(Component.translatable("nautec.crate.rusted_shut").withStyle(ChatFormatting.GOLD));
+                player.displayClientMessage(Component.translatable("nautec.crate.rusted_shut").withStyle(ChatFormatting.GOLD), true);
             } else {
                 player.openMenu(be);
                 player.awardStat(Stats.OPEN_BARREL);
-                PiglinAi.angerNearbyPiglins((ServerLevel) level, player, true);
+                PiglinAi.angerNearbyPiglins(player, true);
             }
             return InteractionResult.CONSUME;
         } else {

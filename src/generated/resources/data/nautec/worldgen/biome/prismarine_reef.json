@@ -1,17 +1,23 @@
 {
-  "attributes": {
-    "minecraft:visual/sky_color": "#77a8ff",
-    "minecraft:visual/water_fog_color": "#1b9a90",
-    "minecraft:visual/water_fog_end_distance": 145.0
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:cave_extra_underground",
+      "minecraft:canyon"
+    ]
   },
-  "carvers": [
-    "minecraft:cave",
-    "minecraft:cave_extra_underground",
-    "minecraft:canyon"
-  ],
   "downfall": 0.5,
   "effects": {
-    "water_color": "#25c4b4"
+    "fog_color": 12638463,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "sky_color": 7842047,
+    "water_color": 2475188,
+    "water_fog_color": 1809040
   },
   "features": [
     [],
@@ -74,9 +80,8 @@
       "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_pumpkin",
       "minecraft:patch_sugar_cane",
-      "minecraft:patch_firefly_bush_near_water",
+      "minecraft:patch_pumpkin",
       "minecraft:warm_ocean_vegetation",
       "minecraft:seagrass_warm",
       "minecraft:sea_pickle",

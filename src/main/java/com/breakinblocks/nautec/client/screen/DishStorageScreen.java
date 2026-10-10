@@ -4,8 +4,7 @@ import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.content.dishstorage.DishStorageBlockEntity;
 import com.breakinblocks.nautec.content.dishstorage.DishStorageMenu;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,8 +28,8 @@ public class DishStorageScreen extends NTMachineScreen<DishStorageBlockEntity> {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         int x = leftPos + BAR_X;
         int y = topPos + DishStorageMenu.GRID_Y - 1;
         guiGraphics.fill(x - 1, y - 1, x + BAR_WIDTH + 1, y + BAR_HEIGHT + 1, PanelStyle.SLOT_EDGE);
@@ -42,11 +41,11 @@ public class DishStorageScreen extends NTMachineScreen<DishStorageBlockEntity> {
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        super.extractLabels(guiGraphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
         Component count = Component.translatable("nautec.dish_storage.count", this.menu.blockEntity.storedCount(),
                 this.menu.blockEntity.getCapacity());
-        guiGraphics.text(this.font, count, this.imageWidth - 14 - this.font.width(count), this.titleLabelY, PanelStyle.LABEL, false);
+        guiGraphics.drawString(this.font, count, this.imageWidth - 14 - this.font.width(count), this.titleLabelY, PanelStyle.LABEL, false);
     }
 
     private void scrollTo(int offset) {
@@ -78,27 +77,27 @@ public class DishStorageScreen extends NTMachineScreen<DishStorageBlockEntity> {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (storage().maxOffset() > 0 && overBar(event.x(), event.y())) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (storage().maxOffset() > 0 && overBar(mouseX, mouseY)) {
             dragging = true;
-            dragTo(event.y());
+            dragTo(mouseY);
             return true;
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (dragging) {
-            dragTo(event.y());
+            dragTo(mouseY);
             return true;
         }
-        return super.mouseDragged(event, dragX, dragY);
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = false;
-        return super.mouseReleased(event);
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 }

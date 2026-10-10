@@ -1,12 +1,12 @@
 package com.breakinblocks.nautec.content.blockentities.generators;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
 import com.breakinblocks.nautec.capabilities.fluid.SidedFluidHandler;
-import com.breakinblocks.nautec.capabilities.item.SidedItemHandler;
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlockEntity;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -14,7 +14,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.tags.NTTags;
 import com.breakinblocks.nautec.worldgen.NTBiomeKeys;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,16 +21,16 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -150,7 +149,7 @@ public class ThermalVentTapBlockEntity extends FeGeneratorBlockEntity {
         }
         if (itemOutputs.isEmpty()) {
             for (Direction direction : Direction.values()) {
-                itemOutputs.add(BlockCapabilityCache.create(Capabilities.Item.BLOCK, level, worldPosition.relative(direction), direction.getOpposite()));
+                itemOutputs.add(BlockCapabilityCache.create(TransferCapabilities.Item.BLOCK, level, worldPosition.relative(direction), direction.getOpposite()));
             }
         }
         for (BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache : itemOutputs) {

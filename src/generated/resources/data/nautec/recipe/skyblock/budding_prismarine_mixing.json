@@ -13,15 +13,21 @@
   },
   "ingredients": [
     {
-      "ingredient": "minecraft:prismarine_bricks"
+      "ingredient": {
+        "item": "minecraft:prismarine_bricks"
+      }
     },
     {
       "count": 4,
-      "ingredient": "#c:gems/prismarine"
+      "ingredient": {
+        "tag": "c:gems/prismarine"
+      }
     },
     {
       "count": 2,
-      "ingredient": "nautec:prismarine_crystal_shard"
+      "ingredient": {
+        "item": "nautec:prismarine_crystal_shard"
+      }
     }
   ],
   "result": {

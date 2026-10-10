@@ -13,7 +13,6 @@ public class EASFluid extends NTFluid {
     public EASFluid(String name) {
         super(name);
         this.fluidType = registerFluidType(FluidType.Properties.create()
-                .isWaterLike(true)
                 .fallDistanceModifier(0.0F)
                 .canExtinguish(true)
                 .supportsBoating(true)

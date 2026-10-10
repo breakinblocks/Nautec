@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.api.client.renderer.robotArms.RobotArmRenderState;
 import com.breakinblocks.nautec.api.client.renderer.robotArms.RobotArmRenderer;
@@ -9,22 +11,19 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class AugmentStationExtensionBERenderer implements BlockEntityRenderer<AugmentationStationExtensionBlockEntity, RobotArmRenderState> {
+public class AugmentStationExtensionBERenderer extends NTBERenderer<AugmentationStationExtensionBlockEntity, RobotArmRenderState> {
     private static final Object2ObjectMap<RobotArmItem, Function<EntityModelSet, ? extends RobotArmRenderer>> RENDERER_PROVIDERS = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectMap<RobotArmItem, RobotArmRenderer> RENDERERS = new Object2ObjectOpenHashMap<>();
 
     public AugmentStationExtensionBERenderer(BlockEntityRendererProvider.Context ctx) {
+        super(ctx);
     }
 
     @Override
@@ -33,8 +32,8 @@ public class AugmentStationExtensionBERenderer implements BlockEntityRenderer<Au
     }
 
     @Override
-    public void extractRenderState(AugmentationStationExtensionBlockEntity blockEntity, RobotArmRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void extractRenderState(AugmentationStationExtensionBlockEntity blockEntity, RobotArmRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         state.armItem = blockEntity.getItemStackHandler().getStackInSlot(1).getItem() instanceof RobotArmItem robotArmItem ? robotArmItem : null;
         if (state.armItem != null) {
             RobotArmRenderer robotArmRenderer = RENDERERS.get(state.armItem);
@@ -45,11 +44,11 @@ public class AugmentStationExtensionBERenderer implements BlockEntityRenderer<Au
     }
 
     @Override
-    public void submit(RobotArmRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(RobotArmRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         if (state.armItem != null) {
             RobotArmRenderer robotArmRenderer = RENDERERS.get(state.armItem);
             if (robotArmRenderer != null) {
-                robotArmRenderer.submit(state, poseStack, collector);
+                robotArmRenderer.submit(state, poseStack, buffers);
             }
         }
     }

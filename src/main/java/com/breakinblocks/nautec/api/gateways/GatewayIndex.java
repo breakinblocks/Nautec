@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.api.gateways;
 
+
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.multiblocks.Multiblock;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -8,7 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import com.breakinblocks.nautec.utils.SavedDataType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -44,7 +48,7 @@ public class GatewayIndex extends SavedData {
     }
 
     public static GatewayIndex get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return TYPE.get(level.getDataStorage());
     }
 
     public void put(BlockPos pos, GatewayAddress address) {
@@ -111,5 +115,10 @@ public class GatewayIndex extends SavedData {
             remove(pos);
         }
         return best;
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return TYPE.save(this, tag, registries);
     }
 }

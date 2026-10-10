@@ -9,7 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,22 +23,35 @@ import snownee.jade.api.config.IPluginConfig;
 public enum AquaticCatalystComponentProvider implements StreamServerDataProvider<BlockAccessor, AquaticCatalystComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("aquatic_catalyst");
+    private static final ResourceLocation UID = Nautec.rl("aquatic_catalyst");
 
     public record Data(boolean burning, boolean waiting, ItemStack queued, int remainingDuration, int transferring,
                        int scanStatus, int scanDistance, BlockState target, int maxDistance) {
-        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.BOOL, Data::burning,
-                ByteBufCodecs.BOOL, Data::waiting,
-                ItemStack.OPTIONAL_STREAM_CODEC, Data::queued,
-                ByteBufCodecs.VAR_INT, Data::remainingDuration,
-                ByteBufCodecs.VAR_INT, Data::transferring,
-                ByteBufCodecs.VAR_INT, Data::scanStatus,
-                ByteBufCodecs.VAR_INT, Data::scanDistance,
-                ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY), Data::target,
-                ByteBufCodecs.VAR_INT, Data::maxDistance,
-                Data::new
-        );
+        private static final StreamCodec<? super RegistryFriendlyByteBuf, ItemStack> QUEUED_CODEC = ItemStack.OPTIONAL_STREAM_CODEC;
+        private static final StreamCodec<? super RegistryFriendlyByteBuf, BlockState> TARGET_CODEC = ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.of(
+                (buf, data) -> {
+                    ByteBufCodecs.BOOL.encode(buf, data.burning());
+                    ByteBufCodecs.BOOL.encode(buf, data.waiting());
+                    QUEUED_CODEC.encode(buf, data.queued());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.remainingDuration());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.transferring());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.scanStatus());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.scanDistance());
+                    TARGET_CODEC.encode(buf, data.target());
+                    ByteBufCodecs.VAR_INT.encode(buf, data.maxDistance());
+                },
+                buf -> new Data(
+                    ByteBufCodecs.BOOL.decode(buf),
+                    ByteBufCodecs.BOOL.decode(buf),
+                    QUEUED_CODEC.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    TARGET_CODEC.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf)
+                ));
     }
 
     @Override
@@ -63,7 +76,7 @@ public enum AquaticCatalystComponentProvider implements StreamServerDataProvider
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -114,7 +127,7 @@ public enum AquaticCatalystComponentProvider implements StreamServerDataProvider
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

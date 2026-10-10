@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_u",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/laser_injector_back",
     "east": "nautec:block/laser_injector_side",

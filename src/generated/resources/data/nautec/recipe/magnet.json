@@ -4,7 +4,9 @@
   "desc": "Pulls nearby items towards you, hold crouch to suspend it",
   "ingredients": [
     {
-      "ingredient": "nautec:magnetic_coil_arm"
+      "ingredient": {
+        "item": "nautec:magnetic_coil_arm"
+      }
     }
   ],
   "resultAugment": "nautec:magnet"

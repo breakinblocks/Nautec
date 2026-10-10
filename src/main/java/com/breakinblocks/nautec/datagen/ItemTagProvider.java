@@ -8,20 +8,21 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.data.tags.TagAppender;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider.IntrinsicTagAppender;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
 public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
-    public ItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, Registries.ITEM, lookupProvider, item -> item.builtInRegistryHolder().key(), Nautec.MODID);
+    public ItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+        super(output, Registries.ITEM, lookupProvider, item -> item.builtInRegistryHolder().key(), Nautec.MODID, existingFileHelper);
     }
 
     @Override
@@ -46,15 +47,15 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ItemTags.BOW_ENCHANTABLE, NTItems.ATLANTEAN_RIFLE);
         tag(ItemTags.VANISHING_ENCHANTABLE, NTItems.ATLANTEAN_RIFLE, NTItems.NEPTUNES_TRIDENT);
         tag(ItemTags.TRIDENT_ENCHANTABLE, NTItems.NEPTUNES_TRIDENT);
-        tag(ItemTags.MELEE_WEAPON_ENCHANTABLE, NTItems.NEPTUNES_TRIDENT);
-        tag(ItemTags.SWEEPING_ENCHANTABLE, NTItems.NEPTUNES_TRIDENT);
+        tag(ItemTags.SWORD_ENCHANTABLE, NTItems.NEPTUNES_TRIDENT);
+        tag(ItemTags.SHARP_WEAPON_ENCHANTABLE, NTItems.NEPTUNES_TRIDENT);
         tag(ItemTags.CHEST_ARMOR_ENCHANTABLE, NTItems.AQUARINE_CHESTPLATE);
         tag(ItemTags.LEG_ARMOR_ENCHANTABLE, NTItems.AQUARINE_LEGGINGS);
         tag(ItemTags.FOOT_ARMOR_ENCHANTABLE, NTItems.AQUARINE_BOOTS);
 
         tag(Tags.Items.TOOLS_WRENCH, NTItems.AQUARINE_WRENCH);
 
-        TagAppender<Item, Item> modules = tag(NTTags.Items.SUBMARINE_MODULE);
+        IntrinsicTagAppender<Item> modules = tag(NTTags.Items.SUBMARINE_MODULE);
         for (var module : NTItems.SUBMARINE_MODULES) {
             modules.add(module.get());
         }
@@ -79,7 +80,7 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
     }
 
     private void tag(TagKey<Item> itemTagKey, ItemLike... items) {
-        TagAppender<Item, Item> tag = tag(itemTagKey);
+        IntrinsicTagAppender<Item> tag = tag(itemTagKey);
         for (ItemLike item : items) {
             tag.add(item.asItem());
         }
@@ -87,7 +88,7 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
     @SafeVarargs
     private void tag(TagKey<Item> itemTagKey, TagKey<Item>... items) {
-        TagAppender<Item, Item> tag = tag(itemTagKey);
+        IntrinsicTagAppender<Item> tag = tag(itemTagKey);
         for (TagKey<Item> item : items) {
             tag.addTag(item);
         }

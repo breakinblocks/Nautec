@@ -6,5 +6,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "minecraft:cherry_log"
+  "nutrient": {
+    "item": "minecraft:cherry_log"
+  }
 }

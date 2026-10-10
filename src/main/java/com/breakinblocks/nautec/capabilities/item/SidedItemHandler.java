@@ -4,8 +4,8 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.SidedResourceHandler;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 
 public final class SidedItemHandler extends SidedResourceHandler<ItemResource> {
     public SidedItemHandler(ResourceHandler<ItemResource> inner, IOActions action, IntList slots) {

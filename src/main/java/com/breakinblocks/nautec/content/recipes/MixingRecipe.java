@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.recipes;
 
+
+import com.breakinblocks.nautec.content.recipes.utils.SimpleRecipeSerializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,17 +15,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import com.breakinblocks.nautec.utils.templates.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,22 +65,28 @@ public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<Fluid
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull MixingRecipeInput input) {
+    public @NotNull ItemStack assemble(@NotNull MixingRecipeInput input, HolderLookup.@NotNull Provider registries) {
         return result();
     }
 
+    @Override
     public @NotNull ItemStack getResultItem(HolderLookup.@Nullable Provider registries) {
         return result();
     }
 
     @Override
-    public @NotNull String group() {
+    public @NotNull String getGroup() {
         return "";
     }
 
     @Override
     public boolean showNotification() {
         return false;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
     }
 
     @Override
@@ -100,15 +105,6 @@ public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<Fluid
     }
 
     @Override
-    public @NotNull PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public @NotNull RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
     public @NotNull NonNullList<Ingredient> getIngredients() {
         return RecipeUtils.listToNonNullList(RecipeUtils.iWCToIngredientsSaveCount(ingredients));
     }
@@ -138,7 +134,7 @@ public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<Fluid
                 MixingRecipe::duration,
                 MixingRecipe::new
         );
-        public static final RecipeSerializer<MixingRecipe> INSTANCE = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+        public static final RecipeSerializer<MixingRecipe> INSTANCE = new SimpleRecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
         private Serializer() {
         }

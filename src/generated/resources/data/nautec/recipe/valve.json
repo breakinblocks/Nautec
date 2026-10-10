@@ -2,7 +2,9 @@
   "type": "nautec:item_etching",
   "duration": 200,
   "ingredient": {
-    "ingredient": "nautec:ancient_valve"
+    "ingredient": {
+      "item": "nautec:ancient_valve"
+    }
   },
   "result": {
     "id": "nautec:valve"

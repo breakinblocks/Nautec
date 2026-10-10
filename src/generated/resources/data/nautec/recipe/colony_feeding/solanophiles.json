@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:solanophiles",
   "ingredient": {
-    "ingredient": "minecraft:potato"
+    "ingredient": {
+      "item": "minecraft:potato"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -4,16 +4,24 @@
   "desc": "Armour plating that shrugs off knockback and burns out fast",
   "ingredients": [
     {
-      "ingredient": "nautec:chitin_plate"
+      "ingredient": {
+        "item": "nautec:chitin_plate"
+      }
     },
     {
-      "ingredient": "nautec:chitin_plate"
+      "ingredient": {
+        "item": "nautec:chitin_plate"
+      }
     },
     {
-      "ingredient": "nautec:chitin_plate"
+      "ingredient": {
+        "item": "nautec:chitin_plate"
+      }
     },
     {
-      "ingredient": "nautec:chitin_plate"
+      "ingredient": {
+        "item": "nautec:chitin_plate"
+      }
     }
   ],
   "resultAugment": "nautec:vent_carapace"

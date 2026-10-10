@@ -1150,7 +1150,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1202,7 +1204,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1263,7 +1267,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1324,7 +1330,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1358,7 +1366,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1392,7 +1402,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1435,7 +1447,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1478,7 +1492,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1530,7 +1546,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1582,7 +1600,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1643,7 +1663,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1704,7 +1726,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1756,7 +1780,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1808,7 +1834,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1869,7 +1897,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1930,7 +1960,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1964,7 +1996,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -1998,7 +2032,9 @@
         }
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -2041,7 +2077,9 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     },
     {
       "from": [
@@ -2084,7 +2122,10 @@
         "angle": 45
       },
       "shade": false,
-      "light_emission": 15
+      "neoforge_data": {
+        "block_light": 15
+      }
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": "nautec:air_bottle",
-    "C": "nautec:cast_iron_ingot",
-    "G": "#c:glass_blocks/colorless",
-    "K": "#c:storage_blocks/dried_kelp",
-    "V": "nautec:valve"
+    "B": {
+      "item": "nautec:air_bottle"
+    },
+    "C": {
+      "item": "nautec:cast_iron_ingot"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "K": {
+      "tag": "c:storage_blocks/dried_kelp"
+    },
+    "V": {
+      "item": "nautec:valve"
+    }
   },
   "pattern": [
     "CGC",
@@ -14,6 +24,7 @@
     "CKC"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:oxygen_diffuser"
   }
 }

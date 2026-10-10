@@ -1,12 +1,13 @@
 package com.breakinblocks.nautec.content.resonantstorage;
 
+
+import com.breakinblocks.nautec.api.blockentities.NTBlockEntity;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,15 +21,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ResonantStorageBlockEntity extends BlockEntity implements MenuProvider, ResonantStore.Listener {
+public abstract class ResonantStorageBlockEntity extends NTBlockEntity implements MenuProvider, ResonantStore.Listener {
     protected static final Direction[] DIRECTIONS = Direction.values();
     private static final Codec<List<FaceMode>> FACES_CODEC = FaceMode.CODEC.listOf(6, 6);
 
@@ -246,7 +247,7 @@ public abstract class ResonantStorageBlockEntity extends BlockEntity implements 
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull DataComponentGetter components) {
+    protected void applyImplicitComponents(BlockEntity.@NotNull DataComponentInput components) {
         super.applyImplicitComponents(components);
         ResonantLink link = components.get(NTDataComponents.RESONANT_LINK.get());
         if (link != null) {

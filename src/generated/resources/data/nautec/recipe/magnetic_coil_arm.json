@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:aquatic_chip",
-    "I": "#c:ingots/iron",
-    "L": "nautec:laser_channeling_coil"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    }
   },
   "pattern": [
     "III",
@@ -13,6 +21,7 @@
     " A "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:magnetic_coil_arm"
   }
 }

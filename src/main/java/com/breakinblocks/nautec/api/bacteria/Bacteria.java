@@ -12,7 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -63,10 +63,10 @@ public interface Bacteria {
 
         static DataResult<Resource> parse(String raw) {
             if (raw.startsWith("#")) {
-                return Identifier.read(raw.substring(1))
+                return ResourceLocation.read(raw.substring(1))
                         .map(id -> new ItemTagResource(TagKey.create(Registries.ITEM, id)));
             }
-            return Identifier.read(raw).map(id -> new ItemResource(BuiltInRegistries.ITEM.getValue(id)));
+            return ResourceLocation.read(raw).map(id -> new ItemResource(BuiltInRegistries.ITEM.get(id)));
         }
 
         record ItemResource(Item item) implements Resource {
@@ -84,7 +84,7 @@ public interface Bacteria {
         record ItemTagResource(TagKey<Item> tag) implements Resource {
             @Override
             public Item resolve() {
-                return BuiltInRegistries.ITEM.get(tag)
+                return BuiltInRegistries.ITEM.getTag(tag)
                         .map(holders -> holders.stream()
                                 .map(Holder::value)
                                 .filter(item -> item != Items.AIR)

@@ -1,11 +1,15 @@
 package com.breakinblocks.nautec.content.resonantstorage;
 
+
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import com.breakinblocks.nautec.Nautec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import com.breakinblocks.nautec.utils.SavedDataType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +54,7 @@ public final class ResonantStorage extends SavedData {
     }
 
     public static ResonantStorage get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(TYPE);
+        return TYPE.get(server.overworld().getDataStorage());
     }
 
     public VaultStore vault(ResonantChannel channel) {
@@ -71,5 +75,10 @@ public final class ResonantStorage extends SavedData {
             cisterns.put(channel, store);
         }
         return store;
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        return TYPE.save(this, tag, registries);
     }
 }

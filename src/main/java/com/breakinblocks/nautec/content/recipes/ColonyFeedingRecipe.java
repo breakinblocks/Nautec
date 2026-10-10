@@ -1,5 +1,10 @@
 package com.breakinblocks.nautec.content.recipes;
 
+
+
+import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.NotNull;
+import com.breakinblocks.nautec.content.recipes.utils.SimpleRecipeSerializer;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.bacteria.BacteriaSelector;
@@ -14,10 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -44,7 +46,7 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
             return Optional.empty();
         }
         ColonyFeedingRecipe best = null;
-        for (RecipeHolder<ColonyFeedingRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(TYPE)) {
+        for (RecipeHolder<ColonyFeedingRecipe> holder : serverLevel.getRecipeManager().getAllRecipesFor(TYPE)) {
             ColonyFeedingRecipe recipe = holder.value();
             if (!recipe.ingredient().test(stack) || !recipe.accepts(colony, level)) {
                 continue;
@@ -70,7 +72,7 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
         if (!(level instanceof ServerLevel serverLevel)) {
             return true;
         }
-        for (RecipeHolder<ColonyFeedingRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(TYPE)) {
+        for (RecipeHolder<ColonyFeedingRecipe> holder : serverLevel.getRecipeManager().getAllRecipesFor(TYPE)) {
             if (holder.value().ingredient().ingredient().test(stack)) {
                 return true;
             }
@@ -84,18 +86,28 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
     }
 
     @Override
-    public ItemStack assemble(BacteriaRecipeInput input) {
+    public ItemStack assemble(BacteriaRecipeInput input, HolderLookup.@NotNull Provider registries) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public String group() {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public String getGroup() {
         return "";
     }
 
     @Override
     public boolean showNotification() {
         return false;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
     }
 
     @Override
@@ -113,16 +125,6 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
         return true;
     }
 
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
     public static final class Serializer {
         public static final MapCodec<ColonyFeedingRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 BacteriaSelector.CODEC.optionalFieldOf("bacteria").forGetter(ColonyFeedingRecipe::bacteria),
@@ -138,7 +140,7 @@ public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, Ingredien
                 ColonyFeedingRecipe::vitalityTicks,
                 ColonyFeedingRecipe::new
         );
-        public static final RecipeSerializer<ColonyFeedingRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+        public static final RecipeSerializer<ColonyFeedingRecipe> INSTANCE = new SimpleRecipeSerializer<>(CODEC, STREAM_CODEC);
 
         private Serializer() {
         }

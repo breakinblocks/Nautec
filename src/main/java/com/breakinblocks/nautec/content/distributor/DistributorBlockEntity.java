@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.distributor;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.sides.SideKind;
@@ -22,18 +23,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.resource.Resource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -75,8 +76,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         static Caches create(ServerLevel level, BlockPos pos, Direction face, BooleanSupplier valid) {
             Runnable ignored = () -> {
             };
-            return new Caches(BlockCapabilityCache.create(Capabilities.Item.BLOCK, level, pos, face, valid, ignored),
-                    BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, level, pos, face, valid, ignored));
+            return new Caches(BlockCapabilityCache.create(TransferCapabilities.Item.BLOCK, level, pos, face, valid, ignored),
+                    BlockCapabilityCache.create(TransferCapabilities.Fluid.BLOCK, level, pos, face, valid, ignored));
         }
     }
 

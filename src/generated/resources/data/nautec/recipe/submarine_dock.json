@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "L": "nautec:laser_channeling_coil",
-    "P": "nautec:polished_prismarine"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    },
+    "P": {
+      "item": "nautec:polished_prismarine"
+    }
   },
   "pattern": [
     "AAA",
@@ -12,6 +18,7 @@
     "APA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:submarine_dock"
   }
 }

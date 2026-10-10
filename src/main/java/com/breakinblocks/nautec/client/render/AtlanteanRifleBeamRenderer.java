@@ -4,8 +4,8 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleBeam;
 import com.breakinblocks.nautec.content.items.AtlanteanRifleItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,16 +100,16 @@ public final class AtlanteanRifleBeamRenderer {
         return hits;
     }
 
-    public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, Vec3 from, Vec3 to,
                                   float ramp, boolean impact) {
-        submitBeam(poseStack, collector, from, to, ramp, impact, false);
+        submitBeam(poseStack, buffers, from, to, ramp, impact, false);
     }
 
-    public static void submitWorldBeam(Vec3 camera, SubmitNodeCollector collector, Vec3 from, Vec3 to, float ramp, boolean impact) {
-        ShaderPackOverlay.anchored(camera, () -> submitBeam(new PoseStack(), collector, from.subtract(camera), to.subtract(camera), ramp, impact, true));
+    public static void submitWorldBeam(Vec3 camera, MultiBufferSource buffers, Vec3 from, Vec3 to, float ramp, boolean impact) {
+        ShaderPackOverlay.anchored(camera, () -> submitBeam(new PoseStack(), buffers, from.subtract(camera), to.subtract(camera), ramp, impact, true));
     }
 
-    public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vec3 from, Vec3 to,
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, Vec3 from, Vec3 to,
                                   float ramp, boolean impact, boolean world) {
         if (to.distanceTo(from) < MIN_LENGTH) {
             return;
@@ -119,10 +119,10 @@ public final class AtlanteanRifleBeamRenderer {
         Vector3f start = from.toVector3f();
         Vector3f end = to.toVector3f();
 
-        LaserBeamRenderer.submitBeam(poseStack, collector, start, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, world);
-        LaserBeamRenderer.submitFlare(poseStack, collector, start, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, world);
+        LaserBeamRenderer.submitBeam(poseStack, buffers, start, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, world);
+        LaserBeamRenderer.submitFlare(poseStack, buffers, start, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, world);
         if (impact) {
-            LaserBeamRenderer.submitFlare(poseStack, collector, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color, world);
+            LaserBeamRenderer.submitFlare(poseStack, buffers, end, Mth.lerp(ramp, IMPACT_FLARE_COLD, IMPACT_FLARE_HOT), color, world);
         }
     }
 }

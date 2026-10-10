@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "nautec:aquarine_copper_block"
+    {
+      "item": "nautec:aquarine_copper_block"
+    }
   ],
   "result": {
     "count": 9,

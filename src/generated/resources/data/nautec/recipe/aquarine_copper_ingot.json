@@ -2,7 +2,9 @@
   "type": "nautec:item_transformation",
   "duration": 100,
   "ingredient": {
-    "ingredient": "nautec:aquarine_copper_compound"
+    "ingredient": {
+      "item": "nautec:aquarine_copper_compound"
+    }
   },
   "purity": 2.1,
   "result": {

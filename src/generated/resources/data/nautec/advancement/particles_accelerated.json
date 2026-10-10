@@ -21,6 +21,7 @@
     },
     "frame": "challenge",
     "icon": {
+      "count": 1,
       "id": "nautec:atlantean_rifle"
     },
     "title": {

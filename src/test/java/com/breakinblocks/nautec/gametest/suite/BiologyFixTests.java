@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
@@ -26,7 +27,6 @@ import com.breakinblocks.nautec.utils.MultiblockHelper;
 import com.breakinblocks.nautec.utils.RNGUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,10 +34,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.Set;
 
@@ -49,7 +49,7 @@ public final class BiologyFixTests {
     private BiologyFixTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    private static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -68,14 +68,14 @@ public final class BiologyFixTests {
         return new BacteriaInstance(bacteria, size, stats, true, age);
     }
 
-    private static Item productOf(GameTestHelper helper, ResourceKey<Bacteria> bacteria) {
+    private static Item productOf(NTGameTestHelper helper, ResourceKey<Bacteria> bacteria) {
         Bacteria definition = BacteriaHelper.getBacteria(helper.getLevel().registryAccess(), bacteria);
         if (definition == null) {
-            throw helper.assertionException("No bacteria definition for " + bacteria.identifier());
+            throw helper.assertionException("No bacteria definition for " + bacteria.location());
         }
         Item item = definition.resource().resolve();
         if (item == null || item == Items.AIR) {
-            throw helper.assertionException("Bacteria " + bacteria.identifier() + " produces nothing");
+            throw helper.assertionException("Bacteria " + bacteria.location() + " produces nothing");
         }
         return item;
     }
@@ -86,8 +86,8 @@ public final class BiologyFixTests {
         return stack;
     }
 
-    private static ResourceHandler<ItemResource> itemsOn(GameTestHelper helper, BlockPos pos, Direction side) {
-        return helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
+    private static ResourceHandler<ItemResource> itemsOn(NTGameTestHelper helper, BlockPos pos, Direction side) {
+        return helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(pos), side);
     }
 
     private static int insert(ResourceHandler<ItemResource> handler, int slot, ItemStack stack) {
@@ -106,7 +106,7 @@ public final class BiologyFixTests {
         }
     }
 
-    private static void placeBioReactor(GameTestHelper helper) {
+    private static void placeBioReactor(NTGameTestHelper helper) {
         for (int y = 0; y < 2; y++) {
             for (int z = 0; z < 3; z++) {
                 for (int x = 0; x < 3; x++) {

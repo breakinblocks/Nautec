@@ -2,11 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:paper",
-    "nautec:cast_iron_nugget",
-    "#c:dusts/redstone"
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "nautec:cast_iron_nugget"
+    },
+    {
+      "tag": "c:dusts/redstone"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "nautec:filter"
   }
 }

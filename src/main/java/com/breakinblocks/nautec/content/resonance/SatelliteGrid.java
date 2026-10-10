@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -102,7 +103,8 @@ public final class SatelliteGrid {
         int surface = level.getHeight(Heightmap.Types.WORLD_SURFACE, top.getX(), top.getZ());
         BlockPos.MutableBlockPos cursor = top.mutable();
         for (int y = top.getY() + 1; y < surface; y++) {
-            if (!level.getBlockState(cursor.setY(y)).getOcclusionShape().isEmpty()) {
+            BlockState state = level.getBlockState(cursor.setY(y));
+            if (state.canOcclude() && !state.getOcclusionShape(level, cursor).isEmpty()) {
                 return false;
             }
         }

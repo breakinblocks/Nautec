@@ -61,7 +61,7 @@ public final class LuckyFishingZoneEvents {
             return;
         }
 
-        ServerLevel level = player.level();
+        ServerLevel level = player.serverLevel();
         expireZones(level);
 
         if (!trySpawn(level, player)) {

@@ -16,12 +16,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.AmethystClusterBlock;
@@ -80,7 +82,7 @@ public final class ContentIntegrityTests {
                     + " but the base sheet is " + base[0] + "x" + base[1]);
         }
 
-        JsonObject geo = readJson("/assets/nautec/geckolib/models/entity/" + name + ".geo.json");
+        JsonObject geo = readJson("/assets/nautec/geo/entity/" + name + ".geo.json");
         if (geo == null) {
             problems.add(name + ".geo.json is missing or does not parse");
         } else {
@@ -100,7 +102,7 @@ public final class ContentIntegrityTests {
             }
         }
 
-        JsonObject animationFile = readJson("/assets/nautec/geckolib/animations/entity/" + name + ".animation.json");
+        JsonObject animationFile = readJson("/assets/nautec/animations/entity/" + name + ".animation.json");
         if (animationFile == null) {
             problems.add(name + ".animation.json is missing or does not parse");
             return;
@@ -189,17 +191,17 @@ public final class ContentIntegrityTests {
                 return;
             }
             ResourceKey<Registry<Object>> fishKey =
-                    ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("starcatcher", "fish"));
-            Optional<Registry<Object>> fish = helper.getLevel().registryAccess().lookup(fishKey);
+                    ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("starcatcher", "fish"));
+            Optional<Registry<Object>> fish = helper.getLevel().registryAccess().registry(fishKey);
             if (fish.isEmpty() || !fish.get().containsKey(Nautec.rl("silt_skipper"))) {
                 helper.fail("Starcatcher is loaded but nautec:silt_skipper is missing from the starcatcher:fish registry");
                 return;
             }
 
-            TagKey<Item> fishable = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("starcatcher", "fishable"));
+            TagKey<Item> fishable = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("starcatcher", "fishable"));
             helper.assertTrue(NTItems.SILT_SKIPPER.toStack().is(fishable), "silt skipper in starcatcher:fishable");
 
-            TagKey<Biome> warmOcean = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("starcatcher", "is_warm_ocean"));
+            TagKey<Biome> warmOcean = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("starcatcher", "is_warm_ocean"));
             helper.assertTrue(helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME)
                             .getOrThrow(ResourceKey.create(Registries.BIOME, Nautec.rl("prismarine_reef")))
                             .is(warmOcean),
@@ -243,7 +245,7 @@ public final class ContentIntegrityTests {
         r.add("content/every_particle_has_a_definition", 5, helper -> {
             List<String> missing = new ArrayList<>();
             for (ParticleType<?> particle : BuiltInRegistries.PARTICLE_TYPE) {
-                Identifier id = BuiltInRegistries.PARTICLE_TYPE.getKey(particle);
+                ResourceLocation id = BuiltInRegistries.PARTICLE_TYPE.getKey(particle);
                 if (id == null || !id.getNamespace().equals(Nautec.MODID)) continue;
 
                 String definition = "/assets/" + id.getNamespace() + "/particles/" + id.getPath() + ".json";
@@ -271,7 +273,7 @@ public final class ContentIntegrityTests {
 
             List<String> problems = new ArrayList<>();
             for (SoundEvent sound : BuiltInRegistries.SOUND_EVENT) {
-                Identifier id = BuiltInRegistries.SOUND_EVENT.getKey(sound);
+                ResourceLocation id = BuiltInRegistries.SOUND_EVENT.getKey(sound);
                 if (id == null || !id.getNamespace().equals(Nautec.MODID)) continue;
                 if (!sounds.has(id.getPath())) {
                     problems.add("sounds.json has no entry for " + id);
@@ -290,7 +292,7 @@ public final class ContentIntegrityTests {
                         continue;
                     }
 
-                    Identifier referenced = Identifier.tryParse(reference.get("name").getAsString());
+                    ResourceLocation referenced = ResourceLocation.tryParse(reference.get("name").getAsString());
                     if (referenced == null || !BuiltInRegistries.SOUND_EVENT.containsKey(referenced)) {
                         problems.add(key + " points at unknown sound event " + reference.get("name").getAsString());
                     }
@@ -306,7 +308,7 @@ public final class ContentIntegrityTests {
         r.add("content/every_item_has_a_model", 5, helper -> {
             List<String> missing = new ArrayList<>();
             for (Item item : BuiltInRegistries.ITEM) {
-                Identifier id = BuiltInRegistries.ITEM.getKey(item);
+                ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
                 if (!id.getNamespace().equals(Nautec.MODID)) continue;
                 if (item.getDefaultInstance().isEmpty()) {
                     missing.add(id.toString());
@@ -344,7 +346,7 @@ public final class ContentIntegrityTests {
                     NTEntities.VENT_CRAWLER.get(), NTEntities.ABYSSAL_MAW.get());
 
             for (EntityType<?> type : types) {
-                Entity entity = type.spawn(level, pool, EntitySpawnReason.SPAWN_ITEM_USE);
+                Entity entity = type.spawn(level, pool, MobSpawnType.SPAWN_EGG);
                 if (entity == null) {
                     helper.fail("Could not spawn " + BuiltInRegistries.ENTITY_TYPE.getKey(type));
                     return;
@@ -424,8 +426,8 @@ public final class ContentIntegrityTests {
         });
 
         r.add("content/prismarine_cluster_drops_shards", 5, helper -> {
-            Identifier lootTable = NTBlocks.PRISMARINE_CLUSTER.get().getLootTable()
-                    .map(key -> key.identifier()).orElse(null);
+            ResourceKey<LootTable> lootKey = NTBlocks.PRISMARINE_CLUSTER.get().getLootTable();
+            ResourceLocation lootTable = lootKey == BuiltInLootTables.EMPTY ? null : lootKey.location();
             if (lootTable == null) {
                 helper.fail("Prismarine Cluster has no loot table");
                 return;

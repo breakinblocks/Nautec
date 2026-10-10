@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:carotophyles",
   "ingredient": {
-    "ingredient": "minecraft:carrot"
+    "ingredient": {
+      "item": "minecraft:carrot"
+    }
   },
   "vitality_ticks": 1200
 }

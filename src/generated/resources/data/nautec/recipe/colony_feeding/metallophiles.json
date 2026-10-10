@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:metallophiles",
   "ingredient": {
-    "ingredient": "#c:ores/copper"
+    "ingredient": {
+      "tag": "c:ores/copper"
+    }
   },
   "vitality_ticks": 1200
 }

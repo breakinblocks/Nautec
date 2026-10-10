@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:redstone",
+  "catalyst": {
+    "item": "minecraft:redstone"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:acidophiles"

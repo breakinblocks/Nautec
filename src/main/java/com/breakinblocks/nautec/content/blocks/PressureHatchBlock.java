@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,9 +60,9 @@ public class PressureHatchBlock extends DoorBlock {
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean movedByPiston) {
         boolean wasOpen = state.getValue(OPEN);
-        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+        super.neighborChanged(state, level, pos, block, fromPos, movedByPiston);
         if (wasOpen) {
             drainIfClosed(level, pos);
         }

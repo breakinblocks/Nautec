@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cross",
+  "render_type": "minecraft:cutout",
   "textures": {
     "cross": "nautec:block/prismarine_frond",
     "cross_emissive": "nautec:block/prismarine_frond_emissive"

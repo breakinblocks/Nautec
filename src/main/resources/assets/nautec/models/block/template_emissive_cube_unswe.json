@@ -54,7 +54,6 @@
         16
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "up": {
           "texture": "#up_emissive",
@@ -76,6 +75,9 @@
           "texture": "#east_emissive",
           "cullface": "east"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     }
   ]

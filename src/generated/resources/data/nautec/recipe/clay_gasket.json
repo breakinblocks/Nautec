@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:clay_ball",
-    "minecraft:clay_ball",
-    "minecraft:dried_kelp"
+    {
+      "item": "minecraft:clay_ball"
+    },
+    {
+      "item": "minecraft:clay_ball"
+    },
+    {
+      "item": "minecraft:dried_kelp"
+    }
   ],
   "result": {
     "count": 8,

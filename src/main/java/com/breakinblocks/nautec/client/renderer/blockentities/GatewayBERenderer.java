@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import net.minecraft.client.renderer.RenderType;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
@@ -12,26 +14,22 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
 public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayBERenderer.GatewayRenderState> {
-    public static final Identifier TEXTURE = Nautec.rl("textures/entity/gateway_ring.png");
+    public static final ResourceLocation TEXTURE = Nautec.rl("textures/entity/gateway_ring.png");
 
     private static final float DIAL_TICKS = 26F;
     private static final float DIAL_SPIN = 200F;
@@ -53,8 +51,8 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
     }
 
     @Override
-    public void extractRenderState(GatewayBlockEntity gateway, GatewayRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(gateway, state, crumbling);
+    public void extractRenderState(GatewayBlockEntity gateway, GatewayRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(gateway, state);
         state.formed = gateway.isFormed();
         if (!state.formed || gateway.getLevel() == null) {
             return;
@@ -65,7 +63,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         state.open = gateway.isOpen();
         state.front = gateway.getFront();
         state.address = gateway.getAddress();
-        state.light = LevelRenderer.getLightCoords(gateway.getLevel(), gateway.getBlockPos().above(GatewayRing.CENTRE));
+        state.light = LevelRenderer.getLightColor(gateway.getLevel(), gateway.getBlockPos().above(GatewayRing.CENTRE));
         state.rippleCount = 0;
         for (GatewayBlockEntity.Ripple ripple : gateway.getRipples()) {
             int o = state.rippleCount * 3;
@@ -80,7 +78,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
     }
 
     @Override
-    public void submit(GatewayRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(GatewayRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         if (!state.formed) {
             return;
         }
@@ -95,24 +93,24 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         JsonMesh mesh = JsonMesh.GATEWAY_RING;
         int glowColor = ((int) (Mth.clamp(energy, 0F, 1F) * 255F) << 24) | 0x52E8FF;
 
-        JsonMesh.submitLit(poseStack, collector, mesh.part("frame"), RenderTypes.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("frame"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
+        JsonMesh.submitLit(poseStack, buffers, mesh.part("frame"), RenderType.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
+        JsonMesh.submitTranslucent(poseStack, buffers, mesh.part("frame"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(trackAngle(state)));
-        JsonMesh.submitLit(poseStack, collector, mesh.part("track"), RenderTypes.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("track"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
+        JsonMesh.submitLit(poseStack, buffers, mesh.part("track"), RenderType.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
+        JsonMesh.submitTranslucent(poseStack, buffers, mesh.part("track"), NTRenderTypes.gatewayGlow(TEXTURE), glowColor, true);
         poseStack.popPose();
 
         for (int chevron = 0; chevron < GatewayRing.CHEVRONS; chevron++) {
-            submitChevron(state, poseStack, collector, mesh, chevron);
+            submitChevron(state, poseStack, buffers, mesh, chevron);
         }
 
         if (open > 0F) {
-            submitHorizon(poseStack, collector, open);
+            submitHorizon(poseStack, buffers, open);
         }
         for (int i = 0; i < state.rippleCount; i++) {
-            submitRipple(poseStack, collector, state.ripples[i * 3], state.ripples[i * 3 + 1], state.ripples[i * 3 + 2]);
+            submitRipple(poseStack, buffers, state.ripples[i * 3], state.ripples[i * 3 + 1], state.ripples[i * 3 + 2]);
         }
         poseStack.popPose();
     }
@@ -150,21 +148,21 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         return Mth.clamp(1F - state.sinceChange / 20F, 0F, 1F);
     }
 
-    private static void submitChevron(GatewayRenderState state, PoseStack poseStack, SubmitNodeCollector collector, JsonMesh mesh, int chevron) {
+    private static void submitChevron(GatewayRenderState state, PoseStack poseStack, MultiBufferSource buffers, JsonMesh mesh, int chevron) {
         float lit = chevronLit(state, chevron);
         int slot = GatewayRing.slotOfChevron(chevron);
         int dye = slot >= 0 ? 0xFF000000 | dyeColour(state.address.slots().get(slot)) : IDLE_CHEVRON;
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(40F * chevron));
-        JsonMesh.submitLit(poseStack, collector, mesh.part("chevron"), RenderTypes.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
+        JsonMesh.submitLit(poseStack, buffers, mesh.part("chevron"), RenderType.entityCutout(TEXTURE), 0xFFFFFFFF, state.light, OverlayTexture.NO_OVERLAY);
 
         int glassAlpha = (int) Mth.lerp(lit, 140F, 255F);
         int glass = (glassAlpha << 24) | (slot >= 0 ? scale(dye, 0.55F + 0.45F * lit) : scale(IDLE_CHEVRON, 0.5F + 0.5F * lit)) & 0xFFFFFF;
-        JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalShell(TEXTURE), glass, true);
+        JsonMesh.submitTranslucent(poseStack, buffers, mesh.part("chevron_glass"), NTRenderTypes.crystalShell(TEXTURE), glass, true);
         if (lit > 0F) {
             int glow = 0xFF000000 | scale(slot >= 0 ? dye : 0xFFC8FAFF, lit) & 0xFFFFFF;
-            JsonMesh.submitTranslucent(poseStack, collector, mesh.part("chevron_glass"), NTRenderTypes.crystalCore(TEXTURE), glow, true);
+            JsonMesh.submitTranslucent(poseStack, buffers, mesh.part("chevron_glass"), NTRenderTypes.crystalCore(TEXTURE), glow, true);
         }
         poseStack.popPose();
     }
@@ -180,10 +178,10 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         return Mth.clamp(r, 0, 255) << 16 | Mth.clamp(g, 0, 255) << 8 | Mth.clamp(b, 0, 255);
     }
 
-    private static void submitHorizon(PoseStack poseStack, SubmitNodeCollector collector, float open) {
+    private static void submitHorizon(PoseStack poseStack, MultiBufferSource buffers, float open) {
         float r = (float) GatewayRing.OPENING_RADIUS;
         int color = ((int) (open * 255F) << 24) | 0xFFFFFF;
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.gatewayHorizon(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.gatewayHorizon(), (pose, buffer) -> {
             quadVertex(buffer, pose, -r, -r, 0F, 0F, 1F, color);
             quadVertex(buffer, pose, r, -r, 0F, 1F, 1F, color);
             quadVertex(buffer, pose, r, r, 0F, 1F, 0F, color);
@@ -191,11 +189,11 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         });
     }
 
-    private static void submitRipple(PoseStack poseStack, SubmitNodeCollector collector, float x, float y, float age) {
+    private static void submitRipple(PoseStack poseStack, MultiBufferSource buffers, float x, float y, float age) {
         float life = Mth.clamp(age / RIPPLE_TICKS, 0F, 1F);
         float size = 0.6F + life * 3.2F;
         int color = ((int) ((1F - life) * 220F) << 24) | 0x9AF4FF;
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
             quadVertex(buffer, pose, x - size, y - size, 0.02F, 0F, 0F, color);
             quadVertex(buffer, pose, x + size, y - size, 0.02F, 1F, 0F, color);
             quadVertex(buffer, pose, x + size, y + size, 0.02F, 1F, 1F, color);
@@ -213,7 +211,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(GatewayBlockEntity gateway) {
         return true;
     }
 
@@ -222,7 +220,7 @@ public class GatewayBERenderer extends NTBERenderer<GatewayBlockEntity, GatewayB
         return 128;
     }
 
-    public static class GatewayRenderState extends BlockEntityRenderState {
+    public static class GatewayRenderState extends BERenderState {
         public boolean formed;
         public boolean open;
         public float ticks;

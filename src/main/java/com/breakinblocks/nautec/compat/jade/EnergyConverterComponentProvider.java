@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -18,7 +18,7 @@ import snownee.jade.api.config.IPluginConfig;
 public enum EnergyConverterComponentProvider implements StreamServerDataProvider<BlockAccessor, EnergyConverterComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("energy_converter");
+    private static final ResourceLocation UID = Nautec.rl("energy_converter");
 
     public record Data(int sending, int beams, int fe, int rate, int capacity) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -43,7 +43,7 @@ public enum EnergyConverterComponentProvider implements StreamServerDataProvider
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -60,7 +60,7 @@ public enum EnergyConverterComponentProvider implements StreamServerDataProvider
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

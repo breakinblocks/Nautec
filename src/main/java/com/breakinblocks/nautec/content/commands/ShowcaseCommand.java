@@ -18,9 +18,9 @@ public final class ShowcaseCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal(Nautec.MODID)
-                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("showcase")
-                        .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                        .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .executes(ShowcaseCommand::showcase)));
     }
 

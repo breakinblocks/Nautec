@@ -2,15 +2,16 @@ package com.breakinblocks.nautec.gametest;
 
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.fml.ModList;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.stream.Stream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,22 +33,30 @@ public class GuideReferencesGameTest {
 
     public static void allGuideReferencesResolve(GameTestHelper helper) {
         Map<String, String> pages = new TreeMap<>();
-        ModList.get().getModFileById(Nautec.MODID).getFile().getContents().visitContent(GUIDE_ROOT, (path, resource) -> {
-            if (!path.endsWith(".md")) return;
-            try {
-                pages.put(path, new String(resource.readAllBytes(), StandardCharsets.UTF_8));
+        Path root = ModList.get().getModFileById(Nautec.MODID).getFile().findResource(GUIDE_ROOT.split("/"));
+        if (Files.isDirectory(root)) {
+            try (Stream<Path> files = Files.walk(root)) {
+                files.filter(file -> file.toString().endsWith(".md")).forEach(file -> {
+                    String path = GUIDE_ROOT + "/" + root.relativize(file).toString().replace(root.getFileSystem().getSeparator(), "/");
+                    try {
+                        pages.put(path, Files.readString(file, StandardCharsets.UTF_8));
+                    } catch (IOException e) {
+                        pages.put(path, "");
+                    }
+                });
             } catch (IOException e) {
-                pages.put(path, "");
+                helper.fail("Could not read guide pages: " + e.getMessage());
+                return;
             }
-        });
+        }
         if (pages.isEmpty()) {
             helper.fail("No guide pages found under " + GUIDE_ROOT);
             return;
         }
 
-        RecipeManager recipes = helper.getLevel().recipeAccess();
+        RecipeManager recipes = helper.getLevel().getRecipeManager();
         List<String> errors = new ArrayList<>();
-        Map<Identifier, String> claimed = new HashMap<>();
+        Map<ResourceLocation, String> claimed = new HashMap<>();
         pages.forEach((path, text) -> each(CLAIMED_ITEM, text, id -> {
             String previous = claimed.putIfAbsent(id, path);
             if (previous != null) errors.add(path + " claims " + id + " already claimed by " + previous);
@@ -57,7 +66,7 @@ public class GuideReferencesGameTest {
                 if (id.getNamespace().equals(Nautec.MODID) && !claimed.containsKey(id)) errors.add(path + " links " + id + " which no page lists in item_ids");
             });
             each(RECIPE, text, id -> {
-                if (recipes.byKey(ResourceKey.create(Registries.RECIPE, id)).isEmpty()) errors.add(path + " recipe " + id);
+                if (recipes.byKey(id).isEmpty()) errors.add(path + " recipe " + id);
             });
             each(ITEM, text, id -> {
                 if (!BuiltInRegistries.ITEM.containsKey(id)) errors.add(path + " item " + id);
@@ -80,11 +89,11 @@ public class GuideReferencesGameTest {
         helper.succeed();
     }
 
-    private static void each(Pattern pattern, String text, Consumer<Identifier> action) {
+    private static void each(Pattern pattern, String text, Consumer<ResourceLocation> action) {
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             String raw = matcher.group(1);
-            action.accept(raw.contains(":") ? Identifier.parse(raw) : Nautec.rl(raw));
+            action.accept(raw.contains(":") ? ResourceLocation.parse(raw) : Nautec.rl(raw));
         }
     }
 }

@@ -11,7 +11,9 @@
   },
   "ingredients": [
     {
-      "ingredient": "#c:dusts/salt"
+      "ingredient": {
+        "tag": "c:dusts/salt"
+      }
     }
   ]
 }

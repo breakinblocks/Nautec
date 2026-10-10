@@ -6,5 +6,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "minecraft:melon_slice"
+  "nutrient": {
+    "item": "minecraft:melon_slice"
+  }
 }

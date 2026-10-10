@@ -67,7 +67,7 @@ public class ItemEtching {
     }
 
     private static Optional<ItemEtchingRecipe> getEtchingRecipe(ItemStack stack, ServerLevel level) {
-        return level.recipeAccess()
+        return level.getRecipeManager()
                 .getRecipeFor(ItemEtchingRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level)
                 .map(RecipeHolder::value);
     }

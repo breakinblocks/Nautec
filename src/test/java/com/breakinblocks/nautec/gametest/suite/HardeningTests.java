@@ -14,7 +14,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ClientInformation;
@@ -40,17 +39,17 @@ public final class HardeningTests {
     private HardeningTests() {
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }
 
-    private static ResonancePylonBlockEntity pylon(GameTestHelper helper) {
+    private static ResonancePylonBlockEntity pylon(NTGameTestHelper helper) {
         helper.setBlock(PYLON, NTBlocks.RESONANCE_PYLON.get());
         return helper.getBlockEntity(PYLON, ResonancePylonBlockEntity.class);
     }
 
-    private static ServerPlayer playerNear(GameTestHelper helper, String name) {
+    private static ServerPlayer playerNear(NTGameTestHelper helper, String name) {
         ServerPlayer player = player(helper, name);
         player.setPos(helper.absoluteVec(new Vec3(4.5, 1.0, 2.5)));
         return player;
@@ -94,7 +93,7 @@ public final class HardeningTests {
 
         r.add("hardening/ender_magnet_keeps_what_does_not_fit", 20, helper -> {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-            player.snapTo(helper.absoluteVec(new Vec3(4.5, 1.0, 4.5)), 0.0f, 0.0f);
+            player.moveTo(helper.absoluteVec(new Vec3(4.5, 1.0, 4.5)), 0.0f, 0.0f);
             Inventory inventory = player.getInventory();
             for (int i = 0; i < Inventory.INVENTORY_SIZE; i++) {
                 inventory.setItem(i, new ItemStack(Items.STONE, 64));

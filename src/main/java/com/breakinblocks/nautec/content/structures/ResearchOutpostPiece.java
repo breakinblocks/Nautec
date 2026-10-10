@@ -59,9 +59,9 @@ public class ResearchOutpostPiece extends StructurePiece {
 
     public ResearchOutpostPiece(CompoundTag tag) {
         super(NTStructures.RESEARCH_OUTPOST_PIECE.get(), tag);
-        this.origin = new BlockPos(tag.getIntOr("OX", 0), tag.getIntOr("OY", 0), tag.getIntOr("OZ", 0));
-        this.rotation = Rotation.values()[Math.floorMod(tag.getIntOr("Rot", 0), Rotation.values().length)];
-        this.seed = tag.getLongOr("Seed", 0L);
+        this.origin = new BlockPos(tag.getInt("OX"), tag.getInt("OY"), tag.getInt("OZ"));
+        this.rotation = Rotation.values()[Math.floorMod(tag.getInt("Rot"), Rotation.values().length)];
+        this.seed = tag.getLong("Seed");
         setOrientation(null);
     }
 
@@ -173,7 +173,7 @@ public class ResearchOutpostPiece extends StructurePiece {
                             break;
                         }
                         BlockState here = level.getBlockState(pos);
-                        if (here.isSolidRender() && !here.getFluidState().is(FluidTags.WATER)) {
+                        if (here.isSolidRender(level, pos) && !here.getFluidState().is(FluidTags.WATER)) {
                             break;
                         }
                         set(x, y, z, Blocks.PRISMARINE_BRICKS.defaultBlockState());
@@ -207,7 +207,7 @@ public class ResearchOutpostPiece extends StructurePiece {
                     }
                     for (int y = top + 1; y <= top + 2; y++) {
                         BlockPos pos = world(x, y, z);
-                        if (clip.isInside(pos) && !level.getBlockState(pos).isSolidRender()) {
+                        if (clip.isInside(pos) && !level.getBlockState(pos).isSolidRender(level, pos)) {
                             set(x, y, z, water());
                         }
                     }

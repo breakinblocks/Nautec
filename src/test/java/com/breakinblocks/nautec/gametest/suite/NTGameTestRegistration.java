@@ -2,14 +2,16 @@ package com.breakinblocks.nautec.gametest.suite;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.minecraft.gametest.framework.TestFunction;
+
+import java.util.List;
 
 public final class NTGameTestRegistration {
     private NTGameTestRegistration() {
     }
 
-    public static void registerTests(RegisterGameTestsEvent event) {
-        NTTestRegistrar r = new NTTestRegistrar(event);
+    public static List<TestFunction> registerTests() {
+        NTTestRegistrar r = new NTTestRegistrar();
 
         r.add("framework/arena_smoke", 20, helper -> {
             BlockPos pos = new BlockPos(4, 1, 4);
@@ -84,5 +86,6 @@ public final class NTGameTestRegistration {
         if (r.registeredCount() != 689) {
             throw new IllegalStateException("Expected 689 Nautec suite tests, registered " + r.registeredCount());
         }
+        return r.functions();
     }
 }

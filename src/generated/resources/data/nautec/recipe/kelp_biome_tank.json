@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "nautec:deep_steel_plating",
-    "G": "#c:glass_panes",
-    "O": "#c:obsidians",
-    "X": "minecraft:kelp"
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    },
+    "X": {
+      "item": "minecraft:kelp"
+    }
   },
   "pattern": [
     "DGD",
@@ -13,6 +21,7 @@
     "GOG"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:kelp_biome_tank"
   }
 }

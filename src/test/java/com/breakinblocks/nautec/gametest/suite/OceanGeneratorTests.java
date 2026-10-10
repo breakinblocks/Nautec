@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +23,7 @@ public final class OceanGeneratorTests {
     private OceanGeneratorTests() {
     }
 
-    private static void flood(GameTestHelper helper) {
+    private static void flood(NTGameTestHelper helper) {
         BlockPos from = helper.absolutePos(new BlockPos(1, 1, 1));
         BlockPos to = helper.absolutePos(new BlockPos(7, 8, 7));
         for (BlockPos pos : BlockPos.betweenClosed(from, to)) {
@@ -32,13 +31,13 @@ public final class OceanGeneratorTests {
         }
     }
 
-    private static TidalRotorBlockEntity rotor(GameTestHelper helper, boolean wet) {
+    private static TidalRotorBlockEntity rotor(NTGameTestHelper helper, boolean wet) {
         helper.getLevel().setBlock(helper.absolutePos(ROTOR), NTBlocks.TIDAL_ROTOR.get().defaultBlockState()
                 .setValue(BlockStateProperties.WATERLOGGED, wet), Block.UPDATE_ALL);
         return (TidalRotorBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(ROTOR));
     }
 
-    private static ThermalVentTapBlockEntity tap(GameTestHelper helper, int hotBlocks) {
+    private static ThermalVentTapBlockEntity tap(NTGameTestHelper helper, int hotBlocks) {
         ServerLevel level = helper.getLevel();
         int placed = 0;
         for (int x = -1; x <= 1; x++) {

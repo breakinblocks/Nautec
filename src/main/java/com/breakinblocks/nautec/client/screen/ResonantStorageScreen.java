@@ -6,10 +6,9 @@ import com.breakinblocks.nautec.content.resonantstorage.ChannelAccess;
 import com.breakinblocks.nautec.content.resonantstorage.FaceMode;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantStorageBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantStorageItem;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -48,7 +47,10 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
     protected final List<AbstractWidget> storageWidgets = new ArrayList<>();
 
     protected ResonantStorageScreen(M menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, WIDTH, HEIGHT);
+        super(menu, inventory, title);
+        this.imageWidth = WIDTH;
+        this.imageHeight = HEIGHT;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.titleLabelY = 6;
         this.inventoryLabelY = ResonantStorageMenu.INVENTORY_Y - 11;
     }
@@ -135,8 +137,7 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         PanelStyle.panel(graphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
         for (Slot slot : this.menu.slots) {
             if (slot.isActive()) {
@@ -150,15 +151,15 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
         }
     }
 
-    protected abstract void extractStorage(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
+    protected abstract void extractStorage(GuiGraphics graphics, int mouseX, int mouseY);
 
-    private void extractChannel(GuiGraphicsExtractor graphics) {
+    private void extractChannel(GuiGraphics graphics) {
         GatewayAddress address = storage().channel().address();
         List<DyeColor> palette = GatewayAddress.PALETTE;
         PanelStyle.screen(graphics, this.leftPos + 8, this.topPos + SWATCH_Y - 4, WIDTH - 16, GatewayAddress.SLOTS * SWATCH_ROW_PITCH + 5);
         for (int slot = 0; slot < GatewayAddress.SLOTS; slot++) {
             int y = swatchY(slot);
-            graphics.text(this.font, String.valueOf(slot + 1), this.leftPos + 12, y + 1, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, String.valueOf(slot + 1), this.leftPos + 12, y + 1, PanelStyle.READOUT_DIM, false);
             for (int colour = 0; colour < palette.size(); colour++) {
                 DyeColor dye = palette.get(colour);
                 int x = swatchX(colour);
@@ -175,24 +176,24 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
         if (tab == Tab.CHANNEL) {
             Component owner = ResonantStorageItem.describe(storage().channel().access(), storage().ownerName());
-            graphics.text(this.font, owner, 8, CONTENT_Y + 17, PanelStyle.LABEL, false);
+            graphics.drawString(this.font, owner, 8, CONTENT_Y + 17, PanelStyle.LABEL, false);
         } else if (tab == Tab.SIDES) {
             int y = CONTENT_Y + 3 * FACE_PITCH + 5;
             for (FormattedCharSequence line : this.font.split(Component.translatable("nautec.resonant_storage.sides_hint"), WIDTH - 24)) {
-                graphics.text(this.font, line, 12, y, PanelStyle.READOUT, false);
+                graphics.drawString(this.font, line, 12, y, PanelStyle.READOUT, false);
                 y += 9;
             }
         }
-        graphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         if (tab == Tab.CHANNEL) {
             List<DyeColor> palette = GatewayAddress.PALETTE;
             for (int slot = 0; slot < GatewayAddress.SLOTS; slot++) {
@@ -200,23 +201,23 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
                 for (int colour = 0; colour < palette.size(); colour++) {
                     int x = swatchX(colour);
                     if (PanelStyle.inside(mouseX, mouseY, x, y, SWATCH, SWATCH)) {
-                        graphics.setTooltipForNextFrame(this.font, Component.translatable("color.minecraft." + palette.get(colour).getSerializedName()), mouseX, mouseY);
+                        graphics.renderTooltip(this.font, Component.translatable("color.minecraft." + palette.get(colour).getSerializedName()), mouseX, mouseY);
                     }
                 }
             }
         }
-        extractTooltip(graphics, mouseX, mouseY);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (tab == Tab.CHANNEL) {
             List<DyeColor> palette = GatewayAddress.PALETTE;
             for (int slot = 0; slot < GatewayAddress.SLOTS; slot++) {
                 int y = swatchY(slot);
                 for (int colour = 0; colour < palette.size(); colour++) {
                     int x = swatchX(colour);
-                    if (PanelStyle.inside(event.x(), event.y(), x, y, SWATCH, SWATCH)) {
+                    if (PanelStyle.inside(mouseX, mouseY, x, y, SWATCH, SWATCH)) {
                         GatewayAddress wanted = storage().channel().address().withSlot(slot, palette.get(colour));
                         press(ResonantStorageMenu.ADDRESS_BUTTON + wanted.pack());
                         return true;
@@ -224,16 +225,16 @@ public abstract class ResonantStorageScreen<M extends ResonantStorageMenu<?>> ex
                 }
             }
         }
-        if (tab == Tab.SIDES && event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        if (tab == Tab.SIDES && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             for (int i = 0; i < FACE_ORDER.length; i++) {
                 AbstractWidget widget = sideWidgets.get(i);
-                if (widget.isMouseOver(event.x(), event.y())) {
+                if (widget.isMouseOver(mouseX, mouseY)) {
                     cycleFace(FACE_ORDER[i], true);
                     return true;
                 }
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     protected enum Tab {

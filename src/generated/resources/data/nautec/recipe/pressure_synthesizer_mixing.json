@@ -7,7 +7,9 @@
   },
   "ingredients": [
     {
-      "ingredient": "nautec:flawless_prismarine_crystal"
+      "ingredient": {
+        "item": "nautec:flawless_prismarine_crystal"
+      }
     }
   ],
   "result": {

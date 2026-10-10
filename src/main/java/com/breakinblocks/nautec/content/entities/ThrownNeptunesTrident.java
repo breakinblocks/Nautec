@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -12,31 +13,29 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
-import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class ThrownNeptunesTrident extends AbstractArrow {
     private static final EntityDataAccessor<Boolean> ID_FOIL = SynchedEntityData.defineId(ThrownNeptunesTrident.class, EntityDataSerializers.BOOLEAN);
@@ -78,7 +77,7 @@ public class ThrownNeptunesTrident extends AbstractArrow {
         if ((this.dealtDamage || this.isNoPhysics()) && currentOwner != null) {
             if (!this.isAcceptableReturnOwner()) {
                 if (this.level() instanceof ServerLevel level && this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                    this.spawnAtLocation(level, this.getPickupItem(), 0.1F);
+                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 }
 
                 this.discard();
@@ -122,12 +121,6 @@ public class ThrownNeptunesTrident extends AbstractArrow {
     }
 
     @Override
-    protected Collection<EntityHitResult> findHitEntities(Vec3 from, Vec3 to) {
-        EntityHitResult hit = this.findHitEntity(from, to);
-        return hit != null ? List.of(hit) : List.of();
-    }
-
-    @Override
     protected void onHitEntity(EntityHitResult hitResult) {
         Entity entity = hitResult.getEntity();
         float damage = NeptunesTridentItem.DAMAGE;
@@ -138,15 +131,14 @@ public class ThrownNeptunesTrident extends AbstractArrow {
         }
 
         this.dealtDamage = true;
-        if (entity.hurtOrSimulate(damageSource, damage)) {
-            if (entity.is(EntityType.ENDERMAN)) {
+        if (entity.hurt(damageSource, damage)) {
+            if (entity.getType() == EntityType.ENDERMAN) {
                 this.releaseShockwave(entity.position());
                 return;
             }
 
             if (this.level() instanceof ServerLevel serverLevel) {
-                EnchantmentHelper.doPostAttackEffectsWithItemSourceOnBreak(
-                        serverLevel, entity, damageSource, this.getWeaponItem(), weapon -> this.kill(serverLevel));
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, entity, damageSource, this.getWeaponItem());
                 this.channelLightning(serverLevel, entity.position(), entity);
             }
 
@@ -156,7 +148,7 @@ public class ThrownNeptunesTrident extends AbstractArrow {
             }
         }
 
-        this.deflect(ProjectileDeflection.REVERSE, entity, this.owner, false);
+        this.deflect(ProjectileDeflection.REVERSE, entity, this.getOwner(), false);
         this.setDeltaMovement(this.getDeltaMovement().multiply(0.02, 0.2, 0.02));
         this.playSound(SoundEvents.TRIDENT_HIT, 1.0F, 1.0F);
         this.releaseShockwave(entity.position());
@@ -200,9 +192,9 @@ public class ThrownNeptunesTrident extends AbstractArrow {
                 null,
                 compensatedHitPosition,
                 level.getBlockState(hitResult.getBlockPos()),
-                item -> this.kill(level)
+                item -> this.kill()
         );
-        if (level.getBlockState(BlockPos.containing(compensatedHitPosition)).is(BlockTags.LIGHTNING_RODS)) {
+        if (level.getBlockState(BlockPos.containing(compensatedHitPosition)).is(Blocks.LIGHTNING_ROD)) {
             this.channelLightning(level, compensatedHitPosition, this);
         }
     }
@@ -213,12 +205,12 @@ public class ThrownNeptunesTrident extends AbstractArrow {
             return;
         }
 
-        LightningBolt bolt = Level.isInSpawnableBounds(pos) ? EntityType.LIGHTNING_BOLT.spawn(level, pos, EntitySpawnReason.TRIGGERED) : null;
+        LightningBolt bolt = Level.isInSpawnableBounds(pos) ? EntityType.LIGHTNING_BOLT.spawn(level, pos, MobSpawnType.TRIGGERED) : null;
         if (bolt != null) {
             if (this.getOwner() instanceof ServerPlayer player) {
                 bolt.setCause(player);
             }
-            bolt.snapTo(position.x, position.y, position.z, bolt.getYRot(), bolt.getXRot());
+            bolt.moveTo(position.x, position.y, position.z, bolt.getYRot(), bolt.getXRot());
         }
         if (!soundSource.isSilent()) {
             level.playSound(null, position.x, position.y, position.z, SoundEvents.TRIDENT_THUNDER, soundSource.getSoundSource(), THUNDER_VOLUME, 1.0F);
@@ -259,16 +251,18 @@ public class ThrownNeptunesTrident extends AbstractArrow {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        ValueInput input = TagValueInput.create(this.registryAccess(), tag);
         this.dealtDamage = input.getBooleanOr("DealtDamage", false);
         this.shockwaveSpent = input.getBooleanOr("ShockwaveSpent", false);
         this.entityData.set(ID_FOIL, this.getPickupItemStackOrigin().hasFoil());
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        ValueOutput output = TagValueOutput.wrap(this.registryAccess(), tag);
         output.putBoolean("DealtDamage", this.dealtDamage);
         output.putBoolean("ShockwaveSpent", this.shockwaveSpent);
     }

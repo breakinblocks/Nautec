@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "N": "nautec:aquarine_copper_nugget"
+    "N": {
+      "item": "nautec:aquarine_copper_nugget"
+    }
   },
   "pattern": [
     "NNN",
@@ -10,6 +12,7 @@
     "NNN"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:aquarine_copper_ingot"
   }
 }

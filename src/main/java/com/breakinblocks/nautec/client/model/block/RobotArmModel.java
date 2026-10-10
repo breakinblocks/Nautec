@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.client.model.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,12 +10,11 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 
-public class RobotArmModel extends Model.Simple {
-    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(Nautec.rl("textures/entity/robot_arm.png"));
+public class RobotArmModel extends SimpleModel {
+    public static final RenderType RENDER_TYPE = RenderType.entitySolid(Nautec.rl("textures/entity/robot_arm.png"));
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("robot_arm"), "main");
     private final ModelPart main;
     private final ModelPart bottom;
@@ -24,7 +22,7 @@ public class RobotArmModel extends Model.Simple {
     private final ModelPart tip;
 
     public RobotArmModel(ModelPart root) {
-        super(root, RenderTypes::entitySolid);
+        super(root, RenderType::entitySolid);
         this.main = root.getChild("main");
         this.bottom = main.getChild("bottom");
         this.middle = main.getChild("middle");
@@ -50,12 +48,12 @@ public class RobotArmModel extends Model.Simple {
         return LayerDefinition.create(meshdefinition, 32, 32);
     }
 
-    public void submitPart(RobotArmParts part, PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
-        collector.submitModelPart((switch (part) {
+    public void submitPart(RobotArmParts part, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        renderPart((switch (part) {
             case BOTTOM -> bottom;
             case MIDDLE -> middle;
             case TIP -> tip;
-        }), poseStack, RENDER_TYPE, packedLight, packedOverlay, null);
+        }), poseStack, buffers, RENDER_TYPE, packedLight, packedOverlay);
     }
 
     public enum RobotArmParts {

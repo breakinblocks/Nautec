@@ -4,7 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -23,7 +23,7 @@ public final class NTCapabilities {
         public static final EntityCapability<IBacteriaStorage, @Nullable Direction> ENTITY = EntityCapability.createSided(create("bacteria"), IBacteriaStorage.class);
     }
 
-    private static Identifier create(String path) {
+    private static ResourceLocation create(String path) {
         return Nautec.rl(path);
     }
 }

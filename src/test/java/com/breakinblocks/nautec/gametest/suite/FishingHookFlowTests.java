@@ -8,7 +8,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -67,7 +66,7 @@ public final class FishingHookFlowTests {
                 zoneCatch(helper, true));
     }
 
-    private static void zoneCatch(GameTestHelper helper, boolean hookInWorld) {
+    private static void zoneCatch(NTGameTestHelper helper, boolean hookInWorld) {
         ServerLevel level = helper.getLevel();
         BlockPos surface = pool(helper);
         BlockPos zonePos = surface.above();
@@ -82,7 +81,7 @@ public final class FishingHookFlowTests {
         owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.FISHING_ROD));
 
         FishingHook hook = new FishingHook(owner, level, 0, 0);
-        hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+        hook.moveTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
         hook.setDeltaMovement(Vec3.ZERO);
         if (hookInWorld) {
             level.addFreshEntity(hook);
@@ -109,7 +108,7 @@ public final class FishingHookFlowTests {
         return !BuiltInRegistries.ITEM.getKey(item.getItem().getItem()).getNamespace().equals("starcatcher");
     }
 
-    private static void liveBite(GameTestHelper helper, boolean withZone) {
+    private static void liveBite(NTGameTestHelper helper, boolean withZone) {
         ServerLevel level = helper.getLevel();
         BlockPos surface = pool(helper);
 
@@ -154,20 +153,20 @@ public final class FishingHookFlowTests {
         });
     }
 
-    private static NautecFishingHook cast(GameTestHelper helper, BlockPos surface) {
+    private static NautecFishingHook cast(NTGameTestHelper helper, BlockPos surface) {
         ServerLevel level = helper.getLevel();
         Player owner = helper.makeMockPlayer(GameType.SURVIVAL);
         owner.setPos(surface.getX() + 0.5, surface.getY() + 1.0, surface.getZ() + 3.5);
         owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.NAUTEC_FISHING_ROD.get()));
 
         NautecFishingHook hook = new NautecFishingHook(owner, level, 0, 0);
-        hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+        hook.moveTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
         hook.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(hook);
         return hook;
     }
 
-    private static BlockPos pool(GameTestHelper helper) {
+    private static BlockPos pool(NTGameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
         for (int dx = -3; dx <= 3; dx++) {

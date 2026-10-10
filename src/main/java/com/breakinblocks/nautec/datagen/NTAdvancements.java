@@ -13,25 +13,23 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.DamageSourcePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.FishingRodHookedTrigger;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.KilledTrigger;
-import net.minecraft.advancements.criterion.LocationPredicate;
-import net.minecraft.advancements.criterion.PlayerTrigger;
-import net.minecraft.advancements.criterion.StartRidingTrigger;
-import net.minecraft.advancements.criterion.TagPredicate;
+import net.minecraft.advancements.critereon.DamageSourcePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.FishingRodHookedTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.KilledTrigger;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.critereon.StartRidingTrigger;
+import net.minecraft.advancements.critereon.TagPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
@@ -41,15 +39,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class NTAdvancements implements AdvancementSubProvider {
-    private static final Identifier BACKGROUND = Nautec.rl("block/polished_prismarine");
+    private static final ResourceLocation BACKGROUND = Nautec.rl("textures/block/polished_prismarine.png");
 
     private Consumer<AdvancementHolder> output;
 
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> output) {
         this.output = output;
-        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
-        HolderGetter<EntityType<?>> entities = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         HolderGetter<Biome> biomes = registries.lookupOrThrow(Registries.BIOME);
 
         AdvancementHolder root = Advancement.Builder.advancement()
@@ -92,13 +88,13 @@ public class NTAdvancements implements AdvancementSubProvider {
                         "hydrothermal_vents", inBiome(biomes, NTBiomeKeys.HYDROTHERMAL_VENTS),
                         "prismarine_reef", inBiome(biomes, NTBiomeKeys.PRISMARINE_REEF)));
         task(trench, "abyssal_maw", NTItems.ABYSSAL_ORGAN, AdvancementType.GOAL, 50,
-                Map.of("maw", KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entities, NTEntities.ABYSSAL_MAW.get()))));
+                Map.of("maw", KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(NTEntities.ABYSSAL_MAW.get()))));
         task(root, "prismatic_angler", NTItems.NAUTEC_FISHING_ROD, AdvancementType.TASK, 0,
                 Map.of("hooked", FishingRodHookedTrigger.TriggerInstance.fishedItem(
-                        Optional.of(ItemPredicate.Builder.item().of(items, NTItems.NAUTEC_FISHING_ROD).build()), Optional.empty(), Optional.empty())));
+                        Optional.of(ItemPredicate.Builder.item().of(NTItems.NAUTEC_FISHING_ROD).build()), Optional.empty(), Optional.empty())));
 
         EntityPredicate.Builder inSubmarine = EntityPredicate.Builder.entity()
-                .vehicle(EntityPredicate.Builder.entity().of(entities, NTEntities.SUBMARINE.get()));
+                .vehicle(EntityPredicate.Builder.entity().of(NTEntities.SUBMARINE.get()));
         AdvancementHolder seaScout = task(suited, "sea_scout", NTItems.SUBMARINE, AdvancementType.TASK, 0,
                 Map.of("riding", StartRidingTrigger.TriggerInstance.playerStartsRiding(inSubmarine)));
         task(seaScout, "impulse_laser", NTItems.IMPULSE_LASER_MODULE, AdvancementType.TASK, 0,
@@ -112,7 +108,7 @@ public class NTAdvancements implements AdvancementSubProvider {
                 Map.of("travelled", player(NTCriteriaTriggers.GATEWAY_TRAVEL.get(), null)));
         task(gatewayTravel, "sea_lane", NTItems.SUBMARINE, AdvancementType.CHALLENGE, 100,
                 Map.of("piloted", player(NTCriteriaTriggers.GATEWAY_TRAVEL.get(), EntityPredicate.Builder.entity()
-                        .vehicle(EntityPredicate.Builder.entity().of(entities, NTEntities.SUBMARINE.get())))));
+                        .vehicle(EntityPredicate.Builder.entity().of(NTEntities.SUBMARINE.get())))));
         task(gatewayTravel, "ring_maker", NTBlocks.GATEWAY, AdvancementType.GOAL, 50,
                 Map.of("gateway", has(NTBlocks.GATEWAY)));
 

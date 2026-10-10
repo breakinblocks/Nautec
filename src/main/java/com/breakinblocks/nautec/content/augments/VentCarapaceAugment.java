@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.registries.NTAugments;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -13,9 +13,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
 public class VentCarapaceAugment extends Augment {
-    private static final Identifier ARMOR_ID = Nautec.rl("vent_carapace_armor");
-    private static final Identifier KNOCKBACK_ID = Nautec.rl("vent_carapace_knockback");
-    private static final Identifier BURNING_ID = Nautec.rl("vent_carapace_burning");
+    private static final ResourceLocation ARMOR_ID = Nautec.rl("vent_carapace_armor");
+    private static final ResourceLocation KNOCKBACK_ID = Nautec.rl("vent_carapace_knockback");
+    private static final ResourceLocation BURNING_ID = Nautec.rl("vent_carapace_burning");
 
     public VentCarapaceAugment(AugmentSlot augmentSlot) {
         super(NTAugments.VENT_CARAPACE.get(), augmentSlot);
@@ -35,14 +35,14 @@ public class VentCarapaceAugment extends Augment {
         remove(player, Attributes.BURNING_TIME, BURNING_ID);
     }
 
-    private static void apply(Player player, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
+    private static void apply(Player player, Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance != null) {
             instance.addOrUpdateTransientModifier(new AttributeModifier(id, amount, operation));
         }
     }
 
-    private static void remove(Player player, Holder<Attribute> attribute, Identifier id) {
+    private static void remove(Player player, Holder<Attribute> attribute, ResourceLocation id) {
         AttributeInstance instance = player.getAttribute(attribute);
         if (instance != null) {
             instance.removeModifier(id);

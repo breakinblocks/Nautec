@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "nautec:diving_chestplate",
-    "G": "nautec:air_bottle"
+    "D": {
+      "item": "nautec:diving_chestplate"
+    },
+    "G": {
+      "item": "nautec:air_bottle"
+    }
   },
   "pattern": [
     "GGG",
@@ -11,9 +15,7 @@
     "GGG"
   ],
   "result": {
-    "components": {
-      "nautec:oxygen": 600
-    },
+    "count": 1,
     "id": "nautec:diving_chestplate"
   }
 }

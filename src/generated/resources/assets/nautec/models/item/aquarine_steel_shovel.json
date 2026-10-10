@@ -1,5 +1,13 @@
 {
   "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "nautec:item/aquarine_steel_shovel_enabled",
+      "predicate": {
+        "nautec:ability_enabled": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "nautec:item/aquarine_steel_shovel"
   }

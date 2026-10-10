@@ -8,7 +8,7 @@ import com.breakinblocks.nautec.registries.NTAugments;
 import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ThrowSpreadingTrident extends Augment {
     private static final float SPREAD_ANGLE = 8.0f;
@@ -20,7 +20,7 @@ public class ThrowSpreadingTrident extends Augment {
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
         if (player.isLocalPlayer() && NTKeybinds.THROW_SPREADING_KEYBIND.get().consumeClick() && !isOnCooldown()) {
-            ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
+            PacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }
     }

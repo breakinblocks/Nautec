@@ -21,14 +21,14 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.energy.SimpleEnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
 
 public class EnergyConverterBlockEntity extends LaserBlockEntity implements MenuProvider {
     private static final String FE_BUFFER_KEY = "fe_buffer";

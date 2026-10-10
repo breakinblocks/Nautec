@@ -4,7 +4,9 @@
   "desc": "Negates all fall damage",
   "ingredients": [
     {
-      "ingredient": "nautec:shock_absorber"
+      "ingredient": {
+        "item": "nautec:shock_absorber"
+      }
     }
   ],
   "resultAugment": "nautec:prevent_fall_damage"

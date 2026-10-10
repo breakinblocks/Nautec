@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.content.structures;
 import com.breakinblocks.nautec.registries.NTStructures;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -18,7 +18,7 @@ public class Ruins1 extends NTJigsawStructure {
 
     public Ruins1(StructureSettings config,
                   Holder<StructureTemplatePool> startPool,
-                  Optional<Identifier> startJigsawName,
+                  Optional<ResourceLocation> startJigsawName,
                   int size,
                   HeightProvider startHeight,
                   Optional<Heightmap.Types> projectStartToHeightmap,

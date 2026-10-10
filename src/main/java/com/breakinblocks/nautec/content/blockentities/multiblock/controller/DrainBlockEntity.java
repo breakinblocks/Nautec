@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.multiblock.controller;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.google.common.collect.ImmutableMap;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -25,13 +26,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -340,9 +340,9 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         }
         BlockPos selfPos = worldPosition;
         for (BlockPos blockPos : BlockUtils.getBlocksAroundSelfHorizontal(selfPos)) {
-            BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, blockPos.above(), level.getBlockState(blockPos));
+            BubbleColumnBlock.updateColumn(level, blockPos.above(), level.getBlockState(blockPos));
         }
-        BubbleColumnBlock.updateColumn(Blocks.BUBBLE_COLUMN, level, selfPos.above(), level.getBlockState(selfPos));
+        BubbleColumnBlock.updateColumn(level, selfPos.above(), level.getBlockState(selfPos));
     }
 
     public float getValveIndependentAngle(float partialTicks) {
@@ -400,7 +400,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
 
     @Override
     public <T> ImmutableMap<Direction, Pair<IOActions, int[]>> getSidedInteractions(BlockCapability<T, @Nullable Direction> capability) {
-        if (capability == Capabilities.Fluid.BLOCK) {
+        if (capability == TransferCapabilities.Fluid.BLOCK) {
             return ImmutableMap.of(
                     Direction.DOWN, Pair.of(IOActions.EXTRACT, new int[]{0})
             );

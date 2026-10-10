@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.recipes;
 
+
+import com.breakinblocks.nautec.content.recipes.utils.SimpleRecipeSerializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,12 +16,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -44,22 +43,28 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull ItemTransformationRecipeInput input) {
+    public @NotNull ItemStack assemble(@NotNull ItemTransformationRecipeInput input, HolderLookup.@NotNull Provider registries) {
         return resultTemplate.create();
     }
 
+    @Override
     public @NotNull ItemStack getResultItem(HolderLookup.@Nullable Provider registries) {
         return resultTemplate.create();
     }
 
     @Override
-    public @NotNull String group() {
+    public @NotNull String getGroup() {
         return "";
     }
 
     @Override
     public boolean showNotification() {
         return false;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return true;
     }
 
     @Override
@@ -77,19 +82,9 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
         return true;
     }
 
-    @Override
-    public @NotNull PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public @NotNull RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
     public static Optional<ItemTransformationRecipe> findBest(ServerLevel level, ItemTransformationRecipeInput input) {
         ItemTransformationRecipe best = null;
-        for (RecipeHolder<ItemTransformationRecipe> holder : level.getServer().getRecipeManager().recipeMap().byType(Type.INSTANCE)) {
+        for (RecipeHolder<ItemTransformationRecipe> holder : level.getServer().getRecipeManager().getAllRecipesFor(Type.INSTANCE)) {
             ItemTransformationRecipe recipe = holder.value();
             if (recipe.matches(input, level) && (best == null || recipe.purity() > best.purity())) {
                 best = recipe;
@@ -98,6 +93,7 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
         return Optional.ofNullable(best);
     }
 
+    @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {
         return RecipeUtils.listToNonNullList(List.of(RecipeUtils.iWCToIngredientSaveCount(ingredient)));
     }
@@ -123,7 +119,7 @@ public record ItemTransformationRecipe(IngredientWithCount ingredient, ItemStack
                 ItemTransformationRecipe::power,
                 ItemTransformationRecipe::new
         );
-        public static final RecipeSerializer<ItemTransformationRecipe> INSTANCE = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+        public static final RecipeSerializer<ItemTransformationRecipe> INSTANCE = new SimpleRecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
         private Serializer() {
         }

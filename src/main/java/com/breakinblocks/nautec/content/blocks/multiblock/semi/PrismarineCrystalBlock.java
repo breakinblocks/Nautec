@@ -136,7 +136,7 @@ public class PrismarineCrystalBlock extends LaserBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack tool, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         removeCrystal(level, player, pos);
         return true;
     }

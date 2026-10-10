@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
@@ -19,8 +20,7 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,11 +29,11 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 public final class ExpansionFeatureTests {
     private static final BlockPos CATALYST = new BlockPos(2, 1, 4);
@@ -93,15 +93,15 @@ public final class ExpansionFeatureTests {
 
             BlockPos center = helper.absolutePos(BEACON);
             var dimension = helper.getLevel().dimension();
-            helper.assertTrue(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, EntitySpawnReason.NATURAL, center.offset(100, 20, 0)),
+            helper.assertTrue(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, MobSpawnType.NATURAL, center.offset(100, 20, 0)),
                     "natural monsters are blocked inside the radius");
-            helper.assertTrue(ConduitBeaconTracker.blocks(dimension, MobCategory.CREATURE, EntitySpawnReason.CHUNK_GENERATION, center.offset(0, 0, -120)),
+            helper.assertTrue(ConduitBeaconTracker.blocks(dimension, MobCategory.CREATURE, MobSpawnType.CHUNK_GENERATION, center.offset(0, 0, -120)),
                     "passive mobs are blocked inside the radius");
-            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, EntitySpawnReason.NATURAL, center.offset(200, 0, 0)),
+            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, MobSpawnType.NATURAL, center.offset(200, 0, 0)),
                     "spawns outside the radius are untouched");
-            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, EntitySpawnReason.SPAWNER, center.offset(10, 0, 0)),
+            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.MONSTER, MobSpawnType.SPAWNER, center.offset(10, 0, 0)),
                     "spawners still work");
-            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.WATER_CREATURE, EntitySpawnReason.NATURAL, center.offset(10, 0, 0)),
+            helper.assertFalse(ConduitBeaconTracker.blocks(dimension, MobCategory.WATER_CREATURE, MobSpawnType.NATURAL, center.offset(10, 0, 0)),
                     "water creatures still spawn");
             helper.succeed();
         });
@@ -181,7 +181,7 @@ public final class ExpansionFeatureTests {
         r.add("dish_storage/pipes_insert_and_extract_only_dishes", 20, helper -> {
             helper.setBlock(MACHINE, NTBlocks.AQUARINE_DISH_STORAGE.get());
             DishStorageBlockEntity storage = helper.getBlockEntity(MACHINE, DishStorageBlockEntity.class);
-            ResourceHandler<ItemResource> side = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.UP);
+            ResourceHandler<ItemResource> side = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.UP);
             helper.assertTrue(side != null, "the storage exposes items on every side");
             helper.assertValueEqual(0, insert(side, new ItemStack(Items.DIRT)), "dirt refused");
             helper.assertValueEqual(1, insert(side, new ItemStack(NTItems.PETRI_DISH.get())), "an empty dish");
@@ -287,7 +287,7 @@ public final class ExpansionFeatureTests {
                 helper.assertTrue(grown.getCount() >= 2, "one per cycle");
                 ItemStack cactus = helper.getBlockEntity(MACHINE.east(2), BiomeTankBlockEntity.class).getItemStackHandler().getStackInSlot(0);
                 helper.assertTrue(cactus.is(Items.CACTUS), "the cactus tank grows cactus");
-                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.DOWN);
+                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.DOWN);
                 helper.assertValueEqual(0, insert(side, new ItemStack(Items.KELP)), "nothing can be piped in");
                 try (Transaction tx = Transaction.openRoot()) {
                     int taken = side.extract(0, side.getResource(0), 64, tx);
@@ -299,7 +299,7 @@ public final class ExpansionFeatureTests {
         });
     }
 
-    private static AquaticCatalystBlockEntity catalyst(GameTestHelper helper) {
+    private static AquaticCatalystBlockEntity catalyst(NTGameTestHelper helper) {
         helper.setBlock(CATALYST, NTBlocks.AQUATIC_CATALYST.get().defaultBlockState().setValue(BlockStateProperties.FACING, Direction.WEST));
         helper.setBlock(CATALYST.east(3), NTBlocks.OXYGEN_DIFFUSER.get());
         AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(CATALYST, AquaticCatalystBlockEntity.class);
@@ -307,7 +307,7 @@ public final class ExpansionFeatureTests {
         return catalyst;
     }
 
-    private static ConduitBeaconBlockEntity buildBeacon(GameTestHelper helper, boolean frame) {
+    private static ConduitBeaconBlockEntity buildBeacon(NTGameTestHelper helper, boolean frame) {
         for (int x = -2; x <= 2; x++) {
             for (int y = -2; y <= 2; y++) {
                 for (int z = -2; z <= 2; z++) {
@@ -326,13 +326,13 @@ public final class ExpansionFeatureTests {
         return beacon;
     }
 
-    private static void feed(GameTestHelper helper, ConduitBeaconBlockEntity beacon, Direction travel, int power) {
+    private static void feed(NTGameTestHelper helper, ConduitBeaconBlockEntity beacon, Direction travel, int power) {
         beacon.receivePower(power, travel, helper.absolutePos(BEACON.relative(travel.getOpposite(), 3)));
         beacon.receiveNewPurity(1.0F, travel, helper.absolutePos(BEACON.relative(travel.getOpposite(), 3)));
         beacon.commonTick();
     }
 
-    private static ItemStack colonyDish(GameTestHelper helper) {
+    private static ItemStack colonyDish(NTGameTestHelper helper) {
         ItemStack dish = new ItemStack(NTItems.PETRI_DISH.get());
         IBacteriaStorage storage = dish.getCapability(NTCapabilities.BacteriaStorage.ITEM);
         storage.setBacteria(0, BacteriaInstance.roll(NTBacterias.LITHOPHILES, helper.getLevel().registryAccess()).copyWithSize(100));

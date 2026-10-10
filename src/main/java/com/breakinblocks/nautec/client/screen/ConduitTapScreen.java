@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.screen;
 
+import net.minecraft.client.gui.screens.Screen;
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.api.client.screen.FluidTankRenderer;
 import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import com.breakinblocks.nautec.content.conduits.ConduitChannel;
@@ -18,10 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -29,7 +30,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -96,7 +97,10 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     private int neighbourTicks;
 
     public ConduitTapScreen(ConduitTapMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, 176, 256);
+        super(menu, playerInventory, title);
+        this.imageWidth = 176;
+        this.imageHeight = 256;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.titleLabelY = 6;
         this.inventoryLabelY = ConduitTapMenu.INVENTORY_Y - 11;
     }
@@ -118,7 +122,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     }
 
     private void send(TapSide side, int action, int index, int value) {
-        ClientPacketDistributor.sendToServer(ConduitTapEditPayload.sided(this.menu.containerId, selected, side, action, index, value));
+        PacketDistributor.sendToServer(ConduitTapEditPayload.sided(this.menu.containerId, selected, side, action, index, value));
     }
 
     private static int modeColor(FlowMode mode) {
@@ -285,7 +289,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     }
 
     private void changePriority(int direction) {
-        int step = this.minecraft.hasShiftDown() ? 10 : 1;
+        int step = Screen.hasShiftDown() ? 10 : 1;
         face().setPriority(face().priority() + direction * step);
         send(TapSide.OUTPUT, ConduitTapEditPayload.PRIORITY, 0, face().priority());
     }
@@ -312,7 +316,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
         }
         ItemStack template = stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1);
         filter().setItem(slot, template);
-        ClientPacketDistributor.sendToServer(ConduitTapEditPayload.item(this.menu.containerId, selected, side(), slot, template));
+        PacketDistributor.sendToServer(ConduitTapEditPayload.item(this.menu.containerId, selected, side(), slot, template));
     }
 
     public void setFluidFilter(int slot, FluidStack stack) {
@@ -320,7 +324,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
             return;
         }
         filter().setFluid(slot, stack);
-        ClientPacketDistributor.sendToServer(ConduitTapEditPayload.fluid(this.menu.containerId, selected, side(), slot, stack));
+        PacketDistributor.sendToServer(ConduitTapEditPayload.fluid(this.menu.containerId, selected, side(), slot, stack));
     }
 
     private static String matchKey(TapFilter filter, int slot) {
@@ -352,8 +356,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         PanelStyle.panel(graphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
         for (int i = 0; i < FACE_ORDER.length; i++) {
             Direction direction = FACE_ORDER[i];
@@ -380,8 +383,9 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
         List<Component> tooltip = new ArrayList<>();
         renderFaces(graphics, mouseX, mouseY, tooltip);
         if (page == Page.SETUP) {
@@ -393,30 +397,31 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
             if (slot.index < ConduitTapBlockEntity.SLOTS && !slot.hasItem()) {
                 int sx = this.leftPos + slot.x;
                 int sy = this.topPos + slot.y;
-                graphics.item(slot.index == ConduitTapBlockEntity.UPGRADE_SLOT ? UPGRADE_GHOST : FILTER_GHOST, sx, sy);
-                graphics.nextStratum();
+                graphics.renderItem(slot.index == ConduitTapBlockEntity.UPGRADE_SLOT ? UPGRADE_GHOST : FILTER_GHOST, sx, sy);
+                NTGui.pushOverItems(graphics);
                 graphics.fill(sx, sy, sx + 16, sy + 16, PanelStyle.GHOST_FADE);
+                NTGui.popOverItems(graphics);
             }
             if (slot.index < ConduitTapBlockEntity.SLOTS && !slot.hasItem() && PanelStyle.inside(mouseX, mouseY, this.leftPos + slot.x, this.topPos + slot.y, 16, 16)) {
                 tooltip.add(Component.translatable(slot.index == ConduitTapBlockEntity.UPGRADE_SLOT ? "nautec.conduit.slot.upgrade" : "nautec.conduit.slot.filter"));
             }
         }
         if (!tooltip.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, tooltip, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, tooltip, mouseX, mouseY);
         }
     }
 
-    private void renderFaces(GuiGraphicsExtractor graphics, int mouseX, int mouseY, List<Component> tooltip) {
+    private void renderFaces(GuiGraphics graphics, int mouseX, int mouseY, List<Component> tooltip) {
         for (int i = 0; i < FACE_ORDER.length; i++) {
             Direction direction = FACE_ORDER[i];
             TapFace face = tap().face(direction);
             int x = faceX(i);
             int y = faceY(i);
             if (!icons[i].isEmpty()) {
-                graphics.item(icons[i], x, y);
+                graphics.renderItem(icons[i], x, y);
             }
-            graphics.nextStratum();
-            graphics.text(this.font, FACE_LETTERS[i], x + 1, y + 1, 0xFFFFFFFF, true);
+            NTGui.pushOverItems(graphics);
+            graphics.drawString(this.font, FACE_LETTERS[i], x + 1, y + 1, 0xFFFFFFFF, true);
             boolean machine = arms[i] == TapArm.MACHINE && !face.disabled();
             boolean inputs = machine && face.anyMode(TapSide.INPUT);
             boolean outputs = machine && face.anyMode(TapSide.OUTPUT);
@@ -426,6 +431,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
             if (outputs) {
                 graphics.fill(x + 13, y + 13, x + 16, y + 16, OUTPUT_MARK);
             }
+            NTGui.popOverItems(graphics);
             if (PanelStyle.inside(mouseX, mouseY, x, y, 16, 16)) {
                 tooltip.add(Component.translatable("nautec.conduit.face." + direction.getSerializedName()));
                 tooltip.add(arms[i] == TapArm.MACHINE ? neighbourNames[i].copy().withStyle(ChatFormatting.AQUA)
@@ -444,7 +450,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
         }
     }
 
-    private void renderSetup(GuiGraphicsExtractor graphics) {
+    private void renderSetup(GuiGraphics graphics) {
         if (readoutTier != tap().tier()) {
             readoutTier = tap().tier();
             readout.clear();
@@ -453,15 +459,15 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
         int readoutX = this.leftPos + RIGHT_X + 3;
         int readoutY = this.topPos + READOUT_Y + 3;
         for (int line = 0; line < readout.size(); line++) {
-            graphics.text(this.font, readout.get(line), readoutX, readoutY + line * 11, PanelStyle.READOUT, false);
+            graphics.drawString(this.font, readout.get(line), readoutX, readoutY + line * 11, PanelStyle.READOUT, false);
         }
     }
 
-    private void renderSide(GuiGraphicsExtractor graphics, int mouseX, int mouseY, List<Component> tooltip) {
+    private void renderSide(GuiGraphics graphics, int mouseX, int mouseY, List<Component> tooltip) {
         TapFilter filter = filter();
         if (page == Page.OUTPUT) {
             Component priority = Component.translatable("nautec.conduit.priority", face().priority());
-            graphics.text(this.font, priority, this.leftPos + RIGHT_X + (RIGHT_WIDTH - this.font.width(priority)) / 2, rowY(1) + 2,
+            graphics.drawString(this.font, priority, this.leftPos + RIGHT_X + (RIGHT_WIDTH - this.font.width(priority)) / 2, rowY(1) + 2,
                     PanelStyle.LABEL, false);
         }
         int open = itemFilterSlots();
@@ -472,16 +478,17 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
             int bottom = this.topPos + ITEM_GRID_Y + 3 * 18 - 2;
             Component note = Component.translatable(unlocked ? "nautec.conduit.filter.needs_intricate" : "nautec.conduit.filter.needs_filter");
             int noteX = this.leftPos + ITEM_GRID_X + (9 * 18 - this.font.width(note)) / 2;
-            graphics.text(this.font, note, noteX, top + (bottom - top - 8) / 2, LOCKED_TEXT, true);
+            graphics.drawString(this.font, note, noteX, top + (bottom - top - 8) / 2, LOCKED_TEXT, true);
         }
         for (int slot = 0; slot < TapFilter.ITEM_SLOTS; slot++) {
             Rect2i area = itemSlotArea(slot);
             ItemStack template = filter.item(slot);
             if (!template.isEmpty()) {
-                graphics.item(template, area.getX(), area.getY());
+                graphics.renderItem(template, area.getX(), area.getY());
                 if (filter.exact(slot)) {
-                    graphics.nextStratum();
+                    NTGui.pushOverItems(graphics);
                     graphics.fill(area.getX() + 12, area.getY(), area.getX() + 16, area.getY() + 4, EXACT_MARK);
+                    NTGui.popOverItems(graphics);
                 }
             }
             if (PanelStyle.inside(mouseX, mouseY, area.getX(), area.getY(), 16, 16)) {
@@ -517,33 +524,31 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
         if (page != Page.SETUP) {
             Component label = Component.translatable(page == Page.INPUT ? "nautec.conduit.filter.input_items" : "nautec.conduit.filter.output_items");
-            graphics.text(this.font, label, ITEM_GRID_X, ITEM_GRID_Y - 10, PanelStyle.LABEL, false);
+            graphics.drawString(this.font, label, ITEM_GRID_X, ITEM_GRID_Y - 10, PanelStyle.LABEL, false);
         } else {
             graphics.fill(ITEM_GRID_X, LEGEND_Y + 1, ITEM_GRID_X + 6, LEGEND_Y + 7, INPUT_MARK);
-            graphics.text(this.font, Component.translatable("nautec.conduit.legend.input"), ITEM_GRID_X + 10, LEGEND_Y, PanelStyle.LABEL, false);
+            graphics.drawString(this.font, Component.translatable("nautec.conduit.legend.input"), ITEM_GRID_X + 10, LEGEND_Y, PanelStyle.LABEL, false);
             graphics.fill(ITEM_GRID_X, LEGEND_Y + 13, ITEM_GRID_X + 6, LEGEND_Y + 19, OUTPUT_MARK);
-            graphics.text(this.font, Component.translatable("nautec.conduit.legend.output"), ITEM_GRID_X + 10, LEGEND_Y + 12, PanelStyle.LABEL, false);
-            graphics.text(this.font, Component.translatable("nautec.conduit.legend.hint"), ITEM_GRID_X, LEGEND_Y + 26, PanelStyle.LABEL, false);
+            graphics.drawString(this.font, Component.translatable("nautec.conduit.legend.output"), ITEM_GRID_X + 10, LEGEND_Y + 12, PanelStyle.LABEL, false);
+            graphics.drawString(this.font, Component.translatable("nautec.conduit.legend.hint"), ITEM_GRID_X, LEGEND_Y + 26, PanelStyle.LABEL, false);
         }
-        graphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        double mouseX = event.x();
-        double mouseY = event.y();
-        boolean right = event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean right = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
         for (int i = 0; i < FACE_ORDER.length; i++) {
             if (PanelStyle.inside(mouseX, mouseY, faceX(i), faceY(i), 16, 16)) {
                 Direction direction = FACE_ORDER[i];
                 if (right) {
                     TapFace face = tap().face(direction);
                     face.setDisabled(!face.disabled());
-                    ClientPacketDistributor.sendToServer(ConduitTapEditPayload.value(this.menu.containerId, direction, ConduitTapEditPayload.DISABLED, 0,
+                    PacketDistributor.sendToServer(ConduitTapEditPayload.value(this.menu.containerId, direction, ConduitTapEditPayload.DISABLED, 0,
                             face.disabled() ? 1 : 0));
                 } else {
                     selected = direction;
@@ -560,7 +565,7 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
                     if (slot < open) {
                         if (right) {
                             setItemFilter(slot, ItemStack.EMPTY);
-                        } else if (this.minecraft.hasShiftDown() || carried.isEmpty()) {
+                        } else if (Screen.hasShiftDown() || carried.isEmpty()) {
                             toggleExact(slot);
                         } else {
                             setItemFilter(slot, carried);
@@ -584,6 +589,6 @@ public class ConduitTapScreen extends AbstractContainerScreen<ConduitTapMenu> {
                 }
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

@@ -8,8 +8,8 @@ import com.breakinblocks.nautec.content.augments.GuardianEyeAugment;
 import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
 import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentSlotsRenderer;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 public class GuardianEyeRenderer extends AugmentRenderer<GuardianEyeAugment> {
@@ -21,18 +21,18 @@ public class GuardianEyeRenderer extends AugmentRenderer<GuardianEyeAugment> {
     }
 
     @Override
-    public void render(GuardianEyeAugment augment, AugmentLayerRenderer<?, ?> superRenderer, PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
+    public void render(GuardianEyeAugment augment, AugmentLayerRenderer<?, ?> superRenderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight) {
         poseStack.pushPose();
         {
             AugmentSlot augmentSlot = augment.getAugmentSlot();
             if (augmentSlot != null) {
-                ModelPart modelPart = AugmentSlotsRenderer.modelPartBySlot(augmentSlot).getModelPart((PlayerModel) superRenderer.getParentModel());
+                ModelPart modelPart = AugmentSlotsRenderer.modelPartBySlot(augmentSlot).getModelPart((PlayerModel<?>) superRenderer.getParentModel());
                 if (modelPart != null) {
                     modelPart.translateAndRotate(poseStack);
                 }
             }
             poseStack.translate(0, -20 / 16f, 0);
-            this.model.submit(poseStack, collector, GuardianEyeModel.RENDER_TYPE, packedLight, OverlayTexture.NO_OVERLAY);
+            this.model.submit(poseStack, buffers, GuardianEyeModel.RENDER_TYPE, packedLight, OverlayTexture.NO_OVERLAY);
         }
         poseStack.popPose();
     }

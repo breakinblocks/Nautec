@@ -11,10 +11,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.world.inventory.StackCopySlot;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.item.StackCopySlot;
 import org.jetbrains.annotations.Nullable;
 
 public class ResonantVaultMenu extends ResonantStorageMenu<ResonantVaultBlockEntity> {

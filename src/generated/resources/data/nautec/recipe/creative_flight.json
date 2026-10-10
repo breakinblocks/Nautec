@@ -4,7 +4,9 @@
   "desc": "Lets you fly freely, in water and out of it",
   "ingredients": [
     {
-      "ingredient": "nautec:buoyancy_tank"
+      "ingredient": {
+        "item": "nautec:buoyancy_tank"
+      }
     }
   ],
   "resultAugment": "nautec:creative_flight"

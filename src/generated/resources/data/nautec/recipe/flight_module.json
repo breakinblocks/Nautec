@@ -2,12 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "minecraft:chorus_fruit",
-    "D": "#c:gems/diamond",
-    "F": "nautec:flawless_prismarine_crystal",
-    "M": "minecraft:phantom_membrane",
-    "P": "nautec:deep_steel_plating",
-    "R": "nautec:resonant_shard"
+    "C": {
+      "item": "minecraft:chorus_fruit"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "M": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "P": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    }
   },
   "pattern": [
     "MFM",
@@ -15,6 +27,7 @@
     "CRC"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:flight_module"
   }
 }

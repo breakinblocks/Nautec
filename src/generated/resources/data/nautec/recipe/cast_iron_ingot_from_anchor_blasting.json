@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 400,
   "experience": 0.2,
-  "ingredient": "nautec:anchor",
+  "ingredient": {
+    "item": "nautec:anchor"
+  },
   "result": {
     "count": 11,
     "id": "nautec:cast_iron_ingot"

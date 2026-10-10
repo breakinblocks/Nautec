@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
@@ -25,14 +26,13 @@ import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -47,11 +47,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public final class MachineFixTests {
     private MachineFixTests() {
     }
 
-    private static ResonanceChamberBlockEntity chamber(GameTestHelper helper, BlockPos pos) {
+    private static ResonanceChamberBlockEntity chamber(NTGameTestHelper helper, BlockPos pos) {
         ResonanceChamberBlockEntity chamber = helper.getBlockEntity(pos, ResonanceChamberBlockEntity.class);
         if (chamber == null) {
             throw helper.assertionException("Expected ResonanceChamberBlockEntity at " + pos);
@@ -73,7 +74,7 @@ public final class MachineFixTests {
         return new GatewayAddress(List.of(a, b, c, d));
     }
 
-    private static IPowerStorage power(GameTestHelper helper, ItemStack stack) {
+    private static IPowerStorage power(NTGameTestHelper helper, ItemStack stack) {
         IPowerStorage storage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (storage == null) {
             throw helper.assertionException(stack + " has no power capability");
@@ -81,12 +82,12 @@ public final class MachineFixTests {
         return storage;
     }
 
-    private static ItemStack charged(GameTestHelper helper, ItemStack stack, int amount) {
+    private static ItemStack charged(NTGameTestHelper helper, ItemStack stack, int amount) {
         power(helper, stack).setPowerStored(amount);
         return stack;
     }
 
-    private static void placeDrain(GameTestHelper helper) {
+    private static void placeDrain(NTGameTestHelper helper) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 Block block = (dx == 0 && dz == 0) ? NTBlocks.DRAIN.get() : NTBlocks.DRAIN_WALL.get();
@@ -95,21 +96,21 @@ public final class MachineFixTests {
         }
     }
 
-    private static boolean formDrain(GameTestHelper helper) {
+    private static boolean formDrain(NTGameTestHelper helper) {
         return MultiblockHelper.form(NTMultiblocks.DRAIN.get(), helper.absolutePos(CENTRE), helper.getLevel());
     }
 
-    private static ArmorStand armourStand(GameTestHelper helper, BlockPos pos, ItemStack head, ItemStack feet) {
+    private static ArmorStand armourStand(NTGameTestHelper helper, BlockPos pos, ItemStack head, ItemStack feet) {
         helper.setBlock(pos.below(), Blocks.STONE.defaultBlockState());
         ArmorStand stand = helper.spawn(EntityType.ARMOR_STAND, pos);
-        head.inventoryTick(helper.getLevel(), stand, EquipmentSlot.HEAD);
-        feet.inventoryTick(helper.getLevel(), stand, EquipmentSlot.FEET);
+        head.inventoryTick(helper.getLevel(), stand, EquipmentSlot.HEAD.getIndex(), false);
+        feet.inventoryTick(helper.getLevel(), stand, EquipmentSlot.FEET.getIndex(), false);
         stand.setItemSlot(EquipmentSlot.HEAD, head);
         stand.setItemSlot(EquipmentSlot.FEET, feet);
         return stand;
     }
 
-    private static void assertNear(GameTestHelper helper, double expected, double actual, String what) {
+    private static void assertNear(NTGameTestHelper helper, double expected, double actual, String what) {
         if (Math.abs(expected - actual) > 1.0e-3) {
             helper.fail(what + ": expected " + expected + " but was " + actual);
         }
@@ -138,7 +139,7 @@ public final class MachineFixTests {
                 helper.assertTrue(player.getMainHandItem().is(NTItems.PRISM_MONOCLE.get()),
                         "The monocle should still be in the player's hand");
 
-                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(Capabilities.Item.BLOCK,
+                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK,
                         helper.absolutePos(CENTRE), Direction.NORTH);
                 helper.assertTrue(side != null, "The chamber should expose an item handler on its side");
                 try (Transaction tx = Transaction.openRoot()) {
@@ -165,21 +166,21 @@ public final class MachineFixTests {
                 BlockPos abs = helper.absolutePos(CENTRE);
                 ItemResource shard = ItemResource.of(NTItems.RESONANT_SHARD.get());
 
-                ResourceHandler<ItemResource> north = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.NORTH);
+                ResourceHandler<ItemResource> north = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.NORTH);
                 helper.assertTrue(north != null, "The chamber should expose an item handler on its side");
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(1, north.extract(1, shard, 1, tx), "output pulled from the side");
                     helper.assertValueEqual(0, north.extract(0, shard, 1, tx), "input pulled from the side");
                 }
 
-                ResourceHandler<ItemResource> down = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.DOWN);
+                ResourceHandler<ItemResource> down = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.DOWN);
                 helper.assertTrue(down != null, "The chamber should expose an item handler on its bottom");
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(2, down.extract(1, shard, 2, tx), "output pulled from the bottom");
                     tx.commit();
                 }
                 chamber.setSideMode(SideKind.ITEMS, RelativeFace.BOTTOM, SideMode.OUTPUT);
-                ResourceHandler<ItemResource> outputOnly = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.DOWN);
+                ResourceHandler<ItemResource> outputOnly = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.DOWN);
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(0, outputOnly.insert(0, ItemResource.of(NTItems.PRISMARINE_CRYSTAL_SHARD.get()), 1, tx),
                             "input pushed into an output-only bottom");
@@ -256,7 +257,7 @@ public final class MachineFixTests {
 
             helper.runAfterDelay(2, () -> {
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-                player.snapTo(helper.absoluteVec(new Vec3(1.5, 1.0, 4.5)), -90.0f, 0.0f);
+                player.moveTo(helper.absoluteVec(new Vec3(1.5, 1.0, 4.5)), -90.0f, 0.0f);
                 GuardianEyeAugment augment = new GuardianEyeAugment(NTAugmentSlots.EYES.get());
                 augment.setPlayer(player);
                 float health = cow.getHealth();
@@ -313,7 +314,7 @@ public final class MachineFixTests {
             }
             helper.runAfterDelay(2, () -> {
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-                player.snapTo(helper.absoluteVec(new Vec3(4.5, 3.0, 4.5)), 0.0f, 90.0f);
+                player.moveTo(helper.absoluteVec(new Vec3(4.5, 3.0, 4.5)), 0.0f, 90.0f);
                 ItemStack shovel = charged(helper, new ItemStack(NTItems.AQUARINE_SHOVEL.get()), 100);
                 NTDataComponentsUtils.setAbilityStatus(shovel, true);
 
@@ -389,7 +390,7 @@ public final class MachineFixTests {
             }
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             Vec3 at = helper.absoluteVec(new Vec3(4.5, 3.0, 4.5));
-            player.snapTo(at.x, at.y, at.z, 0.0F, 0.0F);
+            player.moveTo(at.x, at.y, at.z, 0.0F, 0.0F);
             player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_PICKAXE));
             player.tick();
             helper.assertTrue(player.isEyeInFluid(FluidTags.WATER) && !player.onGround(), "the diver floats under water");
@@ -410,27 +411,18 @@ public final class MachineFixTests {
         r.add("machinefix/diving_chestplate_air_handler", 20, helper -> {
             ItemStack chest = new ItemStack(NTItems.DIVING_CHESTPLATE.get());
             NTDataComponentsUtils.setOxygenLevels(chest, 100);
-            ResourceHandler<FluidResource> tank = ItemAccess.forStack(chest).getCapability(Capabilities.Fluid.ITEM);
+            IFluidHandlerItem tank = chest.getCapability(Capabilities.FluidHandler.ITEM);
             helper.assertTrue(tank != null, "The diving chestplate should expose a fluid handler");
-            helper.assertValueEqual(600L, tank.getCapacityAsLong(0, FluidResource.EMPTY), "air tank capacity in mB");
+            helper.assertValueEqual(600, tank.getTankCapacity(0), "air tank capacity in mB");
 
-            try (Transaction tx = Transaction.openRoot()) {
-                helper.assertValueEqual(0, tank.insert(FluidResource.of(Fluids.WATER), 50, tx), "water accepted into the air tank");
-                tx.commit();
-            }
+            helper.assertValueEqual(0, tank.fill(new FluidStack(Fluids.WATER, 50), IFluidHandler.FluidAction.EXECUTE), "water accepted into the air tank");
             helper.assertValueEqual(100, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen after offering water");
 
             List<FluidResource> oxygenFluids = DivingSuitAirHandler.oxygenFluids();
             if (!oxygenFluids.isEmpty()) {
-                try (Transaction tx = Transaction.openRoot()) {
-                    helper.assertValueEqual(50, tank.insert(oxygenFluids.getFirst(), 50, tx), "oxygen accepted into the air tank");
-                    tx.commit();
-                }
+                helper.assertValueEqual(50, tank.fill(oxygenFluids.getFirst().toStack(50), IFluidHandler.FluidAction.EXECUTE), "oxygen accepted into the air tank");
                 helper.assertValueEqual(150, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen after filling 50 mB");
-                try (Transaction tx = Transaction.openRoot()) {
-                    helper.assertValueEqual(450, tank.insert(oxygenFluids.getFirst(), 1000, tx), "oxygen accepted up to a full tank");
-                    tx.commit();
-                }
+                helper.assertValueEqual(450, tank.fill(oxygenFluids.getFirst().toStack(1000), IFluidHandler.FluidAction.EXECUTE), "oxygen accepted up to a full tank");
                 helper.assertValueEqual(600, NTDataComponentsUtils.getOxygenLevels(chest), "oxygen is capped at a full tank");
             }
             helper.succeed();

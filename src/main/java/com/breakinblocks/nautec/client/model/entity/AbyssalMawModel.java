@@ -1,16 +1,20 @@
 package com.breakinblocks.nautec.client.model.entity;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
 
-public class AbyssalMawModel extends EntityModel<LivingEntityRenderState> {
+import java.util.List;
+
+public class AbyssalMawModel<T extends Entity> extends HierarchicalModel<T> {
+    private final ModelPart root;
+    private final List<ModelPart> parts;
     private final ModelPart lowerJaw;
     private final ModelPart tail;
     private final ModelPart lureRod;
@@ -19,7 +23,8 @@ public class AbyssalMawModel extends EntityModel<LivingEntityRenderState> {
     private final ModelPart rightFin;
 
     public AbyssalMawModel(ModelPart root) {
-        super(root);
+        this.root = root;
+        this.parts = root.getAllParts().toList();
         this.lowerJaw = root.getChild("lower_jaw");
         this.tail = root.getChild("tail");
         this.lureRod = root.getChild("lure_rod");
@@ -125,14 +130,21 @@ public class AbyssalMawModel extends EntityModel<LivingEntityRenderState> {
     }
 
     @Override
-    public void setupAnim(LivingEntityRenderState state) {
-        super.setupAnim(state);
-        this.tail.yRot = -0.45F * Mth.sin(0.2F * state.ageInTicks);
-        this.tailTip.yRot = -0.35F * Mth.sin(0.2F * state.ageInTicks - 0.6F);
-        this.lowerJaw.xRot = 0.16F + 0.16F * Mth.sin(0.09F * state.ageInTicks);
-        float sway = 0.22F * Mth.sin(0.13F * state.ageInTicks);
+    public ModelPart root() {
+        return this.root;
+    }
+
+    @Override
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        for (int i = 0; i < this.parts.size(); i++) {
+            this.parts.get(i).resetPose();
+        }
+        this.tail.yRot = -0.45F * Mth.sin(0.2F * ageInTicks);
+        this.tailTip.yRot = -0.35F * Mth.sin(0.2F * ageInTicks - 0.6F);
+        this.lowerJaw.xRot = 0.16F + 0.16F * Mth.sin(0.09F * ageInTicks);
+        float sway = 0.22F * Mth.sin(0.13F * ageInTicks);
         this.lureRod.xRot = sway;
-        this.leftFin.zRot += 0.12F * Mth.sin(0.13F * state.ageInTicks);
-        this.rightFin.zRot -= 0.12F * Mth.sin(0.13F * state.ageInTicks);
+        this.leftFin.zRot += 0.12F * Mth.sin(0.13F * ageInTicks);
+        this.rightFin.zRot -= 0.12F * Mth.sin(0.13F * ageInTicks);
     }
 }

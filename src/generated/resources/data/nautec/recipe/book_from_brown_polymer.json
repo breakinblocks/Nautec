@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "nautec:brown_polymer",
-    "minecraft:paper",
-    "minecraft:paper",
-    "minecraft:paper"
+    {
+      "item": "nautec:brown_polymer"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:paper"
+    }
   ],
   "result": {
     "count": 2,

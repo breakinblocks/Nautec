@@ -4,17 +4,15 @@ import com.breakinblocks.nautec.content.fishing.FishingMinigame;
 import com.breakinblocks.nautec.content.fishing.MinigameKind;
 import com.breakinblocks.nautec.network.FishingMinigameResultPayload;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +76,7 @@ public class FishingMinigameScreen extends Screen {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.minecraft.gui.extractDeferredSubtitles();
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
     @Override
@@ -105,49 +102,49 @@ public class FishingMinigameScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
-        if (isActionKey(event)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (isActionKey(keyCode)) {
             if (!this.actionKeyDown) {
                 this.actionKeyDown = true;
                 press();
             }
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean keyReleased(KeyEvent event) {
-        if (isActionKey(event)) {
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (isActionKey(keyCode)) {
             this.actionKeyDown = false;
             release();
             return true;
         }
-        return super.keyReleased(event);
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (isStrikeButton(event)) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isStrikeButton(button)) {
             press();
         }
         return true;
     }
 
     @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
-        if (isStrikeButton(event)) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (isStrikeButton(button)) {
             release();
         }
         return true;
     }
 
-    private static boolean isActionKey(KeyEvent event) {
-        return event.key() == 32 || event.key() == 257;
+    private static boolean isActionKey(int keyCode) {
+        return keyCode == 32 || keyCode == 257;
     }
 
-    private static boolean isStrikeButton(MouseButtonEvent event) {
-        return event.button() == 0;
+    private static boolean isStrikeButton(int button) {
+        return button == 0;
     }
 
     private void press() {
@@ -207,7 +204,7 @@ public class FishingMinigameScreen extends Screen {
             return;
         }
         this.reported = true;
-        ClientPacketDistributor.sendToServer(new FishingMinigameResultPayload(this.nonce, List.copyOf(this.report)));
+        PacketDistributor.sendToServer(new FishingMinigameResultPayload(this.nonce, List.copyOf(this.report)));
     }
 
     private void playUi(SoundEvent sound, float pitch) {
@@ -215,8 +212,8 @@ public class FishingMinigameScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         float progress = Math.min(this.elapsed + (this.won ? 0.0F : partialTick), FishingMinigame.DURATION_TICKS);
         float result = this.resultTicks + partialTick;
@@ -248,25 +245,25 @@ public class FishingMinigameScreen extends Screen {
         return Math.round(Mth.sin(result * 2.4F) * 3.0F * decay);
     }
 
-    private void drawPlate(GuiGraphicsExtractor guiGraphics, int x, int y, boolean onTarget) {
+    private void drawPlate(GuiGraphics guiGraphics, int x, int y, boolean onTarget) {
         PanelStyle.panel(guiGraphics, x, y, PANEL_W, PANEL_H);
         guiGraphics.fill(x + 3, y + 3, x + PANEL_W - 1, y + 4, accent(onTarget));
     }
 
-    private void drawHeader(GuiGraphicsExtractor guiGraphics, int x, int y, boolean onTarget) {
+    private void drawHeader(GuiGraphics guiGraphics, int x, int y, boolean onTarget) {
         int centreX = x + PANEL_W / 2;
-        guiGraphics.centeredText(this.font, this.title, centreX, y + TITLE_ROW, headline());
+        guiGraphics.drawCenteredString(this.font, this.title, centreX, y + TITLE_ROW, headline());
 
         Component status = this.won
                 ? Component.translatable("nautec.fishing_minigame.hooked")
                 : this.missed
                 ? Component.translatable("nautec.fishing_minigame.missed")
                 : Component.translatable("nautec.fishing_minigame.prompt." + this.kind.name().toLowerCase(Locale.ROOT));
-        guiGraphics.centeredText(this.font, status, centreX, y + STATUS_ROW,
+        guiGraphics.drawCenteredString(this.font, status, centreX, y + STATUS_ROW,
                 this.won ? PanelStyle.SEND_COLOR : this.missed ? PanelStyle.DANGER : onTarget ? PanelStyle.SEND_COLOR : PanelStyle.LABEL);
     }
 
-    private void drawTrack(GuiGraphicsExtractor guiGraphics, int x, int y, float progress, boolean onTarget) {
+    private void drawTrack(GuiGraphics guiGraphics, int x, int y, float progress, boolean onTarget) {
         PanelStyle.screen(guiGraphics, x, y, TRACK_W, TRACK_H);
 
         for (int i = 1; i < 12; i++) {
@@ -277,7 +274,7 @@ public class FishingMinigameScreen extends Screen {
         drawTension(guiGraphics, x, y, progress, onTarget);
     }
 
-    private void drawTension(GuiGraphicsExtractor guiGraphics, int x, int y, float progress, boolean onTarget) {
+    private void drawTension(GuiGraphics guiGraphics, int x, int y, float progress, boolean onTarget) {
         float urgency = progress / FishingMinigame.DURATION_TICKS;
         float amplitude = this.missed ? 0.4F : 1.4F + urgency * 2.6F;
         int colour = this.missed
@@ -292,7 +289,7 @@ public class FishingMinigameScreen extends Screen {
         }
     }
 
-    private void drawWindows(GuiGraphicsExtractor guiGraphics, int x, int y, float progress) {
+    private void drawWindows(GuiGraphics guiGraphics, int x, int y, float progress) {
         float pulse = this.reported ? 1.0F : 0.75F + Mth.sin(progress * 0.4F) * 0.25F;
 
         for (int i = 0; i < this.windows.size(); i++) {
@@ -314,7 +311,7 @@ public class FishingMinigameScreen extends Screen {
         }
     }
 
-    private void drawStamp(GuiGraphicsExtractor guiGraphics, int wx, int y, int ww, int struckAt) {
+    private void drawStamp(GuiGraphics guiGraphics, int wx, int y, int ww, int struckAt) {
         int age = this.elapsed - struckAt;
         int centreX = wx + ww / 2;
         guiGraphics.fill(centreX - 1, y + 3, centreX + 1, y + TRACK_H - 3, WHITE);
@@ -328,7 +325,7 @@ public class FishingMinigameScreen extends Screen {
         }
     }
 
-    private void drawHold(GuiGraphicsExtractor guiGraphics, int x, int y, float progress) {
+    private void drawHold(GuiGraphics guiGraphics, int x, int y, float progress) {
         if (this.kind != MinigameKind.HOLD || this.holdStart < 0) {
             return;
         }
@@ -343,7 +340,7 @@ public class FishingMinigameScreen extends Screen {
         guiGraphics.fill(hx + hw - 1, y + 2, hx + hw, y + TRACK_H - 2, WHITE);
     }
 
-    private void drawNeedle(GuiGraphicsExtractor guiGraphics, int x, int y, float progress, boolean onTarget) {
+    private void drawNeedle(GuiGraphics guiGraphics, int x, int y, float progress, boolean onTarget) {
         int needleX = x + Math.round(progress * TRACK_W / FishingMinigame.DURATION_TICKS);
         int colour = this.missed ? RED : onTarget ? GREEN : WHITE;
 
@@ -362,7 +359,7 @@ public class FishingMinigameScreen extends Screen {
         drawChevron(guiGraphics, needleX, y + TRACK_H + 5, false, colour);
     }
 
-    private static void drawChevron(GuiGraphicsExtractor guiGraphics, int centreX, int y, boolean pointingDown, int colour) {
+    private static void drawChevron(GuiGraphics guiGraphics, int centreX, int y, boolean pointingDown, int colour) {
         for (int i = 0; i < 3; i++) {
             int half = 3 - i;
             int rowY = pointingDown ? y + i : y - i;
@@ -370,7 +367,7 @@ public class FishingMinigameScreen extends Screen {
         }
     }
 
-    private void drawCountdown(GuiGraphicsExtractor guiGraphics, int x, int y, float progress) {
+    private void drawCountdown(GuiGraphics guiGraphics, int x, int y, float progress) {
         int barX = x + (PANEL_W - TRACK_W) / 2;
         float left = 1.0F - progress / FishingMinigame.DURATION_TICKS;
         int width = Math.round(TRACK_W * left);
@@ -383,7 +380,7 @@ public class FishingMinigameScreen extends Screen {
         guiGraphics.fill(barX, y, barX + width, y + 1, colour);
     }
 
-    private void drawWinFlash(GuiGraphicsExtractor guiGraphics, int x, int y, float result) {
+    private void drawWinFlash(GuiGraphics guiGraphics, int x, int y, float result) {
         float fade = 1.0F - Math.min(1.0F, result / WIN_HOLD_TICKS);
         guiGraphics.fill(x - 1, y - 1, x + TRACK_W + 1, y + TRACK_H + 1, ARGB.color(fade * 0.6F, 0xFFFFFF));
 

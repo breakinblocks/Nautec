@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -21,7 +21,7 @@ import java.util.Locale;
 public enum CrystalCradleComponentProvider implements StreamServerDataProvider<BlockAccessor, CrystalCradleComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("crystal_cradle");
+    private static final ResourceLocation UID = Nautec.rl("crystal_cradle");
 
     public record Data(int status, long growth, long target, int power, float purity, float requiredPurity) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -48,7 +48,7 @@ public enum CrystalCradleComponentProvider implements StreamServerDataProvider<B
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -82,7 +82,7 @@ public enum CrystalCradleComponentProvider implements StreamServerDataProvider<B
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

@@ -6,7 +6,6 @@ import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +18,7 @@ public final class BubbleAnchorTests {
     private BubbleAnchorTests() {
     }
 
-    private static void flood(GameTestHelper helper) {
+    private static void flood(NTGameTestHelper helper) {
         for (int dx = -RADIUS; dx <= RADIUS; dx++) {
             for (int dy = -RADIUS; dy <= RADIUS; dy++) {
                 for (int dz = -RADIUS; dz <= RADIUS; dz++) {
@@ -32,7 +31,7 @@ public final class BubbleAnchorTests {
         }
     }
 
-    private static int countIn(GameTestHelper helper, Block block) {
+    private static int countIn(NTGameTestHelper helper, Block block) {
         int count = 0;
         for (int dx = -RADIUS; dx <= RADIUS; dx++) {
             for (int dy = -RADIUS; dy <= RADIUS; dy++) {
@@ -46,7 +45,7 @@ public final class BubbleAnchorTests {
         return count;
     }
 
-    private static BubbleAnchorBlockEntity anchor(GameTestHelper helper) {
+    private static BubbleAnchorBlockEntity anchor(NTGameTestHelper helper) {
         helper.setBlock(ANCHOR, NTBlocks.BUBBLE_ANCHOR.get());
         BubbleAnchorBlockEntity anchor = helper.getBlockEntity(ANCHOR, BubbleAnchorBlockEntity.class);
         anchor.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.DRIED_KELP_BLOCK, 4));

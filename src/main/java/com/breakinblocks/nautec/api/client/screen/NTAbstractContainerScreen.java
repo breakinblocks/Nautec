@@ -3,17 +3,15 @@ package com.breakinblocks.nautec.api.client.screen;
 import net.minecraft.world.inventory.Slot;
 import com.breakinblocks.nautec.client.screen.PanelStyle;
 import com.breakinblocks.nautec.client.screen.GhostSlots;
-import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.renderer.Rect2i;
 import com.breakinblocks.nautec.client.screen.SideConfigPanel;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> extends AbstractContainerScreen<NTAbstractContainerMenu<T>> implements SideConfigHost {
@@ -25,16 +23,18 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
     }
 
     public NTAbstractContainerScreen(NTAbstractContainerMenu<T> menu, Inventory playerInventory, Component title, int imageWidth, int imageHeight) {
-        super(menu, playerInventory, title, imageWidth, imageHeight);
+        super(menu, playerInventory, title);
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageHeight;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.titleLabelY = 6;
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
-        Identifier texture = getBackgroundTexture();
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        ResourceLocation texture = getBackgroundTexture();
         if (texture != null) {
-            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
+            NTGui.blit(guiGraphics, texture, leftPos, topPos, 0F, 0F, imageWidth, imageHeight, 256, 256);
             return;
         }
         PanelStyle.panel(guiGraphics, leftPos, topPos, imageWidth, imageHeight);
@@ -45,7 +45,7 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
         }
     }
 
-    protected void extractSlotHint(GuiGraphicsExtractor guiGraphics, @Nullable Slot slot, Identifier icon) {
+    protected void extractSlotHint(GuiGraphics guiGraphics, @Nullable Slot slot, ResourceLocation icon) {
         if (slot != null && !slot.hasItem()) {
             PanelStyle.icon(guiGraphics, icon, leftPos + slot.x, topPos + slot.y, 16, 16);
         }
@@ -60,24 +60,25 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
         GhostSlots.extract(guiGraphics, this.menu, this.menu.blockEntity, this.leftPos, this.topPos);
         GhostSlots.tooltip(guiGraphics, font, this.menu.blockEntity, this.hoveredSlot, mouseX, mouseY);
         if (sidePanel != null) {
             sidePanel.extract(guiGraphics, font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
         }
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (sidePanel != null && sidePanel.mouseClicked(mouseX, mouseY, button, sideAnchorX(), sideAnchorY())) {
             return true;
         }
-        if (GhostSlots.click(event, this.menu, this.menu.blockEntity, this.hoveredSlot)) {
+        if (GhostSlots.click(this.menu, this.menu.blockEntity, this.hoveredSlot)) {
             return true;
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     private int sideAnchorX() {
@@ -94,14 +95,14 @@ public abstract class NTAbstractContainerScreen<T extends ContainerBlockEntity> 
     }
 
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
         if (sidePanel != null && sidePanel.contains(mouseX, mouseY, sideAnchorX(), sideAnchorY())) {
             return false;
         }
-        return super.hasClickedOutside(mouseX, mouseY, left, top);
+        return super.hasClickedOutside(mouseX, mouseY, left, top, button);
     }
 
-    public @Nullable Identifier getBackgroundTexture() {
+    public @Nullable ResourceLocation getBackgroundTexture() {
         return null;
     }
 }

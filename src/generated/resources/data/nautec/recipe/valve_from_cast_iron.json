@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:cast_iron_ingot",
-    "G": "nautec:gear",
-    "R": "nautec:cast_iron_rod",
-    "S": "nautec:prismarine_crystal_shard"
+    "C": {
+      "item": "nautec:cast_iron_ingot"
+    },
+    "G": {
+      "item": "nautec:gear"
+    },
+    "R": {
+      "item": "nautec:cast_iron_rod"
+    },
+    "S": {
+      "item": "nautec:prismarine_crystal_shard"
+    }
   },
   "pattern": [
     " R ",
@@ -13,6 +21,7 @@
     " S "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:valve"
   }
 }

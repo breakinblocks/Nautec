@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cross",
+  "render_type": "minecraft:cutout",
   "textures": {
     "cross": "nautec:block/vent_tubeworm",
     "cross_emissive": "nautec:block/vent_tubeworm_emissive"

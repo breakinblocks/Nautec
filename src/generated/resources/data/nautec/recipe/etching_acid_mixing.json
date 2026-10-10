@@ -11,13 +11,19 @@
   },
   "ingredients": [
     {
-      "ingredient": "minecraft:pufferfish"
+      "ingredient": {
+        "item": "minecraft:pufferfish"
+      }
     },
     {
-      "ingredient": "#c:gunpowders"
+      "ingredient": {
+        "tag": "c:gunpowders"
+      }
     },
     {
-      "ingredient": "minecraft:bone_meal"
+      "ingredient": {
+        "item": "minecraft:bone_meal"
+      }
     }
   ]
 }

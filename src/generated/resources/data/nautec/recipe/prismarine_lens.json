@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "G": "#c:glass_panes/colorless"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    }
   },
   "pattern": [
     " A ",
@@ -11,6 +15,7 @@
     " A "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:prismarine_lens"
   }
 }

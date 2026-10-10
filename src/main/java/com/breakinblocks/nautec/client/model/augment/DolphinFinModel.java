@@ -10,16 +10,15 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 
 public class DolphinFinModel extends AugmentModel<DolphinFinAugment> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("dolphin_fin"), "main");
-    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(Nautec.rl("textures/augments/dolphin_fin.png"));
+    public static final RenderType RENDER_TYPE = RenderType.entitySolid(Nautec.rl("textures/augments/dolphin_fin.png"));
 
     public DolphinFinModel(ModelPart root) {
-        super(root, RenderTypes::entitySolid);
+        super(root, RenderType::entitySolid);
     }
 
     public static LayerDefinition createBodyLayer() {

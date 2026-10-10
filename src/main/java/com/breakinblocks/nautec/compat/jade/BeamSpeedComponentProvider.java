@@ -4,7 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -30,7 +30,7 @@ public enum BeamSpeedComponentProvider implements IBlockComponentProvider {
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return Nautec.rl("beam_speed");
     }
 }

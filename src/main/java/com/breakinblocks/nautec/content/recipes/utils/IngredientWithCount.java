@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.content.recipes.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -39,7 +38,7 @@ public record IngredientWithCount(Ingredient ingredient, int count) {
     }
 
     public static IngredientWithCount fromItemTag(TagKey<Item> itemTagKey, int count) {
-        return new IngredientWithCount(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(itemTagKey)), count);
+        return new IngredientWithCount(Ingredient.of(itemTagKey), count);
     }
 
     public static IngredientWithCount fromItemLike(ItemLike itemLike) {

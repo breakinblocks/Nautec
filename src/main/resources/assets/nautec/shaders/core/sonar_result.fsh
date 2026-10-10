@@ -1,4 +1,4 @@
-#version 330
+#version 150
 
 // Adapted from Scannable Reforged 1.0.1 (MIT); see LICENSE-SCANNABLE.
 // Animated shimmer drawn over each scan-result box (additive): horizontal scanlines that scroll
@@ -6,15 +6,7 @@
 // Ported from the 1.21.1 ShaderInstance shader; the per-second "time" uniform is recovered from the
 // Globals UBO's GameTime (a 0..1 day fraction, so *1200 gives seconds).
 
-layout(std140) uniform Globals {
-    ivec3 CameraBlockPos;
-    vec3 CameraOffset;
-    vec2 ScreenSize;
-    float GlintAlpha;
-    float GameTime;
-    int MenuBlurRadius;
-    int UseRgss;
-};
+uniform float GameTime;
 
 in vec2 texCoord0;
 in vec4 vertexColor;

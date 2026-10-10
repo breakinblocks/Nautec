@@ -10,16 +10,16 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCategory<AquaticCatalystChannelingRecipe> {
-    public static final Identifier UID = Nautec.rl("aquatic_catalyst_channeling");
-    public static final IRecipeType<AquaticCatalystChannelingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, AquaticCatalystChannelingRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl("aquatic_catalyst_channeling");
+    public static final RecipeType<AquaticCatalystChannelingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, AquaticCatalystChannelingRecipe.class);
 
     public AquaticCatalystChannelingRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -50,6 +50,6 @@ public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCateg
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, AquaticCatalystChannelingRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 8, 0).add(recipe.ingredient());
+        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 8, 0).addIngredients(recipe.ingredient());
     }
 }

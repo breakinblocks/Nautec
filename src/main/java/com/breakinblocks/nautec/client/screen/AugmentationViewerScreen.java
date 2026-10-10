@@ -8,13 +8,12 @@ import com.breakinblocks.nautec.network.OpenResonanceAugmentPayload;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import com.breakinblocks.nautec.utils.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,19 +58,19 @@ public class AugmentationViewerScreen extends Screen {
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        extractTransparentBackground(graphics);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        renderTransparentBackground(graphics);
         PanelStyle.panel(graphics, leftPos, topPos, WIDTH, imageHeight);
         PanelStyle.screen(graphics, leftPos + VIEW_X, topPos + LIST_Y, VIEW_WIDTH, listHeight());
         PanelStyle.screen(graphics, leftPos + LIST_X, topPos + LIST_Y, LIST_WIDTH, listHeight());
-        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, leftPos + VIEW_X + 1, topPos + LIST_Y + 1,
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, leftPos + VIEW_X + 1, topPos + LIST_Y + 1,
                 leftPos + VIEW_X + VIEW_WIDTH - 1, topPos + LIST_Y + listHeight() - 1, 36, 0.0625F, mouseX, mouseY, player);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        graphics.text(this.font, this.title, leftPos + 8, topPos + 8, PanelStyle.LABEL, false);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        graphics.drawString(this.font, this.title, leftPos + 8, topPos + 8, PanelStyle.LABEL, false);
 
         List<AugmentSlot> slots = slots();
         int installed = 0;
@@ -88,7 +87,7 @@ public class AugmentationViewerScreen extends Screen {
                 graphics.fill(x, y, x + LIST_WIDTH - 4, y + ROW, ROW_HOVER);
             }
             Component slotName = Utils.registryTranslation(NTRegistries.AUGMENT_SLOT, slot);
-            graphics.text(this.font, slotName, x + 3, y + 4, PanelStyle.READOUT_DIM, false);
+            graphics.drawString(this.font, slotName, x + 3, y + 4, PanelStyle.READOUT_DIM, false);
             int nameX = x + 58;
             int nameWidth = LIST_WIDTH - 4 - 58 - 4;
             Component name = augment == null
@@ -98,7 +97,7 @@ public class AugmentationViewerScreen extends Screen {
             if (shown.length() < name.getString().length()) {
                 shown = this.font.plainSubstrByWidth(name.getString(), nameWidth - this.font.width("...")) + "...";
             }
-            graphics.text(this.font, Component.literal(shown), nameX, y + 4,
+            graphics.drawString(this.font, Component.literal(shown), nameX, y + 4,
                     augment == null ? PanelStyle.SLOT_FILL : augment.isOnCooldown() ? PanelStyle.WARNING : PanelStyle.READOUT, false);
             if (augment != null) {
                 installed++;
@@ -111,7 +110,7 @@ public class AugmentationViewerScreen extends Screen {
         }
 
         Component count = Component.translatable("nautec.augment_viewer.count", installed, slots.size());
-        graphics.text(this.font, count, leftPos + WIDTH - 8 - this.font.width(count), topPos + 8, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, count, leftPos + WIDTH - 8 - this.font.width(count), topPos + 8, PanelStyle.LABEL, false);
 
         if (hoverSlot != null) {
             List<Component> lines = new ArrayList<>();
@@ -128,23 +127,23 @@ public class AugmentationViewerScreen extends Screen {
                             String.format(Locale.ROOT, "%.1f", hoverAugment.getCooldown() / 20f)).withStyle(ChatFormatting.YELLOW));
                 }
             }
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         List<AugmentSlot> slots = slots();
         for (int i = 0; i < slots.size(); i++) {
             int x = leftPos + LIST_X + 2;
             int y = topPos + LIST_Y + 2 + i * ROW;
-            if (PanelStyle.inside(event.x(), event.y(), x, y, LIST_WIDTH - 4, ROW)
+            if (PanelStyle.inside(mouseX, mouseY, x, y, LIST_WIDTH - 4, ROW)
                     && AugmentHelper.getAugmentBySlot(player, slots.get(i)) instanceof ResonanceAugment) {
-                ClientPacketDistributor.sendToServer(new OpenResonanceAugmentPayload());
+                PacketDistributor.sendToServer(new OpenResonanceAugmentPayload());
                 return true;
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

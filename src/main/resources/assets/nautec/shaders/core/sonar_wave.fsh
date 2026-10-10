@@ -1,4 +1,4 @@
-#version 330
+#version 150
 
 // Adapted from Scannable Reforged 1.0.1 (MIT); see LICENSE-SCANNABLE.
 // Fullscreen scan-reveal effect. Reconstructs world position from the main depth buffer and
@@ -8,16 +8,12 @@
 uniform sampler2D DepthSampler;
 
 // Bound from the active world projection (RenderSystem.getProjectionMatrixBuffer()).
-layout(std140) uniform Projection {
-    mat4 ProjMat;
-};
+uniform mat4 ProjMat;
 
 // Per-frame parameters (see SonarPulseRenderer).
-layout(std140) uniform ScanInfo {
-    mat4 InvViewMat;  // inverse of the camera view-rotation matrix
-    vec4 Center;      // xyz = scan centre relative to camera (subtract in double precision)
-    vec4 Params;      // x = current wave radius, y = band width
-};
+uniform mat4 InvViewMat;  // inverse of the camera view-rotation matrix
+uniform vec4 Center;      // xyz = scan centre relative to camera (subtract in double precision)
+uniform vec4 Params;      // x = current wave radius, y = band width
 
 in vec2 texCoord;
 

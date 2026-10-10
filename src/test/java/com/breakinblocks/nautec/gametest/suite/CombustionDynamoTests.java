@@ -13,15 +13,14 @@ import com.breakinblocks.nautec.tags.NTTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 public final class CombustionDynamoTests {
     private static final BlockPos POS = new BlockPos(4, 2, 4);
@@ -29,7 +28,7 @@ public final class CombustionDynamoTests {
     private CombustionDynamoTests() {
     }
 
-    private static CombustionDynamoBlockEntity dynamo(GameTestHelper helper) {
+    private static CombustionDynamoBlockEntity dynamo(NTGameTestHelper helper) {
         helper.setBlock(POS, NTBlocks.COMBUSTION_DYNAMO.get());
         return helper.getBlockEntity(POS, CombustionDynamoBlockEntity.class);
     }
@@ -128,11 +127,11 @@ public final class CombustionDynamoTests {
 
         r.add("combustion_dynamo/oil_chain_is_complete", 20, helper -> {
             helper.assertTrue(NTFluids.OIL.getStillFluid().defaultFluidState().is(NTTags.Fluids.OIL), "NauTec oil is in c:oil");
-            var recipes = helper.getLevel().recipeAccess();
+            var recipes = helper.getLevel().getRecipeManager();
             for (String id : new String[]{"kelp_slurry_mixing", "oil_from_algal_lipid_mixing", "combustion_additive/redstone"}) {
-                helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl(id))).isPresent(), "recipe " + id);
+                helper.assertTrue(recipes.byKey(Nautec.rl(id)).isPresent(), "recipe " + id);
             }
-            Bacteria lipophiles = helper.getLevel().registryAccess().lookupOrThrow(NTRegistries.BACTERIA_KEY).getValueOrThrow(NTBacterias.LIPOPHILES);
+            Bacteria lipophiles = helper.getLevel().registryAccess().registryOrThrow(NTRegistries.BACTERIA_KEY).getOrThrow(NTBacterias.LIPOPHILES);
             helper.assertTrue(lipophiles.resource().resolve() == NTItems.ALGAL_LIPID.get(), "Lipophiles produce Algal Lipid");
             helper.succeed();
         });

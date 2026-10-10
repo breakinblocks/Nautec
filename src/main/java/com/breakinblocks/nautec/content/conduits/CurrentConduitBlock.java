@@ -5,11 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -81,9 +80,8 @@ public class CurrentConduitBlock extends ConduitPartBlock {
     }
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction,
-                                              BlockPos neighbourPos, BlockState neighbour, RandomSource random) {
-        scheduleWater(state, level, tickAccess, pos);
+    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighbour, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+        scheduleWater(state, level, level, pos);
         return state.setValue(ARMS[direction.ordinal()], arm(level, neighbourPos, direction, state, neighbour));
     }
 

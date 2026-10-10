@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+
+import net.minecraft.nbt.Tag;
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -27,13 +30,11 @@ import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -42,11 +43,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ public final class BioReactorOverhaulTests {
         return BacteriaMachineTests.stats(1.0f, 0f, productionRate, lifespan);
     }
 
-    private static BioReactorBlockEntity loneReactor(GameTestHelper helper, BlockPos reactorPos, BlockPos sourcePos) {
+    private static BioReactorBlockEntity loneReactor(NTGameTestHelper helper, BlockPos reactorPos, BlockPos sourcePos) {
         helper.setBlock(reactorPos, NTBlocks.BIO_REACTOR.get().defaultBlockState());
         BacteriaMachineTests.feedExact(helper, reactorPos);
         return helper.getBlockEntity(reactorPos, BioReactorBlockEntity.class);
@@ -80,7 +81,7 @@ public final class BioReactorOverhaulTests {
         return cellPos(origin, IndustrialBioReactorMultiblock.CONTROLLER_LAYER, IndustrialBioReactorMultiblock.CONTROLLER_CELL);
     }
 
-    private static void buildIndustrial(GameTestHelper helper, BlockPos origin) {
+    private static void buildIndustrial(NTGameTestHelper helper, BlockPos origin) {
         Map<Integer, Block> definition = NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get().getDefinition();
         for (int layer = 0; layer < IndustrialBioReactorMultiblock.HEIGHT; layer++) {
             for (int cell = 0; cell < IndustrialBioReactorMultiblock.SIZE * IndustrialBioReactorMultiblock.SIZE; cell++) {
@@ -89,11 +90,11 @@ public final class BioReactorOverhaulTests {
         }
     }
 
-    private static boolean formIndustrial(GameTestHelper helper, BlockPos origin) {
+    private static boolean formIndustrial(NTGameTestHelper helper, BlockPos origin) {
         return MultiblockHelper.form(NTMultiblocks.INDUSTRIAL_BIO_REACTOR.get(), helper.absolutePos(industrialController(origin)), helper.getLevel());
     }
 
-    private static void powerIndustrialThroughHatches(GameTestHelper helper, BlockPos origin) {
+    private static void powerIndustrialThroughHatches(NTGameTestHelper helper, BlockPos origin) {
         for (int cell : HATCH_CELLS) {
             BlockPos roof = cellPos(origin, IndustrialBioReactorMultiblock.HEIGHT - 1, cell);
             BlockState state = helper.getBlockState(roof);
@@ -102,7 +103,7 @@ public final class BioReactorOverhaulTests {
         }
     }
 
-    private static void placeBioReactor(GameTestHelper helper, BlockPos controller) {
+    private static void placeBioReactor(NTGameTestHelper helper, BlockPos controller) {
         for (int y = 0; y < 2; y++) {
             for (int z = 0; z < 3; z++) {
                 for (int x = 0; x < 3; x++) {
@@ -162,8 +163,8 @@ public final class BioReactorOverhaulTests {
         }
     }
 
-    private static ResourceHandler<ItemResource> items(GameTestHelper helper, BlockPos pos, Direction side) {
-        return helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
+    private static ResourceHandler<ItemResource> items(NTGameTestHelper helper, BlockPos pos, Direction side) {
+        return helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(pos), side);
     }
 
     private static int window() {
@@ -646,15 +647,15 @@ public final class BioReactorOverhaulTests {
                 source.getItemStackHandler().setStackInSlot(0, new ItemStack(Items.IRON_INGOT, 5));
 
                 CompoundTag tag = source.saveWithoutMetadata(helper.getLevel().registryAccess());
-                ListTag stacks = tag.getCompoundOrEmpty("itemhandler").getListOrEmpty("stacks");
+                ListTag stacks = tag.getCompound("itemhandler").getList("stacks", Tag.TAG_COMPOUND);
                 while (stacks.size() > 3) {
                     stacks.remove(stacks.size() - 1);
                 }
-                helper.assertValueEqual(3, tag.getCompoundOrEmpty("itemhandler").getListOrEmpty("stacks").size(), "trimmed legacy item list");
+                helper.assertValueEqual(3, tag.getCompound("itemhandler").getList("stacks", Tag.TAG_COMPOUND).size(), "trimmed legacy item list");
                 tag.remove("vitality0");
                 tag.remove("vitalityCapacity0");
 
-                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+                target.loadWithComponents(tag, helper.getLevel().registryAccess());
                 helper.assertValueEqual(source.totalItemSlots(), target.getItemStackHandler().getSlots(), "slot count after loading a three slot save");
                 helper.assertValueEqual(5, target.getItemStackHandler().getStackInSlot(0).getCount(), "legacy output slot 0");
                 helper.assertTrue(target.getItemStackHandler().getStackInSlot(target.nutrientSlot(1)).isEmpty(), "new nutrient slot should start empty");
@@ -708,15 +709,15 @@ public final class BioReactorOverhaulTests {
 
         r.add("bio_overhaul/feeding_recipes_cover_incubated_strains", 20, helper -> {
             StringBuilder missing = new StringBuilder();
-            for (RecipeHolder<BacteriaIncubationRecipe> holder : helper.getLevel().recipeAccess().recipeMap().byType(BacteriaIncubationRecipe.TYPE)) {
+            for (RecipeHolder<BacteriaIncubationRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(BacteriaIncubationRecipe.TYPE)) {
                 BacteriaIncubationRecipe incubation = holder.value();
-                Optional<Holder<Item>> nutrient = incubation.nutrient().items().findFirst();
-                if (nutrient.isEmpty()) {
+                ItemStack[] nutrient = incubation.nutrient().getItems();
+                if (nutrient.length == 0) {
                     continue;
                 }
                 BacteriaInstance colony = BacteriaMachineTests.colony(incubation.bacteria(), 400, stats(1.0f, 2000), 0);
-                if (ColonyFeedingRecipe.find(helper.getLevel(), colony, new ItemStack(nutrient.get())).isEmpty()) {
-                    missing.append(' ').append(incubation.bacteria().identifier());
+                if (ColonyFeedingRecipe.find(helper.getLevel(), colony, new ItemStack(nutrient[0].getItem())).isEmpty()) {
+                    missing.append(' ').append(incubation.bacteria().location());
                 }
             }
             helper.assertTrue(missing.isEmpty(), "Strains whose incubation nutrient does not feed them in a reactor:" + missing);
@@ -727,7 +728,7 @@ public final class BioReactorOverhaulTests {
             helper.setBlock(REACTOR, NTBlocks.BIO_REACTOR.get().defaultBlockState());
             helper.runAfterDelay(2, () -> {
                 BioReactorBlockEntity reactor = helper.getBlockEntity(REACTOR, BioReactorBlockEntity.class);
-                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(REACTOR), Direction.UP);
+                ResourceHandler<ItemResource> side = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(REACTOR), Direction.UP);
                 helper.assertTrue(side != null, "Bio reactor should expose items on top");
                 ItemStack upgrade = new ItemStack(NTItems.REACTOR_SPEED_UPGRADE.get());
                 helper.assertValueEqual(0, insert(side, reactor.outputSlot(0), upgrade), "upgrade into an output slot");
@@ -796,10 +797,10 @@ public final class BioReactorOverhaulTests {
         });
     }
 
-    private static void assertMultiplier(GameTestHelper helper, AbstractBioReactorBlockEntity reactor, ResourceKey<Bacteria> key, float expected) {
+    private static void assertMultiplier(NTGameTestHelper helper, AbstractBioReactorBlockEntity reactor, ResourceKey<Bacteria> key, float expected) {
         Bacteria definition = reactor.definitionOf(key);
-        helper.assertTrue(definition != null, "Missing bacteria definition " + key.identifier());
+        helper.assertTrue(definition != null, "Missing bacteria definition " + key.location());
         helper.assertTrue(Math.abs(definition.productionMultiplier() - expected) < EPSILON,
-                key.identifier() + " multiplier should be " + expected + ", was " + definition.productionMultiplier());
+                key.location() + " multiplier should be " + expected + ", was " + definition.productionMultiplier());
     }
 }

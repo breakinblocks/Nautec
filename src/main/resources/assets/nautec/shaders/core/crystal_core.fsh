@@ -1,9 +1,12 @@
-#version 330
+#version 150
 
-#moj_import <minecraft:fog.glsl>
-#moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:globals.glsl>
-#moj_import <minecraft:projection.glsl>
+#moj_import <fog.glsl>
+
+uniform mat4 ProjMat;
+uniform float GameTime;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
 
 uniform sampler2D Sampler0;
 
@@ -11,8 +14,7 @@ in vec2 texCoord0;
 in vec4 vertexColor;
 in vec3 viewNormal;
 in vec3 viewPosition;
-in float sphericalVertexDistance;
-in float cylindricalVertexDistance;
+in float vertexDistance;
 
 out vec4 fragColor;
 
@@ -36,7 +38,7 @@ void main() {
         color *= 0.4;
     }
 
-    float fog = total_fog_value(sphericalVertexDistance, cylindricalVertexDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd);
+    float fog = (1.0 - linear_fog_fade(vertexDistance, FogStart, FogEnd));
     color *= 1.0 - fog;
 
     fragColor = vec4(color, clamp(max(color.r, max(color.g, color.b)), 0.0, 1.0));

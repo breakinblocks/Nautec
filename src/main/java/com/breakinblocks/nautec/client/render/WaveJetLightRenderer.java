@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
@@ -57,15 +57,18 @@ public final class WaveJetLightRenderer {
     private static @Nullable ByteBufferBuilder renderBuffer;
 
     @SubscribeEvent
-    public static void render(RenderLevelStageEvent.AfterLevel event) {
+    public static void render(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
         if (level == null) {
             return;
         }
 
-        Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
-        float partialTick = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        Vec3 cameraPos = event.getCamera().getPosition();
+        float partialTick = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
         PoseStack poseStack = new PoseStack();
         poseStack.last().pose().set(event.getModelViewMatrix());
 

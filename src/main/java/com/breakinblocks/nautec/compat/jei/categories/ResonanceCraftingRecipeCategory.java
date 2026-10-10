@@ -10,18 +10,18 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class ResonanceCraftingRecipeCategory extends AbstractRecipeCategory<ResonanceCraftingRecipe> {
-    static final Identifier BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
-    public static final Identifier UID = Nautec.rl("resonance_crafting");
-    public static final IRecipeType<ResonanceCraftingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, ResonanceCraftingRecipe.class);
+    static final ResourceLocation BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
+    public static final ResourceLocation UID = Nautec.rl("resonance_crafting");
+    public static final RecipeType<ResonanceCraftingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, ResonanceCraftingRecipe.class);
 
     public ResonanceCraftingRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -32,7 +32,7 @@ public class ResonanceCraftingRecipeCategory extends AbstractRecipeCategory<Reso
     }
 
     @Override
-    public void draw(ResonanceCraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(ResonanceCraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, BURN_PROGRESS_SPRITE, 28, 0, 24, 16);
     }
 
@@ -47,7 +47,7 @@ public class ResonanceCraftingRecipeCategory extends AbstractRecipeCategory<Reso
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ResonanceCraftingRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).add(recipe.ingredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).add(recipe.result());
+        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).addIngredients(recipe.ingredient());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).addItemStack(recipe.result());
     }
 }

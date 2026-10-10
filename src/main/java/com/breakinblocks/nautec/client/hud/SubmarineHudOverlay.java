@@ -7,7 +7,7 @@ import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 
 public final class SubmarineHudOverlay {
@@ -52,7 +52,7 @@ public final class SubmarineHudOverlay {
 
     public static final int TOTAL_H = PANEL_H + CONTROL_TOP_GAP + CONTROLS.length * CONTROL_ROW_H;
 
-    public static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
+    public static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.options.hideGui || minecraft.screen instanceof SubmarineHudPositionScreen) {
             return;
@@ -77,13 +77,13 @@ public final class SubmarineHudOverlay {
         return (int) Math.round(fraction * (guiHeight - TOTAL_H));
     }
 
-    public static void drawPanel(GuiGraphicsExtractor guiGraphics, int x, int y, int power, int capacity,
+    public static void drawPanel(GuiGraphics guiGraphics, int x, int y, int power, int capacity,
                                  float health, float maxHealth, long ticks) {
         drawGauge(guiGraphics, x, y, power, capacity, health, maxHealth, ticks);
         drawControls(guiGraphics, x, y + PANEL_H + CONTROL_TOP_GAP);
     }
 
-    private static void drawGauge(GuiGraphicsExtractor guiGraphics, int x, int y, int power, int capacity,
+    private static void drawGauge(GuiGraphics guiGraphics, int x, int y, int power, int capacity,
                                   float health, float maxHealth, long ticks) {
         Font font = Minecraft.getInstance().font;
         float powerFraction = capacity > 0 ? Mth.clamp((float) power / capacity, 0F, 1F) : 0F;
@@ -119,9 +119,9 @@ public final class SubmarineHudOverlay {
         drawReadout(guiGraphics, font, readoutRight, y + HULL_ROW, hullReadout, lowHull ? AMBER : WHITE);
     }
 
-    private static void drawRow(GuiGraphicsExtractor guiGraphics, Font font, int x, int cellsX, int rowY,
+    private static void drawRow(GuiGraphics guiGraphics, Font font, int x, int cellsX, int rowY,
                                 String label, float fraction, int color) {
-        guiGraphics.text(font, label, x + PAD_LEFT, rowY + 1, WHITE, false);
+        guiGraphics.drawString(font, label, x + PAD_LEFT, rowY + 1, WHITE, false);
 
         int filled = Mth.ceil(fraction * CELLS);
         int cellX = cellsX;
@@ -131,12 +131,12 @@ public final class SubmarineHudOverlay {
         }
     }
 
-    private static void drawReadout(GuiGraphicsExtractor guiGraphics, Font font, int readoutRight, int rowY,
+    private static void drawReadout(GuiGraphics guiGraphics, Font font, int readoutRight, int rowY,
                                     String readout, int color) {
-        guiGraphics.text(font, readout, readoutRight - font.width(readout), rowY + 1, color, false);
+        guiGraphics.drawString(font, readout, readoutRight - font.width(readout), rowY + 1, color, false);
     }
 
-    private static void drawControls(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    private static void drawControls(GuiGraphics guiGraphics, int x, int y) {
         Font font = Minecraft.getInstance().font;
         int keyWidth = 0;
         for (String[] control : CONTROLS) {
@@ -145,8 +145,8 @@ public final class SubmarineHudOverlay {
 
         int row = y;
         for (String[] control : CONTROLS) {
-            guiGraphics.text(font, control[0], x + PAD_LEFT, row, CYAN, false);
-            guiGraphics.text(font, control[1], x + PAD_LEFT + keyWidth + COL_GAP, row, CYAN_DIM, false);
+            guiGraphics.drawString(font, control[0], x + PAD_LEFT, row, CYAN, false);
+            guiGraphics.drawString(font, control[1], x + PAD_LEFT + keyWidth + COL_GAP, row, CYAN_DIM, false);
             row += CONTROL_ROW_H;
         }
     }

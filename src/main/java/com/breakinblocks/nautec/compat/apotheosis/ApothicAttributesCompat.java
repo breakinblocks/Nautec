@@ -1,16 +1,16 @@
 package com.breakinblocks.nautec.compat.apotheosis;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.neoforged.fml.ModList;
 
 public final class ApothicAttributesCompat {
     public static final String MOD_ID = "apothic_attributes";
-    private static final Identifier DRAW_SPEED = Identifier.fromNamespaceAndPath(MOD_ID, "draw_speed");
-    private static final Identifier ARROW_VELOCITY = Identifier.fromNamespaceAndPath(MOD_ID, "arrow_velocity");
-    private static final Identifier ARROW_DAMAGE = Identifier.fromNamespaceAndPath(MOD_ID, "arrow_damage");
+    private static final ResourceLocation DRAW_SPEED = ResourceLocation.fromNamespaceAndPath(MOD_ID, "draw_speed");
+    private static final ResourceLocation ARROW_VELOCITY = ResourceLocation.fromNamespaceAndPath(MOD_ID, "arrow_velocity");
+    private static final ResourceLocation ARROW_DAMAGE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "arrow_damage");
     private static final double MIN_DRAW_SPEED = 0.1D;
 
     private static Boolean loaded;
@@ -33,11 +33,11 @@ public final class ApothicAttributesCompat {
         return value(entity, ARROW_VELOCITY) * value(entity, ARROW_DAMAGE);
     }
 
-    private static double value(LivingEntity entity, Identifier id) {
+    private static double value(LivingEntity entity, ResourceLocation id) {
         if (!isLoaded()) {
             return 1.0D;
         }
-        return BuiltInRegistries.ATTRIBUTE.get(id)
+        return BuiltInRegistries.ATTRIBUTE.getHolder(id)
                 .map(entity::getAttribute)
                 .map(AttributeInstance::getValue)
                 .orElse(1.0D);

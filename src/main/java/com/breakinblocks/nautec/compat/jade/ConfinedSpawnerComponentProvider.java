@@ -10,7 +10,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -23,14 +24,14 @@ import java.util.Optional;
 public enum ConfinedSpawnerComponentProvider implements StreamServerDataProvider<BlockAccessor, ConfinedSpawnerComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("confined_spawner");
+    private static final ResourceLocation UID = Nautec.rl("confined_spawner");
 
-    public record Data(int power, int status, boolean active, Optional<Identifier> mob) {
+    public record Data(int power, int status, boolean active, Optional<ResourceLocation> mob) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, Data::power,
                 ByteBufCodecs.VAR_INT, Data::status,
                 ByteBufCodecs.BOOL, Data::active,
-                ByteBufCodecs.optional(Identifier.STREAM_CODEC), Data::mob,
+                ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), Data::mob,
                 Data::new
         );
     }
@@ -39,7 +40,8 @@ public enum ConfinedSpawnerComponentProvider implements StreamServerDataProvider
     public Data streamData(BlockAccessor accessor) {
         ConfinedSpawnerBlockEntity spawner = (ConfinedSpawnerBlockEntity) accessor.getBlockEntity();
         SpawnerSettings settings = spawner.getSettings();
-        Optional<Identifier> mob = settings == null ? Optional.empty() : settings.displayEntity().read("id", Identifier.CODEC);
+        Optional<ResourceLocation> mob = settings == null || !settings.displayEntity().contains("id", Tag.TAG_STRING)
+                ? Optional.empty() : Optional.ofNullable(ResourceLocation.tryParse(settings.displayEntity().getString("id")));
         return new Data(spawner.getBufferedPower(), spawner.getStatus().ordinal(), spawner.isActive(), mob);
     }
 
@@ -49,7 +51,7 @@ public enum ConfinedSpawnerComponentProvider implements StreamServerDataProvider
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -72,7 +74,7 @@ public enum ConfinedSpawnerComponentProvider implements StreamServerDataProvider
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

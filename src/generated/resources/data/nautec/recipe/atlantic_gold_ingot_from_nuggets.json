@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": "nautec:atlantic_gold_nugget"
+    "#": {
+      "item": "nautec:atlantic_gold_nugget"
+    }
   },
   "pattern": [
     "###",
@@ -10,6 +12,7 @@
     "###"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:atlantic_gold_ingot"
   }
 }

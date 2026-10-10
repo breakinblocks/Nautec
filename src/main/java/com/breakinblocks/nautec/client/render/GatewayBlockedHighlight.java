@@ -7,7 +7,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
@@ -15,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import java.util.List;
 
@@ -28,7 +29,10 @@ public final class GatewayBlockedHighlight {
     }
 
     @SubscribeEvent
-    public static void onSubmitGeometry(SubmitCustomGeometryEvent event) {
+    public static void onSubmitGeometry(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
         Player player = minecraft.player;
@@ -44,15 +48,17 @@ public final class GatewayBlockedHighlight {
         }
 
         PoseStack poseStack = event.getPoseStack();
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.getCamera().getPosition();
         poseStack.pushPose();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
-        event.getSubmitNodeCollector().submitCustomGeometry(poseStack, RenderTypes.debugQuads(), (pose, buffer) -> {
-            for (BlockPos pos : blocked) {
-                box(buffer, pose, pos.getX() - INFLATE, pos.getY() - INFLATE, pos.getZ() - INFLATE,
-                        pos.getX() + 1 + INFLATE, pos.getY() + 1 + INFLATE, pos.getZ() + 1 + INFLATE);
-            }
-        });
+        MultiBufferSource.BufferSource buffers = minecraft.renderBuffers().bufferSource();
+        VertexConsumer buffer = buffers.getBuffer(RenderType.debugQuads());
+        PoseStack.Pose pose = poseStack.last();
+        for (BlockPos pos : blocked) {
+            box(buffer, pose, pos.getX() - INFLATE, pos.getY() - INFLATE, pos.getZ() - INFLATE,
+                    pos.getX() + 1 + INFLATE, pos.getY() + 1 + INFLATE, pos.getZ() + 1 + INFLATE);
+        }
+        buffers.endBatch(RenderType.debugQuads());
         poseStack.popPose();
     }
 

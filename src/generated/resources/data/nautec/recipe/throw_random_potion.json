@@ -4,7 +4,9 @@
   "desc": "Throws a randomly brewed splash potion",
   "ingredients": [
     {
-      "ingredient": "nautec:syringe_robot_arm"
+      "ingredient": {
+        "item": "nautec:syringe_robot_arm"
+      }
     }
   ],
   "resultAugment": "nautec:throw_random_potion"

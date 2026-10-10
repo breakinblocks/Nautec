@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.content.menus.ResonantStorageMenu;
 import com.breakinblocks.nautec.content.menus.ResonantVaultMenu;
@@ -20,7 +21,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ClientInformation;
@@ -36,12 +36,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public final class ResonantStorageTests {
     private ResonantStorageTests() {
     }
 
-    private static ResonantVaultBlockEntity vault(GameTestHelper helper, int x, int z, ResonantChannel channel) {
+    private static ResonantVaultBlockEntity vault(NTGameTestHelper helper, int x, int z, ResonantChannel channel) {
         BlockPos pos = helper.absolutePos(new BlockPos(x, Y, z));
         helper.getLevel().setBlock(pos, NTBlocks.RESONANT_VAULT.get().defaultBlockState(), Block.UPDATE_ALL);
         ResonantVaultBlockEntity vault = (ResonantVaultBlockEntity) helper.getLevel().getBlockEntity(pos);
@@ -61,7 +61,7 @@ public final class ResonantStorageTests {
         return vault;
     }
 
-    private static ResonantCisternBlockEntity cistern(GameTestHelper helper, int x, int z, ResonantChannel channel) {
+    private static ResonantCisternBlockEntity cistern(NTGameTestHelper helper, int x, int z, ResonantChannel channel) {
         BlockPos pos = helper.absolutePos(new BlockPos(x, Y, z));
         helper.getLevel().setBlock(pos, NTBlocks.RESONANT_CISTERN.get().defaultBlockState(), Block.UPDATE_ALL);
         ResonantCisternBlockEntity cistern = (ResonantCisternBlockEntity) helper.getLevel().getBlockEntity(pos);
@@ -141,7 +141,7 @@ public final class ResonantStorageTests {
             ResonantVaultBlockEntity vault = vault(helper, 4, 4, first);
             insert(vault.itemHandler(null), new ItemStack(Items.IRON_INGOT, 5));
             BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = BlockCapabilityCache.create(
-                    Capabilities.Item.BLOCK, helper.getLevel(), vault.getBlockPos(), Direction.UP);
+                    TransferCapabilities.Item.BLOCK, helper.getLevel(), vault.getBlockPos(), Direction.UP);
             helper.assertValueEqual(5, count(cache.getCapability(), new ItemStack(Items.IRON_INGOT)), "pipe view before the change");
             vault.link(new ResonantLink(second, "tester"));
             helper.assertValueEqual(0, count(cache.getCapability(), new ItemStack(Items.IRON_INGOT)), "a pipe kept the old channel after a rekey");

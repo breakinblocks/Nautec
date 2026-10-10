@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
@@ -15,15 +16,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
-import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandlerUtil;
+import com.breakinblocks.nautec.transfer.energy.SimpleEnergyHandler;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -132,14 +133,14 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
 
     public boolean canTune(ServerPlayer player) {
         return owner == null || owner.equals(player.getUUID())
-                || Commands.LEVEL_GAMEMASTERS.check(player.createCommandSourceStack().permissions());
+                || player.hasPermissions(Commands.LEVEL_GAMEMASTERS);
     }
 
     public static boolean accepts(ServerLevel level, BlockPos pos, Direction face) {
         if (level.getBlockEntity(pos) instanceof ResonancePylonBlockEntity) {
             return false;
         }
-        return level.getCapability(Capabilities.Energy.BLOCK, pos, face) != null;
+        return level.getCapability(TransferCapabilities.Energy.BLOCK, pos, face) != null;
     }
 
     public LinkResult toggle(BlockPos pos, Direction face) {
@@ -194,7 +195,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
 
     private void pruneLinks(ServerLevel serverLevel) {
         boolean removed = links.removeIf(link -> {
-            if (!serverLevel.isLoaded(link.pos()) || serverLevel.getCapability(Capabilities.Energy.BLOCK, link.pos(), link.face()) != null) {
+            if (!serverLevel.isLoaded(link.pos()) || serverLevel.getCapability(TransferCapabilities.Energy.BLOCK, link.pos(), link.face()) != null) {
                 return false;
             }
             caches.remove(link);
@@ -238,7 +239,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
                     continue;
                 }
                 EnergyHandler target = caches.computeIfAbsent(link,
-                        key -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, serverLevel, key.pos(), key.face())).getCapability();
+                        key -> BlockCapabilityCache.create(TransferCapabilities.Energy.BLOCK, serverLevel, key.pos(), key.face())).getCapability();
                 if (target == null) {
                     continue;
                 }

@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:carbophages",
   "ingredient": {
-    "ingredient": "#c:ores/coal"
+    "ingredient": {
+      "tag": "c:ores/coal"
+    }
   },
   "vitality_ticks": 1200
 }

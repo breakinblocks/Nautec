@@ -3,10 +3,12 @@ package com.breakinblocks.nautec.content.spawner;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,18 +20,18 @@ import java.util.Optional;
 
 public record SpawnerFilterEntry(Holder<Item> item, Optional<TagKey<Item>> tag) {
     public static final Codec<SpawnerFilterEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Item.CODEC.fieldOf("item").forGetter(SpawnerFilterEntry::item),
+            BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(SpawnerFilterEntry::item),
             TagKey.codec(Registries.ITEM).optionalFieldOf("tag").forGetter(SpawnerFilterEntry::tag)
     ).apply(instance, SpawnerFilterEntry::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SpawnerFilterEntry> STREAM_CODEC = StreamCodec.composite(
-            Item.STREAM_CODEC, SpawnerFilterEntry::item,
-            ByteBufCodecs.optional(TagKey.streamCodec(Registries.ITEM)), SpawnerFilterEntry::tag,
+            ByteBufCodecs.holderRegistry(Registries.ITEM), SpawnerFilterEntry::item,
+            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC.map(id -> TagKey.create(Registries.ITEM, id), TagKey::location)), SpawnerFilterEntry::tag,
             SpawnerFilterEntry::new
     );
 
     public static SpawnerFilterEntry of(ItemStack stack) {
-        return new SpawnerFilterEntry(stack.typeHolder(), Optional.empty());
+        return new SpawnerFilterEntry(stack.getItemHolder(), Optional.empty());
     }
 
     public boolean matches(ItemStack stack) {

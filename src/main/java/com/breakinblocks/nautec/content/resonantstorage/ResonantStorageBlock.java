@@ -12,14 +12,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -34,8 +34,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,13 +66,11 @@ public abstract class ResonantStorageBlock extends Block implements EntityBlock,
     }
 
     @Override
-    protected @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess tickAccess,
-                                              @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos,
-                                              @NotNull BlockState neighborState, @NotNull RandomSource random) {
+    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED)) {
-            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -98,25 +96,25 @@ public abstract class ResonantStorageBlock extends Block implements EntityBlock,
             return InteractionResult.FAIL;
         }
         player.openMenu(storage, buffer -> buffer.writeBlockPos(pos));
-        return InteractionResult.SUCCESS_SERVER;
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    protected @NotNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                                    BlockHitResult hitResult) {
         if (!stack.is(NTItems.RESONANT_EXPANSION.get()) || !(level.getBlockEntity(pos) instanceof ResonantStorageBlockEntity storage)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (!storage.canUse(player)) {
             denied(player, storage);
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
         ResonantStore store = storage.store();
         if (store == null) {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
         int inserted;
         try (Transaction transaction = Transaction.openRoot()) {
@@ -124,17 +122,17 @@ public abstract class ResonantStorageBlock extends Block implements EntityBlock,
             transaction.commit();
         }
         if (inserted <= 0) {
-            player.sendOverlayMessage(Component.translatable("nautec.resonant_storage.expansions_full").withStyle(ChatFormatting.GOLD));
-            return InteractionResult.FAIL;
+            player.displayClientMessage(Component.translatable("nautec.resonant_storage.expansions_full").withStyle(ChatFormatting.GOLD), true);
+            return ItemInteractionResult.FAIL;
         }
         stack.consume(1, player);
-        player.sendOverlayMessage(Component.translatable("nautec.resonant_storage.expansions", store.upgrades(), ResonantStore.MAX_UPGRADES)
-                .withStyle(ChatFormatting.AQUA));
-        return InteractionResult.SUCCESS_SERVER;
+        player.displayClientMessage(Component.translatable("nautec.resonant_storage.expansions", store.upgrades(), ResonantStore.MAX_UPGRADES)
+                .withStyle(ChatFormatting.AQUA), true);
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
     }
 
     protected static void denied(Player player, ResonantStorageBlockEntity storage) {
-        player.sendOverlayMessage(Component.translatable("nautec.resonant_storage.denied", storage.ownerName()).withStyle(ChatFormatting.RED));
+        player.displayClientMessage(Component.translatable("nautec.resonant_storage.denied", storage.ownerName()).withStyle(ChatFormatting.RED), true);
     }
 
     @Override
@@ -175,7 +173,7 @@ public abstract class ResonantStorageBlock extends Block implements EntityBlock,
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return level.getBlockEntity(pos) instanceof ResonantStorageBlockEntity storage ? storage.comparatorSignal() : 0;
     }
 

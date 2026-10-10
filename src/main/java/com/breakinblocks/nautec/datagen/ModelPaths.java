@@ -1,28 +1,28 @@
 package com.breakinblocks.nautec.datagen;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public final class ModelPaths {
     private ModelPaths() {
     }
 
-    public static Identifier blockModel(Identifier name) {
+    public static ResourceLocation blockModel(ResourceLocation name) {
         return blockModel(name, "");
     }
 
-    public static Identifier blockModel(Identifier name, String suffix) {
+    public static ResourceLocation blockModel(ResourceLocation name, String suffix) {
         return inFolder(name, "block/", suffix);
     }
 
-    public static Identifier itemModel(Identifier name) {
+    public static ResourceLocation itemModel(ResourceLocation name) {
         return inFolder(name, "item/", "");
     }
 
-    public static Identifier extend(Identifier id, String suffix) {
-        return Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
+    public static ResourceLocation extend(ResourceLocation id, String suffix) {
+        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
     }
 
-    private static Identifier inFolder(Identifier name, String folder, String suffix) {
-        return Identifier.fromNamespaceAndPath(name.getNamespace(), folder + name.getPath() + suffix);
+    private static ResourceLocation inFolder(ResourceLocation name, String folder, String suffix) {
+        return ResourceLocation.fromNamespaceAndPath(name.getNamespace(), folder + name.getPath() + suffix);
     }
 }

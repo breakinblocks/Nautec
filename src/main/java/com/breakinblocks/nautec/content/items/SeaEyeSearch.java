@@ -81,7 +81,7 @@ public final class SeaEyeSearch {
         static Request capture(ServerLevel level, BlockPos origin, TagKey<Structure> structures, int radius) {
             ChunkGeneratorStructureState generatorState = level.getChunkSource().getGeneratorState();
             Map<RandomSpreadStructurePlacement, List<Holder<Structure>>> placements = new LinkedHashMap<>();
-            boolean generate = level.getServer().getWorldGenSettings().options().generateStructures();
+            boolean generate = level.getServer().getWorldData().worldGenOptions().generateStructures();
             Optional<HolderSet.Named<Structure>> tag = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(structures);
             if (generate && tag.isPresent()) {
                 for (Holder<Structure> structure : tag.get()) {
@@ -147,7 +147,7 @@ public final class SeaEyeSearch {
                         continue;
                     }
                     ChunkPos candidate = placement.getPotentialStructureChunk(seed, originX + spacing * x, originZ + spacing * z);
-                    if (!placement.isStructureChunk(generatorState, candidate.x(), candidate.z())) {
+                    if (!placement.isStructureChunk(generatorState, candidate.x, candidate.z)) {
                         continue;
                     }
                     stats.candidates++;

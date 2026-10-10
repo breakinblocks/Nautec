@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:kelp",
+  "catalyst": {
+    "item": "minecraft:kelp"
+  },
   "chance": 25.0,
   "input_bacteria": "nautec:halobacteria",
   "result_bacteria": "nautec:halotrophs"

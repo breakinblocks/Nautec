@@ -8,7 +8,6 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -108,7 +107,7 @@ public class ItemInfusion {
     }
 
     private static void spawnCompletionEffects(ItemEntity itemEntity, ServerLevel level) {
-        spawnParticles(itemEntity, level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F));
+        spawnParticles(itemEntity, level, ParticleTypes.DRAGON_BREATH);
 
         level.playSound(null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(),
                 SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, SOUND_VOLUME, SOUND_PITCH);

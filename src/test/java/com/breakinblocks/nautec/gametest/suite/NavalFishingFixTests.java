@@ -21,7 +21,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
@@ -238,7 +237,7 @@ public final class NavalFishingFixTests {
             owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.FISHING_ROD));
 
             FishingHook hook = new FishingHook(owner, level, 0, 0);
-            hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+            hook.moveTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
             hook.setDeltaMovement(Vec3.ZERO);
 
             AABB area = new AABB(zonePos).inflate(8);
@@ -322,7 +321,7 @@ public final class NavalFishingFixTests {
         });
     }
 
-    private static SubmarineEntity spawnSubmarine(GameTestHelper helper) {
+    private static SubmarineEntity spawnSubmarine(NTGameTestHelper helper) {
         SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), SUB_POS);
         helper.assertTrue(submarine != null, "the submarine failed to spawn");
         return submarine;
@@ -349,7 +348,7 @@ public final class NavalFishingFixTests {
         return accessor.nautec$getNibble();
     }
 
-    private static void drain(GameTestHelper helper) {
+    private static void drain(NTGameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
         for (int dx = -3; dx <= 3; dx++) {
@@ -372,20 +371,20 @@ public final class NavalFishingFixTests {
         return ticks;
     }
 
-    private static NautecFishingHook cast(GameTestHelper helper, BlockPos surface) {
+    private static NautecFishingHook cast(NTGameTestHelper helper, BlockPos surface) {
         ServerLevel level = helper.getLevel();
         Player owner = helper.makeMockPlayer(GameType.SURVIVAL);
         owner.setPos(surface.getX() + 0.5, surface.getY() + 1.0, surface.getZ() + 3.5);
         owner.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.NAUTEC_FISHING_ROD.get()));
 
         NautecFishingHook hook = new NautecFishingHook(owner, level, 0, 0);
-        hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+        hook.moveTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
         hook.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(hook);
         return hook;
     }
 
-    private static BlockPos pool(GameTestHelper helper) {
+    private static BlockPos pool(NTGameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
         for (int dx = -3; dx <= 3; dx++) {
@@ -397,7 +396,7 @@ public final class NavalFishingFixTests {
         return centre.below();
     }
 
-    private static BlockPos acidPit(GameTestHelper helper) {
+    private static BlockPos acidPit(NTGameTestHelper helper) {
         BlockPos acid = new BlockPos(4, 2, 4);
         helper.setBlock(acid.below(), Blocks.STONE.defaultBlockState());
         for (Direction direction : Direction.Plane.HORIZONTAL) {
@@ -415,7 +414,7 @@ public final class NavalFishingFixTests {
     }
 
     private static Optional<ItemEtchingRecipe> gearRecipe(ServerLevel level) {
-        return level.recipeAccess()
+        return level.getRecipeManager()
                 .getRecipeFor(ItemEtchingRecipe.Type.INSTANCE, new SingleRecipeInput(new ItemStack(NTItems.RUSTY_GEAR.get())), level)
                 .map(RecipeHolder::value);
     }

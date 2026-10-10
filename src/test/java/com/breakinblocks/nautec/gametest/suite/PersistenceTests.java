@@ -23,20 +23,19 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.storage.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.IntegerRange;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 
 public final class PersistenceTests {
@@ -149,7 +148,7 @@ public final class PersistenceTests {
                 saved[0] = source.getProgress();
                 helper.assertTrue(saved[0] > 0, "Mutator should have accumulated progress before the reload");
                 CompoundTag tag = source.saveWithoutMetadata(helper.getLevel().registryAccess());
-                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+                target.loadWithComponents(tag, helper.getLevel().registryAccess());
                 helper.assertValueEqual(saved[0], target.getProgress(), "mutator progress across save and load");
                 target.onLoad();
             });
@@ -178,7 +177,7 @@ public final class PersistenceTests {
                 helper.assertTrue(progress != Math.floor(progress), "Bio reactor progress should be fractional");
 
                 CompoundTag tag = source.saveWithoutMetadata(helper.getLevel().registryAccess());
-                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), tag));
+                target.loadWithComponents(tag, helper.getLevel().registryAccess());
                 helper.assertValueEqual(progress, target.getProgress(0), "bio reactor progress across save and load");
 
                 CompoundTag legacy = source.saveWithoutMetadata(helper.getLevel().registryAccess());
@@ -186,7 +185,7 @@ public final class PersistenceTests {
                 legacy.remove("progress1");
                 legacy.remove("progress2");
                 legacy.putIntArray("progress", new int[]{41, 52, 63});
-                target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), legacy));
+                target.loadWithComponents(legacy, helper.getLevel().registryAccess());
                 helper.assertValueEqual(41.0f, target.getProgress(0), "legacy progress slot 0");
                 helper.assertValueEqual(52.0f, target.getProgress(1), "legacy progress slot 1");
                 helper.assertValueEqual(63.0f, target.getProgress(2), "legacy progress slot 2");
@@ -271,7 +270,7 @@ public final class PersistenceTests {
         }));
     }
 
-    private static <T extends BlockEntity> T placePair(GameTestHelper helper, Block block, Class<T> type) {
+    private static <T extends BlockEntity> T placePair(NTGameTestHelper helper, Block block, Class<T> type) {
         helper.setBlock(SOURCE_POS, block);
         helper.setBlock(TARGET_POS, block);
         T be = helper.getBlockEntity(SOURCE_POS, type);
@@ -279,11 +278,11 @@ public final class PersistenceTests {
         return be;
     }
 
-    private static <T extends BlockEntity> T reload(GameTestHelper helper, BlockEntity source, Class<T> type) {
+    private static <T extends BlockEntity> T reload(NTGameTestHelper helper, BlockEntity source, Class<T> type) {
         CompoundTag saved = source.saveWithoutMetadata(helper.getLevel().registryAccess());
         T target = helper.getBlockEntity(TARGET_POS, type);
         helper.assertTrue(target != null, "block entity not created at " + TARGET_POS);
-        target.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), saved));
+        target.loadWithComponents(saved, helper.getLevel().registryAccess());
         return target;
     }
 }

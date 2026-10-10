@@ -5,14 +5,13 @@ import com.breakinblocks.nautec.worldgen.NTBiomeKeys;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -25,8 +24,8 @@ public class BiomeTagProvider extends TagsProvider<Biome> {
     public static final TagKey<Biome> HAS_BUDDING_PRISMARINE = modTag("has_budding_prismarine");
     public static final TagKey<Biome> BUDDING_PRISMARINE_GRAFTING = modTag("budding_prismarine_grafting");
 
-    public BiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, Registries.BIOME, registries, Nautec.MODID);
+    public BiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper existingFileHelper) {
+        super(output, Registries.BIOME, registries, Nautec.MODID, existingFileHelper);
     }
 
     @Override
@@ -65,9 +64,6 @@ public class BiomeTagProvider extends TagsProvider<Biome> {
                 .add(NTBiomeKeys.PRISMARINE_REEF, NTBiomeKeys.BIOLUMINESCENT_GROVE, NTBiomeKeys.ABYSSAL_TRENCH);
     }
 
-    private TagAppender<ResourceKey<Biome>, Biome> tag(TagKey<Biome> tag) {
-        return TagAppender.forBuilder(getOrCreateRawBuilder(tag));
-    }
 
     private static TagKey<Biome> modTag(String name) {
         return TagKey.create(Registries.BIOME, Nautec.rl(name));

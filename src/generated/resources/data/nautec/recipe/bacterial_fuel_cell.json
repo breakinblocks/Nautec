@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:aquatic_chip",
-    "D": "nautec:dark_prismarine_pillar",
-    "L": "nautec:laser_channeling_coil",
-    "P": "nautec:petri_dish",
-    "S": "nautec:bacterial_containment_shield"
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "D": {
+      "item": "nautec:dark_prismarine_pillar"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    },
+    "P": {
+      "item": "nautec:petri_dish"
+    },
+    "S": {
+      "item": "nautec:bacterial_containment_shield"
+    }
   },
   "pattern": [
     "DCD",
@@ -14,6 +24,7 @@
     "DLD"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:bacterial_fuel_cell"
   }
 }

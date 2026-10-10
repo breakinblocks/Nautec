@@ -6,14 +6,14 @@ import com.breakinblocks.nautec.network.KeyPressedPayload;
 import com.breakinblocks.nautec.registries.NTAugments;
 import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.core.Holder;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class ThrowRandomPotionAugments extends Augment {
     @Override
     public void clientTick(PlayerTickEvent.Post event) {
         if (player.isLocalPlayer() && NTKeybinds.THROW_POTION_KEYBIND.get().consumeClick() && !isOnCooldown()) {
-            ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
+            PacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }
     }
@@ -46,7 +46,8 @@ public class ThrowRandomPotionAugments extends Augment {
         Holder<Potion> randomPotion = potions.get(player.getRandom().nextInt(potions.size()));
         ItemStack stack = PotionContents.createItemStack(Items.SPLASH_POTION,randomPotion);
 
-        ThrownSplashPotion potion = new ThrownSplashPotion(player.level(), player, stack);
+        ThrownPotion potion = new ThrownPotion(player.level(), player);
+        potion.setItem(stack);
         potion.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
         player.level().addFreshEntity(potion);
         setCooldown(20);

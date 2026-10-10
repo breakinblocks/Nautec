@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.minecraft.util.TriState;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @EventBusSubscriber(modid = Nautec.MODID)
@@ -46,15 +46,15 @@ public final class TuningForkEvents {
         }
         ResonanceNetwork network = tunable.getNetwork();
         if (network == null) {
-            serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance_charm.no_network").withStyle(ChatFormatting.RED));
+            serverPlayer.displayClientMessage(Component.translatable("nautec.resonance_charm.no_network").withStyle(ChatFormatting.RED), true);
             return;
         }
         if (!ResonanceNetworks.canUse(serverPlayer, network)) {
-            serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance.error.no_access").withStyle(ChatFormatting.RED));
+            serverPlayer.displayClientMessage(Component.translatable("nautec.resonance.error.no_access").withStyle(ChatFormatting.RED), true);
             return;
         }
         augment.bind(new ResonanceBinding(network.id(), network.name()));
-        serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance_augment.bound", network.name()).withStyle(ChatFormatting.AQUA));
+        serverPlayer.displayClientMessage(Component.translatable("nautec.resonance_augment.bound", network.name()).withStyle(ChatFormatting.AQUA), true);
         event.getLevel().playSound(null, event.getPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, 1.4F);
     }
 }

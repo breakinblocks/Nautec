@@ -6,16 +6,13 @@ import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserBlockEnti
 import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserRenderState;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<PrismarineCrystalBlockEntity, PrismarineCrystalBERenderer.PrismarineCrystalRenderState> {
     public PrismarineCrystalBERenderer(BlockEntityRendererProvider.Context ctx) {
@@ -28,8 +25,8 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
     }
 
     @Override
-    public void extractRenderState(PrismarineCrystalBlockEntity blockEntity, PrismarineCrystalRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        super.extractRenderState(blockEntity, state, partialTick, cameraPos, crumbling);
+    public void extractRenderState(PrismarineCrystalBlockEntity blockEntity, PrismarineCrystalRenderState state, float partialTick, Vec3 cameraPos) {
+        super.extractRenderState(blockEntity, state, partialTick, cameraPos);
         state.breaking = blockEntity.isBreaking();
         state.breakingProgress = 0;
         if (state.breaking && blockEntity.getLevel() != null) {
@@ -40,8 +37,8 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
     }
 
     @Override
-    public void submit(PrismarineCrystalRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        super.submit(state, poseStack, collector, camera);
+    public void submit(PrismarineCrystalRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
+        super.submit(state, poseStack, buffers, cameraPos);
         poseStack.pushPose();
         {
             poseStack.translate(0.5, 0, 0.5);
@@ -58,7 +55,7 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
                     flash = Mth.sin(f * Mth.PI) * 0.6F;
                 }
             }
-            PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks, state.seed, flash, true);
+            PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks, state.seed, flash, true);
         }
         poseStack.popPose();
     }

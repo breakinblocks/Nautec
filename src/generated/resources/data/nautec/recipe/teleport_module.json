@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:aquatic_chip",
-    "H": "nautec:eldritch_heart",
-    "P": "#c:ender_pearls",
-    "X": "minecraft:chorus_fruit"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "H": {
+      "item": "nautec:eldritch_heart"
+    },
+    "P": {
+      "tag": "c:ender_pearls"
+    },
+    "X": {
+      "item": "minecraft:chorus_fruit"
+    }
   },
   "pattern": [
     "PXP",
@@ -14,6 +24,7 @@
     "ACA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:teleport_module"
   }
 }

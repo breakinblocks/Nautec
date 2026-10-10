@@ -9,7 +9,7 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -37,8 +37,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +81,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     private AugmentSlot slot;
     private int installedTicks;
 
-    private static final Identifier SURGERY_LOCK = Nautec.rl("augmentation_lock");
+    private static final ResourceLocation SURGERY_LOCK = Nautec.rl("augmentation_lock");
     private final Map<BlockPos, ItemStack> operationInputs = new HashMap<>();
 
     public AugmentationStationBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -155,7 +155,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
             return Optional.empty();
         }
         List<ItemStack> ingredients = collectInputItems();
-        return serverLevel.recipeAccess()
+        return serverLevel.getRecipeManager()
                 .getRecipeFor(AugmentationRecipe.Type.INSTANCE, new AugmentationRecipeInput(ingredients, 100), level)
                 .map(RecipeHolder::value);
     }
@@ -260,7 +260,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
             playerUUID = null;
             if (level.getGameTime() % 40 == 0) {
                 for (Player standing : level.getEntitiesOfClass(Player.class, new AABB(worldPosition.above()))) {
-                    standing.sendOverlayMessage(Component.translatable("nautec.augmentation_station.unformed").withStyle(ChatFormatting.RED));
+                    standing.displayClientMessage(Component.translatable("nautec.augmentation_station.unformed").withStyle(ChatFormatting.RED), true);
                 }
             }
             return;

@@ -30,7 +30,7 @@ public class LithostitchedInjectorProvider implements DataProvider {
 
         int priority = 10;
         for (NTOceanRegion.Slice slice : NTOceanRegion.slices()) {
-            String name = slice.biome().identifier().getPath();
+            String name = slice.biome().location().getPath();
             Path file = path.json(Nautec.rl(name));
             futures.add(DataProvider.saveStable(cache, injector(slice, priority), file));
             priority += 10;
@@ -45,7 +45,7 @@ public class LithostitchedInjectorProvider implements DataProvider {
         json.addProperty("dimension", "minecraft:overworld");
         json.addProperty("priority", priority);
         json.addProperty("targets", OCEAN_TARGET);
-        json.addProperty("replacement", slice.biome().identifier().toString());
+        json.addProperty("replacement", slice.biome().location().toString());
 
         JsonObject parameters = new JsonObject();
         put(parameters, "temperature", slice, slice.temperature());

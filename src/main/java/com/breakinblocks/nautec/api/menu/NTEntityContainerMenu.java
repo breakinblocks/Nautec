@@ -48,6 +48,6 @@ public abstract class NTEntityContainerMenu<T extends Entity> extends AbstractCo
 
     @Override
     public boolean stillValid(Player player) {
-        return this.entity.isAlive() && player.isWithinEntityInteractionRange(this.entity, INTERACTION_RANGE);
+        return this.entity.isAlive() && player.canInteractWithEntity(this.entity, INTERACTION_RANGE);
     }
 }

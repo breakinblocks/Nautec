@@ -21,7 +21,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,7 +38,7 @@ public final class BacteriaMachineTests {
     private BacteriaMachineTests() {
     }
 
-    static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -54,7 +53,7 @@ public final class BacteriaMachineTests {
         laser.receivePower(laser.getRequiredPower(), Direction.UP, laser.getBlockPos().above());
     }
 
-    static void feedExact(GameTestHelper helper, BlockPos pos) {
+    static void feedExact(NTGameTestHelper helper, BlockPos pos) {
         BlockPos abs = helper.absolutePos(pos);
         helper.onEachTick(() -> {
             if (helper.getLevel().getBlockEntity(abs) instanceof LaserBlockEntity laser) {
@@ -71,13 +70,13 @@ public final class BacteriaMachineTests {
         return new BacteriaInstance(bacteria, size, stats, true, age);
     }
 
-    private static BacteriaIncubationRecipe incubationRecipeFor(GameTestHelper helper, ResourceKey<Bacteria> bacteria) {
-        for (RecipeHolder<BacteriaIncubationRecipe> holder : helper.getLevel().recipeAccess().recipeMap().byType(BacteriaIncubationRecipe.TYPE)) {
+    private static BacteriaIncubationRecipe incubationRecipeFor(NTGameTestHelper helper, ResourceKey<Bacteria> bacteria) {
+        for (RecipeHolder<BacteriaIncubationRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(BacteriaIncubationRecipe.TYPE)) {
             if (holder.value().bacteria().equals(bacteria)) {
                 return holder.value();
             }
         }
-        throw helper.assertionException("No incubation recipe for " + bacteria.identifier());
+        throw helper.assertionException("No incubation recipe for " + bacteria.location());
     }
 
     private static int window() {
@@ -464,7 +463,7 @@ public final class BacteriaMachineTests {
         });
     }
 
-    private static void assertNear(GameTestHelper helper, float expected, float actual, String what) {
+    private static void assertNear(NTGameTestHelper helper, float expected, float actual, String what) {
         helper.assertTrue(Math.abs(expected - actual) < EPSILON,
                 what + ": expected " + expected + " but was " + actual);
     }

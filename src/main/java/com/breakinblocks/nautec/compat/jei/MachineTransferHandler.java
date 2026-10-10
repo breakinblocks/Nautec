@@ -9,11 +9,11 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public final class MachineTransferHandler<C extends NTAbstractContainerMenu<?>, 
     private final IRecipeTransferHandlerHelper helper;
     private final Class<C> menuClass;
     private final Supplier<MenuType<C>> menuType;
-    private final IRecipeType<R> recipeType;
+    private final RecipeType<R> recipeType;
     private final BiFunction<C, R, List<RecipeTransfer.Entry>> entries;
 
-    public MachineTransferHandler(IRecipeTransferHandlerHelper helper, Class<C> menuClass, Supplier<MenuType<C>> menuType, IRecipeType<R> recipeType,
+    public MachineTransferHandler(IRecipeTransferHandlerHelper helper, Class<C> menuClass, Supplier<MenuType<C>> menuType, RecipeType<R> recipeType,
                                   BiFunction<C, R, List<RecipeTransfer.Entry>> entries) {
         this.helper = helper;
         this.menuClass = menuClass;
@@ -49,7 +49,7 @@ public final class MachineTransferHandler<C extends NTAbstractContainerMenu<?>, 
     }
 
     @Override
-    public IRecipeType<R> getRecipeType() {
+    public RecipeType<R> getRecipeType() {
         return recipeType;
     }
 
@@ -88,7 +88,7 @@ public final class MachineTransferHandler<C extends NTAbstractContainerMenu<?>, 
             return helper.createUserErrorWithTooltip(Component.translatable("nautec.jei.transfer.full"));
         }
         if (doTransfer) {
-            ClientPacketDistributor.sendToServer(new RecipeTransferPayload(menu.containerId, wanted, maxTransfer));
+            PacketDistributor.sendToServer(new RecipeTransferPayload(menu.containerId, wanted, maxTransfer));
         }
         return null;
     }

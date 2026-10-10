@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:warped_stem",
+  "catalyst": {
+    "item": "minecraft:warped_stem"
+  },
   "chance": 3.0,
   "input_bacteria": "nautec:lignocytes",
   "result_bacteria": "nautec:warped_lignocytes"

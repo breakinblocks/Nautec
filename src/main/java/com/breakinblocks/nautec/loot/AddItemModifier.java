@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -24,8 +24,8 @@ public class AddItemModifier extends LootModifier {
 
     private final ItemStackTemplate item;
 
-    public AddItemModifier(LootItemCondition[] conditionsIn, int priority, ItemStackTemplate item) {
-        super(conditionsIn, priority);
+    public AddItemModifier(LootItemCondition[] conditionsIn, ItemStackTemplate item) {
+        super(conditionsIn);
         this.item = item;
     }
 

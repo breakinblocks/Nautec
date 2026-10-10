@@ -16,7 +16,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -34,13 +33,13 @@ public final class DistributorTests {
     private DistributorTests() {
     }
 
-    private static DistributorBlockEntity distributor(GameTestHelper helper) {
+    private static DistributorBlockEntity distributor(NTGameTestHelper helper) {
         helper.setBlock(DISTRIBUTOR, NTBlocks.DISTRIBUTOR.get());
         helper.setBlock(CHEST, Blocks.CHEST.defaultBlockState());
         return helper.getBlockEntity(DISTRIBUTOR, DistributorBlockEntity.class);
     }
 
-    private static Container chest(GameTestHelper helper) {
+    private static Container chest(NTGameTestHelper helper) {
         return helper.getBlockEntity(CHEST, ChestBlockEntity.class);
     }
 
@@ -54,7 +53,7 @@ public final class DistributorTests {
         return total;
     }
 
-    private static void link(GameTestHelper helper, DistributorBlockEntity distributor, BlockPos relative, Direction face) {
+    private static void link(NTGameTestHelper helper, DistributorBlockEntity distributor, BlockPos relative, Direction face) {
         helper.assertValueEqual(distributor.toggle(helper.absolutePos(relative), face), DistributorBlockEntity.LinkResult.LINKED, "link " + relative);
     }
 

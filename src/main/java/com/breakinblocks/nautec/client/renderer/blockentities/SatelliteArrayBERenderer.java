@@ -8,14 +8,10 @@ import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlockEntity;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -35,13 +31,10 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
     private static final int UPLINK_COLOR = 0x86E7F3;
     private static final int DOWNLINK_COLOR = 0x7FFFE0;
     private static final int FULL_BRIGHT = 15728880;
-
-    private final ItemModelResolver itemModelResolver;
     private @Nullable ItemStack satelliteStack;
 
     public SatelliteArrayBERenderer(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
-        this.itemModelResolver = ctx.itemModelResolver();
     }
 
     @Override
@@ -55,9 +48,8 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
     }
 
     @Override
-    public void extractRenderState(SatelliteArrayBlockEntity array, ArrayRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        super.extractRenderState(array, state, partialTick, cameraPos, crumbling);
+    public void extractRenderState(SatelliteArrayBlockEntity array, ArrayRenderState state, float partialTick, Vec3 cameraPos) {
+        super.extractRenderState(array, state, partialTick, cameraPos);
         state.uplink = array.isUplink();
         state.online = array.getStatus() == SatelliteArrayBlockEntity.STATUS_ONLINE;
         state.active = state.online && array.getRelay() > 0;
@@ -68,22 +60,22 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
         state.launch = array.getLaunchedAt() == Long.MIN_VALUE ? 1F
                 : Mth.clamp((gameTime - array.getLaunchedAt() + partialTick) / SatelliteArrayBlockEntity.LAUNCH_TICKS, 0F, 1F);
         if (state.uplink && state.satellite) {
-            this.itemModelResolver.updateForTopItem(state.item, satelliteStack(), ItemDisplayContext.FIXED,
-                    array.getLevel(), null, 0);
+            state.item.update(satelliteStack(), ItemDisplayContext.FIXED,
+                    array.getLevel(), 0);
         } else {
             state.item.clear();
         }
     }
 
     @Override
-    public void submit(ArrayRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        super.submit(state, poseStack, collector, camera);
+    public void submit(ArrayRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
+        super.submit(state, poseStack, buffers, cameraPos);
         float pulse = 0.5F + 0.5F * Mth.sin(state.ticks * 0.2F);
         float hover = FOCUS + Mth.sin(state.ticks * 0.06F) * 0.03F;
         poseStack.pushPose();
         poseStack.translate(0.5F, hover, 0.5F);
         poseStack.scale(CRYSTAL_SCALE, CRYSTAL_SCALE, CRYSTAL_SCALE);
-        PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks * (state.active ? 3F : state.online ? 1.2F : 0.5F), state.seed,
+        PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks * (state.active ? 3F : state.online ? 1.2F : 0.5F), state.seed,
                 state.active ? 0.45F : state.online ? 0.1F : 0F, true);
         poseStack.popPose();
 
@@ -94,18 +86,18 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
                 return;
             }
             Vector3f satellite = satellitePosition(state, focus);
-            submitSatellite(state, poseStack, collector, satellite);
+            submitSatellite(state, poseStack, buffers, satellite);
             if (state.active && state.launch >= 1F) {
                 int beam = ARGB.color(Math.round(150F + 90F * pulse), color);
-                LaserBeamRenderer.submitBeam(poseStack, collector, focus, satellite, 0.1F, beam, true);
-                LaserBeamRenderer.submitFlare(poseStack, collector, satellite, 0.5F + 0.2F * pulse, beam, true);
-                LaserBeamRenderer.submitFlare(poseStack, collector, focus, 0.2F, beam, true);
+                LaserBeamRenderer.submitBeam(poseStack, buffers, focus, satellite, 0.1F, beam, true);
+                LaserBeamRenderer.submitFlare(poseStack, buffers, satellite, 0.5F + 0.2F * pulse, beam, true);
+                LaserBeamRenderer.submitFlare(poseStack, buffers, focus, 0.2F, beam, true);
             }
         } else if (state.active) {
             int beam = ARGB.color(Math.round(150F + 90F * pulse), color);
             Vector3f sky = new Vector3f(0.5F, FOCUS + ORBIT_HEIGHT, 0.5F);
-            LaserBeamRenderer.submitBeam(poseStack, collector, sky, focus, 0.1F, beam, true);
-            LaserBeamRenderer.submitFlare(poseStack, collector, focus, 0.22F + 0.08F * pulse, beam, true);
+            LaserBeamRenderer.submitBeam(poseStack, buffers, sky, focus, 0.1F, beam, true);
+            LaserBeamRenderer.submitFlare(poseStack, buffers, focus, 0.22F + 0.08F * pulse, beam, true);
         }
     }
 
@@ -126,7 +118,7 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
         return rise.lerp(target, eased * eased);
     }
 
-    private static void submitSatellite(ArrayRenderState state, PoseStack poseStack, SubmitNodeCollector collector, Vector3f at) {
+    private static void submitSatellite(ArrayRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vector3f at) {
         if (state.item.isEmpty()) {
             return;
         }
@@ -136,7 +128,7 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
         poseStack.mulPose(Axis.YP.rotation(-(state.ticks * ORBIT_SPEED)));
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(state.ticks * 0.02F) * 6F));
         poseStack.scale(scale, scale, scale);
-        state.item.submit(poseStack, collector, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+        state.item.submit(poseStack, buffers, FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
     }
 
@@ -147,7 +139,7 @@ public class SatelliteArrayBERenderer extends LaserBlockEntityRenderer<Satellite
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(SatelliteArrayBlockEntity blockEntity) {
         return true;
     }
 

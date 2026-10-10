@@ -10,15 +10,14 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 import java.util.Set;
@@ -29,12 +28,12 @@ public final class LaserCraftingMatrixTests {
     private LaserCraftingMatrixTests() {
     }
 
-    private static LaserCraftingMatrixBlockEntity place(GameTestHelper helper) {
+    private static LaserCraftingMatrixBlockEntity place(NTGameTestHelper helper) {
         helper.setBlock(MATRIX, NTBlocks.LASER_CRAFTING_MATRIX.get());
         return helper.getBlockEntity(MATRIX, LaserCraftingMatrixBlockEntity.class);
     }
 
-    private static void run(GameTestHelper helper, LaserCraftingMatrixBlockEntity matrix, int power, float purity, int ticks) {
+    private static void run(NTGameTestHelper helper, LaserCraftingMatrixBlockEntity matrix, int power, float purity, int ticks) {
         BlockPos origin = helper.absolutePos(MATRIX).above();
         for (int i = 0; i < ticks; i++) {
             matrix.receivePower(power, Direction.UP, origin);
@@ -154,31 +153,31 @@ public final class LaserCraftingMatrixTests {
         });
 
         r.add("laser_crafting_matrix/covers_every_in_world_transformation", 20, helper -> {
-            List<LaserCraftingRecipe> matrixRecipes = helper.getLevel().recipeAccess().recipeMap().byType(LaserCraftingRecipe.Type.INSTANCE)
+            List<LaserCraftingRecipe> matrixRecipes = helper.getLevel().getRecipeManager().getAllRecipesFor(LaserCraftingRecipe.Type.INSTANCE)
                     .stream().map(RecipeHolder::value).toList();
-            for (RecipeHolder<ItemTransformationRecipe> holder : helper.getLevel().recipeAccess().recipeMap().byType(ItemTransformationRecipe.Type.INSTANCE)) {
+            for (RecipeHolder<ItemTransformationRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(ItemTransformationRecipe.Type.INSTANCE)) {
                 ItemTransformationRecipe transformation = holder.value();
-                ItemStack input = transformation.ingredient().ingredient().items().findFirst().orElseThrow().value().getDefaultInstance();
+                ItemStack input = transformation.ingredient().ingredient().getItems()[0].getItem().getDefaultInstance();
                 boolean covered = matrixRecipes.stream().anyMatch(recipe -> recipe.ingredients().size() == 1
                         && recipe.ingredients().getFirst().test(input)
                         && recipe.purity() == transformation.purity()
                         && recipe.results().size() == 1
                         && ItemStack.isSameItemSameComponents(recipe.results().getFirst(), transformation.result())
                         && recipe.results().getFirst().getCount() == transformation.result().getCount());
-                helper.assertTrue(covered, "no Laser Crafting Matrix recipe for " + holder.id().identifier());
+                helper.assertTrue(covered, "no Laser Crafting Matrix recipe for " + holder.id());
             }
             helper.succeed();
         });
 
         r.add("laser_crafting_matrix/recipe_json_limits_hold", 20, helper -> {
             String tooMany = """
-                    {"ingredients": [{"ingredient": "minecraft:stone"}, {"ingredient": "minecraft:dirt"},
-                      {"ingredient": "minecraft:sand"}, {"ingredient": "minecraft:gravel"}],
+                    {"ingredients": [{"ingredient": {"item": "minecraft:stone"}}, {"ingredient": {"item": "minecraft:dirt"}},
+                      {"ingredient": {"item": "minecraft:sand"}}, {"ingredient": {"item": "minecraft:gravel"}}],
                      "results": [{"id": "minecraft:stone"}], "power": 1, "duration": 1}""";
             String noOutput = """
-                    {"ingredients": [{"ingredient": "minecraft:stone"}], "power": 1, "duration": 1}""";
+                    {"ingredients": [{"ingredient": {"item": "minecraft:stone"}}], "power": 1, "duration": 1}""";
             String valid = """
-                    {"ingredients": [{"ingredient": "minecraft:stone"}], "results": [{"id": "minecraft:dirt"}], "power": 1, "duration": 1}""";
+                    {"ingredients": [{"ingredient": {"item": "minecraft:stone"}}], "results": [{"id": "minecraft:dirt"}], "power": 1, "duration": 1}""";
             helper.assertTrue(parse(helper, tooMany).isError(), "four item inputs are rejected");
             helper.assertTrue(parse(helper, noOutput).isError(), "a recipe with no output is rejected");
             helper.assertTrue(parse(helper, valid).isSuccess(), "a minimal recipe loads");
@@ -186,7 +185,7 @@ public final class LaserCraftingMatrixTests {
         });
     }
 
-    private static DataResult<LaserCraftingRecipe> parse(GameTestHelper helper, String json) {
+    private static DataResult<LaserCraftingRecipe> parse(NTGameTestHelper helper, String json) {
         return LaserCraftingRecipe.Serializer.INSTANCE.codec().codec()
                 .parse(helper.getLevel().registryAccess().createSerializationContext(JsonOps.INSTANCE), JsonParser.parseString(json));
     }

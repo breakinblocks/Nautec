@@ -3,9 +3,9 @@ package com.breakinblocks.nautec.capabilities;
 import com.breakinblocks.nautec.utils.Utils;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.resource.Resource;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 
 public class SidedResourceHandler<R extends Resource> implements ResourceHandler<R> {
     private final ResourceHandler<R> innerHandler;

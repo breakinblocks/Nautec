@@ -13,7 +13,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public final class TidalShockwave {
     private static final float EDGE_STRENGTH = 0.5F;
@@ -55,10 +54,10 @@ public final class TidalShockwave {
 
     public static void release(ServerLevel level, Entity source, @Nullable Entity owner, ItemStack weapon, Vec3 center) {
         double radius = NTConfig.tridentShockwaveRadius;
-        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
         if (bolt != null) {
             bolt.setVisualOnly(true);
-            bolt.snapTo(center.x, center.y, center.z);
+            bolt.moveTo(center.x, center.y, center.z);
             level.addFreshEntity(bolt);
         }
 
@@ -72,7 +71,7 @@ public final class TidalShockwave {
                 continue;
             }
             float strength = falloff(distance, radius);
-            target.hurtServer(level, damageSource, damage * strength);
+            target.hurt(damageSource, damage * strength);
             target.knockback(knockback * strength, center.x - target.getX(), center.z - target.getZ());
             target.hurtMarked = true;
         }
@@ -98,7 +97,7 @@ public final class TidalShockwave {
         if (target == owner || owner.isAlliedTo(target) || target.isAlliedTo(owner)) {
             return false;
         }
-        return !(target instanceof OwnableEntity ownable) || ownable.getOwner() != owner;
+        return !(target instanceof OwnableEntity ownable) || !owner.getUUID().equals(ownable.getOwnerUUID());
     }
 
     private static int enchantmentLevel(ServerLevel level, ItemStack weapon, ResourceKey<Enchantment> key) {

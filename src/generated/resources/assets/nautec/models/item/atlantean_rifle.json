@@ -1,0 +1,105 @@
+{
+  "parent": "minecraft:builtin/entity",
+  "display": {
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        -8
+      ],
+      "translation": [
+        1,
+        0,
+        -2
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        8
+      ],
+      "translation": [
+        -1,
+        0,
+        -2
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        4,
+        0,
+        0
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "translation": [
+        0,
+        0,
+        4
+      ]
+    },
+    "gui": {
+      "rotation": [
+        75,
+        -80,
+        65
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "translation": [
+        -2.75,
+        -1.25,
+        0
+      ]
+    },
+    "head": {
+      "translation": [
+        0,
+        -2.5,
+        -7.75
+      ]
+    },
+    "thirdperson_lefthand": {
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "translation": [
+        0,
+        0,
+        1
+      ]
+    },
+    "thirdperson_righthand": {
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "translation": [
+        0,
+        0,
+        1
+      ]
+    }
+  },
+  "gui_light": "front",
+  "textures": {
+    "particle": "nautec:item/atlantean_rifle"
+  }
+}

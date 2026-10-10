@@ -1,9 +1,0 @@
-{
-  "model": {
-    "type": "minecraft:special",
-    "base": "nautec:block/anchor",
-    "model": {
-      "type": "nautec:anchor"
-    }
-  }
-}

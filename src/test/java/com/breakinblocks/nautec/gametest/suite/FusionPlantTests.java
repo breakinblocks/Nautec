@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
@@ -14,52 +15,51 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 public final class FusionPlantTests {
     private static final BlockPos CORE = new BlockPos(4, 5, 4);
     private static final int RADIUS = 2;
     private static final BlockPos WIDE_CORE = new BlockPos(9, 5, 9);
-    private static final Identifier WIDE_ARENA = Nautec.rl("empty_19x11x19");
+    private static final ResourceLocation WIDE_ARENA = Nautec.rl("empty_19x11x19");
     private static int lowIgnitionHolders;
     private static long savedIgnition;
 
     private FusionPlantTests() {
     }
 
-    private static BlockPos controllerPos(GameTestHelper helper) {
+    private static BlockPos controllerPos(NTGameTestHelper helper) {
         return controllerPos(helper, RADIUS);
     }
 
-    private static BlockPos controllerPos(GameTestHelper helper, int radius) {
+    private static BlockPos controllerPos(NTGameTestHelper helper, int radius) {
         return controllerPos(helper, CORE, radius);
     }
 
-    private static BlockPos controllerPos(GameTestHelper helper, BlockPos corePos, int radius) {
+    private static BlockPos controllerPos(NTGameTestHelper helper, BlockPos corePos, int radius) {
         return helper.absolutePos(corePos).offset(0, 1, -radius);
     }
 
-    private static BlockPos injectorPos(GameTestHelper helper) {
+    private static BlockPos injectorPos(NTGameTestHelper helper) {
         return injectorPos(helper, RADIUS);
     }
 
-    private static BlockPos injectorPos(GameTestHelper helper, int radius) {
+    private static BlockPos injectorPos(NTGameTestHelper helper, int radius) {
         return injectorPos(helper, CORE, radius);
     }
 
-    private static BlockPos injectorPos(GameTestHelper helper, BlockPos corePos, int radius) {
+    private static BlockPos injectorPos(NTGameTestHelper helper, BlockPos corePos, int radius) {
         return helper.absolutePos(corePos).offset(-radius, 0, 0);
     }
 
@@ -76,15 +76,15 @@ public final class FusionPlantTests {
         }
     }
 
-    private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated) {
+    private static FusionControllerBlockEntity build(NTGameTestHelper helper, boolean cultivated) {
         return build(helper, cultivated, RADIUS);
     }
 
-    private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated, int radius) {
+    private static FusionControllerBlockEntity build(NTGameTestHelper helper, boolean cultivated, int radius) {
         return build(helper, cultivated, CORE, radius);
     }
 
-    private static FusionControllerBlockEntity build(GameTestHelper helper, boolean cultivated, BlockPos corePos, int radius) {
+    private static FusionControllerBlockEntity build(NTGameTestHelper helper, boolean cultivated, BlockPos corePos, int radius) {
         ServerLevel level = helper.getLevel();
         BlockPos core = helper.absolutePos(corePos);
         for (int x = -radius; x <= radius; x++) {
@@ -112,15 +112,15 @@ public final class FusionPlantTests {
         return controller;
     }
 
-    private static void feedInjector(GameTestHelper helper, int power, float purity) {
+    private static void feedInjector(NTGameTestHelper helper, int power, float purity) {
         feedInjector(helper, power, purity, RADIUS);
     }
 
-    private static void feedInjector(GameTestHelper helper, int power, float purity, int radius) {
+    private static void feedInjector(NTGameTestHelper helper, int power, float purity, int radius) {
         feedInjector(helper, power, purity, CORE, radius);
     }
 
-    private static void feedInjector(GameTestHelper helper, int power, float purity, BlockPos corePos, int radius) {
+    private static void feedInjector(NTGameTestHelper helper, int power, float purity, BlockPos corePos, int radius) {
         helper.onEachTick(() -> {
             if (helper.getLevel().getBlockEntity(injectorPos(helper, corePos, radius)) instanceof LaserInjectorBlockEntity injector) {
                 BlockPos origin = injectorPos(helper, corePos, radius).west(3);
@@ -229,7 +229,7 @@ public final class FusionPlantTests {
             FusionPortBlockEntity port = (FusionPortBlockEntity) level.getBlockEntity(portPos);
             helper.assertTrue(port.getController() == controller, "the port links to its controller");
 
-            ResourceHandler<FluidResource> fuel = level.getCapability(Capabilities.Fluid.BLOCK, portPos, Direction.EAST);
+            ResourceHandler<FluidResource> fuel = level.getCapability(TransferCapabilities.Fluid.BLOCK, portPos, Direction.EAST);
             helper.assertTrue(fuel != null, "the port exposes a fluid handler");
             try (Transaction tx = Transaction.openRoot()) {
                 int inserted = fuel.insert(FluidResource.of(NTFluids.SALT_WATER.getStillFluid()), 500, tx);
@@ -241,7 +241,7 @@ public final class FusionPlantTests {
                 int water = fuel.insert(FluidResource.of(Fluids.WATER), 500, tx);
                 helper.assertValueEqual(water, 0, "plain water is refused");
             }
-            EnergyHandler energy = level.getCapability(Capabilities.Energy.BLOCK, portPos, Direction.EAST);
+            EnergyHandler energy = level.getCapability(TransferCapabilities.Energy.BLOCK, portPos, Direction.EAST);
             helper.assertTrue(energy != null, "the port exposes an energy handler");
             helper.succeed();
         });

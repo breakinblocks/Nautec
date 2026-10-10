@@ -2,9 +2,9 @@ package com.breakinblocks.nautec.content.resonantstorage;
 
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.ItemStacksResourceHandler;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 
 public final class UpgradeSlot extends ItemStacksResourceHandler {
     private final ResonantStore store;

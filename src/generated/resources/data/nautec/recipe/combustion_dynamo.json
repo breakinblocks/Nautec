@@ -2,12 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:cast_iron_block",
-    "G": "nautec:atlantic_gold_ingot",
-    "H": "nautec:aquatic_chip",
-    "P": "minecraft:piston",
-    "T": "nautec:oil_barrel"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:cast_iron_block"
+    },
+    "G": {
+      "item": "nautec:atlantic_gold_ingot"
+    },
+    "H": {
+      "item": "nautec:aquatic_chip"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "T": {
+      "item": "nautec:oil_barrel"
+    }
   },
   "pattern": [
     "GTG",
@@ -15,6 +27,7 @@
     "AHA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:combustion_dynamo"
   }
 }

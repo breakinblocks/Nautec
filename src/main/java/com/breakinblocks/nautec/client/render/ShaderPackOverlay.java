@@ -1,17 +1,14 @@
 package com.breakinblocks.nautec.client.render;
 
 import com.breakinblocks.nautec.Nautec;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,9 +45,14 @@ public final class ShaderPackOverlay {
     private ShaderPackOverlay() {
     }
 
-    public static void submit(PoseStack poseStack, SubmitNodeCollector collector, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer) {
+    @FunctionalInterface
+    public interface Geometry {
+        void render(PoseStack.Pose pose, VertexConsumer buffer);
+    }
+
+    public static void submit(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, Geometry renderer) {
         if (!shaderPackActive()) {
-            collector.submitCustomGeometry(poseStack, renderType, renderer);
+            renderer.render(poseStack.last(), buffers.getBuffer(renderType));
             return;
         }
         if (queued >= MAX_QUEUED || renderingShadowPass()) {
@@ -123,67 +125,59 @@ public final class ShaderPackOverlay {
             irisApi = api.getMethod("getInstance").invoke(null);
             shaderPackInUse = api.getMethod("isShaderPackInUse");
             renderingShadowPass = api.getMethod("isRenderingShadowPass");
-            assignItemPipelines(api);
         } catch (ReflectiveOperationException | RuntimeException | LinkageError e) {
             Nautec.LOGGER.warn("Could not reach the Iris API, NauTec effects will draw in the normal pass", e);
             irisApi = null;
         }
     }
 
-    private static void assignItemPipelines(Class<?> api) throws ReflectiveOperationException {
-        Class<?> programs = Class.forName("net.irisshaders.iris.api.v0.IrisProgram");
-        Method assign = api.getMethod("assignPipeline", RenderPipeline.class, programs);
-        assign.invoke(irisApi, NTRenderPipelines.CRYSTAL_SHELL, program(programs, "EMISSIVE_ENTITIES"));
-        assign.invoke(irisApi, NTRenderPipelines.CRYSTAL_CORE, program(programs, "EMISSIVE_ENTITIES"));
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private static Object program(Class<?> programs, String name) {
-        return Enum.valueOf((Class) programs, name);
-    }
-
     @SubscribeEvent
-    public static void captureDepth(RenderLevelStageEvent.AfterOpaqueFeatures event) {
+    public static void onRenderStage(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
+            captureDepth();
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+            render(event);
+        }
+    }
+
+    private static void captureDepth() {
         depthCaptured = false;
         if (queued == 0 || !shaderPackActive() || renderingShadowPass()) {
             return;
         }
         RenderTarget main = Minecraft.getInstance().getMainRenderTarget();
-        GpuTexture depth = main.getDepthTexture();
-        if (depth == null || main.width <= 0 || main.height <= 0) {
+        if (!main.useDepth || main.width <= 0 || main.height <= 0) {
             return;
         }
         if (opaqueDepth == null) {
-            opaqueDepth = new TextureTarget("Nautec opaque depth", main.width, main.height, true);
+            opaqueDepth = new TextureTarget(main.width, main.height, true, Minecraft.ON_OSX);
         } else if (opaqueDepth.width != main.width || opaqueDepth.height != main.height) {
-            opaqueDepth.resize(main.width, main.height);
+            opaqueDepth.resize(main.width, main.height, Minecraft.ON_OSX);
         }
-        GpuTexture copy = opaqueDepth.getDepthTexture();
-        if (copy == null) {
-            return;
+        if (main.isStencilEnabled() && !opaqueDepth.isStencilEnabled()) {
+            opaqueDepth.enableStencil();
         }
-        RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(depth, copy, 0, 0, 0, 0, 0, main.width, main.height);
+        opaqueDepth.copyDepthFrom(main);
+        main.bindWrite(false);
         depthCaptured = true;
     }
 
-    @SubscribeEvent
-    public static void render(RenderLevelStageEvent.AfterLevel event) {
+    private static void render(RenderLevelStageEvent event) {
         if (queued == 0) {
             depthCaptured = false;
             return;
         }
         RenderTarget main = Minecraft.getInstance().getMainRenderTarget();
-        if (depthCaptured && opaqueDepth != null && opaqueDepth.getDepthTexture() != null && main.getDepthTexture() != null
-                && opaqueDepth.width == main.width && opaqueDepth.height == main.height) {
-            RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(opaqueDepth.getDepthTexture(), main.getDepthTexture(),
-                    0, 0, 0, 0, 0, main.width, main.height);
+        if (depthCaptured && opaqueDepth != null && opaqueDepth.width == main.width && opaqueDepth.height == main.height) {
+            main.copyDepthFrom(opaqueDepth);
+            main.bindWrite(false);
         }
         depthCaptured = false;
         if (buffer == null) {
             buffer = new ByteBufferBuilder(1 << 16);
         }
         Matrix4f modelView = new Matrix4f(event.getModelViewMatrix());
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.getCamera().getPosition();
         Matrix3f viewNormal = new Matrix3f(modelView);
         MultiBufferSource.BufferSource source = MultiBufferSource.immediate(buffer);
         PoseStack poseStack = new PoseStack();
@@ -237,7 +231,7 @@ public final class ShaderPackOverlay {
         private final Matrix4f pose = new Matrix4f();
         private final Matrix3f normal = new Matrix3f();
         private @Nullable RenderType renderType;
-        private @Nullable SubmitNodeCollector.CustomGeometryRenderer renderer;
+        private @Nullable Geometry renderer;
         private @Nullable Vec3 anchor;
 
         private void release() {

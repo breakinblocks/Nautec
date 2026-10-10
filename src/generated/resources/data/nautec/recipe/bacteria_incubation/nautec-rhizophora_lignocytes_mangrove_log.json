@@ -6,5 +6,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "minecraft:mangrove_log"
+  "nutrient": {
+    "item": "minecraft:mangrove_log"
+  }
 }

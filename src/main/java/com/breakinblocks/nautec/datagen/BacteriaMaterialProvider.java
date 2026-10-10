@@ -14,7 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
@@ -143,11 +143,11 @@ public class BacteriaMaterialProvider implements DataProvider {
                     continue;
                 }
 
-                Identifier id = Nautec.rl(entry.name());
+                ResourceLocation id = Nautec.rl(entry.name());
                 ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, id);
 
                 Bacteria.Resource resource = new Bacteria.Resource.ItemTagResource(
-                        TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", entry.kind().family + "/" + entry.material())));
+                        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", entry.kind().family + "/" + entry.material())));
 
                 JsonElement bacteriaJson = BacteriaJsonWriter.encodeBacteria(
                         BacteriaBalance.buildBacteria(resource, entry.rarity(), id), provider);

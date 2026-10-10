@@ -2,7 +2,9 @@
   "type": "nautec:item_transformation",
   "duration": 160,
   "ingredient": {
-    "ingredient": "#c:gems/prismarine"
+    "ingredient": {
+      "tag": "c:gems/prismarine"
+    }
   },
   "purity": 2.0,
   "result": {

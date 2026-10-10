@@ -11,15 +11,18 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
-import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class VentCrawler extends WaterAnimal {
     public VentCrawler(EntityType<? extends VentCrawler> type, Level level) {
         super(type, level);
+        this.moveControl = new SwimmingMoveControl(this);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -37,8 +40,8 @@ public class VentCrawler extends WaterAnimal {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
+    public boolean canDrownInFluidType(FluidType type) {
+        return type != NeoForgeMod.WATER_TYPE.value() && super.canDrownInFluidType(type);
     }
 
     @Override

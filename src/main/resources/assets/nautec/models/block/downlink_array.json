@@ -3,5 +3,6 @@
   "textures": {
     "body": "nautec:block/downlink_array",
     "particle": "nautec:block/downlink_array"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

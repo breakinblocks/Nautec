@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.content.effects;
 
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,8 +18,8 @@ public class StunnedMobEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
-        if (entity instanceof Mob mob) {
+    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+        if (!entity.level().isClientSide() && entity instanceof Mob mob) {
             mob.setTarget(null);
             mob.getNavigation().stop();
         }

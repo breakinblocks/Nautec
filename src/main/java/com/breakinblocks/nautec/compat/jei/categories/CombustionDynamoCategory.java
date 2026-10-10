@@ -13,12 +13,12 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CombustionDynamoCategory extends AbstractRecipeCategory<CombustionDynamoCategory.Fuel> {
-    public static final Identifier UID = Nautec.rl("combustion_dynamo");
-    public static final IRecipeType<Fuel> RECIPE_TYPE = IRecipeType.create(UID, Fuel.class);
+    public static final ResourceLocation UID = Nautec.rl("combustion_dynamo");
+    public static final RecipeType<Fuel> RECIPE_TYPE = new RecipeType<>(UID, Fuel.class);
     private static final int WIDTH = 150;
 
     public CombustionDynamoCategory(IGuiHelper helper) {
@@ -58,15 +58,15 @@ public class CombustionDynamoCategory extends AbstractRecipeCategory<CombustionD
     public void setRecipe(IRecipeLayoutBuilder builder, Fuel recipe, IFocusGroup focuses) {
         IRecipeSlotBuilder oil = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, WIDTH / 2 - 20, 0);
         for (Fluid fluid : oils()) {
-            oil.add(fluid, 1000);
+            oil.addFluidStack(fluid, 1000);
             ItemStack bucket = new ItemStack(fluid.getBucket());
             if (!bucket.isEmpty()) {
-                builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(bucket);
+                builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addItemStack(bucket);
             }
         }
         oil.setFluidRenderer(1000, false, 16, 16);
         NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, WIDTH / 2 + 2, 0)
-                .add(Fluids.WATER, 1000)
+                .addFluidStack(Fluids.WATER, 1000)
                 .setFluidRenderer(1000, false, 16, 16);
     }
 

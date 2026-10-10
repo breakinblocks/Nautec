@@ -44,8 +44,8 @@ public final class WaveJetHands {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.sendOverlayMessage(Component.translatable("nautec.wave_jet.both_hands")
-                    .withStyle(ChatFormatting.AQUA));
+            serverPlayer.displayClientMessage(Component.translatable("nautec.wave_jet.both_hands")
+                    .withStyle(ChatFormatting.AQUA), true);
         }
         return true;
     }
@@ -68,7 +68,7 @@ public final class WaveJetHands {
 
     private static boolean stow(Player player, ItemStack waveJet, InteractionHand from) {
         Inventory inventory = player.getInventory();
-        int held = from == InteractionHand.MAIN_HAND ? inventory.getSelectedSlot() : -1;
+        int held = from == InteractionHand.MAIN_HAND ? inventory.selected : -1;
 
         for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
             if (slot != held && inventory.getItem(slot).isEmpty()) {

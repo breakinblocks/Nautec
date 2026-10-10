@@ -2,10 +2,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "nautec:filter",
-    "#c:gems/emerald"
+    {
+      "item": "nautec:filter"
+    },
+    {
+      "tag": "c:gems/emerald"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "nautec:intricate_filter"
   }
 }

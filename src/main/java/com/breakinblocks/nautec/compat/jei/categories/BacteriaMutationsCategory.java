@@ -9,20 +9,20 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BacteriaMutationsCategory extends BacteriaCategory<BacteriaMutationRecipe> {
-    static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/mutator/progress_arrow_off");
-    public static final Identifier UID = Nautec.rl(BacteriaMutationRecipe.NAME);
-    public static final IRecipeType<BacteriaMutationRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, BacteriaMutationRecipe.class);
+    static final ResourceLocation RIGHT_ARROW_SPRITE = Nautec.rl("container/mutator/progress_arrow_off");
+    public static final ResourceLocation UID = Nautec.rl(BacteriaMutationRecipe.NAME);
+    public static final RecipeType<BacteriaMutationRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, BacteriaMutationRecipe.class);
 
     private static final int GAP = 5;
     private static final int SLOT_SIZE = 18;
@@ -47,15 +47,15 @@ public class BacteriaMutationsCategory extends BacteriaCategory<BacteriaMutation
         addBacteriaSlot(recipe, GAP - 1, GAP + 7, recipe.inputBacteria());
         addBacteriaSlot(recipe, DRAWABLE_WIDTH - GAP - SLOT_SIZE, GAP + 7, recipe.resultBacteria());
 
-        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(NTJeiUtil.maxStatDish(recipe.inputBacteria()));
+        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addItemStack(NTJeiUtil.maxStatDish(recipe.inputBacteria()));
 
         NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT,
                         DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 1, GAP + 8 + Y_GAP_BETWEEN_IN_CATA)
-                .add(recipe.catalyst());
+                .addIngredients(recipe.catalyst());
     }
 
     @Override
-    public void draw(@NotNull BacteriaMutationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(@NotNull BacteriaMutationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, GAP + SLOT_SIZE + GAP_BETWEEN_SLOT_ARROW, GAP + 8 - 1, ARROW_WIDTH, ARROW_HEIGHT);
 
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);

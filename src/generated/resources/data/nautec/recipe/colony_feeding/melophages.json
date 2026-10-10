@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:melophages",
   "ingredient": {
-    "ingredient": "minecraft:melon_slice"
+    "ingredient": {
+      "item": "minecraft:melon_slice"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -50,7 +50,7 @@ public class PrismaticEmitterBlock extends ContainerBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (placer instanceof Player player && level.getBlockEntity(pos) instanceof PrismaticEmitterBlockEntity emitter) {
-            emitter.setOwner(player.getUUID(), player.getGameProfile().name());
+            emitter.setOwner(player.getUUID(), player.getGameProfile().getName());
         }
     }
 
@@ -60,9 +60,9 @@ public class PrismaticEmitterBlock extends ContainerBlock {
             return InteractionResult.PASS;
         }
         if (!level.isClientSide()) {
-            player.sendOverlayMessage(Component.translatable("nautec.emitter.status", emitter.getLinks().size(), NTConfig.emitterMaxLinks,
+            player.displayClientMessage(Component.translatable("nautec.emitter.status", emitter.getLinks().size(), NTConfig.emitterMaxLinks,
                     String.format(Locale.ROOT, "%,d", emitter.getFlow()),
-                    String.format(Locale.ROOT, "%,d", emitter.getEnergyStorage().getAmountAsInt()), emitter.getOwnerName()));
+                    String.format(Locale.ROOT, "%,d", emitter.getEnergyStorage().getAmountAsInt()), emitter.getOwnerName()), true);
         }
         return InteractionResult.SUCCESS;
     }

@@ -6,10 +6,9 @@ import com.breakinblocks.nautec.api.client.renderer.robotArms.RobotArmRenderStat
 import com.breakinblocks.nautec.api.client.renderer.robotArms.RobotArmRenderer;
 import com.breakinblocks.nautec.client.model.block.RobotArmModel;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -30,7 +29,7 @@ public class ClawRobotArmRenderer extends RobotArmRenderer {
         state.partialTick = partialTick;
         state.facing = blockEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
         state.lightAbove = blockEntity.getLevel() != null
-                ? LevelRenderer.getLightCoords(blockEntity.getLevel(), blockEntity.getBlockPos().above())
+                ? LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos().above())
                 : 15728880;
         state.middleAngle = blockEntity.getMiddleIndependentAngle(partialTick);
         state.prevMiddleAngle = blockEntity.getPrevMiddleIndependentAngle(partialTick);
@@ -38,11 +37,11 @@ public class ClawRobotArmRenderer extends RobotArmRenderer {
         state.prevTipAngle = blockEntity.getPrevTipIndependentAngle(partialTick);
 
         ItemStack item = blockEntity.getItemStackHandler().getStackInSlot(0);
-        Minecraft.getInstance().getItemModelResolver().updateForTopItem(state.heldItem, item, ItemDisplayContext.NONE, blockEntity.getLevel(), null, 1);
+        state.heldItem.update(item, ItemDisplayContext.NONE, blockEntity.getLevel(), 1);
     }
 
     @Override
-    public void submit(RobotArmRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
+    public void submit(RobotArmRenderState state, PoseStack poseStack, MultiBufferSource buffers) {
         int light = state.lightAbove;
         Direction direction = state.facing;
 
@@ -53,14 +52,14 @@ public class ClawRobotArmRenderer extends RobotArmRenderer {
                     ? direction.getCounterClockWise()
                     : direction.getClockWise()).toYRot()));
             poseStack.translate(-0.5, 0, -0.5);
-            renderArmBottom(poseStack, collector, light);
+            renderArmBottom(poseStack, buffers, light);
             poseStack.pushPose();
             {
-                renderArmMiddle(poseStack, collector, light, Mth.lerp(state.partialTick, state.prevMiddleAngle, state.middleAngle));
+                renderArmMiddle(poseStack, buffers, light, Mth.lerp(state.partialTick, state.prevMiddleAngle, state.middleAngle));
                 poseStack.pushPose();
                 {
-                    renderArmTip(poseStack, collector, light, Mth.lerp(state.partialTick, state.prevTipAngle, state.tipAngle));
-                    submitItem(state, poseStack, collector);
+                    renderArmTip(poseStack, buffers, light, Mth.lerp(state.partialTick, state.prevTipAngle, state.tipAngle));
+                    submitItem(state, poseStack, buffers);
                 }
                 poseStack.popPose();
             }
@@ -70,39 +69,39 @@ public class ClawRobotArmRenderer extends RobotArmRenderer {
 
     }
 
-    private static void submitItem(RobotArmRenderState state, PoseStack poseStack, SubmitNodeCollector collector) {
+    private static void submitItem(RobotArmRenderState state, PoseStack poseStack, MultiBufferSource buffers) {
         if (!state.heldItem.isEmpty()) {
             poseStack.translate(0, -3, 0);
             poseStack.scale(0.5f, 0.5f, 0.5f);
             poseStack.mulPose(Axis.YP.rotationDegrees(90));
-            state.heldItem.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            state.heldItem.submit(poseStack, buffers, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         }
     }
 
-    private void renderArmBottom(PoseStack poseStack, SubmitNodeCollector collector, int light) {
+    private void renderArmBottom(PoseStack poseStack, MultiBufferSource buffers, int light) {
         poseStack.translate(0.5, 0.625, 0.5);
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(0));
-        model.submitPart(RobotArmModel.RobotArmParts.BOTTOM, poseStack, collector, light, OverlayTexture.NO_OVERLAY);
+        model.submitPart(RobotArmModel.RobotArmParts.BOTTOM, poseStack, buffers, light, OverlayTexture.NO_OVERLAY);
     }
 
-    private void renderArmMiddle(PoseStack poseStack, SubmitNodeCollector collector, int light, float rotation) {
+    private void renderArmMiddle(PoseStack poseStack, MultiBufferSource buffers, int light, float rotation) {
         poseStack.translate(0, 0.625, 0);
 
         poseStack.translate(0, -1.625, 0);
         poseStack.mulPose(Axis.ZP.rotationDegrees(25));
         poseStack.mulPose(Axis.ZP.rotation(rotation));
         poseStack.translate(0, 1.03125, 0);
-        model.submitPart(RobotArmModel.RobotArmParts.MIDDLE, poseStack, collector, light, OverlayTexture.NO_OVERLAY);
+        model.submitPart(RobotArmModel.RobotArmParts.MIDDLE, poseStack, buffers, light, OverlayTexture.NO_OVERLAY);
     }
 
-    private void renderArmTip(PoseStack poseStack, SubmitNodeCollector collector, int light, float rotation) {
+    private void renderArmTip(PoseStack poseStack, MultiBufferSource buffers, int light, float rotation) {
         poseStack.translate(0, 0.375 + 0.125, 0);
 
         poseStack.translate(0, -3 - 0.125, 0);
         poseStack.mulPose(Axis.ZP.rotationDegrees(80));
         poseStack.mulPose(Axis.ZN.rotation(rotation));
         poseStack.translate(0, 2.5 + 0.0625 + 0.125, 0);
-        model.submitPart(RobotArmModel.RobotArmParts.TIP, poseStack, collector, light, OverlayTexture.NO_OVERLAY);
+        model.submitPart(RobotArmModel.RobotArmParts.TIP, poseStack, buffers, light, OverlayTexture.NO_OVERLAY);
     }
 }

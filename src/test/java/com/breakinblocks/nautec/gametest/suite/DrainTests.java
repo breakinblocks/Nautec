@@ -13,12 +13,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -42,7 +42,7 @@ public final class DrainTests {
     private DrainTests() {
     }
 
-    private static void buildFormedDrain(GameTestHelper helper, boolean water) {
+    private static void buildFormedDrain(NTGameTestHelper helper, boolean water) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 Block block = (dx == 0 && dz == 0) ? NTBlocks.DRAIN.get() : NTBlocks.DRAIN_WALL.get();
@@ -59,19 +59,19 @@ public final class DrainTests {
         }
     }
 
-    private static void beamIntoPort(GameTestHelper helper) {
+    private static void beamIntoPort(NTGameTestHelper helper) {
         DrainPartBlock.setLaserPort(helper.absolutePos(PORT_PART), helper.getLevel(), Direction.SOUTH);
         BacteriaMachineTests.placeShieldedSource(helper, SOURCE, Direction.NORTH);
     }
 
-    private static void feed(GameTestHelper helper, int power) {
+    private static void feed(NTGameTestHelper helper, int power) {
         helper.onEachTick(() -> {
             DrainBlockEntity drain = helper.getBlockEntity(DRAIN_C, DrainBlockEntity.class);
             drain.receivePower(power, Direction.NORTH, helper.absolutePos(DRAIN_C));
         });
     }
 
-    private static void sneakUse(GameTestHelper helper) {
+    private static void sneakUse(NTGameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setShiftKeyDown(true);
         BlockPos abs = helper.absolutePos(PORT_PART);
@@ -79,7 +79,7 @@ public final class DrainTests {
         state.useWithoutItem(helper.getLevel(), player, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false));
     }
 
-    private static DrainBlockEntity drain(GameTestHelper helper) {
+    private static DrainBlockEntity drain(NTGameTestHelper helper) {
         return helper.getBlockEntity(DRAIN_C, DrainBlockEntity.class);
     }
 
@@ -94,7 +94,7 @@ public final class DrainTests {
             ItemStack wrench = new ItemStack(NTItems.AQUARINE_WRENCH.get());
             player.setItemInHand(InteractionHand.MAIN_HAND, wrench);
             BlockHitResult top = new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false);
-            InteractionResult result = helper.getBlockState(PORT_PART).useItemOn(wrench, helper.getLevel(), player, InteractionHand.MAIN_HAND, top);
+            ItemInteractionResult result = helper.getBlockState(PORT_PART).useItemOn(wrench, helper.getLevel(), player, InteractionHand.MAIN_HAND, top);
             helper.assertTrue(result.consumesAction(), "wrenching the top of a port wall is taken");
             helper.assertTrue(part.getLaserInputs().contains(Direction.SOUTH), "the port turns to face outward, away from the centre");
             helper.assertTrue(part.getLaserOutputs().contains(Direction.NORTH), "and passes its beam on to the centre");
@@ -195,12 +195,12 @@ public final class DrainTests {
         });
 
         r.add("drain/ocean_like_biome_tags_count", 20, helper -> {
-            Registry<Biome> biomes = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME);
+            Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
             for (ResourceKey<Biome> ocean : List.of(Biomes.OCEAN, Biomes.DEEP_OCEAN, Biomes.WARM_OCEAN, Biomes.FROZEN_OCEAN, Biomes.DEEP_COLD_OCEAN)) {
-                helper.assertTrue(DrainBlockEntity.isOcean(biomes.getOrThrow(ocean)), ocean.identifier() + " should count as an ocean");
+                helper.assertTrue(DrainBlockEntity.isOcean(biomes.getHolderOrThrow(ocean)), ocean.location() + " should count as an ocean");
             }
             for (ResourceKey<Biome> land : List.of(Biomes.PLAINS, Biomes.RIVER, Biomes.DESERT, Biomes.DEEP_DARK)) {
-                helper.assertTrue(!DrainBlockEntity.isOcean(biomes.getOrThrow(land)), land.identifier() + " should not count as an ocean, tags " + biomes.getOrThrow(land).tags().map(tag -> tag.location().toString()).toList());
+                helper.assertTrue(!DrainBlockEntity.isOcean(biomes.getHolderOrThrow(land)), land.location() + " should not count as an ocean, tags " + biomes.getHolderOrThrow(land).tags().map(tag -> tag.location().toString()).toList());
             }
             helper.succeed();
         });
@@ -213,7 +213,7 @@ public final class DrainTests {
                 DrainBlockEntity drain = drain(helper);
                 helper.assertTrue(drain.open() == null, "an ocean drain with water and power opens with no warning");
                 CompoundTag update = drain.getUpdateTag(helper.getLevel().registryAccess());
-                helper.assertTrue(update.getCompoundOrEmpty("valve").getIntOr("ticks", 0) > 0, "the valve animation is in the client update");
+                helper.assertTrue(update.getCompound("valve").getInt("ticks") > 0, "the valve animation is in the client update");
                 helper.assertTrue(drain.isMoving(), "the drain is moving after opening");
                 helper.succeed();
             });

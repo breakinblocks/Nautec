@@ -13,13 +13,13 @@ import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.utils.ItemUtils;
 import com.breakinblocks.nautec.utils.Tooltips;
-import com.geckolib.animatable.GeoItem;
-import com.geckolib.animatable.client.GeoRenderProvider;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.renderer.GeoItemRenderer;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,15 +29,13 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -56,7 +54,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
     private static final double MIN_LAUNCH_DISTANCE = 2.5D;
     private static final double CLEARANCE = 1.8D;
 
-    private final AnimatableInstanceCache animatableCache = new SingletonAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache animatableCache = GeckoLibUtil.createInstanceCache(this);
 
     public SubmarineItem(Properties properties) {
         super(properties.stacksTo(1)
@@ -78,7 +76,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
             private SubmarineItemRenderer renderer;
 
             @Override
-            public GeoItemRenderer<?> getGeoItemRenderer() {
+            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null) {
                     this.renderer = new SubmarineItemRenderer();
                 }
@@ -88,25 +86,25 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (SubmarineAnvilRepair.isBreached(stack)) {
-            player.sendOverlayMessage(Component.translatable("nautec.submarine.breached").withStyle(ChatFormatting.RED));
-            return InteractionResult.FAIL;
+            player.displayClientMessage(Component.translatable("nautec.submarine.breached").withStyle(ChatFormatting.RED), true);
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
 
-        SubmarineEntity submarine = NTEntities.SUBMARINE.get().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+        SubmarineEntity submarine = NTEntities.SUBMARINE.get().create(level);
         if (submarine == null) {
-            return InteractionResult.FAIL;
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
 
         Vec3 launch = findLaunchPoint(level, player, submarine);
         if (launch == null) {
-            player.sendOverlayMessage(Component.translatable("nautec.submarine.needs_water").withStyle(ChatFormatting.RED));
-            return InteractionResult.FAIL;
+            player.displayClientMessage(Component.translatable("nautec.submarine.needs_water").withStyle(ChatFormatting.RED), true);
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
 
-        submarine.snapTo(launch.x, launch.y, launch.z, player.getYRot(), 0F);
+        submarine.moveTo(launch.x, launch.y, launch.z, player.getYRot(), 0F);
         submarine.applyStack(stack);
         if (level instanceof ServerLevel serverLevel) {
             EntityType.<SubmarineEntity>createDefaultStackConfig(serverLevel, stack, player).accept(submarine);
@@ -119,7 +117,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     private static @Nullable Vec3 findLaunchPoint(Level level, Player player, SubmarineEntity submarine) {
@@ -149,7 +147,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
         Vec3 back = new Vec3(view.x, 0D, view.z).normalize().scale(-1D);
         for (Vec3 offset : List.of(Vec3.ZERO, new Vec3(0D, 0.5D, 0D), new Vec3(0D, 1D, 0D), back, back.add(0D, 0.5D, 0D))) {
             Vec3 candidate = aim.add(offset);
-            submarine.snapTo(candidate.x, candidate.y, candidate.z, player.getYRot(), 0F);
+            submarine.moveTo(candidate.x, candidate.y, candidate.z, player.getYRot(), 0F);
             if (fitsInWater(level, submarine)) {
                 return candidate;
             }
@@ -169,7 +167,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
 
     private static void appendModules(ItemStack stack, Consumer<Component> tooltipComponents) {
         List<Component> installed = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
-                .nonEmptyItemCopyStream()
+                .nonEmptyStream()
                 .map(SubmarineModuleItem::typeOf)
                 .filter(Objects::nonNull)
                 .map(SubmarineModuleType::displayName)
@@ -210,7 +208,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         IPowerStorage powerStorage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (powerStorage != null) {
             Tooltips.transInsert(tooltipComponents, "nautec.armor.power",
@@ -227,7 +225,7 @@ public class SubmarineItem extends Item implements IPowerItem, GeoItem {
                     " " + Math.round(health / max * 100F) + "%", color);
         }
 
-        appendModules(stack, tooltipComponents);
+        appendModules(stack, tooltipComponents::add);
 
         Tooltips.trans(tooltipComponents, "nautec.submarine.controls", ChatFormatting.GRAY);
         Tooltips.trans(tooltipComponents, "nautec.submarine.aim", ChatFormatting.GRAY);

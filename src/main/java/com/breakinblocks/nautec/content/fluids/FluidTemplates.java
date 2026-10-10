@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.content.fluids;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.fluids.FluidTemplate;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public enum FluidTemplates implements FluidTemplate {
     MOLTEN_METAL(Nautec.rl("fluid/molten_fluid_still"),
@@ -13,43 +13,43 @@ public enum FluidTemplates implements FluidTemplate {
             Nautec.rl("fluid/oil_overlay")),
     EAS(modFluidTexture("eas_fluid"),
             modFluidTexture("eas_fluid"),
-            Identifier.withDefaultNamespace("block/water_overlay")),
+            ResourceLocation.withDefaultNamespace("block/water_overlay")),
     ETCHING_ACID(modFluidTexture("etching_acid"),
             modFluidTexture("etching_acid"),
-            Identifier.withDefaultNamespace("block/water_overlay")),
+            ResourceLocation.withDefaultNamespace("block/water_overlay")),
     EXPERIENCE_ALGAE(modFluidTexture("experience_algae"),
             modFluidTexture("experience_algae"),
-            Identifier.withDefaultNamespace("block/water_overlay")),
-    WATER(Identifier.parse("block/water_still"),
-            Identifier.parse("block/water_flow"),
-            Identifier.withDefaultNamespace("block/water_overlay"));
+            ResourceLocation.withDefaultNamespace("block/water_overlay")),
+    WATER(ResourceLocation.parse("block/water_still"),
+            ResourceLocation.parse("block/water_flow"),
+            ResourceLocation.withDefaultNamespace("block/water_overlay"));
 
-    private final Identifier still;
-    private final Identifier flowing;
-    private final Identifier overlay;
+    private final ResourceLocation still;
+    private final ResourceLocation flowing;
+    private final ResourceLocation overlay;
 
-    FluidTemplates(Identifier still, Identifier flowing, Identifier overlay) {
+    FluidTemplates(ResourceLocation still, ResourceLocation flowing, ResourceLocation overlay) {
         this.still = still;
         this.flowing = flowing;
         this.overlay = overlay;
     }
 
     @Override
-    public Identifier getStillTexture() {
+    public ResourceLocation getStillTexture() {
         return still;
     }
 
     @Override
-    public Identifier getFlowingTexture() {
+    public ResourceLocation getFlowingTexture() {
         return flowing;
     }
 
     @Override
-    public Identifier getOverlayTexture() {
+    public ResourceLocation getOverlayTexture() {
         return overlay;
     }
 
-    private static Identifier modFluidTexture(String name) {
+    private static ResourceLocation modFluidTexture(String name) {
         return Nautec.rl("fluid/" + name);
     }
 }

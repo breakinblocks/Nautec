@@ -35,7 +35,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.Set;
 
 public final class ShowcaseParts {
-    public static final int CLEAR_FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_SKIP_ALL_SIDEEFFECTS;
+    public static final int CLEAR_FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_SUPPRESS_DROPS;
     public static final ItemStack CATALYST_FUEL = new ItemStack(Items.PRISMARINE_SHARD);
     public static final int FUEL_STACKS = 9;
 
@@ -89,7 +89,7 @@ public final class ShowcaseParts {
     }
 
     public static int catalystPower(ServerLevel level) {
-        return level.recipeAccess()
+        return level.getRecipeManager()
                 .getRecipeFor(AquaticCatalystChannelingRecipe.Type.INSTANCE, new SingleRecipeInput(CATALYST_FUEL.copy()), level)
                 .map(holder -> holder.value().powerAmount() / Math.max(1, holder.value().duration()))
                 .orElse(0);

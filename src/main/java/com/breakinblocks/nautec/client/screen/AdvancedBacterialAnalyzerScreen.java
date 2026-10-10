@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
@@ -8,18 +9,17 @@ import com.breakinblocks.nautec.content.blockentities.AdvancedBacterialAnalyzerB
 import com.breakinblocks.nautec.content.blocks.AdvancedBacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.menus.AdvancedBacterialAnalyzerMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
 
 public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBacterialAnalyzerBlockEntity> {
-    public static final Identifier PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
-    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
+    public static final ResourceLocation PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
+    public static final ResourceLocation PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
     private static final int PROGRESS_FILL = 0x8046E8C8;
 
     public AdvancedBacterialAnalyzerScreen(NTMachineMenu<AdvancedBacterialAnalyzerBlockEntity> menu, Inventory playerInventory, Component title) {
@@ -31,8 +31,8 @@ public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBac
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         int duration = analyzer().getDuration();
         int best = 0;
         for (int dish = 0; dish < AdvancedBacterialAnalyzerBlockEntity.DISHES; dish++) {
@@ -46,17 +46,17 @@ public class AdvancedBacterialAnalyzerScreen extends NTMachineScreen<AdvancedBac
             }
         }
         int width = Mth.ceil((float) best / duration * 24.0F);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, leftPos + 76, topPos + 25, 24, 24);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + 76, topPos + 25, width, 24);
+        NTGui.blitSprite(guiGraphics, PROGRESS_ARROW_OFF, leftPos + 76, topPos + 25, 24, 24);
+        NTGui.blitSprite(guiGraphics, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + 76, topPos + 25, width, 24);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (isHovering(76, 36, 24, 12, mouseX, mouseY)) {
             int status = analyzer().getStatus();
             boolean running = status == AdvancedBacterialAnalyzerBlockEntity.STATUS_RUNNING;
-            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+            guiGraphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable(AdvancedBacterialAnalyzerBlock.statusKey(status)).withStyle(running ? ChatFormatting.AQUA : ChatFormatting.RED),
                     Component.translatable("nautec.advanced_analyzer.requirements", NTConfig.advancedAnalyzerPowerUsage,
                             String.format("%.1f", NTConfig.advancedAnalyzerPurity)).withStyle(ChatFormatting.GRAY)

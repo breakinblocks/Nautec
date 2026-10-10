@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import com.breakinblocks.nautec.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class ConfinedSpawnerMenu extends NTAbstractContainerMenu<ConfinedSpawnerBlockEntity> {

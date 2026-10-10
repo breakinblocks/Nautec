@@ -14,7 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public final class ProductNutrients {
     private static final String COMMON = "c";
     private static final Set<String> MATERIAL_FAMILIES = Set.of("ingots", "gems", "dusts");
 
-    private static @Nullable RecipeMap cachedMap;
+    private static @Nullable RecipeManager cachedMap;
     private static Derived cached = Derived.EMPTY;
 
     private ProductNutrients() {
@@ -48,7 +48,7 @@ public final class ProductNutrients {
     }
 
     public static Derived get(ServerLevel level) {
-        RecipeMap map = level.getServer().getRecipeManager().recipeMap();
+        RecipeManager map = level.getServer().getRecipeManager();
         if (map != cachedMap) {
             cached = derive(map, level.registryAccess());
             cachedMap = map;
@@ -56,7 +56,7 @@ public final class ProductNutrients {
         return cached;
     }
 
-    public static Derived derive(RecipeMap map, HolderLookup.Provider registries) {
+    public static Derived derive(RecipeManager map, HolderLookup.Provider registries) {
         List<BacteriaIncubationRecipe> incubation = new ArrayList<>();
         List<ColonyFeedingRecipe> feeding = new ArrayList<>();
         List<BacteriaMutationRecipe> mutation = new ArrayList<>();
@@ -65,7 +65,7 @@ public final class ProductNutrients {
             return Derived.EMPTY;
         }
         List<Holder.Reference<Bacteria>> strains = lookup.get().listElements()
-                .sorted(Comparator.comparing(holder -> holder.key().identifier().toString()))
+                .sorted(Comparator.comparing(holder -> holder.key().location().toString()))
                 .toList();
         for (Holder.Reference<Bacteria> strain : strains) {
             ResourceKey<Bacteria> key = strain.key();
@@ -78,7 +78,7 @@ public final class ProductNutrients {
             if (NTConfig.mutatorRefineChance > 0) {
                 Ingredient catalyst = block != null ? block : product;
                 boolean taken = false;
-                for (RecipeHolder<BacteriaMutationRecipe> holder : map.byType(BacteriaMutationRecipe.TYPE)) {
+                for (RecipeHolder<BacteriaMutationRecipe> holder : map.getAllRecipesFor(BacteriaMutationRecipe.TYPE)) {
                     if (holder.value().inputBacteria().equals(key) && overlaps(List.of(holder.value().catalyst()), catalyst)) {
                         taken = true;
                         break;
@@ -94,7 +94,7 @@ public final class ProductNutrients {
 
             BacteriaIncubationRecipe base = null;
             List<Ingredient> eaten = new ArrayList<>();
-            for (RecipeHolder<BacteriaIncubationRecipe> holder : map.byType(BacteriaIncubationRecipe.TYPE)) {
+            for (RecipeHolder<BacteriaIncubationRecipe> holder : map.getAllRecipesFor(BacteriaIncubationRecipe.TYPE)) {
                 BacteriaIncubationRecipe recipe = holder.value();
                 if (recipe.bacteria().equals(key)) {
                     eaten.add(recipe.nutrient());
@@ -115,7 +115,7 @@ public final class ProductNutrients {
 
             int ticks = 0;
             List<Ingredient> fed = new ArrayList<>();
-            for (RecipeHolder<ColonyFeedingRecipe> holder : map.byType(ColonyFeedingRecipe.TYPE)) {
+            for (RecipeHolder<ColonyFeedingRecipe> holder : map.getAllRecipesFor(ColonyFeedingRecipe.TYPE)) {
                 ColonyFeedingRecipe recipe = holder.value();
                 if (recipe.bacteria().isPresent() && BacteriaSelector.matches(recipe.bacteria(), key, registries)) {
                     fed.add(recipe.ingredient().ingredient());
@@ -135,15 +135,15 @@ public final class ProductNutrients {
     }
 
     private static boolean overlaps(List<Ingredient> existing, Ingredient candidate) {
-        return candidate.items().anyMatch(item -> {
-            ItemStack stack = new ItemStack(item);
+        for (ItemStack candidateStack : candidate.getItems()) {
+            ItemStack stack = new ItemStack(candidateStack.getItem());
             for (Ingredient ingredient : existing) {
                 if (ingredient.test(stack)) {
                     return true;
                 }
             }
-            return false;
-        });
+        }
+        return false;
     }
 
     public static long biomass(Bacteria strain, ItemStack stack) {
@@ -186,13 +186,13 @@ public final class ProductNutrients {
         item.builtInRegistryHolder().tags().forEach(materials::add);
         materials.sort(Comparator.comparing(tag -> tag.location().toString()));
         for (TagKey<Item> tag : materials) {
-            Identifier id = tag.location();
+            ResourceLocation id = tag.location();
             int slash = id.getPath().indexOf('/');
             if (!id.getNamespace().equals(COMMON) || slash < 0 || !MATERIAL_FAMILIES.contains(id.getPath().substring(0, slash))) {
                 continue;
             }
             TagKey<Item> blocks = TagKey.create(Registries.ITEM,
-                    Identifier.fromNamespaceAndPath(COMMON, "storage_blocks/" + id.getPath().substring(slash + 1)));
+                    ResourceLocation.fromNamespaceAndPath(COMMON, "storage_blocks/" + id.getPath().substring(slash + 1)));
             Ingredient ingredient = tagIngredient(blocks);
             if (ingredient != null) {
                 return ingredient;
@@ -202,7 +202,7 @@ public final class ProductNutrients {
     }
 
     private static @Nullable Ingredient tagIngredient(TagKey<Item> tag) {
-        Optional<HolderSet.Named<Item>> items = BuiltInRegistries.ITEM.get(tag);
-        return items.isPresent() && items.get().size() > 0 ? Ingredient.of(items.get()) : null;
+        Optional<HolderSet.Named<Item>> items = BuiltInRegistries.ITEM.getTag(tag);
+        return items.isPresent() && items.get().size() > 0 ? Ingredient.of(tag) : null;
     }
 }

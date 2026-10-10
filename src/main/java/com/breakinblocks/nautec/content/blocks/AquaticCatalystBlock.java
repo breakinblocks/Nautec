@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -72,7 +72,7 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         AquaticCatalystBlockEntity be = (AquaticCatalystBlockEntity) level.getBlockEntity(pos);
         var itemHandler = be.getItemStackHandler();
         if (!stack.isEmpty()) {
@@ -81,17 +81,17 @@ public class AquaticCatalystBlock extends LaserBlock implements DisplayBlock {
                 ItemStack remainder = itemHandler.insertItem(0, stack, false);
                 player.setItemInHand(hand, remainder);
 
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         } else if (player.isShiftKeyDown()) {
             if (!level.isClientSide()) {
                 be.diagnosticLines().forEach(player::sendSystemMessage);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else {
             ItemStack extracted = itemHandler.extractItem(0, itemHandler.getSlotLimit(0), false);
-            ItemUtils.giveItemToPlayer(player, extracted, player.getInventory().getSelectedSlot());
-            return InteractionResult.SUCCESS;
+            ItemUtils.giveItemToPlayer(player, extracted, player.getInventory().selected);
+            return ItemInteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }

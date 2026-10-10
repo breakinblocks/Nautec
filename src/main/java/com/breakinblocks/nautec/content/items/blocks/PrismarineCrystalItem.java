@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.content.items.blocks;
 
+
+
+import net.minecraft.world.item.Item;
+import java.util.List;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -8,7 +12,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,11 +33,11 @@ public class PrismarineCrystalItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isCultivated(stack)) {
-            tooltipComponents.accept(Component.translatable("nautec.cultivated_crystal.tooltip.place").withStyle(ChatFormatting.GRAY));
-            tooltipComponents.accept(Component.translatable("nautec.cultivated_crystal.tooltip.move").withStyle(ChatFormatting.AQUA));
+            tooltipComponents.add(Component.translatable("nautec.cultivated_crystal.tooltip.place").withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("nautec.cultivated_crystal.tooltip.move").withStyle(ChatFormatting.AQUA));
         }
     }
 

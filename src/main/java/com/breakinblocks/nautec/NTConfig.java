@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import java.util.List;
 import java.util.Set;
 
-@EventBusSubscriber(modid = Nautec.MODID)
+@EventBusSubscriber(modid = Nautec.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class NTConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     private static final ModConfigSpec.Builder WORLDGEN_BUILDER = new ModConfigSpec.Builder();

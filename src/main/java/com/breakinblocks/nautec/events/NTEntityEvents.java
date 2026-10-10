@@ -9,7 +9,7 @@ import com.breakinblocks.nautec.content.entities.mobs.VentCrawler;
 import com.breakinblocks.nautec.registries.NTEntities;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -19,7 +19,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
-@EventBusSubscriber(modid = Nautec.MODID)
+@EventBusSubscriber(modid = Nautec.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class NTEntityEvents {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
@@ -45,7 +45,7 @@ public final class NTEntityEvents {
 
         registerWaterSpawn(event, NTEntities.ABYSSAL_MAW.get(),
                 (type, level, reason, pos, random) -> level.getFluidState(pos).is(FluidTags.WATER)
-                        && (reason == EntitySpawnReason.SPAWN_ITEM_USE || pos.getY() < 40)
+                        && (reason == MobSpawnType.SPAWN_EGG || pos.getY() < 40)
                         && level.getMaxLocalRawBrightness(pos) <= 7);
     }
 

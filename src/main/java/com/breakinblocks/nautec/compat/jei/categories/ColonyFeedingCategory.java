@@ -13,12 +13,12 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +27,9 @@ import java.util.Locale;
 import java.util.Optional;
 
 public class ColonyFeedingCategory extends BacteriaCategory<ColonyFeedingRecipe> {
-    static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/bio_reactor/progress_arrow_off");
-    public static final Identifier UID = Nautec.rl(ColonyFeedingRecipe.NAME);
-    public static final IRecipeType<ColonyFeedingRecipe> RECIPE_TYPE = IRecipeType.create(UID, ColonyFeedingRecipe.class);
+    static final ResourceLocation RIGHT_ARROW_SPRITE = Nautec.rl("container/bio_reactor/progress_arrow_off");
+    public static final ResourceLocation UID = Nautec.rl(ColonyFeedingRecipe.NAME);
+    public static final RecipeType<ColonyFeedingRecipe> RECIPE_TYPE = new RecipeType<>(UID, ColonyFeedingRecipe.class);
 
     private static final int DRAWABLE_WIDTH = 116;
     private static final int DRAWABLE_HEIGHT = 44;
@@ -57,13 +57,13 @@ public class ColonyFeedingCategory extends BacteriaCategory<ColonyFeedingRecipe>
 
         Optional<ResourceKey<Bacteria>> strain = knownStrain(recipe);
         if (strain.isPresent()) {
-            builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(NTJeiUtil.maxStatDish(strain.get()));
+            builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addItemStack(NTJeiUtil.maxStatDish(strain.get()));
             addBacteriaSlot(recipe, COLONY_X, ROW_Y, strain.get());
         }
     }
 
     @Override
-    public void draw(@NotNull ColonyFeedingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(@NotNull ColonyFeedingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, ARROW_X, ROW_Y + 4, 24, 10);
     }

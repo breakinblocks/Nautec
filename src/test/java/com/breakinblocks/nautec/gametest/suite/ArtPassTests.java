@@ -4,7 +4,6 @@ import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -65,10 +64,10 @@ public final class ArtPassTests {
     }
 
     private static String name(Block block) {
-        return block.builtInRegistryHolder().key().identifier().getPath();
+        return block.builtInRegistryHolder().key().location().getPath();
     }
 
-    private static void lightsWater(GameTestHelper helper, BlockState plant) {
+    private static void lightsWater(NTGameTestHelper helper, BlockState plant) {
         helper.assertTrue(plant.getLightEmission() > 0, name(plant.getBlock()) + " should emit light");
         helper.setBlock(FLOOR, Blocks.STONE);
         helper.setBlock(PLANT.above(), Blocks.WATER);

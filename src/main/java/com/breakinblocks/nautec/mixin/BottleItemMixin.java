@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.Item;
@@ -31,7 +31,7 @@ public abstract class BottleItemMixin extends Item {
     }
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;", ordinal = 0), cancellable = true)
-    private void onUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
+    private void onUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
         if (NTConfig.collectAirWithBottle) {
             BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
@@ -45,7 +45,7 @@ public abstract class BottleItemMixin extends Item {
                     ItemUtils.giveItemToPlayerNoSound(player, airBottleStack);
                     ItemStack itemInHand = player.getItemInHand(hand);
                     itemInHand.shrink(1);
-                    cir.setReturnValue(InteractionResult.SUCCESS);
+                    cir.setReturnValue(InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide()));
                 }
             }
         }

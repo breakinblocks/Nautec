@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import com.breakinblocks.nautec.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class FishingStationMenu extends NTMachineMenu<FishingStationBlockEntity> {

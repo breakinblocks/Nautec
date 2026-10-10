@@ -1,23 +1,28 @@
 package com.breakinblocks.nautec.client.model.entity;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
 
-public class SiltSkipperModel extends EntityModel<LivingEntityRenderState> {
+import java.util.List;
+
+public class SiltSkipperModel<T extends Entity> extends HierarchicalModel<T> {
+    private final ModelPart root;
+    private final List<ModelPart> parts;
     private final ModelPart tail;
     private final ModelPart tailTip;
     private final ModelPart leftFin;
     private final ModelPart rightFin;
 
     public SiltSkipperModel(ModelPart root) {
-        super(root);
+        this.root = root;
+        this.parts = root.getAllParts().toList();
         this.tail = root.getChild("tail");
         this.tailTip = this.tail.getChild("tail_tip");
         this.leftFin = root.getChild("left_fin");
@@ -91,12 +96,19 @@ public class SiltSkipperModel extends EntityModel<LivingEntityRenderState> {
     }
 
     @Override
-    public void setupAnim(LivingEntityRenderState state) {
-        super.setupAnim(state);
-        float amplitude = state.isInWater ? 1.0F : 1.6F;
-        float wave = Mth.sin(0.4F * state.ageInTicks);
+    public ModelPart root() {
+        return this.root;
+    }
+
+    @Override
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        for (int i = 0; i < this.parts.size(); i++) {
+            this.parts.get(i).resetPose();
+        }
+        float amplitude = entity.isInWater() ? 1.0F : 1.6F;
+        float wave = Mth.sin(0.4F * ageInTicks);
         this.tail.yRot = -amplitude * 0.3F * wave;
-        this.tailTip.yRot = -amplitude * 0.4F * Mth.sin(0.4F * state.ageInTicks - 0.65F);
+        this.tailTip.yRot = -amplitude * 0.4F * Mth.sin(0.4F * ageInTicks - 0.65F);
         this.leftFin.zRot += 0.2F * wave;
         this.rightFin.zRot -= 0.2F * wave;
     }

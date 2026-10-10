@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:sugar_cane",
+  "catalyst": {
+    "item": "minecraft:sugar_cane"
+  },
   "chance": 10.0,
   "input_bacteria": "nautec:cyanobacteria",
   "result_bacteria": "nautec:phototrophs"

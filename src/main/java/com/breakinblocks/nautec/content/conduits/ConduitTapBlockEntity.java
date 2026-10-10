@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.conduits;
 
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.menus.ConduitTapMenu;
@@ -33,23 +35,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
-import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandlerUtil;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.VanillaContainerWrapper;
+import com.breakinblocks.nautec.transfer.item.WorldlyContainerWrapper;
+import com.breakinblocks.nautec.transfer.resource.Resource;
+import com.breakinblocks.nautec.transfer.transaction.SnapshotJournal;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,7 +95,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
 
         @Override
         public int insert(ConduitTapBlockEntity tap, Direction face, FluidResource resource, int amount, TransactionContext transaction) {
-            return ResourceHandlerUtil.insertStacking(tap.target(Capabilities.Fluid.BLOCK, tap.fluidCaches, face), resource, amount, transaction);
+            return ResourceHandlerUtil.insertStacking(tap.target(TransferCapabilities.Fluid.BLOCK, tap.fluidCaches, face), resource, amount, transaction);
         }
     };
     private static final Channel<Boolean> ENERGY = new Channel<>() {
@@ -109,7 +111,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
 
         @Override
         public int insert(ConduitTapBlockEntity tap, Direction face, Boolean resource, int amount, TransactionContext transaction) {
-            EnergyHandler target = tap.target(Capabilities.Energy.BLOCK, tap.energyCaches, face);
+            EnergyHandler target = tap.target(TransferCapabilities.Energy.BLOCK, tap.energyCaches, face);
             return target == null ? 0 : target.insert(amount, transaction);
         }
     };
@@ -400,12 +402,12 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             input = mode.extracts();
             output = mode.inserts();
         }
-        if (target(Capabilities.Fluid.BLOCK, fluidCaches, direction) != null) {
+        if (target(TransferCapabilities.Fluid.BLOCK, fluidCaches, direction) != null) {
             FlowMode mode = face.mode(ConduitChannel.FLUIDS);
             input |= mode.extracts();
             output |= mode.inserts();
         }
-        if (target(Capabilities.Energy.BLOCK, energyCaches, direction) != null) {
+        if (target(TransferCapabilities.Energy.BLOCK, energyCaches, direction) != null) {
             FlowMode mode = face.mode(ConduitChannel.ENERGY);
             input |= mode.extracts();
             output |= mode.inserts();
@@ -429,8 +431,8 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             return CurrentConduitBlock.joins(level, neighbourPos, direction.getOpposite(), neighbour) ? TapArm.CONDUIT : TapArm.NONE;
         }
         boolean machine = items(direction) != null
-                || target(Capabilities.Fluid.BLOCK, fluidCaches, direction) != null
-                || target(Capabilities.Energy.BLOCK, energyCaches, direction) != null;
+                || target(TransferCapabilities.Fluid.BLOCK, fluidCaches, direction) != null
+                || target(TransferCapabilities.Energy.BLOCK, energyCaches, direction) != null;
         return machine ? TapArm.MACHINE : TapArm.NONE;
     }
 
@@ -464,14 +466,14 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
             TapFace face = faces[d];
             int energy = index(ConduitChannel.ENERGY, direction);
             if (face.mode(ConduitChannel.ENERGY).extracts() && ready(energy, time) && routesFor(ConduitChannel.ENERGY) != null) {
-                EnergyHandler source = target(Capabilities.Energy.BLOCK, energyCaches, direction);
+                EnergyHandler source = target(TransferCapabilities.Energy.BLOCK, energyCaches, direction);
                 if (source != null) {
                     backOff(energy, EnergyHandlerUtil.move(source, energySinks[d], rates.energyRate(), null) > 0, MAX_ENERGY_IDLE, time);
                 }
             }
             int fluid = index(ConduitChannel.FLUIDS, direction);
             if (face.mode(ConduitChannel.FLUIDS).extracts() && ready(fluid, time) && routesFor(ConduitChannel.FLUIDS) != null) {
-                ResourceHandler<FluidResource> source = target(Capabilities.Fluid.BLOCK, fluidCaches, direction);
+                ResourceHandler<FluidResource> source = target(TransferCapabilities.Fluid.BLOCK, fluidCaches, direction);
                 if (source != null) {
                     backOff(fluid, ResourceHandlerUtil.move(source, fluidSinks[d], fluidFilters[d], rates.fluidRate(), null) > 0, MAX_IDLE, time);
                 }
@@ -524,7 +526,7 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
     }
 
     private @Nullable ResourceHandler<ItemResource> items(Direction direction) {
-        ResourceHandler<ItemResource> handler = target(Capabilities.Item.BLOCK, itemCaches, direction);
+        ResourceHandler<ItemResource> handler = target(TransferCapabilities.Item.BLOCK, itemCaches, direction);
         return handler != null || level == null ? handler : containerAt(level, worldPosition.relative(direction), direction.getOpposite());
     }
 
@@ -832,13 +834,13 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
     }
 
     @Override
-    public void handleUpdateTag(ValueInput input) {
-        readFlow(input);
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        readFlow(TagValueInput.create(registries, tag));
     }
 
     @Override
-    public void onDataPacket(Connection connection, ValueInput input) {
-        readFlow(input);
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
+        readFlow(TagValueInput.create(registries, packet.getTag()));
     }
 
     private void readFlow(ValueInput input) {

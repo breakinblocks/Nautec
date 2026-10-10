@@ -2,14 +2,27 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:poisonous_potato",
-    "#c:gunpowders",
-    "minecraft:bone_meal",
-    "minecraft:snow_block",
-    "minecraft:pufferfish",
-    "#c:buckets/empty"
+    {
+      "item": "minecraft:poisonous_potato"
+    },
+    {
+      "tag": "c:gunpowders"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "minecraft:snow_block"
+    },
+    {
+      "item": "minecraft:pufferfish"
+    },
+    {
+      "tag": "c:buckets/empty"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "nautec:etching_acid_bucket"
   }
 }

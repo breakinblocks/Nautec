@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.registries.NTFeatures;
@@ -26,6 +27,7 @@ import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataMaps;
 import com.breakinblocks.nautec.data.generated.GeneratedPackFinder;
 import com.breakinblocks.nautec.registries.NTArgumentTypes;
+import com.breakinblocks.nautec.registries.NTArmorMaterials;
 import com.breakinblocks.nautec.registries.NTAttachmentTypes;
 import com.breakinblocks.nautec.registries.NTAugmentSlots;
 import com.breakinblocks.nautec.registries.NTAugments;
@@ -52,7 +54,7 @@ import com.breakinblocks.nautec.registries.NTStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -65,7 +67,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -106,6 +108,7 @@ public final class Nautec {
         modEventBus.addListener(RegisterTicketControllersEvent.class, ResonanceChunkLoading::register);
 
         NTEntities.ENTITIES.register(modEventBus);
+        NTArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         NTItems.ITEMS.register(modEventBus);
         NTBlocks.BLOCKS.register(modEventBus);
         NTParticles.PARTICLE_TYPES.register(modEventBus);
@@ -180,6 +183,7 @@ public final class Nautec {
         registerItemCaps(event);
         registerBECaps(event);
         registerEntityCaps(event);
+        TransferCapabilities.registerBridges(event);
     }
 
     private static void registerEntityCaps(RegisterCapabilitiesEvent event) {
@@ -188,7 +192,7 @@ public final class Nautec {
     }
 
     private static void registerItemCaps(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new DivingSuitAirHandler(access), NTItems.DIVING_CHESTPLATE.get());
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new DivingSuitAirHandler(stack), NTItems.DIVING_CHESTPLATE.get());
 
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof IPowerItem powerItem) {
@@ -196,7 +200,7 @@ public final class Nautec {
             }
 
             if (item instanceof IFluidItem fluidItem) {
-                event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new ItemAccessFluidHandler(access, NTDataComponents.FLUID.get(), fluidItem.getFluidCapacity()), item);
+                event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidHandlerItemStack(NTDataComponents.FLUID, stack, fluidItem.getFluidCapacity()), item);
             }
 
             if (item instanceof IBacteriaItem) {
@@ -221,41 +225,41 @@ public final class Nautec {
     }
 
     private static void registerBECaps(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.ENERGY_CONVERTER.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.ENERGY_CONVERTER.get(),
                 (blockEntity, dir) -> blockEntity.getFeBuffer());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CREATIVE_ENERGY_SOURCE.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.CREATIVE_ENERGY_SOURCE.get(),
                 (blockEntity, dir) -> blockEntity);
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.PRISMATIC_EMITTER.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.PRISMATIC_EMITTER.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_PYLON.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_PYLON.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.SATELLITE_ARRAY.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.SATELLITE_ARRAY.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_NODE.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_NODE.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
+        event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.getFuelInput());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.COMBUSTION_DYNAMO.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.COMBUSTION_DYNAMO.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
+        event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_CONTROLLER.get(),
                 (blockEntity, dir) -> blockEntity.getFuelInput());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
                 (blockEntity, dir) -> blockEntity.getEnergy());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
+        event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, NTBlockEntityTypes.FUSION_PORT.get(),
                 (blockEntity, dir) -> blockEntity.getFuel());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, NTBlockEntityTypes.RESONANT_VAULT.get(),
+        event.registerBlockEntity(TransferCapabilities.Item.BLOCK, NTBlockEntityTypes.RESONANT_VAULT.get(),
                 (blockEntity, dir) -> blockEntity.itemHandler(dir));
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.RESONANT_CISTERN.get(),
+        event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, NTBlockEntityTypes.RESONANT_CISTERN.get(),
                 (blockEntity, dir) -> blockEntity.fluidHandler(dir));
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
+        event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.fluidSink(dir));
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.energySink(dir));
 
         for (DeferredHolder<BlockEntityType<?>, ? extends BlockEntityType<?>> be : NTBlockEntityTypes.BLOCK_ENTITIES.getEntries()) {
@@ -269,11 +273,11 @@ public final class Nautec {
                 }
 
                 if (containerBE.getItemHandler() != null) {
-                    event.registerBlockEntity(Capabilities.Item.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getItemHandlerOnSide(dir));
+                    event.registerBlockEntity(TransferCapabilities.Item.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getItemHandlerOnSide(dir));
                 }
 
                 if (containerBE.getFluidHandler() != null) {
-                    event.registerBlockEntity(Capabilities.Fluid.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getFluidHandlerOnSide(dir));
+                    event.registerBlockEntity(TransferCapabilities.Fluid.BLOCK, be.get(), (blockEntity, dir) -> ((ContainerBlockEntity) blockEntity).getFluidHandlerOnSide(dir));
                 }
 
                 if (containerBE.getBacteriaStorage() != null){
@@ -283,7 +287,7 @@ public final class Nautec {
         }
     }
 
-    public static Identifier rl(String path) {
-        return Identifier.fromNamespaceAndPath(MODID, path);
+    public static ResourceLocation rl(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

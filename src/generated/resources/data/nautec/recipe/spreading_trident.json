@@ -4,7 +4,9 @@
   "desc": "Throws a spreading volley of tridents",
   "ingredients": [
     {
-      "ingredient": "nautec:volley_trident_arm"
+      "ingredient": {
+        "item": "nautec:volley_trident_arm"
+      }
     }
   ],
   "resultAugment": "nautec:spreading_trident"

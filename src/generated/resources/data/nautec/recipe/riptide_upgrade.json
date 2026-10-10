@@ -2,15 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": "#c:gems/diamond",
-    "P": "nautec:surge_upgrade",
-    "R": "#c:dusts/redstone"
+    "M": {
+      "tag": "c:gems/diamond"
+    },
+    "P": {
+      "item": "nautec:surge_upgrade"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
   },
   "pattern": [
     " M ",
     "RPR"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:riptide_upgrade"
   }
 }

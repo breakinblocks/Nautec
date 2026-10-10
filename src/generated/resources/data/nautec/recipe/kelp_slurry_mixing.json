@@ -8,7 +8,9 @@
   "ingredients": [
     {
       "count": 4,
-      "ingredient": "minecraft:kelp"
+      "ingredient": {
+        "item": "minecraft:kelp"
+      }
     }
   ],
   "result": {

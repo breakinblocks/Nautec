@@ -12,12 +12,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.core.Holder;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -28,8 +27,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCraftingRecipe> {
-    public static final Identifier UID = Nautec.rl(LaserCraftingRecipe.NAME);
-    public static final IRecipeType<LaserCraftingRecipe> RECIPE_TYPE = IRecipeType.create(UID, LaserCraftingRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl(LaserCraftingRecipe.NAME);
+    public static final RecipeType<LaserCraftingRecipe> RECIPE_TYPE = new RecipeType<>(UID, LaserCraftingRecipe.class);
 
     private static final int WIDTH = 152;
     private static final int TANK_WIDTH = 16;
@@ -61,7 +60,7 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
         for (int i = 0; i < LaserCraftingRecipe.MAX_ITEM_OUTPUTS; i++) {
             IRecipeSlotBuilder slot = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.OUTPUT, OUTPUT_SLOT_X, 1 + i * 18);
             if (i < results.size()) {
-                slot.add(results.get(i));
+                slot.addItemStack(results.get(i));
             }
         }
 
@@ -70,9 +69,9 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
             SizedFluidIngredient ingredient = recipe.fluidIngredients().get(i);
             IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, INPUT_TANK_X[i], 1)
                     .setFluidRenderer(inputCapacity, false, TANK_WIDTH, TANK_HEIGHT);
-            for (Holder<Fluid> fluid : ingredient.ingredient().fluids()) {
-                slot.add(fluid.value(), ingredient.amount());
-                addBucket(builder, RecipeIngredientRole.INPUT, fluid.value());
+            for (FluidStack fluid : ingredient.ingredient().getStacks()) {
+                slot.addFluidStack(fluid.getFluid(), ingredient.amount());
+                addBucket(builder, RecipeIngredientRole.INPUT, fluid.getFluid());
             }
         }
 
@@ -82,7 +81,7 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
             FluidStack result = fluidResults.get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, OUTPUT_TANK_X[i], 1)
                     .setFluidRenderer(outputCapacity, false, TANK_WIDTH, TANK_HEIGHT)
-                    .add(result.getFluid(), result.getAmount(), result.getComponentsPatch());
+                    .addFluidStack(result.getFluid(), result.getAmount(), result.getComponentsPatch());
             addBucket(builder, RecipeIngredientRole.OUTPUT, result.getFluid());
         }
     }
@@ -90,7 +89,7 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
     private static void addBucket(IRecipeLayoutBuilder builder, RecipeIngredientRole role, Fluid fluid) {
         ItemStack bucket = new ItemStack(fluid.getBucket());
         if (!bucket.isEmpty()) {
-            builder.addInvisibleIngredients(role).add(bucket);
+            builder.addInvisibleIngredients(role).addItemStack(bucket);
         }
     }
 
@@ -116,7 +115,7 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
     }
 
     @Override
-    public void draw(@NotNull LaserCraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(@NotNull LaserCraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         for (int x : INPUT_TANK_X) {
             tankFrame(guiGraphics, x, 1);
         }
@@ -125,7 +124,7 @@ public class LaserCraftingRecipeCategory extends AbstractRecipeCategory<LaserCra
         }
     }
 
-    private static void tankFrame(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    private static void tankFrame(GuiGraphics guiGraphics, int x, int y) {
         guiGraphics.fill(x - 1, y - 1, x + TANK_WIDTH + 1, y + TANK_HEIGHT + 1, 0xFF1E2221);
         guiGraphics.fill(x, y, x + TANK_WIDTH, y + TANK_HEIGHT, 0xFF16201F);
     }

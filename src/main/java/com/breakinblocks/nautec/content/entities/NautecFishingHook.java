@@ -69,7 +69,7 @@ public class NautecFishingHook extends FishingHook {
         float xCos = -Mth.cos(-xRot * (float) (Math.PI / 180.0));
         float xSin = Mth.sin(-xRot * (float) (Math.PI / 180.0));
 
-        this.snapTo(player.getX() - ySin * 0.3, player.getEyeY(), player.getZ() - yCos * 0.3, yRot, xRot);
+        this.moveTo(player.getX() - ySin * 0.3, player.getEyeY(), player.getZ() - yCos * 0.3, yRot, xRot);
 
         Vec3 movement = new Vec3(
                 -ySin, Mth.clamp(-(xSin / xCos), -5.0F, 5.0F), -yCos);

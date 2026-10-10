@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "B": "nautec:prismatic_battery",
-    "C": "nautec:aquatic_chip",
-    "K": "nautec:laser_channeling_coil"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "B": {
+      "item": "nautec:prismatic_battery"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "K": {
+      "item": "nautec:laser_channeling_coil"
+    }
   },
   "pattern": [
     "AKA",
@@ -13,6 +21,7 @@
     "ACA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:booster_module"
   }
 }

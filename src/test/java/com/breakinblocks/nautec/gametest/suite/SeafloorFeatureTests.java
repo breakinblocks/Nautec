@@ -6,8 +6,7 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.worldgen.feature.GlowGrottoFeature;
 import com.breakinblocks.nautec.worldgen.feature.VentFieldFeature;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -16,13 +15,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public final class SeafloorFeatureTests {
-    private static final Identifier TALL = Nautec.rl("empty_19x11x19");
-    private static final Identifier WIDE = Nautec.rl("empty_34x16x14");
+    private static final ResourceLocation TALL = Nautec.rl("empty_19x11x19");
+    private static final ResourceLocation WIDE = Nautec.rl("empty_34x16x14");
 
     private SeafloorFeatureTests() {
     }
 
-    private static void fill(GameTestHelper helper, int sizeX, int sizeZ, int floorY, int topY) {
+    private static void fill(NTGameTestHelper helper, int sizeX, int sizeZ, int floorY, int topY) {
         ServerLevel level = helper.getLevel();
         for (int x = 0; x < sizeX; x++) {
             for (int z = 0; z < sizeZ; z++) {
@@ -34,7 +33,7 @@ public final class SeafloorFeatureTests {
         }
     }
 
-    private static int count(GameTestHelper helper, BlockPos from, BlockPos to, Block block) {
+    private static int count(NTGameTestHelper helper, BlockPos from, BlockPos to, Block block) {
         int found = 0;
         for (BlockPos pos : BlockPos.betweenClosed(from, to)) {
             if (helper.getBlockState(pos).is(block)) {

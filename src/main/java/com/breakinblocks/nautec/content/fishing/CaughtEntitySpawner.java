@@ -4,7 +4,6 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
@@ -34,13 +33,13 @@ public final class CaughtEntitySpawner {
     }
 
     private static void spawn(ServerLevel level, FishingHook hook, EntityType<?> type) {
-        Entity entity = type.create(level, EntitySpawnReason.NATURAL);
+        Entity entity = type.create(level);
         if (entity == null) {
             Nautec.LOGGER.warn("A lucky fishing zone tried to catch {} but it could not be created", type);
             return;
         }
 
-        entity.snapTo(hook.getX(), hook.getY(), hook.getZ(), level.getRandom().nextFloat() * 360.0F, 0.0F);
+        entity.moveTo(hook.getX(), hook.getY(), hook.getZ(), level.getRandom().nextFloat() * 360.0F, 0.0F);
 
         Entity owner = hook.getOwner();
         if (owner != null) {

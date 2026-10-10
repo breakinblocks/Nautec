@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_dunswe",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/containment_coil_end",
     "down_emissive": "nautec:block/containment_coil_end_emissive",

@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueIOSerializable;
 
 import java.util.List;
 

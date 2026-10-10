@@ -3,7 +3,9 @@
   "duration": 20,
   "ingredients": [
     {
-      "ingredient": "nautec:aquarine_steel_compound"
+      "ingredient": {
+        "item": "nautec:aquarine_steel_compound"
+      }
     }
   ],
   "power": 20,

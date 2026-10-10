@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,10 +17,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class EyeOfTheSeaEntity extends Entity implements ItemSupplier {
     public static final int LIFETIME = 80;
@@ -111,7 +114,7 @@ public class EyeOfTheSeaEntity extends Entity implements ItemSupplier {
 
     private void vanish(ServerLevel level) {
         playSound(SoundEvents.ENDER_EYE_DEATH, 1.0F, 1.4F);
-        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, getItem().getItem()),
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, getItem()),
                 getX(), getY(), getZ(), 8, 0.1, 0.1, 0.1, 0.15);
         level.sendParticles(ParticleTypes.BUBBLE_POP, getX(), getY(), getZ(), 24, 0.4, 0.4, 0.4, 0.05);
         level.sendParticles(ParticleTypes.GLOW, getX(), getY(), getZ(), 6, 0.3, 0.3, 0.3, 0.02);
@@ -152,12 +155,14 @@ public class EyeOfTheSeaEntity extends Entity implements ItemSupplier {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        ValueOutput output = TagValueOutput.wrap(registryAccess(), tag);
         output.store("Item", ItemStack.CODEC, getItem());
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        ValueInput input = TagValueInput.create(registryAccess(), tag);
         setItem(input.read("Item", ItemStack.CODEC).orElse(defaultItem()));
     }
 
@@ -172,7 +177,7 @@ public class EyeOfTheSeaEntity extends Entity implements ItemSupplier {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         return false;
     }
 }

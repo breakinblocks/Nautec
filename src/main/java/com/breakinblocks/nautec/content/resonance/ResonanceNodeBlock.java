@@ -9,14 +9,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -73,13 +71,11 @@ public class ResonanceNodeBlock extends ContainerBlock implements SimpleWaterlog
     }
 
     @Override
-    protected @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess tickAccess,
-                                              @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos,
-                                              @NotNull BlockState neighborState, @NotNull RandomSource random) {
+    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -108,8 +104,8 @@ public class ResonanceNodeBlock extends ContainerBlock implements SimpleWaterlog
         if (player instanceof ServerPlayer serverPlayer) {
             ResonanceNetwork network = node.getNetwork();
             if (network != null && !ResonanceNetworks.canUse(serverPlayer, network)) {
-                serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
-                        .withStyle(ChatFormatting.RED));
+                serverPlayer.displayClientMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
+                        .withStyle(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }
             serverPlayer.openMenu(node, pos);

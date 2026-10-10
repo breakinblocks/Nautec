@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "nautec:aquarine_copper_ingot"
+    {
+      "item": "nautec:aquarine_copper_ingot"
+    }
   ],
   "result": {
     "count": 9,

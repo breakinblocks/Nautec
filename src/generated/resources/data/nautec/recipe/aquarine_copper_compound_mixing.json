@@ -8,10 +8,14 @@
   "ingredients": [
     {
       "count": 3,
-      "ingredient": "#c:ingots/copper"
+      "ingredient": {
+        "tag": "c:ingots/copper"
+      }
     },
     {
-      "ingredient": "nautec:kelp_slurry"
+      "ingredient": {
+        "item": "nautec:kelp_slurry"
+      }
     }
   ],
   "result": {

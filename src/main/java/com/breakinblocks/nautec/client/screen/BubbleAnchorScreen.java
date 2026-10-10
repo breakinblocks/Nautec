@@ -8,10 +8,10 @@ import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.content.menus.BubbleAnchorMenu;
 import com.breakinblocks.nautec.network.BubbleAnchorTogglePayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -55,12 +55,12 @@ public class BubbleAnchorScreen extends NTMachineScreen<BubbleAnchorBlockEntity>
     private NTPanelButton toggle(int x, int y, int which, Supplier<Component> label, Supplier<Integer> color, Supplier<Integer> hover,
                                  Supplier<Component> tooltip) {
         return new NTPanelButton(this.font, leftPos + x, topPos + y, 108, 16, label, color, hover, tooltip,
-                () -> ClientPacketDistributor.sendToServer(new BubbleAnchorTogglePayload(this.menu.containerId, which)));
+                () -> PacketDistributor.sendToServer(new BubbleAnchorTogglePayload(this.menu.containerId, which)));
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         BubbleAnchorMenu anchor = anchor();
         boolean laser = anchor.getStatus() == BubbleAnchorBlockEntity.STATUS_LASER;
         float fraction = laser ? 1F : anchor.getBurn() / (float) Math.max(1, anchor.getBurnTotal());
@@ -69,24 +69,24 @@ public class BubbleAnchorScreen extends NTMachineScreen<BubbleAnchorBlockEntity>
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         int status = anchor().getStatus();
         boolean running = status == BubbleAnchorBlockEntity.STATUS_FUEL || status == BubbleAnchorBlockEntity.STATUS_LASER;
         Component text = Component.translatable(BubbleAnchorBlock.statusKey(status));
-        graphics.text(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY, running ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
+        graphics.drawString(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY, running ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         if (mouseX >= leftPos + BAR_X - 1 && mouseX < leftPos + BAR_X + BAR_WIDTH + 1 && mouseY >= topPos + BAR_Y - 1 && mouseY < topPos + BAR_Y + BAR_HEIGHT + 1) {
             BubbleAnchorMenu anchor = anchor();
             int size = anchor.getRadius() * 2 + 1;
             Supplier<Component> fuelLine = () -> anchor.getStatus() == BubbleAnchorBlockEntity.STATUS_LASER
                     ? Component.translatable("nautec.bubble_anchor.status.laser")
                     : Component.translatable("nautec.bubble_anchor.time", anchor.getBurn() / 20);
-            graphics.setComponentTooltipForNextFrame(this.font, List.of(
+            graphics.renderComponentTooltip(this.font, List.of(
                     fuelLine.get(),
                     Component.translatable("nautec.bubble_anchor.size", size, size, size).withStyle(ChatFormatting.GRAY),
                     Component.translatable("nautec.bubble_anchor.fuel.desc").withStyle(ChatFormatting.GRAY),

@@ -72,7 +72,7 @@ public class DishStorageBlock extends ContainerBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         return level.getBlockEntity(pos) instanceof DishStorageBlockEntity storage ? storage.comparatorSignal() : 0;
     }
 

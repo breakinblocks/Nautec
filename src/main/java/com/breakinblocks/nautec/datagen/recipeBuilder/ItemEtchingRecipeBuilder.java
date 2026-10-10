@@ -4,13 +4,12 @@ import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +71,7 @@ public class ItemEtchingRecipeBuilder implements NTRecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         ItemEtchingRecipe recipe = new ItemEtchingRecipe(this.ingredient, this.result, this.duration);
         recipeOutput.accept(key, recipe, null);
     }

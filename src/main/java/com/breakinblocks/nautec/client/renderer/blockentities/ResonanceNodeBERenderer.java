@@ -5,10 +5,8 @@ import com.breakinblocks.nautec.api.client.renderer.blockentities.LaserRenderSta
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -28,9 +26,8 @@ public class ResonanceNodeBERenderer extends LaserBlockEntityRenderer<ResonanceN
     }
 
     @Override
-    public void extractRenderState(ResonanceNodeBlockEntity node, NodeRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        super.extractRenderState(node, state, partialTick, cameraPos, crumbling);
+    public void extractRenderState(ResonanceNodeBlockEntity node, NodeRenderState state, float partialTick, Vec3 cameraPos) {
+        super.extractRenderState(node, state, partialTick, cameraPos);
         state.facing = node.facing();
         state.online = node.isOnline();
         state.linked = node.getNetworkId() != null;
@@ -39,8 +36,8 @@ public class ResonanceNodeBERenderer extends LaserBlockEntityRenderer<ResonanceN
     }
 
     @Override
-    public void submit(NodeRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        super.submit(state, poseStack, collector, camera);
+    public void submit(NodeRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
+        super.submit(state, poseStack, buffers, cameraPos);
         float speed = state.online ? 3F : state.linked ? 1.2F : 0.5F;
         float flash = state.online ? 0.45F + 0.25F * Mth.sin(state.ticks * 0.3F) : state.linked ? 0.1F : 0F;
         poseStack.pushPose();
@@ -48,7 +45,7 @@ public class ResonanceNodeBERenderer extends LaserBlockEntityRenderer<ResonanceN
         poseStack.mulPose(state.facing.getRotation());
         poseStack.translate(0F, HOVER - 0.5F + Mth.sin(state.ticks * 0.05F) * 0.02F, 0F);
         poseStack.scale(SCALE, SCALE, SCALE);
-        PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks * speed, state.seed, flash, true);
+        PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks * speed, state.seed, flash, true);
         poseStack.popPose();
     }
 

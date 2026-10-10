@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "#c:chests",
-    "E": "nautec:eye_of_the_sea",
-    "P": "nautec:prismarine_crystal_shard",
-    "S": "nautec:resonant_shard"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "tag": "c:chests"
+    },
+    "E": {
+      "item": "nautec:eye_of_the_sea"
+    },
+    "P": {
+      "item": "nautec:prismarine_crystal_shard"
+    },
+    "S": {
+      "item": "nautec:resonant_shard"
+    }
   },
   "pattern": [
     "AEA",
@@ -14,6 +24,7 @@
     "ASA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:resonant_vault"
   }
 }

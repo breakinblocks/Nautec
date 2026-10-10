@@ -16,6 +16,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import com.breakinblocks.nautec.utils.InteractionResults;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -71,7 +73,7 @@ public class SatelliteArrayBlock extends LaserBlock {
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos above = context.getClickedPos().above();
         Level level = context.getLevel();
-        if (above.getY() > level.getMaxY() || !level.getBlockState(above).canBeReplaced(context)) {
+        if (above.getY() >= level.getMaxBuildHeight() || !level.getBlockState(above).canBeReplaced(context)) {
             return null;
         }
         return super.getStateForPlacement(context);
@@ -88,22 +90,24 @@ public class SatelliteArrayBlock extends LaserBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        BlockPos above = pos.above();
-        BlockState top = level.getBlockState(above);
-        if (top.getBlock() instanceof SatelliteArrayTopBlock) {
-            level.setBlockAndUpdate(above, top.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.defaultFluidState().createLegacyBlock()
-                    : Blocks.AIR.defaultBlockState());
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, world, pos, newState, movedByPiston);
+        if (!state.is(newState.getBlock()) && world instanceof ServerLevel level) {
+            BlockPos above = pos.above();
+            BlockState top = level.getBlockState(above);
+            if (top.getBlock() instanceof SatelliteArrayTopBlock) {
+                level.setBlockAndUpdate(above, top.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.defaultFluidState().createLegacyBlock()
+                        : Blocks.AIR.defaultBlockState());
+            }
         }
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(stack.getItem() instanceof PrismSatelliteItem)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return launch(stack, level, pos, player);
+        return InteractionResults.toItem(launch(stack, level, pos, player));
     }
 
     @Override
@@ -133,13 +137,13 @@ public class SatelliteArrayBlock extends LaserBlock {
             error = "nautec.satellite.error.sky";
         }
         if (error != null) {
-            serverPlayer.sendOverlayMessage(Component.translatable(error).withStyle(ChatFormatting.RED));
+            serverPlayer.displayClientMessage(Component.translatable(error).withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
         array.launch();
         stack.consume(1, player);
         NTCriteriaTriggers.SATELLITE_LAUNCHED.get().trigger(serverPlayer);
-        serverPlayer.sendOverlayMessage(Component.translatable("nautec.satellite.launched").withStyle(ChatFormatting.AQUA));
+        serverPlayer.displayClientMessage(Component.translatable("nautec.satellite.launched").withStyle(ChatFormatting.AQUA), true);
         double x = pos.getX() + 0.5;
         double z = pos.getZ() + 0.5;
         serverLevel.playSound(null, pos, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.BLOCKS, 1.4F, 0.8F);
@@ -159,8 +163,8 @@ public class SatelliteArrayBlock extends LaserBlock {
         if (player instanceof ServerPlayer serverPlayer) {
             ResonanceNetwork network = array.getNetwork();
             if (network != null && !ResonanceNetworks.canUse(serverPlayer, network)) {
-                serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
-                        .withStyle(ChatFormatting.RED));
+                serverPlayer.displayClientMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
+                        .withStyle(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }
             serverPlayer.openMenu(array, pos);

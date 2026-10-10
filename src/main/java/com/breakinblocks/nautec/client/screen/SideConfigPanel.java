@@ -8,11 +8,10 @@ import com.breakinblocks.nautec.network.SetSideConfigPayload;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -115,13 +114,13 @@ public final class SideConfigPanel {
         return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
     }
 
-    private void box(GuiGraphicsExtractor g, int x, int y, int w, int h) {
+    private void box(GuiGraphics g, int x, int y, int w, int h) {
         g.fill(x, y, x + w, y + h, OUTLINE);
         g.fill(x + 1, y + 1, x + w - 1, y + h - 1, LIGHT);
         g.fill(x + 2, y + 2, x + w - 1, y + h - 1, PANEL);
     }
 
-    private void icon(GuiGraphicsExtractor g, int x, int y) {
+    private void icon(GuiGraphics g, int x, int y) {
         g.fill(x + 4, y + 4, x + 14, y + 14, OUTLINE);
         g.fill(x + 5, y + 5, x + 9, y + 9, SideMode.INPUT.color());
         g.fill(x + 9, y + 5, x + 13, y + 9, SideMode.OUTPUT.color());
@@ -129,7 +128,7 @@ public final class SideConfigPanel {
         g.fill(x + 9, y + 9, x + 13, y + 13, SideMode.NONE.color());
     }
 
-    public void extract(GuiGraphicsExtractor g, Font font, int anchorX, int anchorY, int mouseX, int mouseY) {
+    public void extract(GuiGraphics g, Font font, int anchorX, int anchorY, int mouseX, int mouseY) {
         Rect2i area = area(anchorX, anchorY);
         int x = area.getX();
         int y = area.getY();
@@ -137,14 +136,14 @@ public final class SideConfigPanel {
             box(g, x, y, TAB, TAB);
             icon(g, x, y);
             if (inside(mouseX, mouseY, x, y, TAB, TAB)) {
-                g.setComponentTooltipForNextFrame(font, List.of(Component.translatable("nautec.side_config.title")), mouseX, mouseY);
+                g.renderComponentTooltip(font, List.of(Component.translatable("nautec.side_config.title")), mouseX, mouseY);
             }
             return;
         }
 
         box(g, x, y, area.getWidth(), height());
         icon(g, x, y);
-        g.text(font, Component.translatable("nautec.side_config.short"), x + 20, y + 6, TEXT, false);
+        g.drawString(font, Component.translatable("nautec.side_config.short"), x + 20, y + 6, TEXT, false);
 
         if (bothKinds()) {
             for (SideKind option : SideKind.values()) {
@@ -154,7 +153,7 @@ public final class SideConfigPanel {
                 boolean selected = option == kind;
                 g.fill(bx, by, bx + bw, by + 11, OUTLINE);
                 g.fill(bx + 1, by + 1, bx + bw - 1, by + 10, selected ? 0xFF45504A : LIGHT);
-                g.text(font, kindLabel(option), bx + 3, by + 2, selected ? LIGHT : TEXT, false);
+                g.drawString(font, kindLabel(option), bx + 3, by + 2, selected ? LIGHT : TEXT, false);
             }
         }
 
@@ -171,9 +170,9 @@ public final class SideConfigPanel {
                 g.fill(cx, cy, cx + CELL, cy + CELL, OUTLINE);
                 g.fill(cx + 1, cy + 1, cx + CELL - 1, cy + CELL - 1, mode.color());
                 Component letter = Component.translatable(face.translationKey() + ".short");
-                g.text(font, letter, cx + CELL / 2 - font.width(letter) / 2 + 1, cy + 4, TEXT, false);
+                g.drawString(font, letter, cx + CELL / 2 - font.width(letter) / 2 + 1, cy + 4, TEXT, false);
                 if (inside(mouseX, mouseY, cx, cy, CELL, CELL)) {
-                    g.setComponentTooltipForNextFrame(font, List.of(
+                    g.renderComponentTooltip(font, List.of(
                             Component.translatable("nautec.side_config.tooltip", Component.translatable(face.translationKey()),
                                     Component.translatable(kind.translationKey()), Component.translatable(mode.translationKey())),
                             Component.translatable(mode.translationKey() + ".desc").withStyle(ChatFormatting.GRAY),
@@ -184,9 +183,7 @@ public final class SideConfigPanel {
         }
     }
 
-    public boolean mouseClicked(MouseButtonEvent event, int anchorX, int anchorY) {
-        double mouseX = event.x();
-        double mouseY = event.y();
+    public boolean mouseClicked(double mouseX, double mouseY, int button, int anchorX, int anchorY) {
         if (!contains(mouseX, mouseY, anchorX, anchorY)) {
             return false;
         }
@@ -215,9 +212,9 @@ public final class SideConfigPanel {
                 RelativeFace face = GRID[row][column];
                 if (face != null && inside(mouseX, mouseY, x + left + column * PITCH, y + gridTop() + row * PITCH, CELL, CELL)) {
                     SideMode current = machine.getSideConfig().get(kind, face);
-                    SideMode next = event.button() == 1 ? current.previous() : current.next();
+                    SideMode next = button == 1 ? current.previous() : current.next();
                     machine.getSideConfig().set(kind, face, next);
-                    ClientPacketDistributor.sendToServer(new SetSideConfigPayload(containerId, kind, face, next));
+                    PacketDistributor.sendToServer(new SetSideConfigPayload(containerId, kind, face, next));
                     return true;
                 }
             }

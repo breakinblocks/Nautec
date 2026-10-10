@@ -13,18 +13,18 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public class AugmentationRecipeCategory extends AbstractRecipeCategory<AugmentationRecipe> {
-    public static final Identifier UID = Nautec.rl("augmentation");
-    public static final IRecipeType<AugmentationRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, AugmentationRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl("augmentation");
+    public static final RecipeType<AugmentationRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, AugmentationRecipe.class);
 
     public AugmentationRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -40,7 +40,7 @@ public class AugmentationRecipeCategory extends AbstractRecipeCategory<Augmentat
         int width = getWidth() / 2 - (ingredients.size() * 10);
 
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, getWidth() / 2 - 8 - 1, 12)
-                .add(recipe.augmentItem().getDefaultInstance());
+                .addItemStack(recipe.augmentItem().getDefaultInstance());
 
         for (int i = 0; i < ingredients.size(); i++) {
             IngredientWithCount ingredient = ingredients.get(i);

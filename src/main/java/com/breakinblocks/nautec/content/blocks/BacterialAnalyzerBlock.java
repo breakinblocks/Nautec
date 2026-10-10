@@ -78,9 +78,11 @@ public class BacterialAnalyzerBlock extends LaserBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        level.removeBlock(pos.above(), false);
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, world, pos, newState, movedByPiston);
+        if (!state.is(newState.getBlock()) && world instanceof ServerLevel level) {
+            level.removeBlock(pos.above(), false);
+        }
     }
 
     @Override

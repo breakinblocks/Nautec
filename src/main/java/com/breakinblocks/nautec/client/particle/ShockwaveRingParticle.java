@@ -3,14 +3,16 @@ package com.breakinblocks.nautec.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
-public class ShockwaveRingParticle extends SingleQuadParticle {
+public class ShockwaveRingParticle extends TextureSheetParticle {
     private static final SingleQuadParticle.FacingCameraMode FLAT =
             (target, camera, partialTick) -> target.rotationX(Mth.HALF_PI);
 
@@ -19,7 +21,8 @@ public class ShockwaveRingParticle extends SingleQuadParticle {
 
     protected ShockwaveRingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite,
                                     float startSize, float endSize, int lifetime) {
-        super(level, x, y, z, 0D, 0D, 0D, sprite);
+        super(level, x, y, z, 0D, 0D, 0D);
+        this.setSprite(sprite);
         this.startSize = startSize;
         this.endSize = endSize;
         this.quadSize = startSize;
@@ -34,8 +37,8 @@ public class ShockwaveRingParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -58,7 +61,8 @@ public class ShockwaveRingParticle extends SingleQuadParticle {
                            float startSize, float endSize, int lifetime) implements ParticleProvider<SimpleParticleType> {
         @Override
         public Particle createParticle(SimpleParticleType options, ClientLevel level,
-                                       double x, double y, double z, double xa, double ya, double za, RandomSource random) {
+                                       double x, double y, double z, double xa, double ya, double za) {
+            RandomSource random = level.random;
             ShockwaveRingParticle particle = new ShockwaveRingParticle(level, x, y, z, sprites.get(random),
                     startSize, endSize, lifetime);
             particle.setColor(red, green, blue);

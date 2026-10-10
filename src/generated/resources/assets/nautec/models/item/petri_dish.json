@@ -1,5 +1,13 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "nautec:item/petri_dish_bacteria",
+      "predicate": {
+        "nautec:has_bacteria": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "nautec:item/petri_dish"
   }

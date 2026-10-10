@@ -38,8 +38,11 @@ repositories {
         url = "https://maven.blamejared.com/"
     }
     maven {
-        name = "OctoStudios"
-        url = uri("https://maven.octo-studios.com/releases")
+        name = "GeckoLib"
+        url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"
+        content {
+            includeGroup "software.bernie.geckolib"
+        }
     }
 }
 
@@ -47,7 +50,7 @@ base {
     archivesName = mod_id + "-" + minecraft_version + "-NeoForge"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 sourceSets {
     test {
@@ -59,20 +62,20 @@ sourceSets {
 tasks.named('test') { enabled = false }
 
 tasks.matching { it.name == 'runGameTestServer' }.configureEach {
-    def generatedPack = neoForge.runs.gameTestServer.gameDirectory.dir('config/nautec/generated_pack')
+    def gameTestDir = neoForge.runs.gameTestServer.gameDirectory
     doFirst {
-        generatedPack.get().asFile.mkdirs()
+        project.delete(gameTestDir.dir('world').get().asFile)
+        gameTestDir.dir('config/nautec/generated_pack').get().asFile.mkdirs()
     }
 }
 
 neoForge {
     version = project.neoforge_full_version
 
-    interfaceInjectionData.from(provider {
-        zipTree(configurations.geckolibArtifact.singleFile).matching {
-            include 'META-INF/interface_injections.json'
-        }
-    })
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
 
     runs {
         configureEach {
@@ -96,12 +99,13 @@ neoForge {
 
         gameTestServer {
             type = "gameTestServer"
+            gameDirectory = project.file('run/gametestserver')
             systemProperty 'nautec.requireGameTests', 'true'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
-        clientData {
-            clientData()
+        data {
+            data()
             programArguments.addAll('--mod', project.mod_id, '--all',
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources/').absolutePath)
@@ -118,16 +122,11 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-configurations {
-    geckolibArtifact { transitive = false }
-}
-
 dependencies {
-    implementation "maven.modrinth:geckolib:${geckolib_modrinth_id}"
-    geckolibArtifact "maven.modrinth:geckolib:${geckolib_modrinth_id}"
+    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    implementation "maven.modrinth:curios:dRnRThvD"
-    implementation "curse.maven:jade-324717:7938398"
+    implementation "maven.modrinth:curios:${curios_version}"
+    implementation "maven.modrinth:jade:${jade_version}"
 
     compileOnly "org.appliedenergistics:guideme:${guideme_version}"
     runtimeOnly "org.appliedenergistics:guideme:${guideme_version}"

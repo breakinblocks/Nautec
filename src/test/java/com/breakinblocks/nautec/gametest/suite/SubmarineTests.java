@@ -19,21 +19,24 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMobEffects;
-import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.core.BlockPos;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.ArrayList;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.zombie.Drowned;
+import net.minecraft.world.entity.monster.Drowned;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -55,7 +58,7 @@ public final class SubmarineTests {
     private SubmarineTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    private static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -81,10 +84,10 @@ public final class SubmarineTests {
             helper.runAfterDelay(5, () -> {
                 Player diver = helper.makeMockPlayer(GameType.SURVIVAL);
                 BlockPos stand = helper.absolutePos(new BlockPos(1, 3, 4));
-                diver.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 90F, 0F);
+                diver.moveTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 90F, 0F);
                 diver.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
 
-                InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), diver, InteractionHand.MAIN_HAND);
+                InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), diver, InteractionHand.MAIN_HAND).getResult();
                 helper.assertTrue(result.consumesAction(), "launching into open water was refused");
 
                 List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
@@ -97,10 +100,10 @@ public final class SubmarineTests {
         r.add("submarine/refuses_to_launch_on_land", 40, helper -> helper.runAfterDelay(1, () -> {
             Player lubber = helper.makeMockPlayer(GameType.SURVIVAL);
             BlockPos stand = helper.absolutePos(new BlockPos(4, 2, 4));
-            lubber.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0F, 0F);
+            lubber.moveTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0F, 0F);
             lubber.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.SUBMARINE.get()));
 
-            InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), lubber, InteractionHand.MAIN_HAND);
+            InteractionResult result = NTItems.SUBMARINE.get().use(helper.getLevel(), lubber, InteractionHand.MAIN_HAND).getResult();
             helper.assertFalse(result.consumesAction(), "a submersible should not launch on dry land");
 
             List<SubmarineEntity> launched = helper.getLevel().getEntitiesOfClass(SubmarineEntity.class,
@@ -121,7 +124,7 @@ public final class SubmarineTests {
             storage.setPowerStored(storage.getPowerCapacity());
             helper.assertTrue(storage.getPowerStored() > 0, "the Wave Jet should hold a charge");
 
-            helper.assertValueEqual(ItemUseAnimation.NONE, NTItems.WAVE_JET.get().getUseAnimation(jet),
+            helper.assertValueEqual(UseAnim.NONE, NTItems.WAVE_JET.get().getUseAnimation(jet),
                     "Vanilla use animation must not override the custom two-handed Wave Jet pose");
             helper.succeed();
         }));
@@ -254,7 +257,7 @@ public final class SubmarineTests {
             helper.assertValueEqual(max, submarine.getHealth(), "a fresh submarine should launch at full hull");
 
             Player attacker = helper.makeMockPlayer(GameType.SURVIVAL);
-            helper.assertTrue(submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(attacker), 10F),
+            helper.assertTrue(submarine.hurt(helper.getLevel().damageSources().playerAttack(attacker), 10F),
                     "the submarine refused a survival attack");
             helper.assertFalse(submarine.isRemoved(), "one hit should not destroy the submarine");
             helper.assertValueEqual(max - 3F, submarine.getHealth(), "hull left after 10 damage through 20 armor and 8 toughness");
@@ -266,7 +269,7 @@ public final class SubmarineTests {
             Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
             pilot.startRiding(submarine);
 
-            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(pilot), 10F);
+            submarine.hurt(helper.getLevel().damageSources().playerAttack(pilot), 10F);
             helper.assertValueEqual(submarine.getMaxHealth(), submarine.getHealth(), "the pilot damaged their own hull");
             helper.succeed();
         }));
@@ -277,7 +280,7 @@ public final class SubmarineTests {
             LivingEntity rider = helper.spawn(EntityType.PIG, SUB_POS);
             rider.startRiding(submarine);
 
-            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().generic(), 1000F);
+            submarine.hurt(helper.getLevel().damageSources().generic(), 1000F);
 
             helper.assertTrue(submarine.isRemoved(), "a destroyed submarine should be gone");
             helper.assertTrue(rider.isAlive(), "the rider should have been ejected alive");
@@ -458,7 +461,7 @@ public final class SubmarineTests {
 
             Player attacker = helper.makeMockPlayer(GameType.SURVIVAL);
             float max = submarine.getMaxHealth();
-            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(attacker), 10F);
+            submarine.hurt(helper.getLevel().damageSources().playerAttack(attacker), 10F);
             helper.assertValueEqual(max - 2.8F, submarine.getHealth(), "hull left after 10 damage through the armour module");
 
             submarine.setModule(0, ItemStack.EMPTY);
@@ -476,7 +479,7 @@ public final class SubmarineTests {
             float max = submarine.getMaxHealth();
 
             Player attacker = helper.makeMockPlayer(GameType.SURVIVAL);
-            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(attacker), 10F);
+            submarine.hurt(helper.getLevel().damageSources().playerAttack(attacker), 10F);
 
             int perHealth = NTConfig.submarineShieldPowerPerHeart / 2;
             helper.assertValueEqual(max, submarine.getHealth(), "the shield should have soaked the whole hit");
@@ -485,7 +488,7 @@ public final class SubmarineTests {
 
             submarine.invulnerableTime = 0;
             submarine.setPowerStored(perHealth);
-            submarine.hurtServer(helper.getLevel(), helper.getLevel().damageSources().playerAttack(attacker), 10F);
+            submarine.hurt(helper.getLevel().damageSources().playerAttack(attacker), 10F);
             helper.assertValueEqual(max - 2F, submarine.getHealth(), "overflow past the shield should reach the hull");
             helper.assertValueEqual(0, submarine.getPowerStored(), "the shield should have burned its last power");
             helper.succeed();
@@ -727,7 +730,7 @@ public final class SubmarineTests {
 
         r.add("submarine/charging_locks_heading_and_pulls_into_portal", SubmarineModules.TELEPORT_CHARGE_TICKS + 30, helper -> {
             SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 24, 4));
-            submarine.snapTo(submarine.getX(), submarine.getY(), submarine.getZ(), 90F, -15F);
+            submarine.moveTo(submarine.getX(), submarine.getY(), submarine.getZ(), 90F, -15F);
             helper.assertFalse(SubmarineCollision.blocked(helper.getLevel(), submarine, submarine.position(), 90F, -15F),
                     "the tilted hull should start in open air above the arena");
             Vec3 portal = SubmarineEntity.portalCenter(submarine.position(), 90F, -15F);
@@ -883,12 +886,12 @@ public final class SubmarineTests {
 
     private static void registerCraftingTests(NTTestRegistrar r) {
         r.add("submarine/everything_is_craftable", 40, helper -> helper.runAfterDelay(1, () -> {
-            java.util.Set<String> crafting = helper.getLevel().recipeAccess().recipeMap()
-                    .byType(RecipeType.CRAFTING).stream()
-                    .map(holder -> holder.id().identifier().toString())
-                    .collect(java.util.stream.Collectors.toSet());
+            Set<String> crafting = new HashSet<>();
+            for (RecipeHolder<CraftingRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
+                crafting.add(holder.id().toString());
+            }
 
-            List<String> expected = new java.util.ArrayList<>();
+            List<String> expected = new ArrayList<>();
             expected.add("nautec:submarine");
             for (var module : NTItems.SUBMARINE_MODULES) {
                 expected.add(String.valueOf(BuiltInRegistries.ITEM.getKey(module.get())));
@@ -902,7 +905,7 @@ public final class SubmarineTests {
         }));
     }
 
-    private static SubmarineEntity spawnSubmarine(GameTestHelper helper) {
+    private static SubmarineEntity spawnSubmarine(NTGameTestHelper helper) {
         SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), SUB_POS);
         helper.assertTrue(submarine != null, "the submarine failed to spawn");
         return submarine;

@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquatic_chip",
-    "C": "#c:gems/prismarine",
-    "G": "#c:glass_blocks",
-    "L": "nautec:laser_channeling_coil",
-    "P": "nautec:polished_prismarine"
+    "A": {
+      "item": "nautec:aquatic_chip"
+    },
+    "C": {
+      "tag": "c:gems/prismarine"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    },
+    "P": {
+      "item": "nautec:polished_prismarine"
+    }
   },
   "pattern": [
     "PGP",
@@ -14,6 +24,7 @@
     "PLP"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:incubator"
   }
 }

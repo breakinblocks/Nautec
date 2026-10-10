@@ -23,6 +23,7 @@
       ]
     }
   ],
+  "render_type": "minecraft:translucent",
   "textures": {
     "north": "nautec:block/multiblock/industrial_bio_reactor/side_c3_r2_active",
     "particle": "nautec:block/multiblock/industrial_bio_reactor/side_c0_r1",

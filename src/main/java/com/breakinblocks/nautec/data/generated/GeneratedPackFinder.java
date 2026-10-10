@@ -14,12 +14,9 @@ import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
-import net.minecraft.server.packs.metadata.MetadataSectionType;
-import net.minecraft.server.packs.metadata.pack.PackFormat;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.util.InclusiveRange;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 import java.io.IOException;
@@ -145,21 +142,14 @@ public final class GeneratedPackFinder {
         }
     }
 
-    private static PackFormat runtimeFormat() {
-        return SharedConstants.getCurrentVersion().packVersion(PackType.SERVER_DATA);
-    }
-
-    private static MetadataSectionType<PackMetadataSection> metaType() {
-        return PackMetadataSection.forPackType(PackType.SERVER_DATA);
+    private static int runtimeFormat() {
+        return SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA);
     }
 
     private static JsonObject buildMeta() {
-        PackFormat format = runtimeFormat();
-        MetadataSectionType<PackMetadataSection> type = metaType();
-        PackMetadataSection section = new PackMetadataSection(Component.literal(DESCRIPTION), new InclusiveRange<>(format, format));
-
+        PackMetadataSection section = new PackMetadataSection(Component.literal(DESCRIPTION), runtimeFormat());
         JsonObject root = new JsonObject();
-        root.add(type.name(), type.codec().encodeStart(JsonOps.INSTANCE, section).getOrThrow());
+        root.add(PackMetadataSection.TYPE.getMetadataSectionName(), PackMetadataSection.CODEC.encodeStart(JsonOps.INSTANCE, section).getOrThrow());
         return root;
     }
 
@@ -169,19 +159,18 @@ public final class GeneratedPackFinder {
             return false;
         }
 
-        MetadataSectionType<PackMetadataSection> type = metaType();
         try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
             JsonElement parsed = JsonParser.parseReader(reader);
             if (!parsed.isJsonObject()) {
                 return false;
             }
-            JsonElement section = parsed.getAsJsonObject().get(type.name());
+            JsonElement section = parsed.getAsJsonObject().get(PackMetadataSection.TYPE.getMetadataSectionName());
             if (section == null) {
                 return false;
             }
-            return type.codec().parse(JsonOps.INSTANCE, section)
+            return PackMetadataSection.CODEC.parse(JsonOps.INSTANCE, section)
                     .result()
-                    .map(meta -> meta.supportedFormats().isValueInRange(runtimeFormat()))
+                    .map(meta -> meta.packFormat() == runtimeFormat())
                     .orElse(false);
         } catch (Exception e) {
             return false;

@@ -36,32 +36,34 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.CookingBookCategory;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import com.breakinblocks.nautec.utils.templates.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
 public class RecipesProvider extends RecipeProvider {
-    public RecipesProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public RecipesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
-    protected void buildRecipes() {
+    protected void buildRecipes(RecipeOutput output) {
         RecipeOutput pRecipeOutput = output;
         aquaticCatalystRecipes(pRecipeOutput);
         combustionAdditiveRecipes(pRecipeOutput);
@@ -172,17 +174,17 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("decorative_prismarine_crystal"));
 
 
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.ANCHOR), RecipeCategory.MISC, CookingBookCategory.MISC, new ItemStackTemplate(NTItems.CAST_IRON_INGOT.get(), 11), 0.2f, 400)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.ANCHOR), RecipeCategory.MISC, new ItemStack(NTItems.CAST_IRON_INGOT.get(), 11), 0.2f, 400)
                 .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_from_anchor_blasting"));
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.OIL_BARREL), RecipeCategory.MISC, CookingBookCategory.MISC, new ItemStackTemplate(NTItems.CAST_IRON_INGOT.get(), 5), 0.2f, 400)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTBlocks.OIL_BARREL), RecipeCategory.MISC, new ItemStack(NTItems.CAST_IRON_INGOT.get(), 5), 0.2f, 400)
                 .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_from_oil_barrel_blasting"));
 
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, CookingBookCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 100)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 100)
                 .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_blasting"));
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, CookingBookCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 200)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(NTItems.CAST_IRON_COMPOUND), RecipeCategory.MISC, NTItems.CAST_IRON_INGOT.get(), 0.2f, 200)
                 .unlockedBy("has_item", has(Tags.Items.INGOTS_IRON))
                 .save(pRecipeOutput, key("cast_iron_ingot_smelting"));
     }
@@ -546,9 +548,9 @@ public class RecipesProvider extends RecipeProvider {
                 .duration(100)
                 .save(pRecipeOutput, key("aquarine_steel_ingot"));
 
-        nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.AQUARINE_STEEL_INGOT.get(), RecipeCategory.BUILDING_BLOCKS, NTBlocks.AQUARINE_STEEL_BLOCK.get());
+        nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, NTItems.AQUARINE_STEEL_INGOT.get(), RecipeCategory.BUILDING_BLOCKS, NTBlocks.AQUARINE_STEEL_BLOCK.get());
 
-        nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_NUGGET, RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_INGOT,
+        nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_NUGGET, RecipeCategory.MISC, NTItems.ATLANTIC_GOLD_INGOT,
                 Nautec.MODID + ":atlantic_gold_ingot_from_nuggets", null, Nautec.MODID + ":atlantic_gold_nuggets_from_ingot", null);
     }
 
@@ -1221,9 +1223,9 @@ public class RecipesProvider extends RecipeProvider {
 
     private void castIronRecipes(@NotNull RecipeOutput pRecipeOutput) {
 
-        nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.CAST_IRON_NUGGET, RecipeCategory.MISC, NTItems.CAST_IRON_INGOT,
+        nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, NTItems.CAST_IRON_NUGGET, RecipeCategory.MISC, NTItems.CAST_IRON_INGOT,
                 Nautec.MODID + ":cast_iron_ingot_from_nuggets", null, Nautec.MODID + ":nuggets_from_cast_iron_ingot", null);
-        nineBlockStorageRecipes(RecipeCategory.MISC, NTItems.CAST_IRON_INGOT, RecipeCategory.BUILDING_BLOCKS, NTBlocks.CAST_IRON_BLOCK,
+        nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, NTItems.CAST_IRON_INGOT, RecipeCategory.BUILDING_BLOCKS, NTBlocks.CAST_IRON_BLOCK,
                 Nautec.MODID + ":cast_iron_block_from_ingots", null, Nautec.MODID + ":ingots_from_cast_iron_block", null);
 
         shaped(RecipeCategory.MISC, NTItems.CAST_IRON_ROD.get(), 4)
@@ -2362,23 +2364,35 @@ public class RecipesProvider extends RecipeProvider {
         return new IngredientWithCount(tag(item), count);
     }
 
-    private static ResourceKey<Recipe<?>> key(String path) {
-        return ResourceKey.create(Registries.RECIPE, Nautec.rl(path));
+    private static ResourceLocation key(String path) {
+        return Nautec.rl(path);
     }
 
-    public static class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-            super(output, registries);
-        }
+    private static ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result) {
+        return ShapedRecipeBuilder.shaped(category, result);
+    }
 
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-            return new RecipesProvider(registries, output);
-        }
+    private static ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result, int count) {
+        return ShapedRecipeBuilder.shaped(category, result, count);
+    }
 
-        @Override
-        public String getName() {
-            return "Nautec Recipes";
-        }
+    private static ShapedRecipeBuilder shaped(RecipeCategory category, ItemStackTemplate result) {
+        return ShapedRecipeBuilder.shaped(category, result.create());
+    }
+
+    private static ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike result) {
+        return ShapelessRecipeBuilder.shapeless(category, result);
+    }
+
+    private static ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike result, int count) {
+        return ShapelessRecipeBuilder.shapeless(category, result, count);
+    }
+
+    private static ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemStackTemplate result) {
+        return ShapelessRecipeBuilder.shapeless(category, result.create());
+    }
+
+    private static Ingredient tag(TagKey<Item> tag) {
+        return Ingredient.of(tag);
     }
 }

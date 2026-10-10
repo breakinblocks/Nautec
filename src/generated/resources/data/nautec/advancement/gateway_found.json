@@ -11,6 +11,7 @@
       "translate": "advancements.nautec.gateway_found.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:gateway"
     },
     "title": {

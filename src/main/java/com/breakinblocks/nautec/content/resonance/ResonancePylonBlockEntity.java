@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.mojang.serialization.Codec;
 import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.NTConfig;
@@ -22,15 +23,15 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
-import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandlerUtil;
+import com.breakinblocks.nautec.transfer.energy.SimpleEnergyHandler;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -266,7 +267,7 @@ public class ResonancePylonBlockEntity extends ContainerBlockEntity implements M
     private void push(ServerLevel serverLevel) {
         if (neighbours.isEmpty()) {
             for (Direction direction : Direction.values()) {
-                neighbours.add(BlockCapabilityCache.create(Capabilities.Energy.BLOCK, serverLevel, worldPosition.relative(direction), direction.getOpposite()));
+                neighbours.add(BlockCapabilityCache.create(TransferCapabilities.Energy.BLOCK, serverLevel, worldPosition.relative(direction), direction.getOpposite()));
             }
         }
         for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache : neighbours) {

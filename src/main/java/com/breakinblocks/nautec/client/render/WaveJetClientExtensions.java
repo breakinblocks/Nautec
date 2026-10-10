@@ -1,9 +1,9 @@
 package com.breakinblocks.nautec.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -15,15 +15,15 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 public final class WaveJetClientExtensions implements IClientItemExtensions {
     public static final EnumProxy<HumanoidModel.ArmPose> ARM_POSE = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, true, true, (IArmPoseTransformer) WaveJetClientExtensions::poseArms);
+            HumanoidModel.ArmPose.class, true, (IArmPoseTransformer) WaveJetClientExtensions::poseArms);
 
     @Override
     public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
         return ARM_POSE.getValue();
     }
 
-    private static void poseArms(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
-        float swimming = Mth.clamp(state.swimAmount, 0.0F, 1.0F);
+    private static void poseArms(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
+        float swimming = Mth.clamp(entity.getSwimAmount(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false)), 0.0F, 1.0F);
         float pitch = Mth.lerp(swimming, -Mth.HALF_PI + model.head.xRot, -2.5F);
         model.rightArm.xRot = pitch;
         model.leftArm.xRot = pitch;

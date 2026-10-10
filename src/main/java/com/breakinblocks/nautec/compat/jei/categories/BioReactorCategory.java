@@ -14,23 +14,23 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 
 public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioReactorRecipe> {
-    static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/bio_reactor/progress_arrow_off");
-    public static final Identifier UID = Nautec.rl(BioReactorRecipe.NAME);
-    public static final IRecipeType<BioReactorRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, BioReactorRecipe.class);
+    static final ResourceLocation RIGHT_ARROW_SPRITE = Nautec.rl("container/bio_reactor/progress_arrow_off");
+    public static final ResourceLocation UID = Nautec.rl(BioReactorRecipe.NAME);
+    public static final RecipeType<BioReactorRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, BioReactorRecipe.class);
 
     private static final int DRAWABLE_WIDTH = 96;
     private static final int DRAWABLE_HEIGHT = 44;
@@ -48,16 +48,16 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
     public void setRecipe(IRecipeLayoutBuilder builder, BioReactorRecipe recipe, IFocusGroup focuses) {
         Item item = recipe.resource().resolve();
         if (item != Items.AIR) {
-            builder.addOutputSlot(getWidth() - 18, 3).add(item);
+            builder.addOutputSlot(getWidth() - 18, 3).addItemStack(new ItemStack(item));
         }
 
-        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).add(NTJeiUtil.maxStatDish(recipe.bacteria()));
+        builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addItemStack(NTJeiUtil.maxStatDish(recipe.bacteria()));
 
         addBacteriaSlot(recipe, 0, 3, recipe.bacteria);
     }
 
     @Override
-    public void draw(BioReactorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(BioReactorRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
 
         NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, getWidth() / 2 - 12, ARROW_ROW_HEIGHT / 2 - 5, 24, 10);

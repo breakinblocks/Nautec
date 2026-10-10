@@ -1,8 +1,8 @@
 package com.breakinblocks.nautec.capabilities.power;
 
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueIOSerializable;
 import org.jetbrains.annotations.Range;
 
 public class PowerStorage implements IPowerStorage, ValueIOSerializable {

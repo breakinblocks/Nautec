@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:rhizophora_lignocytes",
   "ingredient": {
-    "ingredient": "minecraft:mangrove_log"
+    "ingredient": {
+      "item": "minecraft:mangrove_log"
+    }
   },
   "vitality_ticks": 1200
 }

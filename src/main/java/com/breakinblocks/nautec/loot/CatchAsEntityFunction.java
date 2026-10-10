@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +39,7 @@ public class CatchAsEntityFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public @NotNull MapCodec<? extends LootItemConditionalFunction> codec() {
+    public @NotNull LootItemFunctionType<CatchAsEntityFunction> getType() {
         return NTLootFunctions.CATCH_AS_ENTITY.get();
     }
 }

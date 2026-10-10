@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.content.blockentities.fusion.FusionControllerBlo
 import com.breakinblocks.nautec.content.blockentities.fusion.FusionStructure;
 import com.breakinblocks.nautec.content.menus.FusionControllerMenu;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -55,7 +55,10 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
     private static final int FOOTER_Y = 122;
 
     public FusionControllerScreen(FusionControllerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, IMAGE_WIDTH, IMAGE_HEIGHT);
+        super(menu, playerInventory, title);
+        this.imageWidth = IMAGE_WIDTH;
+        this.imageHeight = IMAGE_HEIGHT;
+        this.inventoryLabelY = this.imageHeight - 94;
     }
 
     private static String number(long value) {
@@ -67,8 +70,7 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
         graphics.fill(x, y, x + this.imageWidth, y + this.imageHeight, OUTLINE);
@@ -102,7 +104,7 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
         }
     }
 
-    private void bar(GuiGraphicsExtractor graphics, int x, float fraction, int fill, int shine) {
+    private void bar(GuiGraphics graphics, int x, float fraction, int fill, int shine) {
         int top = this.topPos + BAR_TOP;
         int bottom = top + BAR_HEIGHT;
         graphics.fill(x - 1, top - 1, x + BAR_WIDTH + 1, bottom + 1, OUTLINE);
@@ -123,32 +125,38 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        graphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, LABEL, false);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, LABEL, false);
         Component status = statusText();
-        graphics.text(this.font, status, this.imageWidth - 8 - this.font.width(status), this.titleLabelY, statusColor(), false);
+        graphics.drawString(this.font, status, this.imageWidth - 8 - this.font.width(status), this.titleLabelY, statusColor(), false);
 
         int x = READOUT_X + 5;
         int y = READOUT_Y + 4;
-        graphics.text(this.font, Component.translatable("nautec.fusion.output", number(this.menu.getOutput())), x, y, READOUT, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.output", number(this.menu.getOutput())), x, y, READOUT, false);
         y = GAUGE_Y + 8;
-        graphics.text(this.font, Component.translatable("nautec.fusion.injected", number(this.menu.getInjected()), decimal(this.menu.getPurity())), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.injected", number(this.menu.getInjected()), decimal(this.menu.getPurity())), x, y, READOUT_DIM, false);
         y += LINE;
-        graphics.text(this.font, Component.translatable("nautec.fusion.ceiling", number(this.menu.getCeiling())), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.ceiling", number(this.menu.getCeiling())), x, y, READOUT_DIM, false);
         y += LINE;
         int width = Math.max(0, this.menu.getRadius() * 2 - 1);
-        graphics.text(this.font, Component.translatable("nautec.fusion.chamber", width, width), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.chamber", width, width), x, y, READOUT_DIM, false);
         y += LINE;
-        graphics.text(this.font, Component.translatable("nautec.fusion.parts", this.menu.getInjectors(), FusionStructure.MAX_INJECTORS, this.menu.getCoils()), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.parts", this.menu.getInjectors(), FusionStructure.MAX_INJECTORS, this.menu.getCoils()), x, y, READOUT_DIM, false);
         y += LINE;
-        graphics.text(this.font, Component.translatable("nautec.fusion.burn", decimal(burnRate())), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.burn", decimal(burnRate())), x, y, READOUT_DIM, false);
         y += LINE;
-        graphics.text(this.font, Component.translatable("nautec.fusion.satellites", this.menu.getSatellites(), FusionStructure.MAX_SATELLITES), x, y, READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable("nautec.fusion.satellites", this.menu.getSatellites(), FusionStructure.MAX_SATELLITES), x, y, READOUT_DIM, false);
 
         List<FormattedCharSequence> footer = this.font.split(footerText(), this.imageWidth - 16);
         int fy = FOOTER_Y;
         for (FormattedCharSequence line : footer) {
-            graphics.text(this.font, line, 8, fy, statusColor(), false);
+            graphics.drawString(this.font, line, 8, fy, statusColor(), false);
             fy += this.font.lineHeight;
         }
     }
@@ -178,11 +186,11 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
     }
 
     @Override
-    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractTooltip(graphics, mouseX, mouseY);
+    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderTooltip(graphics, mouseX, mouseY);
         List<Component> lines = hoverLines(mouseX, mouseY);
         if (!lines.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 

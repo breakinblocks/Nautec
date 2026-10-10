@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:cast_iron_block",
-    "H": "nautec:aquatic_chip",
-    "M": "minecraft:magma_block",
-    "V": "nautec:valve"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:cast_iron_block"
+    },
+    "H": {
+      "item": "nautec:aquatic_chip"
+    },
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "V": {
+      "item": "nautec:valve"
+    }
   },
   "pattern": [
     "AVA",
@@ -14,6 +24,7 @@
     "AHA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:thermal_vent_tap"
   }
 }

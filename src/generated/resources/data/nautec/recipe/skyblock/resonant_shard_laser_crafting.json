@@ -10,7 +10,9 @@
   "ingredients": [
     {
       "count": 4,
-      "ingredient": "nautec:prismarine_crystal_shard"
+      "ingredient": {
+        "item": "nautec:prismarine_crystal_shard"
+      }
     }
   ],
   "power": 20,

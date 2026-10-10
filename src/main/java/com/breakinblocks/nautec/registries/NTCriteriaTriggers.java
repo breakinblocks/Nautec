@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.criterion.PlayerTrigger;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;

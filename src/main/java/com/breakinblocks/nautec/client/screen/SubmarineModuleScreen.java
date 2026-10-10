@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.client.screen;
 
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,14 +14,16 @@ public class SubmarineModuleScreen extends AbstractContainerScreen<SubmarineModu
 
 
     public SubmarineModuleScreen(SubmarineModuleMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, WIDTH, HEIGHT);
+        super(menu, playerInventory, title);
+        this.imageWidth = WIDTH;
+        this.imageHeight = HEIGHT;
+        this.inventoryLabelY = this.imageHeight - 94;
         this.titleLabelY = 6;
         this.inventoryLabelY = SubmarineModuleMenu.INVENTORY_Y - 12;
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int x = this.leftPos;
         int y = this.topPos;
         PanelStyle.panel(guiGraphics, x, y, WIDTH, HEIGHT);
@@ -32,12 +34,18 @@ public class SubmarineModuleScreen extends AbstractContainerScreen<SubmarineModu
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.text(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
-        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, PanelStyle.LABEL, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, PanelStyle.LABEL, false);
         for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
             String label = String.valueOf(slot + 1);
-            guiGraphics.text(this.font, label, 8 + slot * 18 + (16 - this.font.width(label)) / 2, SubmarineModuleMenu.MODULE_ROW_Y - 10,
+            guiGraphics.drawString(this.font, label, 8 + slot * 18 + (16 - this.font.width(label)) / 2, SubmarineModuleMenu.MODULE_ROW_Y - 10,
                     PanelStyle.READOUT_DIM, false);
         }
     }

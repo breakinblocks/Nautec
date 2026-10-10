@@ -15,7 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class WaveJetClientEvents {
@@ -44,7 +44,7 @@ public final class WaveJetClientEvents {
         }
 
         if (toggled) {
-            ClientPacketDistributor.sendToServer(new ToggleWaveJetLightPayload());
+            PacketDistributor.sendToServer(new ToggleWaveJetLightPayload());
         }
     }
 

@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": "#c:ender_pearls",
-    "F": "nautec:focusing_lens",
-    "L": "nautec:prismarine_lens",
-    "P": "nautec:deep_steel_plating",
-    "R": "nautec:resonant_shard"
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "F": {
+      "item": "nautec:focusing_lens"
+    },
+    "L": {
+      "item": "nautec:prismarine_lens"
+    },
+    "P": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    }
   },
   "pattern": [
     "PRP",
@@ -14,6 +24,7 @@
     "PFP"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:laser_injector"
   }
 }

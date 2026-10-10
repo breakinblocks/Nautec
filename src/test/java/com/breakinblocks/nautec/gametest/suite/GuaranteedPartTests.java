@@ -11,11 +11,10 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -30,17 +29,17 @@ public final class GuaranteedPartTests {
     private GuaranteedPartTests() {
     }
 
-    private static ItemStack craft(GameTestHelper helper, List<ItemStack> grid) {
+    private static ItemStack craft(NTGameTestHelper helper, List<ItemStack> grid) {
         CraftingInput input = CraftingInput.of(3, 3, grid);
-        Optional<RecipeHolder<CraftingRecipe>> holder = helper.getLevel().recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel());
-        return holder.map(recipe -> recipe.value().assemble(input)).orElse(ItemStack.EMPTY);
+        Optional<RecipeHolder<CraftingRecipe>> holder = helper.getLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel());
+        return holder.map(recipe -> recipe.value().assemble(input, helper.getLevel().registryAccess())).orElse(ItemStack.EMPTY);
     }
 
-    private static ItemStack mix(GameTestHelper helper, List<ItemStack> items) {
+    private static ItemStack mix(NTGameTestHelper helper, List<ItemStack> items) {
         MixingRecipeInput input = new MixingRecipeInput(items, new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 1000));
-        for (RecipeHolder<MixingRecipe> holder : helper.getLevel().recipeAccess().recipeMap().byType(MixingRecipe.Type.INSTANCE)) {
+        for (RecipeHolder<MixingRecipe> holder : helper.getLevel().getRecipeManager().getAllRecipesFor(MixingRecipe.Type.INSTANCE)) {
             if (holder.value().matches(input, helper.getLevel())) {
-                return holder.value().assemble(input);
+                return holder.value().assemble(input, helper.getLevel().registryAccess());
             }
         }
         return ItemStack.EMPTY;
@@ -97,8 +96,8 @@ public final class GuaranteedPartTests {
         });
 
         r.add("guaranteed_parts/pressure_forge_makes_atlantic_gold", 20, helper -> {
-            RecipeHolder<?> holder = helper.getLevel().recipeAccess()
-                    .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl("atlantic_gold_ingot_forging"))).orElse(null);
+            RecipeHolder<?> holder = helper.getLevel().getRecipeManager()
+                    .byKey(Nautec.rl("atlantic_gold_ingot_forging")).orElse(null);
             helper.assertTrue(holder != null && holder.value() instanceof PressureForgingRecipe, "an Atlantic Gold forging recipe exists");
             PressureForgingRecipe recipe = (PressureForgingRecipe) holder.value();
             helper.assertTrue(recipe.ingredient().test(new ItemStack(Items.GOLD_BLOCK)), "it takes a Block of Gold");

@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.utils.RecipeRevision;
-import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
@@ -33,12 +33,12 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 
 public final class ReleaseRegressionTests {
@@ -82,8 +82,8 @@ public final class ReleaseRegressionTests {
             helper.succeed();
         });
         r.add("release/submarine_pickup_preserves_cooldown", 40, helper -> {
-            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
-            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
+            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel());
+            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel());
             source.getModules().startCooldown(0, 600, 100);
             loaded.applyStack(source.toStack());
             helper.assertTrue(loaded.getModules().remainingCooldown(0) > 0, "Picking up and redeploying the submarine clears the cooldown");
@@ -166,8 +166,8 @@ public final class ReleaseRegressionTests {
             helper.succeed();
         });
         r.add("release/submarine_cooldown_survives_item_codec", 40, helper -> {
-            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
-            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
+            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel());
+            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel());
             source.getModules().startCooldown(0, 600, 100);
             RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, helper.getLevel().registryAccess());
             Tag saved = ItemStack.CODEC.encodeStart(ops, source.toStack()).getOrThrow();
@@ -177,8 +177,8 @@ public final class ReleaseRegressionTests {
         });
         r.add("release/recipe_revision_detects_replacement_once", 40, helper -> {
             RecipeRevision revision = new RecipeRevision();
-            RecipeMap first = RecipeMap.create(List.of());
-            RecipeMap reloaded = RecipeMap.create(List.of());
+            RecipeManager first = new RecipeManager(helper.getLevel().registryAccess());
+            RecipeManager reloaded = new RecipeManager(helper.getLevel().registryAccess());
             helper.assertTrue(!revision.changed(first), "Initial load must preserve saved progress");
             helper.assertTrue(!revision.changed(first), "Unchanged recipes must preserve progress");
             helper.assertTrue(revision.changed(reloaded), "Reload must invalidate cached recipes");
@@ -193,8 +193,8 @@ public final class ReleaseRegressionTests {
             helper.succeed();
         });
         r.add("release/submarine_module_entity_state_roundtrip", 40, helper -> {
-            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
-            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
+            SubmarineEntity source = NTEntities.SUBMARINE.get().create(helper.getLevel());
+            SubmarineEntity loaded = NTEntities.SUBMARINE.get().create(helper.getLevel());
             source.getModules().startCooldown(2, 600, 100);
             TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, helper.getLevel().registryAccess());
             source.getModules().save(output);
@@ -203,7 +203,7 @@ public final class ReleaseRegressionTests {
             helper.succeed();
         });
         r.add("release/active_duration_keeps_aging_after_cooldown", 40, helper -> {
-            SubmarineEntity submarine = NTEntities.SUBMARINE.get().create(helper.getLevel(), EntitySpawnReason.COMMAND);
+            SubmarineEntity submarine = NTEntities.SUBMARINE.get().create(helper.getLevel());
             long started = helper.getLevel().getGameTime();
             submarine.getModules().startCooldown(0, 1, 10);
             helper.runAfterDelay(3, () -> {

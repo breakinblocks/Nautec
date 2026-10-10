@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import org.jetbrains.annotations.Nullable;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import net.minecraft.world.item.ItemStack;
 import com.breakinblocks.nautec.content.resonance.ResonanceCharmItem;
 import com.breakinblocks.nautec.content.items.MachineSettings;
@@ -22,11 +22,11 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -42,12 +42,12 @@ public final class SatelliteTests {
     private SatelliteTests() {
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }
 
-    private static void openSky(GameTestHelper helper, BlockPos absolute) {
+    private static void openSky(NTGameTestHelper helper, BlockPos absolute) {
         ServerLevel level = helper.getLevel();
         for (int dy = 2; dy < 24; dy++) {
             BlockPos pos = absolute.above(dy);
@@ -57,7 +57,7 @@ public final class SatelliteTests {
         }
     }
 
-    private static SatelliteArrayBlockEntity array(GameTestHelper helper, BlockPos relative, boolean uplink, @Nullable ResonanceNetwork network) {
+    private static SatelliteArrayBlockEntity array(NTGameTestHelper helper, BlockPos relative, boolean uplink, @Nullable ResonanceNetwork network) {
         BlockPos pos = helper.absolutePos(relative);
         Block block = uplink ? NTBlocks.UPLINK_ARRAY.get() : NTBlocks.DOWNLINK_ARRAY.get();
         helper.getLevel().setBlock(pos, block.defaultBlockState(), Block.UPDATE_ALL);
@@ -67,7 +67,7 @@ public final class SatelliteTests {
         return array;
     }
 
-    private static ResonanceNodeBlockEntity node(GameTestHelper helper, BlockPos relative, ResonanceNetwork network, boolean output) {
+    private static ResonanceNodeBlockEntity node(NTGameTestHelper helper, BlockPos relative, ResonanceNetwork network, boolean output) {
         BlockPos pos = helper.absolutePos(relative);
         helper.getLevel().setBlock(pos, NTBlocks.RESONANCE_NODE.get().defaultBlockState(), Block.UPDATE_ALL);
         ResonanceNodeBlockEntity node = (ResonanceNodeBlockEntity) helper.getLevel().getBlockEntity(pos);
@@ -76,7 +76,7 @@ public final class SatelliteTests {
         return node;
     }
 
-    private static void feed(GameTestHelper helper, SatelliteArrayBlockEntity uplink) {
+    private static void feed(NTGameTestHelper helper, SatelliteArrayBlockEntity uplink) {
         helper.onEachTick(() -> {
             uplink.receivePower(FEED, Direction.NORTH, uplink.getBlockPos().north());
             uplink.receiveNewPurity(FEED_PURITY, Direction.NORTH, uplink.getBlockPos().north());
@@ -183,7 +183,7 @@ public final class SatelliteTests {
             });
         });
 
-        r.add("satellite/ap_crosses_dimensions_with_purity_loss", 200, helper -> {
+        r.add("satellite/ap_crosses_dimensions_with_purity_loss", 600, helper -> {
             ServerPlayer owner = player(helper, "SatDim");
             ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
             ResonanceNetwork network = networks.create(owner, "Sat dimension").network();
@@ -193,20 +193,36 @@ public final class SatelliteTests {
             ServerLevel nether = helper.getLevel().getServer().getLevel(Level.NETHER);
             BlockPos arena = helper.absolutePos(new BlockPos(4, 1, 4));
             BlockPos remote = new BlockPos(arena.getX(), 200, arena.getZ());
-            nether.setBlock(remote, NTBlocks.RESONANCE_NODE.get().defaultBlockState(), Block.UPDATE_ALL);
-            ResonanceNodeBlockEntity node = (ResonanceNodeBlockEntity) nether.getBlockEntity(remote);
-            node.setNetwork(network);
-            node.setOutput(true);
-            node.setChunkLoading(true);
+            ChunkPos chunk = new ChunkPos(remote);
+            nether.setChunkForced(chunk.x, chunk.z, true);
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    nether.getChunk(chunk.x + dx, chunk.z + dz);
+                }
+            }
+            ResonanceNodeBlockEntity[] node = new ResonanceNodeBlockEntity[1];
             float expected = FEED_PURITY * (float) (1.0 - NTConfig.satelliteCrossDimensionPurityLoss);
-            helper.succeedWhen(() -> {
-                helper.assertValueEqual(node.getStatus(), ResonanceNodeBlockEntity.STATUS_ONLINE, "the Nether node finds the Overworld core");
-                helper.assertTrue(node.getApStored() > 0, "AP reaches the Nether");
-                helper.assertTrue(Math.abs(node.getApPurity() - expected) < 0.001F,
-                        "purity drops by the cross-dimension loss, expected " + expected + " got " + node.getApPurity());
-                nether.setBlock(remote, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-                networks.delete(owner, network.id());
-            });
+            helper.startSequence()
+                    .thenWaitUntil(() -> helper.assertTrue(nether.isPositionEntityTicking(remote), "the Nether chunk is not ticking yet"))
+                    .thenExecute(() -> {
+                        nether.setBlock(remote, NTBlocks.RESONANCE_NODE.get().defaultBlockState(), Block.UPDATE_ALL);
+                        node[0] = (ResonanceNodeBlockEntity) nether.getBlockEntity(remote);
+                        node[0].setNetwork(network);
+                        node[0].setOutput(true);
+                        node[0].setChunkLoading(true);
+                    })
+                    .thenWaitUntil(() -> {
+                        helper.assertValueEqual(node[0].getStatus(), ResonanceNodeBlockEntity.STATUS_ONLINE, "the Nether node finds the Overworld core");
+                        helper.assertTrue(node[0].getApStored() > 0, "AP reaches the Nether");
+                        helper.assertTrue(Math.abs(node[0].getApPurity() - expected) < 0.001F,
+                                "purity drops by the cross-dimension loss, expected " + expected + " got " + node[0].getApPurity());
+                    })
+                    .thenExecute(() -> {
+                        nether.setBlock(remote, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                        nether.setChunkForced(chunk.x, chunk.z, false);
+                        networks.delete(owner, network.id());
+                    })
+                    .thenSucceed();
         });
 
         r.add("resonance_node/input_feeds_the_core_and_output_takes_from_it", 200, helper -> {

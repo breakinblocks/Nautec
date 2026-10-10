@@ -4,7 +4,9 @@
   "desc": "Mine underwater as fast as you would on land",
   "ingredients": [
     {
-      "ingredient": "nautec:hydro_drill_arm"
+      "ingredient": {
+        "item": "nautec:hydro_drill_arm"
+      }
     }
   ],
   "resultAugment": "nautec:underwater_mining_speed"

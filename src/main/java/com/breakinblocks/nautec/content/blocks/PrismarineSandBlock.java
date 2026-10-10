@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.FallingBlock;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PrismarineSandBlock extends FallingBlock {
     public static final MapCodec<PrismarineSandBlock> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-            IntProviders.codec(0, 10).fieldOf("experience").forGetter(block -> block.xpRange),
+            IntProvider.codec(0, 10).fieldOf("experience").forGetter(block -> block.xpRange),
             propertiesCodec()).apply(builder, PrismarineSandBlock::new)
     );
 

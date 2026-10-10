@@ -6,7 +6,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = Nautec.MODID)
+@EventBusSubscriber(modid = Nautec.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class NetworkEvents {
     @SubscribeEvent
     public static void registerPayloads(final RegisterPayloadHandlersEvent event) {
@@ -175,6 +175,11 @@ public class NetworkEvents {
                 ClearAugmentPayload.TYPE,
                 ClearAugmentPayload.STREAM_CODEC,
                 ClearAugmentPayload::clearAugmentAction
+        );
+        registrar.playToClient(
+                AirlessUntilPayload.TYPE,
+                AirlessUntilPayload.STREAM_CODEC,
+                AirlessUntilPayload::handle
         );
     }
 }

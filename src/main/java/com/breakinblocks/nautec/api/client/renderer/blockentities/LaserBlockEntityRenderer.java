@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.client.render.CustomGeometry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -7,18 +8,15 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.client.render.LaserBeamRenderer;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -26,13 +24,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends LaserRenderState> extends NTBERenderer<T, S> {
-    public static final Identifier BEAM_LOCATION = Nautec.rl("textures/entity/laser_beam.png");
-    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
-    private static final RenderType BEAM_RENDER_TYPE = RenderTypes.entityCutout(GUARDIAN_BEAM_LOCATION);
+    public static final ResourceLocation BEAM_LOCATION = Nautec.rl("textures/entity/laser_beam.png");
+    private static final ResourceLocation GUARDIAN_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
+    private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutout(GUARDIAN_BEAM_LOCATION);
     private static final float BEAM_HALF_WIDTH = 0.2F;
     private static final float IMPACT_FLARE_RADIUS = 0.32F;
 
@@ -47,8 +44,8 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     }
 
     @Override
-    public void extractRenderState(T blockEntity, S state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void extractRenderState(T blockEntity, S state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         state.beams.clear();
         state.partialTick = partialTick;
         state.laserTime = blockEntity.getClientLaserTime() + (partialTick * 24);
@@ -78,24 +75,24 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     }
 
     @Override
-    public void submit(S state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(S state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         for (LaserRenderState.Beam beam : state.beams) {
             Direction direction = beam.direction();
             float indent = direction.getAxisDirection() == Direction.AxisDirection.POSITIVE ? beam.shapeIndent() : 1 - beam.shapeIndent();
-            submitLaser(poseStack, collector, direction, beam.laserDistance() - 0.5F + indent, beam.impact());
+            submitLaser(poseStack, buffers, direction, beam.laserDistance() - 0.5F + indent, beam.impact());
         }
     }
 
-    public static void submitLaser(PoseStack poseStack, SubmitNodeCollector collector, Direction direction, float length, boolean impact) {
+    public static void submitLaser(PoseStack poseStack, MultiBufferSource buffers, Direction direction, float length, boolean impact) {
         Vector3f from = new Vector3f(0.5F);
-        Vector3f to = new Vector3f(direction.getUnitVec3f()).mul(length).add(0.5F, 0.5F, 0.5F);
-        LaserBeamRenderer.submitBeam(poseStack, collector, from, to, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN, true);
+        Vector3f to = new Vector3f(direction.step()).mul(length).add(0.5F, 0.5F, 0.5F);
+        LaserBeamRenderer.submitBeam(poseStack, buffers, from, to, BEAM_HALF_WIDTH, LaserBeamRenderer.CYAN, true);
         if (impact) {
-            LaserBeamRenderer.submitFlare(poseStack, collector, to, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN, true);
+            LaserBeamRenderer.submitFlare(poseStack, buffers, to, IMPACT_FLARE_RADIUS, LaserBeamRenderer.CYAN, true);
         }
     }
 
-    public static void submitOuterBeam(PoseStack poseStack, SubmitNodeCollector collector, Direction direction, int laserDistance, float targetOffset, float laserTime, long gameTime) {
+    public static void submitOuterBeam(PoseStack poseStack, MultiBufferSource buffers, Direction direction, int laserDistance, float targetOffset, float laserTime, long gameTime) {
         float f1 = laserTime;
         float f2 = f1 * 0.5F % 1.0F;
         float f3 = 0.5f;
@@ -158,7 +155,7 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
             float f29 = -1.0F + f2;
             float f30 = f4 * 2.5F + f29;
             float f31 = gameTime % 2 == 0 ? 0.5F : 0.0F;
-            collector.submitCustomGeometry(poseStack, BEAM_RENDER_TYPE, (pose, vertexconsumer) -> {
+            CustomGeometry.submit(poseStack, buffers, BEAM_RENDER_TYPE, (pose, vertexconsumer) -> {
                 outerBeamVertex(red, green, blue, f4, f19, f20, f21, f22, f29, f30, vertexconsumer, pose);
                 outerBeamVertex(red, green, blue, f4, f23, f24, f25, f26, f29, f30, vertexconsumer, pose);
 
@@ -199,15 +196,15 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     }
 
     public static void submitInnerBeam(
-            PoseStack poseStack, SubmitNodeCollector collector, float partialTick, long gameTime, float yOffset, float height, int color
+            PoseStack poseStack, MultiBufferSource buffers, float partialTick, long gameTime, float yOffset, float height, int color
     ) {
-        submitInnerBeam(poseStack, collector, BEAM_LOCATION, partialTick, 1.0F, gameTime, yOffset, height, color, 0.2F, 0.25F);
+        submitInnerBeam(poseStack, buffers, BEAM_LOCATION, partialTick, 1.0F, gameTime, yOffset, height, color, 0.2F, 0.25F);
     }
 
     public static void submitInnerBeam(
             PoseStack poseStack,
-            SubmitNodeCollector collector,
-            Identifier beamLocation,
+            MultiBufferSource buffers,
+            ResourceLocation beamLocation,
             float partialTick,
             float textureScale,
             long gameTime,
@@ -231,8 +228,8 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
         float f13 = (float) height * textureScale * (0.5F / beamRadius) + f12;
         submitPart(
                 poseStack,
-                collector,
-                RenderTypes.beaconBeam(beamLocation, false),
+                buffers,
+                RenderType.beaconBeam(beamLocation, false),
                 color,
                 yOffset,
                 i,
@@ -258,8 +255,8 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
         f13 = (float) height * textureScale + f12;
         submitPart(
                 poseStack,
-                collector,
-                RenderTypes.beaconBeam(beamLocation, true),
+                buffers,
+                RenderType.beaconBeam(beamLocation, true),
                 ARGB.color(32, color),
                 yOffset,
                 i,
@@ -281,7 +278,7 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
 
     private static void submitPart(
             PoseStack poseStack,
-            SubmitNodeCollector collector,
+            MultiBufferSource buffers,
             RenderType renderType,
             int color,
             float minY,
@@ -299,7 +296,7 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
             float minV,
             float maxV
     ) {
-        collector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
+        CustomGeometry.submit(poseStack, buffers, renderType, (pose, consumer) -> {
             renderQuad(pose, consumer, color, minY, maxY, x1, z1, x2, z2, minU, maxU, minV, maxV);
             renderQuad(pose, consumer, color, minY, maxY, x4, z4, x3, z3, minU, maxU, minV, maxV);
             renderQuad(pose, consumer, color, minY, maxY, x2, z2, x4, z4, minU, maxU, minV, maxV);
@@ -348,7 +345,7 @@ public class LaserBlockEntityRenderer<T extends LaserBlockEntity, S extends Lase
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(T blockEntity) {
         return true;
     }
 

@@ -1,0 +1,10 @@
+{
+    "vertex": "nautec:screenquad",
+    "fragment": "nautec:teleport_blur",
+    "samplers": [
+        { "name": "SceneSampler" }
+    ],
+    "uniforms": [
+        { "name": "Params", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] }
+    ]
+}

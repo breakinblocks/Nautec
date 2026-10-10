@@ -71,6 +71,6 @@ public class BuddingPrismarineBlock extends Block {
     }
 
     public static boolean canClusterGrowAtState(BlockState state) {
-        return state.isAir() || state.is(Blocks.WATER) && state.getFluidState().isFull();
+        return state.isAir() || state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8;
     }
 }

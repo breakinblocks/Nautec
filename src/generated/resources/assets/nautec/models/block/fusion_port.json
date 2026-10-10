@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_dunswe",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/fusion_port",
     "down_emissive": "nautec:block/fusion_port_emissive",

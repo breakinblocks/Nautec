@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.content.menus.ResonancePylonMenu;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.network.ResonanceSyncPayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +34,7 @@ public class ResonancePylonScreen extends ResonanceNetworkScreen<ResonancePylonM
     }
 
     @Override
-    protected void extractReadoutBackground(GuiGraphicsExtractor graphics, int rx, int ry, int rw) {
+    protected void extractReadoutBackground(GuiGraphics graphics, int rx, int ry, int rw) {
         int bx = rx + 5;
         int by = ry + 5;
         int bw = rw - 10;
@@ -48,15 +48,15 @@ public class ResonancePylonScreen extends ResonanceNetworkScreen<ResonancePylonM
     }
 
     @Override
-    protected void extractReadout(GuiGraphicsExtractor graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
-        graphics.text(this.font, Component.translatable("nautec.resonance.flow", number(this.menu.getFlow())), tx, ty, READOUT, false);
-        graphics.text(this.font, Component.translatable("nautec.resonance.buffer", compact(this.menu.getEnergy()), compact(this.menu.getCapacity())),
+    protected void extractReadout(GuiGraphics graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
+        graphics.drawString(this.font, Component.translatable("nautec.resonance.flow", number(this.menu.getFlow())), tx, ty, READOUT, false);
+        graphics.drawString(this.font, Component.translatable("nautec.resonance.buffer", compact(this.menu.getEnergy()), compact(this.menu.getCapacity())),
                 tx, ty + 11, READOUT_DIM, false);
         Component tier = Component.translatable(this.menu.isInterdimensional() ? "nautec.resonance.tier.abyssal" : "nautec.resonance.tier.basic");
-        graphics.text(this.font, tier, IMAGE_WIDTH - 13 - this.font.width(tier), ty, READOUT_DIM, false);
+        graphics.drawString(this.font, tier, IMAGE_WIDTH - 13 - this.font.width(tier), ty, READOUT_DIM, false);
         if (view != null) {
             Component pylons = Component.translatable("nautec.resonance.pylons", view.pylons());
-            graphics.text(this.font, pylons, IMAGE_WIDTH - 13 - this.font.width(pylons), ty + 11, READOUT_DIM, false);
+            graphics.drawString(this.font, pylons, IMAGE_WIDTH - 13 - this.font.width(pylons), ty + 11, READOUT_DIM, false);
         }
     }
 

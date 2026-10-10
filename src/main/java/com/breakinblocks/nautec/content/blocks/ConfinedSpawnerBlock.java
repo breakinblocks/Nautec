@@ -1,16 +1,13 @@
 package com.breakinblocks.nautec.content.blocks;
 
 import net.minecraft.world.entity.item.ItemEntity;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.breakinblocks.nautec.utils.FluidInteractions;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
 import net.minecraft.world.InteractionHand;
 import it.unimi.dsi.fastutil.ints.IntSets;
 import com.breakinblocks.nautec.capabilities.fluid.TankList;
 import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
-import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
@@ -18,8 +15,8 @@ import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -69,16 +65,12 @@ public class ConfinedSpawnerBlock extends LaserBlock {
     }
 
     private static void keepContents(ItemStack stack, ConfinedSpawnerBlockEntity confined, Level level) {
-        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
-            TagValueOutput out = TagValueOutput.createWithContext(reporter, level.registryAccess());
-            confined.saveCustomOnly(out);
-            BlockItem.setBlockEntityData(stack, confined.getType(), out);
-        }
+        BlockItem.setBlockEntityData(stack, confined.getType(), confined.saveCustomOnly(level.registryAccess()));
     }
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide() && player.preventsBlockDrops() && level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined
+        if (!level.isClientSide() && player.getAbilities().instabuild && level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined
                 && confined.hasContents()) {
             ItemStack stack = new ItemStack(asItem());
             keepContents(stack, confined, level);
@@ -90,21 +82,21 @@ public class ConfinedSpawnerBlock extends LaserBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                           InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined) || confined.getFluidTank().getFluidAmount() <= 0) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         ResourceHandler<FluidResource> drainOnly = new RoleResourceHandler<>(new TankList(confined.fluidTanks()), IntSets.EMPTY_SET,
                 IntSets.singleton(0), FluidResource.EMPTY);
         if (level.isClientSide()) {
-            return stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, hand)) != null
-                    ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+            return FluidInteractions.isFluidContainer(stack)
+                    ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (FluidUtil.interactWithFluidHandler(player, hand, pos, drainOnly, null)) {
-            return InteractionResult.SUCCESS;
+        if (FluidInteractions.interact(player, hand, drainOnly)) {
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

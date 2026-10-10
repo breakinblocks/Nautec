@@ -123,6 +123,6 @@ public abstract class Augment {
     }
 
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
-        this.cooldown = nbt.getIntOr("cooldown", 0);
+        this.cooldown = nbt.getInt("cooldown");
     }
 }

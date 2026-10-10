@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.client.model.block;
 
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,18 +9,17 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 
-public class AnchorModel extends Model.Simple {
+public class AnchorModel extends SimpleModel {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("anchor"), "main");
-    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(Nautec.rl("textures/entity/anchor.png"));
+    public static final RenderType RENDER_TYPE = RenderType.entitySolid(Nautec.rl("textures/entity/anchor.png"));
     private final ModelPart anchor;
     private final ModelPart rod;
     private final ModelPart bottom;
 
     public AnchorModel(ModelPart root) {
-        super(root, RenderTypes::entitySolid);
+        super(root, RenderType::entitySolid);
         this.anchor = root.getChild("anchor");
         this.rod = this.anchor.getChild("rod");
         this.bottom = this.anchor.getChild("bottom");

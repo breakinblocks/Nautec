@@ -15,7 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +49,7 @@ public class GuardianEyeAugment extends Augment {
         if (player.isLocalPlayer() && NTKeybinds.ACTIVATE_LASER_KEYBIND.get().isDown()
                 && intervalPassed(lastSendTime)) {
             lastSendTime = player.level().getGameTime();
-            ClientPacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
+            PacketDistributor.sendToServer(new KeyPressedPayload(augmentSlot));
             handleKeybindPress();
         }
 
@@ -181,7 +181,7 @@ public class GuardianEyeAugment extends Augment {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.deserializeNBT(provider, tag);
         if (player != null && player.level().isClientSide()) {
-            Entity target = player.level().getEntity(tag.getIntOr("beam_target", -1));
+            Entity target = player.level().getEntity(tag.contains("beam_target") ? tag.getInt("beam_target") : -1);
             if (target != targetEntity) clientLaserTime = 0;
             targetEntity = target;
         }

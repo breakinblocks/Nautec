@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:cast_iron_ingot"
+    "C": {
+      "item": "nautec:cast_iron_ingot"
+    }
   },
   "pattern": [
     "C",

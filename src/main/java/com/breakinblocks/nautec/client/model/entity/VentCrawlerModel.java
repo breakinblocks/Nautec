@@ -1,16 +1,20 @@
 package com.breakinblocks.nautec.client.model.entity;
 
-import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Mth;
 
-public class VentCrawlerModel extends EntityModel<LivingEntityRenderState> {
+import java.util.List;
+
+public class VentCrawlerModel<T extends Entity> extends HierarchicalModel<T> {
+    private final ModelPart root;
+    private final List<ModelPart> parts;
     private static final int LEG_COUNT = 6;
 
     private final ModelPart[] legs = new ModelPart[LEG_COUNT];
@@ -21,7 +25,8 @@ public class VentCrawlerModel extends EntityModel<LivingEntityRenderState> {
     private final ModelPart rightPincer;
 
     public VentCrawlerModel(ModelPart root) {
-        super(root);
+        this.root = root;
+        this.parts = root.getAllParts().toList();
         this.head = root.getChild("head");
         this.leftClaw = root.getChild("left_claw");
         this.rightClaw = root.getChild("right_claw");
@@ -153,16 +158,23 @@ public class VentCrawlerModel extends EntityModel<LivingEntityRenderState> {
     }
 
     @Override
-    public void setupAnim(LivingEntityRenderState state) {
-        super.setupAnim(state);
+    public ModelPart root() {
+        return this.root;
+    }
+
+    @Override
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        for (int i = 0; i < this.parts.size(); i++) {
+            this.parts.get(i).resetPose();
+        }
         for (int i = 0; i < LEG_COUNT; i++) {
             float phase = (i % 3) * 1.0471976F + (i < 3 ? 0.0F : 3.1415927F);
-            float swing = Mth.cos(state.walkAnimationPos * 0.6F + phase) * 0.45F * state.walkAnimationSpeed;
+            float swing = Mth.cos(limbSwing * 0.6F + phase) * 0.45F * limbSwingAmount;
             this.legs[i].zRot += swing * 0.5F;
-            this.legs[i].yRot += Mth.sin(state.walkAnimationPos * 0.6F + phase) * 0.2F * state.walkAnimationSpeed;
+            this.legs[i].yRot += Mth.sin(limbSwing * 0.6F + phase) * 0.2F * limbSwingAmount;
         }
-        this.head.xRot = 0.06F * Mth.sin(0.08F * state.ageInTicks);
-        float feel = Mth.sin(0.07F * state.ageInTicks);
+        this.head.xRot = 0.06F * Mth.sin(0.08F * ageInTicks);
+        float feel = Mth.sin(0.07F * ageInTicks);
         this.leftClaw.yRot += 0.06F * feel;
         this.rightClaw.yRot -= 0.06F * feel;
         this.leftPincer.yRot += 0.1F * feel;

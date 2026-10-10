@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "G": "#c:glass_blocks/colorless",
-    "S": "nautec:aquarine_steel_ingot",
-    "V": "nautec:valve"
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "S": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "V": {
+      "item": "nautec:valve"
+    }
   },
   "pattern": [
     "SV",

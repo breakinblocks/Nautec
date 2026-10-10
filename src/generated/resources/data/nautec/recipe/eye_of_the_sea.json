@@ -2,10 +2,15 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:prismarine_shard",
-    "#c:ender_pearls"
+    {
+      "item": "minecraft:prismarine_shard"
+    },
+    {
+      "tag": "c:ender_pearls"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "nautec:eye_of_the_sea"
   }
 }

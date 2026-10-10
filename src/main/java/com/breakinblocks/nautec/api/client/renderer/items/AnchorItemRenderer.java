@@ -1,45 +1,50 @@
 package com.breakinblocks.nautec.api.client.renderer.items;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.client.model.block.AnchorModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.util.Unit;
-import org.joml.Vector3fc;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+public class AnchorItemRenderer extends BlockEntityWithoutLevelRenderer {
+    private static @Nullable AnchorItemRenderer instance;
 
-public class AnchorItemRenderer implements NoDataSpecialModelRenderer {
-    private final AnchorModel model;
+    public static final IClientItemExtensions EXTENSIONS = new IClientItemExtensions() {
+        @Override
+        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return get();
+        }
+    };
 
-    public AnchorItemRenderer(AnchorModel model) {
-        this.model = model;
-        this.model.setupAnim();
+    private @Nullable AnchorModel model;
+
+    public AnchorItemRenderer() {
+        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+    }
+
+    public static AnchorItemRenderer get() {
+        if (instance == null) {
+            instance = new AnchorItemRenderer();
+        }
+        return instance;
     }
 
     @Override
-    public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
-        collector.submitModel(this.model, Unit.INSTANCE, poseStack, AnchorModel.RENDER_TYPE, packedLight, packedOverlay, outlineColor, null);
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+        this.model = null;
     }
 
     @Override
-    public void getExtents(Consumer<Vector3fc> output) {
-        this.model.root().getExtentsForGui(new PoseStack(), output);
-    }
-
-    public record Unbaked() implements NoDataSpecialModelRenderer.Unbaked {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
-
-        @Override
-        public MapCodec<Unbaked> type() {
-            return MAP_CODEC;
+    public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        if (this.model == null) {
+            this.model = new AnchorModel(Minecraft.getInstance().getEntityModels().bakeLayer(AnchorModel.LAYER_LOCATION));
+            this.model.setupAnim();
         }
-
-        @Override
-        public AnchorItemRenderer bake(SpecialModelRenderer.BakingContext context) {
-            return new AnchorItemRenderer(new AnchorModel(context.entityModelSet().bakeLayer(AnchorModel.LAYER_LOCATION)));
-        }
+        this.model.renderToBuffer(poseStack, buffers.getBuffer(AnchorModel.RENDER_TYPE), packedLight, packedOverlay);
     }
 }

@@ -2,8 +2,8 @@ package com.breakinblocks.nautec.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -16,12 +16,12 @@ public final class LaserBeamRenderer {
     private LaserBeamRenderer() {
     }
 
-    public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vector3fc from, Vector3fc to,
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, Vector3fc from, Vector3fc to,
                                   float halfWidth, int color) {
-        submitBeam(poseStack, collector, from, to, halfWidth, color, false);
+        submitBeam(poseStack, buffers, from, to, halfWidth, color, false);
     }
 
-    public static void submitBeam(PoseStack poseStack, SubmitNodeCollector collector, Vector3fc from, Vector3fc to,
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, Vector3fc from, Vector3fc to,
                                   float halfWidth, int color, boolean world) {
         Matrix4f pose = poseStack.last().pose();
         float scale = Math.max(1.0E-4F, pose.getScale(new Vector3f()).x);
@@ -39,7 +39,7 @@ public final class LaserBeamRenderer {
         Vector3f sideTo = side(axis, to, camera, width);
         float worldLength = length * scale;
 
-        submit(poseStack, collector, NTRenderTypes.laserBeam(), world, (last, buffer) -> {
+        submit(poseStack, buffers, NTRenderTypes.laserBeam(), world, (last, buffer) -> {
             vertex(buffer, last, new Vector3f(from).sub(sideFrom), 0F, 0F, color);
             vertex(buffer, last, new Vector3f(from).add(sideFrom), 1F, 0F, color);
             vertex(buffer, last, new Vector3f(to).add(sideTo), 1F, worldLength, color);
@@ -47,12 +47,12 @@ public final class LaserBeamRenderer {
         });
     }
 
-    public static void submitFlare(PoseStack poseStack, SubmitNodeCollector collector, Vector3fc centre,
+    public static void submitFlare(PoseStack poseStack, MultiBufferSource buffers, Vector3fc centre,
                                    float radius, int color) {
-        submitFlare(poseStack, collector, centre, radius, color, false);
+        submitFlare(poseStack, buffers, centre, radius, color, false);
     }
 
-    public static void submitFlare(PoseStack poseStack, SubmitNodeCollector collector, Vector3fc centre,
+    public static void submitFlare(PoseStack poseStack, MultiBufferSource buffers, Vector3fc centre,
                                    float radius, int color, boolean world) {
         Matrix4f pose = poseStack.last().pose();
         float scale = Math.max(1.0E-4F, pose.getScale(new Vector3f()).x);
@@ -71,7 +71,7 @@ public final class LaserBeamRenderer {
         Vector3f right = reference.cross(normal).normalize(size);
         Vector3f up = new Vector3f(normal).cross(right).normalize(size);
 
-        submit(poseStack, collector, NTRenderTypes.laserFlare(), world, (last, buffer) -> {
+        submit(poseStack, buffers, NTRenderTypes.laserFlare(), world, (last, buffer) -> {
             vertex(buffer, last, new Vector3f(middle).sub(right).sub(up), 0F, 0F, color);
             vertex(buffer, last, new Vector3f(middle).add(right).sub(up), 1F, 0F, color);
             vertex(buffer, last, new Vector3f(middle).add(right).add(up), 1F, 1F, color);
@@ -97,12 +97,12 @@ public final class LaserBeamRenderer {
                 .setColor(color);
     }
 
-    private static void submit(PoseStack poseStack, SubmitNodeCollector collector, RenderType renderType, boolean world,
-                               SubmitNodeCollector.CustomGeometryRenderer renderer) {
+    private static void submit(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, boolean world,
+                               ShaderPackOverlay.Geometry renderer) {
         if (world) {
-            ShaderPackOverlay.submit(poseStack, collector, renderType, renderer);
+            ShaderPackOverlay.submit(poseStack, buffers, renderType, renderer);
         } else {
-            collector.submitCustomGeometry(poseStack, renderType, renderer);
+            renderer.render(poseStack.last(), buffers.getBuffer(renderType));
         }
     }
 }

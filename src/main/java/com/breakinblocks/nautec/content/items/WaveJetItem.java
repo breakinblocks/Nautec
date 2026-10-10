@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.items;
 
+
+import java.util.List;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.items.IPowerItem;
@@ -12,31 +14,30 @@ import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.ItemUtils;
 import com.breakinblocks.nautec.utils.Tooltips;
-import com.geckolib.animatable.GeoItem;
-import com.geckolib.animatable.client.GeoRenderProvider;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.object.PlayState;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.renderer.GeoItemRenderer;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -50,11 +51,11 @@ import java.util.function.Consumer;
 public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     private static final int USE_DURATION = 72000;
 
-    public static final DataTicket<Boolean> THRUSTING = DataTicket.create("nautec:wave_jet_thrusting", Boolean.class);
+    public static final DataTicket<Boolean> THRUSTING = new DataTicket<>("nautec:wave_jet_thrusting", Boolean.class);
 
     private static final RawAnimation ACTIVATED = RawAnimation.begin().thenLoop("activated");
 
-    private final AnimatableInstanceCache animatableCache = new SingletonAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache animatableCache = GeckoLibUtil.createInstanceCache(this);
 
     public WaveJetItem(Properties properties) {
         super(properties.component(NTDataComponents.POWER, ComponentPowerStorage.withCapacity(6000))
@@ -63,8 +64,8 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<WaveJetItem>("fan", 0, state ->
-                state.getDataOrDefault(THRUSTING, false) ? state.setAndContinue(ACTIVATED) : PlayState.STOP));
+        controllers.add(new AnimationController<WaveJetItem>(this, "fan", 0, state ->
+                Boolean.TRUE.equals(state.getData(THRUSTING)) ? state.setAndContinue(ACTIVATED) : PlayState.STOP));
     }
 
     @Override
@@ -78,7 +79,7 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
             private WaveJetItemRenderer renderer;
 
             @Override
-            public GeoItemRenderer<?> getGeoItemRenderer() {
+            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null) {
                     this.renderer = new WaveJetItemRenderer();
                 }
@@ -108,8 +109,8 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.NONE;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.NONE;
     }
 
     @Override
@@ -118,16 +119,16 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!player.isInWater() || player.isPassenger() || !hasCharge(stack, player)) {
-            return InteractionResult.PASS;
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
 
         player.startUsingItem(hand);
         playAt(level, player, NTSounds.WAVE_JET_START.get(), 0.6f, 1.3f);
-        return InteractionResult.CONSUME;
+        return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
 
     @Override
@@ -172,12 +173,11 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int remaining) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int remaining) {
         if (entity instanceof Player player && !player.isInWater()) {
             player.setSwimming(false);
         }
         playAt(level, entity, NTSounds.WAVE_JET_STOP.get(), 0.5f, 1.4f);
-        return false;
     }
 
     @SubscribeEvent
@@ -199,8 +199,7 @@ public class WaveJetItem extends Item implements IPowerItem, GeoItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
-                                Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         IPowerStorage powerStorage = storage(stack);
         if (powerStorage != null) {
             Tooltips.transInsert(tooltipComponents, "nautec.armor.power",

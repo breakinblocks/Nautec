@@ -11,16 +11,13 @@ import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.utils.RecipeRevision;
-import com.breakinblocks.nautec.utils.SidedCapUtils;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -29,8 +26,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,8 +41,8 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private RecipeHolder<AquaticCatalystChannelingRecipe> currentRecipe;
     private RecipeHolder<AquaticCatalystChannelingRecipe> nextRecipe;
     private int duration;
-    private Identifier currentRecipeId;
-    private Identifier nextRecipeId;
+    private ResourceLocation currentRecipeId;
+    private ResourceLocation nextRecipeId;
     private int syncedTransfer;
     private boolean burning;
     private BeamScan beamScan;
@@ -334,7 +331,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
-        return serverLevel.recipeAccess()
+        return serverLevel.getRecipeManager()
                 .getRecipeFor(AquaticCatalystChannelingRecipe.Type.INSTANCE, new SingleRecipeInput(stack), level)
                 .orElse(null);
     }
@@ -375,8 +372,8 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         super.loadData(in);
 
         this.duration = in.getIntOr("duration", 0);
-        this.currentRecipeId = in.getString("current_recipe").map(Identifier::parse).orElse(null);
-        this.nextRecipeId = in.getString("next_recipe").map(Identifier::parse).orElse(null);
+        this.currentRecipeId = in.getString("current_recipe").map(ResourceLocation::parse).orElse(null);
+        this.nextRecipeId = in.getString("next_recipe").map(ResourceLocation::parse).orElse(null);
         this.syncedTransfer = in.getIntOr("transfer", 0);
     }
 
@@ -388,12 +385,12 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         this.nextRecipe = loadRecipe(nextRecipeId);
     }
 
-    private RecipeHolder<AquaticCatalystChannelingRecipe> loadRecipe(Identifier location) {
+    private RecipeHolder<AquaticCatalystChannelingRecipe> loadRecipe(ResourceLocation location) {
         if (location == null || !(level instanceof ServerLevel serverLevel)) {
             return null;
         }
-        return (RecipeHolder<AquaticCatalystChannelingRecipe>) serverLevel.recipeAccess()
-                .byKey(ResourceKey.create(Registries.RECIPE, location))
+        return (RecipeHolder<AquaticCatalystChannelingRecipe>) serverLevel.getRecipeManager()
+                .byKey(location)
                 .orElse(null);
     }
 
@@ -403,9 +400,9 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
 
         out.putInt("duration", duration);
         if (currentRecipe != null) {
-            out.putString("current_recipe", currentRecipe.id().identifier().toString());
+            out.putString("current_recipe", currentRecipe.id().toString());
             out.putInt("transfer", transferAmount());
         }
-        if (nextRecipe != null) out.putString("next_recipe", nextRecipe.id().identifier().toString());
+        if (nextRecipe != null) out.putString("next_recipe", nextRecipe.id().toString());
     }
 }

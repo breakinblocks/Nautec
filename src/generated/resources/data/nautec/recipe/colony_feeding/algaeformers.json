@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:algaeformers",
   "ingredient": {
-    "ingredient": "minecraft:kelp"
+    "ingredient": {
+      "item": "minecraft:kelp"
+    }
   },
   "vitality_ticks": 1200
 }

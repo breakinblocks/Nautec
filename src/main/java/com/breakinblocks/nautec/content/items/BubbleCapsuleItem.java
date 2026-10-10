@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.items;
 
+
+import java.util.List;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.bubble.AirPocketBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -12,12 +14,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,20 +32,20 @@ public class BubbleCapsuleItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         BlockPos eyes = BlockPos.containing(player.getEyePosition());
         if (!player.isEyeInFluid(FluidTags.WATER) || !level.getBlockState(eyes).is(Blocks.WATER)) {
             if (!level.isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("nautec.bubble_capsule.not_underwater").withStyle(ChatFormatting.RED));
+                player.displayClientMessage(Component.translatable("nautec.bubble_capsule.not_underwater").withStyle(ChatFormatting.RED), true);
             }
-            return InteractionResult.FAIL;
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
         if (!(level instanceof ServerLevel serverLevel)) {
-            return InteractionResult.SUCCESS;
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
         serverLevel.setBlock(eyes, NTBlocks.AIR_POCKET.get().defaultBlockState(), Block.UPDATE_ALL);
         if (!(serverLevel.getBlockEntity(eyes) instanceof AirPocketBlockEntity pocket)) {
-            return InteractionResult.FAIL;
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
         pocket.start(serverLevel, NTConfig.bubbleCapsuleRadius, NTConfig.bubbleCapsuleSeconds * 20);
         player.setAirSupply(player.getMaxAirSupply());
@@ -51,15 +53,15 @@ public class BubbleCapsuleItem extends Item {
         serverLevel.sendParticles(ParticleTypes.BUBBLE, eyes.getX() + 0.5, eyes.getY() + 0.5, eyes.getZ() + 0.5, 40,
                 NTConfig.bubbleCapsuleRadius * 0.5, NTConfig.bubbleCapsuleRadius * 0.5, NTConfig.bubbleCapsuleRadius * 0.5, 0.1);
         ItemStack stack = player.getItemInHand(hand);
-        player.getCooldowns().addCooldown(stack, 20);
+        player.getCooldowns().addCooldown(stack.getItem(), 20);
         stack.consume(1, player);
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         int size = NTConfig.bubbleCapsuleRadius * 2 + 1;
-        tooltip.accept(Component.translatable("nautec.bubble_capsule.tooltip", size, size, size, NTConfig.bubbleCapsuleSeconds)
+        tooltip.add(Component.translatable("nautec.bubble_capsule.tooltip", size, size, size, NTConfig.bubbleCapsuleSeconds)
                 .withStyle(ChatFormatting.GRAY));
     }
 }

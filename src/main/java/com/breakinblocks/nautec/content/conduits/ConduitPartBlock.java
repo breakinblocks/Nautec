@@ -8,7 +8,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,7 +28,7 @@ public abstract class ConduitPartBlock extends Block implements SimpleWaterlogge
 
     protected ConduitPartBlock(Properties properties) {
         super(properties);
-        this.shapes = getShapeForEachState(this::shapeFor, BlockStateProperties.WATERLOGGED);
+        this.shapes = getShapeForEachState(this::shapeFor)::get;
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public abstract class ConduitPartBlock extends Block implements SimpleWaterlogge
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return !state.getValue(BlockStateProperties.WATERLOGGED);
     }
 
@@ -81,7 +81,7 @@ public abstract class ConduitPartBlock extends Block implements SimpleWaterlogge
         return state.setValue(BlockStateProperties.WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
     }
 
-    protected static void scheduleWater(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos) {
+    protected static void scheduleWater(BlockState state, LevelReader level, LevelAccessor tickAccess, BlockPos pos) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
@@ -105,8 +105,10 @@ public abstract class ConduitPartBlock extends Block implements SimpleWaterlogge
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
-        ConduitNetworks.invalidate(level, pos);
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, world, pos, newState, movedByPiston);
+        if (!state.is(newState.getBlock()) && world instanceof ServerLevel level) {
+            ConduitNetworks.invalidate(level, pos);
+        }
     }
 }

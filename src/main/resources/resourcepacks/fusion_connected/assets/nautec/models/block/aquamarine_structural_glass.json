@@ -2,6 +2,7 @@
   "type": "fusion:connecting",
   "parent": "minecraft:block/cube_all",
   "loader": "fusion:model",
+  "render_type": "minecraft:translucent",
   "textures": {
     "all": "nautec:block/aquamarine_structural_glass_ctm"
   }

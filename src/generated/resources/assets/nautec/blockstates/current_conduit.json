@@ -18,7 +18,7 @@
         "model": "nautec:block/current_conduit_cap"
       },
       "when": {
-        "down": "blocked|none"
+        "down": "none|blocked"
       }
     },
     {
@@ -36,7 +36,7 @@
         "x": 180
       },
       "when": {
-        "up": "blocked|none"
+        "up": "none|blocked"
       }
     },
     {
@@ -65,7 +65,7 @@
         "y": 180
       },
       "when": {
-        "north": "blocked|none"
+        "north": "none|blocked"
       }
     },
     {
@@ -83,7 +83,7 @@
         "x": 90
       },
       "when": {
-        "south": "blocked|none"
+        "south": "none|blocked"
       }
     },
     {
@@ -112,7 +112,7 @@
         "y": 90
       },
       "when": {
-        "west": "blocked|none"
+        "west": "none|blocked"
       }
     },
     {
@@ -132,7 +132,7 @@
         "y": 270
       },
       "when": {
-        "east": "blocked|none"
+        "east": "none|blocked"
       }
     },
     {

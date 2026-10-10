@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_un",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/grafting_station_bottom",
     "east": "nautec:block/grafting_station_side",

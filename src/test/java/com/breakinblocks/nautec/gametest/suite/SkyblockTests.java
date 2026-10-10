@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -63,9 +62,9 @@ public final class SkyblockTests {
             for (SkyblockOption option : SkyblockOption.values()) {
                 helper.assertFalse(option.enabled(), option.getSerializedName() + " should be off by default");
             }
-            var recipes = helper.getLevel().recipeAccess();
+            var recipes = helper.getLevel().getRecipeManager();
             for (String id : SKYBLOCK_RECIPES) {
-                helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl(id))).isEmpty(),
+                helper.assertTrue(recipes.byKey(Nautec.rl(id)).isEmpty(),
                         "recipe " + id + " should not load while its option is off");
             }
             helper.succeed();
@@ -178,7 +177,7 @@ public final class SkyblockTests {
         });
     }
 
-    private static BacteriaInstance graft(GameTestHelper helper, Player player, BlockPos target, int attempts) {
+    private static BacteriaInstance graft(NTGameTestHelper helper, Player player, BlockPos target, int attempts) {
         ItemStack dish = new ItemStack(NTItems.PETRI_DISH.get());
         player.setItemInHand(InteractionHand.OFF_HAND, dish);
         BlockPos clicked = helper.absolutePos(target);
@@ -195,7 +194,7 @@ public final class SkyblockTests {
         return storage(helper, player.getOffhandItem()).getBacteria(0);
     }
 
-    private static IBacteriaStorage storage(GameTestHelper helper, ItemStack dish) {
+    private static IBacteriaStorage storage(NTGameTestHelper helper, ItemStack dish) {
         IBacteriaStorage storage = dish.getCapability(NTCapabilities.BacteriaStorage.ITEM);
         if (storage == null) {
             throw helper.assertionException("petri dish has no bacteria storage");

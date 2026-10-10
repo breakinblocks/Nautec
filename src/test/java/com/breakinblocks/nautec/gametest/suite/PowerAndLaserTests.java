@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
@@ -25,7 +26,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -40,9 +40,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 import java.util.List;
 import java.util.Set;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+
 
 public final class PowerAndLaserTests {
     private static final BlockPos SOURCE_POS = new BlockPos(2, 1, 4);
@@ -50,7 +50,7 @@ public final class PowerAndLaserTests {
     private PowerAndLaserTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    private static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -61,13 +61,13 @@ public final class PowerAndLaserTests {
         }
     }
 
-    private static void assertPurityNear(GameTestHelper helper, float expected, float actual, String what) {
+    private static void assertPurityNear(NTGameTestHelper helper, float expected, float actual, String what) {
         if (Math.abs(expected - actual) > 1.0e-3f) {
             helper.fail(what + ": expected " + expected + " but was " + actual);
         }
     }
 
-    private static MixerBlockEntity mixer(GameTestHelper helper, BlockPos pos) {
+    private static MixerBlockEntity mixer(NTGameTestHelper helper, BlockPos pos) {
         MixerBlockEntity mixer = helper.getBlockEntity(pos, MixerBlockEntity.class);
         if (mixer == null) {
             throw helper.assertionException("Expected MixerBlockEntity at " + pos);
@@ -75,18 +75,18 @@ public final class PowerAndLaserTests {
         return mixer;
     }
 
-    private static void placeMirror(GameTestHelper helper, BlockPos pos, Direction facing) {
+    private static void placeMirror(NTGameTestHelper helper, BlockPos pos, Direction facing) {
         helper.setBlock(pos, NTBlocks.PRISMATIC_MIRROR.get().defaultBlockState().setValue(OpticsBlock.FACING, facing));
     }
 
-    private static void placeMirrorLoop(GameTestHelper helper, BlockPos entry) {
+    private static void placeMirrorLoop(NTGameTestHelper helper, BlockPos entry) {
         placeMirror(helper, entry, Direction.SOUTH);
         placeMirror(helper, entry.south(3), Direction.EAST);
         placeMirror(helper, entry.south(3).east(3), Direction.NORTH);
         placeMirror(helper, entry.east(3), Direction.WEST);
     }
 
-    private static PrismaticMirrorBlockEntity mirror(GameTestHelper helper, BlockPos pos) {
+    private static PrismaticMirrorBlockEntity mirror(NTGameTestHelper helper, BlockPos pos) {
         PrismaticMirrorBlockEntity mirror = helper.getBlockEntity(pos, PrismaticMirrorBlockEntity.class);
         if (mirror == null) {
             throw helper.assertionException("Expected PrismaticMirrorBlockEntity at " + pos);
@@ -94,7 +94,7 @@ public final class PowerAndLaserTests {
         return mirror;
     }
 
-    private static IPowerStorage batteryStorage(GameTestHelper helper, ItemStack stack) {
+    private static IPowerStorage batteryStorage(NTGameTestHelper helper, ItemStack stack) {
         IPowerStorage storage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (storage == null) {
             throw helper.assertionException("Prismatic battery did not expose item power capability");
@@ -643,7 +643,7 @@ public final class PowerAndLaserTests {
         });
     }
 
-    private static void placeCrystal(GameTestHelper helper, BlockPos corePos) {
+    private static void placeCrystal(NTGameTestHelper helper, BlockPos corePos) {
         BlockPos topPos = corePos.above(2);
         for (int i = 0; i < 6; i++) {
             BlockPos pos = topPos.below(i);
@@ -785,8 +785,8 @@ public final class PowerAndLaserTests {
         });
     }
 
-    private static EnergyHandler energyAt(GameTestHelper helper, BlockPos pos) {
+    private static EnergyHandler energyAt(NTGameTestHelper helper, BlockPos pos) {
         BlockPos absolute = helper.absolutePos(pos);
-        return helper.getLevel().getCapability(Capabilities.Energy.BLOCK, absolute, null);
+        return helper.getLevel().getCapability(TransferCapabilities.Energy.BLOCK, absolute, null);
     }
 }

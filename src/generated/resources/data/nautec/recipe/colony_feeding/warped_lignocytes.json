@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:warped_lignocytes",
   "ingredient": {
-    "ingredient": "minecraft:warped_stem"
+    "ingredient": {
+      "item": "minecraft:warped_stem"
+    }
   },
   "vitality_ticks": 1200
 }

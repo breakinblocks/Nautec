@@ -27,6 +27,7 @@
       "translate": "advancements.nautec.diving_suit.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:diving_helmet"
     },
     "title": {

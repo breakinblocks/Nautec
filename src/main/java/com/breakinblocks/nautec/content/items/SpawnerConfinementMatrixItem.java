@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.items;
 
+
+import java.util.List;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -15,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -89,7 +90,7 @@ public class SpawnerConfinementMatrixItem extends Item {
         }
         if (confined.hasContents()) {
             if (player != null) {
-                player.sendOverlayMessage(Component.translatable("nautec.confined_spawner.release.not_empty").withStyle(ChatFormatting.RED));
+                player.displayClientMessage(Component.translatable("nautec.confined_spawner.release.not_empty").withStyle(ChatFormatting.RED), true);
             }
             level.playSound(null, pos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 0.6F, 1.0F);
             return false;
@@ -106,11 +107,11 @@ public class SpawnerConfinementMatrixItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
-        tooltipComponents.accept(Component.translatable("nautec.spawner_confinement_matrix.use").withStyle(ChatFormatting.GRAY));
-        tooltipComponents.accept(Component.translatable("nautec.spawner_confinement_matrix.power",
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(Component.translatable("nautec.spawner_confinement_matrix.use").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("nautec.spawner_confinement_matrix.power",
                 NTConfig.confinedSpawnerPowerPerTick).withStyle(ChatFormatting.AQUA));
-        tooltipComponents.accept(Component.translatable("nautec.spawner_confinement_matrix.release").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("nautec.spawner_confinement_matrix.release").withStyle(ChatFormatting.GRAY));
     }
 }

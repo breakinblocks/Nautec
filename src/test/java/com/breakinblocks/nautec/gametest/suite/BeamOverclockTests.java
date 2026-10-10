@@ -10,7 +10,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.utils.BeamOverclock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
@@ -25,7 +24,7 @@ public final class BeamOverclockTests {
     private BeamOverclockTests() {
     }
 
-    private static int runMixer(GameTestHelper helper, int power, int ticks) {
+    private static int runMixer(NTGameTestHelper helper, int power, int ticks) {
         helper.setBlock(MIXER, NTBlocks.MIXER.get());
         MixerBlockEntity mixer = helper.getBlockEntity(MIXER, MixerBlockEntity.class);
         mixer.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.SALT.get()));

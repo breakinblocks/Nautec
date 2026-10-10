@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:aquatic_chip",
-    "D": "#c:gems/diamond",
-    "N": "#c:ingots/netherite",
-    "P": "nautec:chitin_plate"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "P": {
+      "item": "nautec:chitin_plate"
+    }
   },
   "pattern": [
     "DND",
@@ -14,6 +24,7 @@
     "ACA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:armor_module"
   }
 }

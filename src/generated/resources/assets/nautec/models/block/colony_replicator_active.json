@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_n",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/colony_replicator_bottom",
     "east": "nautec:block/colony_replicator_side",

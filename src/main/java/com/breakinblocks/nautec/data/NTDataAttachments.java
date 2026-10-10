@@ -6,7 +6,6 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.utils.codec.AugmentCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.codec.ByteBufCodecs;
 import com.breakinblocks.nautec.events.helper.ItemInfusion;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -35,15 +34,15 @@ public final class NTDataAttachments {
 
     public static final Supplier<AttachmentType<Map<BlockPos, BlockState>>> SPOTLIGHT_ORIGINALS = ATTACHMENTS.register(
             "spotlight_originals", () -> AttachmentType.<Map<BlockPos, BlockState>>builder(Collections::emptyMap)
-                    .serialize(SPOTLIGHT_CODEC.fieldOf("value"), map -> !map.isEmpty()).build()
+                    .serialize(SPOTLIGHT_CODEC, map -> !map.isEmpty()).build()
     );
     public static final Supplier<AttachmentType<Map<AugmentSlot, Augment>>> AUGMENTS = ATTACHMENTS.register(
             "augments", () -> AttachmentType.<Map<AugmentSlot, Augment>>builder(Collections::emptyMap)
-                    .serialize(AugmentCodecs.AUGMENTS_CODEC.fieldOf("value")).copyOnDeath().build()
+                    .serialize(AugmentCodecs.AUGMENTS_CODEC).copyOnDeath().build()
     );
     public static final Supplier<AttachmentType<Map<AugmentSlot, CompoundTag>>> AUGMENTS_EXTRA_DATA = ATTACHMENTS.register(
             "augments_extra_data", () -> AttachmentType.<Map<AugmentSlot, CompoundTag>>builder(Collections::emptyMap)
-                    .serialize(AugmentCodecs.AUGMENTS_EXTRA_DATA_CODEC.fieldOf("value")).copyOnDeath().build()
+                    .serialize(AugmentCodecs.AUGMENTS_EXTRA_DATA_CODEC).copyOnDeath().build()
     );
     public static final Supplier<AttachmentType<Integer>> AUGMENT_DATA_CHANGED = ATTACHMENTS.register(
             "augment_data_changed", () -> AttachmentType.builder(() -> -1).build()
@@ -55,7 +54,6 @@ public final class NTDataAttachments {
             "augmentation_station", () -> AttachmentType.<Optional<GlobalPos>>builder(Optional::empty).build()
     );
     public static final Supplier<AttachmentType<Long>> AIRLESS_UNTIL = ATTACHMENTS.register(
-            "airless_until", () -> AttachmentType.builder(() -> 0L)
-                    .sync((holder, player) -> holder == player, ByteBufCodecs.VAR_LONG).build()
+            "airless_until", () -> AttachmentType.builder(() -> 0L).build()
     );
 }

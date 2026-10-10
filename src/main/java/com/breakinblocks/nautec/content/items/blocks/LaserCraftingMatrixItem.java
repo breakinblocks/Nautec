@@ -1,14 +1,14 @@
 package com.breakinblocks.nautec.content.items.blocks;
 
 import com.breakinblocks.nautec.client.renderer.items.LaserCraftingMatrixItemRenderer;
-import com.geckolib.animatable.GeoItem;
-import com.geckolib.animatable.client.GeoRenderProvider;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.instance.SingletonAnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.renderer.GeoItemRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class LaserCraftingMatrixItem extends BlockItem implements GeoItem {
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
 
-    private final AnimatableInstanceCache animatableCache = new SingletonAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache animatableCache = GeckoLibUtil.createInstanceCache(this);
 
     public LaserCraftingMatrixItem(Block block, Properties properties) {
         super(block, properties);
@@ -25,7 +25,7 @@ public class LaserCraftingMatrixItem extends BlockItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<LaserCraftingMatrixItem>("matrix", 0, state -> state.setAndContinue(IDLE)));
+        controllers.add(new AnimationController<LaserCraftingMatrixItem>(this, "matrix", 0, state -> state.setAndContinue(IDLE)));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LaserCraftingMatrixItem extends BlockItem implements GeoItem {
             private LaserCraftingMatrixItemRenderer renderer;
 
             @Override
-            public GeoItemRenderer<?> getGeoItemRenderer() {
+            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null) {
                     this.renderer = new LaserCraftingMatrixItemRenderer();
                 }

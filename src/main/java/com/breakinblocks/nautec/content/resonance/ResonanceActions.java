@@ -2,8 +2,8 @@ package com.breakinblocks.nautec.content.resonance;
 
 import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
 import net.minecraft.core.UUIDUtil;
 import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
@@ -152,7 +152,7 @@ public final class ResonanceActions {
         if (target == null) {
             return "nautec.resonance.error.player_offline";
         }
-        return networks.trust(player, network.id(), target.getUUID(), target.getGameProfile().name()).error();
+        return networks.trust(player, network.id(), target.getUUID(), target.getGameProfile().getName()).error();
     }
 
     private static String untrust(ServerPlayer player, ResonanceNetworks networks, ResonanceNetwork network, String id) {
@@ -164,6 +164,6 @@ public final class ResonanceActions {
     }
 
     private static void fail(ServerPlayer player, String key) {
-        player.sendOverlayMessage(Component.translatable(key).withStyle(ChatFormatting.RED));
+        player.displayClientMessage(Component.translatable(key).withStyle(ChatFormatting.RED), true);
     }
 }

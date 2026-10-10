@@ -11,15 +11,15 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class CombustionAdditiveCategory extends AbstractRecipeCategory<CombustionAdditiveRecipe> {
-    public static final Identifier UID = Nautec.rl(CombustionAdditiveRecipe.NAME);
-    public static final IRecipeType<CombustionAdditiveRecipe> RECIPE_TYPE = IRecipeType.create(UID, CombustionAdditiveRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl(CombustionAdditiveRecipe.NAME);
+    public static final RecipeType<CombustionAdditiveRecipe> RECIPE_TYPE = new RecipeType<>(UID, CombustionAdditiveRecipe.class);
     private static final int WIDTH = 150;
 
     public CombustionAdditiveCategory(IGuiHelper helper) {
@@ -32,7 +32,7 @@ public class CombustionAdditiveCategory extends AbstractRecipeCategory<Combustio
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CombustionAdditiveRecipe recipe, IFocusGroup focuses) {
-        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, WIDTH / 2 - 9, 0).add(recipe.ingredient());
+        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, WIDTH / 2 - 9, 0).addIngredients(recipe.ingredient());
     }
 
     @Override

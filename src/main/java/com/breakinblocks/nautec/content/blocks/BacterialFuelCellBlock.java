@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -62,7 +62,7 @@ public class BacterialFuelCellBlock extends LaserBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         IBacteriaStorage dish = stack.getCapability(NTCapabilities.BacteriaStorage.ITEM);
         if (dish == null || stack.getCount() != 1 || !(level.getBlockEntity(pos) instanceof BacterialFuelCellBlockEntity be)) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -74,18 +74,18 @@ public class BacterialFuelCellBlock extends LaserBlock {
         if (held.isEmpty()) {
             BacteriaInstance taken = cell.extractBacteria(0, Long.MAX_VALUE, false);
             if (taken.isEmpty()) {
-                return InteractionResult.CONSUME;
+                return ItemInteractionResult.CONSUME;
             }
             dish.setBacteria(0, taken);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         BacteriaInstance remainder = cell.insertBacteria(0, held, false);
         if (remainder.getSize() == held.getSize()) {
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
         dish.setBacteria(0, remainder);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

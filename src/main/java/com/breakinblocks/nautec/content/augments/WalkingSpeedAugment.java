@@ -4,7 +4,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.registries.NTAugments;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 
 public class WalkingSpeedAugment extends Augment {
-    private static final Identifier MODIFIER_ID = Nautec.rl("walking_speed_augment");
+    private static final ResourceLocation MODIFIER_ID = Nautec.rl("walking_speed_augment");
     private static final float DEFAULT_WALKING_SPEED = 0.1f;
     private static final float LEGACY_WALKING_SPEED = 0.25f;
     private static final double SPEED_BONUS = 1.5;

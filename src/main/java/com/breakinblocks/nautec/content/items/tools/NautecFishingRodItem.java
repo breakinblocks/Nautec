@@ -7,9 +7,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -23,7 +23,7 @@ public class NautecFishingRodItem extends FishingRodItem {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack rod = player.getItemInHand(hand);
 
         if (player.fishing != null) {
@@ -34,13 +34,13 @@ public class NautecFishingRodItem extends FishingRodItem {
             if (level instanceof ServerLevel serverLevel) {
                 int lureSpeed = (int) (EnchantmentHelper.getFishingTimeReduction(serverLevel, rod, player) * 20.0F);
                 int luck = EnchantmentHelper.getFishingLuckBonus(serverLevel, rod, player);
-                Projectile.spawnProjectile(new NautecFishingHook(player, level, luck, lureSpeed), serverLevel, rod);
+                serverLevel.addFreshEntity(new NautecFishingHook(player, level, luck, lureSpeed));
             }
             player.awardStat(Stats.ITEM_USED.get(this));
-            rod.causeUseVibration(player, GameEvent.ITEM_INTERACT_START);
+            player.gameEvent(GameEvent.ITEM_INTERACT_START);
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     public static void reel(Level level, Player player, InteractionHand hand) {
@@ -48,13 +48,13 @@ public class NautecFishingRodItem extends FishingRodItem {
         if (!level.isClientSide() && player.fishing != null) {
             int damage = player.fishing.retrieve(rod);
             ItemStack original = rod.copy();
-            rod.hurtAndBreak(damage, player, hand.asEquipmentSlot());
+            rod.hurtAndBreak(damage, player, LivingEntity.getSlotForHand(hand));
             if (rod.isEmpty()) {
                 EventHooks.onPlayerDestroyItem(player, original, hand);
             }
         }
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FISHING_BOBBER_RETRIEVE,
                 SoundSource.NEUTRAL, 1.0F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-        rod.causeUseVibration(player, GameEvent.ITEM_INTERACT_FINISH);
+        player.gameEvent(GameEvent.ITEM_INTERACT_FINISH);
     }
 }

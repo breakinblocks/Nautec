@@ -6,5 +6,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "minecraft:bone_block"
+  "nutrient": {
+    "item": "minecraft:bone_block"
+  }
 }

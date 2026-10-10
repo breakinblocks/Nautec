@@ -9,9 +9,9 @@ import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRend
 import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentSlotsRenderer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.player.PlayerModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 import java.util.function.Function;
@@ -29,17 +29,17 @@ public class SimpleAugmentRenderer<T extends Augment> extends AugmentRenderer<T>
     }
 
     @Override
-    public void render(T augment, AugmentLayerRenderer<?, ?> superRenderer, PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
+    public void render(T augment, AugmentLayerRenderer<?, ?> superRenderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight) {
         poseStack.pushPose();
         {
             AugmentSlot augmentSlot = augment.getAugmentSlot();
             if (augmentSlot != null) {
-                ModelPart modelPart = AugmentSlotsRenderer.modelPartBySlot(augmentSlot).getModelPart((PlayerModel) superRenderer.getParentModel());
+                ModelPart modelPart = AugmentSlotsRenderer.modelPartBySlot(augmentSlot).getModelPart((PlayerModel<?>) superRenderer.getParentModel());
                 if (modelPart != null && moveWithBody) {
                     modelPart.translateAndRotate(poseStack);
                 }
             }
-            this.model.submit(poseStack, collector, renderType, packedLight, OverlayTexture.NO_OVERLAY);
+            this.model.submit(poseStack, buffers, renderType, packedLight, OverlayTexture.NO_OVERLAY);
         }
         poseStack.popPose();
     }

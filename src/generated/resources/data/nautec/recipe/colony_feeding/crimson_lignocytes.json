@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:crimson_lignocytes",
   "ingredient": {
-    "ingredient": "minecraft:crimson_stem"
+    "ingredient": {
+      "item": "minecraft:crimson_stem"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -4,7 +4,7 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,8 +33,8 @@ public final class SubmarineAnvilRepair {
     }
 
     public static Item repairItem() {
-        Identifier id = Identifier.tryParse(NTConfig.submarineRepairItem);
-        Item item = id == null ? null : BuiltInRegistries.ITEM.getValue(id);
+        ResourceLocation id = ResourceLocation.tryParse(NTConfig.submarineRepairItem);
+        Item item = id == null ? null : BuiltInRegistries.ITEM.get(id);
         return item == null || item == Items.AIR ? Items.DIAMOND : item;
     }
 

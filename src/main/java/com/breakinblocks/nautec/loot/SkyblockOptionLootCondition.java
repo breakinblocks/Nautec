@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.registries.NTLootConditions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import org.jetbrains.annotations.NotNull;
 
 public record SkyblockOptionLootCondition(SkyblockOption option) implements LootItemCondition {
@@ -17,7 +18,7 @@ public record SkyblockOptionLootCondition(SkyblockOption option) implements Loot
     }
 
     @Override
-    public @NotNull MapCodec<? extends LootItemCondition> codec() {
+    public @NotNull LootItemConditionType getType() {
         return NTLootConditions.SKYBLOCK_OPTION.get();
     }
 

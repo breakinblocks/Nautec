@@ -17,7 +17,7 @@ import java.util.List;
 public class ClearAugmentsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> nautecCommand = Commands.literal(Nautec.MODID)
-                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()));
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS));
 
         dispatcher.register(nautecCommand
                 .then(Commands.literal("augments")

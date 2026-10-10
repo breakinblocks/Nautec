@@ -35,7 +35,7 @@ public class GraftingToolItem extends Item {
         BlockPos pos = context.getClickedPos();
         Level level = context.getLevel();
         BlockState blockState = level.getBlockState(pos);
-        BacteriaObtainValue data = blockState.typeHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
+        BacteriaObtainValue data = blockState.getBlockHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
         Player player = context.getPlayer();
         if (player != null && data != null && (NTConfig.skyblockGraftingAnyBiome || level.getBiome(pos).is(data.biome()))) {
             ItemStack offhandItem = player.getOffhandItem();
@@ -46,7 +46,7 @@ public class GraftingToolItem extends Item {
                 }
                 if (!canGraftInto(bacteriaStorage)) {
                     if (!level.isClientSide()) {
-                        player.sendOverlayMessage(Component.translatable("nautec.grafting_tool.dish_occupied").withStyle(ChatFormatting.RED));
+                        player.displayClientMessage(Component.translatable("nautec.grafting_tool.dish_occupied").withStyle(ChatFormatting.RED), true);
                     }
                     return InteractionResult.FAIL;
                 }

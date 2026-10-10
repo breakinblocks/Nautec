@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": "nautec:brown_polymer",
-    "C": "#c:ingots/copper"
+    "B": {
+      "item": "nautec:brown_polymer"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    }
   },
   "pattern": [
     "C C",
@@ -11,6 +15,7 @@
     "BBB"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:diving_chestplate"
   }
 }

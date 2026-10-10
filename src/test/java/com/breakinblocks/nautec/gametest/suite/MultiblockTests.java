@@ -14,7 +14,6 @@ import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biomes;
@@ -35,7 +34,7 @@ public final class MultiblockTests {
     private static final int[][] AS_STEEL = {{1, 1}, {3, 1}, {1, 3}, {3, 3}};
     private static final int[][] AS_PRISMARINE = {{2, 1}, {1, 2}, {3, 2}, {2, 3}};
 
-    private static void placeDrain(GameTestHelper helper) {
+    private static void placeDrain(NTGameTestHelper helper) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 Block block = (dx == 0 && dz == 0) ? NTBlocks.DRAIN.get() : NTBlocks.DRAIN_WALL.get();
@@ -54,11 +53,11 @@ public final class MultiblockTests {
         }
     }
 
-    private static boolean formDrain(GameTestHelper helper) {
+    private static boolean formDrain(NTGameTestHelper helper) {
         return MultiblockHelper.form(NTMultiblocks.DRAIN.get(), helper.absolutePos(DRAIN_C), helper.getLevel());
     }
 
-    private static void assertDrainUnformed(GameTestHelper helper, BlockPos broken) {
+    private static void assertDrainUnformed(NTGameTestHelper helper, BlockPos broken) {
         forDrainRing(pos -> {
             BlockState state = helper.getBlockState(pos);
             helper.assertTrue(!state.is(NTBlocks.DRAIN_PART.get()), "No formed drain part expected at " + pos);
@@ -76,7 +75,7 @@ public final class MultiblockTests {
         }
     }
 
-    private static void placeBioReactor(GameTestHelper helper) {
+    private static void placeBioReactor(NTGameTestHelper helper) {
         for (int y = 0; y < 2; y++) {
             for (int z = 0; z < 3; z++) {
                 for (int x = 0; x < 3; x++) {
@@ -94,11 +93,11 @@ public final class MultiblockTests {
         }
     }
 
-    private static boolean formBioReactor(GameTestHelper helper) {
+    private static boolean formBioReactor(NTGameTestHelper helper) {
         return MultiblockHelper.form(NTMultiblocks.BIO_REACTOR.get(), helper.absolutePos(REACTOR_C), helper.getLevel());
     }
 
-    private static void assertBioReactorUnformed(GameTestHelper helper, BlockPos broken) {
+    private static void assertBioReactorUnformed(NTGameTestHelper helper, BlockPos broken) {
         checkRestored(helper, REACTOR_C.offset(0, -1, 0), NTBlocks.POLISHED_PRISMARINE.get(), broken);
         checkRestored(helper, REACTOR_C.offset(1, -1, 1), NTBlocks.DARK_PRISMARINE_PILLAR.get(), broken);
         checkRestored(helper, REACTOR_C.offset(0, 0, -1), NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get(), broken);
@@ -111,7 +110,7 @@ public final class MultiblockTests {
         }
     }
 
-    private static void checkRestored(GameTestHelper helper, BlockPos pos, Block expected, BlockPos broken) {
+    private static void checkRestored(NTGameTestHelper helper, BlockPos pos, Block expected, BlockPos broken) {
         if (pos.equals(broken)) {
             return;
         }
@@ -123,7 +122,7 @@ public final class MultiblockTests {
         return AS_C.offset(2 - lz, 0, lx - 2);
     }
 
-    private static void placeAugmentationStation(GameTestHelper helper) {
+    private static void placeAugmentationStation(NTGameTestHelper helper) {
         helper.setBlock(asPos(2, 2), NTBlocks.AUGMENTATION_STATION.get());
         for (int[] c : AS_EXTENSIONS) {
             helper.setBlock(asPos(c[0], c[1]), NTBlocks.AUGMENTATION_STATION_EXTENSION.get());
@@ -136,11 +135,11 @@ public final class MultiblockTests {
         }
     }
 
-    private static boolean formAugmentationStation(GameTestHelper helper) {
+    private static boolean formAugmentationStation(NTGameTestHelper helper) {
         return MultiblockHelper.form(NTMultiblocks.AUGMENTATION_STATION.get(), helper.absolutePos(asPos(2, 2)), helper.getLevel());
     }
 
-    private static void assertAugmentationUnformed(GameTestHelper helper, BlockPos broken) {
+    private static void assertAugmentationUnformed(NTGameTestHelper helper, BlockPos broken) {
         for (int[] c : AS_EXTENSIONS) {
             BlockPos pos = asPos(c[0], c[1]);
             if (pos.equals(broken)) {

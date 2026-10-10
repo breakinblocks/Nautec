@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.content.resonance;
 
+
+import java.util.List;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
@@ -12,16 +14,15 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import java.util.Locale;
-import java.util.function.Consumer;
 
 public class TuningForkItem extends Item {
     public TuningForkItem(Properties properties) {
@@ -91,20 +92,20 @@ public class TuningForkItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack fork = player.getItemInHand(hand);
         if (player.isSecondaryUseActive() && fork.has(NTDataComponents.TUNED_EMITTER.get())) {
             if (!level.isClientSide()) {
                 fork.remove(NTDataComponents.TUNED_EMITTER.get());
-                player.sendOverlayMessage(Component.translatable("nautec.tuning_fork.reset"));
+                player.displayClientMessage(Component.translatable("nautec.tuning_fork.reset"), true);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResultHolder.success(fork);
         }
-        return InteractionResult.PASS;
+        return InteractionResultHolder.pass(fork);
     }
 
     private static void message(ServerPlayer player, Component text) {
-        player.sendOverlayMessage(text);
+        player.displayClientMessage(text, true);
     }
 
     private static void ring(ServerLevel level, BlockPos pos, float pitch) {
@@ -112,14 +113,14 @@ public class TuningForkItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         GlobalPos tuned = stack.get(NTDataComponents.TUNED_EMITTER.get());
         if (tuned != null) {
-            tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.tuned", tuned.pos().getX(), tuned.pos().getY(), tuned.pos().getZ())
+            tooltip.add(Component.translatable("nautec.tuning_fork.tooltip.tuned", tuned.pos().getX(), tuned.pos().getY(), tuned.pos().getZ())
                     .withStyle(ChatFormatting.AQUA));
         } else {
-            tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.untuned").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("nautec.tuning_fork.tooltip.untuned").withStyle(ChatFormatting.GRAY));
         }
-        tooltip.accept(Component.translatable("nautec.tuning_fork.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("nautec.tuning_fork.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

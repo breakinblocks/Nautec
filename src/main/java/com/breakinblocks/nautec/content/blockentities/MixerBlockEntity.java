@@ -7,7 +7,6 @@ import com.breakinblocks.nautec.utils.RecipeRevision;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
-import com.breakinblocks.nautec.capabilities.fluid.TwoTankSidedFluidHandler;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
@@ -27,15 +26,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -209,7 +206,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         }
         
         MixingRecipeInput input = new MixingRecipeInput(itemHandlerStacksList, getFluidTank().getFluid());
-        Optional<MixingRecipe> recipe = serverLevel.recipeAccess()
+        Optional<MixingRecipe> recipe = serverLevel.getRecipeManager()
                 .getRecipeFor(MixingRecipe.Type.INSTANCE, input, level).map(RecipeHolder::value);
         
         if (recipe.isPresent() && canInsertItem(recipe.get().result()) && canInsertFluid(recipe.get().fluidResult())) {

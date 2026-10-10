@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import net.minecraft.client.gui.screens.Screen;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
@@ -8,11 +9,11 @@ import com.breakinblocks.nautec.content.menus.EnergyConverterMenu;
 import com.breakinblocks.nautec.network.SetConverterRatePayload;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -58,20 +59,20 @@ public class EnergyConverterScreen extends NTMachineScreen<EnergyConverterBlockE
                 () -> amount > 0 ? PanelStyle.SEND_HOVER : PanelStyle.NEUTRAL_HOVER,
                 () -> Component.translatable("nautec.energy_converter.step.desc", Math.abs(amount) * 10, Math.abs(amount) * 100), () -> {
             long delta = amount;
-            if (this.minecraft.hasControlDown()) {
+            if (Screen.hasControlDown()) {
                 delta *= 100;
-            } else if (this.minecraft.hasShiftDown()) {
+            } else if (Screen.hasShiftDown()) {
                 delta *= 10;
             }
             EnergyConverterMenu converter = converter();
             int rate = (int) Math.max(0, Math.min(converter.getMaxRate(), converter.getRate() + delta));
-            ClientPacketDistributor.sendToServer(new SetConverterRatePayload(this.menu.containerId, rate));
+            PacketDistributor.sendToServer(new SetConverterRatePayload(this.menu.containerId, rate));
         });
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         PanelStyle.screen(graphics, leftPos + VALUE_X, topPos + RATE_Y, VALUE_WIDTH, 16);
 
         for (int slot = 0; slot < EnergyConverterBlockEntity.UPGRADE_SLOTS; slot++) {
@@ -79,7 +80,7 @@ public class EnergyConverterScreen extends NTMachineScreen<EnergyConverterBlockE
             if (!this.menu.getBlockEntity().getItemStackHandler().getStackInSlot(slot).isEmpty()) {
                 continue;
             }
-            graphics.fakeItem(upgradeFor(slot), leftPos + sx, topPos + EnergyConverterMenu.SLOT_Y);
+            graphics.renderFakeItem(upgradeFor(slot), leftPos + sx, topPos + EnergyConverterMenu.SLOT_Y);
             graphics.fill(leftPos + sx, topPos + EnergyConverterMenu.SLOT_Y, leftPos + sx + 16, topPos + EnergyConverterMenu.SLOT_Y + 16, GHOST);
         }
 
@@ -95,18 +96,18 @@ public class EnergyConverterScreen extends NTMachineScreen<EnergyConverterBlockE
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         EnergyConverterMenu converter = converter();
-        graphics.text(this.font, Component.translatable("nautec.energy_converter.rate"), 8, 17, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.energy_converter.rate"), 8, 17, PanelStyle.LABEL, false);
 
         Component value = Component.translatable("nautec.energy_converter.rate.value", converter.getRate());
-        graphics.text(this.font, value, VALUE_X + (VALUE_WIDTH - this.font.width(value)) / 2, RATE_Y + 4, PanelStyle.READOUT, false);
+        graphics.drawString(this.font, value, VALUE_X + (VALUE_WIDTH - this.font.width(value)) / 2, RATE_Y + 4, PanelStyle.READOUT, false);
 
         Component cost = Component.translatable("nautec.energy_converter.cost", String.format("%,d", (long) converter.getRate() * converter.getFePerAp()));
-        graphics.text(this.font, cost, this.imageWidth - 8 - this.font.width(cost), 17, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, cost, this.imageWidth - 8 - this.font.width(cost), 17, PanelStyle.LABEL, false);
 
-        graphics.text(this.font, Component.translatable("nautec.energy_converter.max", converter.getMaxRate()), BAR_X, BAR_Y + 9, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.energy_converter.max", converter.getMaxRate()), BAR_X, BAR_Y + 9, PanelStyle.LABEL, false);
 
         Component status;
         boolean running = false;
@@ -120,21 +121,21 @@ public class EnergyConverterScreen extends NTMachineScreen<EnergyConverterBlockE
             status = Component.translatable("nautec.energy_converter.sending", converter.getSending());
             running = true;
         }
-        graphics.text(this.font, status, BAR_X, BAR_Y + 19, running ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
+        graphics.drawString(this.font, status, BAR_X, BAR_Y + 19, running ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         EnergyConverterMenu converter = converter();
         if (isHovering(BAR_X - 1, BAR_Y - 1, BAR_WIDTH + 2, BAR_HEIGHT + 2, mouseX, mouseY)) {
-            graphics.setComponentTooltipForNextFrame(this.font, List.of(
+            graphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.energy_converter.fe",
                             String.format("%,d", converter.getFeStored()), String.format("%,d", converter.getCapacity())),
                     Component.translatable("nautec.energy_converter.ratio", converter.getFePerAp()).withStyle(ChatFormatting.GRAY)
             ), mouseX, mouseY);
         } else if (isHovering(VALUE_X - 1, RATE_Y - 1, VALUE_WIDTH + 2, 18, mouseX, mouseY)) {
-            graphics.setComponentTooltipForNextFrame(this.font, List.of(
+            graphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.energy_converter.rate.desc", converter.getMaxRate()),
                     Component.translatable("nautec.energy_converter.beams", Math.max(1, converter.getBeams()), converter.getRate() / Math.max(1, converter.getBeams()))
                             .withStyle(ChatFormatting.GRAY)
@@ -146,7 +147,7 @@ public class EnergyConverterScreen extends NTMachineScreen<EnergyConverterBlockE
                         && isHovering(sx, EnergyConverterMenu.SLOT_Y, 16, 16, mouseX, mouseY)) {
                     ItemStack upgrade = upgradeFor(slot);
                     EnergyConversionUpgradeItem item = (EnergyConversionUpgradeItem) upgrade.getItem();
-                    graphics.setComponentTooltipForNextFrame(this.font, List.of(
+                    graphics.renderComponentTooltip(this.font, List.of(
                             upgrade.getHoverName(),
                             Component.translatable("nautec.energy_conversion_upgrade.effect", item.getTier().ap()).withStyle(ChatFormatting.AQUA),
                             Component.translatable("nautec.energy_conversion_upgrade.limit", EnergyConversionUpgradeItem.MAX_PER_SLOT).withStyle(ChatFormatting.GRAY)

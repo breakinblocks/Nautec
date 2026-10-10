@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.network;
 
+
+import com.breakinblocks.nautec.utils.codec.StreamCodecs;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.resonance.ResonanceClientState;
 import net.minecraft.core.BlockPos;
@@ -28,7 +30,7 @@ public record ResonanceSyncPayload(BlockPos pos, Optional<UUID> current, List<Ne
 
     public record NetworkView(UUID id, String name, String ownerName, boolean owner, boolean manage, List<Member> trusted,
                               boolean teamAccess, int pylons) {
-        public static final StreamCodec<RegistryFriendlyByteBuf, NetworkView> STREAM_CODEC = StreamCodec.composite(
+        public static final StreamCodec<RegistryFriendlyByteBuf, NetworkView> STREAM_CODEC = StreamCodecs.composite(
                 UUIDUtil.STREAM_CODEC, NetworkView::id,
                 ByteBufCodecs.STRING_UTF8, NetworkView::name,
                 ByteBufCodecs.STRING_UTF8, NetworkView::ownerName,

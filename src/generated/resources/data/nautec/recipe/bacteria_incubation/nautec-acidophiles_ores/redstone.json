@@ -6,5 +6,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ores/redstone"
+  "nutrient": {
+    "tag": "c:ores/redstone"
+  }
 }

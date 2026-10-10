@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blocks;
 
+import com.breakinblocks.nautec.utils.InteractionResults;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
@@ -14,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -22,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import com.breakinblocks.nautec.utils.ItemUtils;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import com.breakinblocks.nautec.utils.FluidInteractions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,19 +50,19 @@ public class PressureForgeBlock extends LaserBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                           InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof PressureForgeBlockEntity forge)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide()) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (stack.getItem() instanceof PressureSynthesizerItem synthesizer) {
-            return fitSynthesizer(forge, synthesizer, stack, level, pos, player);
+            return InteractionResults.toItem(fitSynthesizer(forge, synthesizer, stack, level, pos, player));
         }
-        if (FluidUtil.interactWithFluidHandler(player, hand, pos, forge.getFluidTank(), null)) {
-            return InteractionResult.SUCCESS;
+        if (FluidInteractions.interact(player, hand, forge.getFluidTank())) {
+            return ItemInteractionResult.SUCCESS;
         }
         return ItemUtils.insertHeldItem(forge.getItemHandler(), 0, stack, player, hand);
     }
@@ -79,13 +81,13 @@ public class PressureForgeBlock extends LaserBlock {
             return InteractionResult.SUCCESS;
         }
         int slot = forge.getItemStackHandler().getStackInSlot(1).isEmpty() ? 0 : 1;
-        return ItemUtils.extractItemToPlayer(forge.getItemHandler(), slot, player);
+        return ItemUtils.extractItemToPlayer(forge.getItemHandler(), slot, player).result();
     }
 
     private static InteractionResult fitSynthesizer(PressureForgeBlockEntity forge, PressureSynthesizerItem synthesizer, ItemStack stack,
                                                     Level level, BlockPos pos, Player player) {
         if (forge.getSynthesizer() == synthesizer.tier()) {
-            player.sendOverlayMessage(Component.translatable("nautec.pressure_synthesizer.already_fitted").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("nautec.pressure_synthesizer.already_fitted").withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
         ItemStack previous = forge.setSynthesizer(synthesizer.tier());
@@ -94,7 +96,7 @@ public class PressureForgeBlock extends LaserBlock {
             player.getInventory().placeItemBackInInventory(previous);
         }
         level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.8F, 1.6F);
-        player.sendOverlayMessage(Component.translatable("nautec.pressure_synthesizer.fitted", synthesizer.tier().stack().getHoverName()).withStyle(ChatFormatting.AQUA));
+        player.displayClientMessage(Component.translatable("nautec.pressure_synthesizer.fitted", synthesizer.tier().stack().getHoverName()).withStyle(ChatFormatting.AQUA), true);
         return InteractionResult.SUCCESS;
     }
 

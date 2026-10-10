@@ -12,18 +12,18 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGraftingCategory.GraftingRecipe> {
-    public static final Identifier UID = Nautec.rl(GraftingRecipe.NAME);
-    public static final IRecipeType<GraftingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, GraftingRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl(GraftingRecipe.NAME);
+    public static final RecipeType<GraftingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, GraftingRecipe.class);
 
     public BacteriaGraftingCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -37,15 +37,15 @@ public class BacteriaGraftingCategory extends AbstractRecipeCategory<BacteriaGra
     public void setRecipe(IRecipeLayoutBuilder builder, GraftingRecipe recipe, IFocusGroup focuses) {
         int y = 6;
 
-        builder.addInputSlot(0, getHeight() / 2 - 9 + y).add(NTItems.PETRI_DISH);
+        builder.addInputSlot(0, getHeight() / 2 - 9 + y).addItemStack(NTItems.PETRI_DISH.toStack());
 
         ItemStack stack = NTItems.PETRI_DISH.toStack();
         IBacteriaStorage bacteriaStorage = NTCapabilities.BacteriaStorage.ITEM.getCapability(stack, null);
         bacteriaStorage.setBacteria(0, BacteriaInstance.withMaxStats(recipe.val.bacteria(), Minecraft.getInstance().level.registryAccess()));
-        builder.addOutputSlot(getWidth() - 18, getHeight() / 2 - 9 + y).add(stack);
+        builder.addOutputSlot(getWidth() - 18, getHeight() / 2 - 9 + y).addItemStack(stack);
 
-        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, getWidth() / 2 - 9, getHeight() / 2 - 18 + y).add(NTItems.GRAFTING_TOOL);
-        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 9, getHeight() / 2 + y).add(recipe.sample());
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, getWidth() / 2 - 9, getHeight() / 2 - 18 + y).addItemStack(NTItems.GRAFTING_TOOL.toStack());
+        builder.addSlot(RecipeIngredientRole.INPUT, getWidth() / 2 - 9, getHeight() / 2 + y).addItemStack(new ItemStack(recipe.sample()));
     }
 
     @Override

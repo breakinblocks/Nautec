@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "nautec:deep_steel_plating",
-    "R": "nautec:resonant_shard",
-    "U": "nautec:advanced_energy_conversion_upgrade"
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    },
+    "U": {
+      "item": "nautec:advanced_energy_conversion_upgrade"
+    }
   },
   "pattern": [
     "DRD",
@@ -12,6 +18,7 @@
     "DRD"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:ultimate_energy_conversion_upgrade"
   }
 }

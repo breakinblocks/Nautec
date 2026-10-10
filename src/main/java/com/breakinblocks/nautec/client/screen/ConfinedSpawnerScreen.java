@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import net.neoforged.neoforge.fluids.FluidStack;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
@@ -8,19 +9,17 @@ import com.breakinblocks.nautec.content.spawner.SpawnerFilter;
 import com.breakinblocks.nautec.content.spawner.SpawnerFilterEntry;
 import com.breakinblocks.nautec.network.SetSpawnerFilterPayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -80,7 +79,9 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     private @Nullable ModeButton modeButton;
 
     public ConfinedSpawnerScreen(ConfinedSpawnerMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, IMAGE_WIDTH, IMAGE_HEIGHT);
+        super(menu, playerInventory, title);
+        this.imageWidth = IMAGE_WIDTH;
+        this.imageHeight = IMAGE_HEIGHT;
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
@@ -136,7 +137,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
             return;
         }
         this.menu.getBlockEntity().getFilter().set(slot, entry);
-        ClientPacketDistributor.sendToServer(new SetSpawnerFilterPayload(this.menu.containerId, slot, Optional.ofNullable(entry)));
+        PacketDistributor.sendToServer(new SetSpawnerFilterPayload(this.menu.containerId, slot, Optional.ofNullable(entry)));
     }
 
     private void togglePanel() {
@@ -184,8 +185,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         tab(graphics);
         frame(graphics, this.leftPos, this.topPos, this.imageWidth, this.imageHeight);
         graphics.fill(this.leftPos, this.topPos + TAB_Y + 3, this.leftPos + 3, this.topPos + TAB_Y + TAB_HEIGHT - 1, PANEL);
@@ -203,7 +203,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         }
     }
 
-    private void tab(GuiGraphicsExtractor graphics) {
+    private void tab(GuiGraphics graphics) {
         int x = tabX();
         int y = this.topPos + TAB_Y;
         int width = TAB_OUT + TAB_OVERLAP;
@@ -241,8 +241,13 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractContents(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        renderContents(graphics, mouseX, mouseY);
+        this.renderTooltip(graphics, mouseX, mouseY);
+    }
+
+    private void renderContents(GuiGraphics graphics, int mouseX, int mouseY) {
         if (sidePanel != null) {
             sidePanel.extract(graphics, this.font, sideAnchorX(), sideAnchorY(), mouseX, mouseY);
         }
@@ -250,41 +255,44 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
             return;
         }
         Component header = Component.translatable("nautec.confined_spawner.filter");
-        graphics.text(this.font, header, panelX() + (PANEL_WIDTH - this.font.width(header)) / 2, this.topPos + 6, LABEL, false);
+        graphics.drawString(this.font, header, panelX() + (PANEL_WIDTH - this.font.width(header)) / 2, this.topPos + 6, LABEL, false);
         SpawnerFilter filter = this.menu.getBlockEntity().getFilter();
         for (int slot = 0; slot < SpawnerFilter.SIZE; slot++) {
             SpawnerFilterEntry entry = filter.get(slot);
             int x = filterSlotX(slot);
             int y = filterSlotY(slot);
             if (entry != null) {
-                graphics.item(entry.displayStack(), x, y);
+                graphics.renderItem(entry.displayStack(), x, y);
                 if (entry.tag().isPresent()) {
-                    graphics.nextStratum();
-                    graphics.text(this.font, "#", x + 11, y + 8, TAG_MARK, true);
+                    NTGui.pushOverItems(graphics);
+                    graphics.drawString(this.font, "#", x + 11, y + 8, TAG_MARK, true);
+                    NTGui.popOverItems(graphics);
                 }
             }
             if (inside(mouseX, mouseY, x, y, 16, 16)) {
+                NTGui.pushOverItems(graphics);
                 graphics.fill(x, y, x + 16, y + 16, 0x60FFFFFF);
+                NTGui.popOverItems(graphics);
             }
         }
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         ConfinedSpawnerBlockEntity.Status status = this.menu.getStatus();
         Component text = Component.translatable(status.translationKey());
         int color = status == ConfinedSpawnerBlockEntity.Status.RUNNING ? RUNNING_TEXT : STOPPED_TEXT;
         int right = statusRight() - this.leftPos;
-        graphics.text(this.font, text, right - this.font.width(text), this.titleLabelY, color, false);
+        graphics.drawString(this.font, text, right - this.font.width(text), this.titleLabelY, color, false);
     }
 
     @Override
-    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractTooltip(graphics, mouseX, mouseY);
+    protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderTooltip(graphics, mouseX, mouseY);
         List<Component> lines = hoverLines(mouseX, mouseY);
         if (!lines.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 
@@ -337,19 +345,19 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (sidePanel != null && sidePanel.mouseClicked(event, sideAnchorX(), sideAnchorY())) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (sidePanel != null && sidePanel.mouseClicked(mouseX, mouseY, button, sideAnchorX(), sideAnchorY())) {
             return true;
         }
-        int slot = hoveredFilterSlot(event.x(), event.y());
+        int slot = hoveredFilterSlot(mouseX, mouseY);
         if (slot >= 0) {
-            clickFilterSlot(slot, event.button());
+            clickFilterSlot(slot, button);
             return true;
         }
-        if (super.mouseClicked(event, doubleClick)) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        return panelOpen && panelArea().contains((int) event.x(), (int) event.y());
+        return panelOpen && panelArea().contains((int) mouseX, (int) mouseY);
     }
 
     private void clickFilterSlot(int slot, int button) {
@@ -379,26 +387,26 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
     }
 
     @Override
-    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo, int button) {
         for (Rect2i area : extraAreas()) {
             if (area.contains((int) mx, (int) my)) {
                 return false;
             }
         }
-        return super.hasClickedOutside(mx, my, xo, yo);
+        return super.hasClickedOutside(mx, my, xo, yo, button);
     }
 
     private static boolean inside(double mouseX, double mouseY, int x, int y, int width, int height) {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    private static void frame(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+    private static void frame(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x, y, x + width, y + height, OUTLINE);
         graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, PANEL_LIGHT);
         graphics.fill(x + 3, y + 3, x + width - 1, y + height - 1, PANEL);
     }
 
-    private static void roundedLeft(GuiGraphicsExtractor graphics, int x, int y, int width, int height, int color) {
+    private static void roundedLeft(GuiGraphics graphics, int x, int y, int width, int height, int color) {
         graphics.fill(x + 2, y, x + width, y + 1, color);
         graphics.fill(x + 1, y + 1, x + width, y + 2, color);
         graphics.fill(x, y + 2, x + width, y + height - 2, color);
@@ -406,7 +414,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         graphics.fill(x + 2, y + height - 1, x + width, y + height, color);
     }
 
-    private static void slotFrame(GuiGraphicsExtractor graphics, int x, int y, int fill) {
+    private static void slotFrame(GuiGraphics graphics, int x, int y, int fill) {
         graphics.fill(x - 1, y - 1, x + 17, y + 17, SLOT_EDGE);
         graphics.fill(x, y, x + 16, y + 16, fill);
     }
@@ -418,12 +426,12 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         }
 
         @Override
-        public void onPress(InputWithModifiers input) {
+        public void onPress() {
             togglePanel();
         }
 
         @Override
-        protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
             int x = getX();
             int y = getY();
             graphics.fill(x, y, x + TOGGLE_SIZE, y + TOGGLE_SIZE, OUTLINE);
@@ -454,7 +462,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         }
 
         @Override
-        public void onPress(InputWithModifiers input) {
+        public void onPress() {
             ConfinedSpawnerScreen.this.minecraft.gameMode.handleInventoryButtonClick(
                     ConfinedSpawnerScreen.this.menu.containerId, ConfinedSpawnerMenu.BUTTON_TOGGLE_MODE);
         }
@@ -469,7 +477,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
         }
 
         @Override
-        protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float a) {
             boolean whitelist = whitelist();
             setTooltip(whitelist ? whitelistTooltip : blacklistTooltip);
             int x = getX();
@@ -478,7 +486,7 @@ public class ConfinedSpawnerScreen extends AbstractContainerScreen<ConfinedSpawn
             int fill = isHoveredOrFocused() ? (whitelist ? WHITELIST_HOVER : BLACKLIST_HOVER) : (whitelist ? WHITELIST_COLOR : BLACKLIST_COLOR);
             graphics.fill(x + 1, y + 1, x + getWidth() - 1, y + getHeight() - 1, fill);
             Component message = getMessage();
-            graphics.text(ConfinedSpawnerScreen.this.font, message, x + (getWidth() - ConfinedSpawnerScreen.this.font.width(message)) / 2,
+            graphics.drawString(ConfinedSpawnerScreen.this.font, message, x + (getWidth() - ConfinedSpawnerScreen.this.font.width(message)) / 2,
                     y + 3, 0xFFFFFFFF, true);
         }
 

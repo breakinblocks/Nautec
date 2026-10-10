@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.client.model.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,18 +10,17 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 
-public class DrainTopModel extends Model.Simple {
-    public static final RenderType RENDER_TYPE = RenderTypes.entityTranslucent(Nautec.rl("textures/entity/drain_top.png"));
+public class DrainTopModel extends SimpleModel {
+    public static final RenderType RENDER_TYPE = RenderType.entityTranslucent(Nautec.rl("textures/entity/drain_top.png"));
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("drain_top"), "main");
     private final ModelPart top;
     private final ModelPart valve;
 
     public DrainTopModel(ModelPart root) {
-        super(root, RenderTypes::entityTranslucent);
+        super(root, RenderType::entityTranslucent);
         this.top = root.getChild("top");
         this.valve = root.getChild("valve");
     }
@@ -48,20 +46,20 @@ public class DrainTopModel extends Model.Simple {
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
-    public void submitLid(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
+    public void submitLid(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         {
             poseStack.translate(1, -1, 1);
-            collector.submitModelPart(this.top, poseStack, RENDER_TYPE, packedLight, packedOverlay, null);
+            renderPart(this.top, poseStack, buffers, RENDER_TYPE, packedLight, packedOverlay);
         }
         poseStack.popPose();
     }
 
-    public void submitValve(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, int packedOverlay) {
+    public void submitValve(PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         {
             poseStack.translate(0.5, 0, 0.5);
-            collector.submitModelPart(this.valve, poseStack, RENDER_TYPE, packedLight, packedOverlay, null);
+            renderPart(this.valve, poseStack, buffers, RENDER_TYPE, packedLight, packedOverlay);
         }
         poseStack.popPose();
     }

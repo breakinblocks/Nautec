@@ -1,20 +1,21 @@
 package com.breakinblocks.nautec.client.teleport;
 
+import com.breakinblocks.nautec.client.render.CustomGeometry;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.joml.Quaternionf;
 
 public final class PortalRenderer {
-    public static final Identifier SPIRAL = Nautec.rl("textures/effect/teleport_spiral.png");
+    public static final ResourceLocation SPIRAL = Nautec.rl("textures/effect/teleport_spiral.png");
 
     private static final float[] RADII = {3.0F, 2.4F, 1.8F, 1.1F};
     private static final int[] ALPHA = {70, 110, 160, 220};
@@ -24,7 +25,7 @@ public final class PortalRenderer {
     private PortalRenderer() {
     }
 
-    public static void render(PoseStack poseStack, SubmitNodeCollector collector, Vec3 cameraPos, float partialTick) {
+    public static void render(PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos, float partialTick) {
         if (!TeleportFxManager.isVisible()) {
             return;
         }
@@ -50,7 +51,7 @@ public final class PortalRenderer {
 
             poseStack.pushPose();
             poseStack.mulPose(Axis.ZP.rotationDegrees(rotation));
-            collector.submitCustomGeometry(poseStack, NTRenderTypes.portalSwirl(SPIRAL),
+            CustomGeometry.submit(poseStack, buffers, NTRenderTypes.portalSwirl(SPIRAL),
                     (pose, buffer) -> quad(pose, buffer, radius, color));
             poseStack.popPose();
         }

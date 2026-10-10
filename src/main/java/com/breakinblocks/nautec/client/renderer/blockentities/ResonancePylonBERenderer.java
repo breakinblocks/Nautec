@@ -1,14 +1,12 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.PrismarineCrystalRenderer;
 import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,9 +28,8 @@ public class ResonancePylonBERenderer extends NTBERenderer<ResonancePylonBlockEn
     }
 
     @Override
-    public void extractRenderState(ResonancePylonBlockEntity pylon, PylonRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(pylon, state, crumbling);
+    public void extractRenderState(ResonancePylonBlockEntity pylon, PylonRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(pylon, state);
         state.active = pylon.isVisualActive();
         state.linked = pylon.getNetworkId() != null;
         state.interdimensional = pylon.interdimensional();
@@ -41,14 +38,14 @@ public class ResonancePylonBERenderer extends NTBERenderer<ResonancePylonBlockEn
     }
 
     @Override
-    public void submit(PylonRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(PylonRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         float scale = state.interdimensional ? ABYSSAL_SCALE : BASIC_SCALE;
         float speed = state.active ? 3F : state.linked ? 1.2F : 0.5F;
         float flash = state.active ? 0.45F + 0.25F * Mth.sin(state.ticks * 0.3F) : state.linked ? 0.1F : 0F;
         poseStack.pushPose();
         poseStack.translate(0.5F, HOVER + Mth.sin(state.ticks * 0.05F) * 0.04F, 0.5F);
         poseStack.scale(scale, scale, scale);
-        PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks * speed, state.seed, flash, true);
+        PrismarineCrystalRenderer.submit(poseStack, buffers, state.ticks * speed, state.seed, flash, true);
         poseStack.popPose();
     }
 
@@ -57,7 +54,7 @@ public class ResonancePylonBERenderer extends NTBERenderer<ResonancePylonBlockEn
         return new AABB(pylon.getBlockPos()).expandTowards(0, 1.5, 0);
     }
 
-    public static class PylonRenderState extends BlockEntityRenderState {
+    public static class PylonRenderState extends BERenderState {
         public boolean active;
         public boolean linked;
         public boolean interdimensional;

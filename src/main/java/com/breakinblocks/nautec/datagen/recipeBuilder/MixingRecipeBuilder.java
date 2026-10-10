@@ -5,13 +5,12 @@ import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import com.breakinblocks.nautec.utils.templates.FluidStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -76,7 +75,7 @@ public class MixingRecipeBuilder implements NTRecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         MixingRecipe recipe = new MixingRecipe(
                 ingredients,
                 Optional.ofNullable(fluidIngredient),

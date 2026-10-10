@@ -4,18 +4,18 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 public final class ItemUtils {
     public static final int ITEM_POWER_INPUT = 128;
@@ -54,19 +54,15 @@ public final class ItemUtils {
         }
 
         Level level = player.level();
-        PlayerInventoryWrapper inventory = PlayerInventoryWrapper.of(player);
-        ItemResource resource = ItemResource.of(stack);
-        int inserted;
-        try (Transaction tx = Transaction.openRoot()) {
-            inserted = preferredSlot >= 0 && preferredSlot < inventory.size()
-                    ? inventory.getSlot(preferredSlot).insert(resource, stack.getCount(), tx)
-                    : 0;
-            if (inserted < stack.getCount()) {
-                inserted += ResourceHandlerUtil.insertStacking(inventory.getMainSlots(), resource,
-                        stack.getCount() - inserted, tx);
-            }
-            tx.commit();
+        IItemHandler inventory = new PlayerMainInvWrapper(player.getInventory());
+        ItemStack remainder = stack.copy();
+        if (preferredSlot >= 0 && preferredSlot < inventory.getSlots()) {
+            remainder = inventory.insertItem(preferredSlot, remainder, false);
         }
+        if (!remainder.isEmpty()) {
+            remainder = ItemHandlerHelper.insertItemStacked(inventory, remainder, false);
+        }
+        int inserted = stack.getCount() - remainder.getCount();
 
         if (playSound && inserted > 0) {
             level.playSound(null, player.getX(), player.getY() + 0.5, player.getZ(),
@@ -74,7 +70,6 @@ public final class ItemUtils {
                     ((level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
         }
 
-        ItemStack remainder = stack.copyWithCount(stack.getCount() - inserted);
         if (!remainder.isEmpty() && !level.isClientSide()) {
             ItemEntity itemEntity = new ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), remainder);
             itemEntity.setPickUpDelay(DROPPED_PICKUP_DELAY);
@@ -84,23 +79,23 @@ public final class ItemUtils {
         }
     }
 
-    public static InteractionResult insertHeldItem(ResourceHandler<ItemResource> handler, int slot, ItemStack stack,
+    public static ItemInteractionResult insertHeldItem(ResourceHandler<ItemResource> handler, int slot, ItemStack stack,
                                                    Player player, InteractionHand hand) {
         try (Transaction tx = Transaction.openRoot()) {
             if (handler.insert(slot, ItemResource.of(stack), stack.getCount(), tx) != stack.getCount()) {
-                return InteractionResult.TRY_WITH_EMPTY_HAND;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             tx.commit();
         }
 
         player.setItemInHand(hand, ItemStack.EMPTY);
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
-    public static InteractionResult extractItemToPlayer(ResourceHandler<ItemResource> handler, int slot, Player player) {
+    public static ItemInteractionResult extractItemToPlayer(ResourceHandler<ItemResource> handler, int slot, Player player) {
         ItemResource resource = handler.getResource(slot);
         if (resource.isEmpty()) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         int extracted;
@@ -110,10 +105,10 @@ public final class ItemUtils {
         }
 
         if (extracted <= 0) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         giveItemToPlayer(player, resource.toStack(extracted));
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 }

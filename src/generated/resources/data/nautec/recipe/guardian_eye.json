@@ -4,7 +4,9 @@
   "desc": "Shoots lasers at enemies you are looking at",
   "ingredients": [
     {
-      "ingredient": "nautec:guardian_eye"
+      "ingredient": {
+        "item": "nautec:guardian_eye"
+      }
     }
   ],
   "resultAugment": "nautec:guardian_eye"

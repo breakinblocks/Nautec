@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.api.client.model.armor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -7,12 +9,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 
 import java.util.function.Consumer;
 
-public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
+public class NTArmorModel extends HumanoidModel<LivingEntity> {
 
     private final EquipmentSlot slot;
 
@@ -26,8 +28,8 @@ public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
-        PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
-        head.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
+        root.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.ZERO);
+        root.addOrReplaceChild("hat", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("body", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.ZERO);
         root.addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.ZERO);
@@ -37,6 +39,12 @@ public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
         partsConsumer.accept(new PartsDefinition(root));
 
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        setPartVisibility(slot);
+        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, color);
     }
 
     public EquipmentSlot getSlot() {
@@ -76,7 +84,7 @@ public class NTArmorModel extends HumanoidModel<HumanoidRenderState> {
     public record PartsDefinition(PartDefinition root) {
 
         public PartDefinition getHat() {
-            return getHead().getChild("hat");
+            return root().getChild("hat");
         }
 
         public PartDefinition getHead() {

@@ -13,7 +13,6 @@ import com.breakinblocks.nautec.events.LuckyFishingZoneEvents;
 import com.breakinblocks.nautec.loot.InLuckyFishingZoneCondition;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -265,7 +264,7 @@ public final class LuckyZoneTests {
         return InLuckyFishingZoneCondition.INSTANCE.test(new LootContext.Builder(params).create(java.util.Optional.empty()));
     }
 
-    private static BlockPos pool(GameTestHelper helper, int half) {
+    private static BlockPos pool(NTGameTestHelper helper, int half) {
         ServerLevel level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
         for (int dx = -half - 1; dx <= half + 1; dx++) {

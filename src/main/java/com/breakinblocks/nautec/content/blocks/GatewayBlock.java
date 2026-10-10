@@ -22,9 +22,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import com.breakinblocks.nautec.utils.InteractionResults;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -33,8 +34,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -105,13 +105,11 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
     }
 
     @Override
-    protected @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess tickAccess,
-                                              @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos,
-                                              @NotNull BlockState neighborState, @NotNull RandomSource random) {
+    protected @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     public static int slotFor(BlockPos pos, Direction face, Vec3 hit) {
@@ -129,20 +127,20 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof GatewayBlockEntity gateway)) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
         return useOnRing(stack, level, gateway, player, hitResult);
     }
 
-    public static InteractionResult useOnRing(ItemStack stack, Level level, GatewayBlockEntity gateway, Player player, BlockHitResult hitResult) {
+    public static ItemInteractionResult useOnRing(ItemStack stack, Level level, GatewayBlockEntity gateway, Player player, BlockHitResult hitResult) {
         if (stack.is(Tags.Items.TOOLS_WRENCH)) {
             return useWrench(level, gateway, player);
         }
         DyeColor colour = GatewayAddress.colourOf(stack.getItem());
         if (colour == null) {
-            return stack.isEmpty() ? InteractionResult.TRY_WITH_EMPTY_HAND : InteractionResult.PASS;
+            return stack.isEmpty() ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
         int slot = gateway.isFormed()
@@ -150,7 +148,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
                 : slotFor(gateway.getBlockPos(), hitResult.getDirection(), hitResult.getLocation());
         GatewayAddress updated = gateway.getAddress().withSlot(slot, colour);
         if (updated.equals(gateway.getAddress())) {
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
 
         if (!level.isClientSide()) {
@@ -160,13 +158,13 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
             }
             MachineSounds.play(level, gateway.getBlockPos(), NTSounds.GATEWAY_RECODE, 0.8f, 1.0f + slot * 0.1f);
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
-    public static InteractionResult useWrench(Level level, GatewayBlockEntity gateway, Player player) {
+    public static ItemInteractionResult useWrench(Level level, GatewayBlockEntity gateway, Player player) {
         if (player.isShiftKeyDown()) {
             if (!gateway.isFormed()) {
-                return forceBuild(level, gateway, player);
+                return InteractionResults.toItem(forceBuild(level, gateway, player));
             }
             if (!level.isClientSide()) {
                 ItemStack packed = gateway.pack();
@@ -174,10 +172,10 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
                     player.drop(packed, false);
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (gateway.isFormed()) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!level.isClientSide()) {
             if (gateway.isWaitingToBuild() || gateway.needsSelfHeal()) {
@@ -186,7 +184,7 @@ public class GatewayBlock extends ContainerBlock implements DisplayBlock, Simple
                 MultiblockHelper.form(NTMultiblocks.GATEWAY.get(), gateway.getBlockPos(), level, player);
             }
         }
-        return InteractionResult.SUCCESS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

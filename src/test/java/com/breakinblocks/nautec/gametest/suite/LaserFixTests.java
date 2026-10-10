@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
@@ -14,7 +15,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -29,9 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.Set;
 
@@ -41,7 +41,7 @@ public final class LaserFixTests {
     private LaserFixTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    private static void placeShieldedSource(NTGameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -52,21 +52,21 @@ public final class LaserFixTests {
         }
     }
 
-    private static CreativePowerSourceBlockEntity source(GameTestHelper helper, BlockPos pos) {
+    private static CreativePowerSourceBlockEntity source(NTGameTestHelper helper, BlockPos pos) {
         return helper.getBlockEntity(pos, CreativePowerSourceBlockEntity.class);
     }
 
-    private static MixerBlockEntity mixer(GameTestHelper helper, BlockPos pos) {
+    private static MixerBlockEntity mixer(NTGameTestHelper helper, BlockPos pos) {
         return helper.getBlockEntity(pos, MixerBlockEntity.class);
     }
 
-    private static void assertNear(GameTestHelper helper, float expected, float actual, String what) {
+    private static void assertNear(NTGameTestHelper helper, float expected, float actual, String what) {
         if (Math.abs(expected - actual) > 1.0e-3f) {
             helper.fail(what + ": expected " + expected + " but was " + actual);
         }
     }
 
-    private static ItemEntity floatingItem(GameTestHelper helper, ItemStack stack, double x, double y, double z) {
+    private static ItemEntity floatingItem(NTGameTestHelper helper, ItemStack stack, double x, double y, double z) {
         Vec3 pos = helper.absoluteVec(new Vec3(x, y, z));
         ItemEntity entity = new ItemEntity(helper.getLevel(), pos.x, pos.y, pos.z, stack);
         entity.setNoGravity(true);
@@ -75,7 +75,7 @@ public final class LaserFixTests {
         return entity;
     }
 
-    private static int countItems(GameTestHelper helper, Item item) {
+    private static int countItems(NTGameTestHelper helper, Item item) {
         int total = 0;
         for (ItemEntity entity : helper.getLevel().getEntitiesOfClass(ItemEntity.class, helper.getBounds())) {
             if (entity.isAlive() && entity.getItem().is(item)) {
@@ -85,7 +85,7 @@ public final class LaserFixTests {
         return total;
     }
 
-    private static int batteryPower(GameTestHelper helper, ItemStack stack) {
+    private static int batteryPower(NTGameTestHelper helper, ItemStack stack) {
         IPowerStorage storage = stack.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (storage == null) {
             throw helper.assertionException("Battery did not expose item power capability");
@@ -93,7 +93,7 @@ public final class LaserFixTests {
         return storage.getPowerStored();
     }
 
-    private static Player player(GameTestHelper helper, GameType gameType, ItemStack held) {
+    private static Player player(NTGameTestHelper helper, GameType gameType, ItemStack held) {
         Player player = helper.makeMockPlayer(gameType);
         if (gameType == GameType.CREATIVE) {
             player.getAbilities().instabuild = true;
@@ -102,15 +102,15 @@ public final class LaserFixTests {
         return player;
     }
 
-    private static void breakAs(GameTestHelper helper, Player player, BlockPos relative) {
+    private static void breakAs(NTGameTestHelper helper, Player player, BlockPos relative) {
         ServerLevel level = helper.getLevel();
         BlockPos pos = helper.absolutePos(relative);
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         ItemStack tool = player.getMainHandItem().copy();
         BlockState adjusted = state.getBlock().playerWillDestroy(level, pos, state, player);
-        boolean canHarvest = !player.preventsBlockDrops() && adjusted.canHarvestBlock(level, pos, player);
-        boolean removed = adjusted.onDestroyedByPlayer(level, pos, player, tool, canHarvest, level.getFluidState(pos));
+        boolean canHarvest = !player.getAbilities().instabuild && adjusted.canHarvestBlock(level, pos, player);
+        boolean removed = adjusted.onDestroyedByPlayer(level, pos, player, canHarvest, level.getFluidState(pos));
         if (removed) {
             adjusted.getBlock().destroy(level, pos, adjusted);
         }
@@ -119,7 +119,7 @@ public final class LaserFixTests {
         }
     }
 
-    private static void placeDecorativeCrystal(GameTestHelper helper, BlockPos bottom) {
+    private static void placeDecorativeCrystal(NTGameTestHelper helper, BlockPos bottom) {
         helper.setBlock(bottom, NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get().defaultBlockState());
         for (int i = 1; i < 6; i++) {
             helper.setBlock(bottom.above(i), NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL_PART.get().defaultBlockState()
@@ -127,7 +127,7 @@ public final class LaserFixTests {
         }
     }
 
-    private static void assertDecorativeCrystalGone(GameTestHelper helper, BlockPos bottom) {
+    private static void assertDecorativeCrystalGone(NTGameTestHelper helper, BlockPos bottom) {
         for (int i = 0; i < 6; i++) {
             helper.assertBlockPresent(Blocks.AIR, bottom.above(i));
         }
@@ -276,7 +276,7 @@ public final class LaserFixTests {
             helper.setBlock(eastMixer, NTBlocks.MIXER.get().defaultBlockState());
             helper.setBlock(southMixer, NTBlocks.MIXER.get().defaultBlockState());
 
-            EnergyHandler handler = helper.getLevel().getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(converterPos), null);
+            EnergyHandler handler = helper.getLevel().getCapability(TransferCapabilities.Energy.BLOCK, helper.absolutePos(converterPos), null);
             if (handler == null) {
                 helper.fail("Energy Converter should expose the energy capability");
                 return;
@@ -292,7 +292,7 @@ public final class LaserFixTests {
                 EnergyConverterBlockEntity converter = helper.getBlockEntity(converterPos, EnergyConverterBlockEntity.class);
                 helper.assertValueEqual(150, converter.getSending(), "the converter reports what it sends");
                 helper.assertValueEqual(2, converter.getBeams(), "the converter reports its beams");
-                helper.assertTrue(converter.getUpdateTag(helper.getLevel().registryAccess()).getIntOr("sending", 0) == 150,
+                helper.assertTrue(converter.getUpdateTag(helper.getLevel().registryAccess()).getInt("sending") == 150,
                         "the amount sent reaches the client so the beam can draw");
                 helper.succeed();
             });

@@ -43,11 +43,12 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "nautec:block/polished_prismarine",
+    "background": "nautec:textures/block/polished_prismarine.png",
     "description": {
       "translate": "advancements.nautec.root.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:aquatic_catalyst"
     },
     "show_toast": false,

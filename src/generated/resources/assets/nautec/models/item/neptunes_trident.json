@@ -1,0 +1,21 @@
+{
+  "base": {
+    "parent": "nautec:item/neptunes_trident_handheld"
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "nautec:item/neptunes_trident_gui"
+    },
+    "ground": {
+      "parent": "nautec:item/neptunes_trident_gui"
+    },
+    "gui": {
+      "parent": "nautec:item/neptunes_trident_gui"
+    }
+  },
+  "textures": {
+    "particle": "nautec:item/neptunes_trident"
+  }
+}

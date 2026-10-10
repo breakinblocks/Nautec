@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:dark_lignocytes",
   "ingredient": {
-    "ingredient": "minecraft:dark_oak_log"
+    "ingredient": {
+      "item": "minecraft:dark_oak_log"
+    }
   },
   "vitality_ticks": 1200
 }

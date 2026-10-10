@@ -4,12 +4,12 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.resonance.SatelliteArrayBlockEntity;
 import com.breakinblocks.nautec.network.OpenCharmScreenPayload;
 import com.breakinblocks.nautec.network.SetCharmPriorityPayload;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.NumberFormat;
 
@@ -57,12 +57,12 @@ public class ResonanceCharmScreen extends Screen {
 
     private void setPriority(int value) {
         priority = Mth.clamp(value, SatelliteArrayBlockEntity.MIN_PRIORITY, SatelliteArrayBlockEntity.MAX_PRIORITY);
-        ClientPacketDistributor.sendToServer(new SetCharmPriorityPayload(hand, priority));
+        PacketDistributor.sendToServer(new SetCharmPriorityPayload(hand, priority));
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         int x = left();
         int y = top();
         graphics.fill(x, y, x + WIDTH, y + HEIGHT, OUTLINE);
@@ -76,37 +76,37 @@ public class ResonanceCharmScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         int x = left();
         int y = top();
-        graphics.text(this.font, this.title, x + 8, y + 7, LABEL, false);
+        graphics.drawString(this.font, this.title, x + 8, y + 7, LABEL, false);
         int tx = x + 13;
         int ty = y + 25;
         if (!info.bound()) {
-            graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.unbound"), tx, ty, WARNING, false);
-            graphics.text(this.font, Component.translatable(hand == OpenCharmScreenPayload.AUGMENT
+            graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.unbound"), tx, ty, WARNING, false);
+            graphics.drawString(this.font, Component.translatable(hand == OpenCharmScreenPayload.AUGMENT
                     ? "nautec.resonance_augment.screen.unbound.hint" : "nautec.resonance_charm.screen.unbound.hint"), tx, ty + 12, READOUT_DIM, false);
         } else {
-            graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.network", info.network()), tx, ty, READOUT, false);
-            graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.owner", info.owner()), tx, ty + 11, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.network", info.network()), tx, ty, READOUT, false);
+            graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.owner", info.owner()), tx, ty + 11, READOUT_DIM, false);
             if (!info.access()) {
-                graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.no_access"), tx, ty + 22, WARNING, false);
+                graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.no_access"), tx, ty + 22, WARNING, false);
             } else {
-                graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.links", info.uplinks(), info.downlinks()),
+                graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.links", info.uplinks(), info.downlinks()),
                         tx, ty + 22, READOUT_DIM, false);
-                graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.stored", format.format(info.stored())),
+                graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.stored", format.format(info.stored())),
                         tx, ty + 33, READOUT_DIM, false);
-                graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.pylons", info.pylons()), tx, ty + 44, READOUT_DIM, false);
-                graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.rate", format.format(NTConfig.charmTransferRate)),
+                graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.pylons", info.pylons()), tx, ty + 44, READOUT_DIM, false);
+                graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.rate", format.format(NTConfig.charmTransferRate)),
                         tx, ty + 55, READOUT_DIM, false);
             }
         }
-        graphics.text(this.font, Component.translatable("nautec.resonance_charm.screen.priority"), x + 8, y + 105, LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.resonance_charm.screen.priority"), x + 8, y + 105, LABEL, false);
         String value = Integer.toString(priority);
-        graphics.text(this.font, value, x + 142 - this.font.width(value) / 2, y + 105, READOUT, false);
+        graphics.drawString(this.font, value, x + 142 - this.font.width(value) / 2, y + 105, READOUT, false);
         if (mouseX >= x + 8 && mouseX < x + 166 && mouseY >= y + 100 && mouseY < y + 118) {
-            graphics.setTooltipForNextFrame(this.font, Component.translatable("nautec.resonance_charm.screen.priority.desc"), mouseX, mouseY);
+            graphics.renderTooltip(this.font, Component.translatable("nautec.resonance_charm.screen.priority.desc"), mouseX, mouseY);
         }
     }
 

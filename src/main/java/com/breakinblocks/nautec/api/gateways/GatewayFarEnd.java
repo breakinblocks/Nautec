@@ -59,12 +59,12 @@ public final class GatewayFarEnd {
         for (int cx = (x - 9) >> 4; cx <= (x + 9) >> 4; cx++) {
             for (int cz = (z - 9) >> 4; cz <= (z + 9) >> 4; cz++) {
                 level.getChunk(cx, cz);
-                level.getChunkSource().addTicketWithRadius(TicketType.PORTAL, new ChunkPos(cx, cz), 1);
+                level.getChunkSource().addRegionTicket(TicketType.PORTAL, new ChunkPos(cx, cz), 1, new BlockPos(cx << 4, 0, cz << 4));
             }
         }
 
         int floor = level.getHeight(Heightmap.Types.OCEAN_FLOOR, x, z);
-        BlockPos core = new BlockPos(x, Math.max(floor, level.getMinY() + 2), z);
+        BlockPos core = new BlockPos(x, Math.max(floor, level.getMinBuildHeight() + 2), z);
         HorizontalDirection direction = random.nextBoolean() ? HorizontalDirection.NORTH : HorizontalDirection.EAST;
         build(level, core, direction, address, seaLevel);
 

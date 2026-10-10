@@ -10,7 +10,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,14 +31,14 @@ public final class CrystalCultivationTests {
     private CrystalCultivationTests() {
     }
 
-    private static CrystalCradleBlockEntity seededCradle(GameTestHelper helper) {
+    private static CrystalCradleBlockEntity seededCradle(NTGameTestHelper helper) {
         helper.setBlock(CRADLE, NTBlocks.CRYSTAL_CRADLE.get());
         CrystalCradleBlockEntity cradle = helper.getBlockEntity(CRADLE, CrystalCradleBlockEntity.class);
         helper.assertTrue(cradle.insertSeed(new ItemStack(NTItems.PRISMARINE_CRYSTAL_SEED.get())), "an empty cradle takes a seed");
         return cradle;
     }
 
-    private static void feed(GameTestHelper helper, int power, float purity) {
+    private static void feed(NTGameTestHelper helper, int power, float purity) {
         helper.onEachTick(() -> {
             CrystalCradleBlockEntity cradle = helper.getBlockEntity(CRADLE, CrystalCradleBlockEntity.class);
             BlockPos origin = helper.absolutePos(CRADLE.north(2));
@@ -48,7 +47,7 @@ public final class CrystalCultivationTests {
         });
     }
 
-    private static Player wrenchPlayer(GameTestHelper helper) {
+    private static Player wrenchPlayer(NTGameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.AQUARINE_WRENCH.get()));
         player.setShiftKeyDown(true);
@@ -56,7 +55,7 @@ public final class CrystalCultivationTests {
     }
 
     private static boolean holdsCultivatedCrystal(Player player) {
-        for (ItemStack stack : player.getInventory()) {
+        for (ItemStack stack : player.getInventory().items) {
             if (stack.is(NTBlocks.PRISMARINE_CRYSTAL.get().asItem()) && PrismarineCrystalItem.isCultivated(stack)) {
                 return true;
             }

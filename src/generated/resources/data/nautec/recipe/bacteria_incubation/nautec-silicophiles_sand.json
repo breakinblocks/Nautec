@@ -6,5 +6,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "minecraft:sand"
+  "nutrient": {
+    "item": "minecraft:sand"
+  }
 }

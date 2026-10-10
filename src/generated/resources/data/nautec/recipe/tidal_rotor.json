@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "#c:storage_blocks/copper",
-    "I": "nautec:cast_iron_ingot",
-    "R": "nautec:cast_iron_rod",
-    "X": "#c:dusts/redstone"
+    "C": {
+      "tag": "c:storage_blocks/copper"
+    },
+    "I": {
+      "item": "nautec:cast_iron_ingot"
+    },
+    "R": {
+      "item": "nautec:cast_iron_rod"
+    },
+    "X": {
+      "tag": "c:dusts/redstone"
+    }
   },
   "pattern": [
     "RIR",
@@ -13,6 +21,7 @@
     "RXR"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:tidal_rotor"
   }
 }

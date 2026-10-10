@@ -10,7 +10,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 
 public final class AdvancedAnalyzerTests {
@@ -19,7 +18,7 @@ public final class AdvancedAnalyzerTests {
     private AdvancedAnalyzerTests() {
     }
 
-    private static ItemStack dish(GameTestHelper helper, boolean analyzed) {
+    private static ItemStack dish(NTGameTestHelper helper, boolean analyzed) {
         ItemStack stack = new ItemStack(NTItems.PETRI_DISH.get());
         IBacteriaStorage storage = stack.getCapability(NTCapabilities.BacteriaStorage.ITEM);
         BacteriaInstance colony = BacteriaInstance.roll(NTBacterias.LITHOPHILES, helper.getLevel().registryAccess());
@@ -33,7 +32,7 @@ public final class AdvancedAnalyzerTests {
         return storage != null && storage.getBacteria(0).isAnalyzed();
     }
 
-    private static AdvancedBacterialAnalyzerBlockEntity filled(GameTestHelper helper) {
+    private static AdvancedBacterialAnalyzerBlockEntity filled(NTGameTestHelper helper) {
         helper.setBlock(ANALYZER, NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         AdvancedBacterialAnalyzerBlockEntity analyzer = helper.getBlockEntity(ANALYZER, AdvancedBacterialAnalyzerBlockEntity.class);
         for (int i = 0; i < AdvancedBacterialAnalyzerBlockEntity.DISHES; i++) {
@@ -42,7 +41,7 @@ public final class AdvancedAnalyzerTests {
         return analyzer;
     }
 
-    private static void run(GameTestHelper helper, AdvancedBacterialAnalyzerBlockEntity analyzer, int power, float purity, int ticks) {
+    private static void run(NTGameTestHelper helper, AdvancedBacterialAnalyzerBlockEntity analyzer, int power, float purity, int ticks) {
         BlockPos origin = helper.absolutePos(ANALYZER.above());
         for (int tick = 0; tick < ticks; tick++) {
             analyzer.receivePower(power, Direction.UP, origin);

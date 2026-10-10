@@ -49,7 +49,7 @@ public class VentFieldFeature extends Feature<NoneFeatureConfiguration> {
                 return null;
             }
             BlockState below = level.getBlockState(cursor.below());
-            if (isWater(level, cursor) && isWater(level, cursor.above()) && below.isSolidRender()) {
+            if (isWater(level, cursor) && isWater(level, cursor.above()) && below.isSolidRender(level, cursor.below())) {
                 return cursor.immutable();
             }
             cursor.move(Direction.DOWN);

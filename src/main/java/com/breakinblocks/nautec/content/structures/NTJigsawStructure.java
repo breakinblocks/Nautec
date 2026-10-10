@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -31,7 +31,7 @@ public abstract class NTJigsawStructure extends Structure {
     public interface Factory<S extends NTJigsawStructure> {
         S create(StructureSettings settings,
                  Holder<StructureTemplatePool> startPool,
-                 Optional<Identifier> startJigsawName,
+                 Optional<ResourceLocation> startJigsawName,
                  int size,
                  HeightProvider startHeight,
                  Optional<Heightmap.Types> projectStartToHeightmap,
@@ -43,7 +43,7 @@ public abstract class NTJigsawStructure extends Structure {
     }
 
     protected final Holder<StructureTemplatePool> startPool;
-    protected final Optional<Identifier> startJigsawName;
+    protected final Optional<ResourceLocation> startJigsawName;
     protected final int size;
     protected final HeightProvider startHeight;
     protected final Optional<Heightmap.Types> projectStartToHeightmap;
@@ -55,7 +55,7 @@ public abstract class NTJigsawStructure extends Structure {
 
     protected NTJigsawStructure(StructureSettings config,
                                 Holder<StructureTemplatePool> startPool,
-                                Optional<Identifier> startJigsawName,
+                                Optional<ResourceLocation> startJigsawName,
                                 int size,
                                 HeightProvider startHeight,
                                 Optional<Heightmap.Types> projectStartToHeightmap,
@@ -81,7 +81,7 @@ public abstract class NTJigsawStructure extends Structure {
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 settingsCodec(instance),
                 StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
-                Identifier.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
+                ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> structure.startJigsawName),
                 Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
                 HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
                 Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
@@ -131,7 +131,7 @@ public abstract class NTJigsawStructure extends Structure {
         Vec3i offset = placementOffset(box, chunkPos.getMiddleBlockX(), chunkPos.getMiddleBlockZ(),
                 this.centerInChunk, this.minCover, floorAt);
 
-        if (box.minY() + offset.getY() < context.heightAccessor().getMinY() + this.dimensionPadding.bottom()) {
+        if (box.minY() + offset.getY() < context.heightAccessor().getMinBuildHeight() + this.dimensionPadding.bottom()) {
             return Optional.empty();
         }
 
@@ -167,7 +167,7 @@ public abstract class NTJigsawStructure extends Structure {
                 blockPos,
                 false,
                 this.projectStartToHeightmap,
-                new JigsawStructure.MaxDistance(this.maxDistanceFromCenter),
+                this.maxDistanceFromCenter,
                 PoolAliasLookup.EMPTY,
                 this.dimensionPadding,
                 this.liquidSettings);

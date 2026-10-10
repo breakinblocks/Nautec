@@ -18,7 +18,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -86,13 +85,13 @@ public final class DataFixTests {
             ItemStack vial = new ItemStack(NTItems.GLASS_VIAL.get());
             CraftingInput input = CraftingInput.of(2, 2, List.of(bucket, vial, vial.copy(), vial.copy()));
             Optional<RecipeHolder<CraftingRecipe>> holder =
-                    helper.getLevel().recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel());
+                    helper.getLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel());
             if (holder.isEmpty()) {
                 helper.fail("No crafting recipe fills Glass Vials from an EAS Bucket");
                 return;
             }
 
-            ItemStack result = holder.get().value().assemble(input);
+            ItemStack result = holder.get().value().assemble(input, helper.getLevel().registryAccess());
             if (!result.is(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.get()) || result.getCount() != 3) {
                 helper.fail("An EAS Bucket and three Glass Vials should craft three EAS Vials, got " + result);
                 return;
@@ -104,7 +103,7 @@ public final class DataFixTests {
                 return;
             }
 
-            boolean mixerMakesEas = helper.getLevel().recipeAccess().recipeMap().byType(MixingRecipe.Type.INSTANCE).stream()
+            boolean mixerMakesEas = helper.getLevel().getRecipeManager().getAllRecipesFor(MixingRecipe.Type.INSTANCE).stream()
                     .anyMatch(recipe -> recipe.value().fluidResult().is(NTFluids.EAS.getStillFluid()));
             if (!mixerMakesEas) {
                 helper.fail("No Mixer recipe produces EAS, so the bucket has no source");
@@ -222,14 +221,14 @@ public final class DataFixTests {
         r.add("datafix/every_augmentation_recipe_fits_the_station", 20, 1, helper -> {
             List<String> problems = new ArrayList<>();
             for (RecipeHolder<AugmentationRecipe> holder
-                    : helper.getLevel().recipeAccess().recipeMap().byType(AugmentationRecipe.Type.INSTANCE)) {
+                    : helper.getLevel().getRecipeManager().getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
                 List<IngredientWithCount> ingredients = holder.value().ingredients();
                 if (ingredients.size() > 4) {
-                    problems.add(holder.id().identifier() + " needs " + ingredients.size() + " extensions but the station has 4");
+                    problems.add(holder.id() + " needs " + ingredients.size() + " extensions but the station has 4");
                 }
                 for (IngredientWithCount ingredient : ingredients) {
                     if (ingredient.count() != 1) {
-                        problems.add(holder.id().identifier() + " asks for a stack of " + ingredient.count()
+                        problems.add(holder.id() + " asks for a stack of " + ingredient.count()
                                 + " but an extension slot holds one item");
                     }
                 }
@@ -239,8 +238,8 @@ public final class DataFixTests {
                 return;
             }
 
-            RecipeHolder<?> carapace = helper.getLevel().recipeAccess()
-                    .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl("vent_carapace")))
+            RecipeHolder<?> carapace = helper.getLevel().getRecipeManager()
+                    .byKey(Nautec.rl("vent_carapace"))
                     .orElse(null);
             if (carapace == null || !(carapace.value() instanceof AugmentationRecipe recipe)) {
                 helper.fail("nautec:vent_carapace is not a loaded augmentation recipe: " + carapace);
@@ -342,7 +341,7 @@ public final class DataFixTests {
             for (ResourceKey<Enchantment> key : List.of(Enchantments.POWER, Enchantments.PUNCH, Enchantments.FLAME,
                     Enchantments.UNBREAKING, Enchantments.MENDING)) {
                 if (rifle.supportsEnchantment(enchantments.getOrThrow(key))) {
-                    accepted.add(key.identifier().toString());
+                    accepted.add(key.location().toString());
                 }
             }
             if (!accepted.isEmpty()) {
@@ -353,10 +352,10 @@ public final class DataFixTests {
         });
     }
 
-    private static ItemStack craft(GameTestHelper helper, int width, int height, List<ItemStack> items) {
+    private static ItemStack craft(NTGameTestHelper helper, int width, int height, List<ItemStack> items) {
         CraftingInput input = CraftingInput.of(width, height, items);
-        return helper.getLevel().recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel())
-                .map(holder -> holder.value().assemble(input))
+        return helper.getLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, helper.getLevel())
+                .map(holder -> holder.value().assemble(input, helper.getLevel().registryAccess()))
                 .orElse(ItemStack.EMPTY);
     }
 

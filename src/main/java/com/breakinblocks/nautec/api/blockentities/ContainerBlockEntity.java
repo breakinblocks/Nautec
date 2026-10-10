@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.blockentities;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -39,19 +40,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-public abstract class ContainerBlockEntity extends BlockEntity {
+public abstract class ContainerBlockEntity extends NTBlockEntity {
     public static final int SYNC_INTERVAL = 10;
     private @Nullable ItemStackHandler itemHandler;
     private BiPredicate<Integer, ItemStack> itemValidation = (slot, stack) -> true;
@@ -603,7 +603,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             return roleHandler(getItemHandler(), roles, sideConfig.get(SideKind.ITEMS, RelativeFace.of(front(), direction)), ItemResource.EMPTY);
         }
         return getHandlerOnSide(
-                Capabilities.Item.BLOCK,
+                TransferCapabilities.Item.BLOCK,
                 SidedItemHandler::new,
                 direction,
                 getItemHandler()
@@ -620,7 +620,7 @@ public abstract class ContainerBlockEntity extends BlockEntity {
             return roleHandler(tanks, roles, sideConfig.get(SideKind.FLUIDS, RelativeFace.of(front(), direction)), FluidResource.EMPTY);
         }
         return getHandlerOnSide(
-                Capabilities.Fluid.BLOCK,
+                TransferCapabilities.Fluid.BLOCK,
                 SidedFluidHandler::new,
                 direction,
                 getFluidHandler()

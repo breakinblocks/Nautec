@@ -739,7 +739,6 @@
         4
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -750,6 +749,9 @@
           ],
           "texture": "#window_emissive"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -765,7 +767,6 @@
         9
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -776,6 +777,9 @@
           ],
           "texture": "#oil_tank_emissive"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -791,7 +795,6 @@
         9
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -802,6 +805,9 @@
           ],
           "texture": "#water_tank_emissive"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -817,7 +823,6 @@
         13
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "up": {
           "uv": [
@@ -829,7 +834,11 @@
           "texture": "#exhaust_emissive",
           "cullface": "up"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:acidophiles",
   "ingredient": {
-    "ingredient": "#c:ores/redstone"
+    "ingredient": {
+      "tag": "c:ores/redstone"
+    }
   },
   "vitality_ticks": 1200
 }

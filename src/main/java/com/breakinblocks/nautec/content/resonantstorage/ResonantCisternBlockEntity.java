@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonantstorage;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.menus.ResonantCisternMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -14,13 +15,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 public class ResonantCisternBlockEntity extends ResonantStorageBlockEntity {
@@ -67,7 +68,7 @@ public class ResonantCisternBlockEntity extends ResonantStorageBlockEntity {
         }
         BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> cache = neighbours[face.ordinal()];
         if (cache == null) {
-            cache = BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, level, worldPosition.relative(face), face.getOpposite());
+            cache = BlockCapabilityCache.create(TransferCapabilities.Fluid.BLOCK, level, worldPosition.relative(face), face.getOpposite());
             neighbours[face.ordinal()] = cache;
         }
         ResourceHandler<FluidResource> neighbour = cache.getCapability();
@@ -88,7 +89,7 @@ public class ResonantCisternBlockEntity extends ResonantStorageBlockEntity {
 
     @Override
     protected void writeClient(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.store("client_fluid", FluidStack.OPTIONAL_CODEC, registries.createSerializationContext(NbtOps.INSTANCE), fluid());
+        tag.put("client_fluid", FluidStack.OPTIONAL_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), fluid()).getOrThrow());
         tag.putInt("client_capacity", capacity());
     }
 

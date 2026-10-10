@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cross",
+  "render_type": "minecraft:cutout",
   "textures": {
     "cross": "nautec:block/abyssal_coral",
     "cross_emissive": "nautec:block/abyssal_coral_emissive"

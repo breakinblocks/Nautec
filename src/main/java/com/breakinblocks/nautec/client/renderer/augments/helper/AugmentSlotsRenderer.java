@@ -27,9 +27,9 @@ public class AugmentSlotsRenderer {
         return MODEL_PART_GETTERS.get(slot);
     }
 
-    public static void render(RenderPlayerEvent.Pre<?> event) {
+    public static void render(RenderPlayerEvent.Pre event) {
 
-        Map<AugmentSlot, Augment> augments = AugmentClientHelper.forState(event.getRenderState());
+        Map<AugmentSlot, Augment> augments = AugmentClientHelper.forEntity(event.getEntity());
         for (AugmentSlot slot : augments.keySet()) {
             Augment augment = augments.get(slot);
             if (augment != null && augment.replaceBodyPart()) {

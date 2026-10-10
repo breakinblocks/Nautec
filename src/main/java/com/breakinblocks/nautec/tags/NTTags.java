@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.tags;
 
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
@@ -15,8 +15,8 @@ public final class NTTags {
     }
 
     public static final class Fluids {
-        public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oxygen"));
-        public static final TagKey<Fluid> OIL = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oil"));
+        public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "oxygen"));
+        public static final TagKey<Fluid> OIL = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "oil"));
     }
 
     public static final class Blocks {
@@ -37,10 +37,10 @@ public final class NTTags {
         public static final TagKey<Item> REPAIRS_DIVING_SUIT = ntTag("repairs_diving_suit");
         public static final TagKey<Item> REPAIRS_PRISMARINE_ARMOR = ntTag("repairs_prismarine_armor");
         public static final TagKey<Item> SUBMARINE_MODULE = ntTag("submarine_module");
-        public static final TagKey<Item> DUSTS_SALT = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/salt"));
-        public static final TagKey<Item> INGOTS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "ingots/aquarine_copper"));
-        public static final TagKey<Item> NUGGETS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "nuggets/aquarine_copper"));
-        public static final TagKey<Item> STORAGE_BLOCKS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "storage_blocks/aquarine_copper"));
+        public static final TagKey<Item> DUSTS_SALT = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/salt"));
+        public static final TagKey<Item> INGOTS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/aquarine_copper"));
+        public static final TagKey<Item> NUGGETS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/aquarine_copper"));
+        public static final TagKey<Item> STORAGE_BLOCKS_AQUARINE_COPPER = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/aquarine_copper"));
 
         private static TagKey<Item> ntTag(String name) {
             return TagKey.create(Registries.ITEM, Nautec.rl(name));

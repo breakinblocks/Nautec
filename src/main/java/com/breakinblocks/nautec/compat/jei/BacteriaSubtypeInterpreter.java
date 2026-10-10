@@ -24,7 +24,13 @@ public final class BacteriaSubtypeInterpreter implements ISubtypeInterpreter<Ite
         if (instance.isEmpty()) {
             return null;
         }
-        String strain = instance.getBacteria().identifier().toString();
+        String strain = instance.getBacteria().location().toString();
         return context == UidContext.Ingredient && instance.isAnalyzed() ? strain + ";analyzed" : strain;
+    }
+
+    @Override
+    public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
+        Object data = getSubtypeData(stack, context);
+        return data == null ? "" : data.toString();
     }
 }

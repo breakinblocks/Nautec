@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.NTConfig;
@@ -17,9 +18,9 @@ import com.breakinblocks.nautec.events.AugmentEvents;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.biome.Biomes;
@@ -27,9 +28,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import io.netty.buffer.Unpooled;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -48,7 +49,6 @@ import com.breakinblocks.nautec.registries.*;
 import com.breakinblocks.nautec.utils.AugmentHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -76,7 +76,7 @@ public final class ReviewRegressionTests {
                 });
     }
 
-    private static AugmentationStationBlockEntity station(GameTestHelper helper) {
+    private static AugmentationStationBlockEntity station(NTGameTestHelper helper) {
         BlockPos center = new BlockPos(4, 1, 4);
         helper.setBlock(center, NTBlocks.AUGMENTATION_STATION.get());
         for (Direction direction : Direction.Plane.HORIZONTAL) {
@@ -99,7 +99,7 @@ public final class ReviewRegressionTests {
         return station;
     }
 
-    private static Player recipient(GameTestHelper helper) {
+    private static Player recipient(NTGameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setPos(helper.absolutePos(new BlockPos(4, 2, 4)).getCenter());
         player.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.17);
@@ -107,14 +107,14 @@ public final class ReviewRegressionTests {
         return player;
     }
 
-    private static void assertReleased(GameTestHelper helper, Player player) {
+    private static void assertReleased(NTGameTestHelper helper, Player player) {
         helper.assertValueEqual(0.17, player.getAttributeValue(Attributes.MOVEMENT_SPEED), "movement restored");
         helper.assertValueEqual(0.6, player.getAttributeValue(Attributes.JUMP_STRENGTH), "jump restored");
         helper.assertTrue(player.getData(NTDataAttachments.AUGMENTATION_STATION).isEmpty(), "operation attachment cleared");
     }
 
     public static void register(NTTestRegistrar registrar) {
-        var tests = new LinkedHashMap<String, Consumer<GameTestHelper>>();
+        var tests = new LinkedHashMap<String, Consumer<NTGameTestHelper>>();
         tests.put("server_rejects_unearned_augment", helper -> {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             var slot = NTAugmentSlots.LUNG.get();
@@ -336,7 +336,7 @@ public final class ReviewRegressionTests {
             helper.setBlock(pos, NTBlocks.PRESSURE_FORGE.get());
             var forge = helper.getBlockEntity(pos, PressureForgeBlockEntity.class);
             forge.getItemStackHandler().setStackInSlot(1, NTItems.AQUARINE_STEEL_INGOT.toStack());
-            var handler = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), Direction.DOWN);
+            var handler = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(pos), Direction.DOWN);
             helper.assertTrue(handler != null, "forge exposes output capability");
             try (var tx = Transaction.openRoot()) {
                 helper.assertValueEqual(1, handler.extract(ItemResource.of(NTItems.AQUARINE_STEEL_INGOT.toStack()), 1, tx), "bottom extracts finished output");
@@ -381,7 +381,7 @@ public final class ReviewRegressionTests {
                 new SaltWaterCase("filled_bucket_not_replaced_by_saltwater", Items.LAVA_BUCKET, true, false))) {
             tests.put(saltCase.name(), helper -> {
                 helper.setBiome(Biomes.OCEAN);
-                BlockPos pos = new BlockPos(4, 1, 4);
+                BlockPos pos = new BlockPos(4, 3, 4);
                 helper.setBlock(pos.below(), Blocks.STONE);
                 helper.setBlock(pos, Blocks.WATER);
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
@@ -390,14 +390,14 @@ public final class ReviewRegressionTests {
                 player.setItemInHand(InteractionHand.MAIN_HAND, saltCase.bucket().getDefaultInstance());
                 boolean previous = NTConfig.collectSaltWater;
                 NTConfig.collectSaltWater = saltCase.collect();
-                InteractionResult result;
+                InteractionResultHolder<ItemStack> result;
                 try {
                     result = saltCase.bucket().use(helper.getLevel(), player, InteractionHand.MAIN_HAND);
                 } finally {
                     NTConfig.collectSaltWater = previous;
                 }
-                ItemStack transformed = result instanceof InteractionResult.Success success && success.heldItemTransformedTo() != null
-                        ? success.heldItemTransformedTo() : player.getMainHandItem();
+                ItemStack transformed = result.getResult().consumesAction() && result.getObject() != null
+                        ? result.getObject() : player.getMainHandItem();
                 helper.assertTrue(transformed.is(NTFluids.SALT_WATER.getBucket()) == saltCase.expectSaltWater(),
                         "salt water collection with collectSaltWater=" + saltCase.collect());
                 helper.succeed();

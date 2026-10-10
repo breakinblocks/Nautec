@@ -6,9 +6,10 @@ import com.breakinblocks.nautec.registries.NTLootConditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.util.context.ContextKey;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,18 +27,18 @@ public class InLuckyFishingZoneCondition implements LootItemCondition {
     }
 
     @Override
-    public @NotNull MapCodec<? extends LootItemCondition> codec() {
+    public @NotNull LootItemConditionType getType() {
         return NTLootConditions.IN_LUCKY_FISHING_ZONE.get();
     }
 
     @Override
-    public @NotNull Set<ContextKey<?>> getReferencedContextParams() {
+    public @NotNull Set<LootContextParam<?>> getReferencedContextParams() {
         return Set.of(LootContextParams.ORIGIN);
     }
 
     @Override
     public boolean test(LootContext context) {
-        Vec3 origin = context.getOptionalParameter(LootContextParams.ORIGIN);
+        Vec3 origin = context.getParamOrNull(LootContextParams.ORIGIN);
         if (origin == null) {
             return false;
         }

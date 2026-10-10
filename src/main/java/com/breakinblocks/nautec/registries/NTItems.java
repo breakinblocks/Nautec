@@ -47,13 +47,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.item.TridentItem;
-import net.minecraft.world.item.component.Weapon;
+import net.minecraft.world.item.component.Unbreakable;
+import net.minecraft.world.item.ArmorItem;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -181,14 +181,14 @@ public final class NTItems {
     public static final DeferredItem<NautecFishingRodItem> NAUTEC_FISHING_ROD = registerItem("nautec_fishing_rod",
             NautecFishingRodItem::new, new Item.Properties().durability(128));
 
-    public static final DeferredItem<Item> SILT_SKIPPER_SPAWN_EGG = registerItem("silt_skipper_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.SILT_SKIPPER.get()));
-    public static final DeferredItem<Item> LANTERN_JELLY_SPAWN_EGG = registerItem("lantern_jelly_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.LANTERN_JELLY.get()));
-    public static final DeferredItem<Item> VENT_CRAWLER_SPAWN_EGG = registerItem("vent_crawler_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.VENT_CRAWLER.get()));
-    public static final DeferredItem<Item> ABYSSAL_MAW_SPAWN_EGG = registerItem("abyssal_maw_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.ABYSSAL_MAW.get()));
+    public static final DeferredItem<DeferredSpawnEggItem> SILT_SKIPPER_SPAWN_EGG = registerItem("silt_skipper_spawn_egg",
+            props -> new DeferredSpawnEggItem(NTEntities.SILT_SKIPPER, 0xFFFFFF, 0xFFFFFF, props), new Item.Properties());
+    public static final DeferredItem<DeferredSpawnEggItem> LANTERN_JELLY_SPAWN_EGG = registerItem("lantern_jelly_spawn_egg",
+            props -> new DeferredSpawnEggItem(NTEntities.LANTERN_JELLY, 0xFFFFFF, 0xFFFFFF, props), new Item.Properties());
+    public static final DeferredItem<DeferredSpawnEggItem> VENT_CRAWLER_SPAWN_EGG = registerItem("vent_crawler_spawn_egg",
+            props -> new DeferredSpawnEggItem(NTEntities.VENT_CRAWLER, 0xFFFFFF, 0xFFFFFF, props), new Item.Properties());
+    public static final DeferredItem<DeferredSpawnEggItem> ABYSSAL_MAW_SPAWN_EGG = registerItem("abyssal_maw_spawn_egg",
+            props -> new DeferredSpawnEggItem(NTEntities.ABYSSAL_MAW, 0xFFFFFF, 0xFFFFFF, props), new Item.Properties());
 
     public static final DeferredItem<Item> HYDRAULIC_LEG = registerItem("hydraulic_leg",
             Item::new, new Item.Properties());
@@ -292,22 +292,21 @@ public final class NTItems {
             EyeOfTheSeaItem::new, () -> new Item.Properties().stacksTo(1)
                     .component(NTDataComponents.SEA_EYE_TARGET, SeaEyeTarget.CRYSTAL_GEODES));
 
-    public static final DeferredItem<DivingSuitArmorItem> DIVING_HELMET = registerItem("diving_helmet", props -> new DivingSuitArmorItem(ArmorType.HELMET, props), new Item.Properties());
-    public static final DeferredItem<DivingSuitArmorItem> DIVING_CHESTPLATE = registerItem("diving_chestplate", props -> new DivingSuitArmorItem(ArmorType.CHESTPLATE, props), () -> new Item.Properties().component(NTDataComponents.OXYGEN, AirBottleItem.TANK_SECONDS));
-    public static final DeferredItem<DivingSuitArmorItem> DIVING_LEGGINGS = registerItem("diving_leggings", props -> new DivingSuitArmorItem(ArmorType.LEGGINGS, props), new Item.Properties());
-    public static final DeferredItem<DivingSuitArmorItem> DIVING_BOOTS = registerItem("diving_boots", props -> new DivingSuitArmorItem(ArmorType.BOOTS, props), new Item.Properties());
+    public static final DeferredItem<DivingSuitArmorItem> DIVING_HELMET = registerItem("diving_helmet", props -> new DivingSuitArmorItem(ArmorItem.Type.HELMET, props), new Item.Properties());
+    public static final DeferredItem<DivingSuitArmorItem> DIVING_CHESTPLATE = registerItem("diving_chestplate", props -> new DivingSuitArmorItem(ArmorItem.Type.CHESTPLATE, props), () -> new Item.Properties().component(NTDataComponents.OXYGEN, AirBottleItem.TANK_SECONDS));
+    public static final DeferredItem<DivingSuitArmorItem> DIVING_LEGGINGS = registerItem("diving_leggings", props -> new DivingSuitArmorItem(ArmorItem.Type.LEGGINGS, props), new Item.Properties());
+    public static final DeferredItem<DivingSuitArmorItem> DIVING_BOOTS = registerItem("diving_boots", props -> new DivingSuitArmorItem(ArmorItem.Type.BOOTS, props), new Item.Properties());
 
-    public static final DeferredItem<AquarineArmorItem> AQUARINE_HELMET = registerItem("aquarine_steel_helmet", props -> new AquarineArmorItem(ArmorType.HELMET, props), new Item.Properties());
-    public static final DeferredItem<AquarineArmorItem> AQUARINE_CHESTPLATE = registerItem("aquarine_steel_chestplate", props -> new AquarineArmorItem(ArmorType.CHESTPLATE, props), new Item.Properties());
-    public static final DeferredItem<AquarineArmorItem> AQUARINE_LEGGINGS = registerItem("aquarine_steel_leggings", props -> new AquarineArmorItem(ArmorType.LEGGINGS, props), new Item.Properties());
-    public static final DeferredItem<AquarineArmorItem> AQUARINE_BOOTS = registerItem("aquarine_steel_boots", props -> new AquarineArmorItem(ArmorType.BOOTS, props), new Item.Properties());
+    public static final DeferredItem<AquarineArmorItem> AQUARINE_HELMET = registerItem("aquarine_steel_helmet", props -> new AquarineArmorItem(ArmorItem.Type.HELMET, props), new Item.Properties());
+    public static final DeferredItem<AquarineArmorItem> AQUARINE_CHESTPLATE = registerItem("aquarine_steel_chestplate", props -> new AquarineArmorItem(ArmorItem.Type.CHESTPLATE, props), new Item.Properties());
+    public static final DeferredItem<AquarineArmorItem> AQUARINE_LEGGINGS = registerItem("aquarine_steel_leggings", props -> new AquarineArmorItem(ArmorItem.Type.LEGGINGS, props), new Item.Properties());
+    public static final DeferredItem<AquarineArmorItem> AQUARINE_BOOTS = registerItem("aquarine_steel_boots", props -> new AquarineArmorItem(ArmorItem.Type.BOOTS, props), new Item.Properties());
 
     public static final DeferredItem<NeptunesTridentItem> NEPTUNES_TRIDENT = registerItem("neptunes_trident",
             NeptunesTridentItem::new, new Item.Properties()
                     .attributes(NeptunesTridentItem.createAttributes())
                     .component(DataComponents.TOOL, TridentItem.createToolProperties())
-                    .component(DataComponents.WEAPON, new Weapon(1))
-                    .component(DataComponents.UNBREAKABLE, Unit.INSTANCE));
+                    .component(DataComponents.UNBREAKABLE, new Unbreakable(true)));
 
     public static final DeferredItem<AquarineSwordItem> AQUARINE_SWORD = registerItem("aquarine_steel_sword", AquarineSwordItem::new, new Item.Properties());
     public static final DeferredItem<AquarineAxeItem> AQUARINE_AXE = registerItem("aquarine_steel_axe", AquarineAxeItem::new, new Item.Properties());
@@ -366,7 +365,7 @@ public final class NTItems {
     }
 
     public static <T extends Item> DeferredItem<T> registerItem(String name, Function<Item.Properties, T> itemConstructor, Item.Properties properties, boolean addToTab) {
-        DeferredItem<T> toReturn = ITEMS.registerItem(name, itemConstructor, () -> properties);
+        DeferredItem<T> toReturn = ITEMS.registerItem(name, itemConstructor, properties);
         if (addToTab) {
             CREATIVE_TAB_ITEMS.add(toReturn);
         }
@@ -374,7 +373,7 @@ public final class NTItems {
     }
 
     public static <T extends Item> DeferredItem<T> registerItem(String name, Function<Item.Properties, T> itemConstructor, Supplier<Item.Properties> properties, boolean addToTab) {
-        DeferredItem<T> toReturn = ITEMS.registerItem(name, itemConstructor, properties);
+        DeferredItem<T> toReturn = ITEMS.register(name, () -> itemConstructor.apply(properties.get()));
         if (addToTab) {
             CREATIVE_TAB_ITEMS.add(toReturn);
         }

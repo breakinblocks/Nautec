@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:betulophiles",
   "ingredient": {
-    "ingredient": "minecraft:birch_log"
+    "ingredient": {
+      "item": "minecraft:birch_log"
+    }
   },
   "vitality_ticks": 1200
 }

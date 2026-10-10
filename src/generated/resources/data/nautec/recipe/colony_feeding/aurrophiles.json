@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:aurrophiles",
   "ingredient": {
-    "ingredient": "#c:ores/gold"
+    "ingredient": {
+      "tag": "c:ores/gold"
+    }
   },
   "vitality_ticks": 1200
 }

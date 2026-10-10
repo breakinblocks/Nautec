@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "#c:chests/wooden",
-    "D": "nautec:petri_dish"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "tag": "c:chests/wooden"
+    },
+    "D": {
+      "item": "nautec:petri_dish"
+    }
   },
   "pattern": [
     "ADA",
@@ -12,6 +18,7 @@
     "ADA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:aquarine_dish_storage"
   }
 }

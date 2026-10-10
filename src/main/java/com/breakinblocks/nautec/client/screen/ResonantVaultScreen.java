@@ -1,11 +1,12 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.content.menus.ResonantStorageMenu;
 import com.breakinblocks.nautec.content.menus.ResonantVaultMenu;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantStore;
 import com.breakinblocks.nautec.content.resonantstorage.VaultStore;
 import com.breakinblocks.nautec.registries.NTItems;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +53,7 @@ public class ResonantVaultScreen extends ResonantStorageScreen<ResonantVaultMenu
     }
 
     @Override
-    protected void extractStorage(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+    protected void extractStorage(GuiGraphics graphics, int mouseX, int mouseY) {
         VaultStore vault = this.menu.vault();
         int used = 0;
         int capacity = vault != null ? vault.capacity() : VaultStore.PAGE;
@@ -67,12 +68,13 @@ public class ResonantVaultScreen extends ResonantStorageScreen<ResonantVaultMenu
         int y = this.topPos + ResonantStorageMenu.UPGRADE_Y;
         PanelStyle.slot(graphics, x, y);
         if (vault != null && vault.upgrades() == 0) {
-            graphics.item(EXPANSION_GHOST, x, y);
-            graphics.nextStratum();
+            graphics.renderItem(EXPANSION_GHOST, x, y);
+            NTGui.pushOverItems(graphics);
             graphics.fill(x, y, x + 16, y + 16, PanelStyle.GHOST_FADE);
+            NTGui.popOverItems(graphics);
         }
         Component readout = Component.translatable("nautec.resonant_storage.slots_used", used, capacity);
         int readoutX = this.leftPos + WIDTH - 8 - this.font.width(readout);
-        graphics.text(this.font, readout, readoutX, this.topPos + PAGE_Y + 3, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, readout, readoutX, this.topPos + PAGE_Y + 3, PanelStyle.LABEL, false);
     }
 }

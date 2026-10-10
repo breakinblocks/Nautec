@@ -11,7 +11,6 @@ import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import java.util.UUID;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -183,7 +182,7 @@ public final class WaveJetTests {
             tank(helper);
             SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 4));
             Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
-            pilot.snapTo(submarine.getX(), submarine.getY(), submarine.getZ(), 0.0F, 0.0F);
+            pilot.moveTo(submarine.getX(), submarine.getY(), submarine.getZ(), 0.0F, 0.0F);
             Player passenger = diver(helper, 0.0);
             try {
                 helper.assertTrue(pilot.startRiding(submarine), "The pilot was refused a seat");
@@ -236,7 +235,7 @@ public final class WaveJetTests {
             Vec3 start = helper.absoluteVec(new Vec3(1.3, 3.0, 4.5));
             Vec3 end = helper.absoluteVec(new Vec3(7.5, 3.0, 4.5));
             float yaw = (float) Mth.atan2(end.z - start.z, end.x - start.x) * Mth.RAD_TO_DEG - 90.0F;
-            player.snapTo(start.x, start.y, start.z, yaw, -30.0F);
+            player.moveTo(start.x, start.y, start.z, yaw, -30.0F);
             player.startUsingItem(InteractionHand.MAIN_HAND);
             double surface = helper.absoluteVec(new Vec3(0.0, 6.0, 0.0)).y;
 
@@ -270,25 +269,25 @@ public final class WaveJetTests {
         });
     }
 
-    private static Player lane(GameTestHelper helper) {
+    private static Player lane(NTGameTestHelper helper) {
         tank(helper);
         Player player = diver(helper, 0.0);
         Vec3 start = helper.absoluteVec(new Vec3(1.3, 2.0, 4.5));
         Vec3 end = helper.absoluteVec(new Vec3(7.5, 2.0, 4.5));
         float yaw = (float) Mth.atan2(end.z - start.z, end.x - start.x) * Mth.RAD_TO_DEG - 90.0F;
-        player.snapTo(start.x, start.y, start.z, yaw, 0.0F);
+        player.moveTo(start.x, start.y, start.z, yaw, 0.0F);
         player.startUsingItem(InteractionHand.MAIN_HAND);
         return player;
     }
 
-    private static Player thrusting(GameTestHelper helper, double oxygenBonus) {
+    private static Player thrusting(NTGameTestHelper helper, double oxygenBonus) {
         tank(helper);
         Player player = diver(helper, oxygenBonus);
         player.startUsingItem(InteractionHand.MAIN_HAND);
         return player;
     }
 
-    private static void tank(GameTestHelper helper) {
+    private static void tank(NTGameTestHelper helper) {
         for (BlockPos pos : BlockPos.betweenClosed(0, 0, 0, 8, 8, 8)) {
             boolean wall = pos.getX() == 0 || pos.getX() == 8 || pos.getY() == 0 || pos.getY() == 8
                     || pos.getZ() == 0 || pos.getZ() == 8;
@@ -296,10 +295,10 @@ public final class WaveJetTests {
         }
     }
 
-    private static Player diver(GameTestHelper helper, double oxygenBonus) {
+    private static Player diver(NTGameTestHelper helper, double oxygenBonus) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         BlockPos centre = helper.absolutePos(new BlockPos(4, 1, 4));
-        player.snapTo(centre.getX() + 0.5, centre.getY(), centre.getZ() + 0.5, 0.0F, 90.0F);
+        player.moveTo(centre.getX() + 0.5, centre.getY(), centre.getZ() + 0.5, 0.0F, 90.0F);
         player.getAttribute(Attributes.OXYGEN_BONUS).setBaseValue(oxygenBonus);
 
         ItemStack stack = new ItemStack(NTItems.WAVE_JET.get());
@@ -312,7 +311,7 @@ public final class WaveJetTests {
         r.add("wave_jet/a_full_inventory_drops_it", 20, helper -> {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             BlockPos at = helper.absolutePos(new BlockPos(4, 2, 4));
-            player.snapTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
+            player.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, 0.0F, 0.0F);
             for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
                 player.getInventory().setItem(slot, new ItemStack(Items.COBBLESTONE, 64));
             }
@@ -412,7 +411,7 @@ public final class WaveJetTests {
         });
     }
 
-    private static BlockPos shaft(GameTestHelper helper, BlockState fill) {
+    private static BlockPos shaft(NTGameTestHelper helper, BlockState fill) {
         ServerLevel level = helper.getLevel();
         BlockPos floor = helper.absolutePos(new BlockPos(4, 1, 4));
         level.setBlockAndUpdate(floor, Blocks.STONE.defaultBlockState());
@@ -422,7 +421,7 @@ public final class WaveJetTests {
         return floor;
     }
 
-    private static Player aiming(GameTestHelper helper, BlockPos floor) {
+    private static Player aiming(NTGameTestHelper helper, BlockPos floor) {
         Player holder = helper.makeMockPlayer(GameType.SURVIVAL);
         holder.setPos(floor.getX() + 0.5, floor.getY() + 3, floor.getZ() + 0.5);
         holder.setYRot(0.0F);

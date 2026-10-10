@@ -22,13 +22,12 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,8 +35,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -50,7 +49,7 @@ public final class RecipeAndBacteriaTests {
     public static void register(NTTestRegistrar r) {
         r.add("recipe/item_transformation_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<ItemTransformationRecipe>> recipes =
-                    helper.getLevel().recipeAccess().recipeMap().byType(ItemTransformationRecipe.Type.INSTANCE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(ItemTransformationRecipe.Type.INSTANCE);
             helper.assertFalse(recipes.isEmpty(), "No item transformation recipes loaded");
             for (RecipeHolder<ItemTransformationRecipe> holder : recipes) {
                 ItemTransformationRecipe recipe = holder.value();
@@ -64,7 +63,7 @@ public final class RecipeAndBacteriaTests {
 
         r.add("recipe/item_etching_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<ItemEtchingRecipe>> recipes =
-                    helper.getLevel().recipeAccess().recipeMap().byType(ItemEtchingRecipe.Type.INSTANCE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(ItemEtchingRecipe.Type.INSTANCE);
             helper.assertFalse(recipes.isEmpty(), "No item etching recipes loaded");
             for (RecipeHolder<ItemEtchingRecipe> holder : recipes) {
                 ItemEtchingRecipe recipe = holder.value();
@@ -77,7 +76,7 @@ public final class RecipeAndBacteriaTests {
 
         r.add("recipe/mixing_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<MixingRecipe>> recipes =
-                    helper.getLevel().recipeAccess().recipeMap().byType(MixingRecipe.Type.INSTANCE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(MixingRecipe.Type.INSTANCE);
             helper.assertFalse(recipes.isEmpty(), "No mixing recipes loaded");
             for (RecipeHolder<MixingRecipe> holder : recipes) {
                 MixingRecipe recipe = holder.value();
@@ -106,7 +105,7 @@ public final class RecipeAndBacteriaTests {
 
         r.add("recipe/aquatic_catalyst_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<AquaticCatalystChannelingRecipe>> recipes =
-                    helper.getLevel().recipeAccess().recipeMap().byType(AquaticCatalystChannelingRecipe.Type.INSTANCE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(AquaticCatalystChannelingRecipe.Type.INSTANCE);
             helper.assertFalse(recipes.isEmpty(), "No aquatic catalyst channeling recipes loaded");
             for (RecipeHolder<AquaticCatalystChannelingRecipe> holder : recipes) {
                 AquaticCatalystChannelingRecipe recipe = holder.value();
@@ -120,7 +119,7 @@ public final class RecipeAndBacteriaTests {
 
         r.add("recipe/bacteria_recipes_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<BacteriaIncubationRecipe>> incubation =
-                    helper.getLevel().recipeAccess().recipeMap().byType(BacteriaIncubationRecipe.TYPE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(BacteriaIncubationRecipe.TYPE);
             helper.assertFalse(incubation.isEmpty(), "No bacteria incubation recipes loaded");
             for (RecipeHolder<BacteriaIncubationRecipe> holder : incubation) {
                 BacteriaIncubationRecipe recipe = holder.value();
@@ -132,7 +131,7 @@ public final class RecipeAndBacteriaTests {
             }
 
             Collection<RecipeHolder<BacteriaMutationRecipe>> mutation =
-                    helper.getLevel().recipeAccess().recipeMap().byType(BacteriaMutationRecipe.TYPE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(BacteriaMutationRecipe.TYPE);
             helper.assertFalse(mutation.isEmpty(), "No bacteria mutation recipes loaded");
             for (RecipeHolder<BacteriaMutationRecipe> holder : mutation) {
                 BacteriaMutationRecipe recipe = holder.value();
@@ -146,7 +145,7 @@ public final class RecipeAndBacteriaTests {
 
         r.add("recipe/augmentation_registry_valid", 40, helper -> helper.runAfterDelay(1, () -> {
             Collection<RecipeHolder<AugmentationRecipe>> recipes =
-                    helper.getLevel().recipeAccess().recipeMap().byType(AugmentationRecipe.Type.INSTANCE);
+                    helper.getLevel().getRecipeManager().getAllRecipesFor(AugmentationRecipe.Type.INSTANCE);
             helper.assertFalse(recipes.isEmpty(), "No augmentation recipes loaded");
             for (RecipeHolder<AugmentationRecipe> holder : recipes) {
                 AugmentationRecipe recipe = holder.value();
@@ -331,15 +330,15 @@ public final class RecipeAndBacteriaTests {
         }));
     }
 
-    private static Recipe<?> lookup(GameTestHelper helper, String path) {
-        RecipeHolder<?> holder = helper.getLevel().recipeAccess()
-                .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl(path)))
+    private static Recipe<?> lookup(NTGameTestHelper helper, String path) {
+        RecipeHolder<?> holder = helper.getLevel().getRecipeManager()
+                .byKey(Nautec.rl(path))
                 .orElse(null);
         helper.assertTrue(holder != null, "Recipe nautec:" + path + " not found");
         return holder.value();
     }
 
-    private static void assertSameStats(GameTestHelper helper, BacteriaInstance expected, BacteriaInstance actual) {
+    private static void assertSameStats(NTGameTestHelper helper, BacteriaInstance expected, BacteriaInstance actual) {
         helper.assertTrue(expected.getStats() instanceof SimpleCollapsedStats, "expected stats are not simple stats");
         helper.assertTrue(actual.getStats() instanceof SimpleCollapsedStats, "actual stats are not simple stats");
         SimpleCollapsedStats expectedStats = (SimpleCollapsedStats) expected.getStats();

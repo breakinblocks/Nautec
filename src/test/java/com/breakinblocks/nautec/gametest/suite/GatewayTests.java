@@ -20,8 +20,7 @@ import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.MultiblockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,7 +41,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import java.util.List;
 
 public final class GatewayTests {
-    private static final Identifier ARENA = Nautec.rl("empty_34x16x14");
+    private static final ResourceLocation ARENA = Nautec.rl("empty_34x16x14");
     private static final BlockPos CORE_A = new BlockPos(6, 1, 6);
     private static final BlockPos CORE_B = new BlockPos(25, 1, 6);
 
@@ -53,11 +52,11 @@ public final class GatewayTests {
         return GatewayAddress.unpack(3000 + id);
     }
 
-    private static GatewayBlockEntity ring(GameTestHelper helper, BlockPos relativeCore, GatewayAddress address) {
+    private static GatewayBlockEntity ring(NTGameTestHelper helper, BlockPos relativeCore, GatewayAddress address) {
         return ringAt(helper, helper.absolutePos(relativeCore), address);
     }
 
-    private static GatewayBlockEntity ringAt(GameTestHelper helper, BlockPos core, GatewayAddress address) {
+    private static GatewayBlockEntity ringAt(NTGameTestHelper helper, BlockPos core, GatewayAddress address) {
         ServerLevel level = helper.getLevel();
         level.setBlockAndUpdate(core, NTBlocks.GATEWAY.get().defaultBlockState());
         for (BlockPos cell : GatewayRing.ringCells(core, HorizontalDirection.NORTH)) {
@@ -74,7 +73,7 @@ public final class GatewayTests {
         return gateway;
     }
 
-    private static void keepAwake(GameTestHelper helper, GatewayBlockEntity... rings) {
+    private static void keepAwake(NTGameTestHelper helper, GatewayBlockEntity... rings) {
         helper.onEachTick(() -> {
             for (GatewayBlockEntity ring : rings) {
                 ring.wake(20);
@@ -83,7 +82,7 @@ public final class GatewayTests {
         });
     }
 
-    private static Player sneakingWith(GameTestHelper helper, ItemStack stack) {
+    private static Player sneakingWith(NTGameTestHelper helper, ItemStack stack) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.setItemInHand(InteractionHand.MAIN_HAND, stack);
         player.setShiftKeyDown(true);
@@ -94,7 +93,7 @@ public final class GatewayTests {
         return new BlockHitResult(Vec3.atCenterOf(pos), Direction.SOUTH, pos, false);
     }
 
-    private static ItemEntity launch(GameTestHelper helper, Vec3 relative, Vec3 velocity) {
+    private static ItemEntity launch(NTGameTestHelper helper, Vec3 relative, Vec3 velocity) {
         Vec3 at = helper.absoluteVec(relative);
         ItemEntity item = new ItemEntity(helper.getLevel(), at.x, at.y, at.z, new ItemStack(Items.PRISMARINE_SHARD), velocity.x, velocity.y, velocity.z);
         item.setNoGravity(true);
@@ -103,11 +102,11 @@ public final class GatewayTests {
         return item;
     }
 
-    private static Vec3 centre(GameTestHelper helper, BlockPos relativeCore) {
+    private static Vec3 centre(NTGameTestHelper helper, BlockPos relativeCore) {
         return GatewayRing.centre(helper.absolutePos(relativeCore));
     }
 
-    private static void fillWall(GameTestHelper helper, BlockPos relativeCore, int z, BlockState state) {
+    private static void fillWall(NTGameTestHelper helper, BlockPos relativeCore, int z, BlockState state) {
         for (int x = -2; x <= 2; x++) {
             for (int y = 4; y <= 8; y++) {
                 helper.setBlock(new BlockPos(relativeCore.getX() + x, relativeCore.getY() + y, z), state);
@@ -549,7 +548,7 @@ public final class GatewayTests {
                 helper.assertTrue(helper.getLevel().getBlockState(cell).isAir(), "Packed cell at " + cell + " should be empty");
             }
             ItemStack packed = ItemStack.EMPTY;
-            for (ItemStack stack : player.getInventory()) {
+            for (ItemStack stack : player.getInventory().items) {
                 if (stack.is(NTBlocks.GATEWAY.asItem())) {
                     packed = stack;
                 }
@@ -571,7 +570,7 @@ public final class GatewayTests {
             helper.assertTrue(event.isCanceled(), "A sneaking wrench click should be taken before the wrench or the ring sees it");
             helper.assertTrue(helper.getLevel().getBlockState(core).isAir(), "The core should be gone after a sneaking wrench click");
             boolean packed = false;
-            for (ItemStack stack : player.getInventory()) {
+            for (ItemStack stack : player.getInventory().items) {
                 if (stack.is(NTBlocks.GATEWAY.asItem()) && code.equals(stack.get(NTDataComponents.GATEWAY_ADDRESS.get()))) {
                     packed = true;
                 }

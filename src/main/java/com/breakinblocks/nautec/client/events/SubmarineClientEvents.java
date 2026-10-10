@@ -5,15 +5,16 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.hud.SubmarineAbilityBarState;
 import com.breakinblocks.nautec.client.screen.SubmarineHudPositionScreen;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineInput;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
 import com.breakinblocks.nautec.network.SubmarineAbilityPayload;
 import com.breakinblocks.nautec.network.SubmarineLaserPayload;
 import com.breakinblocks.nautec.registries.NTKeybinds;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,12 +27,20 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
 public final class SubmarineClientEvents {
     private static int laserSubmarine = -1;
     private static boolean laserHeld;
+    private static @Nullable Player posedPlayer;
+    private static float savedBodyRot;
+    private static float savedBodyRotO;
+    private static float savedHeadRot;
+    private static float savedHeadRotO;
+    private static float savedXRot;
+    private static float savedXRotO;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Pre event) {
@@ -54,7 +63,9 @@ public final class SubmarineClientEvents {
             return;
         }
 
-        submarine.setInput(player.input.keyPresses);
+        Input input = player.input;
+        submarine.setInput(new SubmarineInput(input.up, input.down, input.left, input.right, input.jumping, input.shiftKeyDown,
+                minecraft.options.keySprint.isDown()));
         submarine.setFreeLook(minecraft.options.keyUse.isDown());
         submarine.setDescending(NTKeybinds.SUBMARINE_DESCEND_KEYBIND.get().isDown());
 
@@ -68,13 +79,13 @@ public final class SubmarineClientEvents {
             return;
         }
 
-        int heldSlot = player.getInventory().getSelectedSlot();
+        int heldSlot = player.getInventory().selected;
         for (int slot = 0; slot < SubmarineEntity.MODULE_SLOTS; slot++) {
             while (minecraft.options.keyHotbarSlots[slot].consumeClick()) {
                 SubmarineAbilityBarState.select(slot);
             }
         }
-        player.getInventory().setSelectedSlot(heldSlot);
+        player.getInventory().selected = heldSlot;
 
         drain(minecraft.options.keySwapOffhand);
 
@@ -95,7 +106,7 @@ public final class SubmarineClientEvents {
         }
         laserSubmarine = submarine.getId();
         laserHeld = held;
-        ClientPacketDistributor.sendToServer(new SubmarineLaserPayload(submarine.getId(), held));
+        PacketDistributor.sendToServer(new SubmarineLaserPayload(submarine.getId(), held));
     }
 
     private static void drain(KeyMapping mapping) {
@@ -110,7 +121,7 @@ public final class SubmarineClientEvents {
             return;
         }
 
-        int scroll = event.getAccumulatedScrollY();
+        int scroll = (int) Math.signum(event.getScrollDeltaY());
         if (scroll != 0) {
             SubmarineAbilityBarState.step(-Integer.signum(scroll));
         }
@@ -146,7 +157,7 @@ public final class SubmarineClientEvents {
             return;
         }
 
-        Identifier layer = event.getName();
+        ResourceLocation layer = event.getName();
         if (layer.equals(VanillaGuiLayers.HOTBAR)
                 || layer.equals(VanillaGuiLayers.SELECTED_ITEM_NAME)
                 || layer.equals(VanillaGuiLayers.EXPERIENCE_LEVEL)
@@ -156,34 +167,61 @@ public final class SubmarineClientEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderPlayer(RenderPlayerEvent.Pre<?> event) {
+    public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
         Level level = Minecraft.getInstance().level;
         if (level == null) {
             return;
         }
 
-        AvatarRenderState state = event.getRenderState();
-        if (!(level.getEntity(state.id) instanceof Player player)
-                || !(player.getVehicle() instanceof SubmarineEntity submarine)
+        Player player = event.getEntity();
+        if (!(player.getVehicle() instanceof SubmarineEntity submarine)
                 || submarine.getControllingPassenger() != player) {
             return;
         }
 
-        state.bodyRot = Mth.rotLerp(event.getPartialTick(), submarine.yRotO, submarine.getYRot());
-        state.yRot = 0F;
-        state.xRot = Mth.lerp(event.getPartialTick(), submarine.xRotO, submarine.getXRot());
+        posedPlayer = player;
+        savedBodyRot = player.yBodyRot;
+        savedBodyRotO = player.yBodyRotO;
+        savedHeadRot = player.yHeadRot;
+        savedHeadRotO = player.yHeadRotO;
+        savedXRot = player.getXRot();
+        savedXRotO = player.xRotO;
+
+        float bodyRot = Mth.rotLerp(event.getPartialTick(), submarine.yRotO, submarine.getYRot());
+        float xRot = Mth.lerp(event.getPartialTick(), submarine.xRotO, submarine.getXRot());
+        player.yBodyRot = bodyRot;
+        player.yBodyRotO = bodyRot;
+        player.yHeadRot = bodyRot;
+        player.yHeadRotO = bodyRot;
+        player.setXRot(xRot);
+        player.xRotO = xRot;
+    }
+
+    @SubscribeEvent
+    public static void onRenderPlayerPost(RenderPlayerEvent.Post event) {
+        Player player = posedPlayer;
+        if (player == null || player != event.getEntity()) {
+            return;
+        }
+        posedPlayer = null;
+        player.yBodyRot = savedBodyRot;
+        player.yBodyRotO = savedBodyRotO;
+        player.yHeadRot = savedHeadRot;
+        player.yHeadRotO = savedHeadRotO;
+        player.setXRot(savedXRot);
+        player.xRotO = savedXRotO;
     }
 
     @SubscribeEvent
     public static void onCameraDistance(CalculateDetachedCameraDistanceEvent event) {
-        if (event.getCamera().entity() != null
-                && event.getCamera().entity().getVehicle() instanceof SubmarineEntity) {
+        if (event.getCamera().getEntity() != null
+                && event.getCamera().getEntity().getVehicle() instanceof SubmarineEntity) {
             event.setDistance((float) NTConfig.submarineCameraDistance);
         }
     }
 
     private static void fireSelected(SubmarineEntity submarine) {
-        ClientPacketDistributor.sendToServer(new SubmarineAbilityPayload(submarine.getId(), SubmarineAbilityBarState.selected()));
+        PacketDistributor.sendToServer(new SubmarineAbilityPayload(submarine.getId(), SubmarineAbilityBarState.selected()));
     }
 
     private SubmarineClientEvents() {

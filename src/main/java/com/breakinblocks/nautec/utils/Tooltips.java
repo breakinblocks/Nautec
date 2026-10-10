@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public final class Tooltips {
@@ -26,6 +27,22 @@ public final class Tooltips {
     public static void tt(Consumer<Component> components, MutableComponent c, ChatFormatting... formatings) {
         apply(c, formatings);
         components.accept(c);
+    }
+
+    public static void trans(List<Component> components, String key, ChatFormatting... formatings) {
+        trans(components::add, key, formatings);
+    }
+
+    public static void transInsert(List<Component> components, String key, String additional, ChatFormatting... formatings) {
+        transInsert(components::add, key, additional, formatings);
+    }
+
+    public static void transtrans(List<Component> components, String key, String additional, ChatFormatting... formatings) {
+        transtrans(components::add, key, additional, formatings);
+    }
+
+    public static void tt(List<Component> components, MutableComponent c, ChatFormatting... formatings) {
+        tt(components::add, c, formatings);
     }
 
     public static MutableComponent apply(MutableComponent component, ChatFormatting... formattings) {

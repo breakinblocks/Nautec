@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": "nautec:cast_iron_ingot"
+    "#": {
+      "item": "nautec:cast_iron_ingot"
+    }
   },
   "pattern": [
     "###",
@@ -10,6 +12,7 @@
     "###"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:cast_iron_block"
   }
 }

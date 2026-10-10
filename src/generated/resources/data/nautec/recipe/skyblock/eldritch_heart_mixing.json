@@ -13,15 +13,21 @@
   },
   "ingredients": [
     {
-      "ingredient": "minecraft:heart_of_the_sea"
+      "ingredient": {
+        "item": "minecraft:heart_of_the_sea"
+      }
     },
     {
       "count": 2,
-      "ingredient": "nautec:resonant_shard"
+      "ingredient": {
+        "item": "nautec:resonant_shard"
+      }
     },
     {
       "count": 4,
-      "ingredient": "nautec:prismarine_crystal_shard"
+      "ingredient": {
+        "item": "nautec:prismarine_crystal_shard"
+      }
     }
   ],
   "result": {

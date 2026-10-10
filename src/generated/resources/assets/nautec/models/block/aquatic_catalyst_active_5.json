@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_dnswe",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/aquatic_catalyst_bottom_active",
     "down_emissive": "nautec:block/aquatic_catalyst_bottom_active_emissive",

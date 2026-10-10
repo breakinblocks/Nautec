@@ -19,8 +19,7 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.BlockItem;
@@ -40,16 +39,16 @@ import java.util.Map;
 import java.util.Set;
 
 public final class ShowcaseTests {
-    private static final Identifier ARENA = Nautec.rl("empty_19x11x19");
+    private static final ResourceLocation ARENA = Nautec.rl("empty_19x11x19");
 
     private ShowcaseTests() {
     }
 
-    private static ShowcaseFrame frame(GameTestHelper helper, int x, int z) {
+    private static ShowcaseFrame frame(NTGameTestHelper helper, int x, int z) {
         return new ShowcaseFrame(helper.absolutePos(new BlockPos(x, 0, z)), Rotation.NONE);
     }
 
-    private static <T extends BlockEntity> T blockEntity(GameTestHelper helper, BlockPos absolute, Class<T> type) {
+    private static <T extends BlockEntity> T blockEntity(NTGameTestHelper helper, BlockPos absolute, Class<T> type) {
         BlockEntity blockEntity = helper.getLevel().getBlockEntity(absolute);
         if (!type.isInstance(blockEntity)) {
             throw helper.assertionException("Expected " + type.getSimpleName() + " at " + absolute + " but found " + blockEntity);
@@ -57,7 +56,7 @@ public final class ShowcaseTests {
         return type.cast(blockEntity);
     }
 
-    private static int batteryPower(GameTestHelper helper, ChargerBlockEntity charger) {
+    private static int batteryPower(NTGameTestHelper helper, ChargerBlockEntity charger) {
         ItemStack battery = charger.getItemStackHandler().getStackInSlot(0);
         IPowerStorage storage = battery.getCapability(NTCapabilities.PowerStorage.ITEM);
         if (storage == null) {

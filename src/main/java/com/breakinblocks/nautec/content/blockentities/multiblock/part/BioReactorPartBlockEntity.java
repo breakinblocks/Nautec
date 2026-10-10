@@ -15,11 +15,11 @@ import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -122,7 +122,7 @@ public class BioReactorPartBlockEntity extends LaserBlockEntity implements Multi
             BlockPos controllerPos1 = getControllerPos();
             if (controllerPos1 != null && level.getBlockEntity(controllerPos1) instanceof LaserBlockEntity laserBE) {
                 BlockPos diff = controllerPos1.subtract(worldPosition);
-                Direction dir = Direction.getNearest(diff.getX(), diff.getY(), diff.getZ(), Direction.UP).getOpposite();
+                Direction dir = nearest(diff.getX(), diff.getY(), diff.getZ(), Direction.UP).getOpposite();
 
                 laserBE.receivePower(getPower(), dir, worldPosition);
                 laserBE.receiveNewPurity(purity, dir, worldPosition);
@@ -160,5 +160,21 @@ public class BioReactorPartBlockEntity extends LaserBlockEntity implements Multi
         if (this.controllerPos != null) {
             out.putLong("controllerPos", this.controllerPos.asLong());
         }
+    }
+
+    private static Direction nearest(int x, int y, int z, Direction orElse) {
+        int absX = Math.abs(x);
+        int absY = Math.abs(y);
+        int absZ = Math.abs(z);
+        if (absX > absZ && absX > absY) {
+            return x < 0 ? Direction.WEST : Direction.EAST;
+        }
+        if (absZ > absX && absZ > absY) {
+            return z < 0 ? Direction.NORTH : Direction.SOUTH;
+        }
+        if (absY > absX && absY > absZ) {
+            return y < 0 ? Direction.DOWN : Direction.UP;
+        }
+        return orElse;
     }
 }

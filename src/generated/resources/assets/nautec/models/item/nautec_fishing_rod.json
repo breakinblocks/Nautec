@@ -1,5 +1,13 @@
 {
   "parent": "minecraft:item/handheld_rod",
+  "overrides": [
+    {
+      "model": "nautec:item/nautec_fishing_rod_cast",
+      "predicate": {
+        "minecraft:cast": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "nautec:item/nautec_fishing_rod"
   }

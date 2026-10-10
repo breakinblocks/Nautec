@@ -74,13 +74,10 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.neoforge.NeoForgeTypes;
-import mezz.jei.api.recipe.IRecipeManager;
-import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -90,19 +87,16 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.item.crafting.RecipeType;
+import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,87 +110,56 @@ import java.util.function.Function;
 @JeiPlugin
 public class NTJeiPlugin implements IModPlugin {
 
-    private final List<RecipeBinding<?, ?>> recipeBindings = List.of(
-            new RecipeBinding<>(PressureForgingRecipe.Type.INSTANCE, PressureForgingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(ResonanceCraftingRecipe.Type.INSTANCE, ResonanceCraftingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(ItemTransformationRecipe.Type.INSTANCE, ItemTransformationRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(AquaticCatalystChannelingRecipe.Type.INSTANCE, AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(CombustionAdditiveRecipe.Type.INSTANCE, CombustionAdditiveCategory.RECIPE_TYPE),
-            new RecipeBinding<>(ItemEtchingRecipe.Type.INSTANCE, ItemEtchingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(MixingRecipe.Type.INSTANCE, MixingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(LaserCraftingRecipe.Type.INSTANCE, LaserCraftingRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(AugmentationRecipe.Type.INSTANCE, AugmentationRecipeCategory.RECIPE_TYPE),
-            new RecipeBinding<>(BacteriaMutationRecipe.TYPE, BacteriaMutationsCategory.RECIPE_TYPE, ProductNutrients.Derived::mutation),
-            new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE, ProductNutrients.Derived::incubation),
-            new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
-    private IJeiRuntime runtime;
+    private final List<RecipeBinding<?>> recipeBindings = List.of(
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(PressureForgingRecipe.Type.INSTANCE), PressureForgingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(ResonanceCraftingRecipe.Type.INSTANCE), ResonanceCraftingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(ItemTransformationRecipe.Type.INSTANCE), ItemTransformationRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(AquaticCatalystChannelingRecipe.Type.INSTANCE), AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(CombustionAdditiveRecipe.Type.INSTANCE), CombustionAdditiveCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(ItemEtchingRecipe.Type.INSTANCE), ItemEtchingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(MixingRecipe.Type.INSTANCE), MixingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(LaserCraftingRecipe.Type.INSTANCE), LaserCraftingRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE), AugmentationRecipeCategory.RECIPE_TYPE),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(BacteriaMutationRecipe.TYPE), BacteriaMutationsCategory.RECIPE_TYPE, ProductNutrients.Derived::mutation),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(BacteriaIncubationRecipe.TYPE), BacteriaIncubationCategory.RECIPE_TYPE, ProductNutrients.Derived::incubation),
+            new RecipeBinding<>(manager -> manager.getAllRecipesFor(ColonyFeedingRecipe.TYPE), ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
 
-    public NTJeiPlugin() {
-        // Only instantiated by JEI, so clients without JEI never load its API classes.
-        NeoForge.EVENT_BUS.addListener(this::recipesReceived);
-    }
-
-    @Override
-    public void onRuntimeAvailable(IJeiRuntime runtime) {
-        this.runtime = runtime;
-    }
-
-    @Override
-    public void onRuntimeUnavailable() {
-        runtime = null;
-    }
-
-    private void recipesReceived(RecipesReceivedEvent event) {
-        if (runtime != null) {
-            for (RecipeBinding<?, ?> binding : recipeBindings) {
-                binding.refresh(runtime.getRecipeManager(), event.getRecipeMap());
-            }
-        }
-    }
-
-    private static final class RecipeBinding<I extends RecipeInput, R extends Recipe<I>> {
-        private final RecipeType<R> minecraftType;
-        private final IRecipeType<R> jeiType;
+    private static final class RecipeBinding<R extends Recipe<?>> {
+        private final Function<RecipeManager, List<RecipeHolder<R>>> source;
+        private final RecipeType<R> jeiType;
         private final @Nullable Function<ProductNutrients.Derived, List<R>> derived;
-        private List<R> registered = List.of();
 
-        private RecipeBinding(RecipeType<R> minecraftType, IRecipeType<R> jeiType) {
-            this(minecraftType, jeiType, null);
+        private RecipeBinding(Function<RecipeManager, List<RecipeHolder<R>>> source, RecipeType<R> jeiType) {
+            this(source, jeiType, null);
         }
 
-        private RecipeBinding(RecipeType<R> minecraftType, IRecipeType<R> jeiType, @Nullable Function<ProductNutrients.Derived, List<R>> derived) {
-            this.minecraftType = minecraftType;
+        private RecipeBinding(Function<RecipeManager, List<RecipeHolder<R>>> source, RecipeType<R> jeiType, @Nullable Function<ProductNutrients.Derived, List<R>> derived) {
+            this.source = source;
             this.jeiType = jeiType;
             this.derived = derived;
         }
 
-        private List<R> recipes(RecipeMap map) {
-            List<R> recipes = new ArrayList<>(map.byType(minecraftType).stream().map(RecipeHolder::value).toList());
+        private List<R> recipes(RecipeManager manager) {
+            List<RecipeHolder<R>> holders = source.apply(manager);
+            List<R> recipes = new ArrayList<>(holders.size());
+            for (RecipeHolder<R> holder : holders) {
+                recipes.add(holder.value());
+            }
             ClientPacketListener connection = Minecraft.getInstance().getConnection();
             if (derived != null && connection != null) {
-                recipes.addAll(derived.apply(ProductNutrients.derive(map, connection.registryAccess())));
+                recipes.addAll(derived.apply(ProductNutrients.derive(manager, connection.registryAccess())));
             }
             return recipes;
         }
 
-        private void register(IRecipeRegistration registration, RecipeMap map) {
-            registered = recipes(map);
-            registration.addRecipes(jeiType, registered);
-        }
-
-        private void refresh(IRecipeManager manager, RecipeMap map) {
-            // JEI exposes hide/add for runtime changes, rather than removal.
-            manager.hideRecipes(jeiType, registered);
-            registered = recipes(map);
-            manager.addRecipes(jeiType, registered);
-            // Record recipes compare by value; unchanged replacements may share a hidden key.
-            manager.unhideRecipes(jeiType, registered);
+        private void register(IRecipeRegistration registration, RecipeManager manager) {
+            registration.addRecipes(jeiType, recipes(manager));
         }
     }
 
 
     @Override
-    public @NotNull Identifier getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return Nautec.rl("jei_plugin");
     }
 
@@ -263,15 +226,23 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addIngredientInfo(NTItems.PRISMARINE_CRYSTAL_SEED.get(), seedInfo);
         registration.addIngredientInfo(NTBlocks.CRYSTAL_CRADLE.get(), Component.translatable("nautec.jei.crystal_cradle",
                 NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.crystalGrowthPower)));
-        for (RecipeBinding<?, ?> binding : recipeBindings) {
-            binding.register(registration, ClientRecipes.get());
+        RecipeManager recipeManager = ClientRecipes.get();
+        if (recipeManager != null) {
+            for (RecipeBinding<?> binding : recipeBindings) {
+                binding.register(registration, recipeManager);
+            }
         }
         ClientLevel level = Minecraft.getInstance().level;
         RegistryAccess registryAccess = level.registryAccess();
 
-        List<AugmentationRecipe> augmentationRecipes = recipesFor(AugmentationRecipe.Type.INSTANCE);
+        List<AugmentationRecipe> augmentationRecipes = new ArrayList<>();
+        if (recipeManager != null) {
+            for (RecipeHolder<AugmentationRecipe> holder : recipeManager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
+                augmentationRecipes.add(holder.value());
+            }
+        }
 
-        Registry<Bacteria> registry = registryAccess.lookupOrThrow(NTRegistries.BACTERIA_KEY);
+        Registry<Bacteria> registry = registryAccess.registryOrThrow(NTRegistries.BACTERIA_KEY);
         List<BioReactorCategory.BioReactorRecipe> bioReactorRecipes = registry.entrySet().stream()
                 .map(entry -> new BioReactorCategory.BioReactorRecipe(entry.getKey(), entry.getValue().resource()))
                 .filter(recipe -> !(recipe.bacteria().equals(NTBacterias.EMPTY) || recipe.resource().isEmpty()))
@@ -280,8 +251,8 @@ public class NTJeiPlugin implements IModPlugin {
         Map<ResourceKey<Block>, BacteriaObtainValue> dataMap = BuiltInRegistries.BLOCK.getDataMap(NTDataMaps.BACTERIA_OBTAINING);
         List<BacteriaGraftingCategory.GraftingRecipe> graftingRecipes = new ArrayList<>();
         for (Map.Entry<ResourceKey<Block>, BacteriaObtainValue> entry : dataMap.entrySet()) {
-            Block block = BuiltInRegistries.BLOCK.getValueOrThrow(entry.getKey());
-            Item sample = block.defaultBlockState().getCloneItemStack(level, BlockPos.ZERO, false).getItem();
+            Block block = BuiltInRegistries.BLOCK.getOrThrow(entry.getKey());
+            Item sample = block.getCloneItemStack(level, BlockPos.ZERO, block.defaultBlockState()).getItem();
             if (sample == Items.AIR) {
                 sample = block.asItem();
             }
@@ -309,10 +280,6 @@ public class NTJeiPlugin implements IModPlugin {
                 Component.translatable("nautec.jei.info.prismarine_crystal_shard"));
 
         registration.addIngredientInfo(List.of(NTItems.BROKEN_WHISK.toStack(), NTItems.BURNT_COIL.toStack(), NTItems.ANCIENT_VALVE.toStack(), NTItems.RUSTY_GEAR.toStack()), VanillaTypes.ITEM_STACK, Component.translatable("nautec.jei.info.machine_parts"));
-    }
-
-    private static <I extends RecipeInput, R extends Recipe<I>> List<R> recipesFor(RecipeType<R> type) {
-        return ClientRecipes.get().byType(type).stream().map(RecipeHolder::value).toList();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -381,33 +348,33 @@ public class NTJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addCraftingStation(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
-        registration.addCraftingStation(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
-        registration.addCraftingStation(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
+        registration.addRecipeCatalysts(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
+        registration.addRecipeCatalysts(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AQUATIC_CATALYST.get()));
-        registration.addCraftingStation(ItemEtchingRecipeCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(ItemEtchingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTFluids.ETCHING_ACID.getBucket()));
-        registration.addCraftingStation(MixingRecipeCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(MixingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MIXER.get()));
-        registration.addCraftingStation(LaserCraftingRecipeCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(LaserCraftingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.LASER_CRAFTING_MATRIX.get()));
-        registration.addCraftingStation(EasInfusionCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(EasInfusionCategory.RECIPE_TYPE,
                 new ItemStack(NTFluids.EAS.getBucket()));
-        registration.addCraftingStation(AugmentationRecipeCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(AugmentationRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AUGMENTATION_STATION.get()));
-        registration.addCraftingStation(BacteriaMutationsCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(BacteriaMutationsCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MUTATOR.get()));
-        registration.addCraftingStation(BacteriaIncubationCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(BacteriaIncubationCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.INCUBATOR.get()));
-        registration.addCraftingStation(BioReactorCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(BioReactorCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.BIO_REACTOR.get()),
                 new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
-        registration.addCraftingStation(ColonyFeedingCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(ColonyFeedingCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.BIO_REACTOR.get()),
                 new ItemStack(NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
-        registration.addCraftingStation(CombustionDynamoCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
-        registration.addCraftingStation(CombustionAdditiveCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
-        registration.addCraftingStation(BacteriaGraftingCategory.RECIPE_TYPE,
+        registration.addRecipeCatalysts(CombustionDynamoCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
+        registration.addRecipeCatalysts(CombustionAdditiveCategory.RECIPE_TYPE, NTBlocks.COMBUSTION_DYNAMO.toStack());
+        registration.addRecipeCatalysts(BacteriaGraftingCategory.RECIPE_TYPE,
                 new ItemStack(NTItems.GRAFTING_TOOL.get()),
                 new ItemStack(NTItems.PETRI_DISH.get()),
                 new ItemStack(NTBlocks.GRAFTING_STATION.get()));

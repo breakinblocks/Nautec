@@ -3,11 +3,10 @@ package com.breakinblocks.nautec.datagen.recipeBuilder;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStackTemplate;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +70,7 @@ public class PressureForgingRecipeBuilder implements NTRecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         recipeOutput.accept(key, new PressureForgingRecipe(this.ingredient, this.result, this.minDepth, this.purity, this.duration), null);
     }
 

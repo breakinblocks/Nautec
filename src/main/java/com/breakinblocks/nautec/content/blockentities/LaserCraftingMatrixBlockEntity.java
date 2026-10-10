@@ -13,19 +13,19 @@ import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.utils.RecipeRevision;
-import com.geckolib.animatable.GeoBlockEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,13 +34,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +54,7 @@ public class LaserCraftingMatrixBlockEntity extends LaserBlockEntity implements 
     public static final int OUTPUT_START = INPUT_SLOTS;
     public static final int SLOTS = INPUT_SLOTS + LaserCraftingRecipe.MAX_ITEM_OUTPUTS;
     public static final int FLUID_INPUTS = LaserCraftingRecipe.MAX_FLUID_INPUTS;
-    public static final DataTicket<Boolean> WORKING = DataTicket.create("nautec:laser_crafting_matrix_working", Boolean.class);
+    public static final DataTicket<Boolean> WORKING = new DataTicket<>("nautec:laser_crafting_matrix_working", Boolean.class);
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(SlotRoles.range(0, INPUT_SLOTS), SlotRoles.range(OUTPUT_START, SLOTS));
     private static final SlotRoles FLUID_ROLES = SlotRoles.of(new int[]{0, 1}, new int[]{2, 3});
@@ -67,7 +67,7 @@ public class LaserCraftingMatrixBlockEntity extends LaserBlockEntity implements 
     private final RecipeRevision recipeRevision = new RecipeRevision();
     private final FluidTank[] outputTanks = new FluidTank[LaserCraftingRecipe.MAX_FLUID_OUTPUTS];
     private @Nullable RecipeHolder<LaserCraftingRecipe> recipe;
-    private @Nullable Identifier recipeId;
+    private @Nullable ResourceLocation recipeId;
     private boolean recipeDirty = true;
     private boolean running;
     private int progress;
@@ -262,7 +262,7 @@ public class LaserCraftingMatrixBlockEntity extends LaserBlockEntity implements 
     private void refreshRecipe(ServerLevel server) {
         recipeDirty = false;
         RecipeHolder<LaserCraftingRecipe> next = LaserCraftingRecipe.findBest(server, currentInput()).orElse(null);
-        Identifier nextId = next == null ? null : next.id().identifier();
+        ResourceLocation nextId = next == null ? null : next.id();
         if (nextId == null ? recipeId != null : !nextId.equals(recipeId)) {
             progress = 0;
             overclock.reset();
@@ -290,7 +290,7 @@ public class LaserCraftingMatrixBlockEntity extends LaserBlockEntity implements 
         LaserCraftingRecipeInput input = currentInput();
         LaserCraftingRecipeInput unlimited = new LaserCraftingRecipeInput(input.items(), input.fluids(), Float.MAX_VALUE);
         float lowest = 0F;
-        for (RecipeHolder<LaserCraftingRecipe> holder : server.recipeAccess().recipeMap().byType(LaserCraftingRecipe.Type.INSTANCE)) {
+        for (RecipeHolder<LaserCraftingRecipe> holder : server.getRecipeManager().getAllRecipesFor(LaserCraftingRecipe.Type.INSTANCE)) {
             LaserCraftingRecipe candidate = holder.value();
             if (candidate.purity() > getPurity() && candidate.matches(unlimited, server) && (lowest == 0F || candidate.purity() < lowest)) {
                 lowest = candidate.purity();
@@ -502,8 +502,8 @@ public class LaserCraftingMatrixBlockEntity extends LaserBlockEntity implements 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<LaserCraftingMatrixBlockEntity>("matrix", 6,
-                state -> state.setAndContinue(state.getDataOrDefault(WORKING, false) ? WORKING_ANIMATION : IDLE)));
+        controllers.add(new AnimationController<LaserCraftingMatrixBlockEntity>(this, "matrix", 6,
+                state -> state.setAndContinue(isRunning() ? WORKING_ANIMATION : IDLE)));
     }
 
     @Override

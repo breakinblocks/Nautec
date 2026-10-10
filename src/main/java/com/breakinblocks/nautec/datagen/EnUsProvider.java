@@ -1518,12 +1518,12 @@ public class EnUsProvider extends LanguageProvider {
     }
 
     private void addBacteria(ResourceKey<?> key, String val) {
-        add(key.registry().getPath() + "." + key.identifier().getNamespace() + "." + key.identifier().getPath(), val);
+        add(key.registry().getPath() + "." + key.location().getNamespace() + "." + key.location().getPath(), val);
     }
 
     private void addDirectBacteria(ResourceKey<?> key) {
-        add(key.registry().getPath() + "." + key.identifier().getNamespace() + "." + key.identifier().getPath(),
-                Utils.prettify(key.identifier().getPath()));
+        add(key.registry().getPath() + "." + key.location().getNamespace() + "." + key.location().getPath(),
+                Utils.prettify(key.location().getPath()));
     }
 
     private void addBlock(String key, String val) {

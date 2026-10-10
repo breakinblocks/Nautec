@@ -7,17 +7,25 @@
   },
   "ingredients": [
     {
-      "ingredient": "nautec:pressure_synthesizer"
+      "ingredient": {
+        "item": "nautec:pressure_synthesizer"
+      }
     },
     {
-      "ingredient": "minecraft:heart_of_the_sea"
+      "ingredient": {
+        "item": "minecraft:heart_of_the_sea"
+      }
     },
     {
-      "ingredient": "#c:nether_stars"
+      "ingredient": {
+        "tag": "c:nether_stars"
+      }
     },
     {
       "count": 4,
-      "ingredient": "#c:ender_pearls"
+      "ingredient": {
+        "tag": "c:ender_pearls"
+      }
     }
   ],
   "result": {

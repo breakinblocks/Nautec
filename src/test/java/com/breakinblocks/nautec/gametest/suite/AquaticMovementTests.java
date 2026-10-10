@@ -3,12 +3,11 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.content.entities.mobs.AbyssalMaw;
 import com.breakinblocks.nautec.registries.NTEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +28,7 @@ public final class AquaticMovementTests {
         registrar.add("fauna/maw_spawns_only_deep_and_dark", 200, AquaticMovementTests::mawSpawnRules);
     }
 
-    private static void mawSpawnRules(GameTestHelper helper) {
+    private static void mawSpawnRules(NTGameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos arena = helper.absolutePos(new BlockPos(4, 4, 4));
         BlockPos deepDark = pocket(level, arena.offset(-2, 0, 0), Blocks.WATER);
@@ -42,11 +41,11 @@ public final class AquaticMovementTests {
             helper.assertTrue(level.getMaxLocalRawBrightness(deepDark) <= 7, "The deep dark pocket is lit, " + light(level, deepDark));
             helper.assertTrue(level.getMaxLocalRawBrightness(shallowDark) <= 7, "The shallow dark pocket is lit, " + light(level, shallowDark));
             helper.assertTrue(level.getMaxLocalRawBrightness(deepLit) > 7, "The lit pocket is dark, " + light(level, deepLit));
-            helper.assertTrue(mawMaySpawn(level, deepDark, EntitySpawnReason.NATURAL), "A Maw may not spawn in deep, dark water");
-            helper.assertFalse(mawMaySpawn(level, deepLit, EntitySpawnReason.NATURAL), "A Maw spawned in lit water");
-            helper.assertFalse(mawMaySpawn(level, deepDry, EntitySpawnReason.NATURAL), "A Maw spawned out of water");
-            helper.assertFalse(mawMaySpawn(level, shallowDark, EntitySpawnReason.NATURAL), "A Maw spawned at y=45, above the y=40 limit");
-            helper.assertTrue(mawMaySpawn(level, shallowDark, EntitySpawnReason.SPAWN_ITEM_USE), "A spawn egg could not place a Maw at y=45");
+            helper.assertTrue(mawMaySpawn(level, deepDark, MobSpawnType.NATURAL), "A Maw may not spawn in deep, dark water");
+            helper.assertFalse(mawMaySpawn(level, deepLit, MobSpawnType.NATURAL), "A Maw spawned in lit water");
+            helper.assertFalse(mawMaySpawn(level, deepDry, MobSpawnType.NATURAL), "A Maw spawned out of water");
+            helper.assertFalse(mawMaySpawn(level, shallowDark, MobSpawnType.NATURAL), "A Maw spawned at y=45, above the y=40 limit");
+            helper.assertTrue(mawMaySpawn(level, shallowDark, MobSpawnType.SPAWN_EGG), "A spawn egg could not place a Maw at y=45");
             for (BlockPos pos : BlockPos.betweenClosed(shallowDark.offset(-1, -1, -1), shallowDark.offset(1, 1, 1))) {
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             }
@@ -57,7 +56,7 @@ public final class AquaticMovementTests {
         return "sky " + level.getBrightness(LightLayer.SKY, pos) + ", block " + level.getBrightness(LightLayer.BLOCK, pos);
     }
 
-    private static boolean mawMaySpawn(ServerLevel level, BlockPos pos, EntitySpawnReason reason) {
+    private static boolean mawMaySpawn(ServerLevel level, BlockPos pos, MobSpawnType reason) {
         return SpawnPlacements.checkSpawnRules(NTEntities.ABYSSAL_MAW.get(), level, reason, pos, level.getRandom());
     }
 
@@ -69,7 +68,7 @@ public final class AquaticMovementTests {
         return centre.immutable();
     }
 
-    private static void keepsBiting(GameTestHelper helper) {
+    private static void keepsBiting(NTGameTestHelper helper) {
         tank(helper);
         Pig prey = helper.spawn(EntityType.PIG, new BlockPos(4, 1, 4));
         prey.setNoAi(true);
@@ -97,7 +96,7 @@ public final class AquaticMovementTests {
                 + maw.position() + ", " + String.format("%.2f", maw.distanceTo(prey)) + " blocks from the target at " + prey.position()));
     }
 
-    private static void pursuesAndBites(GameTestHelper helper) {
+    private static void pursuesAndBites(NTGameTestHelper helper) {
         tank(helper);
         Pig prey = helper.spawn(EntityType.PIG, new BlockPos(6, 1, 6));
         prey.setNoAi(true);
@@ -119,7 +118,7 @@ public final class AquaticMovementTests {
                 + " with the target at " + prey.position()));
     }
 
-    private static void tank(GameTestHelper helper) {
+    private static void tank(NTGameTestHelper helper) {
         for (BlockPos pos : BlockPos.betweenClosed(0, 0, 0, 8, 8, 8)) {
             boolean wall = pos.getX() == 0 || pos.getX() == 8 || pos.getY() == 0 || pos.getY() == 8
                     || pos.getZ() == 0 || pos.getZ() == 8;
@@ -127,9 +126,9 @@ public final class AquaticMovementTests {
         }
     }
 
-    private static void swimsUpward(GameTestHelper helper, EntityType<? extends Mob> type) {
+    private static void swimsUpward(NTGameTestHelper helper, EntityType<? extends Mob> type) {
         tank(helper);
-        Mob mob = type.spawn(helper.getLevel(), helper.absolutePos(new BlockPos(3, 2, 4)), EntitySpawnReason.COMMAND);
+        Mob mob = type.spawn(helper.getLevel(), helper.absolutePos(new BlockPos(3, 2, 4)), MobSpawnType.COMMAND);
         helper.assertTrue(mob != null, "Aquatic mob must spawn");
         mob.goalSelector.removeAllGoals(goal -> true);
         mob.targetSelector.removeAllGoals(goal -> true);

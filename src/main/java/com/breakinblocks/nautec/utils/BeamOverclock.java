@@ -1,8 +1,8 @@
 package com.breakinblocks.nautec.utils;
 
 import com.breakinblocks.nautec.NTConfig;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 
 public final class BeamOverclock {
     private float carry;

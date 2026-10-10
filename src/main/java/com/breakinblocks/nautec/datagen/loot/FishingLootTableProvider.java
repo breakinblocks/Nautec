@@ -10,7 +10,7 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTLootTables;
-import net.minecraft.advancements.criterion.LocationPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;

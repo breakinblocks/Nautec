@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -20,7 +20,7 @@ import java.util.Locale;
 public enum FusionControllerComponentProvider implements StreamServerDataProvider<BlockAccessor, FusionControllerComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("fusion_controller");
+    private static final ResourceLocation UID = Nautec.rl("fusion_controller");
 
     public record Data(int status, int problem, int heat, int output, int fuel) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -46,7 +46,7 @@ public enum FusionControllerComponentProvider implements StreamServerDataProvide
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -71,7 +71,7 @@ public enum FusionControllerComponentProvider implements StreamServerDataProvide
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

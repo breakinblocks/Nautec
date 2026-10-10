@@ -2,5 +2,6 @@
   "parent": "nautec:block/aquatic_catalyst_lamp",
   "textures": {
     "lamp": "nautec:block/aquatic_catalyst_lamp_unlinked"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

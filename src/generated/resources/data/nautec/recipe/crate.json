@@ -2,7 +2,9 @@
   "type": "nautec:item_etching",
   "duration": 200,
   "ingredient": {
-    "ingredient": "nautec:rusty_crate"
+    "ingredient": {
+      "item": "nautec:rusty_crate"
+    }
   },
   "result": {
     "id": "nautec:crate"

@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:azuritophiles",
   "ingredient": {
-    "ingredient": "#c:ores/lapis"
+    "ingredient": {
+      "tag": "c:ores/lapis"
+    }
   },
   "vitality_ticks": 1200
 }

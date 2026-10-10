@@ -12,9 +12,9 @@ import org.lwjgl.glfw.GLFW;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 
-@EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Nautec.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public final class NTKeybinds {
-    public static final KeyMapping.Category NAUTEC_CATEGORY = new KeyMapping.Category(Nautec.rl("main"));
+    public static final String NAUTEC_CATEGORY = "key.category.nautec.main";
 
     public static final Lazy<KeyMapping> AUGMENT_SCREEN_KEYBIND = keyBind(
             "key.nautec.augment_screen", GLFW.GLFW_KEY_B);
@@ -58,7 +58,6 @@ public final class NTKeybinds {
     }
     @SubscribeEvent
     public static void registerBindings(RegisterKeyMappingsEvent event) {
-        event.registerCategory(NAUTEC_CATEGORY);
         event.register(AUGMENT_SCREEN_KEYBIND.get());
         event.register(THROW_TRIDENT_KEYBIND.get());
         event.register(LEAP_KEYBIND.get());

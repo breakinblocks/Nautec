@@ -1,7 +1,7 @@
 package com.breakinblocks.nautec.api.sides;
 
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 
 import java.util.EnumMap;
 import java.util.Map;

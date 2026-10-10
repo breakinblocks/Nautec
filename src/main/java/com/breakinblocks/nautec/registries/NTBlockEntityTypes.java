@@ -77,203 +77,203 @@ public final class NTBlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Nautec.MODID);
 
     public static final Supplier<BlockEntityType<AquaticCatalystBlockEntity>> AQUATIC_CATALYST = BLOCK_ENTITIES.register("aquatic_catalyst",
-            () -> new BlockEntityType<>(AquaticCatalystBlockEntity::new,
-                    NTBlocks.AQUATIC_CATALYST.get()));
+            () -> BlockEntityType.Builder.of(AquaticCatalystBlockEntity::new,
+                    NTBlocks.AQUATIC_CATALYST.get()).build(null));
     public static final Supplier<BlockEntityType<PrismarineLaserRelayBlockEntity>> PRISMARINE_LASER_RELAY = BLOCK_ENTITIES.register("prismarine_laser_relay",
-            () -> new BlockEntityType<>(PrismarineLaserRelayBlockEntity::new,
-                    NTBlocks.PRISMARINE_RELAY.get()));
+            () -> BlockEntityType.Builder.of(PrismarineLaserRelayBlockEntity::new,
+                    NTBlocks.PRISMARINE_RELAY.get()).build(null));
     public static final Supplier<BlockEntityType<LongDistanceLaserBlockEntity>> LONG_DISTANCE_LASER = BLOCK_ENTITIES.register("long_distance_laser",
-            () -> new BlockEntityType<>(LongDistanceLaserBlockEntity::new,
-                    NTBlocks.LONG_DISTANCE_LASER.get()));
+            () -> BlockEntityType.Builder.of(LongDistanceLaserBlockEntity::new,
+                    NTBlocks.LONG_DISTANCE_LASER.get()).build(null));
     public static final Supplier<BlockEntityType<LaserJunctionBlockEntity>> LASER_JUNCTION = BLOCK_ENTITIES.register("laser_junction",
-            () -> new BlockEntityType<>(LaserJunctionBlockEntity::new,
-                    NTBlocks.LASER_JUNCTION.get()));
+            () -> BlockEntityType.Builder.of(LaserJunctionBlockEntity::new,
+                    NTBlocks.LASER_JUNCTION.get()).build(null));
     public static final Supplier<BlockEntityType<MixerBlockEntity>> MIXER = BLOCK_ENTITIES.register("mixer",
-            () -> new BlockEntityType<>(MixerBlockEntity::new,
-                    NTBlocks.MIXER.get()));
+            () -> BlockEntityType.Builder.of(MixerBlockEntity::new,
+                    NTBlocks.MIXER.get()).build(null));
     public static final Supplier<BlockEntityType<LaserCraftingMatrixBlockEntity>> LASER_CRAFTING_MATRIX = BLOCK_ENTITIES.register("laser_crafting_matrix",
-            () -> new BlockEntityType<>(LaserCraftingMatrixBlockEntity::new,
-                    NTBlocks.LASER_CRAFTING_MATRIX.get()));
+            () -> BlockEntityType.Builder.of(LaserCraftingMatrixBlockEntity::new,
+                    NTBlocks.LASER_CRAFTING_MATRIX.get()).build(null));
     public static final Supplier<BlockEntityType<LuckyFishingZoneBlockEntity>> LUCKY_FISHING_ZONE = BLOCK_ENTITIES.register("lucky_fishing_zone",
-            () -> new BlockEntityType<>(LuckyFishingZoneBlockEntity::new,
-                    NTBlocks.LUCKY_FISHING_ZONE.get()));
+            () -> BlockEntityType.Builder.of(LuckyFishingZoneBlockEntity::new,
+                    NTBlocks.LUCKY_FISHING_ZONE.get()).build(null));
     public static final Supplier<BlockEntityType<CrateBlockEntity>> CRATE = BLOCK_ENTITIES.register("crate",
-            () -> new BlockEntityType<>(CrateBlockEntity::new,
-                    NTBlocks.CRATE.get(), NTBlocks.RUSTY_CRATE.get()));
+            () -> BlockEntityType.Builder.of(CrateBlockEntity::new,
+                    NTBlocks.CRATE.get(), NTBlocks.RUSTY_CRATE.get()).build(null));
     public static final Supplier<BlockEntityType<AnchorBlockEntity>> ANCHOR = BLOCK_ENTITIES.register("anchor",
-            () -> new BlockEntityType<>(AnchorBlockEntity::new,
-                    NTBlocks.ANCHOR.get()));
+            () -> BlockEntityType.Builder.of(AnchorBlockEntity::new,
+                    NTBlocks.ANCHOR.get()).build(null));
     public static final Supplier<BlockEntityType<FishingStationBlockEntity>> FISHING_STATION = BLOCK_ENTITIES.register("fishing_station",
-            () -> new BlockEntityType<>(FishingStationBlockEntity::new,
-                    NTBlocks.FISHING_STATION.get()));
+            () -> BlockEntityType.Builder.of(FishingStationBlockEntity::new,
+                    NTBlocks.FISHING_STATION.get()).build(null));
     public static final Supplier<BlockEntityType<OilBarrelBlockEntity>> OIL_BARREL = BLOCK_ENTITIES.register("oil_barrel",
-            () -> new BlockEntityType<>(OilBarrelBlockEntity::new,
-                    NTBlocks.OIL_BARREL.get()));
+            () -> BlockEntityType.Builder.of(OilBarrelBlockEntity::new,
+                    NTBlocks.OIL_BARREL.get()).build(null));
 
     public static final Supplier<BlockEntityType<SubmarineDockBlockEntity>> SUBMARINE_DOCK = BLOCK_ENTITIES.register("submarine_dock",
-            () -> new BlockEntityType<>(SubmarineDockBlockEntity::new,
-                    NTBlocks.SUBMARINE_DOCK.get()));
+            () -> BlockEntityType.Builder.of(SubmarineDockBlockEntity::new,
+                    NTBlocks.SUBMARINE_DOCK.get()).build(null));
     public static final Supplier<BlockEntityType<PressureForgeBlockEntity>> PRESSURE_FORGE = BLOCK_ENTITIES.register("pressure_forge",
-            () -> new BlockEntityType<>(PressureForgeBlockEntity::new,
-                    NTBlocks.PRESSURE_FORGE.get()));
+            () -> BlockEntityType.Builder.of(PressureForgeBlockEntity::new,
+                    NTBlocks.PRESSURE_FORGE.get()).build(null));
     public static final Supplier<BlockEntityType<GatewayBlockEntity>> GATEWAY = BLOCK_ENTITIES.register("gateway",
-            () -> new BlockEntityType<>(GatewayBlockEntity::new,
-                    NTBlocks.GATEWAY.get()));
+            () -> BlockEntityType.Builder.of(GatewayBlockEntity::new,
+                    NTBlocks.GATEWAY.get()).build(null));
     public static final Supplier<BlockEntityType<ResonanceChamberBlockEntity>> RESONANCE_CHAMBER = BLOCK_ENTITIES.register("resonance_chamber",
-            () -> new BlockEntityType<>(ResonanceChamberBlockEntity::new,
-                    NTBlocks.RESONANCE_CHAMBER.get()));
+            () -> BlockEntityType.Builder.of(ResonanceChamberBlockEntity::new,
+                    NTBlocks.RESONANCE_CHAMBER.get()).build(null));
     public static final Supplier<BlockEntityType<PrismaticMirrorBlockEntity>> PRISMATIC_MIRROR = BLOCK_ENTITIES.register("prismatic_mirror",
-            () -> new BlockEntityType<>(PrismaticMirrorBlockEntity::new,
-                    NTBlocks.PRISMATIC_MIRROR.get()));
+            () -> BlockEntityType.Builder.of(PrismaticMirrorBlockEntity::new,
+                    NTBlocks.PRISMATIC_MIRROR.get()).build(null));
     public static final Supplier<BlockEntityType<BeamSplitterBlockEntity>> BEAM_SPLITTER = BLOCK_ENTITIES.register("beam_splitter",
-            () -> new BlockEntityType<>(BeamSplitterBlockEntity::new,
-                    NTBlocks.BEAM_SPLITTER.get()));
+            () -> BlockEntityType.Builder.of(BeamSplitterBlockEntity::new,
+                    NTBlocks.BEAM_SPLITTER.get()).build(null));
     public static final Supplier<BlockEntityType<FocusingLensBlockEntity>> FOCUSING_LENS = BLOCK_ENTITIES.register("focusing_lens",
-            () -> new BlockEntityType<>(FocusingLensBlockEntity::new,
-                    NTBlocks.FOCUSING_LENS.get()));
+            () -> BlockEntityType.Builder.of(FocusingLensBlockEntity::new,
+                    NTBlocks.FOCUSING_LENS.get()).build(null));
 
     public static final Supplier<BlockEntityType<MutatorBlockEntity>> MUTATOR = BLOCK_ENTITIES.register("mutator",
-            () -> new BlockEntityType<>(MutatorBlockEntity::new,
-                    NTBlocks.MUTATOR.get()));
+            () -> BlockEntityType.Builder.of(MutatorBlockEntity::new,
+                    NTBlocks.MUTATOR.get()).build(null));
     public static final Supplier<BlockEntityType<IncubatorBlockEntity>> INCUBATOR = BLOCK_ENTITIES.register("incubator",
-            () -> new BlockEntityType<>(IncubatorBlockEntity::new,
-                    NTBlocks.INCUBATOR.get()));
+            () -> BlockEntityType.Builder.of(IncubatorBlockEntity::new,
+                    NTBlocks.INCUBATOR.get()).build(null));
     public static final Supplier<BlockEntityType<BioReactorBlockEntity>> BIO_REACTOR = BLOCK_ENTITIES.register("bio_reactor",
-            () -> new BlockEntityType<>(BioReactorBlockEntity::new,
-                    NTBlocks.BIO_REACTOR.get()));
+            () -> BlockEntityType.Builder.of(BioReactorBlockEntity::new,
+                    NTBlocks.BIO_REACTOR.get()).build(null));
     public static final Supplier<BlockEntityType<BioReactorPartBlockEntity>> BIO_REACTOR_PART = BLOCK_ENTITIES.register("bio_reactor_part",
-            () -> new BlockEntityType<>(BioReactorPartBlockEntity::new,
-                    NTBlocks.BIO_REACTOR_PART.get()));
+            () -> BlockEntityType.Builder.of(BioReactorPartBlockEntity::new,
+                    NTBlocks.BIO_REACTOR_PART.get()).build(null));
     public static final Supplier<BlockEntityType<IndustrialBioReactorBlockEntity>> INDUSTRIAL_BIO_REACTOR = BLOCK_ENTITIES.register("industrial_bio_reactor",
-            () -> new BlockEntityType<>(IndustrialBioReactorBlockEntity::new,
-                    NTBlocks.INDUSTRIAL_BIO_REACTOR.get()));
+            () -> BlockEntityType.Builder.of(IndustrialBioReactorBlockEntity::new,
+                    NTBlocks.INDUSTRIAL_BIO_REACTOR.get()).build(null));
     public static final Supplier<BlockEntityType<IndustrialBioReactorPartBlockEntity>> INDUSTRIAL_BIO_REACTOR_PART = BLOCK_ENTITIES.register("industrial_bio_reactor_part",
-            () -> new BlockEntityType<>(IndustrialBioReactorPartBlockEntity::new,
-                    NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get()));
+            () -> BlockEntityType.Builder.of(IndustrialBioReactorPartBlockEntity::new,
+                    NTBlocks.INDUSTRIAL_BIO_REACTOR_PART.get()).build(null));
     public static final Supplier<BlockEntityType<BacterialFuelCellBlockEntity>> BACTERIAL_FUEL_CELL = BLOCK_ENTITIES.register("bacterial_fuel_cell",
-            () -> new BlockEntityType<>(BacterialFuelCellBlockEntity::new,
-                    NTBlocks.BACTERIAL_FUEL_CELL.get()));
+            () -> BlockEntityType.Builder.of(BacterialFuelCellBlockEntity::new,
+                    NTBlocks.BACTERIAL_FUEL_CELL.get()).build(null));
     public static final Supplier<BlockEntityType<BacterialAnalyzerBlockEntity>> BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("bacterial_analyzer",
-            () -> new BlockEntityType<>(BacterialAnalyzerBlockEntity::new,
-                    NTBlocks.BACTERIAL_ANALYZER.get()));
+            () -> BlockEntityType.Builder.of(BacterialAnalyzerBlockEntity::new,
+                    NTBlocks.BACTERIAL_ANALYZER.get()).build(null));
     public static final Supplier<BlockEntityType<OxygenDiffuserBlockEntity>> OXYGEN_DIFFUSER = BLOCK_ENTITIES.register("oxygen_diffuser",
-            () -> new BlockEntityType<>(OxygenDiffuserBlockEntity::new,
-                    NTBlocks.OXYGEN_DIFFUSER.get()));
+            () -> BlockEntityType.Builder.of(OxygenDiffuserBlockEntity::new,
+                    NTBlocks.OXYGEN_DIFFUSER.get()).build(null));
     public static final Supplier<BlockEntityType<ColonyReplicatorBlockEntity>> COLONY_REPLICATOR = BLOCK_ENTITIES.register("colony_replicator",
-            () -> new BlockEntityType<>(ColonyReplicatorBlockEntity::new,
-                    NTBlocks.COLONY_REPLICATOR.get()));
+            () -> BlockEntityType.Builder.of(ColonyReplicatorBlockEntity::new,
+                    NTBlocks.COLONY_REPLICATOR.get()).build(null));
     public static final Supplier<BlockEntityType<AirPocketBlockEntity>> AIR_POCKET = BLOCK_ENTITIES.register("air_pocket",
-            () -> new BlockEntityType<>(AirPocketBlockEntity::new,
-                    NTBlocks.AIR_POCKET.get()));
+            () -> BlockEntityType.Builder.of(AirPocketBlockEntity::new,
+                    NTBlocks.AIR_POCKET.get()).build(null));
     public static final Supplier<BlockEntityType<BubbleAnchorBlockEntity>> BUBBLE_ANCHOR = BLOCK_ENTITIES.register("bubble_anchor",
-            () -> new BlockEntityType<>(BubbleAnchorBlockEntity::new,
-                    NTBlocks.BUBBLE_ANCHOR.get()));
+            () -> BlockEntityType.Builder.of(BubbleAnchorBlockEntity::new,
+                    NTBlocks.BUBBLE_ANCHOR.get()).build(null));
     public static final Supplier<BlockEntityType<DistributorBlockEntity>> DISTRIBUTOR = BLOCK_ENTITIES.register("nautechnical_distributor",
-            () -> new BlockEntityType<>(DistributorBlockEntity::new,
-                    NTBlocks.DISTRIBUTOR.get()));
+            () -> BlockEntityType.Builder.of(DistributorBlockEntity::new,
+                    NTBlocks.DISTRIBUTOR.get()).build(null));
     public static final Supplier<BlockEntityType<ConduitTapBlockEntity>> CONDUIT_TAP = BLOCK_ENTITIES.register("conduit_tap",
-            () -> new BlockEntityType<>(ConduitTapBlockEntity::new,
-                    NTBlocks.CONDUIT_TAP.get()));
+            () -> BlockEntityType.Builder.of(ConduitTapBlockEntity::new,
+                    NTBlocks.CONDUIT_TAP.get()).build(null));
     public static final Supplier<BlockEntityType<ResonantVaultBlockEntity>> RESONANT_VAULT = BLOCK_ENTITIES.register("resonant_vault",
-            () -> new BlockEntityType<>(ResonantVaultBlockEntity::new,
-                    NTBlocks.RESONANT_VAULT.get()));
+            () -> BlockEntityType.Builder.of(ResonantVaultBlockEntity::new,
+                    NTBlocks.RESONANT_VAULT.get()).build(null));
     public static final Supplier<BlockEntityType<ResonantCisternBlockEntity>> RESONANT_CISTERN = BLOCK_ENTITIES.register("resonant_cistern",
-            () -> new BlockEntityType<>(ResonantCisternBlockEntity::new,
-                    NTBlocks.RESONANT_CISTERN.get()));
+            () -> BlockEntityType.Builder.of(ResonantCisternBlockEntity::new,
+                    NTBlocks.RESONANT_CISTERN.get()).build(null));
     public static final Supplier<BlockEntityType<AdvancedBacterialAnalyzerBlockEntity>> ADVANCED_BACTERIAL_ANALYZER = BLOCK_ENTITIES.register("advanced_bacterial_analyzer",
-            () -> new BlockEntityType<>(AdvancedBacterialAnalyzerBlockEntity::new,
-                    NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get()));
+            () -> BlockEntityType.Builder.of(AdvancedBacterialAnalyzerBlockEntity::new,
+                    NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get()).build(null));
     public static final Supplier<BlockEntityType<GraftingStationBlockEntity>> GRAFTING_STATION = BLOCK_ENTITIES.register("grafting_station",
-            () -> new BlockEntityType<>(GraftingStationBlockEntity::new,
-                    NTBlocks.GRAFTING_STATION.get()));
+            () -> BlockEntityType.Builder.of(GraftingStationBlockEntity::new,
+                    NTBlocks.GRAFTING_STATION.get()).build(null));
 
     public static final Supplier<BlockEntityType<CreativePowerSourceBlockEntity>> CREATIVE_POWER_SOURCE = BLOCK_ENTITIES.register("creative_power_source",
-            () -> new BlockEntityType<>(CreativePowerSourceBlockEntity::new,
-                    NTBlocks.CREATIVE_POWER_SOURCE.get()));
+            () -> BlockEntityType.Builder.of(CreativePowerSourceBlockEntity::new,
+                    NTBlocks.CREATIVE_POWER_SOURCE.get()).build(null));
     public static final Supplier<BlockEntityType<CreativeEnergySourceBlockEntity>> CREATIVE_ENERGY_SOURCE = BLOCK_ENTITIES.register("creative_energy_source",
-            () -> new BlockEntityType<>(CreativeEnergySourceBlockEntity::new,
-                    NTBlocks.CREATIVE_ENERGY_SOURCE.get()));
+            () -> BlockEntityType.Builder.of(CreativeEnergySourceBlockEntity::new,
+                    NTBlocks.CREATIVE_ENERGY_SOURCE.get()).build(null));
     public static final Supplier<BlockEntityType<EnergyConverterBlockEntity>> ENERGY_CONVERTER = BLOCK_ENTITIES.register("energy_converter",
-            () -> new BlockEntityType<>(EnergyConverterBlockEntity::new,
-                    NTBlocks.ENERGY_CONVERTER.get()));
+            () -> BlockEntityType.Builder.of(EnergyConverterBlockEntity::new,
+                    NTBlocks.ENERGY_CONVERTER.get()).build(null));
     public static final Supplier<BlockEntityType<ChargerBlockEntity>> CHARGER = BLOCK_ENTITIES.register("charger",
-            () -> new BlockEntityType<>(ChargerBlockEntity::new,
-                    NTBlocks.CHARGER.get()));
+            () -> BlockEntityType.Builder.of(ChargerBlockEntity::new,
+                    NTBlocks.CHARGER.get()).build(null));
     public static final Supplier<BlockEntityType<CrystalCradleBlockEntity>> CRYSTAL_CRADLE = BLOCK_ENTITIES.register("crystal_cradle",
-            () -> new BlockEntityType<>(CrystalCradleBlockEntity::new,
-                    NTBlocks.CRYSTAL_CRADLE.get()));
+            () -> BlockEntityType.Builder.of(CrystalCradleBlockEntity::new,
+                    NTBlocks.CRYSTAL_CRADLE.get()).build(null));
     public static final Supplier<BlockEntityType<ResonancePylonBlockEntity>> RESONANCE_PYLON = BLOCK_ENTITIES.register("resonance_pylon",
-            () -> new BlockEntityType<>(ResonancePylonBlockEntity::new,
-                    NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()));
+            () -> BlockEntityType.Builder.of(ResonancePylonBlockEntity::new,
+                    NTBlocks.RESONANCE_PYLON.get(), NTBlocks.ABYSSAL_PYLON.get()).build(null));
     public static final Supplier<BlockEntityType<ConduitBeaconBlockEntity>> CONDUIT_BEACON = BLOCK_ENTITIES.register("conduit_beacon",
-            () -> new BlockEntityType<>(ConduitBeaconBlockEntity::new,
-                    NTBlocks.CONDUIT_BEACON.get()));
+            () -> BlockEntityType.Builder.of(ConduitBeaconBlockEntity::new,
+                    NTBlocks.CONDUIT_BEACON.get()).build(null));
     public static final Supplier<BlockEntityType<DishStorageBlockEntity>> DISH_STORAGE = BLOCK_ENTITIES.register("dish_storage",
-            () -> new BlockEntityType<>(DishStorageBlockEntity::new,
-                    NTBlocks.AQUARINE_DISH_STORAGE.get(), NTBlocks.DEEP_STEEL_DISH_STORAGE.get(), NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get()));
+            () -> BlockEntityType.Builder.of(DishStorageBlockEntity::new,
+                    NTBlocks.AQUARINE_DISH_STORAGE.get(), NTBlocks.DEEP_STEEL_DISH_STORAGE.get(), NTBlocks.ATLANTIC_GOLD_DISH_STORAGE.get()).build(null));
     public static final Supplier<BlockEntityType<BiomeTankBlockEntity>> BIOME_TANK = BLOCK_ENTITIES.register("biome_tank",
-            () -> new BlockEntityType<>(BiomeTankBlockEntity::new,
-                    NTBlocks.BIOME_TANKS.values().stream().map(DeferredBlock::get).toArray(Block[]::new)));
+            () -> BlockEntityType.Builder.of(BiomeTankBlockEntity::new,
+                    NTBlocks.BIOME_TANKS.values().stream().map(DeferredBlock::get).toArray(Block[]::new)).build(null));
     public static final Supplier<BlockEntityType<ResonanceNodeBlockEntity>> RESONANCE_NODE = BLOCK_ENTITIES.register("resonance_node",
-            () -> new BlockEntityType<>(ResonanceNodeBlockEntity::new,
-                    NTBlocks.RESONANCE_NODE.get()));
+            () -> BlockEntityType.Builder.of(ResonanceNodeBlockEntity::new,
+                    NTBlocks.RESONANCE_NODE.get()).build(null));
     public static final Supplier<BlockEntityType<SatelliteArrayBlockEntity>> SATELLITE_ARRAY = BLOCK_ENTITIES.register("satellite_array",
-            () -> new BlockEntityType<>(SatelliteArrayBlockEntity::new,
-                    NTBlocks.UPLINK_ARRAY.get(), NTBlocks.DOWNLINK_ARRAY.get()));
+            () -> BlockEntityType.Builder.of(SatelliteArrayBlockEntity::new,
+                    NTBlocks.UPLINK_ARRAY.get(), NTBlocks.DOWNLINK_ARRAY.get()).build(null));
     public static final Supplier<BlockEntityType<PrismaticEmitterBlockEntity>> PRISMATIC_EMITTER = BLOCK_ENTITIES.register("prismatic_emitter",
-            () -> new BlockEntityType<>(PrismaticEmitterBlockEntity::new,
-                    NTBlocks.PRISMATIC_EMITTER.get()));
+            () -> BlockEntityType.Builder.of(PrismaticEmitterBlockEntity::new,
+                    NTBlocks.PRISMATIC_EMITTER.get()).build(null));
     public static final Supplier<BlockEntityType<TidalRotorBlockEntity>> TIDAL_ROTOR = BLOCK_ENTITIES.register("tidal_rotor",
-            () -> new BlockEntityType<>(TidalRotorBlockEntity::new,
-                    NTBlocks.TIDAL_ROTOR.get()));
+            () -> BlockEntityType.Builder.of(TidalRotorBlockEntity::new,
+                    NTBlocks.TIDAL_ROTOR.get()).build(null));
     public static final Supplier<BlockEntityType<ThermalVentTapBlockEntity>> THERMAL_VENT_TAP = BLOCK_ENTITIES.register("thermal_vent_tap",
-            () -> new BlockEntityType<>(ThermalVentTapBlockEntity::new,
-                    NTBlocks.THERMAL_VENT_TAP.get()));
+            () -> BlockEntityType.Builder.of(ThermalVentTapBlockEntity::new,
+                    NTBlocks.THERMAL_VENT_TAP.get()).build(null));
     public static final Supplier<BlockEntityType<CombustionDynamoBlockEntity>> COMBUSTION_DYNAMO = BLOCK_ENTITIES.register("combustion_dynamo",
-            () -> new BlockEntityType<>(CombustionDynamoBlockEntity::new,
-                    NTBlocks.COMBUSTION_DYNAMO.get()));
+            () -> BlockEntityType.Builder.of(CombustionDynamoBlockEntity::new,
+                    NTBlocks.COMBUSTION_DYNAMO.get()).build(null));
     public static final Supplier<BlockEntityType<FusionControllerBlockEntity>> FUSION_CONTROLLER = BLOCK_ENTITIES.register("fusion_controller",
-            () -> new BlockEntityType<>(FusionControllerBlockEntity::new,
-                    NTBlocks.FUSION_CONTROLLER.get()));
+            () -> BlockEntityType.Builder.of(FusionControllerBlockEntity::new,
+                    NTBlocks.FUSION_CONTROLLER.get()).build(null));
     public static final Supplier<BlockEntityType<LaserInjectorBlockEntity>> LASER_INJECTOR = BLOCK_ENTITIES.register("laser_injector",
-            () -> new BlockEntityType<>(LaserInjectorBlockEntity::new,
-                    NTBlocks.LASER_INJECTOR.get()));
+            () -> BlockEntityType.Builder.of(LaserInjectorBlockEntity::new,
+                    NTBlocks.LASER_INJECTOR.get()).build(null));
     public static final Supplier<BlockEntityType<FusionCollectorBlockEntity>> FUSION_COLLECTOR = BLOCK_ENTITIES.register("fusion_collector",
-            () -> new BlockEntityType<>(FusionCollectorBlockEntity::new,
-                    NTBlocks.FUSION_COLLECTOR.get()));
+            () -> BlockEntityType.Builder.of(FusionCollectorBlockEntity::new,
+                    NTBlocks.FUSION_COLLECTOR.get()).build(null));
     public static final Supplier<BlockEntityType<FusionPortBlockEntity>> FUSION_PORT = BLOCK_ENTITIES.register("fusion_port",
-            () -> new BlockEntityType<>(FusionPortBlockEntity::new,
-                    NTBlocks.FUSION_PORT.get()));
+            () -> BlockEntityType.Builder.of(FusionPortBlockEntity::new,
+                    NTBlocks.FUSION_PORT.get()).build(null));
 
     public static final Supplier<BlockEntityType<ConfinedSpawnerBlockEntity>> CONFINED_SPAWNER = BLOCK_ENTITIES.register("confined_spawner",
-            () -> new BlockEntityType<>(ConfinedSpawnerBlockEntity::new,
-                    NTBlocks.CONFINED_SPAWNER.get()));
+            () -> BlockEntityType.Builder.of(ConfinedSpawnerBlockEntity::new,
+                    NTBlocks.CONFINED_SPAWNER.get()).build(null));
 
     public static final Supplier<BlockEntityType<DrainBlockEntity>> DRAIN = BLOCK_ENTITIES.register("drain",
-            () -> new BlockEntityType<>(DrainBlockEntity::new,
-                    NTBlocks.DRAIN.get()));
+            () -> BlockEntityType.Builder.of(DrainBlockEntity::new,
+                    NTBlocks.DRAIN.get()).build(null));
     public static final Supplier<BlockEntityType<DrainPartBlockEntity>> DRAIN_PART = BLOCK_ENTITIES.register("drain_part",
-            () -> new BlockEntityType<>(DrainPartBlockEntity::new,
-                    NTBlocks.DRAIN_PART.get()));
+            () -> BlockEntityType.Builder.of(DrainPartBlockEntity::new,
+                    NTBlocks.DRAIN_PART.get()).build(null));
 
     public static final Supplier<BlockEntityType<PrismarineCrystalBlockEntity>> PRISMARINE_CRYSTAL = BLOCK_ENTITIES.register("prismarine_crystal",
-            () -> new BlockEntityType<>(PrismarineCrystalBlockEntity::new,
-                    NTBlocks.PRISMARINE_CRYSTAL.get()));
+            () -> BlockEntityType.Builder.of(PrismarineCrystalBlockEntity::new,
+                    NTBlocks.PRISMARINE_CRYSTAL.get()).build(null));
     public static final Supplier<BlockEntityType<PrismarineCrystalPartBlockEntity>> PRISMARINE_CRYSTAL_PART = BLOCK_ENTITIES.register("prismarine_crystal_part",
-            () -> new BlockEntityType<>(PrismarineCrystalPartBlockEntity::new,
-                    NTBlocks.PRISMARINE_CRYSTAL_PART.get()));
+            () -> BlockEntityType.Builder.of(PrismarineCrystalPartBlockEntity::new,
+                    NTBlocks.PRISMARINE_CRYSTAL_PART.get()).build(null));
 
     public static final Supplier<BlockEntityType<DecorativePrismarineCrystalBlockEntity>> DECORATIVE_PRISMARINE_CRYSTAL = BLOCK_ENTITIES.register("decorative_prismarine_crystal",
-            () -> new BlockEntityType<>(DecorativePrismarineCrystalBlockEntity::new,
-                    NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get()));
+            () -> BlockEntityType.Builder.of(DecorativePrismarineCrystalBlockEntity::new,
+                    NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.get()).build(null));
 
     public static final Supplier<BlockEntityType<AugmentationStationBlockEntity>> AUGMENTATION_STATION = BLOCK_ENTITIES.register("augmentation_station",
-            () -> new BlockEntityType<>(AugmentationStationBlockEntity::new,
-                    NTBlocks.AUGMENTATION_STATION.get()));
+            () -> BlockEntityType.Builder.of(AugmentationStationBlockEntity::new,
+                    NTBlocks.AUGMENTATION_STATION.get()).build(null));
     public static final Supplier<BlockEntityType<AugmentationStationPartBlockEntity>> AUGMENTATION_STATION_PART = BLOCK_ENTITIES.register("augmentation_station_part",
-            () -> new BlockEntityType<>(AugmentationStationPartBlockEntity::new,
-                    NTBlocks.AUGMENTATION_STATION_PART.get()));
+            () -> BlockEntityType.Builder.of(AugmentationStationPartBlockEntity::new,
+                    NTBlocks.AUGMENTATION_STATION_PART.get()).build(null));
     public static final Supplier<BlockEntityType<AugmentationStationExtensionBlockEntity>> AUGMENTATION_STATION_EXTENSION = BLOCK_ENTITIES.register("augmentation_station_extension",
-            () -> new BlockEntityType<>(AugmentationStationExtensionBlockEntity::new,
-                    NTBlocks.AUGMENTATION_STATION_EXTENSION.get()));
+            () -> BlockEntityType.Builder.of(AugmentationStationExtensionBlockEntity::new,
+                    NTBlocks.AUGMENTATION_STATION_EXTENSION.get()).build(null));
 }

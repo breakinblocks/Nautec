@@ -8,18 +8,26 @@
   "ingredients": [
     {
       "count": 2,
-      "ingredient": "#c:ingots/gold"
+      "ingredient": {
+        "tag": "c:ingots/gold"
+      }
     },
     {
       "count": 4,
-      "ingredient": "#c:dusts/redstone"
+      "ingredient": {
+        "tag": "c:dusts/redstone"
+      }
     },
     {
       "count": 2,
-      "ingredient": "nautec:prismarine_crystal_shard"
+      "ingredient": {
+        "item": "nautec:prismarine_crystal_shard"
+      }
     },
     {
-      "ingredient": "nautec:laser_channeling_coil"
+      "ingredient": {
+        "item": "nautec:laser_channeling_coil"
+      }
     }
   ],
   "result": {

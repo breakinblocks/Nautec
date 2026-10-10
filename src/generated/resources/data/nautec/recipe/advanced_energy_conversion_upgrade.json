@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": "nautec:atlantic_gold_ingot",
-    "P": "nautec:prismarine_crystal_shard",
-    "U": "nautec:energy_conversion_upgrade"
+    "G": {
+      "item": "nautec:atlantic_gold_ingot"
+    },
+    "P": {
+      "item": "nautec:prismarine_crystal_shard"
+    },
+    "U": {
+      "item": "nautec:energy_conversion_upgrade"
+    }
   },
   "pattern": [
     "GPG",
@@ -12,6 +18,7 @@
     "GPG"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:advanced_energy_conversion_upgrade"
   }
 }

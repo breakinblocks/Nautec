@@ -16,6 +16,7 @@
       "translate": "advancements.nautec.prismatic_angler.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:nautec_fishing_rod"
     },
     "title": {

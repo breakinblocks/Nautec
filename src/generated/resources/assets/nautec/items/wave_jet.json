@@ -1,9 +1,0 @@
-{
-  "model": {
-    "type": "minecraft:special",
-    "base": "nautec:item/wave_jet_base",
-    "model": {
-      "type": "geckolib:geckolib"
-    }
-  }
-}

@@ -11,26 +11,22 @@ import com.breakinblocks.nautec.content.augments.ResonanceAugment;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTParticles;
-import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -41,7 +37,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class ResonanceCharmItem extends Item implements ICurioItem {
     public static final int INTERVAL = 10;
@@ -69,33 +64,33 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
         }
         ResonanceNetwork network = pylon.getNetwork();
         if (network == null) {
-            player.sendOverlayMessage(Component.translatable("nautec.resonance_charm.no_network").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("nautec.resonance_charm.no_network").withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
         if (!ResonanceNetworks.canUse(player, network)) {
-            player.sendOverlayMessage(Component.translatable("nautec.resonance.error.no_access").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("nautec.resonance.error.no_access").withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
         context.getItemInHand().set(NTDataComponents.RESONANCE_BINDING.get(), new ResonanceBinding(network.id(), network.name()));
-        player.sendOverlayMessage(Component.translatable("nautec.resonance_charm.bound", network.name()).withStyle(ChatFormatting.AQUA));
+        player.displayClientMessage(Component.translatable("nautec.resonance_charm.bound", network.name()).withStyle(ChatFormatting.AQUA), true);
         level.playSound(null, context.getClickedPos(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, 1.4F);
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack charm = player.getItemInHand(hand);
         if (player.isSecondaryUseActive() && charm.has(NTDataComponents.RESONANCE_BINDING.get())) {
             if (!level.isClientSide()) {
                 charm.remove(NTDataComponents.RESONANCE_BINDING.get());
-                player.sendOverlayMessage(Component.translatable("nautec.resonance_charm.unbound"));
+                player.displayClientMessage(Component.translatable("nautec.resonance_charm.unbound"), true);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResultHolder.success(charm);
         }
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new OpenCharmScreenPayload(hand.ordinal(), info(serverPlayer, charm)));
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.success(charm);
     }
 
     @Override
@@ -211,7 +206,7 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
 
     public static void charged(ServerPlayer player) {
         player.getInventory().setChanged();
-        player.level().sendParticles(NTParticles.CRYSTAL_MOTE.get(), player.getX(), player.getY() + 1.0, player.getZ(), 3, 0.35, 0.5, 0.35, 0.0);
+        player.serverLevel().sendParticles(NTParticles.CRYSTAL_MOTE.get(), player.getX(), player.getY() + 1.0, player.getZ(), 3, 0.35, 0.5, 0.35, 0.0);
     }
 
     private static int charge(ServerPlayer player, ItemStack charm, int budget, IntUnaryOperator source) {
@@ -269,21 +264,15 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
     }
 
     private static int fill(ItemStack target, int limit, IntUnaryOperator source, boolean simulate) {
-        EnergyHandler energy = target.getCount() == 1 ? ItemAccess.forStack(target).getCapability(Capabilities.Energy.ITEM) : null;
+        IEnergyStorage energy = target.getCount() == 1 ? target.getCapability(Capabilities.EnergyStorage.ITEM) : null;
         if (energy != null) {
-            int demand;
-            try (Transaction simulation = Transaction.openRoot()) {
-                demand = energy.insert(limit, simulation);
-            }
+            int demand = energy.receiveEnergy(limit, true);
             if (simulate || demand <= 0) {
                 return demand;
             }
             int drawn = source.applyAsInt(demand);
             if (drawn > 0) {
-                try (Transaction tx = Transaction.openRoot()) {
-                    energy.insert(drawn, tx);
-                    tx.commit();
-                }
+                energy.receiveEnergy(drawn, false);
             }
             return drawn;
         }
@@ -326,15 +315,15 @@ public class ResonanceCharmItem extends Item implements ICurioItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         ResonanceBinding binding = stack.get(NTDataComponents.RESONANCE_BINDING.get());
         if (binding != null) {
-            tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.bound", binding.name()).withStyle(ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("nautec.resonance_charm.tooltip.bound", binding.name()).withStyle(ChatFormatting.AQUA));
         } else {
-            tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.unbound").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("nautec.resonance_charm.tooltip.unbound").withStyle(ChatFormatting.GRAY));
         }
-        tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.priority", priority(stack)).withStyle(ChatFormatting.GRAY));
-        tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.monocle").withStyle(ChatFormatting.GRAY));
-        tooltip.accept(Component.translatable("nautec.resonance_charm.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("nautec.resonance_charm.tooltip.priority", priority(stack)).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("nautec.resonance_charm.tooltip.monocle").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("nautec.resonance_charm.tooltip.usage").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

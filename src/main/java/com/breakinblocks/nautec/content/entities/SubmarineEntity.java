@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.EntityPowerStorage;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.entities.submarine.SubmarineInput;
 import com.breakinblocks.nautec.content.entities.submarine.SubmarineModules;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleItem;
 import com.breakinblocks.nautec.content.items.submarine.SubmarineModuleType;
@@ -17,17 +18,18 @@ import com.breakinblocks.nautec.data.components.ComponentPowerStorage;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
 import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTParticles;
-import com.geckolib.animatable.GeoEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.instance.InstancedAnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -57,7 +59,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -67,8 +68,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
@@ -76,6 +79,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import net.neoforged.neoforge.fluids.FluidType;
+import java.util.Collections;
 
 public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private boolean laserHeld;
@@ -93,7 +97,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final double PASSENGER_SEAT_Z = -4.5D / 16D * MODEL_SCALE;
     private static final double RIDE_HEIGHT = (1D / 16D + MODEL_Y_OFFSET) * MODEL_SCALE;
 
-    public static final DataTicket<Boolean> DEPLOYED = DataTicket.create("nautec:submarine_deployed", Boolean.class);
+    public static final DataTicket<Boolean> DEPLOYED = new DataTicket<>("nautec:submarine_deployed", Boolean.class);
 
     private static final RawAnimation DEPLOY = RawAnimation.begin().thenPlayAndHold("deploy");
     private static final RawAnimation STOWED = RawAnimation.begin().thenLoop("idle");
@@ -142,16 +146,16 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final double AGGRO_TRANSFER_RANGE = 32D;
     private static final double PORTAL_PULL_PEAK = 0.36D;
     private static final double EXIT_PUSH = 0.09D;
-    private static final Identifier TOUGHNESS_MODIFIER = Nautec.rl("submarine_armor_module_toughness");
-    private static final Identifier KNOCKBACK_MODIFIER = Nautec.rl("submarine_armor_module_knockback");
+    private static final ResourceLocation TOUGHNESS_MODIFIER = Nautec.rl("submarine_armor_module_toughness");
+    private static final ResourceLocation KNOCKBACK_MODIFIER = Nautec.rl("submarine_armor_module_knockback");
 
-    private final AnimatableInstanceCache animatableCache = new InstancedAnimatableInstanceCache(this);
+    private final AnimatableInstanceCache animatableCache = GeckoLibUtil.createInstanceCache(this);
     private final SubmarineModules modules = new SubmarineModules(this);
     private final NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO_CAPACITY, ItemStack.EMPTY);
     private final IPowerStorage powerStorage = new EntityPowerStorage(this::getPowerStored, this::setPowerStored,
             NTConfig.submarinePowerCapacity, 200, 0);
 
-    private Input input = Input.EMPTY;
+    private SubmarineInput input = SubmarineInput.EMPTY;
     private boolean freeLook;
     private boolean steeringLast;
     private @Nullable Vec3 portalTarget;
@@ -311,8 +315,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        ValueOutput output = TagValueOutput.wrap(registryAccess(), tag);
         output.putInt("power", getPowerStored());
         output.store("modules", ItemContainerContents.CODEC, ItemContainerContents.fromItems(getModuleStacks()));
         output.store("cargo", ItemContainerContents.CODEC, ItemContainerContents.fromItems(cargo));
@@ -320,8 +325,9 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        ValueInput input = TagValueInput.create(registryAccess(), tag);
         setPowerStored(input.getIntOr("power", 0));
         setModules(input.read("modules", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
         setCargo(input.read("cargo", ItemContainerContents.CODEC).orElse(ItemContainerContents.EMPTY));
@@ -348,7 +354,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         applyModuleModifier(Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK_MODIFIER, armored ? 1D : 0D);
     }
 
-    private void applyModuleModifier(Holder<Attribute> attribute, Identifier id, double amount) {
+    private void applyModuleModifier(Holder<Attribute> attribute, ResourceLocation id, double amount) {
         AttributeInstance instance = getAttribute(attribute);
         if (instance == null) {
             return;
@@ -449,7 +455,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         return this.powerStorage;
     }
 
-    public void setInput(Input input) {
+    public void setInput(SubmarineInput input) {
         this.input = input;
     }
 
@@ -476,7 +482,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     @Override
     public void tick() {
         if (getControllingPassenger() instanceof ServerPlayer driver) {
-            this.input = driver.getLastClientInput();
+            this.input = new SubmarineInput(driver.zza > 0F, driver.zza < 0F, driver.xxa > 0F, driver.xxa < 0F,
+                    false, driver.isShiftKeyDown(), driver.isSprinting());
         }
 
         if (isCharging()) {
@@ -597,7 +604,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         }
 
         if (driver != null && getPowerStored() > 0) {
-            Input controls = this.input;
+            SubmarineInput controls = this.input;
             float throttle = 0F;
             if (controls.forward()) {
                 throttle += 1F;
@@ -723,7 +730,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
             return;
         }
 
-        boolean creativePilot = getControllingPassenger() instanceof Player pilot && pilot.gameMode().isCreative();
+        boolean creativePilot = getControllingPassenger() instanceof Player pilot && pilot.isCreative();
 
         int drain = NTConfig.submarineIdlePowerUsage;
         if (this.underWay) {
@@ -796,8 +803,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
-        InteractionResult result = super.interact(player, hand, location);
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        InteractionResult result = super.interact(player, hand);
         if (result != InteractionResult.PASS) {
             return result;
         }
@@ -850,7 +857,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
+        if (level().isClientSide()) {
+            return false;
+        }
         Entity attacker = source.getEntity();
         if (isRemoved() || (attacker != null && hasPassenger(attacker))) {
             return false;
@@ -858,13 +868,13 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
         if (source.isCreativePlayer()) {
             ejectPassengers();
-            spawnAtLocation(level, toStack());
+            spawnAtLocation(toStack());
             gameEvent(GameEvent.ENTITY_PLACE, attacker);
             discard();
             return true;
         }
 
-        return super.hurtServer(level, source, damage);
+        return super.hurt(source, damage);
     }
 
     @Override
@@ -877,7 +887,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         ejectPassengers();
 
         if (level() instanceof ServerLevel serverLevel && !source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
-            spawnAtLocation(serverLevel, toStack());
+            spawnAtLocation(toStack());
         }
 
         gameEvent(GameEvent.ENTITY_DIE);
@@ -885,8 +895,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
-        return super.isInvulnerableTo(level, source)
+    public boolean isInvulnerableTo(DamageSource source) {
+        return super.isInvulnerableTo(source)
                 || source.is(DamageTypeTags.IS_DROWNING)
                 || source.is(DamageTypeTags.IS_FREEZING)
                 || source.is(DamageTypes.IN_WALL)
@@ -898,7 +908,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource source) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource source) {
         resetFallDistance();
         return false;
     }
@@ -919,8 +929,22 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
+    public boolean canDrownInFluidType(FluidType type) {
+        return false;
+    }
+
+    @Override
+    public Iterable<ItemStack> getArmorSlots() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot slot) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
     }
 
     @Override
@@ -989,7 +1013,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         super.removePassenger(passenger);
         syncPassengers();
         if (getPassengers().isEmpty()) {
-            this.input = Input.EMPTY;
+            this.input = SubmarineInput.EMPTY;
             this.freeLook = false;
             this.descending = false;
         }
@@ -999,7 +1023,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         if (level() instanceof ServerLevel server) {
             // Vanilla filters newly mounted/dismounted players from the tick's update.
             // Multiple seat changes in one tick can otherwise leave their view stale.
-            server.getChunkSource().sendToTrackingPlayers(this, new ClientboundSetPassengersPacket(this));
+            server.getChunkSource().broadcast(this, new ClientboundSetPassengersPacket(this));
         }
     }
 
@@ -1024,7 +1048,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean isFlyingVehicle() {
+    public boolean isNoGravity() {
         return true;
     }
 
@@ -1044,13 +1068,13 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith(@Nullable Entity other) {
+    public boolean canBeCollidedWith() {
         return true;
     }
 
     @Override
     public boolean canCollideWith(Entity entity) {
-        return (entity.canBeCollidedWith(this) || entity.isPushable()) && !isPassengerOfSameVehicle(entity);
+        return (entity.canBeCollidedWith() || entity.isPushable()) && !isPassengerOfSameVehicle(entity);
     }
 
     @Override
@@ -1100,10 +1124,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         boolean[] posed = {false};
 
-        controllers.add(new AnimationController<SubmarineEntity>("canopy", 0, state -> {
-            state.controller().setTransitionTicks(posed[0] ? STOW_TRANSITION_TICKS : 0);
+        controllers.add(new AnimationController<SubmarineEntity>(this, "canopy", 0, state -> {
+            state.getController().transitionLength(posed[0] ? STOW_TRANSITION_TICKS : 0);
             posed[0] = true;
-            return state.setAndContinue(state.getDataOrDefault(DEPLOYED, false) ? DEPLOY : STOWED);
+            return state.setAndContinue(state.getAnimatable().isDeployed() ? DEPLOY : STOWED);
         }));
     }
 

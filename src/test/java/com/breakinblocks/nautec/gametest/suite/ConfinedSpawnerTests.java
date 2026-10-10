@@ -1,7 +1,8 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import io.netty.buffer.Unpooled;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.NTConfig;
@@ -15,15 +16,14 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
@@ -36,14 +36,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
-import net.minecraft.world.level.storage.TagValueInput;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +55,7 @@ public final class ConfinedSpawnerTests {
     private ConfinedSpawnerTests() {
     }
 
-    private static ConfinedSpawnerBlockEntity confinedChickens(GameTestHelper helper, int spawnCount, int delay) {
+    private static ConfinedSpawnerBlockEntity confinedChickens(NTGameTestHelper helper, int spawnCount, int delay) {
         helper.setBlock(SPAWNER, Blocks.SPAWNER.defaultBlockState());
         SpawnerBlockEntity spawner = helper.getBlockEntity(SPAWNER, SpawnerBlockEntity.class);
         spawner.setEntityId(EntityType.CHICKEN, helper.getLevel().getRandom());
@@ -64,13 +64,13 @@ public final class ConfinedSpawnerTests {
         tag.putShort("MinSpawnDelay", (short) delay);
         tag.putShort("MaxSpawnDelay", (short) delay);
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
-            spawner.loadWithComponents(TagValueInput.create(reporter, helper.getLevel().registryAccess(), tag));
+            spawner.loadWithComponents(tag, helper.getLevel().registryAccess());
         }
         helper.assertTrue(SpawnerConfinementMatrixItem.confine(helper.getLevel(), helper.absolutePos(SPAWNER)), "matrix should confine a spawner");
         return helper.getBlockEntity(SPAWNER, ConfinedSpawnerBlockEntity.class);
     }
 
-    private static void power(GameTestHelper helper) {
+    private static void power(NTGameTestHelper helper) {
         BacteriaMachineTests.placeShieldedSource(helper, SOURCE, Direction.NORTH);
     }
 
@@ -102,10 +102,10 @@ public final class ConfinedSpawnerTests {
             helper.assertTrue(helper.getBlockState(SPAWNER).is(Blocks.SPAWNER), "release should put the spawner back");
             SpawnerBlockEntity restored = helper.getBlockEntity(SPAWNER, SpawnerBlockEntity.class);
             CompoundTag tag = restored.saveWithoutMetadata(helper.getLevel().registryAccess());
-            helper.assertValueEqual(7, (int) tag.getShortOr("SpawnCount", (short) 0), "spawn count survives the round trip");
-            helper.assertValueEqual(30, (int) tag.getShortOr("MinSpawnDelay", (short) 0), "min delay survives the round trip");
+            helper.assertValueEqual(7, (int) tag.getShort("SpawnCount"), "spawn count survives the round trip");
+            helper.assertValueEqual(30, (int) tag.getShort("MinSpawnDelay"), "min delay survives the round trip");
             helper.assertValueEqual("minecraft:chicken",
-                    tag.getCompoundOrEmpty("SpawnData").getCompoundOrEmpty("entity").getStringOr("id", ""), "mob survives the round trip");
+                    tag.getCompound("SpawnData").getCompound("entity").getString("id"), "mob survives the round trip");
 
             AABB around = new AABB(helper.absolutePos(SPAWNER)).inflate(2);
             boolean matrixReturned = helper.getLevel().getEntitiesOfClass(ItemEntity.class, around).stream()
@@ -146,7 +146,7 @@ public final class ConfinedSpawnerTests {
             helper.assertTrue(SpawnerConfinementMatrixItem.release(level, helper.absolutePos(target), placed, null), "the emptied spawner can be released");
             SpawnerBlockEntity restored = helper.getBlockEntity(target, SpawnerBlockEntity.class);
             helper.assertValueEqual("minecraft:chicken", restored.saveWithoutMetadata(level.registryAccess())
-                    .getCompoundOrEmpty("SpawnData").getCompoundOrEmpty("entity").getStringOr("id", ""), "mob after release");
+                    .getCompound("SpawnData").getCompound("entity").getString("id"), "mob after release");
             helper.succeed();
         });
 
@@ -246,7 +246,7 @@ public final class ConfinedSpawnerTests {
         r.add("confined_spawner/experience_tank_drains_but_never_fills", 40, helper -> {
             ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
             confined.getFluidTank().setFluid(new FluidStack(NTFluids.EXPERIENCE_ALGAE.getStillFluid(), 500));
-            ResourceHandler<FluidResource> side = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, helper.absolutePos(SPAWNER), Direction.NORTH);
+            ResourceHandler<FluidResource> side = helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, helper.absolutePos(SPAWNER), Direction.NORTH);
             helper.assertTrue(side != null, "the tank should be reachable by pipes");
             FluidResource algae = FluidResource.of(NTFluids.EXPERIENCE_ALGAE.getStillFluid());
             try (Transaction tx = Transaction.openRoot()) {
@@ -325,14 +325,14 @@ public final class ConfinedSpawnerTests {
             ItemResource stone = ItemResource.of(new ItemStack(Items.STONE));
             ItemResource feather = ItemResource.of(new ItemStack(Items.FEATHER));
             for (Direction side : new Direction[]{Direction.UP, Direction.DOWN, Direction.NORTH, null}) {
-                ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, side);
+                ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, side);
                 helper.assertTrue(handler != null, "item handler exposed on " + side);
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(0, handler.insert(1, stone, 16, tx), "no insertion on " + side);
                     helper.assertValueEqual(0, handler.insert(0, feather, 1, tx), "no topping up on " + side);
                 }
             }
-            ResourceHandler<ItemResource> down = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.DOWN);
+            ResourceHandler<ItemResource> down = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.DOWN);
             try (Transaction tx = Transaction.openRoot()) {
                 helper.assertValueEqual(5, down.extract(0, feather, 5, tx), "pipes can pull drops out");
                 tx.commit();

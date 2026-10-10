@@ -9,8 +9,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.resources.ResourceLocation;
+import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
 import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
@@ -29,63 +29,63 @@ public class LootModifierProvider extends GlobalLootModifierProvider {
     protected void start() {
         add("lucky_fishing_zone_modifier",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("gameplay/fishing")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("gameplay/fishing")).build(),
                         InLuckyFishingZoneCondition.builder().build()}
-                        , 0, NTLootTables.LUCKY_ZONE));
+                        , NTLootTables.LUCKY_ZONE));
 
         ItemStackTemplate crate = new ItemStackTemplate(NTBlocks.CRATE.asItem(), 1, DataComponentPatch.builder()
                 .set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(NTLootTables.CRATE, 0))
                 .build());
         add("elder_guardian_modifier",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("entities/elder_guardian")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("entities/elder_guardian")).build(),
                         LootItemRandomChanceCondition.randomChance(1.0f).build()}
-                        , 0, NTLootTables.ELDER_GUARDIAN));
+                        , NTLootTables.ELDER_GUARDIAN));
         add("guardian_modifier",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("entities/guardian")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("entities/guardian")).build(),
                         LootItemRandomChanceCondition.randomChance(0.20f).build()}
-                        , 0, NTLootTables.GUARDIAN));
+                        , NTLootTables.GUARDIAN));
         add("shipwreck_modifier",
                 new AddItemModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("chests/shipwreck_treasure")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("chests/shipwreck_treasure")).build(),
                         LootItemRandomChanceCondition.randomChance(0.66f).build()}
-                        , 0, crate));
+                        , crate));
         add("ocean_ruins_modifier",
                 new AddItemModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_big")).or(LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_small"))).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("chests/underwater_ruin_big")).or(LootTableIdCondition.builder(ResourceLocation.parse("chests/underwater_ruin_small"))).build(),
                         LootItemRandomChanceCondition.randomChance(0.66f).build()}
-                        , 0, crate));
+                        , crate));
         add("ocean_ruins_small_loot",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_small")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("chests/underwater_ruin_small")).build(),
                         LootItemRandomChanceCondition.randomChance(0.25f).build()},
-                        0, NTLootTables.OCEAN_RUINS_SMALL));
+                        NTLootTables.OCEAN_RUINS_SMALL));
         add("ocean_ruins_big_loot",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("chests/underwater_ruin_big")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("chests/underwater_ruin_big")).build(),
                         LootItemRandomChanceCondition.randomChance(0.25f).build()},
-                        0, NTLootTables.OCEAN_RUINS_BIG));
+                        NTLootTables.OCEAN_RUINS_BIG));
         add("suspicious_ruins_sand_modifier",
                 new AddItemModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("archaeology/ocean_ruin_warm")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("archaeology/ocean_ruin_warm")).build(),
                         LootItemRandomChanceCondition.randomChance(0.05f).build()}
-                        , 0, crate));
+                        , crate));
         add("drowned_modifier",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("entities/drowned")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("entities/drowned")).build(),
                         LootItemRandomChanceCondition.randomChance(0.20f).build()},
-                        0, NTLootTables.DROWNED));
+                        NTLootTables.DROWNED));
         add("dolphin_modifier",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("entities/dolphin")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("entities/dolphin")).build(),
                         LootItemRandomChanceCondition.randomChance(0.20f).build()},
-                        0, NTLootTables.DOLPHIN));
+                        NTLootTables.DOLPHIN));
         add("buried_treasure",
                 new AddTableLootModifier(new LootItemCondition[]{
-                        LootTableIdCondition.builder(Identifier.parse("chests/buried_treasure")).build(),
+                        LootTableIdCondition.builder(ResourceLocation.parse("chests/buried_treasure")).build(),
                         LootItemRandomChanceCondition.randomChance(0.45f).build()},
-                        0, NTLootTables.BURIED_TREASURE));
+                        NTLootTables.BURIED_TREASURE));
     }
 
 }

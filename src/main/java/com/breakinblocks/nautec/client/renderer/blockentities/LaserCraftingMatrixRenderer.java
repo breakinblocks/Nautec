@@ -1,42 +1,35 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.renderer.entity.EmissiveGeoLayer;
+import com.breakinblocks.nautec.client.renderer.items.GeoStateData;
 import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
-import com.geckolib.model.DefaultedBlockGeoModel;
-import com.geckolib.renderer.GeoBlockRenderer;
-import com.geckolib.renderer.base.GeoRenderer;
-import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.model.DefaultedBlockGeoModel;
+import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
-public class LaserCraftingMatrixRenderer extends GeoBlockRenderer<LaserCraftingMatrixBlockEntity, BlockEntityRenderState> {
-    private static final Identifier GLOWMASK = Nautec.rl("textures/block/laser_crafting_matrix_glowmask.png");
+import java.util.function.BiConsumer;
+
+public class LaserCraftingMatrixRenderer extends GeoBlockRenderer<LaserCraftingMatrixBlockEntity> {
+    private static final ResourceLocation GLOWMASK = Nautec.rl("textures/block/laser_crafting_matrix_glowmask.png");
 
     public LaserCraftingMatrixRenderer(BlockEntityRendererProvider.Context context) {
-        super(context, new DefaultedBlockGeoModel<>(Nautec.rl("laser_crafting_matrix")));
-        withRenderLayer(new GlowLayer(this));
+        super(new Model());
+        addRenderLayer(new EmissiveGeoLayer<>(this, GLOWMASK));
     }
 
-    @Override
-    public void addRenderData(LaserCraftingMatrixBlockEntity matrix, Void relatedObject, BlockEntityRenderState renderState, float partialTick) {
-        super.addRenderData(matrix, relatedObject, renderState, partialTick);
-        renderState.addGeckolibData(LaserCraftingMatrixBlockEntity.WORKING, matrix.isRunning());
-    }
-
-    private static class GlowLayer extends AutoGlowingGeoLayer<LaserCraftingMatrixBlockEntity, Void, BlockEntityRenderState> {
-        GlowLayer(GeoRenderer<LaserCraftingMatrixBlockEntity, Void, BlockEntityRenderState> renderer) {
-            super(renderer);
+    private static final class Model extends DefaultedBlockGeoModel<LaserCraftingMatrixBlockEntity> {
+        private Model() {
+            super(Nautec.rl("laser_crafting_matrix"));
         }
 
         @Override
-        protected Identifier getTextureResource(BlockEntityRenderState state) {
-            return GLOWMASK;
-        }
-
-        @Override
-        protected boolean shouldAddZOffset(BlockEntityRenderState state) {
-            return true;
+        public void addAdditionalStateData(LaserCraftingMatrixBlockEntity matrix, long instanceId,
+                                           BiConsumer<DataTicket<LaserCraftingMatrixBlockEntity>, LaserCraftingMatrixBlockEntity> dataConsumer) {
+            super.addAdditionalStateData(matrix, instanceId, dataConsumer);
+            GeoStateData.put(dataConsumer, LaserCraftingMatrixBlockEntity.WORKING, matrix.isRunning());
         }
     }
 }

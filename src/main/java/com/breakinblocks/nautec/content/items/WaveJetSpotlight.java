@@ -127,7 +127,7 @@ public final class WaveJetSpotlight {
         Map<BlockPos, BlockState> originals = new HashMap<>(chunk.getData(NTDataAttachments.SPOTLIGHT_ORIGINALS));
         originals.put(target.immutable(), light.original());
         chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
-        chunk.markUnsaved();
+        chunk.setUnsaved(true);
         place(level, target, light.original());
         LIT.put(holder.getUUID(), key);
     }
@@ -241,7 +241,7 @@ public final class WaveJetSpotlight {
 
     @SubscribeEvent
     public static void onChunkLoad(ChunkEvent.Load event) {
-        if (event.getLevel() instanceof ServerLevel) LOADED.add(event.getChunk());
+        if (event.getLevel() instanceof ServerLevel && event.getChunk() instanceof LevelChunk chunk) LOADED.add(chunk);
     }
 
     @SubscribeEvent
@@ -271,7 +271,7 @@ public final class WaveJetSpotlight {
         } else {
             chunk.setData(NTDataAttachments.SPOTLIGHT_ORIGINALS, Map.copyOf(originals));
         }
-        chunk.markUnsaved();
+        chunk.setUnsaved(true);
     }
 
     private WaveJetSpotlight() {

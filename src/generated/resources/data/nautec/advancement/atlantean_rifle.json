@@ -18,6 +18,7 @@
       "translate": "advancements.nautec.atlantean_rifle.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:atlantean_rifle"
     },
     "title": {

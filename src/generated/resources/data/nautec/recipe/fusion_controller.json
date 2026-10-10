@@ -2,12 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquatic_chip",
-    "C": "nautec:fusion_casing",
-    "E": "#c:ender_pearls",
-    "F": "nautec:flawless_prismarine_crystal",
-    "N": "#c:nether_stars",
-    "P": "nautec:deep_steel_plating"
+    "A": {
+      "item": "nautec:aquatic_chip"
+    },
+    "C": {
+      "item": "nautec:fusion_casing"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "N": {
+      "tag": "c:nether_stars"
+    },
+    "P": {
+      "item": "nautec:deep_steel_plating"
+    }
   },
   "pattern": [
     "FNF",
@@ -15,6 +27,7 @@
     "PAP"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:fusion_controller"
   }
 }

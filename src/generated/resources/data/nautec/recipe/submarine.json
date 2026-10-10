@@ -2,11 +2,21 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:atlantic_gold_ingot",
-    "B": "nautec:prismatic_battery",
-    "C": "nautec:eldritch_heart",
-    "G": "#c:glass_blocks/tinted",
-    "T": "nautec:buoyancy_tank"
+    "A": {
+      "item": "nautec:atlantic_gold_ingot"
+    },
+    "B": {
+      "item": "nautec:prismatic_battery"
+    },
+    "C": {
+      "item": "nautec:eldritch_heart"
+    },
+    "G": {
+      "tag": "c:glass_blocks/tinted"
+    },
+    "T": {
+      "item": "nautec:buoyancy_tank"
+    }
   },
   "pattern": [
     "ACA",
@@ -14,6 +24,7 @@
     "ATA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:submarine"
   }
 }

@@ -14,7 +14,6 @@
         3,
         0
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -61,6 +60,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -74,7 +76,6 @@
         3,
         16.5
       ],
-      "light_emission": 15,
       "faces": {
         "south": {
           "uv": [
@@ -121,6 +122,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -134,7 +138,6 @@
         3,
         5
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -181,6 +184,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -194,7 +200,6 @@
         3,
         5
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -241,6 +246,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -254,7 +262,6 @@
         3,
         0
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -301,6 +308,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -314,7 +324,6 @@
         3,
         16.5
       ],
-      "light_emission": 15,
       "faces": {
         "south": {
           "uv": [
@@ -361,6 +370,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -374,7 +386,6 @@
         3,
         14
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -421,6 +432,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     },
     {
@@ -434,7 +448,6 @@
         3,
         14
       ],
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -481,6 +494,9 @@
           ],
           "texture": "#lamp"
         }
+      },
+      "neoforge_data": {
+        "block_light": 15
       }
     }
   ]

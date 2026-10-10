@@ -9,42 +9,40 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import com.breakinblocks.nautec.client.AugmentClientHelper;
 
-public class AugmentLayerRenderer<S extends LivingEntityRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
+public class AugmentLayerRenderer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     private static final Object2ObjectMap<AugmentType<?>, AugmentRendererProvider<?>> RENDERER_PROVIDERS = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectMap<AugmentType<?>, AugmentRenderer<?>> RENDERERS = new Object2ObjectOpenHashMap<>();
 
-
-
-    public AugmentLayerRenderer(RenderLayerParent<S, M> renderLayerParent) {
+    public AugmentLayerRenderer(RenderLayerParent<T, M> renderLayerParent) {
         super(renderLayerParent);
     }
 
     @Override
-    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int packedLight, @NotNull S state, float yRot, float xRot) {
-        Iterable<Augment> augments = AugmentClientHelper.forState(state).values();
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffers, int packedLight, @NotNull T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+        Iterable<Augment> augments = AugmentClientHelper.forEntity(entity).values();
         for (Augment augment : augments) {
             if (augment != null) {
                 poseStack.pushPose();
                 {
-                    renderAugmentModel(poseStack, submitNodeCollector, packedLight, augment);
+                    renderAugmentModel(poseStack, buffers, packedLight, augment);
                 }
                 poseStack.popPose();
             }
         }
     }
 
-    private void renderAugmentModel(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, Augment augment) {
+    private void renderAugmentModel(PoseStack poseStack, MultiBufferSource buffers, int packedLight, Augment augment) {
         AugmentRenderer<Augment> renderer = getRenderer(augment);
         if (renderer != null) {
-            renderer.render(augment, this, poseStack, submitNodeCollector, packedLight);
+            renderer.render(augment, this, poseStack, buffers, packedLight);
         }
     }
 

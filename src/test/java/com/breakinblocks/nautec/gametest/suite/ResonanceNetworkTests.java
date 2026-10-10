@@ -9,7 +9,6 @@ import com.breakinblocks.nautec.content.resonance.ResonancePylonBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -17,7 +16,7 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,7 @@ public final class ResonanceNetworkTests {
         }
     }
 
-    private static ServerPlayer player(GameTestHelper helper, String name) {
+    private static ServerPlayer player(NTGameTestHelper helper, String name) {
         return new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(), new GameProfile(UUID.randomUUID(), name),
                 ClientInformation.createDefault());
     }
@@ -182,7 +181,7 @@ public final class ResonanceNetworkTests {
             ResonanceNetwork network = networks.create(owner, "Saved grid").network();
             networks.trust(owner, network.id(), UUID.randomUUID(), "Friend");
             helper.assertTrue(networks.isDirty(), "creating a network marks the data for saving");
-            helper.getLevel().getServer().overworld().getDataStorage().saveAndJoin();
+            helper.getLevel().getServer().overworld().getDataStorage().save();
             helper.assertFalse(networks.isDirty(), "saving writes it out");
 
             Tag encoded = ResonanceNetworks.CODEC.encodeStart(NbtOps.INSTANCE, networks).getOrThrow();

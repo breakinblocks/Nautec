@@ -9,6 +9,5 @@
       "condition": "nautec:in_lucky_fishing_zone"
     }
   ],
-  "priority": 0,
   "table": "nautec:gameplay/lucky_fishing_zone"
 }

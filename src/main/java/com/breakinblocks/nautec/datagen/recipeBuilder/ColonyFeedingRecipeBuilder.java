@@ -9,11 +9,11 @@ import com.breakinblocks.nautec.data.generated.BacteriaBalance;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -45,13 +45,13 @@ public record ColonyFeedingRecipeBuilder(ResourceKey<Bacteria> bacteria, Ingredi
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+    public void save(RecipeOutput recipeOutput, ResourceLocation key) {
         recipeOutput.accept(key, build(), null);
     }
 
     @Override
     public void save(RecipeOutput output) {
-        save(output, Nautec.rl(getName() + "/" + bacteria.identifier().getPath()));
+        save(output, Nautec.rl(getName() + "/" + bacteria.location().getPath()));
     }
 
     @Override

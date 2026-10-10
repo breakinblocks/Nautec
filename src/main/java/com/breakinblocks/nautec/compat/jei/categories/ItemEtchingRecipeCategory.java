@@ -10,18 +10,18 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemEtchingRecipeCategory extends AbstractRecipeCategory<ItemEtchingRecipe> {
-    static final Identifier BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
-    public static final Identifier UID = Nautec.rl("item_etching");
-    public static final IRecipeType<ItemEtchingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, ItemEtchingRecipe.class);
+    static final ResourceLocation BURN_PROGRESS_SPRITE = Nautec.rl("container/furnace/empty_arrow");
+    public static final ResourceLocation UID = Nautec.rl("item_etching");
+    public static final RecipeType<ItemEtchingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, ItemEtchingRecipe.class);
 
     public ItemEtchingRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -32,7 +32,7 @@ public class ItemEtchingRecipeCategory extends AbstractRecipeCategory<ItemEtchin
     }
 
     @Override
-    public void draw(ItemEtchingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(ItemEtchingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, BURN_PROGRESS_SPRITE, 28, 0, 24, 16);
     }
 
@@ -47,6 +47,6 @@ public class ItemEtchingRecipeCategory extends AbstractRecipeCategory<ItemEtchin
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, ItemEtchingRecipe recipe, IFocusGroup focuses) {
         NTJeiUtil.addIngredientWithCount(builder.addSlot(RecipeIngredientRole.INPUT, 0, 0), recipe.ingredient());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).add(recipe.result());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 0).addItemStack(recipe.result());
     }
 }

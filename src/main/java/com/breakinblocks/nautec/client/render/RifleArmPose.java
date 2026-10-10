@@ -2,8 +2,8 @@ package com.breakinblocks.nautec.client.render;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.IArmPoseTransformer;
 
@@ -12,9 +12,9 @@ public final class RifleArmPose {
     private static final float CROUCH_LIFT = 0.4F;
 
     public static final EnumProxy<HumanoidModel.ArmPose> RIFLE = new EnumProxy<>(
-            HumanoidModel.ArmPose.class, true, true, (IArmPoseTransformer) RifleArmPose::apply);
+            HumanoidModel.ArmPose.class, true, (IArmPoseTransformer) RifleArmPose::apply);
 
-    private static void apply(HumanoidModel<?> model, HumanoidRenderState state, HumanoidArm arm) {
+    private static void apply(HumanoidModel<?> model, LivingEntity entity, HumanoidArm arm) {
         boolean rightHanded = arm == HumanoidArm.RIGHT;
         ModelPart shootingArm = rightHanded ? model.rightArm : model.leftArm;
         ModelPart supportArm = rightHanded ? model.leftArm : model.rightArm;
@@ -37,7 +37,7 @@ public final class RifleArmPose {
             supportArm.z += turn * 4.0F;
         }
 
-        if (state.isCrouching) {
+        if (entity.isCrouching()) {
             supportArm.xRot -= CROUCH_LIFT;
             shootingArm.xRot -= CROUCH_LIFT;
         }

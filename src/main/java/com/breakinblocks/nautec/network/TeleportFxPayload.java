@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.network;
 
+
+import com.breakinblocks.nautec.utils.codec.StreamCodecs;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,7 +17,7 @@ public record TeleportFxPayload(int entityId, int stage, double x, double y, dou
 
     public static final Type<TeleportFxPayload> TYPE = new Type<>(Nautec.rl("teleport_fx"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, TeleportFxPayload> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, TeleportFxPayload> STREAM_CODEC = StreamCodecs.composite(
             ByteBufCodecs.VAR_INT, TeleportFxPayload::entityId,
             ByteBufCodecs.VAR_INT, TeleportFxPayload::stage,
             ByteBufCodecs.DOUBLE, TeleportFxPayload::x,

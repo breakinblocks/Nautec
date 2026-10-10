@@ -1,24 +1,25 @@
 package com.breakinblocks.nautec.client.renderer.augments.helper;
 
+import com.breakinblocks.nautec.client.render.CustomGeometry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.breakinblocks.nautec.content.augments.GuardianEyeAugment;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class GuardianEyeRenderHelper {
-    private static final Identifier GUARDIAN_BEAM_LOCATION = Identifier.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
-    private static final RenderType BEAM_RENDER_TYPE = RenderTypes.entityCutout(GUARDIAN_BEAM_LOCATION);
+    private static final ResourceLocation GUARDIAN_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/guardian/guardian_beam.png");
+    private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutout(GUARDIAN_BEAM_LOCATION);
 
-    public static void render(Player entity, GuardianEyeAugment augment, float partialTicks, PoseStack poseStack, SubmitNodeCollector collector) {
+    public static void render(Player entity, GuardianEyeAugment augment, float partialTicks, PoseStack poseStack, MultiBufferSource buffers) {
         Entity targetEntity = augment.getTargetEntity();
         if (targetEntity == null) {
             return;
@@ -54,7 +55,7 @@ public class GuardianEyeRenderHelper {
         float[] cosines = {Mth.cos(wobble), Mth.cos(wobble + halfPi), Mth.cos((float) (wobble + Math.PI)), Mth.cos(wobble + 1.5F * (float) Math.PI)};
         float[] sines = {Mth.sin(wobble), Mth.sin(wobble + halfPi), Mth.sin((float) (wobble + Math.PI)), Mth.sin(wobble + 1.5F * (float) Math.PI)};
 
-        collector.submitCustomGeometry(poseStack, BEAM_RENDER_TYPE, (pose, vertexConsumer) -> {
+        CustomGeometry.submit(poseStack, buffers, BEAM_RENDER_TYPE, (pose, vertexConsumer) -> {
             for (int i = 0; i < 4; i++) {
                 int next = (i + 1) % 4;
                 float u1 = i < 2 ? 0.0F : 0.5F;

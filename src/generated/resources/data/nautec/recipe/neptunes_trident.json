@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": "nautec:deep_steel_plating",
-    "F": "nautec:flawless_prismarine_crystal",
-    "H": "minecraft:heart_of_the_sea",
-    "R": "nautec:resonant_shard"
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "H": {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    }
   },
   "pattern": [
     "RFR",
@@ -13,6 +21,7 @@
     " D "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:neptunes_trident"
   }
 }

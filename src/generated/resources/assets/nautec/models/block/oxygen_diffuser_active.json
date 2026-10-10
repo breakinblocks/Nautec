@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_unswe",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/oxygen_diffuser_bottom",
     "east": "nautec:block/oxygen_diffuser_side_active",

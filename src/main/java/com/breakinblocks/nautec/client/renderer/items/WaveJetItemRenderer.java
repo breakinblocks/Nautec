@@ -1,60 +1,70 @@
 package com.breakinblocks.nautec.client.renderer.items;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.renderer.entity.EmissiveGeoLayer;
 import com.breakinblocks.nautec.content.items.WaveJetItem;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.DefaultedEntityGeoModel;
-import com.geckolib.renderer.GeoItemRenderer;
-import com.geckolib.renderer.base.GeoRenderState;
-import com.geckolib.renderer.base.RenderPassInfo;
-import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
+
+import java.util.function.BiConsumer;
 
 public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
-    private static final Identifier EMISSIVE = Nautec.rl("textures/entity/wave_jet_e.png");
+    private static final ResourceLocation EMISSIVE = Nautec.rl("textures/entity/wave_jet_e.png");
 
     private static final float CENTRE_Y = 5.5625F / 16F;
     private static final float CENTRE_Z = 5.125F / 16F;
 
     public WaveJetItemRenderer() {
-        super(new DefaultedEntityGeoModel<>(Nautec.rl("wave_jet")));
-        withRenderLayer(new EmissiveLayer(this));
+        super(new Model());
+        ((Model) this.model).renderer = this;
+        addRenderLayer(new EmissiveGeoLayer<>(this, EMISSIVE));
     }
 
-    private static float scaleFor(ItemDisplayContext context) {
+    private static float scaleFor(@Nullable ItemDisplayContext context) {
+        if (context == null) {
+            return 0.85F;
+        }
         return switch (context) {
             case GUI, FIXED, GROUND -> 0.85F;
             default -> 1.0F;
         };
     }
 
-    private static boolean isThrusting(RenderData data) {
-        LivingEntity holder = data.itemOwner() == null ? null : data.itemOwner().asLivingEntity();
-        return holder != null && holder.isUsingItem() && holder.getUseItem() == data.itemStack();
+    private @Nullable LivingEntity holder() {
+        ItemStack stack = this.currentItemStack;
+        return stack == null ? null : HeldItemOwner.of(stack, this.renderPerspective);
+    }
+
+    private boolean isThrusting() {
+        LivingEntity holder = holder();
+        return holder != null && holder.isUsingItem() && holder.getUseItem() == this.currentItemStack;
     }
 
     @Override
-    public void addRenderData(WaveJetItem item, RenderData data, GeoRenderState state, float partialTick) {
-        super.addRenderData(item, data, state, partialTick);
-        state.addGeckolibData(WaveJetItem.THRUSTING, isThrusting(data));
-        LivingEntity holder = data.itemOwner() == null ? null : data.itemOwner().asLivingEntity();
-        state.addGeckolibData(DataTickets.ENTITY_POSE, holder == null ? Pose.STANDING : holder.getPose());
-    }
-
-    @Override
-    public void adjustRenderPose(RenderPassInfo<GeoRenderState> pass) {
-        super.adjustRenderPose(pass);
-        PoseStack poseStack = pass.poseStack();
-        ItemDisplayContext context = pass.renderState().getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.GUI);
+    public void preRender(PoseStack poseStack, WaveJetItem item, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer,
+                          boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        if (isReRender) {
+            return;
+        }
+        ItemDisplayContext context = this.renderPerspective;
         float scale = scaleFor(context);
         poseStack.scale(scale, scale, scale);
         if (context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-            boolean swimming = pass.renderState().getGeckolibData(DataTickets.ENTITY_POSE) == Pose.SWIMMING;
+            LivingEntity holder = holder();
+            boolean swimming = holder != null && holder.getPose() == Pose.SWIMMING;
             float gripOffset = swimming ? 0.45F : 0.22F;
             poseStack.translate(context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND ? gripOffset : -gripOffset, -0.6F, 0.0F);
             if (swimming) {
@@ -64,19 +74,17 @@ public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
         poseStack.translate(0F, -CENTRE_Y, -CENTRE_Z);
     }
 
-    private static class EmissiveLayer extends AutoGlowingGeoLayer<WaveJetItem, GeoItemRenderer.RenderData, GeoRenderState> {
-        EmissiveLayer(GeoItemRenderer<WaveJetItem> renderer) {
-            super(renderer);
+    private static final class Model extends DefaultedEntityGeoModel<WaveJetItem> {
+        private @Nullable WaveJetItemRenderer renderer;
+
+        private Model() {
+            super(Nautec.rl("wave_jet"));
         }
 
         @Override
-        protected Identifier getTextureResource(GeoRenderState state) {
-            return EMISSIVE;
-        }
-
-        @Override
-        protected boolean shouldAddZOffset(GeoRenderState state) {
-            return true;
+        public void addAdditionalStateData(WaveJetItem animatable, long instanceId, BiConsumer<DataTicket<WaveJetItem>, WaveJetItem> dataConsumer) {
+            super.addAdditionalStateData(animatable, instanceId, dataConsumer);
+            GeoStateData.put(dataConsumer, WaveJetItem.THRUSTING, this.renderer != null && this.renderer.isThrusting());
         }
     }
 }

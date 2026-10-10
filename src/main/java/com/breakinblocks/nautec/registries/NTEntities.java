@@ -12,7 +12,6 @@ import com.breakinblocks.nautec.content.entities.mobs.LanternJelly;
 import com.breakinblocks.nautec.content.entities.mobs.SiltSkipper;
 import com.breakinblocks.nautec.content.entities.mobs.VentCrawler;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -26,30 +25,30 @@ public final class NTEntities {
 
     public static final Supplier<EntityType<ThrownBouncingTrident>> THROWN_BOUNCING_TRIDENT = ENTITIES.register("bouncing_trident",
             ()->EntityType.Builder.<ThrownBouncingTrident>of(ThrownBouncingTrident::new, MobCategory.MISC)
-                    .sized(0.5f,0.5f).build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("bouncing_trident"))));
+                    .sized(0.5f,0.5f).build(Nautec.rl("bouncing_trident").toString()));
     public static final Supplier<EntityType<ThrownSpreadingTrident>> THROWN_SPREADING_TRIDENT = ENTITIES.register("spreading_trident",
             () -> EntityType.Builder.<ThrownSpreadingTrident>of(ThrownSpreadingTrident::new, MobCategory.MISC)
-                    .sized(0.5f, 0.5f).build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("spreading_trident"))));
+                    .sized(0.5f, 0.5f).build(Nautec.rl("spreading_trident").toString()));
     public static final Supplier<EntityType<ThrownNeptunesTrident>> NEPTUNES_TRIDENT = ENTITIES.register("neptunes_trident",
             () -> EntityType.Builder.<ThrownNeptunesTrident>of(ThrownNeptunesTrident::new, MobCategory.MISC)
-                    .noLootTable().sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("neptunes_trident"))));
+                    .sized(0.5f, 0.5f).eyeHeight(0.13f).clientTrackingRange(4).updateInterval(20)
+                    .build(Nautec.rl("neptunes_trident").toString()));
 
     public static final Supplier<EntityType<NautecFishingHook>> NAUTEC_FISHING_HOOK = ENTITIES.register("nautec_fishing_hook",
             () -> EntityType.Builder.<NautecFishingHook>of(NautecFishingHook::new, MobCategory.MISC)
                     .noSave().noSummon().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(5)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("nautec_fishing_hook"))));
+                    .build(Nautec.rl("nautec_fishing_hook").toString()));
 
     public static final Supplier<EntityType<EyeOfTheSeaEntity>> EYE_OF_THE_SEA = ENTITIES.register("eye_of_the_sea",
             () -> EntityType.Builder.<EyeOfTheSeaEntity>of(EyeOfTheSeaEntity::new, MobCategory.MISC)
-                    .noSave().noSummon().noLootTable().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(4)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("eye_of_the_sea"))));
+                    .noSave().noSummon().sized(0.25f, 0.25f).clientTrackingRange(4).updateInterval(4)
+                    .build(Nautec.rl("eye_of_the_sea").toString()));
 
     public static final Supplier<EntityType<SubmarineEntity>> SUBMARINE = ENTITIES.register("submarine",
             () -> EntityType.Builder.<SubmarineEntity>of(SubmarineEntity::new, MobCategory.MISC)
                     .sized(3.0f, 3.2f).fireImmune()
                     .eyeHeight(0.5f * SubmarineEntity.MODEL_SCALE).clientTrackingRange(10)
-                    .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl("submarine"))));
+                    .build(Nautec.rl("submarine").toString()));
 
     public static final Supplier<EntityType<SiltSkipper>> SILT_SKIPPER = mob("silt_skipper", SiltSkipper::new,
             MobCategory.WATER_AMBIENT, builder -> builder.sized(0.5f, 0.35f).eyeHeight(0.2f));
@@ -65,6 +64,6 @@ public final class NTEntities {
                                                                                          MobCategory category,
                                                                                          UnaryOperator<EntityType.Builder<T>> builder) {
         return ENTITIES.register(name, () -> builder.apply(EntityType.Builder.of(factory, category))
-                .build(ResourceKey.create(Registries.ENTITY_TYPE, Nautec.rl(name))));
+                .build(Nautec.rl(name).toString()));
     }
 }

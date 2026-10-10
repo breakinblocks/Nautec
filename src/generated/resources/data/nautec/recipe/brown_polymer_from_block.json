@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    "nautec:brown_polymer_block"
+    {
+      "item": "nautec:brown_polymer_block"
+    }
   ],
   "result": {
     "count": 4,

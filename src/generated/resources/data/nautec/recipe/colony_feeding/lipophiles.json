@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:lipophiles",
   "ingredient": {
-    "ingredient": "nautec:kelp_slurry"
+    "ingredient": {
+      "item": "nautec:kelp_slurry"
+    }
   },
   "vitality_ticks": 1200
 }

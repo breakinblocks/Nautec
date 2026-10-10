@@ -10,7 +10,7 @@ import com.breakinblocks.nautec.utils.ranges.IntRange;
 import com.breakinblocks.nautec.utils.ranges.LongRange;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ARGB;
+import com.breakinblocks.nautec.utils.ARGB;
 import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;

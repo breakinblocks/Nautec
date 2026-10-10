@@ -1,5 +1,11 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import com.breakinblocks.nautec.client.render.CustomGeometry;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -10,20 +16,11 @@ import com.breakinblocks.nautec.client.model.block.WhiskModel;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blocks.MixerBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -34,18 +31,17 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, MixerBERenderer.MixerRenderState> {
+public class MixerBERenderer extends NTBERenderer<MixerBlockEntity, MixerBERenderer.MixerRenderState> {
     private static final HorizontalDirection[] HORIZONTAL_DIRECTIONS = HorizontalDirection.values();
     private static final float SIDE_MARGIN = (float) MixerBlock.SHAPE.min(Direction.Axis.X) + 0.075f;
     private static final float MIN_Y = 2 / 16f;
     private static final float MAX_Y = 1 - MIN_Y;
     private final WhiskModel model;
-    private final ItemModelResolver itemModelResolver;
 
     public MixerBERenderer(BlockEntityRendererProvider.Context ctx) {
+        super(ctx);
         this.model = new WhiskModel(ctx.bakeLayer(WhiskModel.LAYER_LOCATION));
         this.model.setupAnim();
-        this.itemModelResolver = ctx.itemModelResolver();
     }
 
     @Override
@@ -54,8 +50,8 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     }
 
     @Override
-    public void extractRenderState(MixerBlockEntity blockEntity, MixerRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void extractRenderState(MixerBlockEntity blockEntity, MixerRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         state.whiskAngle = blockEntity.getIndependentAngle(partialTick);
 
         ItemStackHandler handler = blockEntity.getItemStackHandler();
@@ -64,9 +60,9 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
             state.items.add(new ItemStackRenderState());
         }
         for (int i = 0; i < itemCount; i++) {
-            this.itemModelResolver.updateForTopItem(state.items.get(i), handler.getStackInSlot(i), ItemDisplayContext.NONE, blockEntity.getLevel(), null, 1);
+            state.items.get(i).update(handler.getStackInSlot(i), ItemDisplayContext.NONE, blockEntity.getLevel(), 1);
         }
-        this.itemModelResolver.updateForTopItem(state.centerItem, handler.getStackInSlot(handler.getSlots() - 1), ItemDisplayContext.NONE, blockEntity.getLevel(), null, 1);
+        state.centerItem.update(handler.getStackInSlot(handler.getSlots() - 1), ItemDisplayContext.NONE, blockEntity.getLevel(), 1);
 
         state.fluids.clear();
         FluidTank fluidTank = blockEntity.getFluidTank();
@@ -89,9 +85,9 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     }
 
     private static void extractFluid(MixerRenderState state, FluidStack fluidStack, float alpha, float heightPercentage, float minY, float maxY) {
-        FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidStack.getFluid().defaultFluidState());
-        TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
-        int color = fluidModel.fluidTintSource().colorAsStack(fluidStack);
+        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluidStack.getFluid());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(extensions.getStillTexture(fluidStack));
+        int color = extensions.getTintColor(fluidStack);
         alpha *= (color >> 24 & 255) / 255f;
         float red = (color >> 16 & 255) / 255f;
         float green = (color >> 8 & 255) / 255f;
@@ -100,19 +96,19 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     }
 
     @Override
-    public void submit(MixerRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(MixerRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         poseStack.pushPose();
         {
             poseStack.translate(0.5, 0, 0.5);
             poseStack.mulPose(Axis.YP.rotation(state.whiskAngle));
             poseStack.translate(-0.5, 0, -0.5);
             poseStack.translate(0.5, 1.425, 0.75);
-            collector.submitModel(this.model, Unit.INSTANCE, poseStack, WhiskModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0, state.breakProgress);
+            this.model.submit(poseStack, buffers, WhiskModel.RENDER_TYPE, state.lightCoords, OverlayTexture.NO_OVERLAY);
         }
         poseStack.popPose();
 
         for (int i = 0; i < state.items.size(); i++) {
-            submitItem(state.items.get(i), i, poseStack, collector, state.lightCoords);
+            submitItem(state.items.get(i), i, poseStack, buffers, state.lightCoords);
         }
 
         poseStack.pushPose();
@@ -120,17 +116,17 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
             poseStack.translate(0.5, 0.25, 0.5);
             poseStack.mulPose(Axis.XP.rotationDegrees(90));
             poseStack.scale(0.75f, 0.75f, 0.75f);
-            state.centerItem.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            state.centerItem.submit(poseStack, buffers, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         }
         poseStack.popPose();
 
         for (FluidQuadData fluid : state.fluids) {
-            collector.submitCustomGeometry(poseStack, RenderTypes.translucentMovingBlock(), (pose, consumer) ->
+            CustomGeometry.submit(poseStack, buffers, RenderType.translucentMovingBlock(), (pose, consumer) ->
                     renderQuads(pose.pose(), consumer, fluid.sprite(), fluid.red(), fluid.green(), fluid.blue(), fluid.alpha(), fluid.heightPercentage(), state.lightCoords, fluid.minY(), fluid.maxY()));
         }
     }
 
-    private static void submitItem(ItemStackRenderState itemState, int index, PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
+    private static void submitItem(ItemStackRenderState itemState, int index, PoseStack poseStack, MultiBufferSource buffers, int packedLight) {
         Direction direction = HORIZONTAL_DIRECTIONS[index].toRegularDirection();
 
         poseStack.pushPose();
@@ -140,7 +136,7 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(Axis.YP.rotation((float) Math.toRadians(index * 90)));
             poseStack.scale(0.25f, 0.25f, 0.25f);
-            itemState.submit(poseStack, collector, packedLight, OverlayTexture.NO_OVERLAY, 0);
+            itemState.submit(poseStack, buffers, packedLight, OverlayTexture.NO_OVERLAY, 0);
         }
         poseStack.popPose();
     }
@@ -178,7 +174,7 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     public record FluidQuadData(TextureAtlasSprite sprite, float red, float green, float blue, float alpha, float heightPercentage, float minY, float maxY) {
     }
 
-    public static class MixerRenderState extends BlockEntityRenderState {
+    public static class MixerRenderState extends BERenderState {
         public float whiskAngle;
         public final List<ItemStackRenderState> items = new ArrayList<>();
         public final ItemStackRenderState centerItem = new ItemStackRenderState();

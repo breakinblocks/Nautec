@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
@@ -18,15 +19,14 @@ import com.breakinblocks.nautec.utils.ItemTemplates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 public final class DishPortTests {
     private static final BlockPos MACHINE = new BlockPos(4, 1, 4);
@@ -219,7 +219,7 @@ public final class DishPortTests {
             BioReactorBlockEntity reactor = helper.getBlockEntity(MACHINE, BioReactorBlockEntity.class);
             reactor.getBacteriaStorage().setBacteria(0, colony(helper, NTBacterias.LITHOPHILES, 80));
             reactor.setVitality(0, 500);
-            ResourceHandler<ItemResource> side = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.NORTH);
+            ResourceHandler<ItemResource> side = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.NORTH);
             helper.assertTrue(side != null, "The reactor should expose items to automation");
 
             ItemStack loaded = dish(colony(helper, NTBacterias.CALCIOPHILES, 60));
@@ -278,7 +278,7 @@ public final class DishPortTests {
         });
     }
 
-    static BacteriaInstance colony(GameTestHelper helper, ResourceKey<Bacteria> key, long size) {
+    static BacteriaInstance colony(NTGameTestHelper helper, ResourceKey<Bacteria> key, long size) {
         return BacteriaInstance.roll(key, helper.getLevel().registryAccess()).copyWithSize(size);
     }
 
@@ -297,8 +297,8 @@ public final class DishPortTests {
         }
     }
 
-    private static ResourceHandler<ItemResource> items(GameTestHelper helper) {
-        return helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.NORTH);
+    private static ResourceHandler<ItemResource> items(NTGameTestHelper helper) {
+        return helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(MACHINE), Direction.NORTH);
     }
 
     private static BacteriaInstance contents(ItemStack stack) {

@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "nautec:aquatic_chip",
-    "E": "#c:ender_pearls",
-    "H": "minecraft:hopper"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    }
   },
   "pattern": [
     "ACA",
@@ -13,6 +21,7 @@
     "ACA"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:nautechnical_distributor"
   }
 }

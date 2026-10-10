@@ -9,10 +9,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -20,10 +20,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
 
-    static final Identifier DOWN_ARROW_SPRITE = Nautec.rl("container/furnace/down_arrow");
-    public static final Identifier UID = Nautec.rl(MixingRecipe.NAME);
-    public static final IRecipeType<MixingRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, MixingRecipe.class);
+    static final ResourceLocation DOWN_ARROW_SPRITE = Nautec.rl("container/furnace/down_arrow");
+    public static final ResourceLocation UID = Nautec.rl(MixingRecipe.NAME);
+    public static final RecipeType<MixingRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, MixingRecipe.class);
 
     public MixingRecipeCategory(IGuiHelper helper) {
         super(RECIPE_TYPE,
@@ -57,19 +57,19 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
             int outputX = (80 - outputSlotSize) / 2;
 
             NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.OUTPUT, outputX, 50)
-                    .add(recipe.result());
+                    .addItemStack(recipe.result());
         }
 
         if (recipe.fluidIngredient().getFluid() != Fluids.EMPTY) {
             builder.addSlot(RecipeIngredientRole.INPUT, 88, 0)
-                    .add(recipe.fluidIngredient().getFluid(), recipe.fluidIngredient().getAmount())
+                    .addFluidStack(recipe.fluidIngredient().getFluid(), recipe.fluidIngredient().getAmount())
                     .setFluidRenderer(recipe.fluidIngredient().getAmount(), true, 16, 16);
             addBucket(builder, RecipeIngredientRole.INPUT, recipe.fluidIngredient().getFluid());
         }
 
         if (recipe.fluidResult().getFluid() != Fluids.EMPTY) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 48)
-                    .add(recipe.fluidResult().getFluid(), recipe.fluidResult().getAmount())
+                    .addFluidStack(recipe.fluidResult().getFluid(), recipe.fluidResult().getAmount())
                     .setFluidRenderer(recipe.fluidResult().getAmount(), true, 16, 16);
             addBucket(builder, RecipeIngredientRole.OUTPUT, recipe.fluidResult().getFluid());
         }
@@ -78,12 +78,12 @@ public class MixingRecipeCategory extends AbstractRecipeCategory<MixingRecipe> {
     private static void addBucket(IRecipeLayoutBuilder builder, RecipeIngredientRole role, Fluid fluid) {
         ItemStack bucket = new ItemStack(fluid.getBucket());
         if (!bucket.isEmpty()) {
-            builder.addInvisibleIngredients(role).add(bucket);
+            builder.addInvisibleIngredients(role).addItemStack(bucket);
         }
     }
 
     @Override
-    public void draw(@NotNull MixingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(@NotNull MixingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, NTJeiUtil.SINGLE_SLOT_SPRITE, 87, -1, 18, 18);
         NTJeiUtil.blitSprite(guiGraphics, NTJeiUtil.SINGLE_SLOT_SPRITE, 87, 47, 18, 18);
 

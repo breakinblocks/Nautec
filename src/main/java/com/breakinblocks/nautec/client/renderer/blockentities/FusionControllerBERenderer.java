@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
 import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
@@ -8,17 +9,13 @@ import com.breakinblocks.nautec.content.blockentities.fusion.FusionStructure;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlockEntity, FusionControllerBERenderer.FusionRenderState> {
     private static final int SEGMENTS = 36;
@@ -35,8 +32,8 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     }
 
     @Override
-    public void extractRenderState(FusionControllerBlockEntity controller, FusionRenderState state, float partialTick, Vec3 cameraPos, ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(controller, state, crumbling);
+    public void extractRenderState(FusionControllerBlockEntity controller, FusionRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(controller, state);
         BlockPos core = controller.getVisualCore();
         state.formed = controller.isVisualFormed() && core != null;
         if (!state.formed || controller.getLevel() == null) {
@@ -54,7 +51,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     }
 
     @Override
-    public void submit(FusionRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(FusionRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         if (!state.formed || state.heat <= 0F) {
             return;
         }
@@ -68,9 +65,9 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(state.ticks * (1.5F + 4F * state.power)));
-        cylinder(poseStack, collector, 0.95F + 0.12F * state.power, -COLUMN_HALF_HEIGHT, COLUMN_HALF_HEIGHT, color(0xFFFFFF, columnEnergy));
+        cylinder(poseStack, buffers, 0.95F + 0.12F * state.power, -COLUMN_HALF_HEIGHT, COLUMN_HALF_HEIGHT, color(0xFFFFFF, columnEnergy));
         if (state.radius >= 3) {
-            cylinder(poseStack, collector, Math.min(half - 0.25F, 1.6F + 0.35F * state.radius), -COLUMN_HALF_HEIGHT + 0.4F, COLUMN_HALF_HEIGHT - 0.4F,
+            cylinder(poseStack, buffers, Math.min(half - 0.25F, 1.6F + 0.35F * state.radius), -COLUMN_HALF_HEIGHT + 0.4F, COLUMN_HALF_HEIGHT - 0.4F,
                     color(0xB8A6FF, columnEnergy * 0.55F));
         }
         poseStack.popPose();
@@ -83,16 +80,16 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
             poseStack.pushPose();
             poseStack.translate((bit & 1) != 0 ? corner : -corner, 0, (bit & 2) != 0 ? corner : -corner);
             poseStack.mulPose(Axis.YP.rotationDegrees(-state.ticks * (2F + 5F * state.power)));
-            cylinder(poseStack, collector, 0.7F + 0.1F * state.power, -COLUMN_HALF_HEIGHT, COLUMN_HALF_HEIGHT, color(0xB8A6FF, columnEnergy * 0.8F));
+            cylinder(poseStack, buffers, 0.7F + 0.1F * state.power, -COLUMN_HALF_HEIGHT, COLUMN_HALF_HEIGHT, color(0xB8A6FF, columnEnergy * 0.8F));
             poseStack.popPose();
         }
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(-state.ticks * (3F + 6F * state.power)));
-        disk(poseStack, collector, 0.7F, half, 0.5F, color(0xD8F6FF, Mth.clamp(columnEnergy * 0.8F, 0F, 1F)));
+        disk(poseStack, buffers, 0.7F, half, 0.5F, color(0xD8F6FF, Mth.clamp(columnEnergy * 0.8F, 0F, 1F)));
         poseStack.popPose();
 
-        field(poseStack, collector, half, -COLUMN_HALF_HEIGHT + INSET, COLUMN_HALF_HEIGHT - INSET, color(0xFFFFFF, fieldEnergy));
+        field(poseStack, buffers, half, -COLUMN_HALF_HEIGHT + INSET, COLUMN_HALF_HEIGHT - INSET, color(0xFFFFFF, fieldEnergy));
         poseStack.popPose();
     }
 
@@ -100,8 +97,8 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         return ((int) (Mth.clamp(alpha, 0F, 1F) * 255F) << 24) | (rgb & 0xFFFFFF);
     }
 
-    private static void cylinder(PoseStack poseStack, SubmitNodeCollector collector, float radius, float bottom, float top, int color) {
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
+    private static void cylinder(PoseStack poseStack, MultiBufferSource buffers, float radius, float bottom, float top, int color) {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
             for (int i = 0; i < SEGMENTS; i++) {
                 float u0 = i / (float) SEGMENTS;
                 float u1 = (i + 1) / (float) SEGMENTS;
@@ -117,8 +114,8 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         });
     }
 
-    private static void disk(PoseStack poseStack, SubmitNodeCollector collector, float inner, float outer, float y, int color) {
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
+    private static void disk(PoseStack poseStack, MultiBufferSource buffers, float inner, float outer, float y, int color) {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.fusionPlasma(), (pose, buffer) -> {
             for (int i = 0; i < SEGMENTS; i++) {
                 float u0 = i / (float) SEGMENTS;
                 float u1 = (i + 1) / (float) SEGMENTS;
@@ -134,10 +131,10 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         });
     }
 
-    private static void field(PoseStack poseStack, SubmitNodeCollector collector, float half, float bottom, float top, int color) {
+    private static void field(PoseStack poseStack, MultiBufferSource buffers, float half, float bottom, float top, int color) {
         float width = half * 2F;
         float height = top - bottom;
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.fusionField(), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.fusionField(), (pose, buffer) -> {
             vertex(buffer, pose, -half, bottom, -half, 0F, 0F, color);
             vertex(buffer, pose, half, bottom, -half, width, 0F, color);
             vertex(buffer, pose, half, top, -half, width, height, color);
@@ -185,7 +182,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
     }
 
     @Override
-    public boolean shouldRenderOffScreen() {
+    public boolean shouldRenderOffScreen(FusionControllerBlockEntity controller) {
         return true;
     }
 
@@ -194,7 +191,7 @@ public class FusionControllerBERenderer extends NTBERenderer<FusionControllerBlo
         return 96;
     }
 
-    public static class FusionRenderState extends BlockEntityRenderState {
+    public static class FusionRenderState extends BERenderState {
         public boolean formed;
         public int dx;
         public int dy;

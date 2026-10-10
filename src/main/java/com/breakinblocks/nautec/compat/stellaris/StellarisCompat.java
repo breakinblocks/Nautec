@@ -1,12 +1,16 @@
 package com.breakinblocks.nautec.compat.stellaris;
 
+
+import com.breakinblocks.nautec.network.AirlessUntilPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.items.DivingSuitArmorItem;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -20,7 +24,7 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 public final class StellarisCompat {
     public static final String MOD_ID = "stellaris";
     public static final ResourceKey<DamageType> OXYGEN_DEPRIVATION =
-            ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "oxygen_deprivation"));
+            ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(MOD_ID, "oxygen_deprivation"));
     private static final int DEFAULT_DAMAGE_INTERVAL_TICKS = 20;
     private static final int AIRLESS_GRACE_TICKS = 10;
 
@@ -37,7 +41,11 @@ public final class StellarisCompat {
         }
 
         int interval = damageIntervalTicks();
-        player.setData(NTDataAttachments.AIRLESS_UNTIL, player.level().getGameTime() + interval + AIRLESS_GRACE_TICKS);
+        long airlessUntil = player.level().getGameTime() + interval + AIRLESS_GRACE_TICKS;
+        player.setData(NTDataAttachments.AIRLESS_UNTIL, airlessUntil);
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new AirlessUntilPayload(airlessUntil));
+        }
 
         ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
         int oxygen = NTDataComponentsUtils.getOxygenLevels(chestplate);

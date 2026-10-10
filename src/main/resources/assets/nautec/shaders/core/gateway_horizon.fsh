@@ -1,8 +1,12 @@
-#version 330
+#version 150
 
-#moj_import <minecraft:fog.glsl>
-#moj_import <minecraft:globals.glsl>
-#moj_import <minecraft:projection.glsl>
+#moj_import <fog.glsl>
+
+uniform mat4 ProjMat;
+uniform float GameTime;
+uniform float FogStart;
+uniform float FogEnd;
+uniform vec4 FogColor;
 
 in vec2 texCoord0;
 in vec4 vertexColor;
@@ -75,7 +79,7 @@ void main() {
     float alpha = clamp(0.72 + 0.18 * body + 0.2 * filaments + 0.3 * rim, 0.0, 0.97);
 
     float fragmentDistance = -ProjMat[3].z / ((gl_FragCoord.z) * -2.0 + 1.0 - ProjMat[2].z);
-    float fog = total_fog_value(fragmentDistance, fragmentDistance, FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd);
+    float fog = (1.0 - linear_fog_fade(fragmentDistance, FogStart, FogEnd));
     color = mix(color, FogColor.rgb, fog * FogColor.a);
 
     fragColor = vec4(color, alpha);

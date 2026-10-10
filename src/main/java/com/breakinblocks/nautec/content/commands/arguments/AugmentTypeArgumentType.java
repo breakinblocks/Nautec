@@ -11,7 +11,7 @@ import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.augments.AugmentType;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,8 +38,8 @@ public class AugmentTypeArgumentType implements ArgumentType<AugmentType<?>> {
 
     @Override
     public AugmentType<?> parse(StringReader reader) throws CommandSyntaxException {
-        Identifier read = Identifier.read(reader);
-        AugmentType<?> augmentType = NTRegistries.AUGMENT_TYPE.getValue(read);
+        ResourceLocation read = ResourceLocation.read(reader);
+        AugmentType<?> augmentType = NTRegistries.AUGMENT_TYPE.get(read);
         if (augmentType != null) {
             return augmentType;
         }

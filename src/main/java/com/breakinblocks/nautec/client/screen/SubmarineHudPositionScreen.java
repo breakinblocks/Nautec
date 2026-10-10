@@ -3,13 +3,11 @@ package com.breakinblocks.nautec.client.screen;
 import com.breakinblocks.nautec.NTClientConfig;
 import com.breakinblocks.nautec.client.hud.SubmarineHudOverlay;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
-import net.minecraft.client.input.KeyEvent;
 
 public class SubmarineHudPositionScreen extends Screen {
     private double hudX = NTClientConfig.hudX();
@@ -43,14 +41,19 @@ public class SubmarineHudPositionScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.fill(0, 0, this.width, this.height, 0x90000000);
         int infoX = (this.width - INFO_W) / 2;
         PanelStyle.panel(guiGraphics, infoX, 18, INFO_W, INFO_H);
-        guiGraphics.text(this.font, this.title, infoX + 8, 24, PanelStyle.LABEL, false);
-        guiGraphics.text(this.font, Component.translatable("nautec.submarine.hud_position.drag"), infoX + 8, 36, PanelStyle.LABEL, false);
-        guiGraphics.text(this.font, Component.translatable("nautec.submarine.hud_position.keys"), infoX + 8, 48, PanelStyle.READOUT_DIM, false);
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.drawString(this.font, this.title, infoX + 8, 24, PanelStyle.LABEL, false);
+        guiGraphics.drawString(this.font, Component.translatable("nautec.submarine.hud_position.drag"), infoX + 8, 36, PanelStyle.LABEL, false);
+        guiGraphics.drawString(this.font, Component.translatable("nautec.submarine.hud_position.keys"), infoX + 8, 48, PanelStyle.READOUT_DIM, false);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         int power = 73;
         int capacity = 100;
@@ -87,44 +90,44 @@ public class SubmarineHudPositionScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int x = panelX();
         int y = panelY();
-        if (event.x() >= x && event.x() <= x + SubmarineHudOverlay.PANEL_W
-                && event.y() >= y && event.y() <= y + SubmarineHudOverlay.TOTAL_H) {
+        if (mouseX >= x && mouseX <= x + SubmarineHudOverlay.PANEL_W
+                && mouseY >= y && mouseY <= y + SubmarineHudOverlay.TOTAL_H) {
             this.dragging = true;
-            this.grabOffsetX = event.x() - x;
-            this.grabOffsetY = event.y() - y;
+            this.grabOffsetX = mouseX - x;
+            this.grabOffsetY = mouseY - y;
             return true;
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
         if (this.dragging) {
             int spanX = Math.max(1, this.width - SubmarineHudOverlay.PANEL_W);
             int spanY = Math.max(1, this.height - SubmarineHudOverlay.TOTAL_H);
-            this.hudX = Mth.clamp((event.x() - this.grabOffsetX) / spanX, 0.0, 1.0);
-            this.hudY = Mth.clamp((event.y() - this.grabOffsetY) / spanY, 0.0, 1.0);
+            this.hudX = Mth.clamp((mouseX - this.grabOffsetX) / spanX, 0.0, 1.0);
+            this.hudY = Mth.clamp((mouseY - this.grabOffsetY) / spanY, 0.0, 1.0);
             return true;
         }
-        return super.mouseDragged(event, dx, dy);
+        return super.mouseDragged(mouseX, mouseY, button, dx, dy);
     }
 
     @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         this.dragging = false;
-        return super.mouseReleased(event);
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean keyPressed(KeyEvent event) {
-        if (event.key() == GLFW.GLFW_KEY_H && event.hasControlDown()) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_H && hasControlDown()) {
             onClose();
             return true;
         }
-        return super.keyPressed(event);
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

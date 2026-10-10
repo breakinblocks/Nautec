@@ -1,31 +1,34 @@
 package com.breakinblocks.nautec.client.renderer.items;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.client.renderer.entity.EmissiveGeoLayer;
 import com.breakinblocks.nautec.content.items.SubmarineItem;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.DefaultedEntityGeoModel;
-import com.geckolib.renderer.GeoItemRenderer;
-import com.geckolib.renderer.base.GeoRenderState;
-import com.geckolib.renderer.base.RenderPassInfo;
-import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class SubmarineItemRenderer extends GeoItemRenderer<SubmarineItem> {
-    private static final Identifier EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
+    private static final ResourceLocation EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
 
     private static final float CENTRE_Y = 7.5F / 16F;
     private static final float CENTRE_Z = -2.5F / 16F;
 
     public SubmarineItemRenderer() {
         super(new DefaultedEntityGeoModel<>(Nautec.rl("submarine")));
-        withRenderLayer(new EmissiveLayer(this));
+        addRenderLayer(new EmissiveGeoLayer<>(this, EMISSIVE));
     }
 
-    private static float scaleFor(ItemDisplayContext context) {
+    private static float scaleFor(@Nullable ItemDisplayContext context) {
+        if (context == null) {
+            return 1.1F;
+        }
         return switch (context) {
             case GUI, FIXED -> 1.1F;
             case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> 2.6F;
@@ -34,32 +37,19 @@ public class SubmarineItemRenderer extends GeoItemRenderer<SubmarineItem> {
     }
 
     @Override
-    public RenderType getRenderType(GeoRenderState state, Identifier texture) {
-        return RenderTypes.entityTranslucent(texture);
+    public RenderType getRenderType(SubmarineItem item, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return RenderType.entityTranslucent(texture);
     }
 
     @Override
-    public void adjustRenderPose(RenderPassInfo<GeoRenderState> pass) {
-        super.adjustRenderPose(pass);
-        PoseStack poseStack = pass.poseStack();
-        float scale = scaleFor(pass.renderState().getOrDefaultGeckolibData(DataTickets.ITEM_RENDER_PERSPECTIVE, ItemDisplayContext.GUI));
+    public void preRender(PoseStack poseStack, SubmarineItem item, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer,
+                          boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        if (isReRender) {
+            return;
+        }
+        float scale = scaleFor(this.renderPerspective);
         poseStack.scale(scale, scale, scale);
         poseStack.translate(0F, -CENTRE_Y, CENTRE_Z);
-    }
-
-    private static class EmissiveLayer extends AutoGlowingGeoLayer<SubmarineItem, GeoItemRenderer.RenderData, GeoRenderState> {
-        EmissiveLayer(GeoItemRenderer<SubmarineItem> renderer) {
-            super(renderer);
-        }
-
-        @Override
-        protected Identifier getTextureResource(GeoRenderState state) {
-            return EMISSIVE;
-        }
-
-        @Override
-        protected boolean shouldAddZOffset(GeoRenderState state) {
-            return true;
-        }
     }
 }

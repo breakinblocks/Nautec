@@ -1,6 +1,8 @@
 {
   "type": "nautec:bacteria_mutation",
-  "catalyst": "minecraft:red_mushroom_block",
+  "catalyst": {
+    "item": "minecraft:red_mushroom_block"
+  },
   "chance": 20.0,
   "input_bacteria": "nautec:methanogens",
   "result_bacteria": "nautec:red_mycotrophic_bacteria"

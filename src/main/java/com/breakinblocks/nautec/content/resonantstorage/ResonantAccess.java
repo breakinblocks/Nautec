@@ -22,13 +22,13 @@ public final class ResonantAccess {
     }
 
     public static boolean admin(Player player) {
-        return player instanceof ServerPlayer server && Commands.LEVEL_GAMEMASTERS.check(server.createCommandSourceStack().permissions());
+        return player instanceof ServerPlayer server && server.hasPermissions(Commands.LEVEL_GAMEMASTERS);
     }
 
     public static @Nullable ResonantLink key(ServerPlayer player, ChannelAccess access, GatewayAddress address) {
         return switch (access) {
             case PUBLIC -> new ResonantLink(new ResonantChannel(ChannelAccess.PUBLIC, ResonantChannel.NOBODY, address), "");
-            case PRIVATE -> new ResonantLink(new ResonantChannel(ChannelAccess.PRIVATE, player.getUUID(), address), player.getGameProfile().name());
+            case PRIVATE -> new ResonantLink(new ResonantChannel(ChannelAccess.PRIVATE, player.getUUID(), address), player.getGameProfile().getName());
             case TEAM -> {
                 UUID team = TeamAccess.teamOf(player.getUUID());
                 yield team == null ? null : new ResonantLink(new ResonantChannel(ChannelAccess.TEAM, team, address), TeamAccess.teamName(team));

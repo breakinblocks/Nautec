@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.network;
 
+
+import com.breakinblocks.nautec.utils.codec.StreamCodecs;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.conduits.ConduitChannel;
 import com.breakinblocks.nautec.content.conduits.ConduitPartBlock;
@@ -37,7 +39,7 @@ public record ConduitTapEditPayload(int containerId, int face, int side, int act
     public static final int FLUID = 7;
     public static final int DISABLED = 8;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ConduitTapEditPayload> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ConduitTapEditPayload> STREAM_CODEC = StreamCodecs.composite(
             ByteBufCodecs.VAR_INT, ConduitTapEditPayload::containerId,
             ByteBufCodecs.VAR_INT, ConduitTapEditPayload::face,
             ByteBufCodecs.VAR_INT, ConduitTapEditPayload::side,

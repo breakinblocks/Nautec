@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.semi.Prismarine
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -28,7 +28,7 @@ public enum PrismarineCrystalComponentProvider implements IBlockComponentProvide
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return Nautec.rl("prismarine_crystal");
     }
 }

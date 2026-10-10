@@ -2,20 +2,28 @@
   "type": "nautec:laser_crafting",
   "ingredients": [
     {
-      "ingredient": "minecraft:barrier"
+      "ingredient": {
+        "item": "minecraft:barrier"
+      }
     },
     {
       "count": 2,
-      "ingredient": "minecraft:structure_void"
+      "ingredient": {
+        "item": "minecraft:structure_void"
+      }
     }
   ],
   "fluid_ingredients": [
     {
-      "ingredient": "minecraft:water",
+      "ingredient": {
+        "fluid": "minecraft:water"
+      },
       "amount": 500
     },
     {
-      "ingredient": "minecraft:lava",
+      "ingredient": {
+        "fluid": "minecraft:lava"
+      },
       "amount": 250
     }
   ],

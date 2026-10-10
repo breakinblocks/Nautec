@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -20,7 +20,7 @@ import snownee.jade.api.config.IPluginConfig;
 public enum GeneratorComponentProvider implements StreamServerDataProvider<BlockAccessor, GeneratorComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("fe_generator");
+    private static final ResourceLocation UID = Nautec.rl("fe_generator");
 
     public static final int ROTOR = 0;
     public static final int TAP = 1;
@@ -56,7 +56,7 @@ public enum GeneratorComponentProvider implements StreamServerDataProvider<Block
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -99,7 +99,7 @@ public enum GeneratorComponentProvider implements StreamServerDataProvider<Block
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

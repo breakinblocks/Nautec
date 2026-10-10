@@ -1,6 +1,8 @@
 {
   "type": "nautec:resonance_crafting",
-  "ingredient": "nautec:dormant_crystal_seed",
+  "ingredient": {
+    "item": "nautec:dormant_crystal_seed"
+  },
   "purity": 3.0,
   "result": {
     "id": "nautec:prismarine_crystal_seed"

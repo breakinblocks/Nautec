@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "#c:ingots/copper",
-    "G": "#c:glass_blocks/colorless",
-    "K": "#c:storage_blocks/dried_kelp",
-    "P": "minecraft:prismarine_shard"
+    "C": {
+      "tag": "c:ingots/copper"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "K": {
+      "tag": "c:storage_blocks/dried_kelp"
+    },
+    "P": {
+      "item": "minecraft:prismarine_shard"
+    }
   },
   "pattern": [
     "PGP",
@@ -13,6 +21,7 @@
     "PCP"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:bubble_anchor"
   }
 }

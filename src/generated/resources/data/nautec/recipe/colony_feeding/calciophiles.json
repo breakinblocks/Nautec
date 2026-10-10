@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:calciophiles",
   "ingredient": {
-    "ingredient": "minecraft:bone_block"
+    "ingredient": {
+      "item": "minecraft:bone_block"
+    }
   },
   "vitality_ticks": 1200
 }

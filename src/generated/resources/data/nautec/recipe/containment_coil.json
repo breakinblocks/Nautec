@@ -2,10 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:aquatic_chip",
-    "E": "#c:ender_pearls",
-    "G": "nautec:atlantic_gold_ingot",
-    "L": "nautec:laser_channeling_coil"
+    "C": {
+      "item": "nautec:aquatic_chip"
+    },
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "G": {
+      "item": "nautec:atlantic_gold_ingot"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    }
   },
   "pattern": [
     "ELE",
@@ -13,6 +21,7 @@
     "ELE"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:containment_coil"
   }
 }

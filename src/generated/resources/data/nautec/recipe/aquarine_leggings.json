@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "nautec:prismarine_crystal_shard",
-    "I": "nautec:aquarine_steel_ingot",
-    "V": "nautec:valve"
+    "C": {
+      "item": "nautec:prismarine_crystal_shard"
+    },
+    "I": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "V": {
+      "item": "nautec:valve"
+    }
   },
   "pattern": [
     "IVI",
@@ -12,6 +18,7 @@
     "I I"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:aquarine_steel_leggings"
   }
 }

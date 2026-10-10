@@ -4,7 +4,9 @@
   "desc": "Step up full blocks without jumping",
   "ingredients": [
     {
-      "ingredient": "nautec:servo_knee"
+      "ingredient": {
+        "item": "nautec:servo_knee"
+      }
     }
   ],
   "resultAugment": "nautec:step_up"

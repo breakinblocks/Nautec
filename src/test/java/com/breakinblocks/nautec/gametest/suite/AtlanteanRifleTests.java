@@ -9,13 +9,12 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -169,8 +168,8 @@ public final class AtlanteanRifleTests {
         });
 
         r.add("atlantean_rifle/crafted_from_pressure_forged_parts_with_an_empty_buffer", 20, 1, helper -> {
-            RecipeHolder<?> holder = helper.getLevel().recipeAccess()
-                    .byKey(ResourceKey.create(Registries.RECIPE, Nautec.rl("atlantean_rifle")))
+            RecipeHolder<?> holder = helper.getLevel().getRecipeManager()
+                    .byKey(Nautec.rl("atlantean_rifle"))
                     .orElse(null);
             if (holder == null || !(holder.value() instanceof ShapedRecipe recipe)) {
                 helper.fail("nautec:atlantean_rifle is not a loaded shaped recipe: " + holder);
@@ -192,7 +191,7 @@ public final class AtlanteanRifleTests {
                 return;
             }
 
-            ItemStack result = recipe.assemble(grid);
+            ItemStack result = recipe.assemble(grid, helper.getLevel().registryAccess());
             if (!result.is(NTItems.ATLANTEAN_RIFLE.get()) || result.getCount() != 1) {
                 helper.fail("Crafting produced " + result + " instead of one rifle");
                 return;
@@ -216,7 +215,7 @@ public final class AtlanteanRifleTests {
         return stack.getOrDefault(NTDataComponents.POWER, ComponentPowerStorage.EMPTY).powerStored();
     }
 
-    private static Player shooter(GameTestHelper helper, ItemStack stack) {
+    private static Player shooter(NTGameTestHelper helper, ItemStack stack) {
         Player shooter = helper.makeMockPlayer(GameType.SURVIVAL);
         Vec3 at = helper.absoluteVec(SHOOTER);
         shooter.setPos(at.x, at.y, at.z);

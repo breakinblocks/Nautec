@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:bryophytophiles",
   "ingredient": {
-    "ingredient": "minecraft:moss_block"
+    "ingredient": {
+      "item": "minecraft:moss_block"
+    }
   },
   "vitality_ticks": 1200
 }

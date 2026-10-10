@@ -36,7 +36,7 @@ public record SetGhostInputPayload(int containerId, int slot, ItemStack stack) i
                 return;
             }
             if (!menu.blockEntity.setGhost(payload.slot(), payload.stack()) && !payload.stack().isEmpty()) {
-                player.sendOverlayMessage(Component.translatable("nautec.ghost_input.refused", payload.stack().getHoverName()).withStyle(ChatFormatting.RED));
+                player.displayClientMessage(Component.translatable("nautec.ghost_input.refused", payload.stack().getHoverName()).withStyle(ChatFormatting.RED), true);
             }
         });
     }

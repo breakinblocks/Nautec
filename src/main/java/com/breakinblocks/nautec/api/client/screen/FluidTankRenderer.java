@@ -3,10 +3,7 @@ package com.breakinblocks.nautec.api.client.screen;
 import com.google.common.base.Preconditions;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -50,15 +47,14 @@ public class FluidTankRenderer {
         this.height = height;
     }
 
-    public void render(GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack) {
+    public void render(GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
         }
 
-        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
-        TextureAtlasSprite sprite = model.stillMaterial().sprite();
-        int fluidColor = model.fluidTintSource().colorAsStack(fluidStack);
+        TextureAtlasSprite sprite = NTGui.fluidStillSprite(fluidStack);
+        int fluidColor = NTGui.fluidTint(fluidStack);
 
         long amount = fluidStack.getAmount();
         long scaledAmount = (amount * height) / capacity;
@@ -73,7 +69,7 @@ public class FluidTankRenderer {
         drawTiledSprite(guiGraphics, x, y, width, height, fluidColor, scaledAmount, sprite);
     }
 
-    private static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int x, int y, int tiledWidth, int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
+    private static void drawTiledSprite(GuiGraphics guiGraphics, int x, int y, int tiledWidth, int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
         int filled = (int) scaledAmount;
         int yStart = y + tiledHeight;
         int rowsLeft = filled;
@@ -84,7 +80,7 @@ public class FluidTankRenderer {
             int xStart = x;
             while (colsLeft > 0) {
                 int colWidth = Math.min(TEXTURE_SIZE, colsLeft);
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, xStart, yStart, colWidth, rowHeight, color);
+                NTGui.blitSprite(guiGraphics, sprite, xStart, yStart, colWidth, rowHeight, color);
                 xStart += colWidth;
                 colsLeft -= colWidth;
             }

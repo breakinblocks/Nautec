@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blocks.multiblock.part;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.DisplayBlock;
@@ -14,17 +15,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,11 +33,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.ResourceHandler;
+import com.breakinblocks.nautec.utils.FluidInteractions;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,12 +70,12 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
     }
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+    protected @NotNull BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         if (facing == Direction.UP && state.getValue(OPEN)) {
-            tickAccess.scheduleTick(currentPos, this, 20);
+            level.scheduleTick(currentPos, this, 20);
         }
 
-        return super.updateShape(state, level, tickAccess, currentPos, facing, facingPos, facingState, random);
+        return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override
@@ -105,19 +102,19 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (stack.getItem() instanceof AquarineWrenchItem && wrenchLaserPort(level, pos, state, player)) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         
-        if (state.getValue(Multiblock.FORMED) && stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forPlayerInteraction(player, hand)) != null
+        if (state.getValue(Multiblock.FORMED) && FluidInteractions.isFluidContainer(stack)
                 && level.getBlockEntity(pos) instanceof DrainPartBlockEntity drainPartBlockEntity) {
             BlockPos controllerPos = drainPartBlockEntity.getActualBlockEntityPos();
             if (controllerPos != null) {
                 BlockState controllerState = level.getBlockState(controllerPos);
                 BlockHitResult newHitResult = new BlockHitResult(hitResult.getLocation(), hitResult.getDirection(), controllerPos, hitResult.isInside());
                 InteractionResult result = controllerState.useWithoutItem(level, player, newHitResult);
-                return result == InteractionResult.SUCCESS ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+                return result == InteractionResult.SUCCESS ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
         }
         
@@ -132,10 +129,10 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
             return false;
         }
         BlockPos controller = part.getActualBlockEntityPos();
-        Direction outward = Direction.getApproximateNearest(pos.getX() - controller.getX(), 0, pos.getZ() - controller.getZ());
+        Direction outward = Direction.getNearest(pos.getX() - controller.getX(), 0, pos.getZ() - controller.getZ());
         setLaserPort(pos, level, outward);
         if (!level.isClientSide() && player != null) {
-            player.sendOverlayMessage(Component.translatable("nautec.drain.message.port_set").withStyle(ChatFormatting.AQUA));
+            player.displayClientMessage(Component.translatable("nautec.drain.message.port_set").withStyle(ChatFormatting.AQUA), true);
         }
         return true;
     }
@@ -158,7 +155,7 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrimaryCollision) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (state.getValue(OPEN) && state.getValue(HAS_POWER)) {
             entity.hurt(level.damageSources().drown(), 4.0F);
         }
@@ -190,7 +187,7 @@ public class DrainPartBlock extends LaserBlock implements DisplayBlock {
     public List<Component> displayText(Level level, BlockPos blockPos, Player player) {
         if (level.getBlockEntity(blockPos) instanceof DrainPartBlockEntity drainPartBlockEntity) {
             BlockPos blockEntityPos = drainPartBlockEntity.getActualBlockEntityPos();
-            ResourceHandler<FluidResource> fluidCap = level.getCapability(Capabilities.Fluid.BLOCK, blockEntityPos,
+            ResourceHandler<FluidResource> fluidCap = level.getCapability(TransferCapabilities.Fluid.BLOCK, blockEntityPos,
                     level.getBlockState(blockEntityPos),
                     level.getBlockEntity(blockEntityPos),
                     null

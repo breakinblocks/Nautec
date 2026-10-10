@@ -16,7 +16,7 @@ final class StarcatcherTestBobs {
     static Entity cast(ServerLevel level, Player owner) {
         ItemStack rod = SCItems.ROD.toStack();
         owner.setItemInHand(InteractionHand.MAIN_HAND, rod);
-        return new FishingBobEntity(level, owner, rod, Starcatcher.TACKLE_SKIN_REGISTRY.getValue(Starcatcher.BASE));
+        return new FishingBobEntity(level, owner, rod, Starcatcher.TACKLE_SKIN_REGISTRY.get(Starcatcher.BASE));
     }
 
     static int ticksInFluid(Entity bob) {

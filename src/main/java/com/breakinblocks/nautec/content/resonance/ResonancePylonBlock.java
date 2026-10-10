@@ -60,8 +60,8 @@ public class ResonancePylonBlock extends ContainerBlock {
         if (player instanceof ServerPlayer serverPlayer) {
             ResonanceNetwork network = pylon.getNetwork();
             if (network != null && !ResonanceNetworks.canUse(serverPlayer, network)) {
-                serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
-                        .withStyle(ChatFormatting.RED));
+                serverPlayer.displayClientMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
+                        .withStyle(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }
             serverPlayer.openMenu(pylon, pos);

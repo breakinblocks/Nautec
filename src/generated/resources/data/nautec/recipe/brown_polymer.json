@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:dried_kelp",
-    "minecraft:brown_dye"
+    {
+      "item": "minecraft:dried_kelp"
+    },
+    {
+      "item": "minecraft:brown_dye"
+    }
   ],
   "result": {
     "count": 2,

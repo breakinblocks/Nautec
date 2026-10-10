@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.EnergyConverterBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitChannel;
@@ -24,10 +25,9 @@ import com.breakinblocks.nautec.utils.TemplateSanitizer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.player.Player;
@@ -41,11 +41,11 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.Set;
 
@@ -112,7 +112,7 @@ public final class ConduitTests {
             for (int slot = 0; slot < TapFilter.ITEM_SLOTS; slot++) {
                 tap.face(Direction.NORTH).filter(TapSide.INPUT).setItem(slot, new ItemStack(Items.ENCHANTED_BOOK));
             }
-            helper.assertValueEqual(Set.of("flow"), tap.getUpdateTag(helper.getLevel().registryAccess()).keySet(), "the update tag only carries the flange colours");
+            helper.assertValueEqual(Set.of("flow"), tap.getUpdateTag(helper.getLevel().registryAccess()).getAllKeys(), "the update tag only carries the flange colours");
             helper.succeed();
         });
 
@@ -193,7 +193,7 @@ public final class ConduitTests {
             line(helper, 3, 5);
             ConduitTapBlockEntity tap = tap(helper, 4);
             tap.getItemStackHandler().setStackInSlot(ConduitTapBlockEntity.UPGRADE_SLOT, new ItemStack(NTItems.EDDY_UPGRADE.get()));
-            helper.assertTrue(helper.getLevel().getCapability(Capabilities.Item.BLOCK, tap.getBlockPos(), null) == null,
+            helper.assertTrue(helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, tap.getBlockPos(), null) == null,
                     "the upgrade slots are reachable with a null side");
             helper.succeed();
         });
@@ -310,8 +310,8 @@ public final class ConduitTests {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             ItemStack wrench = new ItemStack(NTItems.AQUARINE_WRENCH.get());
             BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
-            InteractionResult result = helper.getLevel().getBlockState(pos).useItemOn(wrench, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
-            helper.assertTrue(result == InteractionResult.PASS, "a wrench click on a tap was taken by the block, got " + result);
+            ItemInteractionResult result = helper.getLevel().getBlockState(pos).useItemOn(wrench, helper.getLevel(), player, InteractionHand.MAIN_HAND, hit);
+            helper.assertTrue(result == ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION, "a wrench click on a tap was taken by the block, got " + result);
             helper.succeed();
         });
 
@@ -344,7 +344,7 @@ public final class ConduitTests {
             source.face(Direction.WEST).setMode(ConduitChannel.ITEMS, FlowMode.EXTRACT);
             source.configChanged();
             source.serverTick(helper.getLevel());
-            ResourceHandler<ItemResource> sink = helper.getLevel().getCapability(Capabilities.Item.BLOCK, source.getBlockPos(), Direction.WEST);
+            ResourceHandler<ItemResource> sink = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, source.getBlockPos(), Direction.WEST);
             StringBuilder trace = new StringBuilder();
             for (int i = 0; i < 2; i++) {
                 int moved;
@@ -417,7 +417,7 @@ public final class ConduitTests {
         });
     }
 
-    private static void line(GameTestHelper helper, int fromX, int toX) {
+    private static void line(NTGameTestHelper helper, int fromX, int toX) {
         ServerLevel level = helper.getLevel();
         for (int x = fromX; x <= toX; x++) {
             level.setBlock(helper.absolutePos(new BlockPos(x, Y, 4)), NTBlocks.CURRENT_CONDUIT.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -428,7 +428,7 @@ public final class ConduitTests {
         }
     }
 
-    private static BlockPos tapAt(GameTestHelper helper, int x) {
+    private static BlockPos tapAt(NTGameTestHelper helper, int x) {
         ServerLevel level = helper.getLevel();
         BlockPos pos = helper.absolutePos(new BlockPos(x, Y, 4));
         if (!(level.getBlockState(pos).getBlock() instanceof ConduitTapBlock)) {
@@ -437,17 +437,17 @@ public final class ConduitTests {
         return pos;
     }
 
-    private static ConduitTapBlockEntity tap(GameTestHelper helper, int x) {
+    private static ConduitTapBlockEntity tap(NTGameTestHelper helper, int x) {
         return (ConduitTapBlockEntity) helper.getLevel().getBlockEntity(tapAt(helper, x));
     }
 
-    private static ChestBlockEntity chest(GameTestHelper helper, int x, int z) {
+    private static ChestBlockEntity chest(NTGameTestHelper helper, int x, int z) {
         BlockPos pos = helper.absolutePos(new BlockPos(x, Y, z));
         helper.getLevel().setBlock(pos, Blocks.CHEST.defaultBlockState(), Block.UPDATE_ALL);
         return (ChestBlockEntity) helper.getLevel().getBlockEntity(pos);
     }
 
-    private static ChestBlockEntity[] chestLine(GameTestHelper helper) {
+    private static ChestBlockEntity[] chestLine(NTGameTestHelper helper) {
         ChestBlockEntity left = chest(helper, 0, 4);
         ChestBlockEntity right = chest(helper, 8, 4);
         line(helper, 1, 7);
@@ -456,7 +456,7 @@ public final class ConduitTests {
         return new ChestBlockEntity[]{left, right};
     }
 
-    private static Fork fork(GameTestHelper helper) {
+    private static Fork fork(NTGameTestHelper helper) {
         line(helper, 1, 7);
         ChestBlockEntity source = chest(helper, 0, 4);
         ChestBlockEntity north = chest(helper, 7, 3);

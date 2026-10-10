@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cross",
+  "render_type": "minecraft:cutout",
   "textures": {
     "cross": "nautec:block/deep_kelp_plant",
     "cross_emissive": "nautec:block/deep_kelp_plant_emissive"

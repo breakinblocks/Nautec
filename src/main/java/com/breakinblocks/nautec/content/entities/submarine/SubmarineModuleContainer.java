@@ -70,7 +70,7 @@ public class SubmarineModuleContainer implements Container {
 
     @Override
     public boolean stillValid(Player player) {
-        return this.submarine.isAlive() && player.isWithinEntityInteractionRange(this.submarine, 4.0);
+        return this.submarine.isAlive() && player.canInteractWithEntity(this.submarine, 4.0);
     }
 
     @Override

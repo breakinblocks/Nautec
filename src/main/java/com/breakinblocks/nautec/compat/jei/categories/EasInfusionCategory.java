@@ -11,11 +11,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class EasInfusionCategory extends AbstractRecipeCategory<EasInfusionCategory.InfusionRecipe> {
-    public static final Identifier UID = Nautec.rl("eas_infusion");
-    public static final IRecipeType<InfusionRecipe> RECIPE_TYPE = IRecipeType.create(UID, InfusionRecipe.class);
+    public static final ResourceLocation UID = Nautec.rl("eas_infusion");
+    public static final RecipeType<InfusionRecipe> RECIPE_TYPE = new RecipeType<>(UID, InfusionRecipe.class);
     private static final int INFUSION_TICKS = 150;
     private static final int EAS_AMOUNT = 1000;
 
@@ -51,7 +51,7 @@ public class EasInfusionCategory extends AbstractRecipeCategory<EasInfusionCateg
     }
 
     @Override
-    public void draw(InfusionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(InfusionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, ItemEtchingRecipeCategory.BURN_PROGRESS_SPRITE, 50, 0, 24, 16);
     }
 
@@ -65,10 +65,10 @@ public class EasInfusionCategory extends AbstractRecipeCategory<EasInfusionCateg
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, InfusionRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).add(recipe.input());
+        builder.addSlot(RecipeIngredientRole.INPUT, 0, 0).addItemStack(recipe.input());
         builder.addSlot(RecipeIngredientRole.INPUT, 24, 0)
-                .add(NTFluids.EAS.getStillFluid(), EAS_AMOUNT)
+                .addFluidStack(NTFluids.EAS.getStillFluid(), EAS_AMOUNT)
                 .setFluidRenderer(EAS_AMOUNT, true, 16, 16);
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 0).add(recipe.output());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 0).addItemStack(recipe.output());
     }
 }

@@ -52,8 +52,8 @@ public final class ConduitWrenching {
             tap.configChanged(face);
             level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 0.6F, config.disabled() ? 0.8F : 1.4F);
             if (player != null) {
-                player.sendOverlayMessage(Component.translatable(config.disabled() ? "nautec.conduit.face.disabled" : "nautec.conduit.face.enabled",
-                        Component.translatable("nautec.conduit.face." + face.getSerializedName())).withStyle(ChatFormatting.AQUA));
+                player.displayClientMessage(Component.translatable(config.disabled() ? "nautec.conduit.face.disabled" : "nautec.conduit.face.enabled",
+                        Component.translatable("nautec.conduit.face." + face.getSerializedName())).withStyle(ChatFormatting.AQUA), true);
             }
             return InteractionResult.SUCCESS;
         }

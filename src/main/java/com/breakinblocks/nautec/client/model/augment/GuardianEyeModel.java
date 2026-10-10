@@ -12,17 +12,16 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 
 public class GuardianEyeModel extends AugmentModel<GuardianEyeAugment> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("guardian_eye"), "main");
-    public static final RenderType RENDER_TYPE = RenderTypes.entitySolid(Nautec.rl("textures/augments/guardian_eye.png"));
+    public static final RenderType RENDER_TYPE = RenderType.entitySolid(Nautec.rl("textures/augments/guardian_eye.png"));
     private final ModelPart main;
 
     public GuardianEyeModel(ModelPart root) {
-        super(root, RenderTypes::entitySolid);
+        super(root, RenderType::entitySolid);
         this.main = root.getChild("main");
     }
 
@@ -36,7 +35,7 @@ public class GuardianEyeModel extends AugmentModel<GuardianEyeAugment> {
     }
 
     @Override
-    public void submit(PoseStack poseStack, SubmitNodeCollector collector, RenderType renderType, int packedLight, int packedOverlay) {
-        collector.submitModelPart(this.main, poseStack, renderType, packedLight, packedOverlay, null);
+    public void submit(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, int packedLight, int packedOverlay) {
+        this.main.render(poseStack, buffers.getBuffer(renderType), packedLight, packedOverlay);
     }
 }

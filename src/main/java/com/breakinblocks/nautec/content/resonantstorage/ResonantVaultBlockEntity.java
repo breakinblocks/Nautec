@@ -1,17 +1,18 @@
 package com.breakinblocks.nautec.content.resonantstorage;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.menus.ResonantVaultMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
-import com.geckolib.animatable.GeoBlockEntity;
-import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.RawAnimation;
-import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -21,14 +22,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.ResourceHandlerUtil;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class ResonantVaultBlockEntity extends ResonantStorageBlockEntity implements GeoBlockEntity {
-    public static final DataTicket<Boolean> OPEN = DataTicket.create("nautec:resonant_vault_open", Boolean.class);
+    public static final DataTicket<Boolean> OPEN = new DataTicket<>("nautec:resonant_vault_open", Boolean.class);
     private static final int OPENERS_EVENT = 1;
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
     private static final RawAnimation OPENING = RawAnimation.begin().thenPlay("open").thenLoop("opened");
@@ -69,7 +70,7 @@ public class ResonantVaultBlockEntity extends ResonantStorageBlockEntity impleme
         }
         BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = neighbours[face.ordinal()];
         if (cache == null) {
-            cache = BlockCapabilityCache.create(Capabilities.Item.BLOCK, level, worldPosition.relative(face), face.getOpposite());
+            cache = BlockCapabilityCache.create(TransferCapabilities.Item.BLOCK, level, worldPosition.relative(face), face.getOpposite());
             neighbours[face.ordinal()] = cache;
         }
         ResourceHandler<ItemResource> neighbour = cache.getCapability();
@@ -130,8 +131,8 @@ public class ResonantVaultBlockEntity extends ResonantStorageBlockEntity impleme
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<ResonantVaultBlockEntity>("hatch", 3, state -> {
-            if (state.getDataOrDefault(OPEN, false)) {
+        controllers.add(new AnimationController<ResonantVaultBlockEntity>(this, "hatch", 3, state -> {
+            if (isOpen()) {
                 everOpened = true;
                 return state.setAndContinue(OPENING);
             }

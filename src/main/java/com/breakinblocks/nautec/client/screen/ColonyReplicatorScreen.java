@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
@@ -9,21 +10,20 @@ import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.menus.ColonyReplicatorMenu;
 import com.breakinblocks.nautec.network.ReplicatorModePayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBlockEntity> {
-    public static final Identifier PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
-    public static final Identifier PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
+    public static final ResourceLocation PROGRESS_ARROW = Nautec.rl("container/bacterial_analyzer/progress_arrow");
+    public static final ResourceLocation PROGRESS_ARROW_OFF = Nautec.rl("container/bacterial_analyzer/progress_arrow_off");
     private static final int BAR_X = 88;
     private static final int BAR_Y = 18;
     private static final int BAR_WIDTH = 6;
@@ -52,12 +52,12 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
                 () -> replicator().isSplice() ? PanelStyle.RECEIVE_COLOR : PanelStyle.NEUTRAL,
                 () -> replicator().isSplice() ? PanelStyle.RECEIVE_HOVER : PanelStyle.NEUTRAL_HOVER,
                 () -> Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice.desc" : "nautec.replicator.mode.replicate.desc"),
-                () -> ClientPacketDistributor.sendToServer(new ReplicatorModePayload(this.menu.containerId))));
+                () -> PacketDistributor.sendToServer(new ReplicatorModePayload(this.menu.containerId))));
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         if (!replicator().isSplice()) {
             int x = leftPos + ColonyReplicatorMenu.PARTNER_X;
             int y = topPos + ColonyReplicatorMenu.PARTNER_Y;
@@ -70,16 +70,16 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
                 biomass >= NTConfig.replicatorBiomassCost ? BIOMASS_READY : BIOMASS, PanelStyle.READOUT);
 
         int width = Mth.ceil((float) replicator().getProgress() / replicator().getDuration() * 24.0F);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW_OFF, leftPos + ARROW_X, topPos + ARROW_Y, 24, 24);
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + ARROW_X, topPos + ARROW_Y, width, 24);
+        NTGui.blitSprite(graphics, PROGRESS_ARROW_OFF, leftPos + ARROW_X, topPos + ARROW_Y, 24, 24);
+        NTGui.blitSprite(graphics, PROGRESS_ARROW, 24, 24, 0, 0, leftPos + ARROW_X, topPos + ARROW_Y, width, 24);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         int status = replicator().getStatus();
         Component text = Component.translatable(ColonyReplicatorBlock.statusKey(status));
-        graphics.text(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY,
+        graphics.drawString(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY,
                 status == ColonyReplicatorBlockEntity.STATUS_RUNNING ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
     }
 
@@ -88,8 +88,8 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
         ColonyReplicatorBlockEntity machine = this.menu.blockEntity;
         List<Component> lines = new ArrayList<>();
         if (over(mouseX, mouseY, ColonyReplicatorMenu.TEMPLATE_X, ColonyReplicatorMenu.TEMPLATE_Y, 16, 16)
@@ -120,7 +120,7 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
                     String.format("%.1f", NTConfig.replicatorPurity)).withStyle(ChatFormatting.GRAY));
         }
         if (!lines.isEmpty()) {
-            graphics.setComponentTooltipForNextFrame(this.font, lines, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, lines, mouseX, mouseY);
         }
     }
 }

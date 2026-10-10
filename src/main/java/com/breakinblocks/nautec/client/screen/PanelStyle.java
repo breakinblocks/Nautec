@@ -1,9 +1,9 @@
 package com.breakinblocks.nautec.client.screen;
 
+import com.breakinblocks.nautec.api.client.screen.NTGui;
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 public final class PanelStyle {
     public static final int PANEL = 0xFFC8C7B3;
@@ -33,58 +33,58 @@ public final class PanelStyle {
     public static final int TICK = 0xB016201F;
     public static final int GHOST_FADE = 0xA045504A;
 
-    public static final Identifier BACTERIA_SLOT = Nautec.rl("container/bacteria_slot");
-    public static final Identifier ICON_NUTRIENT = Nautec.rl("container/icons/nutrient");
-    public static final Identifier ICON_UPGRADE = Nautec.rl("container/icons/upgrade");
-    public static final Identifier ICON_CLAW = Nautec.rl("container/icons/claw");
-    public static final Identifier ICON_PETRI_DISH = Nautec.rl("container/icons/petri_dish");
-    public static final Identifier ICON_WHISK = Nautec.rl("container/icons/whisk");
+    public static final ResourceLocation BACTERIA_SLOT = Nautec.rl("container/bacteria_slot");
+    public static final ResourceLocation ICON_NUTRIENT = Nautec.rl("container/icons/nutrient");
+    public static final ResourceLocation ICON_UPGRADE = Nautec.rl("container/icons/upgrade");
+    public static final ResourceLocation ICON_CLAW = Nautec.rl("container/icons/claw");
+    public static final ResourceLocation ICON_PETRI_DISH = Nautec.rl("container/icons/petri_dish");
+    public static final ResourceLocation ICON_WHISK = Nautec.rl("container/icons/whisk");
 
     private PanelStyle() {
     }
 
-    public static void panel(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+    public static void panel(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x, y, x + width, y + height, OUTLINE);
         graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, PANEL_LIGHT);
         graphics.fill(x + 3, y + 3, x + width - 1, y + height - 1, PANEL);
     }
 
-    public static void screen(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+    public static void screen(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, OUTLINE);
         graphics.fill(x, y, x + width, y + height, SCREEN_EDGE);
         graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, SCREEN_FILL);
     }
 
-    public static void slot(GuiGraphicsExtractor graphics, int x, int y) {
+    public static void slot(GuiGraphics graphics, int x, int y) {
         slot(graphics, x, y, SLOT_FILL);
     }
 
-    public static void slot(GuiGraphicsExtractor graphics, int x, int y, int fill) {
+    public static void slot(GuiGraphics graphics, int x, int y, int fill) {
         graphics.fill(x - 1, y - 1, x + 17, y + 17, SLOT_EDGE);
         graphics.fill(x, y, x + 16, y + 16, fill);
     }
 
-    public static void bacteriaSlot(GuiGraphicsExtractor graphics, int x, int y) {
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACTERIA_SLOT, x, y, 18, 18);
+    public static void bacteriaSlot(GuiGraphics graphics, int x, int y) {
+        NTGui.blitSprite(graphics, BACTERIA_SLOT, x, y, 18, 18);
     }
 
-    public static void tank(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+    public static void tank(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, SLOT_EDGE);
         graphics.fill(x, y, x + width, y + height, SCREEN_FILL);
     }
 
-    public static void tankTicks(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
+    public static void tankTicks(GuiGraphics graphics, int x, int y, int width, int height) {
         for (int ty = y + height - 4; ty > y; ty -= 4) {
             int length = (y + height - ty) % 8 == 0 ? 5 : 3;
             graphics.fill(x + width - length, ty, x + width, ty + 1, TICK);
         }
     }
 
-    public static void icon(GuiGraphicsExtractor graphics, Identifier sprite, int x, int y, int width, int height) {
-        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, width, height);
+    public static void icon(GuiGraphics graphics, ResourceLocation sprite, int x, int y, int width, int height) {
+        NTGui.blitSprite(graphics, sprite, x, y, width, height);
     }
 
-    public static void bar(GuiGraphicsExtractor graphics, int x, int y, int width, int height, float fraction, int fill, int shine) {
+    public static void bar(GuiGraphics graphics, int x, int y, int width, int height, float fraction, int fill, int shine) {
         graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, SLOT_EDGE);
         graphics.fill(x, y, x + width, y + height, SCREEN_FILL);
         int filled = Math.round(height * Math.max(0F, Math.min(1F, fraction)));

@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
@@ -95,7 +95,7 @@ public final class BacteriaJsonWriter {
         writeObtaining(values);
     }
 
-    public static List<String> removeObtainingFor(Identifier bacteriaId) throws IOException {
+    public static List<String> removeObtainingFor(ResourceLocation bacteriaId) throws IOException {
         JsonObject values = readObtaining();
         List<String> removed = new ArrayList<>();
 

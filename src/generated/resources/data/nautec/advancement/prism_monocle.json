@@ -18,6 +18,7 @@
       "translate": "advancements.nautec.prism_monocle.description"
     },
     "icon": {
+      "count": 1,
       "id": "nautec:prism_monocle"
     },
     "title": {

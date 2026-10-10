@@ -12,7 +12,6 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.utils.BacteriaHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +23,7 @@ public final class ColonyReplicatorTests {
     private ColonyReplicatorTests() {
     }
 
-    private static BacteriaInstance colony(GameTestHelper helper, ResourceKey<Bacteria> strain, float resistance, long size, boolean analyzed) {
+    private static BacteriaInstance colony(NTGameTestHelper helper, ResourceKey<Bacteria> strain, float resistance, long size, boolean analyzed) {
         BacteriaInstance rolled = BacteriaInstance.roll(strain, helper.getLevel().registryAccess());
         SimpleCollapsedStats base = (SimpleCollapsedStats) rolled.getStats();
         SimpleCollapsedStats stats = new SimpleCollapsedStats(base.baseStats(), base.growthRate(), resistance, base.productionRate(), base.lifespan(), base.color());
@@ -35,12 +34,12 @@ public final class ColonyReplicatorTests {
         return new SimpleCollapsedStats(like.baseStats(), growth, resistance, production, lifespan, like.color());
     }
 
-    private static ColonyReplicatorBlockEntity place(GameTestHelper helper) {
+    private static ColonyReplicatorBlockEntity place(NTGameTestHelper helper) {
         helper.setBlock(REPLICATOR, NTBlocks.COLONY_REPLICATOR.get());
         return helper.getBlockEntity(REPLICATOR, ColonyReplicatorBlockEntity.class);
     }
 
-    private static void run(GameTestHelper helper, ColonyReplicatorBlockEntity replicator, int power, float purity, int ticks) {
+    private static void run(NTGameTestHelper helper, ColonyReplicatorBlockEntity replicator, int power, float purity, int ticks) {
         BlockPos origin = helper.absolutePos(REPLICATOR.above());
         for (int tick = 0; tick < ticks; tick++) {
             replicator.receivePower(power, Direction.UP, origin);
@@ -49,7 +48,7 @@ public final class ColonyReplicatorTests {
         }
     }
 
-    private static void feed(GameTestHelper helper, ColonyReplicatorBlockEntity replicator, ResourceKey<Bacteria> strain, long size) {
+    private static void feed(NTGameTestHelper helper, ColonyReplicatorBlockEntity replicator, ResourceKey<Bacteria> strain, long size) {
         IBacteriaStorage storage = replicator.getBacteriaStorage();
         storage.setBacteria(ColonyReplicatorBlockEntity.FODDER, colony(helper, strain, 0F, size, false));
         replicator.commonTick();

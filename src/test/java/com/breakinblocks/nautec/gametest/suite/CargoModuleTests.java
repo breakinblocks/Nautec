@@ -5,7 +5,6 @@ import com.breakinblocks.nautec.content.entities.submarine.SubmarineCargoContain
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
@@ -16,7 +15,7 @@ public final class CargoModuleTests {
     private CargoModuleTests() {
     }
 
-    private static SubmarineEntity spawn(GameTestHelper helper) {
+    private static SubmarineEntity spawn(NTGameTestHelper helper) {
         return helper.spawn(NTEntities.SUBMARINE.get(), SUB_POS);
     }
 

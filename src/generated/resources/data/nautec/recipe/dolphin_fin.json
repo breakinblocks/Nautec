@@ -4,7 +4,9 @@
   "desc": "Greatly improved swimming speed",
   "ingredients": [
     {
-      "ingredient": "nautec:dolphin_fin"
+      "ingredient": {
+        "item": "nautec:dolphin_fin"
+      }
     }
   ],
   "resultAugment": "nautec:dolphin_fin"

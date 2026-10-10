@@ -10,7 +10,6 @@ import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -84,7 +83,7 @@ public class PrismarineCrystalPartBlock extends LaserBlock {
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack tool, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         for (int i = -2; i < 4; i++) {
             BlockPos blockPos = pos.above(i);
             if (level.getBlockEntity(blockPos) instanceof PrismarineCrystalBlockEntity){

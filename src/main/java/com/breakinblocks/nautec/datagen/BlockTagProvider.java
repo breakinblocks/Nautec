@@ -5,12 +5,13 @@ import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.tags.NTTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagAppender;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider.IntrinsicTagAppender;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.concurrent.CompletableFuture;
@@ -19,8 +20,8 @@ import static com.breakinblocks.nautec.registries.NTBlocks.*;
 
 public class BlockTagProvider extends BlockTagsProvider {
 
-    public BlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, lookupProvider, Nautec.MODID);
+    public BlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, Nautec.MODID, existingFileHelper);
     }
 
     @Override
@@ -146,7 +147,7 @@ public class BlockTagProvider extends BlockTagsProvider {
 
     @SafeVarargs
     private void tag(TagKey<Block> blockTagKey, DeferredBlock<? extends Block>... blocks) {
-        TagAppender<Block, Block> tag = tag(blockTagKey);
+        IntrinsicTagAppender<Block> tag = tag(blockTagKey);
         for (DeferredBlock<? extends Block> block : blocks) {
             tag.add(block.get());
         }

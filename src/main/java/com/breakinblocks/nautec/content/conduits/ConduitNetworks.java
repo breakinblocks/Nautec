@@ -133,7 +133,7 @@ public final class ConduitNetworks {
         }
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
-                networks.retireChunk(ChunkPos.pack(chunk.x() + dx, chunk.z() + dz));
+                networks.retireChunk(ChunkPos.asLong(chunk.x + dx, chunk.z + dz));
             }
         }
     }
@@ -141,7 +141,7 @@ public final class ConduitNetworks {
     public static void chunkUnloaded(Level level, ChunkPos chunk) {
         LevelNetworks networks = level.isClientSide() ? null : LEVELS.get(level.dimension());
         if (networks != null && !networks.byChunk.isEmpty()) {
-            networks.retireChunk(ChunkPos.pack(chunk.x(), chunk.z()));
+            networks.retireChunk(ChunkPos.asLong(chunk.x, chunk.z));
         }
     }
 
@@ -184,7 +184,7 @@ public final class ConduitNetworks {
                 continue;
             }
             members.add(packed);
-            chunks.add(ChunkPos.pack(cursor));
+            chunks.add(ChunkPos.asLong(cursor));
             if (state.getBlock() instanceof ConduitTapBlock) {
                 taps.add(packed);
             }

@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:cactophyles",
   "ingredient": {
-    "ingredient": "minecraft:cactus"
+    "ingredient": {
+      "item": "minecraft:cactus"
+    }
   },
   "vitality_ticks": 1200
 }

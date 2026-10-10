@@ -1,13 +1,14 @@
 package com.breakinblocks.nautec.content.blockentities;
 
+
+import com.breakinblocks.nautec.api.blockentities.NTBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
+import com.breakinblocks.nautec.transfer.transaction.TransactionContext;
 
-public class CreativeEnergySourceBlockEntity extends BlockEntity implements EnergyHandler {
+public class CreativeEnergySourceBlockEntity extends NTBlockEntity implements EnergyHandler {
     private static final int MAX_ENERGY = Integer.MAX_VALUE;
 
     public CreativeEnergySourceBlockEntity(BlockPos pos, BlockState blockState) {

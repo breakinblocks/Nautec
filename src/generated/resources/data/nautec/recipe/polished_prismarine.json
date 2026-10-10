@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "D": "minecraft:prismarine"
+    "D": {
+      "item": "minecraft:prismarine"
+    }
   },
   "pattern": [
     "DD",

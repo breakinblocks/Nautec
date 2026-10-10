@@ -3,7 +3,6 @@ package com.breakinblocks.nautec.content.blocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -63,17 +62,17 @@ public class DecorativePrismarineCrystalPartBlock extends Block implements Simpl
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, ItemStack tool, boolean willHarvest, FluidState fluid) {
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         int currentIndex = state.getValue(INDEX);
         BlockPos bottomPos = pos.below(currentIndex);
         BlockState bottomState = level.getBlockState(bottomPos);
         if (!(bottomState.getBlock() instanceof DecorativePrismarineCrystalBlock)) {
-            return super.onDestroyedByPlayer(state, level, pos, player, tool, willHarvest, fluid);
+            return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
         }
         BlockEntity bottomEntity = level.getBlockEntity(bottomPos);
         DecorativePrismarineCrystalBlock.removeCrystal(level, player, bottomPos);
-        if (willHarvest && !player.preventsBlockDrops()) {
-            Block.dropResources(bottomState, level, pos, bottomEntity, player, tool);
+        if (willHarvest && !player.getAbilities().instabuild) {
+            Block.dropResources(bottomState, level, pos, bottomEntity, player, player.getMainHandItem());
         }
         return true;
     }

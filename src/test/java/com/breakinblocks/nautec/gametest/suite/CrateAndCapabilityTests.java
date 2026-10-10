@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.api.sides.SideMode;
 import com.breakinblocks.nautec.api.sides.SideKind;
 import com.breakinblocks.nautec.api.sides.RelativeFace;
@@ -17,7 +18,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -27,12 +27,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import com.breakinblocks.nautec.transfer.ResourceHandler;
+import com.breakinblocks.nautec.transfer.fluid.FluidResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.List;
 
@@ -120,7 +120,7 @@ public final class CrateAndCapabilityTests {
             helper.setBlock(TARGET, NTBlocks.MIXER.get());
             helper.runAfterDelay(2, () -> {
                 BlockPos abs = helper.absolutePos(TARGET);
-                ResourceHandler<ItemResource> north = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.NORTH);
+                ResourceHandler<ItemResource> north = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.NORTH);
                 helper.assertTrue(north != null, "Mixer should expose an item handler on its north side");
                 ItemResource cobble = ItemResource.of(new ItemStack(Items.COBBLESTONE));
                 try (Transaction tx = Transaction.openRoot()) {
@@ -135,13 +135,13 @@ public final class CrateAndCapabilityTests {
                     helper.assertValueEqual(0, north.extract(0, cobble, 4, tx), "extract via insert-only north side");
                 }
                 mixer.setSideMode(SideKind.ITEMS, RelativeFace.TOP, SideMode.OUTPUT);
-                ResourceHandler<ItemResource> up = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.UP);
+                ResourceHandler<ItemResource> up = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.UP);
                 helper.assertTrue(up != null, "An output face should still expose a handler");
                 try (Transaction tx = Transaction.openRoot()) {
                     helper.assertValueEqual(0, up.insert(0, cobble, 4, tx), "insert via an output-only top face");
                 }
                 mixer.setSideMode(SideKind.ITEMS, RelativeFace.TOP, SideMode.NONE);
-                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, Direction.UP) == null, "An Off face exposes nothing");
+                helper.assertTrue(helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, Direction.UP) == null, "An Off face exposes nothing");
                 helper.succeed();
             });
         });
@@ -169,7 +169,7 @@ public final class CrateAndCapabilityTests {
             helper.setBlock(TARGET, NTBlocks.MIXER.get());
             helper.runAfterDelay(2, () -> {
                 BlockPos abs = helper.absolutePos(TARGET);
-                ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, null);
+                ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, null);
                 helper.assertTrue(handler != null, "Null direction should return the base item handler");
                 ItemResource cobble = ItemResource.of(new ItemStack(Items.COBBLESTONE));
                 try (Transaction tx = Transaction.openRoot()) {
@@ -189,7 +189,7 @@ public final class CrateAndCapabilityTests {
             helper.setBlock(TARGET, NTBlocks.MIXER.get());
             helper.runAfterDelay(2, () -> {
                 BlockPos abs = helper.absolutePos(TARGET);
-                ResourceHandler<FluidResource> north = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.NORTH);
+                ResourceHandler<FluidResource> north = helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, abs, Direction.NORTH);
                 helper.assertTrue(north != null, "Mixer should expose a fluid handler on its north side");
                 FluidResource water = FluidResource.of(Fluids.WATER);
                 try (Transaction tx = Transaction.openRoot()) {
@@ -209,10 +209,10 @@ public final class CrateAndCapabilityTests {
                     tx.commit();
                 }
                 helper.assertValueEqual(100, mixer.getSecondaryFluidTank().getFluidAmount(), "output tank amount after extract");
-                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.UP) != null,
+                helper.assertTrue(helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, abs, Direction.UP) != null,
                         "Every face takes fluids by default");
                 mixer.setSideMode(SideKind.FLUIDS, RelativeFace.TOP, SideMode.NONE);
-                helper.assertTrue(helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.UP) == null,
+                helper.assertTrue(helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, abs, Direction.UP) == null,
                         "A face set to Off should expose no fluid handler");
                 helper.succeed();
             });
@@ -225,7 +225,7 @@ public final class CrateAndCapabilityTests {
                 helper.assertTrue(drain != null, "Drain BE missing");
                 drain.getFluidTank().setFluid(new FluidStack(Fluids.WATER, 1000));
                 BlockPos abs = helper.absolutePos(TARGET);
-                ResourceHandler<FluidResource> down = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.DOWN);
+                ResourceHandler<FluidResource> down = helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, abs, Direction.DOWN);
                 helper.assertTrue(down != null, "Drain should expose a fluid handler on the bottom");
                 FluidResource water = FluidResource.of(Fluids.WATER);
                 try (Transaction tx = Transaction.openRoot()) {
@@ -234,7 +234,7 @@ public final class CrateAndCapabilityTests {
                     tx.commit();
                 }
                 helper.assertValueEqual(600, drain.getFluidTank().getFluidAmount(), "drain tank after extraction");
-                ResourceHandler<FluidResource> north = helper.getLevel().getCapability(Capabilities.Fluid.BLOCK, abs, Direction.NORTH);
+                ResourceHandler<FluidResource> north = helper.getLevel().getCapability(TransferCapabilities.Fluid.BLOCK, abs, Direction.NORTH);
                 helper.assertTrue(north == null, "Drain should not expose a fluid handler on its side");
                 helper.succeed();
             });
@@ -244,10 +244,10 @@ public final class CrateAndCapabilityTests {
             helper.setBlock(TARGET, NTBlocks.CHARGER.get());
             helper.runAfterDelay(2, () -> {
                 BlockPos abs = helper.absolutePos(TARGET);
-                ResourceHandler<ItemResource> base = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, null);
+                ResourceHandler<ItemResource> base = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, null);
                 helper.assertTrue(base != null, "Charger should expose its item handler for a null direction");
                 for (Direction direction : Direction.values()) {
-                    ResourceHandler<ItemResource> sided = helper.getLevel().getCapability(Capabilities.Item.BLOCK, abs, direction);
+                    ResourceHandler<ItemResource> sided = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, abs, direction);
                     helper.assertTrue(sided == null, "Charger has no sided IO, expected null handler for " + direction);
                 }
                 helper.succeed();
@@ -336,7 +336,7 @@ public final class CrateAndCapabilityTests {
         });
     }
 
-    private static void checkOutputs(GameTestHelper helper, BlockPos pos, int outputSlot, int inputSlot, ItemResource resource) {
+    private static void checkOutputs(NTGameTestHelper helper, BlockPos pos, int outputSlot, int inputSlot, ItemResource resource) {
         ContainerBlockEntity machine = helper.getBlockEntity(pos, ContainerBlockEntity.class);
         String name = machine.getBlockState().getBlock().getName().getString();
         for (Direction side : Direction.values()) {
@@ -344,7 +344,7 @@ public final class CrateAndCapabilityTests {
             if (inputSlot >= 0) {
                 machine.getItemStackHandler().setStackInSlot(inputSlot, new ItemStack(Items.DIAMOND, 4));
             }
-            ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(Capabilities.Item.BLOCK, helper.absolutePos(pos), side);
+            ResourceHandler<ItemResource> handler = helper.getLevel().getCapability(TransferCapabilities.Item.BLOCK, helper.absolutePos(pos), side);
             helper.assertTrue(handler != null, name + " should expose an item handler on " + side);
             try (Transaction tx = Transaction.openRoot()) {
                 helper.assertValueEqual(4, handler.extract(outputSlot, resource, 4, tx), name + " output extracted via " + side);

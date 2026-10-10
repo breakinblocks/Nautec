@@ -22,7 +22,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.arguments.IdentifierArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,7 +31,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -55,7 +55,7 @@ public final class BacteriaGenerateCommand {
             (ctx, builder) -> SharedSuggestionProvider.suggest(BacteriaBalance.Rarity.names(), builder);
     private static final SuggestionProvider<CommandSourceStack> ITEM_TAGS =
             (ctx, builder) -> SharedSuggestionProvider.suggestResource(
-                    BuiltInRegistries.ITEM.getTags().map(tag -> tag.key().location()), builder);
+                    BuiltInRegistries.ITEM.getTagNames().map(TagKey::location), builder);
     private static final SuggestionProvider<CommandSourceStack> BIOME_TAGS =
             (ctx, builder) -> SharedSuggestionProvider.suggestResource(
                     ctx.getSource().registryAccess().lookupOrThrow(Registries.BIOME).listTagIds().map(TagKey::location), builder);
@@ -65,7 +65,7 @@ public final class BacteriaGenerateCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         LiteralArgumentBuilder<CommandSourceStack> nautecCommand = Commands.literal(Nautec.MODID)
-                .requires(source -> Commands.LEVEL_GAMEMASTERS.check(source.permissions()));
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS));
 
         LiteralArgumentBuilder<CommandSourceStack> generate = Commands.literal("generate")
                 .then(Commands.argument("name", StringArgumentType.word())
@@ -82,7 +82,7 @@ public final class BacteriaGenerateCommand {
         LiteralArgumentBuilder<CommandSourceStack> generateTag = Commands.literal("generate-tag")
                 .then(Commands.argument("name", StringArgumentType.word())
                         .then(Commands.argument("item", ItemArgument.item(buildContext))
-                                .then(Commands.argument("tag", IdentifierArgument.id())
+                                .then(Commands.argument("tag", ResourceLocationArgument.id())
                                         .suggests(ITEM_TAGS)
                                         .executes(ctx -> generate(ctx, nutrientTag(ctx), BacteriaBalance.Rarity.UNCOMMON, false))
                                         .then(Commands.literal("preview")
@@ -96,7 +96,7 @@ public final class BacteriaGenerateCommand {
         LiteralArgumentBuilder<CommandSourceStack> obtain = Commands.literal("obtain")
                 .then(Commands.argument("name", StringArgumentType.word())
                         .then(Commands.argument("block", BlockStateArgument.block(buildContext))
-                                .then(Commands.argument("biometag", IdentifierArgument.id())
+                                .then(Commands.argument("biometag", ResourceLocationArgument.id())
                                         .suggests(BIOME_TAGS)
                                         .then(Commands.argument("chance", FloatArgumentType.floatArg(0f, 1f))
                                                 .executes(BacteriaGenerateCommand::obtain)))));
@@ -122,7 +122,7 @@ public final class BacteriaGenerateCommand {
     }
 
     private static TagKey<Item> nutrientTag(CommandContext<CommandSourceStack> ctx) {
-        return TagKey.create(Registries.ITEM, IdentifierArgument.getId(ctx, "tag"));
+        return TagKey.create(Registries.ITEM, ResourceLocationArgument.getId(ctx, "tag"));
     }
 
     private static int generate(CommandContext<CommandSourceStack> ctx, TagKey<Item> nutrientTag,
@@ -150,7 +150,7 @@ public final class BacteriaGenerateCommand {
 
         Item item;
         try {
-            item = ItemArgument.getItem(ctx, "item").item().value();
+            item = ItemArgument.getItem(ctx, "item").getItem();
         } catch (Exception e) {
             source.sendFailure(Component.literal("Could not read the item argument: " + e.getMessage()));
             return 0;
@@ -158,16 +158,16 @@ public final class BacteriaGenerateCommand {
 
         Ingredient nutrient;
         if (nutrientTag != null) {
-            if (BuiltInRegistries.ITEM.get(nutrientTag).map(holders -> holders.size() == 0).orElse(true)) {
+            if (BuiltInRegistries.ITEM.getTag(nutrientTag).map(holders -> holders.size() == 0).orElse(true)) {
                 source.sendSuccess(() -> Component.literal("Note: the item tag " + nutrientTag.location() + " is empty right now. The recipe will start working once a mod fills it.")
                         .withStyle(ChatFormatting.YELLOW), false);
             }
-            nutrient = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(nutrientTag));
+            nutrient = Ingredient.of(nutrientTag);
         } else {
             nutrient = Ingredient.of(item);
         }
 
-        Identifier id = GeneratedPackPaths.bacteriaId(name);
+        ResourceLocation id = GeneratedPackPaths.bacteriaId(name);
         ResourceKey<Bacteria> key = GeneratedPackPaths.bacteriaKey(name);
         SimpleBacteria bacteria = BacteriaBalance.buildBacteria(item, rarity, id);
 
@@ -208,7 +208,7 @@ public final class BacteriaGenerateCommand {
         }
 
         source.sendSuccess(() -> Component.literal("Wrote " + id + " (" + rarity.lowerName() + ") producing "
-                + BuiltInRegistries.ITEM.getKey(item) + ", mutating from " + rarity.mutationParent().identifier()).withStyle(ChatFormatting.GREEN), true);
+                + BuiltInRegistries.ITEM.getKey(item) + ", mutating from " + rarity.mutationParent().location()).withStyle(ChatFormatting.GREEN), true);
         sendLifecycleNote(source);
         return 1;
     }
@@ -222,7 +222,7 @@ public final class BacteriaGenerateCommand {
         }
 
         Block block = BlockStateArgument.getBlock(ctx, "block").getState().getBlock();
-        Identifier biomeTagId = IdentifierArgument.getId(ctx, "biometag");
+        ResourceLocation biomeTagId = ResourceLocationArgument.getId(ctx, "biometag");
         TagKey<Biome> biomeTag = TagKey.create(Registries.BIOME, biomeTagId);
         float chance = FloatArgumentType.getFloat(ctx, "chance");
 
@@ -373,7 +373,7 @@ public final class BacteriaGenerateCommand {
     private static void sendCopyable(CommandSourceStack source, String what, JsonElement json) {
         String text = BacteriaJsonWriter.pretty(json);
         source.sendSuccess(() -> Component.literal(what + " (click to copy):").withStyle(ChatFormatting.GRAY)
-                .setStyle(Style.EMPTY.withClickEvent(new ClickEvent.CopyToClipboard(text)).withColor(ChatFormatting.GRAY)), false);
+                .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, text)).withColor(ChatFormatting.GRAY)), false);
         source.sendSuccess(() -> Component.literal(text), false);
     }
 

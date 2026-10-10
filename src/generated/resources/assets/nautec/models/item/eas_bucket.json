@@ -1,0 +1,6 @@
+{
+  "parent": "neoforge:item/bucket",
+  "apply_tint": true,
+  "fluid": "nautec:eas",
+  "loader": "neoforge:fluid_container"
+}

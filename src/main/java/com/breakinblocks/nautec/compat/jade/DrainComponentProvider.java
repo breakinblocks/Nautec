@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
@@ -22,7 +22,7 @@ import snownee.jade.api.config.IPluginConfig;
 public enum DrainComponentProvider implements StreamServerDataProvider<BlockAccessor, DrainComponentProvider.Data> {
     INSTANCE;
 
-    private static final Identifier UID = Nautec.rl("drain");
+    private static final ResourceLocation UID = Nautec.rl("drain");
 
     public record Data(int status, int power, int blocker) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
@@ -63,7 +63,7 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
     }
 
     @Override
-    public Identifier getUid() {
+    public ResourceLocation getUid() {
         return UID;
     }
 
@@ -95,7 +95,7 @@ public enum DrainComponentProvider implements StreamServerDataProvider<BlockAcce
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return UID;
         }
     }

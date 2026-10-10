@@ -7,9 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.joml.Vector3f;
@@ -27,10 +27,10 @@ public final class JsonMesh {
 
     private static final List<JsonMesh> ALL = List.of(PRISMARINE_CRYSTAL, GATEWAY_RING);
 
-    private final Identifier location;
+    private final ResourceLocation location;
     private Map<String, Part> parts = Map.of();
 
-    private JsonMesh(Identifier location) {
+    private JsonMesh(ResourceLocation location) {
         this.location = location;
     }
 
@@ -64,15 +64,15 @@ public final class JsonMesh {
         }
     }
 
-    public static void submitTranslucent(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color) {
-        submitTranslucent(poseStack, collector, part, renderType, color, false);
+    public static void submitTranslucent(PoseStack poseStack, MultiBufferSource buffers, Part part, RenderType renderType, int color) {
+        submitTranslucent(poseStack, buffers, part, renderType, color, false);
     }
 
-    public static void submitTranslucent(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color, boolean world) {
+    public static void submitTranslucent(PoseStack poseStack, MultiBufferSource buffers, Part part, RenderType renderType, int color, boolean world) {
         if (part.triangles() == 0) {
             return;
         }
-        SubmitNodeCollector.CustomGeometryRenderer renderer = (pose, buffer) -> {
+        ShaderPackOverlay.Geometry renderer = (pose, buffer) -> {
             for (int t = 0; t < part.triangles(); t++) {
                 for (int corner : Part.QUAD_CORNERS) {
                     int o = t * Part.FLOATS_PER_TRIANGLE + corner * 5;
@@ -84,17 +84,17 @@ public final class JsonMesh {
             }
         };
         if (world) {
-            ShaderPackOverlay.submit(poseStack, collector, renderType, renderer);
+            ShaderPackOverlay.submit(poseStack, buffers, renderType, renderer);
         } else {
-            collector.submitCustomGeometry(poseStack, renderType, renderer);
+            CustomGeometry.submit(poseStack, buffers, renderType, renderer);
         }
     }
 
-    public static void submitLit(PoseStack poseStack, SubmitNodeCollector collector, Part part, RenderType renderType, int color, int light, int overlay) {
+    public static void submitLit(PoseStack poseStack, MultiBufferSource buffers, Part part, RenderType renderType, int color, int light, int overlay) {
         if (part.triangles() == 0) {
             return;
         }
-        collector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+        CustomGeometry.submit(poseStack, buffers, renderType, (pose, buffer) -> {
             for (int t = 0; t < part.triangles(); t++) {
                 for (int corner : Part.QUAD_CORNERS) {
                     int o = t * Part.FLOATS_PER_TRIANGLE + corner * 5;

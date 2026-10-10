@@ -22,7 +22,6 @@ import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.commands.FillBiomeCommand;
 import net.minecraft.server.level.ServerLevel;
@@ -44,7 +43,7 @@ public final class StarcatcherCompatTests {
         r.add("starcatcher/won_catch_in_lucky_zone_gets_winning_rolls", 40, 1, StarcatcherCompatTests::wonCatchInZone);
     }
 
-    private static void nautecRodCatch(GameTestHelper helper) {
+    private static void nautecRodCatch(NTGameTestHelper helper) {
         if (!ModList.get().isLoaded("starcatcher")) {
             helper.succeed();
             return;
@@ -62,7 +61,7 @@ public final class StarcatcherCompatTests {
         owner.setItemInHand(InteractionHand.MAIN_HAND, rod);
 
         NautecFishingHook hook = new NautecFishingHook(owner, level, 0, 0);
-        hook.snapTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
+        hook.moveTo(surface.getX() + 0.5, surface.getY() + 0.4, surface.getZ() + 0.5);
         hook.setDeltaMovement(Vec3.ZERO);
         level.addFreshEntity(hook);
         ((FishingHookAccessor) hook).nautec$setNibble(20);
@@ -81,7 +80,7 @@ public final class StarcatcherCompatTests {
         helper.fail("The NauTec rod reeled in a bite in a Prismarine Reef without picking a Starcatcher fish");
     }
 
-    private static void bobberInZone(GameTestHelper helper) {
+    private static void bobberInZone(NTGameTestHelper helper) {
         if (!ModList.get().isLoaded("starcatcher")) {
             helper.succeed();
             return;
@@ -112,7 +111,7 @@ public final class StarcatcherCompatTests {
         });
     }
 
-    private static void wonCatchInZone(GameTestHelper helper) {
+    private static void wonCatchInZone(NTGameTestHelper helper) {
         if (!ModList.get().isLoaded("starcatcher")) {
             helper.succeed();
             return;
@@ -156,18 +155,18 @@ public final class StarcatcherCompatTests {
         return !(entity instanceof Player);
     }
 
-    private static Entity bobber(GameTestHelper helper, BlockPos surface) {
+    private static Entity bobber(NTGameTestHelper helper, BlockPos surface) {
         ServerLevel level = helper.getLevel();
         Player owner = helper.makeMockPlayer(GameType.SURVIVAL);
         owner.setPos(surface.getX() + 0.5, surface.getY() + 1.0, surface.getZ() + 2.5);
         Entity bob = StarcatcherTestBobs.cast(level, owner);
-        bob.snapTo(surface.getX() + 0.5, surface.getY() + 0.6, surface.getZ() + 0.5);
+        bob.moveTo(surface.getX() + 0.5, surface.getY() + 0.6, surface.getZ() + 0.5);
         bob.setDeltaMovement(new Vec3(0.0, -0.1, 0.0));
         level.addFreshEntity(bob);
         return bob;
     }
 
-    private static BlockPos pool(GameTestHelper helper) {
+    private static BlockPos pool(NTGameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos centre = helper.absolutePos(new BlockPos(4, 2, 4));
         for (int dx = -3; dx <= 3; dx++) {

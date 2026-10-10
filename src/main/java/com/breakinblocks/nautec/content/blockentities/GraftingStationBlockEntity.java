@@ -31,10 +31,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -120,7 +120,7 @@ public class GraftingStationBlockEntity extends LaserBlockEntity implements Menu
         if (!(stack.getItem() instanceof BlockItem blockItem)) {
             return null;
         }
-        return blockItem.getBlock().defaultBlockState().typeHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
+        return blockItem.getBlock().builtInRegistryHolder().getData(NTDataMaps.BACTERIA_OBTAINING);
     }
 
     public static boolean isAnchor(ItemStack stack) {

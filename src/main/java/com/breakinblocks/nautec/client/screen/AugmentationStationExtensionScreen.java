@@ -5,7 +5,7 @@ import com.breakinblocks.nautec.api.client.screen.NTAbstractContainerScreen;
 import com.breakinblocks.nautec.api.menu.NTAbstractContainerMenu;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -35,8 +35,8 @@ public class AugmentationStationExtensionScreen extends NTAbstractContainerScree
     }
 
     @Override
-    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         extractSlotHint(guiGraphics, armSlot(), PanelStyle.ICON_CLAW);
         PanelStyle.screen(guiGraphics, leftPos + READOUT_X, topPos + READOUT_Y, READOUT_WIDTH, READOUT_HEIGHT);
         boolean loaded = partSlot().hasItem();
@@ -45,37 +45,37 @@ public class AugmentationStationExtensionScreen extends NTAbstractContainerScree
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
-        super.extractLabels(graphics, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         Slot arm = armSlot();
         Slot part = partSlot();
-        graphics.text(this.font, Component.translatable("nautec.augmentation_station_extension.arm"), arm.x + 22, arm.y + 4, PanelStyle.LABEL, false);
-        graphics.text(this.font, Component.translatable("nautec.augmentation_station_extension.part"), part.x + 22, part.y + 4, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.augmentation_station_extension.arm"), arm.x + 22, arm.y + 4, PanelStyle.LABEL, false);
+        graphics.drawString(this.font, Component.translatable("nautec.augmentation_station_extension.part"), part.x + 22, part.y + 4, PanelStyle.LABEL, false);
 
         boolean loaded = part.hasItem();
         String state = !loaded ? "idle" : !arm.hasItem() ? "no_arm" : powered() ? "ready" : "low_power";
-        graphics.text(this.font, Component.translatable("nautec.augmentation_station_extension.status." + state),
+        graphics.drawString(this.font, Component.translatable("nautec.augmentation_station_extension.status." + state),
                 READOUT_X + 13, READOUT_Y + 3, loaded ? PanelStyle.READOUT : PanelStyle.READOUT_DIM, false);
-        graphics.text(this.font, Component.translatable("nautec.augmentation_station_extension.beam"), READOUT_X + 4, READOUT_Y + 18,
+        graphics.drawString(this.font, Component.translatable("nautec.augmentation_station_extension.beam"), READOUT_X + 4, READOUT_Y + 18,
                 PanelStyle.READOUT_DIM, false);
         int power = this.menu.blockEntity.getPower();
         int color = !loaded ? PanelStyle.READOUT_DIM : powered() ? PanelStyle.ONLINE : PanelStyle.OFFLINE;
-        graphics.text(this.font, Component.translatable("nautec.augmentation_station.power", power), READOUT_X + 4, READOUT_Y + 30, color, false);
+        graphics.drawString(this.font, Component.translatable("nautec.augmentation_station.power", power), READOUT_X + 4, READOUT_Y + 30, color, false);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (this.hoveredSlot == armSlot() && !armSlot().hasItem()) {
-            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+            guiGraphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.augmentation_station_extension.arm"),
                     Component.translatable("nautec.augmentation_station_extension.arm.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
         } else if (this.hoveredSlot == partSlot() && !partSlot().hasItem()) {
-            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+            guiGraphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.augmentation_station_extension.part"),
                     Component.translatable("nautec.augmentation_station_extension.part.desc").withStyle(ChatFormatting.GRAY)), mouseX, mouseY);
         } else if (PanelStyle.inside(mouseX, mouseY, leftPos + READOUT_X, topPos + READOUT_Y, READOUT_WIDTH, READOUT_HEIGHT)) {
-            guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(
+            guiGraphics.renderComponentTooltip(this.font, List.of(
                     Component.translatable("nautec.augmentation_station_extension.beam"),
                     Component.translatable("nautec.augmentation_station.extension.power", this.menu.blockEntity.getPower(), NTConfig.augmentationStationPower)
                             .withStyle(powered() ? ChatFormatting.GREEN : ChatFormatting.RED),

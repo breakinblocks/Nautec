@@ -9,7 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import com.breakinblocks.nautec.transfer.item.ResourceHandlerSlot;
 import org.jetbrains.annotations.NotNull;
 
 public class ColonyReplicatorMenu extends NTMachineMenu<ColonyReplicatorBlockEntity> {

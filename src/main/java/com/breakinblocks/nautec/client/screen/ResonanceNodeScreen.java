@@ -6,7 +6,7 @@ import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.network.ResonanceSyncPayload;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
@@ -92,19 +92,19 @@ public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMen
     }
 
     @Override
-    protected void extractReadoutBackground(GuiGraphicsExtractor graphics, int rx, int ry, int rw) {
+    protected void extractReadoutBackground(GuiGraphics graphics, int rx, int ry, int rw) {
         int color = this.menu.getStatus() == ResonanceNodeBlockEntity.STATUS_ONLINE ? ONLINE : OFFLINE;
         graphics.fill(rx + 5, ry + 5, rx + 9, ry + 9, color);
     }
 
     @Override
-    protected void extractReadout(GuiGraphicsExtractor graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
+    protected void extractReadout(GuiGraphics graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
         boolean online = this.menu.getStatus() == ResonanceNodeBlockEntity.STATUS_ONLINE;
-        graphics.text(this.font, Component.translatable(statusKey()), tx + 9, ty - 10, online ? READOUT : READOUT_DIM, false);
+        graphics.drawString(this.font, Component.translatable(statusKey()), tx + 9, ty - 10, online ? READOUT : READOUT_DIM, false);
         String purity = String.format(Locale.ROOT, "%.2f", this.menu.getPurity());
-        graphics.text(this.font, Component.translatable(this.menu.isOutput() ? "nautec.resonance_node.sending" : "nautec.resonance_node.taking",
+        graphics.drawString(this.font, Component.translatable(this.menu.isOutput() ? "nautec.resonance_node.sending" : "nautec.resonance_node.taking",
                 number(this.menu.getFlow()), purity), tx, ty + 2, READOUT, false);
-        graphics.text(this.font, Component.translatable("nautec.satellite.stored", compact(this.menu.getAp()), compact(NTConfig.resonanceNodeApBuffer),
+        graphics.drawString(this.font, Component.translatable("nautec.satellite.stored", compact(this.menu.getAp()), compact(NTConfig.resonanceNodeApBuffer),
                 compact(this.menu.getFe()), compact(NTConfig.resonanceNodeFeBuffer)), tx, ty + 13, READOUT_DIM, false);
     }
 

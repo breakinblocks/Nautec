@@ -4,15 +4,16 @@ import com.breakinblocks.nautec.api.blocks.DisplayBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import com.breakinblocks.nautec.utils.InteractionResults;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -59,15 +60,14 @@ public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBl
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction,
-                                     BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
-            tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
         if (direction == Direction.DOWN && !(neighborState.getBlock() instanceof SatelliteArrayBlock)) {
             return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.defaultFluidState().createLegacyBlock() : Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
@@ -80,12 +80,12 @@ public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBl
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockPos below = pos.below();
         if (stack.getItem() instanceof PrismSatelliteItem && level.getBlockState(below).getBlock() instanceof SatelliteArrayBlock) {
-            return SatelliteArrayBlock.launch(stack, level, below, player);
+            return InteractionResults.toItem(SatelliteArrayBlock.launch(stack, level, below, player));
         }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SatelliteArrayTopBlock extends Block implements SimpleWaterloggedBl
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         BlockState below = level.getBlockState(pos.below());
         return below.getBlock() instanceof SatelliteArrayBlock ? new ItemStack(below.getBlock()) : ItemStack.EMPTY;
     }

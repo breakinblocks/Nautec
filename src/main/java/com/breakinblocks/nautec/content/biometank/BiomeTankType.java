@@ -2,7 +2,7 @@ package com.breakinblocks.nautec.content.biometank;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTBlocks;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -38,17 +38,17 @@ public enum BiomeTankType {
     private final String id;
     private final String displayName;
     private final Supplier<Item> plant;
-    private final Identifier texture;
+    private final ResourceLocation texture;
 
-    BiomeTankType(String id, String displayName, Supplier<Item> plant, Identifier texture) {
+    BiomeTankType(String id, String displayName, Supplier<Item> plant, ResourceLocation texture) {
         this.id = id;
         this.displayName = displayName;
         this.plant = plant;
         this.texture = texture;
     }
 
-    private static Identifier vanilla(String path) {
-        return Identifier.withDefaultNamespace(path);
+    private static ResourceLocation vanilla(String path) {
+        return ResourceLocation.withDefaultNamespace(path);
     }
 
     public String id() {
@@ -67,7 +67,7 @@ public enum BiomeTankType {
         return plant.get();
     }
 
-    public Identifier texture() {
+    public ResourceLocation texture() {
         return texture;
     }
 }

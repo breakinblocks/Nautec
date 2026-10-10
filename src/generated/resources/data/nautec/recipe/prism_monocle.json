@@ -2,14 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "P": "#c:gems/prismarine"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "P": {
+      "tag": "c:gems/prismarine"
+    }
   },
   "pattern": [
     "AAA",
     "AP "
   ],
   "result": {
+    "count": 1,
     "id": "nautec:prism_monocle"
   }
 }

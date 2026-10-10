@@ -2,11 +2,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    "minecraft:paper",
-    "nautec:aquatic_chip",
-    "#c:gems/prismarine"
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "nautec:aquatic_chip"
+    },
+    {
+      "tag": "c:gems/prismarine"
+    }
   ],
   "result": {
+    "count": 1,
     "id": "nautec:configuration_card"
   }
 }

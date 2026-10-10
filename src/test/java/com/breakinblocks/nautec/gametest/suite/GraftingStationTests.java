@@ -12,7 +12,6 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -68,7 +67,7 @@ public final class GraftingStationTests {
         });
     }
 
-    private static GraftingStationBlockEntity loaded(GameTestHelper helper) {
+    private static GraftingStationBlockEntity loaded(NTGameTestHelper helper) {
         helper.setBlock(STATION, NTBlocks.GRAFTING_STATION.get());
         GraftingStationBlockEntity station = helper.getBlockEntity(STATION, GraftingStationBlockEntity.class);
         station.getItemStackHandler().setStackInSlot(GraftingStationBlockEntity.DISH_SLOT, new ItemStack(NTItems.PETRI_DISH.get()));
@@ -77,7 +76,7 @@ public final class GraftingStationTests {
         return station;
     }
 
-    private static void run(GameTestHelper helper, GraftingStationBlockEntity station, float purity, int ticks) {
+    private static void run(NTGameTestHelper helper, GraftingStationBlockEntity station, float purity, int ticks) {
         BlockPos origin = helper.absolutePos(STATION.above());
         for (int tick = 0; tick < ticks; tick++) {
             station.receivePower(NTConfig.graftingStationPowerUsage, Direction.UP, origin);

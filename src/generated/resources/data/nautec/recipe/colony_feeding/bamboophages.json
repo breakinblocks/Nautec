@@ -2,7 +2,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:bamboophages",
   "ingredient": {
-    "ingredient": "minecraft:bamboo"
+    "ingredient": {
+      "item": "minecraft:bamboo"
+    }
   },
   "vitality_ticks": 1200
 }

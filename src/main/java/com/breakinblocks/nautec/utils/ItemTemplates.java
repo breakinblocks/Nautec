@@ -3,7 +3,7 @@ package com.breakinblocks.nautec.utils;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.capabilities.bacteria.DishPort;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.breakinblocks.nautec.transfer.item.ItemResource;
 
 public final class ItemTemplates {
     private ItemTemplates() {

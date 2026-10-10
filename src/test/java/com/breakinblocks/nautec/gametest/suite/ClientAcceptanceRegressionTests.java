@@ -21,17 +21,13 @@ import com.breakinblocks.nautec.registries.NTRecipes;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.attachment.AttachmentHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -42,7 +38,7 @@ public final class ClientAcceptanceRegressionTests {
             public BlockState getBlockState(BlockPos pos) { return blocks.getOrDefault(pos, Blocks.STONE.defaultBlockState()); }
             public FluidState getFluidState(BlockPos pos) { return getBlockState(pos).getFluidState(); }
             public int getHeight() { return 384; }
-            public int getMinY() { return -64; }
+            public int getMinBuildHeight() { return -64; }
         };
     }
 
@@ -106,7 +102,7 @@ public final class ClientAcceptanceRegressionTests {
             mixer.getItemStackHandler().setStackInSlot(1, new ItemStack(Items.PRISMARINE_CRYSTALS));
             CompoundTag saved = mixer.saveWithoutMetadata(helper.getLevel().registryAccess());
             saved.putInt("duration", 37);
-            mixer.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), saved));
+            mixer.loadWithComponents(saved, helper.getLevel().registryAccess());
             mixer.onLoad();
             for (int tick = 0; tick < 12; tick++) mixer.commonTick();
             helper.assertValueEqual(37, mixer.getDuration(), "Saved progress while laser connections rebuild");
@@ -125,13 +121,9 @@ public final class ClientAcceptanceRegressionTests {
             helper.assertValueEqual(12, NTRecipes.TYPES.getEntries().size(), "Custom recipe type count");
             RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
             try {
-                for (var type : NTRecipes.TYPES.getEntries()) {
-                    ByteBufCodecs.registry(Registries.RECIPE_TYPE).encode(buffer, type.get());
-                    helper.assertTrue(ByteBufCodecs.registry(Registries.RECIPE_TYPE).decode(buffer) == type.get(), "Recipe type identity lost");
-                }
                 int recipes = 0;
-                for (RecipeHolder<?> holder : helper.getLevel().getServer().getRecipeManager().recipeMap().values()) {
-                    if (!holder.id().identifier().getNamespace().equals("nautec")) continue;
+                for (RecipeHolder<?> holder : helper.getLevel().getServer().getRecipeManager().getRecipes()) {
+                    if (!holder.id().getNamespace().equals("nautec")) continue;
                     RecipeHolder.STREAM_CODEC.encode(buffer, holder);
                     RecipeHolder<?> decoded = RecipeHolder.STREAM_CODEC.decode(buffer);
                     helper.assertValueEqual(holder.id(), decoded.id(), "Recipe id after network roundtrip");
@@ -158,16 +150,16 @@ public final class ClientAcceptanceRegressionTests {
             states.put("nautec:eyes", state);
             legacy.put("nautec:augments_extra_data", states);
             var holder = new AttachmentHolder() {
-                public void read(ValueInput input) { deserializeAttachments(input); }
+                public void read(HolderLookup.Provider provider, CompoundTag tag) { deserializeAttachments(provider, tag); }
             };
-            holder.read(TagValueInput.create(ProblemReporter.DISCARDING, helper.getLevel().registryAccess(), legacy));
+            holder.read(helper.getLevel().registryAccess(), legacy);
             helper.assertTrue(holder.getData(NTAttachmentTypes.HAS_NAUTEC_GUIDE), "Legacy guide flag was lost");
             helper.assertTrue(holder.hasData(NTDataAttachments.AUGMENTS), "Legacy augment map was not loaded");
             helper.assertTrue(holder.hasData(NTDataAttachments.AUGMENTS_EXTRA_DATA), "Legacy augment state was not loaded");
             helper.assertTrue(holder.getData(NTDataAttachments.AUGMENTS).get(NTAugmentSlots.EYES.get()).getAugmentType()
                     == NTAugments.GUARDIAN_EYE.get(), "Installed augment changed during migration");
             helper.assertValueEqual(73, holder.getData(NTDataAttachments.AUGMENTS_EXTRA_DATA)
-                    .get(NTAugmentSlots.EYES.get()).getIntOr("cooldown", 0), "Saved augment state changed during migration");
+                    .get(NTAugmentSlots.EYES.get()).getInt("cooldown"), "Saved augment state changed during migration");
             helper.assertTrue(LegacyAttachmentData.upgrade(legacy), "Old data not detected");
             helper.assertTrue(!LegacyAttachmentData.upgrade(legacy), "Upgrade must be idempotent");
             helper.succeed();

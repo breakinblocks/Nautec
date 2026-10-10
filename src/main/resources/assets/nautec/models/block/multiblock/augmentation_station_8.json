@@ -1,65 +1,290 @@
 {
-	"credit": "Made with Blockbench",
-	"textures": {
-		"missing": "#particle",
-		"1": "nautec:block/multiblock/augmentation_station/bottom_side",
-		"2": "nautec:block/multiblock/augmentation_station/bottom_top",
-		"3": "nautec:block/multiblock/augmentation_station/middle_middle",
-		"4": "nautec:block/multiblock/augmentation_station/middle_pillar",
-		"5": "nautec:block/multiblock/augmentation_station/top",
-		"6": "nautec:block/multiblock/augmentation_station/top_bottom",
-		"7": "nautec:block/multiblock/augmentation_station/top_side",
-		"8": "nautec:block/multiblock/augmentation_station/bottom_8",
-		"particle": "nautec:block/multiblock/augmentation_station/bottom_extensions_side0"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [8, 10, 8],
-			"faces": {
-				"north": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"east": {"uv": [0.0, 0.0, 4.0, 10.0], "texture": "#1"},
-				"south": {"uv": [12.0, 0.0, 16.0, 10.0], "texture": "#1"},
-				"west": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"up": {"uv": [12, 12, 16, 16], "texture": "#2"},
-				"down": {"uv": [0, 8, 8, 0], "texture": "#8"}
-			}
-		},
-		{
-			"from": [3, 10, 3],
-			"to": [5, 13, 5],
-			"faces": {
-				"north": {"uv": [2.0, 0.0, 0.0, 3.0], "texture": "#4"},
-				"east": {"uv": [0.0, 0.0, 2.0, 3.0], "texture": "#4"},
-				"south": {"uv": [2.0, 0.0, 0.0, 3.0], "texture": "#4"},
-				"west": {"uv": [0.0, 0.0, 2.0, 3.0], "texture": "#4"},
-				"up": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"down": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"}
-			}
-		},
-		{
-			"from": [0, 10, 0],
-			"to": [3, 13, 3],
-			"faces": {
-				"north": {"uv": [0.0, 10.0, 16.0, 0.0], "texture": "#missing"},
-				"east": {"uv": [0.0, 3.0, 1.50000125, 0.0], "texture": "#3"},
-				"south": {"uv": [9.49999875, 3.0, 11.0, 0.0], "texture": "#3"},
-				"west": {"uv": [0.0, 10.0, 16.0, 0.0], "texture": "#missing"},
-				"up": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"down": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"}
-			}
-		},
-		{
-			"from": [0, 13, 0],
-			"to": [6, 16, 6],
-			"faces": {
-				"north": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"east": {"uv": [0.0, 0.0, 2.99999875, 3.0], "texture": "#7"},
-				"south": {"uv": [11.00000125, 0.0, 14.0, 3.0], "texture": "#7"},
-				"west": {"uv": [0.0, 0.0, 16.0, 10.0], "texture": "#missing"},
-				"up": {"uv": [11.00000125, 11.00000125, 14.0, 14.0], "texture": "#5"},
-				"down": {"uv": [11.00000125, 0.0, 14.0, 2.99999875], "texture": "#6"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "textures": {
+    "missing": "#particle",
+    "1": "nautec:block/multiblock/augmentation_station/bottom_side",
+    "2": "nautec:block/multiblock/augmentation_station/bottom_top",
+    "3": "nautec:block/multiblock/augmentation_station/middle_middle",
+    "4": "nautec:block/multiblock/augmentation_station/middle_pillar",
+    "5": "nautec:block/multiblock/augmentation_station/top",
+    "6": "nautec:block/multiblock/augmentation_station/top_bottom",
+    "7": "nautec:block/multiblock/augmentation_station/top_side",
+    "8": "nautec:block/multiblock/augmentation_station/bottom_8",
+    "particle": "nautec:block/multiblock/augmentation_station/bottom_extensions_side0"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        8,
+        10,
+        8
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            4.0,
+            10.0
+          ],
+          "texture": "#1"
+        },
+        "south": {
+          "uv": [
+            12.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#1"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "up": {
+          "uv": [
+            12,
+            12,
+            16,
+            16
+          ],
+          "texture": "#2"
+        },
+        "down": {
+          "uv": [
+            0,
+            8,
+            8,
+            0
+          ],
+          "texture": "#8"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        10,
+        3
+      ],
+      "to": [
+        5,
+        13,
+        5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2.0,
+            0.0,
+            0.0,
+            3.0
+          ],
+          "texture": "#4"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            3.0
+          ],
+          "texture": "#4"
+        },
+        "south": {
+          "uv": [
+            2.0,
+            0.0,
+            0.0,
+            3.0
+          ],
+          "texture": "#4"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            2.0,
+            3.0
+          ],
+          "texture": "#4"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "down": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        10,
+        0
+      ],
+      "to": [
+        3,
+        13,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            10.0,
+            16.0,
+            0.0
+          ],
+          "texture": "#missing"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            3.0,
+            1.50000125,
+            0.0
+          ],
+          "texture": "#3"
+        },
+        "south": {
+          "uv": [
+            9.49999875,
+            3.0,
+            11.0,
+            0.0
+          ],
+          "texture": "#3"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            10.0,
+            16.0,
+            0.0
+          ],
+          "texture": "#missing"
+        },
+        "up": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "down": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        13,
+        0
+      ],
+      "to": [
+        6,
+        16,
+        6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            2.99999875,
+            3.0
+          ],
+          "texture": "#7"
+        },
+        "south": {
+          "uv": [
+            11.00000125,
+            0.0,
+            14.0,
+            3.0
+          ],
+          "texture": "#7"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            10.0
+          ],
+          "texture": "#missing"
+        },
+        "up": {
+          "uv": [
+            11.00000125,
+            11.00000125,
+            14.0,
+            14.0
+          ],
+          "texture": "#5"
+        },
+        "down": {
+          "uv": [
+            11.00000125,
+            0.0,
+            14.0,
+            2.99999875
+          ],
+          "texture": "#6"
+        }
+      }
+    }
+  ],
+  "render_type": "minecraft:cutout"
 }

@@ -1,5 +1,6 @@
 {
   "parent": "nautec:block/template_emissive_cube_du",
+  "render_type": "minecraft:cutout",
   "textures": {
     "down": "nautec:block/fusion_collector_lens",
     "down_emissive": "nautec:block/fusion_collector_lens_emissive",

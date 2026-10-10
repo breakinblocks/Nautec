@@ -163,7 +163,7 @@ public final class NTEvents {
                 return;
             }
             if (!crystal.isCultivated()) {
-                player.sendOverlayMessage(Component.translatable("nautec.cultivated_crystal.natural").withStyle(ChatFormatting.GOLD));
+                player.displayClientMessage(Component.translatable("nautec.cultivated_crystal.natural").withStyle(ChatFormatting.GOLD), true);
                 return;
             }
             if (!level.mayInteract(player, crystal.getBlockPos())) {
@@ -192,7 +192,7 @@ public final class NTEvents {
                 event.setCancellationResult(InteractionResult.FAIL);
                 return;
             }
-            event.setCancellationResult(GatewayBlock.useWrench(level, gateway, player));
+            event.setCancellationResult(GatewayBlock.useWrench(level, gateway, player).result());
         }
 
         @SubscribeEvent
@@ -231,7 +231,7 @@ public final class NTEvents {
                 IPowerStorage powerStorage = event.getEntity().getMainHandItem().getCapability(NTCapabilities.PowerStorage.ITEM);
                 if (powerStorage.getPowerStored() <= 0 && event.getTarget() instanceof LivingEntity) {
                     event.setCanceled(true);
-                    event.getEntity().sendOverlayMessage(Component.translatable("nautec.tool.no_power"));
+                    event.getEntity().displayClientMessage(Component.translatable("nautec.tool.no_power"), true);
                 }
             }
         }
@@ -248,7 +248,7 @@ public final class NTEvents {
                     if (NTDataComponentsUtils.isInfused(stack)) {
                         boolean enabled = NTDataComponentsUtils.isAbilityEnabled(stack);
                         NTDataComponentsUtils.setAbilityStatus(stack, !enabled);
-                        event.getEntity().sendOverlayMessage(Component.translatable(enabled ? "nautec.tool.ability_disabled" : "nautec.tool.ability_enabled").withStyle(enabled ? ChatFormatting.RED : ChatFormatting.GREEN));
+                        event.getEntity().displayClientMessage(Component.translatable(enabled ? "nautec.tool.ability_disabled" : "nautec.tool.ability_enabled").withStyle(enabled ? ChatFormatting.RED : ChatFormatting.GREEN), true);
                         if (event.getLevel().isClientSide()) {
                             Player player = event.getEntity();
                             Level level = event.getLevel();

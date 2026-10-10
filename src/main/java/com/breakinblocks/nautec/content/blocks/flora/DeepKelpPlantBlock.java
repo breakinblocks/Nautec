@@ -1,11 +1,11 @@
 package com.breakinblocks.nautec.content.blocks.flora;
 
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.GrowingPlantBodyBlock;
@@ -44,11 +44,11 @@ public class DeepKelpPlantBlock extends GrowingPlantBodyBlock implements LiquidB
 
     @Override
     protected boolean canAttachTo(BlockState state) {
-        return !state.is(BlockTags.CANNOT_SUPPORT_KELP);
+        return !state.is(Blocks.MAGMA_BLOCK);
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable LivingEntity user, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid type) {
+    public boolean canPlaceLiquid(@Nullable Player user, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid type) {
         return false;
     }
 

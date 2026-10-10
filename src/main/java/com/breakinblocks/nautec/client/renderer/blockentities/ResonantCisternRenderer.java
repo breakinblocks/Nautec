@@ -1,19 +1,19 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import com.breakinblocks.nautec.client.render.CustomGeometry;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantStorageBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
@@ -21,7 +21,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCisternBlockEntity, ResonantCisternRenderer.CisternRenderState> {
+public class ResonantCisternRenderer extends NTBERenderer<ResonantCisternBlockEntity, ResonantCisternRenderer.CisternRenderState> {
     public static final float LIGHT_FRONT = 1.0f;
     public static final float LIGHT_BOTTOM = 14.5f;
     public static final float LIGHT_TOP = 15.5f;
@@ -31,6 +31,7 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
     private static final float CEILING = 14.0f / 16f;
 
     public ResonantCisternRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
@@ -39,9 +40,8 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
     }
 
     @Override
-    public void extractRenderState(ResonantCisternBlockEntity cistern, CisternRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(cistern, state, crumbling);
+    public void extractRenderState(ResonantCisternBlockEntity cistern, CisternRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(cistern, state);
         state.facing = cistern.getBlockState().hasProperty(ResonantStorageBlock.FACING) ? cistern.getBlockState().getValue(ResonantStorageBlock.FACING) : Direction.NORTH;
         state.address = cistern.channel().address();
         FluidStack fluid = cistern.fluid();
@@ -50,9 +50,9 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
         if (fluid.isEmpty()) {
             return;
         }
-        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.getFluid().defaultFluidState());
-        int colour = model.fluidTintSource().colorAsStack(fluid);
-        state.sprite = model.stillMaterial().sprite();
+        IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid.getFluid());
+        int colour = extensions.getTintColor(fluid);
+        state.sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(extensions.getStillTexture(fluid));
         state.red = (colour >> 16 & 255) / 255f;
         state.green = (colour >> 8 & 255) / 255f;
         state.blue = (colour & 255) / 255f;
@@ -62,16 +62,16 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
     }
 
     @Override
-    public void submit(CisternRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(CisternRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         if (state.sprite != null && state.fill > 0) {
             TextureAtlasSprite sprite = state.sprite;
             float height = Math.max(0.02f, state.fill) * (CEILING - FLOOR);
             float bottom = state.gaseous ? CEILING - height : FLOOR;
             float top = bottom + height;
-            collector.submitCustomGeometry(poseStack, RenderTypes.translucentMovingBlock(), (pose, consumer) ->
+            CustomGeometry.submit(poseStack, buffers, RenderType.translucentMovingBlock(), (pose, consumer) ->
                     box(pose.pose(), consumer, sprite, state, bottom, top));
         }
-        ResonantLights.submit(poseStack, collector, state.facing, state.address, LIGHT_FRONT, LIGHT_BOTTOM, LIGHT_TOP);
+        ResonantLights.submit(poseStack, buffers, state.facing, state.address, LIGHT_FRONT, LIGHT_BOTTOM, LIGHT_TOP);
     }
 
     private static void box(Matrix4f matrix, VertexConsumer buffer, TextureAtlasSprite sprite, CisternRenderState state, float bottom, float top) {
@@ -117,7 +117,7 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
         buffer.addVertex(matrix, x, y, z).setColor(r, g, b, a).setUv(u, v).setLight(light).setNormal(nx, ny, nz);
     }
 
-    public static class CisternRenderState extends BlockEntityRenderState {
+    public static class CisternRenderState extends BERenderState {
         Direction facing = Direction.NORTH;
         GatewayAddress address = GatewayAddress.DEFAULT;
         @Nullable TextureAtlasSprite sprite;

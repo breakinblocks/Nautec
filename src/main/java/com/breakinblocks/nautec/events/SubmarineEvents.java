@@ -73,7 +73,7 @@ public final class SubmarineEvents {
         }
 
         event.setOutput(result.output());
-        event.setXpCost(result.xpCost());
+        event.setCost(result.xpCost());
         event.setMaterialCost(result.materialCost());
     }
 }

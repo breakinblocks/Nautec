@@ -2,9 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "nautec:aquarine_steel_ingot",
-    "C": "minecraft:conduit",
-    "S": "nautec:prismarine_crystal_shard"
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "minecraft:conduit"
+    },
+    "S": {
+      "item": "nautec:prismarine_crystal_shard"
+    }
   },
   "pattern": [
     "SAS",
@@ -12,6 +18,7 @@
     "SAS"
   ],
   "result": {
+    "count": 1,
     "id": "nautec:conduit_beacon"
   }
 }

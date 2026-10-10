@@ -3,14 +3,15 @@ package com.breakinblocks.nautec.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
-public class SwirlParticle extends SingleQuadParticle {
+public class SwirlParticle extends TextureSheetParticle {
     private final double centerX;
     private final double centerY;
     private final double centerZ;
@@ -22,7 +23,8 @@ public class SwirlParticle extends SingleQuadParticle {
     protected SwirlParticle(ClientLevel level, double centerX, double centerY, double centerZ,
                             TextureAtlasSprite sprite, double startRadius, double rise,
                             float angle, float spin, float size, int lifetime) {
-        super(level, centerX + startRadius * Mth.cos(angle), centerY, centerZ + startRadius * Mth.sin(angle), 0D, 0D, 0D, sprite);
+        super(level, centerX + startRadius * Mth.cos(angle), centerY, centerZ + startRadius * Mth.sin(angle), 0D, 0D, 0D);
+        this.setSprite(sprite);
         this.centerX = centerX;
         this.centerY = centerY;
         this.centerZ = centerZ;
@@ -37,8 +39,8 @@ public class SwirlParticle extends SingleQuadParticle {
     }
 
     @Override
-    public SingleQuadParticle.Layer getLayer() {
-        return SingleQuadParticle.Layer.TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -69,7 +71,8 @@ public class SwirlParticle extends SingleQuadParticle {
                            int minLifetime, int maxLifetime) implements ParticleProvider<SimpleParticleType> {
         @Override
         public Particle createParticle(SimpleParticleType options, ClientLevel level,
-                                       double x, double y, double z, double xa, double ya, double za, RandomSource random) {
+                                       double x, double y, double z, double xa, double ya, double za) {
+            RandomSource random = level.random;
             int lifetime = minLifetime + random.nextInt(Math.max(1, maxLifetime - minLifetime));
             float angle = random.nextFloat() * Mth.TWO_PI;
             SwirlParticle particle = new SwirlParticle(level, x, y, z, sprites.get(random),

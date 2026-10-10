@@ -34,7 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundPlayerRotationPacket;
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -47,15 +47,16 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.portal.TeleportTransition;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.entity.RelativeMovement;
+import com.breakinblocks.nautec.utils.valueio.ValueInput;
+import com.breakinblocks.nautec.utils.valueio.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -570,12 +571,16 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
             ripple(level, worldPosition, front, hit);
 
             List<Entity> riders = root.getPassengers().stream().toList();
-            root.teleport(new TeleportTransition(level, feet, exitVelocity, root.getYRot() + turn, root.getXRot(),
-                    Set.of(), TeleportTransition.DO_NOTHING));
+            root.teleportTo(level, feet.x, feet.y, feet.z, Set.of(), root.getYRot() + turn, root.getXRot());
+            root.setDeltaMovement(exitVelocity);
+            root.hurtMarked = true;
+            if (root.getControllingPassenger() instanceof ServerPlayer driver) {
+                driver.connection.send(new ClientboundMoveVehiclePacket(root));
+            }
             for (Entity rider : riders) {
                 if (rider instanceof ServerPlayer player && turn != 0F) {
-                    player.setYRot(player.getYRot() + turn);
-                    player.connection.send(new ClientboundPlayerRotationPacket(turn, true, 0F, true));
+                    player.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot() + turn, player.getXRot(),
+                            EnumSet.allOf(RelativeMovement.class));
                 }
             }
 
@@ -624,9 +629,9 @@ public class GatewayBlockEntity extends LaserBlockEntity implements MultiblockEn
                 return null;
             }
             if (!level.isLoaded(target)) {
-                ChunkPos chunk = ChunkPos.containing(target);
-                level.getChunkSource().addTicketWithRadius(TicketType.PORTAL, chunk, 2);
-                level.getChunk(chunk.x(), chunk.z());
+                ChunkPos chunk = new ChunkPos(target);
+                level.getChunkSource().addRegionTicket(TicketType.PORTAL, chunk, 2, chunk.getWorldPosition());
+                level.getChunk(chunk.x, chunk.z);
             }
             if (!(level.getBlockEntity(target) instanceof GatewayBlockEntity partner) || !partner.isFormed()) {
                 index.remove(target);

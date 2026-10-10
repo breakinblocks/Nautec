@@ -1,15 +1,14 @@
 package com.breakinblocks.nautec.content.blocks.flora;
 
+import net.minecraft.world.entity.player.Player;
 import com.mojang.serialization.MapCodec;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DeepKelpBlock extends GrowingPlantHeadBlock implements LiquidBlockContainer {
     public static final MapCodec<DeepKelpBlock> CODEC = simpleCodec(DeepKelpBlock::new);
-    private static final VoxelShape SHAPE = Block.column(16.0, 0.0, 9.0);
+    private static final VoxelShape SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 9.0, 16.0);
 
     public DeepKelpBlock(BlockBehaviour.Properties properties) {
         super(properties, Direction.UP, SHAPE, true, 0.14);
@@ -69,11 +68,11 @@ public class DeepKelpBlock extends GrowingPlantHeadBlock implements LiquidBlockC
 
     @Override
     protected boolean canAttachTo(BlockState state) {
-        return !state.is(BlockTags.CANNOT_SUPPORT_KELP);
+        return !state.is(Blocks.MAGMA_BLOCK);
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable LivingEntity user, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid type) {
+    public boolean canPlaceLiquid(@Nullable Player user, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid type) {
         return false;
     }
 
@@ -90,7 +89,7 @@ public class DeepKelpBlock extends GrowingPlantHeadBlock implements LiquidBlockC
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-        return fluidState.is(FluidTags.WATER) && fluidState.isFull() ? super.getStateForPlacement(context) : null;
+        return fluidState.is(FluidTags.WATER) && fluidState.getAmount() == 8 ? super.getStateForPlacement(context) : null;
     }
 
     @Override

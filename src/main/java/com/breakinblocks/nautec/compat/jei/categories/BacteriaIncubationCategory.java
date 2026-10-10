@@ -10,20 +10,20 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubationRecipe> {
 
-    static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/incubator/progress_arrow_off");
-    public static final Identifier UID = Nautec.rl(BacteriaIncubationRecipe.NAME);
-    public static final IRecipeType<BacteriaIncubationRecipe> RECIPE_TYPE =
-            IRecipeType.create(UID, BacteriaIncubationRecipe.class);
+    static final ResourceLocation RIGHT_ARROW_SPRITE = Nautec.rl("container/incubator/progress_arrow_off");
+    public static final ResourceLocation UID = Nautec.rl(BacteriaIncubationRecipe.NAME);
+    public static final RecipeType<BacteriaIncubationRecipe> RECIPE_TYPE =
+            new RecipeType<>(UID, BacteriaIncubationRecipe.class);
 
     private static final int GAP = 5;
     private static final int SLOT_SIZE = 18;
@@ -48,11 +48,11 @@ public class BacteriaIncubationCategory extends BacteriaCategory<BacteriaIncubat
 
         NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT,
                         DRAWABLE_WIDTH / 2 - SLOT_SIZE / 2 + 2, GAP + Y_GAP_BETWEEN_IN_CATA)
-                .add(recipe.nutrient());
+                .addIngredients(recipe.nutrient());
     }
 
     @Override
-    public void draw(@NotNull BacteriaIncubationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
+    public void draw(@NotNull BacteriaIncubationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         NTJeiUtil.blitSprite(guiGraphics, RIGHT_ARROW_SPRITE, GAP + SLOT_SIZE + GAP_BETWEEN_SLOT_ARROW + 17, GAP - 2, 46, 29);
 
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);

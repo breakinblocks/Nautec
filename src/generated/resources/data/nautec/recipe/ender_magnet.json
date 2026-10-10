@@ -4,7 +4,9 @@
   "desc": "Teleports nearby items straight into your inventory, hold crouch to suspend it",
   "ingredients": [
     {
-      "ingredient": "nautec:ender_coil_arm"
+      "ingredient": {
+        "item": "nautec:ender_coil_arm"
+      }
     }
   ],
   "resultAugment": "nautec:ender_magnet"

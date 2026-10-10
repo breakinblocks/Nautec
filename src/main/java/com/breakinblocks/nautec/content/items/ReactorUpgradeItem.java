@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,17 +24,17 @@ public class ReactorUpgradeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (type == Type.FUSION) {
-            tooltipComponents.accept(effect(type).copy().withStyle(ChatFormatting.GOLD));
+            tooltipComponents.add(effect(type).copy().withStyle(ChatFormatting.GOLD));
             for (Type part : Type.BASIC) {
-                tooltipComponents.accept(effect(part).copy().withStyle(ChatFormatting.AQUA));
+                tooltipComponents.add(effect(part).copy().withStyle(ChatFormatting.AQUA));
             }
         } else {
-            tooltipComponents.accept(effect(type).copy().withStyle(ChatFormatting.AQUA));
+            tooltipComponents.add(effect(type).copy().withStyle(ChatFormatting.AQUA));
         }
-        tooltipComponents.accept(Component.translatable("nautec.reactor_upgrade.power", format(type.powerMultiplier()))
+        tooltipComponents.add(Component.translatable("nautec.reactor_upgrade.power", format(type.powerMultiplier()))
                 .withStyle(ChatFormatting.GRAY));
     }
 

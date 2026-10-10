@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.mojang.math.Axis;
+import com.breakinblocks.nautec.api.client.renderer.blockentities.BERenderState;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.renderer.blockentities.NTBERenderer;
 import com.breakinblocks.nautec.client.render.NTRenderTypes;
@@ -7,22 +9,17 @@ import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlockEntity, ConfinedSpawnerBERenderer.ConfinedSpawnerRenderState> {
-    public static final Identifier RUNES = Nautec.rl("textures/entity/confined_spawner_runes.png");
+    public static final ResourceLocation RUNES = Nautec.rl("textures/entity/confined_spawner_runes.png");
 
     private static final float BAND_BOTTOM = 1.0F / 3.0F;
     private static final float BAND_TOP = 2.0F / 3.0F;
@@ -43,9 +40,8 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
     }
 
     @Override
-    public void extractRenderState(ConfinedSpawnerBlockEntity blockEntity, ConfinedSpawnerRenderState state, float partialTick, Vec3 cameraPos,
-                                   ModelFeatureRenderer.@Nullable CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(blockEntity, state, crumbling);
+    public void extractRenderState(ConfinedSpawnerBlockEntity blockEntity, ConfinedSpawnerRenderState state, float partialTick, Vec3 cameraPos) {
+        BERenderState.extractBase(blockEntity, state);
         state.energy = blockEntity.isActive() ? 1.0F : IDLE_ENERGY;
         BlockPos pos = blockEntity.getBlockPos();
         double dx = pos.getX() + 0.5 - cameraPos.x;
@@ -60,20 +56,27 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
             state.displayEntity = null;
             return;
         }
-        state.displayEntity = this.context.entityRenderer().extractEntity(display, partialTick);
-        state.displayEntity.lightCoords = state.lightCoords;
+        state.displayEntity = display;
+        state.partialTick = partialTick;
         state.spin = blockEntity.getSpin(partialTick);
         float longest = Math.max(display.getBbWidth(), display.getBbHeight());
         state.scale = longest > 1.0F ? DISPLAY_SCALE / longest : DISPLAY_SCALE;
     }
 
     @Override
-    public void submit(ConfinedSpawnerRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+    public void submit(ConfinedSpawnerRenderState state, PoseStack poseStack, MultiBufferSource buffers, Vec3 cameraPos) {
         if (state.displayEntity != null) {
-            SpawnerRenderer.submitEntityInSpawner(poseStack, collector, state.displayEntity, this.context.entityRenderer(), state.spin, state.scale, camera);
+            poseStack.pushPose();
+            poseStack.translate(0.5F, 0.4F, 0.5F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.spin));
+            poseStack.translate(0.0F, -0.2F, 0.0F);
+            poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
+            poseStack.scale(state.scale, state.scale, state.scale);
+            this.context.getEntityRenderer().render(state.displayEntity, 0.0, 0.0, 0.0, 0.0F, state.partialTick, poseStack, buffers, state.lightCoords);
+            poseStack.popPose();
         }
         int color = ((int) (state.energy * 255.0F) << 24) | BAND_RGB;
-        ShaderPackOverlay.submit(poseStack, collector, NTRenderTypes.gatewayGlow(RUNES), (pose, buffer) -> {
+        ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.gatewayGlow(RUNES), (pose, buffer) -> {
             float low = -OUTSET;
             float high = 1.0F + OUTSET;
             side(buffer, pose, 1, low, 0, low, 0.0F, 0.0F, -1.0F, color, 0);
@@ -104,8 +107,9 @@ public class ConfinedSpawnerBERenderer extends NTBERenderer<ConfinedSpawnerBlock
         return new AABB(pos.getX() - 1.0, pos.getY() - 1.0, pos.getZ() - 1.0, pos.getX() + 2.0, pos.getY() + 2.0, pos.getZ() + 2.0);
     }
 
-    public static class ConfinedSpawnerRenderState extends BlockEntityRenderState {
-        public @Nullable EntityRenderState displayEntity;
+    public static class ConfinedSpawnerRenderState extends BERenderState {
+        public @Nullable Entity displayEntity;
+        public float partialTick;
         public float spin;
         public float scale;
         public float energy;

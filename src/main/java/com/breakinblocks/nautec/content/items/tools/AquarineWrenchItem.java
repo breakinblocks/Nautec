@@ -27,12 +27,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -60,24 +60,24 @@ public class AquarineWrenchItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!player.isSecondaryUseActive()) {
-            return InteractionResult.PASS;
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
         ItemStack stack = player.getItemInHand(hand);
         WrenchMode next = mode(stack).next();
         stack.set(NTDataComponents.WRENCH_MODE.get(), next.ordinal());
         if (!level.isClientSide()) {
-            player.sendOverlayMessage(Component.translatable("nautec.wrench.mode", Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA));
+            player.displayClientMessage(Component.translatable("nautec.wrench.mode", Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA), true);
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        tooltip.accept(Component.translatable("nautec.wrench.mode", Component.translatable(mode(stack).translationKey())).withStyle(ChatFormatting.AQUA));
-        tooltip.accept(Component.translatable(mode(stack).translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
-        tooltip.accept(Component.translatable("nautec.wrench.mode.switch").withStyle(ChatFormatting.DARK_GRAY));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("nautec.wrench.mode", Component.translatable(mode(stack).translationKey())).withStyle(ChatFormatting.AQUA));
+        tooltip.add(Component.translatable(mode(stack).translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("nautec.wrench.mode.switch").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     @Override
@@ -134,8 +134,8 @@ public class AquarineWrenchItem extends Item {
                 SideMode current = machine.getSideConfig().get(kind, face);
                 SideMode next = player.isSecondaryUseActive() ? current.previous() : current.next();
                 machine.setSideMode(kind, face, next);
-                player.sendOverlayMessage(Component.translatable("nautec.side_config.tooltip", Component.translatable(face.translationKey()),
-                        Component.translatable(kind.translationKey()), Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA));
+                player.displayClientMessage(Component.translatable("nautec.side_config.tooltip", Component.translatable(face.translationKey()),
+                        Component.translatable(kind.translationKey()), Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA), true);
                 level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 0.6F, 1.4F);
             }
             return InteractionResult.SUCCESS;

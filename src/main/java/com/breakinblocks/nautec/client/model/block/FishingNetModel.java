@@ -1,7 +1,6 @@
 package com.breakinblocks.nautec.client.model.block;
 
 import com.breakinblocks.nautec.Nautec;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,17 +9,16 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
 
-public class FishingNetModel extends Model.Simple {
+public class FishingNetModel extends SimpleModel {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Nautec.rl("fishing_net"), "main");
-    public static final RenderType RENDER_TYPE = RenderTypes.entityCutout(Nautec.rl("textures/entity/fishing_net_1.png"));
+    public static final RenderType RENDER_TYPE = RenderType.entityCutout(Nautec.rl("textures/entity/fishing_net_1.png"));
     private final ModelPart main;
     private final ModelPart fishing_net;
 
     public FishingNetModel(ModelPart root) {
-        super(root, RenderTypes::entityCutout);
+        super(root, RenderType::entityCutout);
         this.main = root.getChild("main");
         this.fishing_net = this.main.getChild("fishing_net");
     }

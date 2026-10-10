@@ -7,9 +7,8 @@ import com.breakinblocks.nautec.registries.NTItems;
 import com.breakinblocks.nautec.registries.NTLootTables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +37,7 @@ public final class LootTableTests {
             List<String> broken = new ArrayList<>();
             int checked = 0;
 
-            for (Identifier file : server.getResourceManager()
+            for (ResourceLocation file : server.getResourceManager()
                     .listResources("loot_table", path -> path.getPath().endsWith(".json")).keySet()) {
                 if (!file.getNamespace().equals(Nautec.MODID)) {
                     continue;
@@ -48,9 +47,9 @@ public final class LootTableTests {
 
                 checked++;
                 ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE,
-                        Identifier.fromNamespaceAndPath(Nautec.MODID, path));
+                        ResourceLocation.fromNamespaceAndPath(Nautec.MODID, path));
                 if (server.reloadableRegistries().getLootTable(key) == LootTable.EMPTY) {
-                    broken.add(key.identifier().toString());
+                    broken.add(key.location().toString());
                 }
             }
 
@@ -76,7 +75,7 @@ public final class LootTableTests {
                     NTLootTables.LUCKY_ZONE_CATCH, NTLootTables.LUCKY_ZONE_TREASURE)) {
                 LootTable table = level.getServer().reloadableRegistries().getLootTable(key);
                 if (table == LootTable.EMPTY) {
-                    helper.fail(key.identifier() + " did not load");
+                    helper.fail(key.location() + " did not load");
                     return;
                 }
 
@@ -85,7 +84,7 @@ public final class LootTableTests {
                     gotSomething = !table.getRandomItems(params).isEmpty();
                 }
                 if (!gotSomething) {
-                    helper.fail(key.identifier() + " rolled 40 times without producing a single item");
+                    helper.fail(key.location() + " rolled 40 times without producing a single item");
                 }
             }
             helper.succeed();
@@ -99,7 +98,7 @@ public final class LootTableTests {
             FishingHook hook =
                     new FishingHook(
                             EntityType.FISHING_BOBBER, level);
-            hook.snapTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
+            hook.moveTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
             level.addFreshEntity(hook);
 
             ItemStack marked = new ItemStack(Items.COD);
@@ -174,7 +173,7 @@ public final class LootTableTests {
         });
     }
 
-    private static List<ItemStack> drops(ServerLevel level, GameTestHelper helper, LootTable table, ItemStack tool) {
+    private static List<ItemStack> drops(ServerLevel level, NTGameTestHelper helper, LootTable table, ItemStack tool) {
         return table.getRandomItems(new LootParams.Builder(level)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(helper.absolutePos(new BlockPos(1, 2, 1))))
                 .withParameter(LootContextParams.BLOCK_STATE, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState())

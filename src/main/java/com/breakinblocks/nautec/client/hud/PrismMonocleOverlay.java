@@ -9,10 +9,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.gui.GuiLayer;
+import net.minecraft.client.gui.LayeredDraw;
 
 public final class PrismMonocleOverlay {
-    public static final GuiLayer HUD = (guiGraphics, delta) -> {
+    public static final LayeredDraw.Layer HUD = (guiGraphics, delta) -> {
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
         Player player = mc.player;
@@ -25,7 +25,7 @@ public final class PrismMonocleOverlay {
             BlockPos blockPos = blockHitResult.getBlockPos();
             if (level.getBlockState(blockPos).getBlock() instanceof DisplayBlock displayBlock && displayBlock.display(level, blockPos, player)) {
                 for (Component component : displayBlock.displayText(level, blockPos, player)) {
-                    guiGraphics.centeredText(mc.font, component, x, y + lineOffset, ArtPalette.TEXT);
+                    guiGraphics.drawCenteredString(mc.font, component, x, y + lineOffset, ArtPalette.TEXT);
                     lineOffset += mc.font.lineHeight + 3;
                 }
             }

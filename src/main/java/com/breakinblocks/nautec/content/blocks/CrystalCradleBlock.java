@@ -15,6 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +51,7 @@ public class CrystalCradleBlock extends LaserBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof CrystalCradleBlockEntity cradle)) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
@@ -60,16 +61,16 @@ public class CrystalCradleBlock extends LaserBlock {
                     stack.consume(1, player);
                     level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.BLOCKS, 1.0F, 1.2F);
                 } else {
-                    player.sendOverlayMessage(Component.translatable("nautec.crystal_cradle.message.occupied").withStyle(ChatFormatting.GOLD));
+                    player.displayClientMessage(Component.translatable("nautec.crystal_cradle.message.occupied").withStyle(ChatFormatting.GOLD), true);
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (stack.is(NTItems.DORMANT_CRYSTAL_SEED.get())) {
             if (!level.isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("nautec.crystal_cradle.message.dormant").withStyle(ChatFormatting.GOLD));
+                player.displayClientMessage(Component.translatable("nautec.crystal_cradle.message.dormant").withStyle(ChatFormatting.GOLD), true);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
@@ -82,7 +83,7 @@ public class CrystalCradleBlock extends LaserBlock {
         if (!level.isClientSide()) {
             ItemStack seed = cradle.removeSeed();
             if (seed.isEmpty()) {
-                player.sendOverlayMessage(Component.translatable("nautec.crystal_cradle.message.growing").withStyle(ChatFormatting.GOLD));
+                player.displayClientMessage(Component.translatable("nautec.crystal_cradle.message.growing").withStyle(ChatFormatting.GOLD), true);
             } else {
                 ItemUtils.giveItemToPlayer(player, seed);
             }
