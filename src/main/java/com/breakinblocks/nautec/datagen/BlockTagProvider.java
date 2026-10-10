@@ -10,6 +10,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -124,6 +125,9 @@ public class BlockTagProvider extends BlockTagsProvider {
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA, HYDROTHERMAL_VENT.get());
         tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
         tag(BlockTags.DOORS, PRESSURE_HATCH);
+        tag(Tags.Blocks.BUDDING_BLOCKS, BUDDING_PRISMARINE);
+        tag(Tags.Blocks.BUDS, SMALL_PRISMARINE_BUD, MEDIUM_PRISMARINE_BUD, LARGE_PRISMARINE_BUD);
+        tag(Tags.Blocks.CLUSTERS, PRISMARINE_CLUSTER);
         tag(BlockTags.NEEDS_DIAMOND_TOOL,
                 ABYSSAL_PYLON,
                 FUSION_CASING,
