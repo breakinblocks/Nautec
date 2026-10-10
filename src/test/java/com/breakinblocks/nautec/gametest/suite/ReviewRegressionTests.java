@@ -381,7 +381,7 @@ public final class ReviewRegressionTests {
                 new SaltWaterCase("filled_bucket_not_replaced_by_saltwater", Items.LAVA_BUCKET, true, false))) {
             tests.put(saltCase.name(), helper -> {
                 helper.setBiome(Biomes.OCEAN);
-                BlockPos pos = new BlockPos(4, 1, 4);
+                BlockPos pos = new BlockPos(4, 3, 4);
                 helper.setBlock(pos.below(), Blocks.STONE);
                 helper.setBlock(pos, Blocks.WATER);
                 Player player = helper.makeMockPlayer(GameType.SURVIVAL);
