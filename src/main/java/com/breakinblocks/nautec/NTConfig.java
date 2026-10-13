@@ -1021,6 +1021,14 @@ public final class NTConfig {
             .comment("The highest purity Budding Prismarine can raise an Aquatic Catalyst's beam to")
             .defineInRange("catalystBuddingMaxPurity", 2.0, 0.0, 10.0);
 
+    private static final ModConfigSpec.IntValue ADVANCED_CATALYST_FUEL_MULTIPLIER = BUILDER
+            .comment("How many fuel items an Advanced Aquatic Catalyst burns at once. Its AP output is multiplied by the number it burns, and each burn lasts as long as a single item does in the Aquatic Catalyst")
+            .defineInRange("advancedCatalystFuelMultiplier", 8, 1, 64);
+
+    private static final ModConfigSpec.DoubleValue ADVANCED_CATALYST_PURITY_MULTIPLIER = BUILDER
+            .comment("What an Advanced Aquatic Catalyst multiplies its fuel's purity by, before any Budding Prismarine boost")
+            .defineInRange("advancedCatalystPurityMultiplier", 1.1, 0.0, 10.0);
+
     private static final ModConfigSpec.IntValue CONDUIT_BEACON_POWER_USAGE = BUILDER
             .comment("The AP a running Conduit Beacon uses each tick, taken from its internal buffer")
             .defineInRange("conduitBeaconPowerUsage", 50, 0, Integer.MAX_VALUE);
@@ -1057,6 +1065,8 @@ public final class NTConfig {
     public static double catalystBuddingOutputBonus = 0.25;
     public static double catalystBuddingPurityBonus = 0.1;
     public static double catalystBuddingMaxPurity = 2.0;
+    public static int advancedCatalystFuelMultiplier = 8;
+    public static double advancedCatalystPurityMultiplier = 1.1;
 
     public static int kelpHeight;
     public static boolean spawnBookInInventory;
@@ -1713,6 +1723,8 @@ public final class NTConfig {
         catalystBuddingOutputBonus = value(CATALYST_BUDDING_OUTPUT_BONUS);
         catalystBuddingPurityBonus = value(CATALYST_BUDDING_PURITY_BONUS);
         catalystBuddingMaxPurity = value(CATALYST_BUDDING_MAX_PURITY);
+        advancedCatalystFuelMultiplier = value(ADVANCED_CATALYST_FUEL_MULTIPLIER);
+        advancedCatalystPurityMultiplier = value(ADVANCED_CATALYST_PURITY_MULTIPLIER);
         conduitBeaconPowerUsage = value(CONDUIT_BEACON_POWER_USAGE);
         conduitBeaconBuffer = value(CONDUIT_BEACON_BUFFER);
         conduitBeaconSpawnRadius = value(CONDUIT_BEACON_SPAWN_RADIUS);

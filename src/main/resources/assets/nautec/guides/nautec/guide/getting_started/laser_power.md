@@ -6,6 +6,7 @@ navigation:
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:aquatic_catalyst
+  - nautec:advanced_aquatic_catalyst
   - nautec:prismarine_crystal
 ---
 
@@ -50,6 +51,25 @@ A redstone signal pauses it. A paused catalyst sends no beam and keeps its fuel 
 The two small lamps near the lens end of each side show whether it has found a receiver. Green means a laser block within range takes the beam. Red means it has not: nothing is in line with the lens, a solid block is in the way, or the block in front does not take a beam from that side (a relay facing the wrong way is the usual cause). Shift-right-click the catalyst with an empty hand for a chat readout of its fuel, which way it fires, what the beam hits and how to fix it.
 
 <Color id="gold">Tip</Color>: the beam burns anything standing in it, you included, and a stronger beam burns harder (see [Moving Laser Power](nautec:laser_chemistry/laser_manipulation.md)). Walk around running beams, or run them through glass.
+
+***
+
+<Row>
+  <ItemImage id="advanced_aquatic_catalyst"/>
+  ### <Color id="aqua">Advanced Aquatic Catalyst</Color>
+</Row>
+
+An Aquatic Catalyst with a gold-trimmed frame that burns eight fuel items at once. Each burn lasts as long as one item does in the Aquatic Catalyst, and the beam carries eight times the power, so a stack of shards gives 160 AP per tick instead of 20 and runs out eight times as fast. The energy from each item is the same; you get it all sooner.
+
+<Recipe id="nautec:advanced_aquatic_catalyst"/>
+
+| Fuel | Purity | Power | Burn time |
+|---|---|---|---|
+| Prismarine Shard | 0.44 | 96 AP/t | 30 s |
+| Prismarine Crystals | 0.88 | 48 AP/t | 30 s |
+| <ItemLink id="prismarine_crystal_shard"/> | 1.32 | 160 AP/t | 75 s |
+
+Its beam is 10% purer than the same fuel in an Aquatic Catalyst, before any Budding Prismarine boost. With fewer than eight items loaded it burns what is there, at that many times the power. Everything else works like the Aquatic Catalyst: placement, lamps, redstone pausing, Budding Prismarine and the shift-right-click readout. `advancedCatalystFuelMultiplier` and `advancedCatalystPurityMultiplier` set the eight and the 10%.
 
 ***
 

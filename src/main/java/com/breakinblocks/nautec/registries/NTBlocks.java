@@ -22,6 +22,7 @@ import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.content.distributor.DistributorBlock;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blocks.AnchorBlock;
+import com.breakinblocks.nautec.content.blocks.AdvancedAquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.AdvancedBacterialAnalyzerBlock;
 import com.breakinblocks.nautec.content.blocks.BacterialAnalyzerBlock;
@@ -128,6 +129,8 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK));
     public static final DeferredBlock<AquaticCatalystBlock> AQUATIC_CATALYST = registerBlockAndItem("aquatic_catalyst", AquaticCatalystBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE));
+    public static final DeferredBlock<AdvancedAquaticCatalystBlock> ADVANCED_AQUATIC_CATALYST = registerBlockAndItem("advanced_aquatic_catalyst",
+            AdvancedAquaticCatalystBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE));
     public static final DeferredBlock<PrismarineLaserRelayBlock> PRISMARINE_RELAY = registerBlockAndItem("prismarine_laser_relay", PrismarineLaserRelayBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS));
     public static final DeferredBlock<MixerBlock> MIXER = registerBlockAndItem("mixer", MixerBlock::new,

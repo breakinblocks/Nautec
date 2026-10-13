@@ -42,6 +42,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 RESONANT_VAULT,
                 RESONANT_CISTERN,
                 AQUATIC_CATALYST,
+                ADVANCED_AQUATIC_CATALYST,
                 SUBMARINE_DOCK,
                 PRESSURE_FORGE,
                 LASER_PURIFICATION_SMELTER,

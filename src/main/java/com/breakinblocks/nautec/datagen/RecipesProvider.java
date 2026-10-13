@@ -666,6 +666,17 @@ public class RecipesProvider extends RecipeProvider {
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
                 .unlockedBy("has_item", has(NTBlocks.POLISHED_PRISMARINE))
                 .save(pRecipeOutput, key("aquatic_catalyst"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ADVANCED_AQUATIC_CATALYST.asItem(), 1)
+                .pattern("UFU")
+                .pattern("XAX")
+                .pattern("UFU")
+                .define('U', NTItems.AQUARINE_COPPER_INGOT)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('X', NTItems.AQUATIC_CHIP)
+                .define('A', NTBlocks.AQUATIC_CATALYST)
+                .unlockedBy("has_item", has(NTBlocks.AQUATIC_CATALYST))
+                .save(pRecipeOutput, key("advanced_aquatic_catalyst"));
     }
 
     private void machineRecipes(@NotNull RecipeOutput pRecipeOutput) {

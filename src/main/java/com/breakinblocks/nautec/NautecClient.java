@@ -327,6 +327,7 @@ public final class NautecClient {
         event.registerEntityRenderer(NTEntities.VENT_CRAWLER.get(), NTMobRenderers.VentCrawlerRenderer::new);
         event.registerEntityRenderer(NTEntities.ABYSSAL_MAW.get(), NTMobRenderers.AbyssalMawRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.AQUATIC_CATALYST.get(), LaserBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.ADVANCED_AQUATIC_CATALYST.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMARINE_LASER_RELAY.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CREATIVE_POWER_SOURCE.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_JUNCTION.get(), LaserBlockEntityRenderer::new);

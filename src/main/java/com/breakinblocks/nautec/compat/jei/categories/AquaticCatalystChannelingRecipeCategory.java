@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.compat.jei.categories;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -16,6 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Locale;
+
 public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCategory<AquaticCatalystChannelingRecipe> {
     public static final Identifier UID = Nautec.rl("aquatic_catalyst_channeling");
     public static final IRecipeType<AquaticCatalystChannelingRecipe> RECIPE_TYPE =
@@ -26,7 +29,7 @@ public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCateg
                 Component.translatable("nautec.jei.category.aquatic_catalyst_channeling"),
                 helper.createDrawableItemStack(new ItemStack(NTBlocks.AQUATIC_CATALYST.get())),
                 136,
-                24 + 4 * Minecraft.getInstance().font.lineHeight);
+                24 + 5 * Minecraft.getInstance().font.lineHeight);
     }
 
     @Override
@@ -37,6 +40,9 @@ public class AquaticCatalystChannelingRecipeCategory extends AbstractRecipeCateg
                 Component.translatable("nautec.jei.total_power", recipe.powerAmount()),
                 Component.translatable("nautec.jei.duration_ticks", recipe.duration()),
                 Component.translatable("nautec.jei.purity", recipe.purity()),
+                Component.translatable("nautec.jei.advanced_catalyst",
+                        recipe.powerAmount() / recipe.duration() * NTConfig.advancedCatalystFuelMultiplier,
+                        String.format(Locale.ROOT, "%.2f", recipe.purity() * NTConfig.advancedCatalystPurityMultiplier)),
         };
 
         for (int i = 0; i < text.length; i++) {

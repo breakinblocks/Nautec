@@ -15,6 +15,7 @@ import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.AnchorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.AdvancedAquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AdvancedBacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
@@ -75,6 +76,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<AquaticCatalystBlockEntity>> AQUATIC_CATALYST = BLOCK_ENTITIES.register("aquatic_catalyst",
             () -> new BlockEntityType<>(AquaticCatalystBlockEntity::new,
                     NTBlocks.AQUATIC_CATALYST.get()));
+    public static final Supplier<BlockEntityType<AdvancedAquaticCatalystBlockEntity>> ADVANCED_AQUATIC_CATALYST = BLOCK_ENTITIES.register("advanced_aquatic_catalyst",
+            () -> new BlockEntityType<>(AdvancedAquaticCatalystBlockEntity::new,
+                    NTBlocks.ADVANCED_AQUATIC_CATALYST.get()));
     public static final Supplier<BlockEntityType<PrismarineLaserRelayBlockEntity>> PRISMARINE_LASER_RELAY = BLOCK_ENTITIES.register("prismarine_laser_relay",
             () -> new BlockEntityType<>(PrismarineLaserRelayBlockEntity::new,
                     NTBlocks.PRISMARINE_RELAY.get()));

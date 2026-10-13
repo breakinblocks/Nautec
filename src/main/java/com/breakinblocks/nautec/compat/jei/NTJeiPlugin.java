@@ -413,7 +413,7 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addCraftingStation(RecipeTypes.SMELTING, NTBlocks.LASER_PURIFICATION_SMELTER.toStack());
         registration.addCraftingStation(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
         registration.addCraftingStation(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,
-                new ItemStack(NTBlocks.AQUATIC_CATALYST.get()));
+                new ItemStack(NTBlocks.AQUATIC_CATALYST.get()), new ItemStack(NTBlocks.ADVANCED_AQUATIC_CATALYST.get()));
         registration.addCraftingStation(ItemEtchingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTFluids.ETCHING_ACID.getBucket()));
         registration.addCraftingStation(MixingRecipeCategory.RECIPE_TYPE,

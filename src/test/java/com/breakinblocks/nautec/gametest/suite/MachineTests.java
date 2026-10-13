@@ -5,6 +5,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.AdvancedAquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
@@ -226,6 +227,50 @@ public final class MachineTests {
                 }
                 helper.assertValueEqual(20, receiver.getPower(), "power channeled per tick (30000 / 1500)");
                 helper.assertValueEqual(1.2f, receiver.getPurity(), "recipe purity carried by the beam");
+                helper.succeed();
+            });
+        });
+
+        r.add("machine/advanced_catalyst_burns_eight_at_eight_times_power", 120, helper -> {
+            BlockPos catalystPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(catalystPos, NTBlocks.ADVANCED_AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.assertTrue(catalyst instanceof AdvancedAquaticCatalystBlockEntity, "advanced block makes the advanced block entity");
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 20)));
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(catalyst.isActive(), "advanced catalyst should be channeling");
+                helper.assertValueEqual(12, catalyst.getItemStackHandler().getStackInSlot(0).getCount(), "shards left after one burn of eight");
+                helper.assertValueEqual(8, catalyst.getFuelBurned(), "shards in the current burn");
+                helper.assertValueEqual(1500, catalyst.getCurrentRecipe().value().duration(), "burn time stays the recipe's");
+                MixerBlockEntity receiver = helper.getBlockEntity(mixerPos, MixerBlockEntity.class);
+                helper.assertValueEqual(160, receiver.getPower(), "eight times the 20 AP/t of one shard");
+                helper.assertTrue(Math.abs(receiver.getPurity() - 1.32f) < 0.001f, "purity 1.2 raised by 10%, got " + receiver.getPurity());
+                helper.succeed();
+            });
+        });
+
+        r.add("machine/advanced_catalyst_burns_a_short_stack_at_its_size", 120, helper -> {
+            BlockPos catalystPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(catalystPos, NTBlocks.ADVANCED_AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 3)));
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(catalyst.getItemStackHandler().getStackInSlot(0).isEmpty(), "all three shards burn together");
+                helper.assertValueEqual(3, catalyst.getFuelBurned(), "shards in the current burn");
+                MixerBlockEntity receiver = helper.getBlockEntity(mixerPos, MixerBlockEntity.class);
+                helper.assertValueEqual(60, receiver.getPower(), "three shards give three times one shard's power");
                 helper.succeed();
             });
         });

@@ -441,6 +441,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock("augmentation_station", "Augmentation Station");
         addBlock("aquarine_steel_block", "Aquarine Steel Block");
         addBlock("aquatic_catalyst", "Aquatic Catalyst");
+        addBlock("advanced_aquatic_catalyst", "Advanced Aquatic Catalyst");
         addBlock("dark_prismarine_pillar", "Dark Prismarine Pillar");
         addBlock("chiseled_dark_prismarine", "Chiseled Dark Prismarine");
         addBlock("crate", "Crate");
@@ -1489,6 +1490,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.total_power", "Total Power amount: %s AP");
         add("nautec.jei.duration_ticks", "Duration: %s");
         add("nautec.jei.purity", "Purity: %s");
+        add("nautec.jei.advanced_catalyst", "Advanced: %s AP/t, purity %s");
         add("nautec.jei.purity_value", "%s purity");
         add("nautec.jei.min_power", "Beam of %s AP or more");
         add("nautec.jei.seconds", "%ss");

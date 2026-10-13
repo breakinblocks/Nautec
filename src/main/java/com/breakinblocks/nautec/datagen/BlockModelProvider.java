@@ -136,6 +136,7 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.SATELLITE_ARRAY_TOP.get(), existingModelFile(NTBlocks.SATELLITE_ARRAY_TOP.get()));
         generators();
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
+        aquaticCatalyst(NTBlocks.ADVANCED_AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
 
