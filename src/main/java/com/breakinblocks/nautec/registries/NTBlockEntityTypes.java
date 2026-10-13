@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantVaultBlockEntity;
@@ -203,6 +204,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonanceNodeBlockEntity>> RESONANCE_NODE = BLOCK_ENTITIES.register("resonance_node",
             () -> new BlockEntityType<>(ResonanceNodeBlockEntity::new,
                     NTBlocks.RESONANCE_NODE.get()));
+    public static final Supplier<BlockEntityType<ExtradimensionalStorageBlockEntity>> EXTRADIMENSIONAL_STORAGE = BLOCK_ENTITIES.register("extradimensional_energy_storage",
+            () -> new BlockEntityType<>(ExtradimensionalStorageBlockEntity::new,
+                    NTBlocks.EXTRADIMENSIONAL_STORAGE.get()));
     public static final Supplier<BlockEntityType<SatelliteArrayBlockEntity>> SATELLITE_ARRAY = BLOCK_ENTITIES.register("satellite_array",
             () -> new BlockEntityType<>(SatelliteArrayBlockEntity::new,
                     NTBlocks.UPLINK_ARRAY.get()));

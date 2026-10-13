@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.resonance;
 
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.ContainerBlock;
+import com.breakinblocks.nautec.content.conduits.ConduitUpgradeItem;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
@@ -9,9 +10,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -97,6 +102,42 @@ public class ResonanceNodeBlock extends ContainerBlock implements SimpleWaterlog
         return NTBlockEntityTypes.RESONANCE_NODE.get();
     }
 
+    private static boolean locked(ResonanceNodeBlockEntity node, ServerPlayer player) {
+        ResonanceNetwork network = node.getNetwork();
+        if (network != null && !ResonanceNetworks.canUse(player, network)) {
+            player.sendOverlayMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
+                    .withStyle(ChatFormatting.RED));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (!(stack.getItem() instanceof ConduitUpgradeItem upgrade) || !(level.getBlockEntity(pos) instanceof ResonanceNodeBlockEntity node)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        }
+        if (node.getUpgrade().is(stack.getItem())) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        }
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+        if (player instanceof ServerPlayer serverPlayer && locked(node, serverPlayer)) {
+            return InteractionResult.FAIL;
+        }
+        Component name = stack.getHoverName();
+        ItemStack previous = node.swapUpgrade(stack.copyWithCount(1));
+        stack.consume(1, player);
+        if (!previous.isEmpty()) {
+            player.getInventory().placeItemBackInInventory(previous);
+        }
+        player.sendOverlayMessage(Component.translatable("nautec.resonance_node.upgrade.fitted", name,
+                ResonanceNodeBlockEntity.limitText(upgrade.tier())).withStyle(ChatFormatting.AQUA));
+        level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.8F, 1.2F);
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!(level.getBlockEntity(pos) instanceof ResonanceNodeBlockEntity node)) {
@@ -106,11 +147,16 @@ public class ResonanceNodeBlock extends ContainerBlock implements SimpleWaterlog
             return InteractionResult.SUCCESS;
         }
         if (player instanceof ServerPlayer serverPlayer) {
-            ResonanceNetwork network = node.getNetwork();
-            if (network != null && !ResonanceNetworks.canUse(serverPlayer, network)) {
-                serverPlayer.sendOverlayMessage(Component.translatable("nautec.resonance.locked", network.name(), network.ownerName())
-                        .withStyle(ChatFormatting.RED));
+            if (locked(node, serverPlayer)) {
                 return InteractionResult.FAIL;
+            }
+            if (player.isSecondaryUseActive() && !node.getUpgrade().isEmpty()) {
+                ItemStack removed = node.swapUpgrade(ItemStack.EMPTY);
+                player.getInventory().placeItemBackInInventory(removed);
+                player.sendOverlayMessage(Component.translatable("nautec.resonance_node.upgrade.removed", removed.getHoverName(),
+                        ResonanceNodeBlockEntity.limitText(0)).withStyle(ChatFormatting.GRAY));
+                level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.8F, 1.0F);
+                return InteractionResult.SUCCESS;
             }
             serverPlayer.openMenu(node, pos);
             ResonanceSync.send(serverPlayer, node);

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nautec:block/rift_containment_frame_loose"
+  }
+}

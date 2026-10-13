@@ -37,7 +37,7 @@ Load fuel by right-clicking the catalyst with a stack, or feed it from a hopper.
 |---|---|---|---|
 | Prismarine Shard | 0.4 | 12 AP/t | 30 s |
 | Prismarine Crystals | 0.8 | 6 AP/t | 30 s |
-| <ItemLink id="prismarine_crystal_shard"/> | 1.2 | 12 AP/t | 37.5 s |
+| <ItemLink id="prismarine_crystal_shard"/> | 1.2 | 20 AP/t | 75 s |
 
 The face you are looking at when you place it is the pale intake, with eight sockets that fill as you load fuel. The beam leaves from the opposite face, the dark one with the cyan lens. Look down while placing it to fire downward, look up to fire upward. An <ItemLink id="aquarine_steel_wrench"/> rotates a placed catalyst.
 

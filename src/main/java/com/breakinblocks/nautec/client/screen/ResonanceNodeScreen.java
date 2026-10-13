@@ -5,10 +5,12 @@ import com.breakinblocks.nautec.content.menus.ResonanceNodeMenu;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import com.breakinblocks.nautec.network.ResonanceActionPayload;
 import com.breakinblocks.nautec.network.ResonanceSyncPayload;
+import com.breakinblocks.nautec.registries.NTItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.Locale;
 public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMenu> {
     private static final int ONLINE = 0xFF5FE8B0;
     private static final int OFFLINE = 0xFFE36A5C;
+    private static final int UPGRADE_Y = 20;
 
     public ResonanceNodeScreen(ResonanceNodeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -48,9 +51,10 @@ public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMen
                         .append(Component.translatable("nautec.resonance_node.limit.step").withStyle(ChatFormatting.GRAY)), () -> sendNumber(ResonanceActionPayload.LIMIT, step(-1))));
         addRenderableWidget(new PanelButton(limitLeft + 12, y + 4, 42, 14, () -> Component.literal(compact(this.menu.getLimit()) + "/t"),
                 () -> RECEIVE_COLOR, () -> RECEIVE_HOVER,
-                () -> Component.translatable("nautec.satellite.limit", number(this.menu.getLimit()), number(this.menu.getLimit()), number(NTConfig.satelliteTransferLimit))
+                () -> Component.translatable("nautec.satellite.limit", number(this.menu.getLimit()), number(this.menu.getLimit()),
+                                ResonanceNodeBlockEntity.limitText(this.menu.getTier()))
                         .append("\n").append(Component.translatable("nautec.resonance_node.limit.desc").withStyle(ChatFormatting.GRAY)),
-                () -> sendNumber(ResonanceActionPayload.LIMIT, NTConfig.satelliteTransferLimit)));
+                () -> sendNumber(ResonanceActionPayload.LIMIT, Integer.MAX_VALUE)));
         addRenderableWidget(new PanelButton(limitLeft + 54, y + 4, 12, 14, () -> Component.literal("+"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
                 () -> Component.translatable("nautec.satellite.limit.raise").append("\n")
                         .append(Component.translatable("nautec.resonance_node.limit.step").withStyle(ChatFormatting.GRAY)), () -> sendNumber(ResonanceActionPayload.LIMIT, step(1))));
@@ -70,17 +74,39 @@ public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMen
 
     private int step(int direction) {
         return LimitSteps.step(this.menu.getLimit(), direction, this.minecraft.hasShiftDown(), this.minecraft.hasControlDown(),
-                NTConfig.satelliteTransferLimit);
+                ResonanceNodeBlockEntity.tierLimit(this.menu.getTier()));
     }
 
     private String statusKey() {
         return ResonanceNodeBlockEntity.statusKey(this.menu.getStatus());
     }
 
+    private ItemStack upgradeIcon() {
+        return switch (this.menu.getTier()) {
+            case 1 -> NTItems.EDDY_UPGRADE.toStack();
+            case 2 -> NTItems.SURGE_UPGRADE.toStack();
+            case 3 -> NTItems.RIPTIDE_UPGRADE.toStack();
+            case 4 -> NTItems.MAELSTROM_UPGRADE.toStack();
+            default -> ItemStack.EMPTY;
+        };
+    }
+
+    private int upgradeX(int rx, int rw) {
+        return rx + rw - 30;
+    }
+
     @Override
     protected void extractReadoutBackground(GuiGraphicsExtractor graphics, int rx, int ry, int rw) {
         int color = this.menu.getStatus() == ResonanceNodeBlockEntity.STATUS_ONLINE ? ONLINE : OFFLINE;
         graphics.fill(rx + 5, ry + 5, rx + 9, ry + 9, color);
+        int ux = upgradeX(rx, rw);
+        int uy = ry + UPGRADE_Y;
+        graphics.fill(ux - 1, uy - 1, ux + 17, uy + 17, OUTLINE);
+        graphics.fill(ux, uy, ux + 16, uy + 16, SCREEN_EDGE);
+        ItemStack icon = upgradeIcon();
+        if (!icon.isEmpty()) {
+            graphics.item(icon, ux, uy);
+        }
     }
 
     @Override
@@ -90,12 +116,22 @@ public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMen
         String purity = String.format(Locale.ROOT, "%.2f", this.menu.getPurity());
         graphics.text(this.font, Component.translatable(this.menu.isOutput() ? "nautec.resonance_node.sending" : "nautec.resonance_node.taking",
                 number(this.menu.getFlow()), purity), tx, ty + 2, READOUT, false);
-        graphics.text(this.font, Component.translatable("nautec.satellite.stored", compact(this.menu.getAp()), compact(NTConfig.resonanceNodeApBuffer),
-                compact(this.menu.getFe()), compact(NTConfig.resonanceNodeFeBuffer)), tx, ty + 13, READOUT_DIM, false);
+        int tier = this.menu.getTier();
+        graphics.text(this.font, Component.translatable("nautec.satellite.stored", compact(this.menu.getAp()), compact(ResonanceNodeBlockEntity.apBuffer(tier)),
+                compact(this.menu.getFe()), compact(ResonanceNodeBlockEntity.feBuffer(tier))), tx, ty + 13, READOUT_DIM, false);
     }
 
     @Override
     protected boolean readoutTooltip(List<Component> lines, int mouseX, int mouseY, int rx, int ry) {
+        int ux = upgradeX(rx, IMAGE_WIDTH - 16);
+        if (inside(mouseX, mouseY, ux, ry + UPGRADE_Y, 16, 16)) {
+            ItemStack icon = upgradeIcon();
+            lines.add(icon.isEmpty() ? Component.translatable("nautec.resonance_node.upgrade.none") : icon.getHoverName());
+            lines.add(Component.translatable("nautec.resonance_node.upgrade.cap", ResonanceNodeBlockEntity.limitText(this.menu.getTier()))
+                    .withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable("nautec.resonance_node.upgrade.hint").withStyle(ChatFormatting.DARK_GRAY));
+            return true;
+        }
         if (!inside(mouseX, mouseY, rx, ry, IMAGE_WIDTH - 60, READOUT_HEIGHT)) {
             return false;
         }

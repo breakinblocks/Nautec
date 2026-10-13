@@ -44,9 +44,27 @@ A node holds up to 200,000 AP and 1,000,000 FE (`resonanceNodeApBuffer` and `res
 
 The controls at the top of the screen set its priority, from -100 to 100, and its limit: the most AP, and separately FE, it moves each tick. Higher priorities are filled first. Click either number to reset it.
 
+***
+
+## <Color id="gold">Upgrades</Color>
+
+On its own a node moves up to 100,000 AP and 100,000 FE per tick (`satelliteTransferLimit`). A conduit upgrade raises that, and its buffers grow to match:
+
+| Upgrade | Moves per tick | FE buffer | AP buffer |
+|---|---|---|---|
+| None | 100,000 | 1,000,000 | 200,000 |
+| <ItemLink id="eddy_upgrade"/> | 500,000 | 5,000,000 | 1,000,000 |
+| <ItemLink id="surge_upgrade"/> | 2,500,000 | 25,000,000 | 5,000,000 |
+| <ItemLink id="riptide_upgrade"/> | 10,000,000 | 100,000,000 | 20,000,000 |
+| <ItemLink id="maelstrom_upgrade"/> | no limit | 1,000,000,000 | 1,000,000,000 |
+
+Right-click the node with an upgrade to fit it; a fitted upgrade comes back to you when you swap it. Sneak and right-click with an empty hand to take it out. The screen shows the fitted upgrade under the mode button. `resonanceNodeUpgradeLimits` sets the per-tick limits.
+
+Each <ItemLink id="uplink_array"/> holds 5,000,000 FE, so a network moving more than that each tick needs more than one uplink.
+
 Turn on **Load** to keep the node's own chunk loaded, so it works while nobody is nearby.
 
-A <ItemLink id="configuration_card"/> copies a node's network, mode, priority, limit and chunk loading onto another node.
+A <ItemLink id="configuration_card"/> copies a node's network, mode, priority, limit, chunk loading and upgrade onto another node.
 
 ***
 

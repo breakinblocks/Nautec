@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "nautec:block/void_containment_frame_loose"
+  }
+}

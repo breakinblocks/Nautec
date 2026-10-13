@@ -439,9 +439,16 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue RESONANCE_NODE_AP_BUFFER = BUILDER
             .comment("The laser power a Resonance Node holds")
             .defineInRange("resonanceNodeApBuffer", 200_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.ConfigValue<List<? extends Integer>> RESONANCE_NODE_UPGRADE_LIMITS = BUILDER
+            .comment("The most AP and FE a Resonance Node moves each tick with an Eddy, Surge, Riptide and Maelstrom Upgrade fitted, in that order. 0 means no limit. With no upgrade a node uses satelliteTransferLimit. A fitted node's AP and FE buffers grow with its limit")
+            .defineList("resonanceNodeUpgradeLimits", List.of(500_000, 2_500_000, 10_000_000, 0), () -> 0, entry -> entry instanceof Number number && number.intValue() >= 0);
     private static final ModConfigSpec.IntValue RESONANCE_NODE_FE_BUFFER = BUILDER
             .comment("The FE a Resonance Node holds")
             .defineInRange("resonanceNodeFeBuffer", 1_000_000, 1, Integer.MAX_VALUE);
+    private static final long[] EXTRADIMENSIONAL_CAPACITY_DEFAULTS = {10_000_000L, 1_000_000_000L, 100_000_000_000L, 10_000_000_000_000L, 1_000_000_000_000_000L};
+    private static final int[] EXTRADIMENSIONAL_TRANSFER_DEFAULTS = {50_000, 500_000, 5_000_000, 50_000_000, Integer.MAX_VALUE};
+    private static final ModConfigSpec.LongValue[] EXTRADIMENSIONAL_CAPACITY = extradimensionalCapacities();
+    private static final ModConfigSpec.IntValue[] EXTRADIMENSIONAL_TRANSFER = extradimensionalTransfers();
     private static final ModConfigSpec.BooleanValue RESONANCE_CHUNK_LOADING = BUILDER
             .comment("Whether Resonance Nodes and Uplink Arrays may keep their own chunk loaded when a player turns it on. When false, no block keeps a chunk loaded whatever its setting")
             .define("resonanceChunkLoading", true);
@@ -1241,6 +1248,9 @@ public final class NTConfig {
     public static int pressureForgeAcidUsage = 250;
     public static int pressureForgeCapacity = 4_000;
     public static int[] smelterSlots = {1, 3, 5, 7, 9};
+    public static int[] resonanceNodeUpgradeLimits = {500_000, 2_500_000, 10_000_000, 0};
+    public static long[] extradimensionalCapacity = EXTRADIMENSIONAL_CAPACITY_DEFAULTS.clone();
+    public static int[] extradimensionalTransfer = EXTRADIMENSIONAL_TRANSFER_DEFAULTS.clone();
     public static int[] smelterApMultipliers = {1, 2, 4, 8, 16};
 
     public static int advancedAnalyzerPowerUsage = 40;
@@ -1348,6 +1358,25 @@ public final class NTConfig {
         for (int i = 0; i < values.length; i++) {
             String tier = i == 0 ? "no" : "the " + CONDUIT_TIERS[i];
             values[i] = BUILDER.comment(String.format(comment, tier)).defineInRange(key + CONDUIT_TIERS[i], defaults[i], min, max);
+        }
+        return values;
+    }
+
+    private static ModConfigSpec.LongValue[] extradimensionalCapacities() {
+        ModConfigSpec.LongValue[] values = new ModConfigSpec.LongValue[EXTRADIMENSIONAL_CAPACITY_DEFAULTS.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = BUILDER.comment("The FE an Extradimensional Energy Storage holds at tier " + (i + 1))
+                    .defineInRange("extradimensionalCapacityTier" + (i + 1), EXTRADIMENSIONAL_CAPACITY_DEFAULTS[i], 1L, Long.MAX_VALUE);
+        }
+        return values;
+    }
+
+    private static ModConfigSpec.IntValue[] extradimensionalTransfers() {
+        ModConfigSpec.IntValue[] values = new ModConfigSpec.IntValue[EXTRADIMENSIONAL_TRANSFER_DEFAULTS.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = BUILDER.comment("The most FE each port of an Extradimensional Energy Storage moves per tick at tier " + (i + 1)
+                            + ", and the most it trades with its Resonance Network per tick in each direction")
+                    .defineInRange("extradimensionalTransferTier" + (i + 1), EXTRADIMENSIONAL_TRANSFER_DEFAULTS[i], 1, Integer.MAX_VALUE);
         }
         return values;
     }
@@ -1590,6 +1619,11 @@ public final class NTConfig {
         pressureForgePowerUsage = value(PRESSURE_FORGE_POWER_USAGE);
         pressureForgeAcidUsage = value(PRESSURE_FORGE_ACID_USAGE);
         pressureForgeCapacity = value(PRESSURE_FORGE_CAPACITY);
+        for (int i = 0; i < EXTRADIMENSIONAL_CAPACITY.length; i++) {
+            extradimensionalCapacity[i] = value(EXTRADIMENSIONAL_CAPACITY[i]);
+            extradimensionalTransfer[i] = value(EXTRADIMENSIONAL_TRANSFER[i]);
+        }
+        resonanceNodeUpgradeLimits = tierList(value(RESONANCE_NODE_UPGRADE_LIMITS), new int[]{500_000, 2_500_000, 10_000_000, 0});
         smelterSlots = tierList(value(SMELTER_SLOTS), new int[]{1, 3, 5, 7, 9});
         smelterApMultipliers = tierList(value(SMELTER_AP_MULTIPLIERS), new int[]{1, 2, 4, 8, 16});
 

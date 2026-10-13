@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "tier=1": {
+      "model": "nautec:block/extradimensional_energy_storage"
+    },
+    "tier=2": {
+      "model": "nautec:block/extradimensional_energy_storage_formed"
+    },
+    "tier=3": {
+      "model": "nautec:block/extradimensional_energy_storage_formed"
+    },
+    "tier=4": {
+      "model": "nautec:block/extradimensional_energy_storage_formed"
+    },
+    "tier=5": {
+      "model": "nautec:block/extradimensional_energy_storage_formed"
+    }
+  }
+}

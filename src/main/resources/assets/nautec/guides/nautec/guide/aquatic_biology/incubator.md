@@ -39,7 +39,7 @@ Growth stops exactly at the size cap of 40,000 (configurable). A colony at the c
 
 ## <Color id="gold">Power</Color>
 
-It needs a beam of at least 20 AP entering its top or bottom face, and beams into both faces add together. One <ItemLink id="aquatic_catalyst"/> gives 12 AP at most, so run one above and one below, or combine beams in a <ItemLink id="laser_junction"/> first. The cycle time (100 ticks) and the power are configurable.
+It needs a beam of at least 20 AP entering its top or bottom face, and beams into both faces add together. One <ItemLink id="aquatic_catalyst"/> burning <ItemLink id="prismarine_crystal_shard"/>s gives exactly 20 AP. On Prismarine Shards it gives 12, so run one above and one below, or combine beams in a <ItemLink id="laser_junction"/> first. The cycle time (100 ticks) and the power are configurable.
 
 ***
 

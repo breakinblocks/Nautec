@@ -7,6 +7,8 @@ import com.breakinblocks.nautec.client.screen.ResonantVaultScreen;
 import com.breakinblocks.nautec.client.screen.ConduitTapScreen;
 import com.breakinblocks.nautec.client.screen.DishStorageScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonanceNodeBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.ExtradimensionalStorageBERenderer;
+import com.breakinblocks.nautec.client.screen.ExtradimensionalStorageScreen;
 import com.breakinblocks.nautec.client.screen.ResonanceNodeScreen;
 import com.breakinblocks.nautec.client.screen.ColonyReplicatorScreen;
 import com.breakinblocks.nautec.client.screen.BubbleAnchorScreen;
@@ -210,6 +212,8 @@ public final class NautecClient {
         event.registerPipeline(NTRenderPipelines.GATEWAY_HORIZON);
         event.registerPipeline(NTRenderPipelines.FUSION_PLASMA);
         event.registerPipeline(NTRenderPipelines.FUSION_FIELD);
+        event.registerPipeline(NTRenderPipelines.SINGULARITY_DISK);
+        event.registerPipeline(NTRenderPipelines.SINGULARITY_LENS);
     }
 
     private void registerParticleProviders(RegisterParticleProvidersEvent event) {
@@ -334,6 +338,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DECORATIVE_PRISMARINE_CRYSTAL.get(), DecorativePrismarineCrystalBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.GATEWAY.get(), GatewayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.FUSION_CONTROLLER.get(), FusionControllerBERenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.EXTRADIMENSIONAL_STORAGE.get(), ExtradimensionalStorageBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.PRISMATIC_EMITTER.get(), PrismaticEmitterBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.SATELLITE_ARRAY.get(), SatelliteArrayBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANCE_NODE.get(), ResonanceNodeBERenderer::new);
@@ -431,6 +436,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.COMBUSTION_DYNAMO.get(), CombustionDynamoScreen::new);
         event.register(NTMenuTypes.SATELLITE_ARRAY.get(), SatelliteArrayScreen::new);
         event.register(NTMenuTypes.RESONANCE_NODE.get(), ResonanceNodeScreen::new);
+        event.register(NTMenuTypes.EXTRADIMENSIONAL_STORAGE.get(), ExtradimensionalStorageScreen::new);
         event.register(NTMenuTypes.DISH_STORAGE.get(), DishStorageScreen::new);
     }
 

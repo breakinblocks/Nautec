@@ -42,7 +42,7 @@ Beams also carry purity, which some recipes need. See [Beam Optics](nautec:deep_
 | [Fishing Station](fishing_station.md) | 1 or more |
 | [Confined Spawner](confined_spawner.md) | 50 to run nonstop (less runs it in bursts) |
 
-An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards or Prismarine Crystal Shards sends 12 AP per tick. Burning Prismarine Crystals it sends 6. The machine requirements above are configurable.
+An <ItemLink id="aquatic_catalyst"/> burning Prismarine Shards sends 12 AP per tick, and burning Prismarine Crystal Shards it sends 20. Burning Prismarine Crystals it sends 6. The machine requirements above are configurable.
 
 ***
 

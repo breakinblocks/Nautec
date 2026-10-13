@@ -124,6 +124,22 @@ public final class NTRenderPipelines {
 
     public static final RenderPipeline FUSION_FIELD = glow("fusion_field");
 
+    public static final RenderPipeline SINGULARITY_DISK = glow("singularity_disk");
+
+    public static final RenderPipeline SINGULARITY_LENS = RenderPipeline.builder()
+            .withLocation(Nautec.rl("pipeline/singularity_lens"))
+            .withVertexShader("core/screenquad")
+            .withFragmentShader(Nautec.rl("core/singularity_lens"))
+            .withSampler("SceneSampler")
+            .withSampler("DepthSampler")
+            .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+            .withUniform("LensInfo", UniformType.UNIFORM_BUFFER)
+            .withColorTargetState(ColorTargetState.DEFAULT)
+            .withDepthStencilState(Optional.empty())
+            .withCull(false)
+            .withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES)
+            .build();
+
     private static RenderPipeline glow(String name) {
         return RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(Nautec.rl("pipeline/" + name))

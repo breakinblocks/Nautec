@@ -33,6 +33,7 @@ public final class SatelliteGrid {
 
     private static final Map<UUID, Set<SatelliteArrayBlockEntity>> ARRAYS = new HashMap<>();
     private static final Map<UUID, Set<ResonanceNodeBlockEntity>> NODES = new HashMap<>();
+    private static final Map<UUID, Set<NetworkBattery>> BATTERIES = new HashMap<>();
     private static final Map<UUID, Cached> CACHE = new HashMap<>();
     private static final Map<UUID, CharmEntry> CHARMS = new HashMap<>();
 
@@ -82,6 +83,25 @@ public final class SatelliteGrid {
                 NODES.remove(network);
             }
         }
+    }
+
+    public static void joinBattery(UUID network, NetworkBattery battery) {
+        BATTERIES.computeIfAbsent(network, key -> new LinkedHashSet<>()).add(battery);
+    }
+
+    public static void leaveBattery(UUID network, NetworkBattery battery) {
+        Set<NetworkBattery> members = BATTERIES.get(network);
+        if (members != null) {
+            members.remove(battery);
+            if (members.isEmpty()) {
+                BATTERIES.remove(network);
+            }
+        }
+    }
+
+    public static List<NetworkBattery> batteries(UUID network) {
+        Set<NetworkBattery> members = BATTERIES.get(network);
+        return members == null ? List.of() : List.copyOf(members);
     }
 
     public static List<SatelliteArrayBlockEntity> members(UUID network) {
@@ -164,6 +184,7 @@ public final class SatelliteGrid {
 
         Set<UUID> networks = new HashSet<>(ARRAYS.keySet());
         networks.addAll(NODES.keySet());
+        networks.addAll(BATTERIES.keySet());
         for (UUID network : networks) {
             List<SatelliteArrayBlockEntity> arrays = new ArrayList<>();
             for (SatelliteArrayBlockEntity array : ARRAYS.getOrDefault(network, Set.of())) {
@@ -177,6 +198,12 @@ public final class SatelliteGrid {
                     nodes.add(node);
                 }
             }
+            List<NetworkBattery> batteries = new ArrayList<>();
+            for (NetworkBattery battery : BATTERIES.getOrDefault(network, Set.of())) {
+                if (!battery.isRemoved() && battery.getLevel() != null) {
+                    batteries.add(battery);
+                }
+            }
             List<ServerPlayer> players = new ArrayList<>();
             if (charmTick) {
                 for (Map.Entry<UUID, ServerPlayer> charm : charmPlayers.entrySet()) {
@@ -186,7 +213,7 @@ public final class SatelliteGrid {
                     }
                 }
             }
-            transfer(arrays, nodes, players, tick, charmDelivered);
+            transfer(arrays, nodes, batteries, players, tick, charmDelivered);
         }
 
         if (charmTick) {
@@ -204,8 +231,8 @@ public final class SatelliteGrid {
         }
     }
 
-    private static void transfer(List<SatelliteArrayBlockEntity> arrays, List<ResonanceNodeBlockEntity> nodes, List<ServerPlayer> players, long tick,
-                                 Map<UUID, Integer> charmDelivered) {
+    private static void transfer(List<SatelliteArrayBlockEntity> arrays, List<ResonanceNodeBlockEntity> nodes, List<NetworkBattery> batteries,
+                                 List<ServerPlayer> players, long tick, Map<UUID, Integer> charmDelivered) {
         List<SatelliteArrayBlockEntity> cores = new ArrayList<>();
         for (SatelliteArrayBlockEntity array : arrays) {
             array.beginTransfer();
@@ -222,7 +249,8 @@ public final class SatelliteGrid {
             List<SatelliteArrayBlockEntity> rotated = rotate(cores, tick);
             feedCores(inputs, rotated);
             moveAp(rotated, outputs);
-            moveFe(rotated, outputs, players, charmDelivered);
+            int[] drawn = moveFe(rotated, outputs, batteries, players, charmDelivered);
+            absorb(rotated, batteries, drawn);
         }
         for (SatelliteArrayBlockEntity array : arrays) {
             array.finishTransfer();
@@ -249,20 +277,26 @@ public final class SatelliteGrid {
     private static void feedCores(List<ResonanceNodeBlockEntity> inputs, List<SatelliteArrayBlockEntity> cores) {
         for (ResonanceNodeBlockEntity node : inputs) {
             ResourceKey<Level> dimension = node.dimension();
+            int apBudget = node.apOffer();
+            int feBudget = node.feOffer();
             for (int pass = 0; pass < 2; pass++) {
                 boolean sameDimension = pass == 0;
                 for (SatelliteArrayBlockEntity core : cores) {
                     if (core.dimension().equals(dimension) != sameDimension) {
                         continue;
                     }
-                    int ap = Math.min(node.apOffer(), core.apRoom());
+                    int ap = Math.min(apBudget, core.apRoom());
                     if (ap > 0) {
                         float purity = sameDimension ? node.getApPurity() : crossDimension(node.getApPurity());
-                        core.storeAp(node.takeAp(ap), purity);
+                        int moved = node.takeAp(ap);
+                        core.storeAp(moved, purity);
+                        apBudget -= moved;
                     }
-                    int fe = Math.min(node.feOffer(), core.feRoom());
+                    int fe = Math.min(feBudget, core.feRoom());
                     if (fe > 0) {
-                        core.giveFe(node.takeFe(fe));
+                        int moved = node.takeFe(fe);
+                        core.giveFe(moved);
+                        feBudget -= moved;
                     }
                 }
             }
@@ -305,14 +339,22 @@ public final class SatelliteGrid {
         }
     }
 
-    private static void moveFe(List<SatelliteArrayBlockEntity> cores, List<ResonanceNodeBlockEntity> outputs, List<ServerPlayer> players,
-                               Map<UUID, Integer> charmDelivered) {
+    private static int[] moveFe(List<SatelliteArrayBlockEntity> cores, List<ResonanceNodeBlockEntity> outputs, List<NetworkBattery> batteries,
+                                List<ServerPlayer> players, Map<UUID, Integer> charmDelivered) {
+        int[] drawn = new int[batteries.size()];
         long supply = 0;
         for (SatelliteArrayBlockEntity core : cores) {
             supply += core.getEnergy().getAmountAsInt();
         }
+        long coreSupply = supply;
+        int[] available = new int[batteries.size()];
+        for (int i = 0; i < batteries.size(); i++) {
+            NetworkBattery battery = batteries.get(i);
+            available[i] = (int) Math.max(0, Math.min(battery.batteryRate(), battery.batteryStored()));
+            supply += available[i];
+        }
         if (supply <= 0 || (outputs.isEmpty() && players.isEmpty())) {
-            return;
+            return drawn;
         }
         List<Receiver> receivers = new ArrayList<>();
         for (ResonanceNodeBlockEntity node : outputs) {
@@ -335,11 +377,41 @@ public final class SatelliteGrid {
         }
         long delivered = allocate(receivers, (long) Math.floor(supply * factor()));
         long cost = Math.min(supply, (long) Math.ceil(delivered / factor()));
+        long fromCores = Math.min(cost, coreSupply);
+        cost -= fromCores;
         for (SatelliteArrayBlockEntity core : cores) {
-            if (cost <= 0) {
+            if (fromCores <= 0) {
                 break;
             }
-            cost -= core.takeFe((int) Math.min(Integer.MAX_VALUE, cost));
+            fromCores -= core.takeFe((int) Math.min(Integer.MAX_VALUE, fromCores));
+        }
+        for (int i = 0; i < batteries.size() && cost > 0; i++) {
+            int taken = batteries.get(i).drawFe((int) Math.min(available[i], cost));
+            drawn[i] += taken;
+            cost -= taken;
+        }
+        return drawn;
+    }
+
+    private static void absorb(List<SatelliteArrayBlockEntity> cores, List<NetworkBattery> batteries, int[] drawn) {
+        for (int i = 0; i < batteries.size(); i++) {
+            NetworkBattery battery = batteries.get(i);
+            if (drawn[i] > 0) {
+                continue;
+            }
+            long room = Math.min(battery.batteryRoom(), battery.batteryRate());
+            for (SatelliteArrayBlockEntity core : cores) {
+                if (room <= 0) {
+                    break;
+                }
+                int stored = core.getEnergy().getAmountAsInt();
+                if (stored <= 0) {
+                    continue;
+                }
+                int accepted = battery.storeFe((int) Math.min(room, stored));
+                core.takeFe(accepted);
+                room -= accepted;
+            }
         }
     }
 
@@ -414,6 +486,7 @@ public final class SatelliteGrid {
     public static void onServerStopped(ServerStoppedEvent event) {
         ARRAYS.clear();
         NODES.clear();
+        BATTERIES.clear();
         CACHE.clear();
         CHARMS.clear();
     }

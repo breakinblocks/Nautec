@@ -171,6 +171,14 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.DIVING_BOOTS.get());
 
         itemModels.itemModelOutput.accept(NTBlocks.RESONANCE_NODE.asItem(), ItemModelUtils.plainModel(Nautec.rl("item/resonance_node")));
+        itemModels.itemModelOutput.accept(NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem(),
+                ItemModelUtils.plainModel(Nautec.rl("block/extradimensional_energy_storage")));
+        itemModels.itemModelOutput.accept(NTBlocks.RIFT_CONTAINMENT_FRAME.asItem(), ItemModelUtils.plainModel(Nautec.rl("block/rift_containment_frame_loose")));
+        itemModels.itemModelOutput.accept(NTBlocks.VOID_CONTAINMENT_FRAME.asItem(), ItemModelUtils.plainModel(Nautec.rl("block/void_containment_frame_loose")));
+        itemModels.itemModelOutput.accept(NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem(),
+                ItemModelUtils.plainModel(Nautec.rl("block/abyssal_containment_frame_loose")));
+        itemModels.itemModelOutput.accept(NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.asItem(),
+                ItemModelUtils.plainModel(Nautec.rl("block/event_horizon_containment_frame_loose")));
         itemModels.itemModelOutput.accept(NTItems.SUBMARINE.get(), ItemModelUtils.specialModel(
                 Nautec.rl("item/submarine_base"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 

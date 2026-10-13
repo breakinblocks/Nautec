@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "nautec:prismatic_battery",
+    "F": "nautec:flawless_prismarine_crystal",
+    "N": "nautec:resonance_node",
+    "P": "nautec:deep_steel_plating",
+    "R": "nautec:resonant_shard"
+  },
+  "pattern": [
+    " F ",
+    "PBP",
+    "RNR"
+  ],
+  "result": {
+    "id": "nautec:extradimensional_energy_storage"
+  }
+}

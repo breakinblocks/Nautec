@@ -331,9 +331,9 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("prismarine_shards_to_ap"));
 
         AquaticCatalystChannelingRecipeBuilder.newRecipe(Ingredient.of(NTItems.PRISMARINE_CRYSTAL_SHARD))
-                .powerAmount(9000)
+                .powerAmount(30000)
                 .purity(1.2f)
-                .duration(750)
+                .duration(1500)
                 .save(pRecipeOutput, key("prismarine_crystal_shards_to_ap"));
     }
 
@@ -1490,6 +1490,58 @@ public class RecipesProvider extends RecipeProvider {
                 .define('C', NTItems.AQUATIC_CHIP)
                 .unlockedBy("has_item", has(NTItems.PRISM_SATELLITE))
                 .save(pRecipeOutput, key("resonance_node"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem())
+                .pattern(" F ")
+                .pattern("PBP")
+                .pattern("RNR")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('B', NTItems.PRISMATIC_BATTERY)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('N', NTBlocks.RESONANCE_NODE.asItem())
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_NODE.asItem()))
+                .save(pRecipeOutput, key("extradimensional_energy_storage"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.RIFT_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("SPS")
+                .pattern("PEP")
+                .pattern("SPS")
+                .define('S', NTItems.AQUARINE_STEEL_INGOT)
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .unlockedBy("has_item", has(NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem()))
+                .save(pRecipeOutput, key("rift_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.VOID_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("ROR")
+                .pattern("OFO")
+                .pattern("ROR")
+                .define('R', NTBlocks.RIFT_CONTAINMENT_FRAME.asItem())
+                .define('O', Items.CRYING_OBSIDIAN)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTBlocks.RIFT_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("void_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("VAV")
+                .pattern("AHA")
+                .pattern("VAV")
+                .define('V', NTBlocks.VOID_CONTAINMENT_FRAME.asItem())
+                .define('A', NTItems.ABYSSAL_ORGAN)
+                .define('H', NTItems.ELDRITCH_HEART)
+                .unlockedBy("has_item", has(NTBlocks.VOID_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("abyssal_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("ACA")
+                .pattern("CNC")
+                .pattern("ACA")
+                .define('A', NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem())
+                .define('C', NTBlocks.CONTAINMENT_COIL.asItem())
+                .define('N', Tags.Items.NETHER_STARS)
+                .unlockedBy("has_item", has(NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("event_horizon_containment_frame"));
 
         shaped(RecipeCategory.MISC, NTBlocks.CONDUIT_BEACON.asItem())
                 .pattern("SAS")

@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
+import com.breakinblocks.nautec.content.extradimensional.FramePart;
 import com.breakinblocks.nautec.content.conduits.ConduitArm;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
 import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
@@ -127,6 +131,7 @@ public class BlockModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(existingModelFile(NTBlocks.RESONANCE_NODE.get())))
                 .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING));
         simpleBlock(NTBlocks.PRISMATIC_EMITTER.get(), existingModelFile(NTBlocks.PRISMATIC_EMITTER.get()));
+        extradimensionalStorage();
         simpleBlock(NTBlocks.UPLINK_ARRAY.get(), existingModelFile(NTBlocks.UPLINK_ARRAY.get()));
         simpleBlock(NTBlocks.SATELLITE_ARRAY_TOP.get(), existingModelFile(NTBlocks.SATELLITE_ARRAY_TOP.get()));
         generators();
@@ -655,6 +660,30 @@ public class BlockModelProvider extends ModelProvider {
                 .put(TextureSlot.SIDE, side)
                 .put(TextureSlot.BOTTOM, bottom)
                 .put(TextureSlot.TOP, top), blockModels.modelOutput));
+    }
+
+    private void extradimensionalStorage() {
+        PropertyDispatch.C1<MultiVariant, Integer> tiers = PropertyDispatch.initial(ExtradimensionalStorageBlock.TIER);
+        for (int tier = 1; tier <= ExtradimensionalStorageBlockEntity.MAX_TIER; tier++) {
+            tiers = tiers.select(tier, BlockModelGenerators.plainVariant(existingModelFile(tier == 1 ? "extradimensional_energy_storage"
+                    : "extradimensional_energy_storage_formed")));
+        }
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(NTBlocks.EXTRADIMENSIONAL_STORAGE.get()).with(tiers));
+        for (Block frame : new Block[]{NTBlocks.RIFT_CONTAINMENT_FRAME.get(), NTBlocks.VOID_CONTAINMENT_FRAME.get(),
+                NTBlocks.ABYSSAL_CONTAINMENT_FRAME.get(), NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.get()}) {
+            String name = name(frame);
+            PropertyDispatch.C2<MultiVariant, FramePart, Direction> dispatch = PropertyDispatch.initial(ExtradimensionalFrameBlock.PART,
+                    ExtradimensionalFrameBlock.FACING);
+            for (FramePart part : FramePart.values()) {
+                MultiVariant variant = BlockModelGenerators.plainVariant(existingModelFile(name + "_" + part.getSerializedName()));
+                dispatch = dispatch
+                        .select(part, Direction.NORTH, variant)
+                        .select(part, Direction.EAST, rotated(variant, 0, 90))
+                        .select(part, Direction.SOUTH, rotated(variant, 0, 180))
+                        .select(part, Direction.WEST, rotated(variant, 0, 270));
+            }
+            blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(frame).with(dispatch));
+        }
     }
 
     public static MultiVariant rotated(MultiVariant variant, int xRot, int yRot) {

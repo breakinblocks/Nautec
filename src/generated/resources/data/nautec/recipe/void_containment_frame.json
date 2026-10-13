@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "nautec:flawless_prismarine_crystal",
+    "O": "minecraft:crying_obsidian",
+    "R": "nautec:rift_containment_frame"
+  },
+  "pattern": [
+    "ROR",
+    "OFO",
+    "ROR"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nautec:void_containment_frame"
+  }
+}

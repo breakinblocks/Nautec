@@ -239,6 +239,15 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     }
 
     protected static String compact(long value) {
+        if (value >= 1_000_000_000_000_000L) {
+            return String.format(Locale.ROOT, "%.1fQ", value / 1.0e15).replace(".0Q", "Q");
+        }
+        if (value >= 1_000_000_000_000L) {
+            return String.format(Locale.ROOT, "%.1fT", value / 1.0e12).replace(".0T", "T");
+        }
+        if (value >= 1_000_000_000L) {
+            return String.format(Locale.ROOT, "%.1fB", value / 1.0e9).replace(".0B", "B");
+        }
         if (value >= 1_000_000) {
             return String.format(Locale.ROOT, "%.1fM", value / 1_000_000.0).replace(".0M", "M");
         }

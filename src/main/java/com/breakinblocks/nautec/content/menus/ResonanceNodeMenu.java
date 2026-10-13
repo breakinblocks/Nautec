@@ -76,6 +76,10 @@ public class ResonanceNodeMenu extends NTAbstractContainerMenu<ResonanceNodeBloc
         return (short) data.get(ResonanceNodeBlockEntity.DATA_PRIORITY);
     }
 
+    public int getTier() {
+        return data.get(ResonanceNodeBlockEntity.DATA_TIER);
+    }
+
     public int getLimit() {
         return wide(ResonanceNodeBlockEntity.DATA_LIMIT);
     }

@@ -327,6 +327,73 @@ public final class SatelliteTests {
             helper.succeed();
         });
 
+        r.add("resonance_node/upgrades_raise_the_limit_and_buffers", 20, helper -> {
+            ResonanceNodeBlockEntity node = node(helper, new BlockPos(4, 1, 4), null, true);
+            helper.assertValueEqual(node.effectiveLimit(), NTConfig.satelliteTransferLimit, "no upgrade keeps the configured limit");
+            helper.assertValueEqual(node.getEnergy().getCapacityAsInt(), NTConfig.resonanceNodeFeBuffer, "no upgrade keeps the configured FE buffer");
+            node.swapUpgrade(new ItemStack(NTItems.RIPTIDE_UPGRADE.get()));
+            helper.assertValueEqual(node.tier(), 3, "a Riptide Upgrade is tier 3");
+            helper.assertValueEqual(node.effectiveLimit(), ResonanceNodeBlockEntity.tierLimit(3), "Riptide raises the limit");
+            helper.assertTrue(node.effectiveLimit() > NTConfig.satelliteTransferLimit, "past the base limit");
+            helper.assertValueEqual(node.getEnergy().getCapacityAsInt(), ResonanceNodeBlockEntity.feBuffer(3), "the FE buffer grows with it");
+            helper.assertValueEqual(node.apCapacity(), ResonanceNodeBlockEntity.apBuffer(3), "the AP buffer grows with it");
+            node.setLimit(1_234);
+            helper.assertValueEqual(node.effectiveLimit(), 1_234, "a player limit still applies under the upgrade");
+            node.setLimit(Integer.MAX_VALUE);
+            node.swapUpgrade(new ItemStack(NTItems.MAELSTROM_UPGRADE.get()));
+            helper.assertValueEqual(node.effectiveLimit(), Integer.MAX_VALUE, "Maelstrom has no limit");
+            ItemStack removed = node.swapUpgrade(ItemStack.EMPTY);
+            helper.assertTrue(removed.is(NTItems.MAELSTROM_UPGRADE.get()), "taking it out hands back the upgrade");
+            helper.assertValueEqual(node.effectiveLimit(), NTConfig.satelliteTransferLimit, "back to the base limit");
+            helper.assertValueEqual(node.getEnergy().getCapacityAsInt(), NTConfig.resonanceNodeFeBuffer, "back to the base buffer");
+            helper.succeed();
+        });
+
+        r.add("resonance_node/upgraded_nodes_move_past_the_base_limit", 80, helper -> {
+            ServerPlayer owner = player(helper, "NodeUpgrade");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Node upgrade").network();
+            SatelliteArrayBlockEntity core = uplink(helper, new BlockPos(1, 1, 1), network);
+            core.launch();
+            ResonanceNodeBlockEntity input = node(helper, new BlockPos(4, 1, 2), network, false);
+            ResonanceNodeBlockEntity output = node(helper, new BlockPos(6, 1, 6), network, true);
+            input.swapUpgrade(new ItemStack(NTItems.RIPTIDE_UPGRADE.get()));
+            output.swapUpgrade(new ItemStack(NTItems.RIPTIDE_UPGRADE.get()));
+            int sent = 2_000_000;
+            input.giveFe(sent);
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(input.getEnergy().getAmountAsInt(), 0, "the input node sends past the base limit in one go");
+                helper.assertValueEqual(output.getEnergy().getAmountAsInt(), (int) Math.floor(sent * (1.0 - NTConfig.satelliteLoss)),
+                        "the output node takes it after the network loss");
+                networks.delete(owner, network.id());
+            });
+        });
+
+        r.add("resonance_node/limit_holds_across_several_uplinks", 80, helper -> {
+            ServerPlayer owner = player(helper, "NodeSplit");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Node split").network();
+            uplink(helper, new BlockPos(1, 1, 1), network).launch();
+            uplink(helper, new BlockPos(7, 1, 1), network).launch();
+            uplink(helper, new BlockPos(1, 1, 7), network).launch();
+            ResonanceNodeBlockEntity input = node(helper, new BlockPos(4, 1, 4), network, false);
+            input.setLimit(1_000);
+            input.giveFe(50_000);
+            int[] previous = {input.getEnergy().getAmountAsInt()};
+            int[] most = {0};
+            helper.onEachTick(() -> {
+                int now = input.getEnergy().getAmountAsInt();
+                most[0] = Math.max(most[0], previous[0] - now);
+                previous[0] = now;
+            });
+            helper.succeedWhen(() -> {
+                helper.assertTrue(previous[0] < 50_000, "waiting for the node to send");
+                helper.assertTrue(previous[0] <= 40_000, "waiting for ten ticks of sending");
+                helper.assertTrue(most[0] <= 1_000, "one tick sent " + most[0] + " FE past a 1,000 limit");
+                networks.delete(owner, network.id());
+            });
+        });
+
         r.add("satellite/charm_demand_and_delivery", 20, helper -> {
             ServerPlayer owner = player(helper, "SatCharm");
             ItemStack battery = new ItemStack(NTItems.PRISMATIC_BATTERY.get());

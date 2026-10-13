@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.client.BacteriaLookup;
 import com.breakinblocks.nautec.content.items.PetriDishItem;
 import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.api.gateways.PackedGateway;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.ChatFormatting;
@@ -53,6 +54,15 @@ public final class ItemTooltipEvents {
                             String.format(Locale.ROOT, "%.1f", NTConfig.biomeTankTicks / 20.0)).withStyle(ChatFormatting.GRAY));
                 }
             }
+        }
+        if (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof ExtradimensionalFrameBlock frame) {
+            event.getToolTip().add(Component.translatable("nautec.containment_frame.tooltip", frame.ring(), 8 * frame.ring(), frame.tier())
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        Long storedFe = stack.get(NTDataComponents.STORED_FE.get());
+        if (storedFe != null && storedFe > 0) {
+            event.getToolTip().add(Component.translatable("nautec.extradimensional_storage.tooltip.stored",
+                    String.format(Locale.ROOT, "%,d", storedFe)).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
         if (stack.getItem() instanceof PetriDishItem && event.getFlags().hasShiftDown()) {
             dishLines(stack, event.getToolTip());

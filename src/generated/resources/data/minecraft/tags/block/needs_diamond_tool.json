@@ -1,5 +1,10 @@
 {
   "values": [
+    "nautec:extradimensional_energy_storage",
+    "nautec:rift_containment_frame",
+    "nautec:void_containment_frame",
+    "nautec:abyssal_containment_frame",
+    "nautec:event_horizon_containment_frame",
     "nautec:fusion_casing",
     "nautec:aquamarine_structural_glass",
     "nautec:containment_coil",

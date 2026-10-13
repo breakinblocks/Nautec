@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
 import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlock;
@@ -254,6 +256,14 @@ public final class NTBlocks {
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> 7), true, false);
 
+    public static final DeferredBlock<ExtradimensionalStorageBlock> EXTRADIMENSIONAL_STORAGE = registerBlockAndItem("extradimensional_energy_storage",
+            ExtradimensionalStorageBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(6.0f, 1200.0f).sound(SoundType.NETHERITE_BLOCK)
+                    .noOcclusion().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 10), true, false);
+    public static final DeferredBlock<ExtradimensionalFrameBlock> RIFT_CONTAINMENT_FRAME = containmentFrame("rift_containment_frame", 2);
+    public static final DeferredBlock<ExtradimensionalFrameBlock> VOID_CONTAINMENT_FRAME = containmentFrame("void_containment_frame", 3);
+    public static final DeferredBlock<ExtradimensionalFrameBlock> ABYSSAL_CONTAINMENT_FRAME = containmentFrame("abyssal_containment_frame", 4);
+    public static final DeferredBlock<ExtradimensionalFrameBlock> EVENT_HORIZON_CONTAINMENT_FRAME = containmentFrame("event_horizon_containment_frame", 5);
+
     public static final DeferredBlock<ConduitBeaconBlock> CONDUIT_BEACON = registerBlockAndItem("conduit_beacon", ConduitBeaconBlock::new,
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.0f, 12.0f).sound(SoundType.METAL).noOcclusion()
                     .requiresCorrectToolForDrops().lightLevel(state -> state.getValue(ConduitBeaconBlock.ACTIVE) ? 15 : 6));
@@ -349,6 +359,12 @@ public final class NTBlocks {
 
     private static <T extends Block> DeferredBlock<T> registerBlockAndItem(String name, Function<BlockBehaviour.Properties, T> blockConstructor, BlockBehaviour.Properties properties) {
         return registerBlockAndItem(name, blockConstructor, properties, true, true);
+    }
+
+    private static DeferredBlock<ExtradimensionalFrameBlock> containmentFrame(String name, int tier) {
+        return registerBlockAndItem(name, props -> new ExtradimensionalFrameBlock(props, tier),
+                BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(4.0f + tier, 1200.0f).sound(SoundType.NETHERITE_BLOCK)
+                        .noOcclusion().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 3 + tier), true, false);
     }
 
     public static <T extends Block> DeferredBlock<T> bacteriaBlock(DeferredBlock<T> block) {

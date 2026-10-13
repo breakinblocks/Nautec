@@ -47,6 +47,9 @@ public final class NTRenderTypes {
     private static final RenderType FUSION_FIELD = RenderType.create("nautec_fusion_field",
             RenderSetup.builder(NTRenderPipelines.FUSION_FIELD).createRenderSetup());
 
+    private static final RenderType SINGULARITY_DISK = RenderType.create("nautec_singularity_disk",
+            RenderSetup.builder(NTRenderPipelines.SINGULARITY_DISK).createRenderSetup());
+
     private static final Function<Identifier, RenderType> EMISSIVE_OVERLAY = Util.memoize(texture -> RenderType.create("nautec_emissive_overlay",
             RenderSetup.builder(RenderPipelines.ENTITY_TRANSLUCENT_EMISSIVE)
                     .withTexture("Sampler0", texture)
@@ -78,6 +81,10 @@ public final class NTRenderTypes {
 
     public static RenderType fusionField() {
         return FUSION_FIELD;
+    }
+
+    public static RenderType singularityDisk() {
+        return SINGULARITY_DISK;
     }
 
     public static RenderType gatewayGlow(Identifier texture) {

@@ -1,0 +1,94 @@
+{
+  "variants": {
+    "facing=east,part=corner": {
+      "model": "nautec:block/abyssal_containment_frame_corner",
+      "y": 90
+    },
+    "facing=east,part=edge": {
+      "model": "nautec:block/abyssal_containment_frame_edge",
+      "y": 90
+    },
+    "facing=east,part=inner_corner": {
+      "model": "nautec:block/abyssal_containment_frame_inner_corner",
+      "y": 90
+    },
+    "facing=east,part=inner_edge": {
+      "model": "nautec:block/abyssal_containment_frame_inner_edge",
+      "y": 90
+    },
+    "facing=east,part=loose": {
+      "model": "nautec:block/abyssal_containment_frame_loose",
+      "y": 90
+    },
+    "facing=east,part=port": {
+      "model": "nautec:block/abyssal_containment_frame_port",
+      "y": 90
+    },
+    "facing=north,part=corner": {
+      "model": "nautec:block/abyssal_containment_frame_corner"
+    },
+    "facing=north,part=edge": {
+      "model": "nautec:block/abyssal_containment_frame_edge"
+    },
+    "facing=north,part=inner_corner": {
+      "model": "nautec:block/abyssal_containment_frame_inner_corner"
+    },
+    "facing=north,part=inner_edge": {
+      "model": "nautec:block/abyssal_containment_frame_inner_edge"
+    },
+    "facing=north,part=loose": {
+      "model": "nautec:block/abyssal_containment_frame_loose"
+    },
+    "facing=north,part=port": {
+      "model": "nautec:block/abyssal_containment_frame_port"
+    },
+    "facing=south,part=corner": {
+      "model": "nautec:block/abyssal_containment_frame_corner",
+      "y": 180
+    },
+    "facing=south,part=edge": {
+      "model": "nautec:block/abyssal_containment_frame_edge",
+      "y": 180
+    },
+    "facing=south,part=inner_corner": {
+      "model": "nautec:block/abyssal_containment_frame_inner_corner",
+      "y": 180
+    },
+    "facing=south,part=inner_edge": {
+      "model": "nautec:block/abyssal_containment_frame_inner_edge",
+      "y": 180
+    },
+    "facing=south,part=loose": {
+      "model": "nautec:block/abyssal_containment_frame_loose",
+      "y": 180
+    },
+    "facing=south,part=port": {
+      "model": "nautec:block/abyssal_containment_frame_port",
+      "y": 180
+    },
+    "facing=west,part=corner": {
+      "model": "nautec:block/abyssal_containment_frame_corner",
+      "y": 270
+    },
+    "facing=west,part=edge": {
+      "model": "nautec:block/abyssal_containment_frame_edge",
+      "y": 270
+    },
+    "facing=west,part=inner_corner": {
+      "model": "nautec:block/abyssal_containment_frame_inner_corner",
+      "y": 270
+    },
+    "facing=west,part=inner_edge": {
+      "model": "nautec:block/abyssal_containment_frame_inner_edge",
+      "y": 270
+    },
+    "facing=west,part=loose": {
+      "model": "nautec:block/abyssal_containment_frame_loose",
+      "y": 270
+    },
+    "facing=west,part=port": {
+      "model": "nautec:block/abyssal_containment_frame_port",
+      "y": 270
+    }
+  }
+}

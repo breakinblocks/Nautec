@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.utils.DataSlots;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.content.conduits.ConduitUpgradeItem;
 import com.breakinblocks.nautec.content.menus.ResonanceNodeMenu;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.mojang.serialization.Codec;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -62,7 +65,10 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
     public static final int DATA_PRIORITY = 10;
     public static final int DATA_LIMIT = 11;
     public static final int DATA_CHUNK = 13;
-    public static final int DATA_COUNT = 14;
+    public static final int DATA_TIER = 14;
+    public static final int DATA_COUNT = 15;
+    public static final int UPGRADE_SLOT = 0;
+    private static final int MAX_BUFFER = 1_000_000_000;
 
     private static final int SYNC_INTERVAL = 20;
     private static final Set<Direction> ALL = EnumSet.allOf(Direction.class);
@@ -86,7 +92,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
     private boolean relayed;
     private long lastSync;
 
-    private final SimpleEnergyHandler energy;
+    private final NodeEnergy energy;
     private final EnergyHandler port = new EnergyHandler() {
         @Override
         public long getAmountAsLong() {
@@ -127,6 +133,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
                 case DATA_LIMIT -> DataSlots.low(effectiveLimit());
                 case DATA_LIMIT + 1 -> DataSlots.high(effectiveLimit());
                 case DATA_CHUNK -> ResonanceChunkLoading.state(chunkLoading);
+                case DATA_TIER -> tier();
                 default -> 0;
             };
         }
@@ -143,12 +150,78 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
 
     public ResonanceNodeBlockEntity(BlockPos pos, BlockState state) {
         super(NTBlockEntityTypes.RESONANCE_NODE.get(), pos, state);
-        this.energy = new SimpleEnergyHandler(NTConfig.resonanceNodeFeBuffer, Integer.MAX_VALUE, Integer.MAX_VALUE) {
-            @Override
-            protected void onEnergyChanged(int previousAmount) {
-                setChanged();
-            }
-        };
+        this.energy = new NodeEnergy();
+        addItemHandler(1, 1, (slot, stack) -> stack.getItem() instanceof ConduitUpgradeItem);
+    }
+
+    private final class NodeEnergy extends SimpleEnergyHandler {
+        private NodeEnergy() {
+            super(NTConfig.resonanceNodeFeBuffer, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        }
+
+        private void resize(int newCapacity) {
+            this.capacity = newCapacity;
+        }
+
+        @Override
+        protected void onEnergyChanged(int previousAmount) {
+            setChanged();
+        }
+    }
+
+    public static int tierLimit(int tier) {
+        if (tier <= 0 || tier > NTConfig.resonanceNodeUpgradeLimits.length) {
+            return Math.max(0, NTConfig.satelliteTransferLimit);
+        }
+        int limit = NTConfig.resonanceNodeUpgradeLimits[tier - 1];
+        return limit <= 0 ? Integer.MAX_VALUE : Math.max(limit, NTConfig.satelliteTransferLimit);
+    }
+
+    public static int feBuffer(int tier) {
+        return (int) Math.max(NTConfig.resonanceNodeFeBuffer, Math.min(MAX_BUFFER, 10L * tierLimit(tier)));
+    }
+
+    public static int apBuffer(int tier) {
+        return (int) Math.max(NTConfig.resonanceNodeApBuffer, Math.min(MAX_BUFFER, 2L * tierLimit(tier)));
+    }
+
+    public static Component limitText(int tier) {
+        int limit = tierLimit(tier);
+        return limit == Integer.MAX_VALUE ? Component.translatable("nautec.resonance_node.upgrade.unlimited")
+                : Component.translatable("nautec.resonance_node.upgrade.per_tick", String.format(Locale.ROOT, "%,d", limit));
+    }
+
+    public int tier() {
+        if (getItemStackHandler() == null) {
+            return 0;
+        }
+        return getItemStackHandler().getStackInSlot(UPGRADE_SLOT).getItem() instanceof ConduitUpgradeItem upgrade ? upgrade.tier() : 0;
+    }
+
+    public ItemStack getUpgrade() {
+        return getItemStackHandler() == null ? ItemStack.EMPTY : getItemStackHandler().getStackInSlot(UPGRADE_SLOT);
+    }
+
+    public ItemStack swapUpgrade(ItemStack upgrade) {
+        ItemStack previous = getUpgrade().copy();
+        getItemStackHandler().setStackInSlot(UPGRADE_SLOT, upgrade);
+        return previous;
+    }
+
+    private void resizeBuffers() {
+        energy.resize(feBuffer(tier()));
+    }
+
+    @Override
+    protected void onItemsChanged(int slot) {
+        super.onItemsChanged(slot);
+        resizeBuffers();
+        update();
+    }
+
+    @Override
+    public int[] cardSlots() {
+        return new int[]{UPGRADE_SLOT};
     }
 
     public ContainerData getData() {
@@ -215,7 +288,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
     }
 
     public int effectiveLimit() {
-        return Math.max(0, Math.min(limit, NTConfig.satelliteTransferLimit));
+        return Math.max(0, Math.min(limit, tierLimit(tier())));
     }
 
     public int getApStored() {
@@ -233,7 +306,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
 
     @Override
     public int apCapacity() {
-        return NTConfig.resonanceNodeApBuffer;
+        return apBuffer(tier());
     }
 
     @Override
@@ -258,7 +331,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
     }
 
     public int apDemand() {
-        return output && status == STATUS_ONLINE ? Math.max(0, Math.min(effectiveLimit(), NTConfig.resonanceNodeApBuffer - apStored)) : 0;
+        return output && status == STATUS_ONLINE ? Math.max(0, Math.min(effectiveLimit(), apCapacity() - apStored)) : 0;
     }
 
     public int feDemand() {
@@ -284,7 +357,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
     }
 
     private void addAp(int amount, float purity) {
-        int added = Math.min(amount, Math.max(0, NTConfig.resonanceNodeApBuffer - apStored));
+        int added = Math.min(amount, Math.max(0, apCapacity() - apStored));
         if (added <= 0) {
             return;
         }
@@ -558,6 +631,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
         this.apPurity = in.getFloatOr("ap_purity", 0F);
         this.beam = in.getIntOr("beam", 0);
         energy.deserialize(in.childOrEmpty("energy"));
+        resizeBuffers();
     }
 
     @Override

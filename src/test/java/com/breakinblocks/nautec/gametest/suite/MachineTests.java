@@ -224,7 +224,7 @@ public final class MachineTests {
                     helper.fail("Expected MixerBlockEntity");
                     return;
                 }
-                helper.assertValueEqual(12, receiver.getPower(), "power channeled per tick (9000 / 750)");
+                helper.assertValueEqual(20, receiver.getPower(), "power channeled per tick (30000 / 1500)");
                 helper.assertValueEqual(1.2f, receiver.getPurity(), "recipe purity carried by the beam");
                 helper.succeed();
             });

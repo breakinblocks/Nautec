@@ -105,7 +105,18 @@ public class BlockTagProvider extends BlockTagsProvider {
                 FUSION_CONTROLLER,
                 LASER_INJECTOR,
                 FUSION_COLLECTOR,
-                FUSION_PORT);
+                FUSION_PORT,
+                EXTRADIMENSIONAL_STORAGE,
+                RIFT_CONTAINMENT_FRAME,
+                VOID_CONTAINMENT_FRAME,
+                ABYSSAL_CONTAINMENT_FRAME,
+                EVENT_HORIZON_CONTAINMENT_FRAME);
+        tag(BlockTags.NEEDS_DIAMOND_TOOL,
+                EXTRADIMENSIONAL_STORAGE,
+                RIFT_CONTAINMENT_FRAME,
+                VOID_CONTAINMENT_FRAME,
+                ABYSSAL_CONTAINMENT_FRAME,
+                EVENT_HORIZON_CONTAINMENT_FRAME);
         tag(BlockTags.NEEDS_IRON_TOOL,
                 THERMAL_VENT_TAP,
                 COMBUSTION_DYNAMO,
