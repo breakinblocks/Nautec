@@ -161,7 +161,7 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(4.0f).noOcclusion());
 
     public static final DeferredBlock<LaserPurificationSmelterBlock> LASER_PURIFICATION_SMELTER = registerBlockAndItem("laser_purification_smelter",
-            LaserPurificationSmelterBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(4.0f));
+            LaserPurificationSmelterBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(4.0f).noOcclusion());
 
     public static final DeferredBlock<GatewayBlock> GATEWAY = registerBlockAndItem("gateway", GatewayBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_PRISMARINE).strength(4.0f).noOcclusion());

@@ -28,7 +28,7 @@ public final class ArtPassTests {
     public static void register(NTTestRegistrar r) {
         List<Supplier<? extends Block>> flora = List.of(NTBlocks.LUMINESCENT_ALGAE, NTBlocks.VENT_TUBEWORM);
         for (Supplier<? extends Block> plant : flora) {
-            r.add("art/" + name(plant.get()) + "_lights_the_water", 100, helper -> lightsWater(helper, plant.get().defaultBlockState()));
+            r.add("art/" + name(plant.get()) + "_lights_the_water", 1200, helper -> lightsWater(helper, plant.get().defaultBlockState()));
         }
 
         r.add("art/hydrothermal_vent_is_a_waterlogged_cone", 20, helper -> {

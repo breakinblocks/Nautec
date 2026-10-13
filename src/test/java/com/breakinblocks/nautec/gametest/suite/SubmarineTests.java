@@ -726,7 +726,7 @@ public final class SubmarineTests {
         });
 
         r.add("submarine/charging_locks_heading_and_pulls_into_portal", SubmarineModules.TELEPORT_CHARGE_TICKS + 30, helper -> {
-            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 24, 4));
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(8, 24, 4));
             submarine.snapTo(submarine.getX(), submarine.getY(), submarine.getZ(), 90F, -15F);
             helper.assertFalse(SubmarineCollision.blocked(helper.getLevel(), submarine, submarine.position(), 90F, -15F),
                     "the tilted hull should start in open air above the arena");
@@ -734,6 +734,7 @@ public final class SubmarineTests {
             Vec3 pivot = submarine.position().add(0D, SubmarineEntity.PORTAL_AXIS_HEIGHT, 0D);
             helper.assertTrue(portal.subtract(pivot).normalize().distanceTo(submarine.getForward()) < 1.0E-4D,
                     "the portal should sit on the hull's forward axis");
+            helper.assertTrue(helper.relativeVec(portal).x >= 0D, "the pull should end inside the test's own chunks, not past its west edge");
             submarine.setCharging(true);
 
             helper.runAfterDelay(SubmarineModules.TELEPORT_CHARGE_TICKS / 2, () -> {

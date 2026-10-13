@@ -281,14 +281,8 @@ public class BlockModelProvider extends ModelProvider {
     }
 
     private void laserPurificationSmelter(Block block) {
-        Identifier idle = createdModels.computeIfAbsent(Nautec.rl("block/laser_purification_smelter"), key -> ModelTemplates.CUBE_ORIENTABLE_TOP_BOTTOM.create(key, new TextureMapping()
-                .put(TextureSlot.FRONT, blockTexture(block, "_front"))
-                .put(TextureSlot.SIDE, blockTexture(block, "_side"))
-                .put(TextureSlot.TOP, blockTexture(block, "_top"))
-                .put(TextureSlot.BOTTOM, blockTexture(block, "_bottom")), blockModels.modelOutput));
-        Identifier active = emissiveCube("laser_purification_smelter_active", faces(blockTexture(block, "_bottom"), blockTexture(block, "_top"),
-                blockTexture(block, "_front_active"), blockTexture(block, "_side")), blockTexture(block, "_front_active"),
-                front(blockTexture(block, "_front_active_emissive")));
+        Identifier idle = existingModelFile(block);
+        Identifier active = Nautec.rl("block/laser_purification_smelter_active");
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
                 .with(BlockModelGenerators.createBooleanModelDispatch(LaserPurificationSmelterBlock.ACTIVE,
                         BlockModelGenerators.plainVariant(active), BlockModelGenerators.plainVariant(idle)))
