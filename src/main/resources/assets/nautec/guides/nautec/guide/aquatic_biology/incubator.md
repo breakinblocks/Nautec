@@ -2,7 +2,7 @@
 navigation:
   title: Incubator
   icon: nautec:incubator
-  position: 5
+  position: 7
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:incubator
@@ -15,7 +15,7 @@ item_ids:
   The Incubator grows a colony and restores its Vitality.
 </Column>
 
-Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
+Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. Hover the empty nutrient slot with a colony loaded to see what it grows on, and hover the progress arrow to see what the Incubator is waiting for. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
 
 Every strain that has a nutrient also takes the item it makes and that item's storage block. Ferrophiles, for example, take iron ore, Iron Ingots or Iron Blocks. The item it makes has one and a half times the consume chance of the strain's own nutrient, and a storage block a ninth of that, so one block lasts as long as nine of the item. See [Colony Feeding](colony_feeding.md) for how the block is found.
 

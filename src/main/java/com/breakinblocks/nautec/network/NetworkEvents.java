@@ -127,6 +127,21 @@ public class NetworkEvents {
                 FishingMinigameResultPayload::handle
         );
         registrar.playToClient(
+                OpenBeamFacesPayload.TYPE,
+                OpenBeamFacesPayload.STREAM_CODEC,
+                OpenBeamFacesPayload::handle
+        );
+        registrar.playToServer(
+                SetBeamFacePayload.TYPE,
+                SetBeamFacePayload.STREAM_CODEC,
+                SetBeamFacePayload::handle
+        );
+        registrar.playToServer(
+                SetJunctionLimitPayload.TYPE,
+                SetJunctionLimitPayload.STREAM_CODEC,
+                SetJunctionLimitPayload::handle
+        );
+        registrar.playToClient(
                 OpenGatewayScreenPayload.TYPE,
                 OpenGatewayScreenPayload.STREAM_CODEC,
                 OpenGatewayScreenPayload::handle

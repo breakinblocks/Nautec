@@ -69,33 +69,8 @@ public class ResonanceNodeScreen extends ResonanceNetworkScreen<ResonanceNodeMen
     }
 
     private int step(int direction) {
-        int current = this.menu.getLimit();
-        int max = NTConfig.satelliteTransferLimit;
-        if (this.minecraft.hasControlDown() || this.minecraft.hasShiftDown()) {
-            long delta = (long) direction * (this.minecraft.hasControlDown() ? 10 : 1);
-            return (int) Math.max(0, Math.min(max, current + delta));
-        }
-        if (direction > 0) {
-            long value = 1;
-            while (value <= current) {
-                value = nextLimit(value);
-            }
-            return (int) Math.min(value, max);
-        }
-        long result = 0;
-        for (long value = 1; value < current; value = nextLimit(value)) {
-            result = value;
-        }
-        return (int) Math.min(result, max);
-    }
-
-    private static long nextLimit(long value) {
-        long scale = 1;
-        while (scale * 10 <= value) {
-            scale *= 10;
-        }
-        long lead = value / scale;
-        return lead < 2 ? 2 * scale : lead < 5 ? 5 * scale : 10 * scale;
+        return LimitSteps.step(this.menu.getLimit(), direction, this.minecraft.hasShiftDown(), this.minecraft.hasControlDown(),
+                NTConfig.satelliteTransferLimit);
     }
 
     private String statusKey() {

@@ -2,7 +2,7 @@
 navigation:
   title: Bacteria Stats
   icon: nautec:petri_dish
-  position: 3
+  position: 5
   parent: aquatic_biology/aquatic_biology-index.md
 ---
 

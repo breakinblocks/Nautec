@@ -107,21 +107,7 @@ public class AquarineWrenchItem extends Item {
                 case NONE ->
                         player.isShiftKeyDown() ? LaserJunctionBlock.ConnectionType.OUTPUT : LaserJunctionBlock.ConnectionType.INPUT;
             };
-            level.setBlockAndUpdate(pos, blockState.setValue(LaserJunctionBlock.CONNECTION[direction.ordinal()], newType));
-            switch (newType) {
-                case INPUT -> {
-                    be.getLaserInputs().add(direction);
-                    be.getLaserOutputs().remove(direction);
-                }
-                case OUTPUT -> {
-                    be.getLaserInputs().remove(direction);
-                    be.getLaserOutputs().add(direction);
-                }
-                case NONE -> {
-                    be.getLaserInputs().remove(direction);
-                    be.getLaserOutputs().remove(direction);
-                }
-            }
+            be.setConnection(direction, newType);
 
             return InteractionResult.SUCCESS;
         }

@@ -27,7 +27,7 @@
   ],
   "type": "nautec:bacteria_mutation",
   "catalyst": "#c:gems/apatite",
-  "chance": 10.0,
+  "chance": 30.0,
   "input_bacteria": "nautec:lithophiles",
   "result_bacteria": "nautec:apatitophiles"
 }

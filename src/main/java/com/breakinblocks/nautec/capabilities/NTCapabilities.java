@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.capabilities;
 
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.capabilities.bacteria.IBacteriaStorage;
+import com.breakinblocks.nautec.capabilities.beam.IBeamReceiver;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -21,6 +22,10 @@ public final class NTCapabilities {
         public static final BlockCapability<IBacteriaStorage, @Nullable Direction> BLOCK = BlockCapability.createSided(create("bacteria"), IBacteriaStorage.class);
         public static final ItemCapability<IBacteriaStorage, @Nullable Void> ITEM = ItemCapability.createVoid(create("bacteria"), IBacteriaStorage.class);
         public static final EntityCapability<IBacteriaStorage, @Nullable Direction> ENTITY = EntityCapability.createSided(create("bacteria"), IBacteriaStorage.class);
+    }
+
+    public static final class BeamReceiver {
+        public static final BlockCapability<IBeamReceiver, @Nullable Direction> BLOCK = BlockCapability.createSided(create("beam_receiver"), IBeamReceiver.class);
     }
 
     private static Identifier create(String path) {

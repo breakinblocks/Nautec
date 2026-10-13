@@ -191,6 +191,10 @@ public final class NautecClient {
             event.addPackFinders(Nautec.rl("resourcepacks/fusion_connected"), PackType.CLIENT_RESOURCES,
                     Component.literal("NauTec Connected Textures"), PackSource.BUILT_IN, true, Pack.Position.TOP);
         }
+        if (event.getPackType() == PackType.CLIENT_RESOURCES && ModList.get().isLoaded("ae2")) {
+            event.addPackFinders(Nautec.rl("resourcepacks/ae2_compat"), PackType.CLIENT_RESOURCES,
+                    Component.literal("NauTec Applied Energistics 2 Parts"), PackSource.BUILT_IN, true, Pack.Position.TOP);
+        }
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {

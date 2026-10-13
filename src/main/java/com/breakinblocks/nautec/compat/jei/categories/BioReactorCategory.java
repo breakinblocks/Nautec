@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.compat.jei.categories;
 
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.content.bacteria.SimpleBacteriaStats;
@@ -26,14 +27,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Locale;
+
 public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioReactorRecipe> {
     static final Identifier RIGHT_ARROW_SPRITE = Nautec.rl("container/bio_reactor/progress_arrow_off");
     public static final Identifier UID = Nautec.rl(BioReactorRecipe.NAME);
     public static final IRecipeType<BioReactorRecipe> RECIPE_TYPE =
             IRecipeType.create(UID, BioReactorRecipe.class);
 
-    private static final int DRAWABLE_WIDTH = 96;
-    private static final int DRAWABLE_HEIGHT = 44;
+    private static final int DRAWABLE_WIDTH = 160;
+    private static final int DRAWABLE_HEIGHT = 54;
     private static final int ARROW_ROW_HEIGHT = 24;
 
     public BioReactorCategory(IGuiHelper helper) {
@@ -80,6 +83,19 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
                         MathUtils.roundToPrecision(stats.productionRate().getMax(), 2))
                 : Component.translatable("nautec.jei.production_inherited");
 
+        double perMinute = NTConfig.bioReactorBaseSpeed * bacteria.productionMultiplier() * 12D;
+        double cap = Math.max(1D, NTConfig.bacteriaColonySizeCap);
+        Component rate = graftable
+                ? Component.translatable("nautec.jei.items_per_minute.fresh",
+                        perMinute(perMinute * stats.productionRate().getMin() * (0.5D + 0.5D * Math.min(cap, bacteria.initialSize().getMin()) / cap)),
+                        perMinute(perMinute * stats.productionRate().getMax() * (0.5D + 0.5D * Math.min(cap, bacteria.initialSize().getMax()) / cap)))
+                : Component.translatable("nautec.jei.items_per_minute.rate_one", perMinute(perMinute * 0.5D), perMinute(perMinute));
+        builder.addText(rate, getWidth(), font.lineHeight)
+                .setPosition(0, getHeight() - font.lineHeight * 3 - 2)
+                .setTextAlignment(HorizontalAlignment.CENTER)
+                .setColor(0xFF808080)
+                .setShadow(false);
+
         builder.addText(text, getWidth(), font.lineHeight)
                 .setPosition(0, getHeight() - font.lineHeight * 2 - 1)
                 .setTextAlignment(HorizontalAlignment.CENTER)
@@ -93,6 +109,10 @@ public class BioReactorCategory extends BacteriaCategory<BioReactorCategory.BioR
                 .setTextAlignment(HorizontalAlignment.CENTER)
                 .setColor(0xFF808080)
                 .setShadow(false);
+    }
+
+    private static String perMinute(double value) {
+        return value >= 10D ? String.valueOf(Math.round(value)) : String.format(Locale.ROOT, "%.1f", value);
     }
 
     public record BioReactorRecipe(ResourceKey<Bacteria> bacteria, Bacteria.Resource resource) {

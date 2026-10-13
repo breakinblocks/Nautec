@@ -18,7 +18,7 @@ item_ids:
 
 NauTec machines run on laser power, measured in AP per tick (AP/t). A beam carries two values: its power, and its purity. Machines use the power to run, and recipes check the purity before they start.
 
-A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, a junction, a lens), no more than 16 blocks away (`laserDistance` in `config/nautec-common.toml`), or 64 from a relay, with no solid block in between. Beams pass through water.
+A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, a junction, a lens), no more than 16 blocks away (`laserDistance` in `config/nautec-common.toml`), or 64 from a relay, with no solid block in between. Beams pass through water and through glass, so you can wall a beam in glass.
 
 ***
 
@@ -49,7 +49,7 @@ A redstone signal pauses it. A paused catalyst sends no beam and keeps its fuel 
 
 The two small lamps near the lens end of each side show whether it has found a receiver. Green means a laser block within range takes the beam. Red means it has not: nothing is in line with the lens, a solid block is in the way, or the block in front does not take a beam from that side (a relay facing the wrong way is the usual cause). Shift-right-click the catalyst with an empty hand for a chat readout of its fuel, which way it fires, what the beam hits and how to fix it.
 
-<Color id="gold">Tip</Color>: the beam burns anything standing in it, you included. Walk around running beams.
+<Color id="gold">Tip</Color>: the beam burns anything standing in it, you included, and a stronger beam burns harder (see [Moving Laser Power](nautec:laser_chemistry/laser_manipulation.md)). Walk around running beams, or run them through glass.
 
 ***
 

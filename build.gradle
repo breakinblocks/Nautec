@@ -138,6 +138,9 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     compileOnly "maven.modrinth:starcatcher:${starcatcher_modrinth_id}"
+
+    compileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}") { transitive = false }
+    compileOnly "maven.modrinth:refined-storage:${refined_storage_modrinth_id}"
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -244,7 +247,7 @@ publishMods {
         clientRequired = true
         serverRequired = true
         requires("geckolib", "curios")
-        optional("jei", "jade", "guideme", "apotheosis", "stellaris", "starcatcher")
+        optional("jei", "jade", "guideme", "apotheosis", "stellaris", "starcatcher", "applied-energistics-2", "refined-storage")
     }
 }
 

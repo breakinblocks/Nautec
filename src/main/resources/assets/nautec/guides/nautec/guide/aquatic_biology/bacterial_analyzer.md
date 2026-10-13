@@ -2,7 +2,7 @@
 navigation:
   title: Bacterial Analyzer
   icon: nautec:bacterial_analyzer
-  position: 2
+  position: 4
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:bacterial_analyzer
@@ -36,7 +36,7 @@ Hoppers and pipes can feed dishes into the lower block and pull analyzed dishes 
 
 ## <Color id="gold">Reading an Analyzed Dish</Color>
 
-The tooltip shows Size, Vitality and, for a strain that makes something, its Strain Yield. Hold Shift to see the item the strain produces and its four stats. Hold Shift and Control together to also see the range each stat can move to when the colony next mutates. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
+The tooltip shows Size, Vitality and, for a strain that makes something, its Strain Yield. Hold Shift to see the item the strain produces and its four stats. Hold Shift and Control together to also see the range each stat can move to when the colony next mutates. Shift also lists what the strain eats in a reactor, what it grows on in the Incubator, and the strains it can mutate into, with each catalyst and chance. A stat shown in red is at its cap. [Bacteria Stats](bacteria_stats.md) explains each one.
 
 ***
 

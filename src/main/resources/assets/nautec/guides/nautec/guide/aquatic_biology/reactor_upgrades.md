@@ -2,7 +2,7 @@
 navigation:
   title: Reactor Upgrades
   icon: nautec:reactor_speed_upgrade
-  position: 9
+  position: 11
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:reactor_speed_upgrade
@@ -70,17 +70,17 @@ A Bio Reactor with 3 colonies:
 
 | Upgrades | AP needed |
 |---|---|
-| none | 100 |
-| 1 Speed | 160 |
-| 2 Speed | 256 |
-| 1 Yield | 180 |
-| 2 Yield | 324 |
-| 1 Speed, 1 Yield | 288 |
-| 1 Yield, 1 Efficiency | 216 |
-| 2 Efficiency | 144 |
-| 1 Fusion | 250 |
-| 1 Fusion, 1 Yield | 450 |
-| 2 Fusion | 625 |
+| none | 50 |
+| 1 Speed | 80 |
+| 2 Speed | 128 |
+| 1 Yield | 90 |
+| 2 Yield | 162 |
+| 1 Speed, 1 Yield | 144 |
+| 1 Yield, 1 Efficiency | 108 |
+| 2 Efficiency | 72 |
+| 1 Fusion | 125 |
+| 1 Fusion, 1 Yield | 225 |
+| 2 Fusion | 313 |
 
 An Industrial Bio Reactor with 9 colonies:
 

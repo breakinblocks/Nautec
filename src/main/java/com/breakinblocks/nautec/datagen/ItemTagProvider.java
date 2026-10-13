@@ -53,6 +53,7 @@ public class ItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ItemTags.FOOT_ARMOR_ENCHANTABLE, NTItems.AQUARINE_BOOTS);
 
         tag(Tags.Items.TOOLS_WRENCH, NTItems.AQUARINE_WRENCH);
+        tag(NTTags.Items.LASER_P2P_ATTUNEMENT, NTBlocks.PRISMARINE_RELAY.asItem(), NTBlocks.LASER_JUNCTION.asItem());
 
         TagAppender<Item, Item> modules = tag(NTTags.Items.SUBMARINE_MODULE);
         for (var module : NTItems.SUBMARINE_MODULES) {

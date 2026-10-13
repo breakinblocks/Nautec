@@ -2,7 +2,7 @@
 navigation:
   title: Bacteria Grafting
   icon: nautec:grafting_tool
-  position: 1
+  position: 3
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:grafting_tool
@@ -25,23 +25,6 @@ Hold the Grafting Tool in your main hand and an empty <ItemLink id="petri_dish"/
 ***
 
 ## <Color id="gold">Grafting Tool</Color>
-
-***
-
-## <Color id="gold">Stronger Beams</Color>
-
-The Grafting Station grafts faster on a beam stronger than it needs: speed is the square root of (beam ÷ what it needs). It needs 100 AP, or 500 AP with an Advanced Grafting Anchor, always at purity 2.8 or higher.
-
-| Beam, as a multiple of what it needs | Speed |
-|---|---|
-| 1× | ×1 (normal) |
-| 4× | ×2 |
-| 9× | ×3 |
-| 16× | ×4 |
-
-The two stack. An Advanced Grafting Anchor already grafts three times as fast on its 500 AP, and a 2,000 AP beam doubles that again, so a colony takes 10 seconds instead of 60.
-
-See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
 
 <RecipeFor id="grafting_tool"/>
 
@@ -108,10 +91,27 @@ A Grafting Anchor upgraded with four Reactor Speed Upgrades from the [Bio Reacto
 
 ***
 
+## <Color id="gold">Stronger Beams</Color>
+
+The Grafting Station grafts faster on a beam stronger than it needs: speed is the square root of (beam ÷ what it needs). It needs 100 AP, or 500 AP with an Advanced Grafting Anchor, always at purity 2.8 or higher.
+
+| Beam, as a multiple of what it needs | Speed |
+|---|---|
+| 1× | ×1 (normal) |
+| 4× | ×2 |
+| 9× | ×3 |
+| 16× | ×4 |
+
+The two stack. An Advanced Grafting Anchor already grafts three times as fast on its 500 AP, and a 2,000 AP beam doubles that again, so a colony takes 10 seconds instead of 60.
+
+See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
+
+***
+
 ## <Color id="gold">Which Colony to Start With</Color>
 
 Cyanobacteria, Halobacteria, Methanogens and Thermophiles produce nothing and cannot be incubated. They are starting points: take them straight to the [Mutator](mutator.md) and turn them into a strain that makes something.
 
-The deep ocean strains are ready to work as soon as you have them. Halotrophs make kelp, Algaeformers seagrass, Phototrophs sugar cane, Lithophiles stone, Calciophiles bone meal and Sulfurophiles gunpowder. Lithophiles is the parent of many other strains, and grafting it from Budding Prismarine skips a 5% mutation from Thermophiles, so a trip to the [Deep Oceans](nautec:getting_started/deep_oceans.md) saves a lot of mutating.
+The deep ocean strains are ready to work as soon as you have them. Halotrophs make kelp, Algaeformers seagrass, Phototrophs sugar cane, Lithophiles stone, Calciophiles bone meal and Sulfurophiles gunpowder. Lithophiles is the parent of many other strains, and grafting it from Budding Prismarine skips a 15% mutation from Thermophiles, so a trip to the [Deep Oceans](nautec:getting_started/deep_oceans.md) saves a lot of mutating.
 
 A fresh colony is unanalyzed. Run it through the [Bacterial Analyzer](bacterial_analyzer.md) to see what you got.

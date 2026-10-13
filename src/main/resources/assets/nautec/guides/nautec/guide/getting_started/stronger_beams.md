@@ -47,11 +47,11 @@ Purity does not speed anything up. A machine that needs a minimum purity (the Ad
 | [Pressure Forge](nautec:deep_engineering/pressure_forge.md) | 40 AP | forging |
 | [Colony Replicator](nautec:aquatic_biology/colony_replicator.md) | 80 AP at purity 2.0 | each copy |
 | [Grafting Station](nautec:aquatic_biology/bacteria_grafting.md) | 100 AP at purity 2.8, 500 AP with an Advanced Grafting Anchor | each graft |
-| [Bio Reactor](nautec:aquatic_biology/bio_reactor.md) | 25 AP, plus 25 per colony, times its upgrades | production |
+| [Bio Reactor](nautec:aquatic_biology/bio_reactor.md) | 5 AP, plus 15 per colony, times its upgrades | production |
 | [Industrial Bio Reactor](nautec:aquatic_biology/industrial_bio_reactor.md) | 100 AP, plus 50 per colony, times its upgrades | production |
 | [Augmentation Station](nautec:laser_augmentation/augmentation_station.md) | 25 AP into each extension in use | installing an augment, at the pace of the weakest extension |
 | [Submarine Dock](nautec:submarine/submarine_dock.md) | 20 AP | how fast it charges a docked submarine |
-| [Deep Sea Drain](nautec:laser_chemistry/drain.md) | more than 20 AP | Salt Water pumped each second |
+| [Deep Sea Drain](nautec:laser_chemistry/drain.md) | more than 20 AP | Salt Water pumped each second, in direct proportion to the beam |
 
 **Stacking.** The Bio Reactors work out what they need from their colonies and upgrades first, and a stronger beam then speeds up on top of their Speed Upgrades. A reactor whose upgrades make it run ×1.5 and that gets four times the power it needs runs ×3. A stronger beam does not make a colony eat its nutrient any faster, so it is pure extra output. The Advanced Grafting Anchor works the same way: it raises the station's need to 500 AP and grafts faster, and a beam above 500 AP speeds it up again.
 

@@ -4,10 +4,12 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.tags.NTTags;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
@@ -79,16 +81,20 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
                 }
                 BlockPos pos = worldPosition.relative(direction, i);
                 BlockState state = level.getBlockState(pos);
+                BlockEntity blockEntity = level.getBlockEntity(pos);
 
-                if (level.getBlockEntity(pos) instanceof LaserBlockEntity laserBlockEntity) {
+                if (blockEntity instanceof LaserBlockEntity laserBlockEntity) {
                     if (laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
                         laserDistances.put(direction, i);
+                        setBeamReceiver(direction, false);
                         break;
                     }
                 }
 
-                if (!state.canBeReplaced() || i == maxLaserDistance -1) {
+                boolean stops = !state.canBeReplaced() && !state.is(NTTags.Blocks.LASER_PASSABLE);
+                if (stops || i == maxLaserDistance -1) {
                     laserDistances.put(direction, i);
+                    setBeamReceiver(direction, stops && isBeamReceiver(pos, state, blockEntity, direction));
                     break;
                 }
             }

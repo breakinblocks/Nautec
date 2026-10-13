@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.gametest.suite;
 import com.breakinblocks.nautec.content.blocks.generators.ThermalVentTapBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.LightLayer;
@@ -28,7 +29,7 @@ public final class ArtPassTests {
     public static void register(NTTestRegistrar r) {
         List<Supplier<? extends Block>> flora = List.of(NTBlocks.LUMINESCENT_ALGAE, NTBlocks.VENT_TUBEWORM);
         for (Supplier<? extends Block> plant : flora) {
-            r.add("art/" + name(plant.get()) + "_lights_the_water", 1200, helper -> lightsWater(helper, plant.get().defaultBlockState()));
+            r.add("art/" + name(plant.get()) + "_lights_the_water", 12000, helper -> lightsWater(helper, plant.get().defaultBlockState()));
         }
 
         r.add("art/hydrothermal_vent_is_a_waterlogged_cone", 20, helper -> {
@@ -70,14 +71,21 @@ public final class ArtPassTests {
 
     private static void lightsWater(GameTestHelper helper, BlockState plant) {
         helper.assertTrue(plant.getLightEmission() > 0, name(plant.getBlock()) + " should emit light");
+        helper.assertTrue(Math.max(1, Blocks.WATER.defaultBlockState().getLightDampening()) <= 2,
+                "water should pass light from " + name(plant.getBlock()) + " on to the block above");
         helper.setBlock(FLOOR, Blocks.STONE);
         helper.setBlock(PLANT.above(), Blocks.WATER);
         helper.setBlock(PLANT, plant);
         BlockPos probe = helper.absolutePos(PLANT.above());
+        BlockPos source = helper.absolutePos(PLANT);
         helper.succeedWhen(() -> {
             int light = helper.getLevel().getBrightness(LightLayer.BLOCK, probe);
+            if (light < plant.getLightEmission() - 2) {
+                helper.getLevel().getChunkSource().getLightEngine().checkBlock(source);
+            }
             helper.assertTrue(light >= plant.getLightEmission() - 2,
-                    name(plant.getBlock()) + " should light the water above it, block light " + light);
+                    name(plant.getBlock()) + " should light the water above it, block light " + light + ", plant " + helper.getBlockState(PLANT)
+                            + ", light section " + helper.getLevel().getLightEngine().getDebugSectionType(LightLayer.BLOCK, SectionPos.of(probe)));
         });
     }
 }

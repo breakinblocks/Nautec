@@ -4,6 +4,8 @@ import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.registries.NTFeatures;
 import com.mojang.logging.LogUtils;
+import com.breakinblocks.nautec.compat.ae2.AE2Compat;
+import com.breakinblocks.nautec.compat.refinedstorage.RefinedStorageCompat;
 import com.breakinblocks.nautec.compat.starcatcher.StarcatcherCompat;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
@@ -144,6 +146,8 @@ public final class Nautec {
 
         preserveWorldgenConfig();
         StarcatcherCompat.init();
+        AE2Compat.init(modEventBus);
+        RefinedStorageCompat.init();
         modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.WORLDGEN_SPEC, "nautec-worldgen.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, NTConfig.SPEC, "nautec-common.toml");
     }

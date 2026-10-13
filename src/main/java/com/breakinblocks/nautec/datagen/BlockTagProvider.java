@@ -115,6 +115,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 SATELLITE_ARRAY_TOP);
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NTBlocks.BIOME_TANK.get());
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA, HYDROTHERMAL_VENT.get());
+        tag(NTTags.Blocks.LASER_PASSABLE).addTag(Tags.Blocks.GLASS_BLOCKS).addTag(Tags.Blocks.GLASS_PANES);
         tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
         tag(BlockTags.DOORS, PRESSURE_HATCH);
         tag(Tags.Blocks.BUDDING_BLOCKS, BUDDING_PRISMARINE);

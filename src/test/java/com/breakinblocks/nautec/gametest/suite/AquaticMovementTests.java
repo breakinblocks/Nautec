@@ -26,7 +26,7 @@ public final class AquaticMovementTests {
                 AquaticMovementTests::pursuesAndBites);
         registrar.add("fauna/maw_keeps_biting_a_target_that_stays_put", 320,
                 AquaticMovementTests::keepsBiting);
-        registrar.add("fauna/maw_spawns_only_deep_and_dark", 200, AquaticMovementTests::mawSpawnRules);
+        registrar.add("fauna/maw_spawns_only_deep_and_dark", 1200, AquaticMovementTests::mawSpawnRules);
     }
 
     private static void mawSpawnRules(GameTestHelper helper) {

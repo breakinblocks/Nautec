@@ -2,7 +2,7 @@
 navigation:
   title: Production Rates
   icon: minecraft:clock
-  position: 8
+  position: 10
   parent: aquatic_biology/aquatic_biology-index.md
 ---
 
@@ -77,13 +77,13 @@ A capped stone colony fills its 64-item output slot in about ten seconds, and a 
 
 ## <Color id="gold">Power Needed</Color>
 
-Power is a threshold. The reactor needs this much AP arriving every tick or nothing runs and all progress resets. More power than that makes nothing faster.
+Power is a threshold. The reactor needs this much AP arriving every tick or nothing runs and all progress resets. A stronger beam than that speeds production up, see [Stronger Beams](nautec:getting_started/stronger_beams.md).
 
 AP needed = (base + per colony x filled colony slots) x upgrade multipliers, rounded up
 
 | Reactor | Base | Per colony | Full, no upgrades |
 |---|---|---|---|
-| Bio Reactor | 25 | 25 | 100 AP with 3 colonies |
+| Bio Reactor | 5 | 15 | 50 AP with 3 colonies |
 | Industrial Bio Reactor | 100 | 50 | 550 AP with 9 colonies |
 
 All four values are configurable. Empty colony slots do not count. [Reactor Upgrades](reactor_upgrades.md) lists the multipliers and what common upgrade sets cost.

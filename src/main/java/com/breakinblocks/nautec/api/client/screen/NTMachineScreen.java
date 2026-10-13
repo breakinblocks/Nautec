@@ -170,8 +170,7 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
         if (slot != null) {
             BacteriaInstance bacteria = slot.getBacteriaStorage().getBacteria(slot.getSlot());
             if (!bacteria.isEmpty()) {
-                List<Component> tooltip = bacteria.getTooltip();
-                guiGraphics.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+                guiGraphics.setComponentTooltipForNextFrame(font, bacteriaTooltip(slot, bacteria), mouseX, mouseY);
             }
             int color = ARGB.color(20, 30, 30, 30);
             guiGraphics.fillGradient(
@@ -230,6 +229,10 @@ public abstract class NTMachineScreen<T extends ContainerBlockEntity> extends Ab
             return false;
         }
         return super.hasClickedOutside(mouseX, mouseY, left, top);
+    }
+
+    protected List<Component> bacteriaTooltip(SlotBacteriaStorage slot, BacteriaInstance bacteria) {
+        return bacteria.getTooltip();
     }
 
     private void renderBacteria(GuiGraphicsExtractor guiGraphics, BacteriaInstance instance, int x, int y) {

@@ -40,6 +40,18 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue RELAY_LASER_DISTANCE = BUILDER
             .comment("The distance a Prismarine Laser Relay sends its beam.")
             .defineInRange("relayLaserDistance", 64, 0, 128);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE = BUILDER
+            .comment("The damage each hit of a laser beam deals to a creature standing in it, on a beam of laserDamageReferencePower AP. 0 turns laser damage off")
+            .defineInRange("laserDamage", 3.0, 0.0, 1_000_000.0);
+    private static final ModConfigSpec.IntValue LASER_DAMAGE_REFERENCE_POWER = BUILDER
+            .comment("The beam power in AP that deals exactly laserDamage")
+            .defineInRange("laserDamageReferencePower", 10, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE_SCALING = BUILDER
+            .comment("How laser damage grows with a stronger beam: damage = laserDamage x (beam / laserDamageReferencePower) ^ laserDamageScaling. 0.5 is the square root, the same curve beam overclocking uses, so four times the beam deals twice the damage. 0 deals laserDamage on any beam")
+            .defineInRange("laserDamageScaling", 0.5, 0.0, 2.0);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE_MAX = BUILDER
+            .comment("The most damage one laser hit can deal. 0 means no limit")
+            .defineInRange("laserDamageMax", 0.0, 0.0, 1_000_000.0);
 
     private static final ModConfigSpec.IntValue ENERGY_CONVERTER_FE_PER_AP = BUILDER
             .comment("How much FE an Energy Converter spends for each AP it sends")
@@ -74,8 +86,11 @@ public final class NTConfig {
             .defineInRange("laserCraftingMatrixTankCapacity", 16_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue DRAIN_SALT_WATER_AMOUNT = BUILDER
-            .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. It scales with the square root of the beam, so four times the beam pumps twice as much")
+            .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. A stronger beam pumps more, as set by drainPowerScaling")
             .defineInRange("drainSaltWaterAmount", 500, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue DRAIN_POWER_SCALING = BUILDER
+            .comment("How the Deep Sea Drain's pump rate grows with a stronger beam: rate = drainSaltWaterAmount x (beam / drainPowerRequirement) ^ drainPowerScaling. 1.0 pumps in direct proportion, so four times the beam pumps four times as much. 0.5 is the square root, so four times the beam pumps twice as much")
+            .defineInRange("drainPowerScaling", 1.0, 0.0, 2.0);
     private static final ModConfigSpec.IntValue DRAIN_CAPACITY = BUILDER
             .comment("The fluid capacity of the Deep Sea Drain")
             .defineInRange("drainCapacity", 128_000, 0, Integer.MAX_VALUE);
@@ -191,11 +206,11 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_BASE = BUILDER
             .comment("The amount of power the Bio Reactor requires before any colonies are counted")
-            .defineInRange("bioReactorPowerBase", 25, 0, Integer.MAX_VALUE);
+            .defineInRange("bioReactorPowerBase", 5, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_PER_COLONY = BUILDER
             .comment("The extra amount of power the Bio Reactor requires for each colony it holds")
-            .defineInRange("bioReactorPowerPerColony", 25, 0, Integer.MAX_VALUE);
+            .defineInRange("bioReactorPowerPerColony", 15, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.DoubleValue BIO_REACTOR_DECAY_PER_SECOND = BUILDER
             .comment("The fraction of a senescent, unfed colony that dies off for every 20 ticks it works in a reactor (at least 1 per 20 ticks). 0 turns decay off")
@@ -376,6 +391,10 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue DISTRIBUTOR_INTERVAL = BUILDER
             .comment("How many ticks a Nautechnical Distributor waits between moves. Each move has no amount limit")
             .defineInRange("distributorInterval", 4, 1, 200);
+
+    private static final ModConfigSpec.BooleanValue DISTRIBUTOR_STORAGE_NETWORKS = BUILDER
+            .comment("Whether a Nautechnical Distributor next to an Applied Energistics 2 ME Interface or a Refined Storage Interface pulls the items and fluids its links ask for out of that storage network")
+            .define("distributorStorageNetworks", true);
 
     private static final String[] CONDUIT_TIERS = {"Base", "Eddy", "Surge", "Riptide", "Maelstrom"};
     private static final ModConfigSpec.IntValue[] CONDUIT_ITEM_INTERVALS = conduitValues("conduitItemInterval",
@@ -1044,6 +1063,10 @@ public final class NTConfig {
     public static int augmentationStationPower;
     public static int laserDistance;
     public static int relayLaserDistance;
+    public static double laserDamage = 3.0;
+    public static int laserDamageReferencePower = 10;
+    public static double laserDamageScaling = 0.5;
+    public static double laserDamageMax = 0.0;
     public static int energyConverterFePerAp = 10;
     public static int energyConverterFeCapacity = 4_000_000;
     public static int energyConverterBaseAp = 150;
@@ -1057,6 +1080,7 @@ public final class NTConfig {
     public static int laserCraftingMatrixTankCapacity = 16_000;
 
     public static int drainSaltWaterAmount;
+    public static double drainPowerScaling = 1.0;
     public static int drainCapacity;
     public static boolean drainRequiresOcean;
 
@@ -1090,8 +1114,8 @@ public final class NTConfig {
     public static int incubatorPowerUsage = 20;
 
     public static double bioReactorBaseSpeed = 16.8;
-    public static int bioReactorPowerBase = 25;
-    public static int bioReactorPowerPerColony = 25;
+    public static int bioReactorPowerBase = 5;
+    public static int bioReactorPowerPerColony = 15;
     public static double bioReactorDecayPerSecond = 0.02;
     public static double industrialBioReactorBaseSpeed = 16.8;
     public static int industrialBioReactorPowerBase = 100;
@@ -1139,6 +1163,7 @@ public final class NTConfig {
     public static int distributorRange = 256;
     public static int distributorMaxLinks = 64;
     public static int distributorInterval = 4;
+    public static boolean distributorStorageNetworks = true;
     public static int[] conduitItemIntervals = {20, 10, 5, 2, 1};
     public static int[] conduitItemsPerOp = {8, 16, 32, 64, 64};
     public static int[] conduitFluidRates = {250, 1_000, 4_000, 16_000, 64_000};
@@ -1387,6 +1412,10 @@ public final class NTConfig {
 
         laserDistance = value(REGULAR_LASER_DISTANCE);
         relayLaserDistance = value(RELAY_LASER_DISTANCE);
+        laserDamage = value(LASER_DAMAGE);
+        laserDamageReferencePower = value(LASER_DAMAGE_REFERENCE_POWER);
+        laserDamageScaling = value(LASER_DAMAGE_SCALING);
+        laserDamageMax = value(LASER_DAMAGE_MAX);
         energyConverterFePerAp = value(ENERGY_CONVERTER_FE_PER_AP);
         energyConverterFeCapacity = value(ENERGY_CONVERTER_FE_CAPACITY);
         energyConverterBaseAp = value(ENERGY_CONVERTER_BASE_AP);
@@ -1400,6 +1429,7 @@ public final class NTConfig {
         laserCraftingMatrixTankCapacity = value(LASER_CRAFTING_MATRIX_TANK_CAPACITY);
 
         drainSaltWaterAmount = value(DRAIN_SALT_WATER_AMOUNT);
+        drainPowerScaling = value(DRAIN_POWER_SCALING);
         drainCapacity = value(DRAIN_CAPACITY);
         drainRequiresOcean = value(DRAIN_REQUIRES_OCEAN);
 
@@ -1482,6 +1512,7 @@ public final class NTConfig {
         distributorRange = value(DISTRIBUTOR_RANGE);
         distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
         distributorInterval = value(DISTRIBUTOR_INTERVAL);
+        distributorStorageNetworks = value(DISTRIBUTOR_STORAGE_NETWORKS);
         conduitItemIntervals = values(CONDUIT_ITEM_INTERVALS);
         conduitItemsPerOp = values(CONDUIT_ITEMS_PER_OP);
         conduitFluidRates = values(CONDUIT_FLUID_RATES);

@@ -49,7 +49,7 @@ public final class PowerAndLaserTests {
     private PowerAndLaserTests() {
     }
 
-    private static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
+    static void placeShieldedSource(GameTestHelper helper, BlockPos pos, Direction... openDirections) {
         helper.setBlock(pos, NTBlocks.CREATIVE_POWER_SOURCE.get().defaultBlockState());
         Set<Direction> open = Set.of(openDirections);
         for (Direction direction : Direction.values()) {
@@ -375,6 +375,59 @@ public final class PowerAndLaserTests {
                 helper.assertValueEqual(50, mixer(helper, southMixer).getPower(), "south branch power");
                 assertPurityNear(helper, 2.0f, mixer(helper, northMixer).getPurity(), "purity on a split branch");
                 helper.succeed();
+            });
+        });
+
+        r.add("laser/junction_limit_sends_the_rest_onward", 120, helper -> {
+            BlockPos northMixer = new BlockPos(4, 1, 2);
+            BlockPos southMixer = new BlockPos(4, 1, 6);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            placeJunction(helper, new BlockPos(4, 1, 4), Direction.NORTH, Direction.WEST);
+            LaserJunctionBlockEntity split = junction(helper, new BlockPos(4, 1, 4));
+            split.getLaserOutputs().add(Direction.SOUTH);
+            split.setOutputLimit(Direction.NORTH, 20);
+            helper.setBlock(northMixer, NTBlocks.MIXER.get().defaultBlockState());
+            helper.setBlock(southMixer, NTBlocks.MIXER.get().defaultBlockState());
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(20, mixer(helper, northMixer).getPower(), "the capped branch");
+                helper.assertValueEqual(80, mixer(helper, southMixer).getPower(), "the uncapped branch gets the rest");
+            });
+        });
+
+        r.add("laser/junction_limit_above_the_share_keeps_the_even_split", 120, helper -> {
+            BlockPos northMixer = new BlockPos(4, 1, 2);
+            BlockPos southMixer = new BlockPos(4, 1, 6);
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            placeJunction(helper, new BlockPos(4, 1, 4), Direction.NORTH, Direction.WEST);
+            LaserJunctionBlockEntity split = junction(helper, new BlockPos(4, 1, 4));
+            split.getLaserOutputs().add(Direction.SOUTH);
+            split.setOutputLimit(Direction.NORTH, 70);
+            split.setOutputLimit(Direction.SOUTH, 30);
+            helper.setBlock(northMixer, NTBlocks.MIXER.get().defaultBlockState());
+            helper.setBlock(southMixer, NTBlocks.MIXER.get().defaultBlockState());
+            helper.succeedWhen(() -> {
+                helper.assertValueEqual(70, mixer(helper, northMixer).getPower(), "the larger cap takes what the smaller one leaves");
+                helper.assertValueEqual(30, mixer(helper, southMixer).getPower(), "the smaller cap");
+            });
+        });
+
+        r.add("laser/junction_chain_gives_each_machine_its_cap", 200, helper -> {
+            placeShieldedSource(helper, SOURCE_POS, Direction.EAST);
+            for (int x = 3; x <= 6; x++) {
+                BlockPos pos = new BlockPos(x, 1, 4);
+                placeJunction(helper, pos, Direction.NORTH, Direction.WEST);
+                LaserJunctionBlockEntity link = junction(helper, pos);
+                if (x < 6) {
+                    link.getLaserOutputs().add(Direction.EAST);
+                }
+                link.setOutputLimit(Direction.NORTH, 20);
+                helper.setBlock(new BlockPos(x, 1, 3), NTBlocks.MIXER.get().defaultBlockState());
+            }
+            helper.succeedWhen(() -> {
+                for (int x = 3; x <= 6; x++) {
+                    helper.assertValueEqual(20, mixer(helper, new BlockPos(x, 1, 3)).getPower(), "machine " + (x - 2) + " in the chain");
+                }
+                helper.assertValueEqual(40, junction(helper, new BlockPos(6, 1, 4)).getPower(), "the last junction still gets 40 AP");
             });
         });
 

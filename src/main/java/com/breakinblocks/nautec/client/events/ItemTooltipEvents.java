@@ -1,12 +1,17 @@
 package com.breakinblocks.nautec.client.events;
 
+import java.util.List;
 import java.util.Locale;
 import net.minecraft.world.item.BlockItem;
 import com.breakinblocks.nautec.content.dishstorage.DishStorageBlock;
 import com.breakinblocks.nautec.content.biometank.BiomeTankBlock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
+import com.breakinblocks.nautec.client.BacteriaLookup;
+import com.breakinblocks.nautec.content.items.PetriDishItem;
+import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.api.gateways.PackedGateway;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -49,10 +54,39 @@ public final class ItemTooltipEvents {
                 }
             }
         }
+        if (stack.getItem() instanceof PetriDishItem && event.getFlags().hasShiftDown()) {
+            dishLines(stack, event.getToolTip());
+        }
         if (packed != null) {
             event.getToolTip().add(Component.translatable("nautec.gateway.packed").withStyle(ChatFormatting.AQUA));
             if (packed.wild()) {
                 event.getToolTip().add(Component.translatable("nautec.gateway.packed_wild").withStyle(ChatFormatting.DARK_AQUA));
+            }
+        }
+    }
+
+    private static void dishLines(ItemStack stack, List<Component> tooltip) {
+        ComponentBacteriaStorage component = stack.get(NTDataComponents.BACTERIA);
+        if (component == null) {
+            return;
+        }
+        BacteriaInstance colony = component.bacteriaInstance();
+        if (colony.isEmpty()) {
+            return;
+        }
+        List<ItemStack> feeds = BacteriaLookup.feedingItems(colony);
+        if (!feeds.isEmpty()) {
+            tooltip.add(Component.translatable("nautec.bacteria.lookup.eats", BacteriaLookup.itemList(feeds)).withStyle(ChatFormatting.GRAY));
+        }
+        List<ItemStack> grows = BacteriaLookup.incubationItems(colony.getBacteria());
+        if (!grows.isEmpty()) {
+            tooltip.add(Component.translatable("nautec.bacteria.lookup.grows", BacteriaLookup.itemList(grows)).withStyle(ChatFormatting.GRAY));
+        }
+        List<Component> rows = BacteriaLookup.mutationRows(colony, false, BacteriaLookup.LIST_LIMIT);
+        if (!rows.isEmpty()) {
+            tooltip.add(Component.translatable("nautec.bacteria.lookup.becomes").withStyle(ChatFormatting.GRAY));
+            for (Component row : rows) {
+                tooltip.add(Component.literal("  ").append(row));
             }
         }
     }

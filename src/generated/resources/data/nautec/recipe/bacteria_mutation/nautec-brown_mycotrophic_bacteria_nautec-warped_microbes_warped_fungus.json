@@ -1,7 +1,7 @@
 {
   "type": "nautec:bacteria_mutation",
   "catalyst": "minecraft:warped_fungus",
-  "chance": 3.0,
+  "chance": 9.0,
   "input_bacteria": "nautec:brown_mycotrophic_bacteria",
   "result_bacteria": "nautec:warped_microbes"
 }

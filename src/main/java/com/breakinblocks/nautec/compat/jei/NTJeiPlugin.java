@@ -27,9 +27,11 @@ import com.breakinblocks.nautec.compat.jei.categories.LaserCraftingRecipeCategor
 import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.StrainLineageCategory;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
+import com.breakinblocks.nautec.content.bacteria.BacteriaLineage;
 import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
@@ -131,6 +133,7 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(BacteriaIncubationRecipe.TYPE, BacteriaIncubationCategory.RECIPE_TYPE, ProductNutrients.Derived::incubation),
             new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
     private IJeiRuntime runtime;
+    private List<BacteriaLineage.Path> lineages = List.of();
 
     public NTJeiPlugin() {
         // Only instantiated by JEI, so clients without JEI never load its API classes.
@@ -152,7 +155,25 @@ public class NTJeiPlugin implements IModPlugin {
             for (RecipeBinding<?, ?> binding : recipeBindings) {
                 binding.refresh(runtime.getRecipeManager(), event.getRecipeMap());
             }
+            IRecipeManager manager = runtime.getRecipeManager();
+            manager.hideRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
+            lineages = lineages(event.getRecipeMap());
+            manager.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
+            manager.unhideRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
         }
+    }
+
+    private static List<BacteriaLineage.Path> lineages(RecipeMap map) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (connection == null) {
+            return List.of();
+        }
+        List<BacteriaMutationRecipe> mutations = new ArrayList<>();
+        for (RecipeHolder<BacteriaMutationRecipe> holder : map.byType(BacteriaMutationRecipe.TYPE)) {
+            mutations.add(holder.value());
+        }
+        mutations.addAll(ProductNutrients.derive(map, connection.registryAccess()).mutation());
+        return List.copyOf(BacteriaLineage.fastest(mutations, BacteriaLineage.graftable()).values());
     }
 
     private static final class RecipeBinding<I extends RecipeInput, R extends Recipe<I>> {
@@ -238,6 +259,9 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BacteriaMutationsCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
+        registration.addRecipeCategories(new StrainLineageCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
         registration.addRecipeCategories(new BacteriaIncubationCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -296,6 +320,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipes(EasInfusionCategory.RECIPE_TYPE, EasInfusionCategory.recipes());
         registration.addRecipes(CombustionDynamoCategory.RECIPE_TYPE, CombustionDynamoCategory.recipes());
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
+        lineages = lineages(ClientRecipes.get());
+        registration.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
             registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
@@ -399,6 +425,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addCraftingStation(AugmentationRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AUGMENTATION_STATION.get()));
         registration.addCraftingStation(BacteriaMutationsCategory.RECIPE_TYPE,
+                new ItemStack(NTBlocks.MUTATOR.get()));
+        registration.addCraftingStation(StrainLineageCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MUTATOR.get()));
         registration.addCraftingStation(BacteriaIncubationCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.INCUBATOR.get()));

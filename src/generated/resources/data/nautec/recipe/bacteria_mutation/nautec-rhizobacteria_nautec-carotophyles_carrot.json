@@ -1,7 +1,7 @@
 {
   "type": "nautec:bacteria_mutation",
   "catalyst": "minecraft:carrot",
-  "chance": 10.0,
+  "chance": 30.0,
   "input_bacteria": "nautec:rhizobacteria",
   "result_bacteria": "nautec:carotophyles"
 }
