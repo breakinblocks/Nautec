@@ -12,13 +12,16 @@ import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
 import com.breakinblocks.nautec.content.spawner.SpawnerFilterEntry;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
@@ -39,6 +42,7 @@ import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -47,6 +51,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public final class ConfinedSpawnerTests {
     private static final BlockPos SPAWNER = new BlockPos(4, 1, 4);
@@ -111,6 +116,27 @@ public final class ConfinedSpawnerTests {
             boolean matrixReturned = helper.getLevel().getEntitiesOfClass(ItemEntity.class, around).stream()
                     .anyMatch(item -> item.getItem().is(NTItems.SPAWNER_CONFINEMENT_MATRIX.get()));
             helper.assertTrue(matrixReturned, "the matrix should come back when no player takes it");
+            helper.succeed();
+        });
+
+        r.add("confined_spawner/sneak_click_releases_with_an_item_in_the_off_hand", 40, helper -> {
+            confinedChickens(helper, 4, 20);
+            ServerLevel level = helper.getLevel();
+            BlockPos pos = helper.absolutePos(SPAWNER);
+            ServerPlayer player = new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), "OffHandReleaser"),
+                    ClientInformation.createDefault());
+            player.getAbilities().instabuild = false;
+            player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.TORCH));
+            player.setShiftKeyDown(true);
+            BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+            try {
+                player.gameMode.useItemOn(player, level, player.getMainHandItem(), InteractionHand.MAIN_HAND, hit);
+            } catch (NullPointerException expected) {
+            }
+            helper.assertTrue(helper.getBlockState(SPAWNER).is(Blocks.SPAWNER), "a sneak-click with an empty main hand releases the spawner");
+            helper.assertTrue(player.getInventory().contains(new ItemStack(NTItems.SPAWNER_CONFINEMENT_MATRIX.get())),
+                    "the matrix goes back to the player");
+            helper.assertTrue(player.getOffhandItem().is(Items.TORCH), "the off hand item is untouched");
             helper.succeed();
         });
 
