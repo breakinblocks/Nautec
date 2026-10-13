@@ -400,7 +400,7 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue[] CONDUIT_ITEM_INTERVALS = conduitValues("conduitItemInterval",
             "Ticks between item moves on a Conduit Tap face with %s upgrade", new int[]{20, 10, 5, 2, 1}, 1, 1200);
     private static final ModConfigSpec.IntValue[] CONDUIT_ITEMS_PER_OP = conduitValues("conduitItemsPerOp",
-            "Items moved per move on a Conduit Tap face with %s upgrade", new int[]{8, 16, 32, 64, 64}, 1, 4096);
+            "Items moved per move on a Conduit Tap face with %s upgrade", new int[]{8, 16, 32, 64, 256}, 1, 4096);
     private static final ModConfigSpec.IntValue[] CONDUIT_FLUID_RATES = conduitValues("conduitFluidRate",
             "mB per tick a Conduit Tap face moves with %s upgrade", new int[]{1_000, 5_000, 30_000, 200_000, 1_000_000}, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue[] CONDUIT_ENERGY_RATES = conduitValues("conduitEnergyRate",

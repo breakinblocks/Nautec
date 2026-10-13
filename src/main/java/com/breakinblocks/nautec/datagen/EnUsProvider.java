@@ -206,6 +206,7 @@ public class EnUsProvider extends LanguageProvider {
         add("subtitles.nautec.gateway.travel", "Gateway swallows");
         add("subtitles.nautec.gateway.recode", "Gateway address set");
         add("subtitles.nautec.resonant_vault.open", "Resonant Vault opens");
+        add("subtitles.nautec.extradimensional_storage.hum", "Singularity hums");
         add("subtitles.nautec.resonant_vault.close", "Resonant Vault closes");
         add("subtitles.nautec.resonant_cistern.open", "Resonant Cistern sloshes");
         add("subtitles.nautec.resonant_storage.recode", "Resonant channel set");

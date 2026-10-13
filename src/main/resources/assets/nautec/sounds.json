@@ -608,6 +608,15 @@
       }
     ]
   },
+  "extradimensional_storage.hum": {
+    "subtitle": "subtitles.nautec.extradimensional_storage.hum",
+    "sounds": [
+      {
+        "name": "nautec:extradimensional/energy_core",
+        "attenuation_distance": 24
+      }
+    ]
+  },
   "resonant_vault.open": {
     "subtitle": "subtitles.nautec.resonant_vault.open",
     "sounds": [

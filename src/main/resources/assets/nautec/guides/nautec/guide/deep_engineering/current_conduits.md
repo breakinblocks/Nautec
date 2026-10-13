@@ -71,7 +71,7 @@ Each face moves on its own. Put one upgrade in the tap to raise the speed of all
 | <ItemLink id="eddy_upgrade"/> | 16 every 10 ticks | 5,000 mB/t | 25,000/t |
 | <ItemLink id="surge_upgrade"/> | 32 every 5 ticks | 30,000 mB/t | 150,000/t |
 | <ItemLink id="riptide_upgrade"/> | 64 every 2 ticks | 200,000 mB/t | 1,000,000/t |
-| <ItemLink id="maelstrom_upgrade"/> | 64 every tick | 1,000,000 mB/t | 5,000,000/t |
+| <ItemLink id="maelstrom_upgrade"/> | 256 every tick | 1,000,000 mB/t | 5,000,000/t |
 
 ***
 

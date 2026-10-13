@@ -43,11 +43,13 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class ExtradimensionalStorageBlockEntity extends ContainerBlockEntity implements MenuProvider, ResonanceTunable, ChunkLoadable, NetworkBattery {
@@ -72,6 +74,7 @@ public class ExtradimensionalStorageBlockEntity extends ContainerBlockEntity imp
 
     private static final int SCAN_INTERVAL = 20;
     private static final int VISUAL_STEPS = 32;
+    public static final Set<ExtradimensionalStorageBlockEntity> CLIENT_LOADED = new ReferenceOpenHashSet<>();
 
     public enum PortMode {
         OFF,
@@ -647,11 +650,20 @@ public class ExtradimensionalStorageBlockEntity extends ContainerBlockEntity imp
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level != null && level.isClientSide()) {
+            CLIENT_LOADED.add(this);
+        }
+    }
+
+    @Override
     public void setRemoved() {
         if (joined != null) {
             SatelliteGrid.leaveBattery(joined, this);
             joined = null;
         }
+        CLIENT_LOADED.remove(this);
         super.setRemoved();
     }
 

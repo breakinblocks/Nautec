@@ -32,6 +32,10 @@ public class ExtradimensionalStorageBERenderer extends NTBERenderer<Extradimensi
         super(ctx);
     }
 
+    public static float height(int tier) {
+        return HEIGHT[Mth.clamp(tier, 1, HEIGHT.length) - 1];
+    }
+
     @Override
     public SingularityRenderState createRenderState() {
         return new SingularityRenderState();
