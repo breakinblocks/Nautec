@@ -37,6 +37,11 @@ public class NetworkEvents {
                 OpenResonanceAugmentPayload::handle
         );
         registrar.playToServer(
+                SmelterAutoDistributePayload.TYPE,
+                SmelterAutoDistributePayload.STREAM_CODEC,
+                SmelterAutoDistributePayload::handle
+        );
+        registrar.playToServer(
                 ReplicatorModePayload.TYPE,
                 ReplicatorModePayload.STREAM_CODEC,
                 ReplicatorModePayload::handle
@@ -120,6 +125,21 @@ public class NetworkEvents {
                 FishingMinigameResultPayload.TYPE,
                 FishingMinigameResultPayload.STREAM_CODEC,
                 FishingMinigameResultPayload::handle
+        );
+        registrar.playToClient(
+                OpenBeamFacesPayload.TYPE,
+                OpenBeamFacesPayload.STREAM_CODEC,
+                OpenBeamFacesPayload::handle
+        );
+        registrar.playToServer(
+                SetBeamFacePayload.TYPE,
+                SetBeamFacePayload.STREAM_CODEC,
+                SetBeamFacePayload::handle
+        );
+        registrar.playToServer(
+                SetJunctionLimitPayload.TYPE,
+                SetJunctionLimitPayload.STREAM_CODEC,
+                SetJunctionLimitPayload::handle
         );
         registrar.playToClient(
                 OpenGatewayScreenPayload.TYPE,

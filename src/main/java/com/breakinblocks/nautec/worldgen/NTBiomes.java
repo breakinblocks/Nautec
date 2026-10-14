@@ -38,7 +38,7 @@ public final class NTBiomes {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 3, 4, 4);
         mobs.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.DROWNED, 20, 1, 3));
-        mobs.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 25, 1, 2));
+        mobs.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 100, 1, 2));
         mobs.addSpawn(MobCategory.WATER_AMBIENT, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 8, 3, 6));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);

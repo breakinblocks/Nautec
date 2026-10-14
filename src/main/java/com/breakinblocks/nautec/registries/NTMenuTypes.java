@@ -1,6 +1,9 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.menus.ExtradimensionalStorageMenu;
 import com.breakinblocks.nautec.content.menus.ConduitTapMenu;
+import com.breakinblocks.nautec.content.menus.PressureForgeMenu;
+import com.breakinblocks.nautec.content.menus.LaserPurificationSmelterMenu;
 import com.breakinblocks.nautec.content.menus.ResonantCisternMenu;
 import com.breakinblocks.nautec.content.menus.ResonantVaultMenu;
 import com.breakinblocks.nautec.content.dishstorage.DishStorageMenu;
@@ -54,6 +57,8 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<ColonyReplicatorMenu>> COLONY_REPLICATOR = registerMenuType(ColonyReplicatorMenu::new, "colony_replicator");
     public static final Supplier<MenuType<BubbleAnchorMenu>> BUBBLE_ANCHOR = registerMenuType(BubbleAnchorMenu::new, "bubble_anchor");
     public static final Supplier<MenuType<EnergyConverterMenu>> ENERGY_CONVERTER = registerMenuType(EnergyConverterMenu::new, "energy_converter");
+    public static final Supplier<MenuType<PressureForgeMenu>> PRESSURE_FORGE = registerMenuType(PressureForgeMenu::new, "pressure_forge");
+    public static final Supplier<MenuType<LaserPurificationSmelterMenu>> LASER_PURIFICATION_SMELTER = registerMenuType(LaserPurificationSmelterMenu::new, "laser_purification_smelter");
     public static final Supplier<MenuType<DistributorMenu>> DISTRIBUTOR = registerMenuType(DistributorMenu::new, "nautechnical_distributor");
     public static final Supplier<MenuType<AdvancedBacterialAnalyzerMenu>> ADVANCED_BACTERIAL_ANALYZER = registerMenuType(AdvancedBacterialAnalyzerMenu::new, "advanced_bacterial_analyzer");
     public static final Supplier<MenuType<GraftingStationMenu>> GRAFTING_STATION = registerMenuType(GraftingStationMenu::new, "grafting_station");
@@ -63,6 +68,8 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<CombustionDynamoMenu>> COMBUSTION_DYNAMO = registerMenuType(CombustionDynamoMenu::new, "combustion_dynamo");
     public static final Supplier<MenuType<SatelliteArrayMenu>> SATELLITE_ARRAY = registerMenuType(SatelliteArrayMenu::new, "satellite_array");
     public static final Supplier<MenuType<ResonanceNodeMenu>> RESONANCE_NODE = registerMenuType(ResonanceNodeMenu::new, "resonance_node");
+    public static final Supplier<MenuType<ExtradimensionalStorageMenu>> EXTRADIMENSIONAL_STORAGE = registerMenuType(ExtradimensionalStorageMenu::new,
+            "extradimensional_energy_storage");
     public static final Supplier<MenuType<DishStorageMenu>> DISH_STORAGE = registerMenuType(DishStorageMenu::new, "dish_storage");
     public static final Supplier<MenuType<ConduitTapMenu>> CONDUIT_TAP = registerMenuType(ConduitTapMenu::new, "conduit_tap");
     public static final Supplier<MenuType<ResonantVaultMenu>> RESONANT_VAULT = registerMenuType(ResonantVaultMenu::new, "resonant_vault");

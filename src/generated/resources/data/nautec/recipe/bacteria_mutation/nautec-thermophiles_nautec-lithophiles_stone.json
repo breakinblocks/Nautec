@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:stone"
   },
-  "chance": 5.0,
+  "chance": 15.0,
   "input_bacteria": "nautec:thermophiles",
   "result_bacteria": "nautec:lithophiles"
 }

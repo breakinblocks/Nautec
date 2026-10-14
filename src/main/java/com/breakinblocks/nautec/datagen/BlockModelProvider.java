@@ -1,5 +1,9 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
+import com.breakinblocks.nautec.content.extradimensional.FramePart;
 import com.breakinblocks.nautec.content.conduits.ConduitArm;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
 import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
@@ -7,6 +11,7 @@ import com.breakinblocks.nautec.content.conduits.TapArm;
 import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
+import com.breakinblocks.nautec.content.blocks.LaserPurificationSmelterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
@@ -92,10 +97,12 @@ public class BlockModelProvider extends BlockStateProvider {
         fusionPlant();
         facingBlock(NTBlocks.RESONANCE_NODE.get(), existingModelFile(NTBlocks.RESONANCE_NODE.get()));
         simpleBlock(NTBlocks.PRISMATIC_EMITTER.get(), existingModelFile(NTBlocks.PRISMATIC_EMITTER.get()));
+        extradimensionalStorage();
         simpleBlock(NTBlocks.UPLINK_ARRAY.get(), existingModelFile(NTBlocks.UPLINK_ARRAY.get()));
         simpleBlock(NTBlocks.SATELLITE_ARRAY_TOP.get(), existingModelFile(NTBlocks.SATELLITE_ARRAY_TOP.get()));
         generators();
         aquaticCatalyst(NTBlocks.AQUATIC_CATALYST.get());
+        aquaticCatalyst(NTBlocks.ADVANCED_AQUATIC_CATALYST.get());
 
         existingFacingBlock(NTBlocks.PRISMARINE_RELAY.get(), NTBlocks.PRISMARINE_RELAY.get());
 
@@ -205,6 +212,7 @@ public class BlockModelProvider extends BlockStateProvider {
         advancedAnalyzer(NTBlocks.ADVANCED_BACTERIAL_ANALYZER.get());
         bubbleAnchor(NTBlocks.BUBBLE_ANCHOR.get());
         replicator(NTBlocks.COLONY_REPLICATOR.get());
+        laserPurificationSmelter(NTBlocks.LASER_PURIFICATION_SMELTER.get());
         DoorBlock hatch = NTBlocks.PRESSURE_HATCH.get();
         doorBlockWithRenderType(hatch, blockTexture(hatch, "_bottom"), blockTexture(hatch, "_top"), TRANSLUCENT);
         oxygenDiffuser(NTBlocks.OXYGEN_DIFFUSER.get());
@@ -224,6 +232,10 @@ public class BlockModelProvider extends BlockStateProvider {
                 blockTexture(block, "_front_active"), blockTexture(block, "_side")), blockTexture(block, "_front_active"),
                 front(blockTexture(block, "_front_active_emissive")));
         booleanHorizontalDispatch(block, ColonyReplicatorBlock.ACTIVE, active, idle);
+    }
+
+    private void laserPurificationSmelter(Block block) {
+        booleanHorizontalDispatch(block, LaserPurificationSmelterBlock.ACTIVE, existingModelFile("laser_purification_smelter_active"), existingModelFile(block));
     }
 
     private void conduitBeacon(Block block) {
@@ -597,6 +609,25 @@ public class BlockModelProvider extends BlockStateProvider {
     public BlockModelBuilder cubeBottomTop(String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
         ResourceLocation id = Nautec.rl("block/" + name);
         return createdModels.computeIfAbsent(id, key -> models().cubeBottomTop(key.toString(), side, bottom, top));
+    }
+
+    private void extradimensionalStorage() {
+        getVariantBuilder(NTBlocks.EXTRADIMENSIONAL_STORAGE.get()).forAllStates(state -> new ConfiguredModel[]{new ConfiguredModel(existingModelFile(
+                state.getValue(ExtradimensionalStorageBlock.TIER) == 1 ? "extradimensional_energy_storage" : "extradimensional_energy_storage_formed"))});
+        for (Block frame : new Block[]{NTBlocks.RIFT_CONTAINMENT_FRAME.get(), NTBlocks.VOID_CONTAINMENT_FRAME.get(),
+                NTBlocks.ABYSSAL_CONTAINMENT_FRAME.get(), NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.get()}) {
+            String name = name(frame);
+            getVariantBuilder(frame).forAllStates(state -> {
+                ModelFile model = existingModelFile(name + "_" + state.getValue(ExtradimensionalFrameBlock.PART).getSerializedName());
+                int yRot = switch (state.getValue(ExtradimensionalFrameBlock.FACING)) {
+                    case EAST -> 90;
+                    case SOUTH -> 180;
+                    case WEST -> 270;
+                    default -> 0;
+                };
+                return new ConfiguredModel[]{rotated(model, 0, yRot)};
+            });
+        }
     }
 
     public static ConfiguredModel rotated(ModelFile model, int xRot, int yRot) {

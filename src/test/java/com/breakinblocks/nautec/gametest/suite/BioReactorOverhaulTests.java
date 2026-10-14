@@ -297,8 +297,8 @@ public final class BioReactorOverhaulTests {
             }
             fast.getItemStackHandler().setStackInSlot(fast.upgradeSlot(0), new ItemStack(NTItems.REACTOR_SPEED_UPGRADE.get()));
 
-            helper.assertValueEqual(80, fast.getRequiredPower(), "AP with one colony and one speed upgrade");
-            helper.assertValueEqual(50, slow.getRequiredPower(), "AP with one colony and no upgrades");
+            helper.assertValueEqual(32, fast.getRequiredPower(), "AP with one colony and one speed upgrade");
+            helper.assertValueEqual(20, slow.getRequiredPower(), "AP with one colony and no upgrades");
             helper.assertTrue(Math.abs(fast.getSpeedMultiplier() - 1.5f) < EPSILON, "speed multiplier with one upgrade");
 
             int[] baseline = new int[2];
@@ -321,7 +321,7 @@ public final class BioReactorOverhaulTests {
                     stats(2.0f, NTConfig.bacteriaLifespanCap), 0));
             reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(0), new ItemStack(NTItems.REACTOR_YIELD_UPGRADE.get()));
 
-            helper.assertValueEqual(90, reactor.getRequiredPower(), "AP with one colony and one yield upgrade");
+            helper.assertValueEqual(36, reactor.getRequiredPower(), "AP with one colony and one yield upgrade");
             helper.assertValueEqual(2, reactor.getItemsPerCycle(), "items per cycle with one yield upgrade");
 
             helper.runAfterDelay(200, () -> {
@@ -339,7 +339,7 @@ public final class BioReactorOverhaulTests {
             reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(0), new ItemStack(NTItems.REACTOR_EFFICIENCY_UPGRADE.get()));
             reactor.setVitality(0, 500);
 
-            helper.assertValueEqual(60, reactor.getRequiredPower(), "AP with one colony and one efficiency upgrade");
+            helper.assertValueEqual(24, reactor.getRequiredPower(), "AP with one colony and one efficiency upgrade");
             helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.75f) < EPSILON, "vitality per tick with one efficiency upgrade");
 
             float[] start = new float[1];
@@ -351,7 +351,7 @@ public final class BioReactorOverhaulTests {
 
                 reactor.getItemStackHandler().setStackInSlot(reactor.upgradeSlot(1), new ItemStack(NTItems.REACTOR_EFFICIENCY_UPGRADE.get()));
                 helper.assertTrue(Math.abs(reactor.getVitalityCost() - 0.5625f) < EPSILON, "vitality per tick with two efficiency upgrades");
-                helper.assertValueEqual(72, reactor.getRequiredPower(), "AP with one colony and two efficiency upgrades");
+                helper.assertValueEqual(29, reactor.getRequiredPower(), "AP with one colony and two efficiency upgrades");
                 helper.succeed();
             });
         });

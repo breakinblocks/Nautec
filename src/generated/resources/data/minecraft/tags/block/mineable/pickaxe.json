@@ -12,8 +12,10 @@
     "nautec:resonant_vault",
     "nautec:resonant_cistern",
     "nautec:aquatic_catalyst",
+    "nautec:advanced_aquatic_catalyst",
     "nautec:submarine_dock",
     "nautec:pressure_forge",
+    "nautec:laser_purification_smelter",
     "nautec:gateway",
     "nautec:gateway_ring",
     "nautec:resonance_chamber",
@@ -75,6 +77,11 @@
     "nautec:laser_injector",
     "nautec:fusion_collector",
     "nautec:fusion_port",
+    "nautec:extradimensional_energy_storage",
+    "nautec:rift_containment_frame",
+    "nautec:void_containment_frame",
+    "nautec:abyssal_containment_frame",
+    "nautec:event_horizon_containment_frame",
     "nautec:biome_tank"
   ]
 }

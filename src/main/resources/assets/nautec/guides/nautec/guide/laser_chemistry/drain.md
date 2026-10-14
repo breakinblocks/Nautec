@@ -59,17 +59,17 @@ Shift-right-click the drain with both hands empty to open it. It opens once it h
 
 If it does not open, a message says how much power it is receiving against what it needs. If it opens but something will stop it pumping, such as missing water or the wrong biome, the message says that too.
 
-While open and powered it pumps Salt Water into a 128,000 mB tank. A beam just over 20 AP pumps 500 mB every second, and a stronger beam pumps more with no upper limit, though each extra mB costs more power: four times the beam pumps twice as much.
+While open and powered it pumps Salt Water into a 128,000 mB tank. A beam just over 20 AP pumps 500 mB every second, and a stronger beam pumps more in direct proportion with no upper limit: every AP pumps 25 mB a second, so four times the beam pumps four times as much.
 
 | Beam | Salt Water per second |
 |---|---|
 | just over 20 AP | about 500 mB |
-| 80 AP | 1,000 mB |
-| 320 AP | 2,000 mB |
-| 2,000 AP | 5,000 mB |
-| 20,000 AP | about 15,800 mB |
+| 80 AP | 2,000 mB |
+| 320 AP | 8,000 mB |
+| 2,000 AP | 50,000 mB |
+| 20,000 AP | 500,000 mB |
 
-Jade shows the drain's current rate. The base rate, the power it needs and the tank size are all configurable. It is the steady source of Salt Water for the [Mixer](mixer.md), since ocean water in a Bucket stays plain water unless a pack has turned on `collectSaltWater` in `config/nautec-common.toml`.
+Jade shows the drain's current rate. The base rate, the power it needs, how fast the rate grows with the beam (`drainPowerScaling`) and the tank size are all configurable. It is the steady source of Salt Water for the [Mixer](mixer.md), since ocean water in a Bucket stays plain water unless a pack has turned on `collectSaltWater` in `config/nautec-common.toml`.
 
 * Take Salt Water out with a pipe on the bottom of the centre block.
 * Or right-click any part of the drain with a Bucket or other fluid container. A Bucket fills once the tank holds at least 1,000 mB.
@@ -86,7 +86,7 @@ Look at a wall piece with the <ItemLink id="prism_monocle"/> to see how much flu
 
 ## <Color id="gold">Stronger Beams</Color>
 
-The Deep Sea Drain pumps more Salt Water on a stronger beam, by the same square root rule as the machines: four times the beam pumps twice as much. The table above lists the rates.
+The Deep Sea Drain pumps more Salt Water on a stronger beam, in direct proportion rather than by the square root rule the machines follow: four times the beam pumps four times as much. The table above lists the rates. A pack can change this with `drainPowerScaling` in `config/nautec-common.toml`; 0.5 gives the square root rule.
 
 See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
 

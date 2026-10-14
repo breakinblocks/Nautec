@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "nautec:event_horizon_containment_frame"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "nautec:blocks/event_horizon_containment_frame"
+}

@@ -2,7 +2,7 @@
 navigation:
   title: Custom Bacteria
   icon: minecraft:command_block
-  position: 12
+  position: 14
   parent: aquatic_biology/aquatic_biology-index.md
 ---
 

@@ -34,7 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public final class DrainTests {
-    private static final BlockPos DRAIN_C = new BlockPos(4, 1, 4);
+    private static final BlockPos DRAIN_C = new BlockPos(4, 2, 4);
     private static final BlockPos PORT_PART = DRAIN_C.offset(0, 0, 1);
     private static final BlockPos SOURCE = DRAIN_C.offset(0, 0, 3);
     private static final int OPEN_TICKS = 160;
@@ -107,21 +107,29 @@ public final class DrainTests {
             helper.succeedWhen(() -> helper.assertTrue(drain(helper).getPower() > 0, "a beam into the outward port reaches the drain"));
         });
 
-        r.add("drain/pump_rate_scales_with_the_square_root_of_the_beam", 20, helper -> {
+        r.add("drain/pump_rate_scales_with_the_beam", 20, helper -> {
             int power = NTConfig.drainPower;
             int base = NTConfig.drainSaltWaterAmount;
+            double scaling = NTConfig.drainPowerScaling;
             NTConfig.drainPower = 20;
             NTConfig.drainSaltWaterAmount = 500;
             try {
+                NTConfig.drainPowerScaling = 1.0D;
                 helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(20), 0, "no pumping at the threshold");
-                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(21), 512, "just over the threshold");
-                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(80), 1000, "four times the beam pumps twice as much");
-                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(320), 2000, "sixteen times the beam pumps four times as much");
-                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(2_000_000), 158_114, "no upper limit on the beam");
-                helper.assertTrue(DrainBlockEntity.saltWaterPerSecond(Integer.MAX_VALUE) > 0, "the largest beam does not overflow");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(21), 525, "just over the threshold");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(80), 2000, "four times the beam pumps four times as much");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(320), 8000, "sixteen times the beam pumps sixteen times as much");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(2_000_000), 50_000_000, "no upper limit on the beam");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(Integer.MAX_VALUE), Integer.MAX_VALUE, "the largest beam does not overflow");
+                NTConfig.drainPowerScaling = 0.5D;
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(80), 1000, "at 0.5 four times the beam pumps twice as much");
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(2_000_000), 158_114, "at 0.5 the square root still has no upper limit");
+                NTConfig.drainPowerScaling = 0.0D;
+                helper.assertValueEqual(DrainBlockEntity.saltWaterPerSecond(320), 500, "at 0 a stronger beam pumps no more");
             } finally {
                 NTConfig.drainPower = power;
                 NTConfig.drainSaltWaterAmount = base;
+                NTConfig.drainPowerScaling = scaling;
             }
             helper.succeed();
         });

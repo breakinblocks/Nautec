@@ -27,6 +27,8 @@ public final class NTShaders {
     private static @Nullable ShaderInstance tidalShockwave;
     private static @Nullable ShaderInstance portalArrival;
     private static @Nullable ShaderInstance teleportBlur;
+    private static @Nullable ShaderInstance singularityDisk;
+    private static @Nullable ShaderInstance singularityLens;
 
     private NTShaders() {
     }
@@ -50,6 +52,8 @@ public final class NTShaders {
         register(event, provider, "tidal_shockwave", screen, s -> tidalShockwave = s);
         register(event, provider, "portal_arrival", screen, s -> portalArrival = s);
         register(event, provider, "teleport_blur", screen, s -> teleportBlur = s);
+        register(event, provider, "singularity_disk", glow, s -> singularityDisk = s);
+        register(event, provider, "singularity_lens", screen, s -> singularityLens = s);
     }
 
     private static void register(RegisterShadersEvent event, ResourceProvider provider, String name, VertexFormat format, Consumer<ShaderInstance> onLoaded) {
@@ -114,5 +118,13 @@ public final class NTShaders {
 
     public static @Nullable ShaderInstance teleportBlur() {
         return teleportBlur;
+    }
+
+    public static @Nullable ShaderInstance singularityDisk() {
+        return singularityDisk;
+    }
+
+    public static @Nullable ShaderInstance singularityLens() {
+        return singularityLens;
     }
 }

@@ -40,6 +40,18 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue RELAY_LASER_DISTANCE = BUILDER
             .comment("The distance a Prismarine Laser Relay sends its beam.")
             .defineInRange("relayLaserDistance", 64, 0, 128);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE = BUILDER
+            .comment("The damage each hit of a laser beam deals to a creature standing in it, on a beam of laserDamageReferencePower AP. 0 turns laser damage off")
+            .defineInRange("laserDamage", 3.0, 0.0, 1_000_000.0);
+    private static final ModConfigSpec.IntValue LASER_DAMAGE_REFERENCE_POWER = BUILDER
+            .comment("The beam power in AP that deals exactly laserDamage")
+            .defineInRange("laserDamageReferencePower", 10, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE_SCALING = BUILDER
+            .comment("How laser damage grows with a stronger beam: damage = laserDamage x (beam / laserDamageReferencePower) ^ laserDamageScaling. 0.5 is the square root, the same curve beam overclocking uses, so four times the beam deals twice the damage. 0 deals laserDamage on any beam")
+            .defineInRange("laserDamageScaling", 0.5, 0.0, 2.0);
+    private static final ModConfigSpec.DoubleValue LASER_DAMAGE_MAX = BUILDER
+            .comment("The most damage one laser hit can deal. 0 means no limit")
+            .defineInRange("laserDamageMax", 0.0, 0.0, 1_000_000.0);
 
     private static final ModConfigSpec.IntValue ENERGY_CONVERTER_FE_PER_AP = BUILDER
             .comment("How much FE an Energy Converter spends for each AP it sends")
@@ -74,8 +86,11 @@ public final class NTConfig {
             .defineInRange("laserCraftingMatrixTankCapacity", 16_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue DRAIN_SALT_WATER_AMOUNT = BUILDER
-            .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. It scales with the square root of the beam, so four times the beam pumps twice as much")
+            .comment("The mB of salt water a Deep Sea Drain pumps each second on a beam of exactly its power requirement. A stronger beam pumps more, as set by drainPowerScaling")
             .defineInRange("drainSaltWaterAmount", 500, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.DoubleValue DRAIN_POWER_SCALING = BUILDER
+            .comment("How the Deep Sea Drain's pump rate grows with a stronger beam: rate = drainSaltWaterAmount x (beam / drainPowerRequirement) ^ drainPowerScaling. 1.0 pumps in direct proportion, so four times the beam pumps four times as much. 0.5 is the square root, so four times the beam pumps twice as much")
+            .defineInRange("drainPowerScaling", 1.0, 0.0, 2.0);
     private static final ModConfigSpec.IntValue DRAIN_CAPACITY = BUILDER
             .comment("The fluid capacity of the Deep Sea Drain")
             .defineInRange("drainCapacity", 128_000, 0, Integer.MAX_VALUE);
@@ -191,11 +206,11 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_BASE = BUILDER
             .comment("The amount of power the Bio Reactor requires before any colonies are counted")
-            .defineInRange("bioReactorPowerBase", 25, 0, Integer.MAX_VALUE);
+            .defineInRange("bioReactorPowerBase", 5, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue BIO_REACTOR_POWER_PER_COLONY = BUILDER
             .comment("The extra amount of power the Bio Reactor requires for each colony it holds")
-            .defineInRange("bioReactorPowerPerColony", 25, 0, Integer.MAX_VALUE);
+            .defineInRange("bioReactorPowerPerColony", 15, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.DoubleValue BIO_REACTOR_DECAY_PER_SECOND = BUILDER
             .comment("The fraction of a senescent, unfed colony that dies off for every 20 ticks it works in a reactor (at least 1 per 20 ticks). 0 turns decay off")
@@ -377,11 +392,15 @@ public final class NTConfig {
             .comment("How many ticks a Nautechnical Distributor waits between moves. Each move has no amount limit")
             .defineInRange("distributorInterval", 4, 1, 200);
 
+    private static final ModConfigSpec.BooleanValue DISTRIBUTOR_STORAGE_NETWORKS = BUILDER
+            .comment("Whether a Nautechnical Distributor next to an Applied Energistics 2 ME Interface or a Refined Storage Interface pulls the items and fluids its links ask for out of that storage network")
+            .define("distributorStorageNetworks", true);
+
     private static final String[] CONDUIT_TIERS = {"Base", "Eddy", "Surge", "Riptide", "Maelstrom"};
     private static final ModConfigSpec.IntValue[] CONDUIT_ITEM_INTERVALS = conduitValues("conduitItemInterval",
             "Ticks between item moves on a Conduit Tap face with %s upgrade", new int[]{20, 10, 5, 2, 1}, 1, 1200);
     private static final ModConfigSpec.IntValue[] CONDUIT_ITEMS_PER_OP = conduitValues("conduitItemsPerOp",
-            "Items moved per move on a Conduit Tap face with %s upgrade", new int[]{8, 16, 32, 64, 64}, 1, 4096);
+            "Items moved per move on a Conduit Tap face with %s upgrade", new int[]{8, 16, 32, 64, 256}, 1, 4096);
     private static final ModConfigSpec.IntValue[] CONDUIT_FLUID_RATES = conduitValues("conduitFluidRate",
             "mB per tick a Conduit Tap face moves with %s upgrade", new int[]{1_000, 5_000, 30_000, 200_000, 1_000_000}, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue[] CONDUIT_ENERGY_RATES = conduitValues("conduitEnergyRate",
@@ -420,9 +439,16 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue RESONANCE_NODE_AP_BUFFER = BUILDER
             .comment("The laser power a Resonance Node holds")
             .defineInRange("resonanceNodeApBuffer", 200_000, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.ConfigValue<List<? extends Integer>> RESONANCE_NODE_UPGRADE_LIMITS = BUILDER
+            .comment("The most AP and FE a Resonance Node moves each tick with an Eddy, Surge, Riptide and Maelstrom Upgrade fitted, in that order. 0 means no limit. With no upgrade a node uses satelliteTransferLimit. A fitted node's AP and FE buffers grow with its limit")
+            .defineList("resonanceNodeUpgradeLimits", List.of(500_000, 2_500_000, 10_000_000, 0), () -> 0, entry -> entry instanceof Number number && number.intValue() >= 0);
     private static final ModConfigSpec.IntValue RESONANCE_NODE_FE_BUFFER = BUILDER
             .comment("The FE a Resonance Node holds")
             .defineInRange("resonanceNodeFeBuffer", 1_000_000, 1, Integer.MAX_VALUE);
+    private static final long[] EXTRADIMENSIONAL_CAPACITY_DEFAULTS = {10_000_000L, 1_000_000_000L, 100_000_000_000L, 10_000_000_000_000L, 1_000_000_000_000_000L};
+    private static final int[] EXTRADIMENSIONAL_TRANSFER_DEFAULTS = {50_000, 500_000, 5_000_000, 50_000_000, Integer.MAX_VALUE};
+    private static final ModConfigSpec.LongValue[] EXTRADIMENSIONAL_CAPACITY = extradimensionalCapacities();
+    private static final ModConfigSpec.IntValue[] EXTRADIMENSIONAL_TRANSFER = extradimensionalTransfers();
     private static final ModConfigSpec.BooleanValue RESONANCE_CHUNK_LOADING = BUILDER
             .comment("Whether Resonance Nodes and Uplink Arrays may keep their own chunk loaded when a player turns it on. When false, no block keeps a chunk loaded whatever its setting")
             .define("resonanceChunkLoading", true);
@@ -576,6 +602,16 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue PRESSURE_FORGE_CAPACITY = BUILDER
             .comment("The Etching Acid capacity of an Abyssal Pressure Forge")
             .defineInRange("pressureForgeCapacity", 4_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.ConfigValue<List<? extends Integer>> SMELTER_SLOTS = BUILDER
+            .comment("How many input slots a Laser Purification Smelter unlocks with no upgrade, then with an Eddy, Surge, Riptide and Maelstrom Upgrade.",
+                    "Five whole numbers from 1 to 9")
+            .defineList("smelterSlots", List.of(1, 3, 5, 7, 9), () -> 1, entry -> entry instanceof Number number && number.intValue() >= 1 && number.intValue() <= 9);
+
+    private static final ModConfigSpec.ConfigValue<List<? extends Integer>> SMELTER_AP_MULTIPLIERS = BUILDER
+            .comment("The AP a Laser Purification Smelter needs per tick for each busy slot, with no upgrade, then with an Eddy, Surge, Riptide and Maelstrom Upgrade.",
+                    "The total is divided by the beam's purity when the purity is above 1.0. Five whole numbers, 0 or more")
+            .defineList("smelterApMultipliers", List.of(1, 2, 4, 8, 16), () -> 1, entry -> entry instanceof Number number && number.intValue() >= 0);
 
     private static final ModConfigSpec.IntValue ADVANCED_ANALYZER_POWER_USAGE = BUILDER
             .comment("The beam power in AP an Advanced Bacterial Analyzer needs to run")
@@ -985,6 +1021,14 @@ public final class NTConfig {
             .comment("The highest purity Budding Prismarine can raise an Aquatic Catalyst's beam to")
             .defineInRange("catalystBuddingMaxPurity", 2.0, 0.0, 10.0);
 
+    private static final ModConfigSpec.IntValue ADVANCED_CATALYST_FUEL_MULTIPLIER = BUILDER
+            .comment("How many fuel items an Advanced Aquatic Catalyst burns at once. Its AP output is multiplied by the number it burns, and each burn lasts as long as a single item does in the Aquatic Catalyst")
+            .defineInRange("advancedCatalystFuelMultiplier", 8, 1, 64);
+
+    private static final ModConfigSpec.DoubleValue ADVANCED_CATALYST_PURITY_MULTIPLIER = BUILDER
+            .comment("What an Advanced Aquatic Catalyst multiplies its fuel's purity by, before any Budding Prismarine boost")
+            .defineInRange("advancedCatalystPurityMultiplier", 1.1, 0.0, 10.0);
+
     private static final ModConfigSpec.IntValue CONDUIT_BEACON_POWER_USAGE = BUILDER
             .comment("The AP a running Conduit Beacon uses each tick, taken from its internal buffer")
             .defineInRange("conduitBeaconPowerUsage", 50, 0, Integer.MAX_VALUE);
@@ -1021,6 +1065,8 @@ public final class NTConfig {
     public static double catalystBuddingOutputBonus = 0.25;
     public static double catalystBuddingPurityBonus = 0.1;
     public static double catalystBuddingMaxPurity = 2.0;
+    public static int advancedCatalystFuelMultiplier = 8;
+    public static double advancedCatalystPurityMultiplier = 1.1;
 
     public static int kelpHeight;
     public static boolean spawnBookInInventory;
@@ -1034,6 +1080,10 @@ public final class NTConfig {
     public static int augmentationStationPower;
     public static int laserDistance;
     public static int relayLaserDistance;
+    public static double laserDamage = 3.0;
+    public static int laserDamageReferencePower = 10;
+    public static double laserDamageScaling = 0.5;
+    public static double laserDamageMax = 0.0;
     public static int energyConverterFePerAp = 10;
     public static int energyConverterFeCapacity = 4_000_000;
     public static int energyConverterBaseAp = 150;
@@ -1047,6 +1097,7 @@ public final class NTConfig {
     public static int laserCraftingMatrixTankCapacity = 16_000;
 
     public static int drainSaltWaterAmount;
+    public static double drainPowerScaling = 1.0;
     public static int drainCapacity;
     public static boolean drainRequiresOcean;
 
@@ -1080,8 +1131,8 @@ public final class NTConfig {
     public static int incubatorPowerUsage = 20;
 
     public static double bioReactorBaseSpeed = 16.8;
-    public static int bioReactorPowerBase = 25;
-    public static int bioReactorPowerPerColony = 25;
+    public static int bioReactorPowerBase = 5;
+    public static int bioReactorPowerPerColony = 15;
     public static double bioReactorDecayPerSecond = 0.02;
     public static double industrialBioReactorBaseSpeed = 16.8;
     public static int industrialBioReactorPowerBase = 100;
@@ -1129,6 +1180,7 @@ public final class NTConfig {
     public static int distributorRange = 256;
     public static int distributorMaxLinks = 64;
     public static int distributorInterval = 4;
+    public static boolean distributorStorageNetworks = true;
     public static int[] conduitItemIntervals = {20, 10, 5, 2, 1};
     public static int[] conduitItemsPerOp = {8, 16, 32, 64, 64};
     public static int[] conduitFluidRates = {250, 1_000, 4_000, 16_000, 64_000};
@@ -1205,6 +1257,11 @@ public final class NTConfig {
     public static int pressureForgePowerUsage = 40;
     public static int pressureForgeAcidUsage = 250;
     public static int pressureForgeCapacity = 4_000;
+    public static int[] smelterSlots = {1, 3, 5, 7, 9};
+    public static int[] resonanceNodeUpgradeLimits = {500_000, 2_500_000, 10_000_000, 0};
+    public static long[] extradimensionalCapacity = EXTRADIMENSIONAL_CAPACITY_DEFAULTS.clone();
+    public static int[] extradimensionalTransfer = EXTRADIMENSIONAL_TRANSFER_DEFAULTS.clone();
+    public static int[] smelterApMultipliers = {1, 2, 4, 8, 16};
 
     public static int advancedAnalyzerPowerUsage = 40;
     public static double advancedAnalyzerPurity = 2.1;
@@ -1315,6 +1372,39 @@ public final class NTConfig {
         return values;
     }
 
+    private static ModConfigSpec.LongValue[] extradimensionalCapacities() {
+        ModConfigSpec.LongValue[] values = new ModConfigSpec.LongValue[EXTRADIMENSIONAL_CAPACITY_DEFAULTS.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = BUILDER.comment("The FE an Extradimensional Energy Storage holds at tier " + (i + 1))
+                    .defineInRange("extradimensionalCapacityTier" + (i + 1), EXTRADIMENSIONAL_CAPACITY_DEFAULTS[i], 1L, Long.MAX_VALUE);
+        }
+        return values;
+    }
+
+    private static ModConfigSpec.IntValue[] extradimensionalTransfers() {
+        ModConfigSpec.IntValue[] values = new ModConfigSpec.IntValue[EXTRADIMENSIONAL_TRANSFER_DEFAULTS.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = BUILDER.comment("The most FE each port of an Extradimensional Energy Storage moves per tick at tier " + (i + 1)
+                            + ", and the most it trades with its Resonance Network per tick in each direction")
+                    .defineInRange("extradimensionalTransferTier" + (i + 1), EXTRADIMENSIONAL_TRANSFER_DEFAULTS[i], 1, Integer.MAX_VALUE);
+        }
+        return values;
+    }
+
+    private static int[] tierList(List<?> configured, int[] defaults) {
+        if (configured.size() != defaults.length) {
+            return defaults;
+        }
+        int[] result = new int[defaults.length];
+        for (int i = 0; i < result.length; i++) {
+            if (!(configured.get(i) instanceof Number number)) {
+                return defaults;
+            }
+            result[i] = number.intValue();
+        }
+        return result;
+    }
+
     private static int[] values(ModConfigSpec.IntValue[] values) {
         int[] result = new int[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -1361,6 +1451,10 @@ public final class NTConfig {
 
         laserDistance = value(REGULAR_LASER_DISTANCE);
         relayLaserDistance = value(RELAY_LASER_DISTANCE);
+        laserDamage = value(LASER_DAMAGE);
+        laserDamageReferencePower = value(LASER_DAMAGE_REFERENCE_POWER);
+        laserDamageScaling = value(LASER_DAMAGE_SCALING);
+        laserDamageMax = value(LASER_DAMAGE_MAX);
         energyConverterFePerAp = value(ENERGY_CONVERTER_FE_PER_AP);
         energyConverterFeCapacity = value(ENERGY_CONVERTER_FE_CAPACITY);
         energyConverterBaseAp = value(ENERGY_CONVERTER_BASE_AP);
@@ -1374,6 +1468,7 @@ public final class NTConfig {
         laserCraftingMatrixTankCapacity = value(LASER_CRAFTING_MATRIX_TANK_CAPACITY);
 
         drainSaltWaterAmount = value(DRAIN_SALT_WATER_AMOUNT);
+        drainPowerScaling = value(DRAIN_POWER_SCALING);
         drainCapacity = value(DRAIN_CAPACITY);
         drainRequiresOcean = value(DRAIN_REQUIRES_OCEAN);
 
@@ -1456,6 +1551,7 @@ public final class NTConfig {
         distributorRange = value(DISTRIBUTOR_RANGE);
         distributorMaxLinks = value(DISTRIBUTOR_MAX_LINKS);
         distributorInterval = value(DISTRIBUTOR_INTERVAL);
+        distributorStorageNetworks = value(DISTRIBUTOR_STORAGE_NETWORKS);
         conduitItemIntervals = values(CONDUIT_ITEM_INTERVALS);
         conduitItemsPerOp = values(CONDUIT_ITEMS_PER_OP);
         conduitFluidRates = values(CONDUIT_FLUID_RATES);
@@ -1533,6 +1629,13 @@ public final class NTConfig {
         pressureForgePowerUsage = value(PRESSURE_FORGE_POWER_USAGE);
         pressureForgeAcidUsage = value(PRESSURE_FORGE_ACID_USAGE);
         pressureForgeCapacity = value(PRESSURE_FORGE_CAPACITY);
+        for (int i = 0; i < EXTRADIMENSIONAL_CAPACITY.length; i++) {
+            extradimensionalCapacity[i] = value(EXTRADIMENSIONAL_CAPACITY[i]);
+            extradimensionalTransfer[i] = value(EXTRADIMENSIONAL_TRANSFER[i]);
+        }
+        resonanceNodeUpgradeLimits = tierList(value(RESONANCE_NODE_UPGRADE_LIMITS), new int[]{500_000, 2_500_000, 10_000_000, 0});
+        smelterSlots = tierList(value(SMELTER_SLOTS), new int[]{1, 3, 5, 7, 9});
+        smelterApMultipliers = tierList(value(SMELTER_AP_MULTIPLIERS), new int[]{1, 2, 4, 8, 16});
 
         advancedAnalyzerPowerUsage = value(ADVANCED_ANALYZER_POWER_USAGE);
         advancedAnalyzerPurity = value(ADVANCED_ANALYZER_PURITY);
@@ -1620,6 +1723,8 @@ public final class NTConfig {
         catalystBuddingOutputBonus = value(CATALYST_BUDDING_OUTPUT_BONUS);
         catalystBuddingPurityBonus = value(CATALYST_BUDDING_PURITY_BONUS);
         catalystBuddingMaxPurity = value(CATALYST_BUDDING_MAX_PURITY);
+        advancedCatalystFuelMultiplier = value(ADVANCED_CATALYST_FUEL_MULTIPLIER);
+        advancedCatalystPurityMultiplier = value(ADVANCED_CATALYST_PURITY_MULTIPLIER);
         conduitBeaconPowerUsage = value(CONDUIT_BEACON_POWER_USAGE);
         conduitBeaconBuffer = value(CONDUIT_BEACON_BUFFER);
         conduitBeaconSpawnRadius = value(CONDUIT_BEACON_SPAWN_RADIUS);

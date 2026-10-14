@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "nautec:abyssal_containment_frame"
+    },
+    "C": {
+      "item": "nautec:containment_coil"
+    },
+    "N": {
+      "tag": "c:nether_stars"
+    }
+  },
+  "pattern": [
+    "ACA",
+    "CNC",
+    "ACA"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nautec:event_horizon_containment_frame"
+  }
+}

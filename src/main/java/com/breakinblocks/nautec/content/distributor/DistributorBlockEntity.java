@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class DistributorBlockEntity extends ContainerBlockEntity implements MenuProvider {
@@ -68,7 +69,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         }
     }
 
-    private record Neighbour(@Nullable ResourceHandler<ItemResource> items, @Nullable ResourceHandler<FluidResource> fluids) {
+    private record Neighbour(@Nullable ResourceHandler<ItemResource> items, @Nullable ResourceHandler<FluidResource> fluids,
+                             @Nullable NetworkStorage network) {
     }
 
     private record Caches(BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> items,
@@ -215,18 +217,21 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
             endpoints.add(new Endpoint(link, machine, caches.items().getCapability(), caches.fluids().getCapability(), keptItems, keptFluids));
         }
         List<Neighbour> neighbours = new ArrayList<>();
+        boolean networks = NetworkStorages.enabled();
         for (Direction direction : Direction.values()) {
             BlockPos target = worldPosition.relative(direction);
             if (linked.contains(target) || !serverLevel.isLoaded(target) || serverLevel.getBlockEntity(target) instanceof DistributorBlockEntity) {
                 continue;
             }
             Caches caches = neighbourCaches.computeIfAbsent(direction, key -> caches(serverLevel, target, key.getOpposite()));
-            neighbours.add(new Neighbour(caches.items().getCapability(), caches.fluids().getCapability()));
+            NetworkStorage network = networks ? NetworkStorages.find(serverLevel, target, direction.getOpposite()) : null;
+            neighbours.add(new Neighbour(caches.items().getCapability(), caches.fluids().getCapability(), network));
         }
 
         int maxDelay = maxBackOffCycles();
+        Consumer<ItemStack> spill = stack -> Block.popResource(serverLevel, worldPosition, stack);
         for (Endpoint endpoint : endpoints) {
-            supply(endpoint, endpoints, neighbours, backOffs.computeIfAbsent(endpoint.link(), key -> new BackOff()), maxDelay);
+            supply(endpoint, endpoints, neighbours, backOffs.computeIfAbsent(endpoint.link(), key -> new BackOff()), maxDelay, spill);
         }
         for (Endpoint endpoint : endpoints) {
             for (Neighbour neighbour : neighbours) {
@@ -236,7 +241,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         }
     }
 
-    private static void supply(Endpoint endpoint, List<Endpoint> endpoints, List<Neighbour> neighbours, BackOff backOff, int maxDelay) {
+    private static void supply(Endpoint endpoint, List<Endpoint> endpoints, List<Neighbour> neighbours, BackOff backOff, int maxDelay,
+                               Consumer<ItemStack> spill) {
         DistributorLink link = endpoint.link();
         ContainerBlockEntity machine = endpoint.machine();
         if (machine != null && machine.getItemStackHandler() != null && !machine.ghosts().isEmpty() && backOff.ready(BackOff.GHOSTS)) {
@@ -245,7 +251,8 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                 ResourceHandler<ItemResource> slot = new SingleSlotHandler<>(machine.getItemHandler(), ghost.getIntKey());
                 ItemStack template = ghost.getValue();
                 int index = ghost.getIntKey();
-                moved += fillItems(slot, resource -> machine.ghostMatches(index, template, resource), Integer.MAX_VALUE, endpoint, endpoints, neighbours);
+                moved += fillItems(slot, template, resource -> machine.ghostMatches(index, template, resource), Integer.MAX_VALUE, endpoint, endpoints,
+                        neighbours, spill);
             }
             backOff.result(BackOff.GHOSTS, moved > 0, maxDelay);
         }
@@ -259,7 +266,7 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                 long have = count(endpoint.items(), wanted);
                 int need = (int) Math.max(0, link.itemAmount(i) - have);
                 if (need > 0) {
-                    backOff.result(i, fillItems(endpoint.items(), wanted, need, endpoint, endpoints, neighbours) > 0, maxDelay);
+                    backOff.result(i, fillItems(endpoint.items(), template, wanted, need, endpoint, endpoints, neighbours, spill) > 0, maxDelay);
                 }
             }
         }
@@ -288,13 +295,18 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
                         need -= move(neighbour.fluids(), endpoint.fluids(), filter, need);
                     }
                 }
+                for (Neighbour neighbour : neighbours) {
+                    if (need > 0 && neighbour.network() != null) {
+                        need -= neighbour.network().fillFluid(endpoint.fluids(), fluid, need);
+                    }
+                }
                 backOff.result(index, need < requested, maxDelay);
             }
         }
     }
 
-    private static int fillItems(ResourceHandler<ItemResource> destination, Predicate<ItemResource> filter, int need, Endpoint self, List<Endpoint> endpoints,
-                                 List<Neighbour> neighbours) {
+    private static int fillItems(ResourceHandler<ItemResource> destination, ItemStack template, Predicate<ItemResource> filter, int need, Endpoint self,
+                                 List<Endpoint> endpoints, List<Neighbour> neighbours, Consumer<ItemStack> spill) {
         int moved = 0;
         for (Endpoint other : endpoints) {
             if (other != self && need > 0) {
@@ -306,6 +318,13 @@ public class DistributorBlockEntity extends ContainerBlockEntity implements Menu
         for (Neighbour neighbour : neighbours) {
             if (need > 0) {
                 int step = move(neighbour.items(), destination, filter, need);
+                need -= step;
+                moved += step;
+            }
+        }
+        for (Neighbour neighbour : neighbours) {
+            if (need > 0 && neighbour.network() != null) {
+                int step = neighbour.network().fillItems(destination, template, filter, need, spill);
                 need -= step;
                 moved += step;
             }

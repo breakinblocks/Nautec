@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "P": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "S": {
+      "item": "nautec:aquarine_steel_ingot"
+    }
+  },
+  "pattern": [
+    "SPS",
+    "PEP",
+    "SPS"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nautec:rift_containment_frame"
+  }
+}

@@ -48,10 +48,12 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
     protected void init() {
         super.init();
         addRenderableWidget(new NTPanelButton(this.font, leftPos + 100, topPos + 62, 68, 16,
-                () -> Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice" : "nautec.replicator.mode.replicate"),
+                () -> Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice.button" : "nautec.replicator.mode.replicate.button"),
                 () -> replicator().isSplice() ? PanelStyle.RECEIVE_COLOR : PanelStyle.NEUTRAL,
                 () -> replicator().isSplice() ? PanelStyle.RECEIVE_HOVER : PanelStyle.NEUTRAL_HOVER,
-                () -> Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice.desc" : "nautec.replicator.mode.replicate.desc"),
+                () -> Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice" : "nautec.replicator.mode.replicate").append("\n")
+                        .append(Component.translatable(replicator().isSplice() ? "nautec.replicator.mode.splice.desc" : "nautec.replicator.mode.replicate.desc")
+                                .withStyle(ChatFormatting.GRAY)),
                 () -> PacketDistributor.sendToServer(new ReplicatorModePayload(this.menu.containerId))));
     }
 
@@ -78,9 +80,14 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         int status = replicator().getStatus();
-        Component text = Component.translatable(ColonyReplicatorBlock.statusKey(status));
-        graphics.drawString(this.font, text, this.imageWidth - 8 - this.font.width(text), this.titleLabelY,
+        Component text = Component.translatable(ColonyReplicatorBlock.statusKey(status) + ".short");
+        graphics.drawString(this.font, text, this.imageWidth - 8 - this.font.width(text), this.inventoryLabelY,
                 status == ColonyReplicatorBlockEntity.STATUS_RUNNING ? PanelStyle.SEND_COLOR : PanelStyle.DANGER, false);
+    }
+
+    private boolean statusHovered(int mouseX, int mouseY) {
+        int width = this.font.width(Component.translatable(ColonyReplicatorBlock.statusKey(replicator().getStatus()) + ".short"));
+        return over(mouseX, mouseY, this.imageWidth - 8 - width, this.inventoryLabelY - 1, width, this.font.lineHeight + 1);
     }
 
     private boolean over(int mouseX, int mouseY, int x, int y, int w, int h) {
@@ -112,7 +119,7 @@ public class ColonyReplicatorScreen extends NTMachineScreen<ColonyReplicatorBloc
             lines.add(Component.translatable("nautec.replicator.biomass.bar", format.format(replicator().getBiomass()),
                     format.format(NTConfig.replicatorBiomassCost)));
             lines.add(Component.translatable("nautec.replicator.biomass.desc").withStyle(ChatFormatting.GRAY));
-        } else if (over(mouseX, mouseY, ARROW_X, ARROW_Y + 10, 24, 12)) {
+        } else if (over(mouseX, mouseY, ARROW_X, ARROW_Y + 10, 24, 12) || statusHovered(mouseX, mouseY)) {
             int status = replicator().getStatus();
             lines.add(Component.translatable(ColonyReplicatorBlock.statusKey(status))
                     .withStyle(status == ColonyReplicatorBlockEntity.STATUS_RUNNING ? ChatFormatting.AQUA : ChatFormatting.RED));

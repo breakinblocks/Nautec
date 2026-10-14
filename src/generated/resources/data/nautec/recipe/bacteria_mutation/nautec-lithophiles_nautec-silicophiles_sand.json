@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:sand"
   },
-  "chance": 5.0,
+  "chance": 15.0,
   "input_bacteria": "nautec:lithophiles",
   "result_bacteria": "nautec:silicophiles"
 }

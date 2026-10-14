@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -175,9 +176,12 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
             }
         }
         if (links.isEmpty()) {
-            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty"), lx + 4, ly + 4, READOUT_DIM, false);
-            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty.hint1"), lx + 4, ly + 16, READOUT_DIM, false);
-            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty.hint2"), lx + 4, ly + 28, READOUT_DIM, false);
+            graphics.drawString(this.font, Component.translatable("nautec.distributor.empty"), lx + 4, ly + 4, READOUT, false);
+            int hintY = ly + 17;
+            for (FormattedCharSequence line : this.font.split(Component.translatable("nautec.distributor.empty.hint"), LIST_WIDTH - 8)) {
+                graphics.drawString(this.font, line, lx + 4, hintY, READOUT_DIM, false);
+                hintY += 10;
+            }
         }
 
         DistributorLink link = current();

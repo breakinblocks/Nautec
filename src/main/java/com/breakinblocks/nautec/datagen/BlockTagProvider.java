@@ -43,8 +43,10 @@ public class BlockTagProvider extends BlockTagsProvider {
                 RESONANT_VAULT,
                 RESONANT_CISTERN,
                 AQUATIC_CATALYST,
+                ADVANCED_AQUATIC_CATALYST,
                 SUBMARINE_DOCK,
                 PRESSURE_FORGE,
+                LASER_PURIFICATION_SMELTER,
                 GATEWAY,
                 GATEWAY_RING,
                 RESONANCE_CHAMBER,
@@ -105,7 +107,18 @@ public class BlockTagProvider extends BlockTagsProvider {
                 FUSION_CONTROLLER,
                 LASER_INJECTOR,
                 FUSION_COLLECTOR,
-                FUSION_PORT);
+                FUSION_PORT,
+                EXTRADIMENSIONAL_STORAGE,
+                RIFT_CONTAINMENT_FRAME,
+                VOID_CONTAINMENT_FRAME,
+                ABYSSAL_CONTAINMENT_FRAME,
+                EVENT_HORIZON_CONTAINMENT_FRAME);
+        tag(BlockTags.NEEDS_DIAMOND_TOOL,
+                EXTRADIMENSIONAL_STORAGE,
+                RIFT_CONTAINMENT_FRAME,
+                VOID_CONTAINMENT_FRAME,
+                ABYSSAL_CONTAINMENT_FRAME,
+                EVENT_HORIZON_CONTAINMENT_FRAME);
         tag(BlockTags.NEEDS_IRON_TOOL,
                 THERMAL_VENT_TAP,
                 COMBUSTION_DYNAMO,
@@ -115,6 +128,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 SATELLITE_ARRAY_TOP);
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(NTBlocks.BIOME_TANK.get());
         tag(NTTags.Blocks.VENT_HEAT_SOURCES).add(Blocks.MAGMA_BLOCK, Blocks.LAVA, HYDROTHERMAL_VENT.get());
+        tag(NTTags.Blocks.LASER_PASSABLE).addTag(Tags.Blocks.GLASS_BLOCKS).addTag(Tags.Blocks.GLASS_PANES);
         tag(BlockTags.PREVENT_MOB_SPAWNING_INSIDE, HELD_WATER);
         tag(BlockTags.DOORS, PRESSURE_HATCH);
         tag(Tags.Blocks.BUDDING_BLOCKS, BUDDING_PRISMARINE);

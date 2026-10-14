@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "nautec:aquatic_catalyst"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "U": {
+      "item": "nautec:aquarine_copper_ingot"
+    },
+    "X": {
+      "item": "nautec:aquatic_chip"
+    }
+  },
+  "pattern": [
+    "UFU",
+    "XAX",
+    "UFU"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:advanced_aquatic_catalyst"
+  }
+}

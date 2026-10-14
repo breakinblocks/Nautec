@@ -5,6 +5,10 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.BlockGetter;
@@ -34,7 +38,7 @@ public class LaserJunctionBlock extends LaserBlock {
 
     public LaserJunctionBlock(Properties properties, int width) {
         super(properties);
-        registerDefaultState(getStateDefinition().any()
+        registerDefaultState(defaultBlockState()
                 .setValue(CONNECTION[0], ConnectionType.NONE)
                 .setValue(CONNECTION[1], ConnectionType.NONE)
                 .setValue(CONNECTION[2], ConnectionType.NONE)
@@ -67,6 +71,11 @@ public class LaserJunctionBlock extends LaserBlock {
         }
 
         return getShape(index);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return BeamFaces.open(level, pos, player);
     }
 
     @Override

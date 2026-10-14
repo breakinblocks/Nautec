@@ -2,7 +2,7 @@
 navigation:
   title: Mutator
   icon: nautec:mutator
-  position: 4
+  position: 6
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:mutator
@@ -21,7 +21,9 @@ The catalyst is not used up, so one item covers every attempt. Hoppers and pipes
 
 The two slots at the bottom left are the Dish Port: a dish goes in on the left and new mutations come out on the right. A Petri Dish holding a colony loads it into the left bacteria slot when that slot is free and the catalyst in the Mutator works on that strain. The emptied dish stays in the port, and as soon as the mutation appears in the right bacteria slot it takes it out and moves it to the output slot. That frees the port for the next colony, so a pipe feeding colony dishes in and another pulling mutations out keeps the Mutator working with no empty dishes to handle. The port only accepts a dish it can use right then, so put the catalyst in first, and a pipe keeps hold of anything else instead of jamming the machine.
 
- JEI's Bacteria Mutations category lists the catalyst and base chance for every mutation.
+JEI's Bacteria Mutations category lists the catalyst and base chance for every mutation, and [Strain Tree](strain_tree.md) shows them all as a tree.
+
+Hover the empty catalyst slot with a colony loaded to see every strain it can become, with the catalyst and its chance for that colony. Hover the progress arrow to see what the Mutator is waiting for, the power it is getting, the real chance per try after size, Mutation Resistance and the booster, what a failure costs, and how many tries have failed so far.
 
 ***
 

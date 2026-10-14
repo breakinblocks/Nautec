@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.entities.EyeOfTheSeaEntity;
 import com.breakinblocks.nautec.content.items.EyeOfTheSeaItem;
@@ -26,8 +27,13 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public final class EyeOfTheSeaTests {
     public static void register(NTTestRegistrar r) {
@@ -70,14 +76,31 @@ public final class EyeOfTheSeaTests {
             ServerLevel level = helper.getLevel();
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             ItemStack stack = new ItemStack(NTItems.EYE_OF_THE_SEA.get());
+            stack.set(NTDataComponents.SEA_EYE_TARGET.get(), SeaEyeTarget.GATEWAYS);
             player.setItemInHand(InteractionHand.MAIN_HAND, stack);
-            if (EyeOfTheSeaItem.locate(level, player.blockPosition(), SeaEyeTarget.GATEWAYS) != null) {
-                helper.succeed();
-                return;
+            int radius = NTConfig.eyeOfTheSeaSearchRadius;
+            InteractionResult result;
+            try {
+                NTConfig.eyeOfTheSeaSearchRadius = 2;
+                if (EyeOfTheSeaItem.locate(level, player.blockPosition(), SeaEyeTarget.GATEWAYS) != null) {
+                    helper.succeed();
+                    return;
+                }
+                result = stack.getItem().use(level, player, InteractionHand.MAIN_HAND).getResult();
+            } finally {
+                NTConfig.eyeOfTheSeaSearchRadius = radius;
             }
-            InteractionResult result = stack.getItem().use(level, player, InteractionHand.MAIN_HAND).getResult();
             if (!result.consumesAction()) {
                 helper.fail("Using the eye should start a search, got " + result);
+                return;
+            }
+            try {
+                Field executor = SeaEyeSearch.class.getDeclaredField("EXECUTOR");
+                executor.setAccessible(true);
+                ((ExecutorService) executor.get(null)).submit(() -> {
+                }).get(30, TimeUnit.SECONDS);
+            } catch (ReflectiveOperationException | InterruptedException | ExecutionException | TimeoutException e) {
+                helper.fail("Could not wait for the background search: " + e);
                 return;
             }
             helper.succeedWhen(() -> {

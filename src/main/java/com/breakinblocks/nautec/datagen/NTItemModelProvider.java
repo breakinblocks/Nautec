@@ -167,6 +167,11 @@ public class NTItemModelProvider extends ItemModelProvider {
         basicItem(NTItems.DIVING_BOOTS.get());
 
         handAuthoredItem(NTBlocks.RESONANCE_NODE.asItem());
+        parentItemBlock(NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem());
+        parentItemBlock(NTBlocks.RIFT_CONTAINMENT_FRAME.asItem(), "_loose");
+        parentItemBlock(NTBlocks.VOID_CONTAINMENT_FRAME.asItem(), "_loose");
+        parentItemBlock(NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem(), "_loose");
+        parentItemBlock(NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.asItem(), "_loose");
         entityItem(NTItems.SUBMARINE.get(), Nautec.rl("item/submarine_base"));
         entityItem(NTItems.WAVE_JET.get(), Nautec.rl("item/wave_jet_base"));
         entityItem(NTBlocks.LASER_CRAFTING_MATRIX.asItem(), Nautec.rl("block/laser_crafting_matrix"));

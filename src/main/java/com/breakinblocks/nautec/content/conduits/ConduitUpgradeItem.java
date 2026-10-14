@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.conduits;
 
 
 import java.util.List;
+import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -25,5 +26,6 @@ public class ConduitUpgradeItem extends Item {
         super.appendHoverText(stack, context, tooltip, flag);
         TapRates.of(tier).describe(line -> tooltip.add(line.copy().withStyle(ChatFormatting.AQUA)));
         tooltip.add(Component.translatable("nautec.conduit.upgrade.hint").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("nautec.conduit.upgrade.resonance_node", ResonanceNodeBlockEntity.limitText(tier)).withStyle(ChatFormatting.GRAY));
     }
 }

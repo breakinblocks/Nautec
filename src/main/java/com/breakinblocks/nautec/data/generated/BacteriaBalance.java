@@ -32,9 +32,9 @@ public final class BacteriaBalance {
 
     public enum Rarity {
         COMMON(LongRange.of(350, 600), FloatRange.of(0.40f, 0.70f), FloatRange.of(0.60f, 1.20f),
-                FloatRange.of(0.00f, 0.05f), IntRange.of(1300, 2500), IntRange.of(10, 30), 0.05f, 10f, NTBacterias.LITHOPHILES, 1.0f),
+                FloatRange.of(0.00f, 0.05f), IntRange.of(1300, 2500), IntRange.of(10, 30), 0.05f, 30f, NTBacterias.LITHOPHILES, 1.0f),
         UNCOMMON(LongRange.of(300, 500), FloatRange.of(0.20f, 0.55f), FloatRange.of(0.50f, 1.10f),
-                FloatRange.of(0.00f, 0.08f), IntRange.of(1100, 2300), IntRange.of(10, 30), 0.07f, 10f, NTBacterias.METALLOPHILES, 0.8f),
+                FloatRange.of(0.00f, 0.08f), IntRange.of(1100, 2300), IntRange.of(10, 30), 0.07f, 30f, NTBacterias.METALLOPHILES, 0.8f),
         RARE(LongRange.of(225, 425), FloatRange.of(0.15f, 0.50f), FloatRange.of(0.45f, 1.00f),
                 FloatRange.of(0.00f, 0.10f), IntRange.of(1000, 2100), IntRange.of(8, 25), 0.10f, 5f, NTBacterias.FERROPHILES, 0.6f),
         EPIC(LongRange.of(150, 275), FloatRange.of(0.10f, 0.40f), FloatRange.of(0.50f, 1.10f),

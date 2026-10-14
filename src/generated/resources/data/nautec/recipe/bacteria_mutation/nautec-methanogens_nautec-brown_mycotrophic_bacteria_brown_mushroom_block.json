@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:brown_mushroom_block"
   },
-  "chance": 20.0,
+  "chance": 60.0,
   "input_bacteria": "nautec:methanogens",
   "result_bacteria": "nautec:brown_mycotrophic_bacteria"
 }

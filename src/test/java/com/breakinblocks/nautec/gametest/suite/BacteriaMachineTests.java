@@ -132,16 +132,16 @@ public final class BacteriaMachineTests {
                 return;
             }
 
-            helper.assertValueEqual(25, reactor.getRequiredPower(), "required power with no colonies");
+            helper.assertValueEqual(5, reactor.getRequiredPower(), "required power with no colonies");
             for (int slot = 0; slot < 3; slot++) {
                 reactor.getBacteriaStorage().setBacteria(slot, colony(NTBacterias.FERROPHILES, 400,
                         stats(1.0f, 0f, 1.0f, NTConfig.bacteriaLifespanCap), 0));
-                helper.assertValueEqual(25 + 25 * (slot + 1), reactor.getRequiredPower(),
+                helper.assertValueEqual(5 + 15 * (slot + 1), reactor.getRequiredPower(),
                         "required power with " + (slot + 1) + " colonies");
             }
 
             helper.runAfterDelay(120, () -> {
-                helper.assertValueEqual(100, reactor.getRequiredPower(), "required power with three colonies");
+                helper.assertValueEqual(50, reactor.getRequiredPower(), "required power with three colonies");
                 helper.assertValueEqual(100, reactor.getPower(), "power from a single creative source line");
                 for (int slot = 0; slot < 3; slot++) {
                     helper.assertTrue(reactor.getItemStackHandler().getStackInSlot(slot).getCount() > 0,
@@ -153,9 +153,8 @@ public final class BacteriaMachineTests {
 
         r.add("bacteria/bio_reactor_senescent_colony_decays", 500, helper -> {
             BlockPos reactorPos = new BlockPos(4, 1, 4);
-            BlockPos sourcePos = new BlockPos(4, 1, 6);
             helper.setBlock(reactorPos, NTBlocks.BIO_REACTOR.get().defaultBlockState());
-            placeShieldedSource(helper, sourcePos, Direction.NORTH);
+            feedExact(helper, reactorPos);
 
             BioReactorBlockEntity reactor = helper.getBlockEntity(reactorPos, BioReactorBlockEntity.class);
             if (reactor == null) {

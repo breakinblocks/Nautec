@@ -2,7 +2,7 @@
 navigation:
   title: Industrial Bio Reactor
   icon: nautec:industrial_bio_reactor
-  position: 10
+  position: 12
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:industrial_bio_reactor
@@ -218,6 +218,8 @@ A simple layout: a chest and hopper on one corner of the roof for nutrients, hat
 
 ## <Color id="gold">Recipe</Color>
 
+<RecipeFor id="industrial_bio_reactor"/>
+
 ***
 
 ## <Color id="gold">Stronger Beams</Color>
@@ -234,5 +236,3 @@ The Industrial Bio Reactor first works out the AP it needs from its colonies and
 The two multiply. A reactor whose Speed Upgrade makes it run ×1.5 and that gets four times the power it needs runs ×3. Nutrients are spent per tick of work, so a stronger beam makes more items from the same nutrient. Hover a progress arrow to see the beam speed and the total speed with upgrades; Jade shows the beam speed too.
 
 See [Stronger Beams](nautec:getting_started/stronger_beams.md) for the rule and every machine it applies to.
-
-<RecipeFor id="industrial_bio_reactor"/>

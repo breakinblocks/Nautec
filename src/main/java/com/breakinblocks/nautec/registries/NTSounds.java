@@ -33,6 +33,7 @@ public final class NTSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_VAULT_CLOSE = sound("resonant_vault.close");
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_CISTERN_OPEN = sound("resonant_cistern.open");
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANT_STORAGE_RECODE = sound("resonant_storage.recode");
+    public static final DeferredHolder<SoundEvent, SoundEvent> EXTRADIMENSIONAL_STORAGE_HUM = sound("extradimensional_storage.hum");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CHARGE = sound("resonance.charge");
     public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CRAFT = sound("resonance.craft");

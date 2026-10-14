@@ -61,6 +61,13 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
                                 .include(NTDataComponents.BIOME_TANK_PLANT.get()))))));
     }
 
+    private void dropKeepingEnergy(Block block) {
+        add(block, LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(block)
+                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+                                .include(NTDataComponents.STORED_FE.get()))))));
+    }
+
     private void dropKeepingLink(Block block) {
         add(block, LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                 .add(LootItem.lootTableItem(block)
@@ -72,8 +79,14 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         prismarineSand(NTBlocks.PRISMARINE_SAND.get());
         dropSelf(NTBlocks.AQUATIC_CATALYST.get());
+        dropSelf(NTBlocks.ADVANCED_AQUATIC_CATALYST.get());
         dropSelf(NTBlocks.UPLINK_ARRAY.get());
         dropSelf(NTBlocks.RESONANCE_NODE.get());
+        dropKeepingEnergy(NTBlocks.EXTRADIMENSIONAL_STORAGE.get());
+        dropSelf(NTBlocks.RIFT_CONTAINMENT_FRAME.get());
+        dropSelf(NTBlocks.VOID_CONTAINMENT_FRAME.get());
+        dropSelf(NTBlocks.ABYSSAL_CONTAINMENT_FRAME.get());
+        dropSelf(NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.get());
         dropSelf(NTBlocks.CONDUIT_BEACON.get());
         dropKeepingLink(NTBlocks.RESONANT_VAULT.get());
         dropKeepingLink(NTBlocks.RESONANT_CISTERN.get());
@@ -96,6 +109,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.LASER_JUNCTION.get());
         dropSelf(NTBlocks.SUBMARINE_DOCK.get());
         dropSelf(NTBlocks.PRESSURE_FORGE.get());
+        dropSelf(NTBlocks.LASER_PURIFICATION_SMELTER.get());
         dropSelf(NTBlocks.GATEWAY.get());
         dropSelf(NTBlocks.GATEWAY_RING.get());
         add(NTBlocks.GATEWAY_RING_PART.get(), noDrop());

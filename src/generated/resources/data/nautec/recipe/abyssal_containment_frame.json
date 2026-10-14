@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "nautec:abyssal_organ"
+    },
+    "H": {
+      "item": "nautec:eldritch_heart"
+    },
+    "V": {
+      "item": "nautec:void_containment_frame"
+    }
+  },
+  "pattern": [
+    "VAV",
+    "AHA",
+    "VAV"
+  ],
+  "result": {
+    "count": 4,
+    "id": "nautec:abyssal_containment_frame"
+  }
+}

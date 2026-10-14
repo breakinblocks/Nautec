@@ -2,7 +2,7 @@
 navigation:
   title: Bio Reactor
   icon: nautec:bio_reactor
-  position: 6
+  position: 8
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:bio_reactor
@@ -63,6 +63,7 @@ Once it is formed, right-click the Bio Reactor to open it.
 * The two slots on the far left are nutrient slots. [Colony Feeding](colony_feeding.md) explains what goes in them.
 * The two slots on the far right take [Reactor Upgrades](reactor_upgrades.md), one per slot.
 * Hover a progress arrow to see the power arriving against the power needed.
+* A yellow or red "!" on a colony means it needs attention: its nutrient is not in the nutrient slots, it is aging, or it is Senescent. Hover the colony to see which, and what it eats.
 
 ***
 
@@ -72,13 +73,13 @@ The reactor takes power through hatches. Right-click one of the four Bacteria Co
 
 | Colonies | AP needed |
 |---|---|
-| 1 | 50 |
-| 2 | 75 |
-| 3 | 100 |
+| 1 | 20 |
+| 2 | 35 |
+| 3 | 50 |
 
-That is 25 AP for the reactor plus 25 AP per filled colony slot, both configurable. Upgrades multiply the total, see [Reactor Upgrades](reactor_upgrades.md). The power is a threshold, not a cost. Below it nothing runs and all progress resets, and more power than needed does not make anything faster.
+That is 5 AP for the reactor plus 15 AP per filled colony slot, both configurable. Upgrades multiply the total, see [Reactor Upgrades](reactor_upgrades.md). The power is a threshold, not a cost. Below it nothing runs and all progress resets, and a stronger beam speeds the reactor up (see Stronger Beams below).
 
-One <ItemLink id="aquatic_catalyst"/> gives 12 AP at most, so even four hatches of single catalysts fall short. Combine beams in a <ItemLink id="laser_junction"/> before they reach a hatch. A [Bacterial Fuel Cell](bacterial_fuel_cell.md) gives up to 48 AP from a single beam.
+One <ItemLink id="aquatic_catalyst"/> gives 12 AP on Prismarine Shards, so two catalysts on two hatches run one colony and three run two. For three colonies, touch the catalysts with <ItemLink id="budding_prismarine"/> to boost them, add a fourth hatch, or combine beams in a <ItemLink id="laser_junction"/> before they reach a hatch. A [Bacterial Fuel Cell](bacterial_fuel_cell.md) gives up to 48 AP from a single beam.
 
 ***
 

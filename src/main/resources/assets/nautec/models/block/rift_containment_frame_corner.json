@@ -1,0 +1,556 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "nautec:block/extradimensional/rift_loose_side",
+    "rim": "nautec:block/extradimensional/rift_rim",
+    "rim_glow": "nautec:block/extradimensional/rift_rim_emissive",
+    "floor": "nautec:block/extradimensional/floor_outer",
+    "chamfer_floor": "nautec:block/extradimensional/floor_corner",
+    "chamfer_floor_glow": "nautec:block/extradimensional/floor_corner_emissive"
+  },
+  "elements": [
+    {
+      "name": "floor",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#floor",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#chamfer_floor"
+        },
+        "north": {
+          "uv": [
+            0,
+            2,
+            16,
+            4
+          ],
+          "texture": "#floor",
+          "cullface": "north"
+        },
+        "west": {
+          "uv": [
+            0,
+            2,
+            16,
+            4
+          ],
+          "texture": "#floor",
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "name": "floor_glow",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#chamfer_floor_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "rim_north",
+      "from": [
+        10,
+        2,
+        2
+      ],
+      "to": [
+        16,
+        7,
+        7
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            10,
+            0,
+            16,
+            5
+          ],
+          "texture": "#rim"
+        },
+        "north": {
+          "uv": [
+            0,
+            5,
+            6,
+            10
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            10,
+            10,
+            16,
+            15
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "rim_west",
+      "from": [
+        2,
+        2,
+        10
+      ],
+      "to": [
+        7,
+        7,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            6,
+            5
+          ],
+          "texture": "#rim",
+          "rotation": 270
+        },
+        "west": {
+          "uv": [
+            10,
+            5,
+            16,
+            10
+          ],
+          "texture": "#rim"
+        },
+        "east": {
+          "uv": [
+            0,
+            10,
+            6,
+            15
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "rim_chamfer",
+      "from": [
+        2.1109,
+        2,
+        5.2678
+      ],
+      "to": [
+        13.4246,
+        7.02,
+        10.2678
+      ],
+      "rotation": {
+        "angle": 45,
+        "axis": "y",
+        "origin": [
+          7.7678,
+          2,
+          7.7678
+        ]
+      },
+      "faces": {
+        "up": {
+          "uv": [
+            2.3431,
+            0,
+            13.6569,
+            5
+          ],
+          "texture": "#rim"
+        },
+        "north": {
+          "uv": [
+            2.3431,
+            5,
+            13.6569,
+            10
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            2.3431,
+            10,
+            13.6569,
+            15
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "trim_north",
+      "from": [
+        12,
+        2,
+        7
+      ],
+      "to": [
+        16,
+        5,
+        8
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            12,
+            12,
+            16,
+            13
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            12,
+            13,
+            16,
+            16
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "trim_west",
+      "from": [
+        7,
+        2,
+        12
+      ],
+      "to": [
+        8,
+        5,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            12,
+            4,
+            13
+          ],
+          "texture": "#rim",
+          "rotation": 270
+        },
+        "east": {
+          "uv": [
+            0,
+            13,
+            4,
+            16
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "trim_chamfer",
+      "from": [
+        5.8891,
+        2,
+        9.3891
+      ],
+      "to": [
+        13.8891,
+        5.02,
+        10.3891
+      ],
+      "rotation": {
+        "angle": 45,
+        "axis": "y",
+        "origin": [
+          9.8891,
+          2,
+          9.8891
+        ]
+      },
+      "faces": {
+        "up": {
+          "uv": [
+            4,
+            12,
+            12,
+            13
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            4,
+            13,
+            12,
+            16
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "rim_north_glow",
+      "from": [
+        10,
+        2,
+        2
+      ],
+      "to": [
+        16,
+        7,
+        7
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            10,
+            0,
+            16,
+            5
+          ],
+          "texture": "#rim_glow"
+        },
+        "north": {
+          "uv": [
+            0,
+            5,
+            6,
+            10
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "rim_west_glow",
+      "from": [
+        2,
+        2,
+        10
+      ],
+      "to": [
+        7,
+        7,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            6,
+            5
+          ],
+          "texture": "#rim_glow",
+          "rotation": 270
+        },
+        "west": {
+          "uv": [
+            10,
+            5,
+            16,
+            10
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "rim_chamfer_glow",
+      "from": [
+        2.1109,
+        2,
+        5.2678
+      ],
+      "to": [
+        13.4246,
+        7.02,
+        10.2678
+      ],
+      "rotation": {
+        "angle": 45,
+        "axis": "y",
+        "origin": [
+          7.7678,
+          2,
+          7.7678
+        ]
+      },
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            2.3431,
+            0,
+            13.6569,
+            5
+          ],
+          "texture": "#rim_glow"
+        },
+        "north": {
+          "uv": [
+            2.3431,
+            5,
+            13.6569,
+            10
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "trim_north_glow",
+      "from": [
+        12,
+        2,
+        7
+      ],
+      "to": [
+        16,
+        5,
+        8
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            12,
+            12,
+            16,
+            13
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "trim_west_glow",
+      "from": [
+        7,
+        2,
+        12
+      ],
+      "to": [
+        8,
+        5,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            12,
+            4,
+            13
+          ],
+          "texture": "#rim_glow",
+          "rotation": 270
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "trim_chamfer_glow",
+      "from": [
+        5.8891,
+        2,
+        9.3891
+      ],
+      "to": [
+        13.8891,
+        5.02,
+        10.3891
+      ],
+      "rotation": {
+        "angle": 45,
+        "axis": "y",
+        "origin": [
+          9.8891,
+          2,
+          9.8891
+        ]
+      },
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            4,
+            12,
+            12,
+            13
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    }
+  ]
+}

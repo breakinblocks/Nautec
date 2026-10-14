@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import com.breakinblocks.nautec.utils.valueio.ValueInput;
@@ -48,6 +49,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private boolean paused;
     private BeamScan beamScan;
     private int boosters;
+    private int fuelBurned = 1;
     private final RecipeRevision validatorRevision = new RecipeRevision();
     private @Nullable Item validatedItem;
     private boolean validatedResult;
@@ -55,8 +57,24 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0}, new int[0]);
 
     public AquaticCatalystBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
+        this(NTBlockEntityTypes.AQUATIC_CATALYST.get(), blockPos, blockState);
+    }
+
+    protected AquaticCatalystBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+        super(type, blockPos, blockState);
         addItemHandler(1, (slot, stack) -> acceptsFuel(stack));
+    }
+
+    public int fuelPerBurn() {
+        return 1;
+    }
+
+    public double purityMultiplier() {
+        return 1.0;
+    }
+
+    public int getFuelBurned() {
+        return currentRecipe != null ? fuelBurned : 0;
     }
 
     private boolean acceptsFuel(ItemStack stack) {
@@ -137,7 +155,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         if (currentRecipe == null) {
             return 0;
         }
-        int base = currentRecipe.value().powerAmount() / currentRecipe.value().duration();
+        int base = currentRecipe.value().powerAmount() / currentRecipe.value().duration() * fuelBurned;
         return (int) Math.round(base * (1 + boosters * NTConfig.catalystBuddingOutputBonus));
     }
 
@@ -145,7 +163,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         if (currentRecipe == null) {
             return 0;
         }
-        float base = currentRecipe.value().purity();
+        float base = (float) (currentRecipe.value().purity() * purityMultiplier());
         if (boosters == 0 || base >= NTConfig.catalystBuddingMaxPurity) {
             return base;
         }
@@ -199,7 +217,8 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         }
         if (nextRecipe != null) {
             currentRecipe = nextRecipe;
-            getItemStackHandler().extractItem(0, 1, false);
+            ItemStack burned = getItemStackHandler().extractItem(0, Math.max(1, fuelPerBurn()), false);
+            fuelBurned = Math.max(1, burned.getCount());
         }
     }
 
@@ -391,6 +410,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         this.currentRecipeId = in.getString("current_recipe").map(ResourceLocation::parse).orElse(null);
         this.nextRecipeId = in.getString("next_recipe").map(ResourceLocation::parse).orElse(null);
         this.syncedTransfer = in.getIntOr("transfer", 0);
+        this.fuelBurned = Math.max(1, in.getIntOr("fuel_burned", 1));
     }
 
     @Override
@@ -418,6 +438,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         super.saveData(out);
 
         out.putInt("duration", duration);
+        out.putInt("fuel_burned", fuelBurned);
         if (currentRecipe != null) {
             out.putString("current_recipe", currentRecipe.id().toString());
             out.putInt("transfer", transferAmount());

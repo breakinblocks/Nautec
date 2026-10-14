@@ -2,7 +2,7 @@
 navigation:
   title: Colony Replicator
   icon: nautec:colony_replicator
-  position: 13
+  position: 15
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:colony_replicator
@@ -32,7 +32,9 @@ Each new colony uses 20,000 biomass. A fodder colony gives its size: ten colonie
 |---|---|---|
 | Stone (Strain Yield 1) | 100 | 200 stone |
 | Iron Ingot (0.6) | 167 | 120 ingots, or 14 Iron Blocks |
-| Diamond (0.12) | 833 | 25 diamonds, or 3 Diamond Blocks | The bar beside the fodder slot shows how much is stored, up to 200,000. Fodder that would take the store past 200,000 is still used up, and the extra is lost. Biomass belongs to one strain, so changing the template to another strain throws away what is stored.
+| Diamond (0.12) | 833 | 25 diamonds, or 3 Diamond Blocks |
+
+The bar beside the fodder slot shows how much is stored, up to 200,000. Fodder that would take the store past 200,000 is still used up, and the extra is lost. Biomass belongs to one strain, so changing the template to another strain throws away what is stored.
 
 The new colony has the template's stats, comes out analyzed, and starts at a size of 10,000, half the biomass it cost, so it is ready to work or to top up in the [Incubator](incubator.md).
 

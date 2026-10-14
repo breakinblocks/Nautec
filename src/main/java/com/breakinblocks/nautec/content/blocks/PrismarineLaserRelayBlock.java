@@ -6,6 +6,10 @@ import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -44,6 +48,11 @@ public class PrismarineLaserRelayBlock extends LaserBlock {
             case DOWN, UP -> SHAPE_UD;
             case NORTH, SOUTH -> SHAPE_NS;
         };
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return BeamFaces.open(level, pos, player);
     }
 
     @Override

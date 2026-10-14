@@ -59,6 +59,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
     private BacteriaMutationRecipe recipe;
     private boolean active;
     private int progress;
+    private int attempts;
 
     private static final SlotRoles ITEM_ROLES = SlotRoles.of(new int[]{0, DISH_IN, BOOSTER}, new int[]{DISH_OUT, DISH_EMPTY_OUT});
 
@@ -93,7 +94,12 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         BacteriaInstance inputBacteria = getBacteriaStorage().getBacteria(0);
         BacteriaInstance resultBacteria = getBacteriaStorage().getBacteria(1);
         BacteriaMutationRecipe recipe1 = BacteriaMutationRecipe.find(serverLevel, new BacteriaRecipeInput(inputBacteria, catalyst)).orElse(null);
+        BacteriaMutationRecipe previous = this.recipe;
         this.recipe = (recipe1 != null && resultBacteria.isEmpty()) ? recipe1 : null;
+        if (this.attempts > 0 && (this.recipe == null || !this.recipe.equals(previous))) {
+            this.attempts = 0;
+            update();
+        }
 
         if (this.active != (this.recipe != null)) {
             this.active = this.recipe != null;
@@ -210,6 +216,8 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
             }
         } else {
             getBacteriaStorage().extractBacteria(0, computeFailureShrink(inputBacteria, boosted), false);
+            this.attempts++;
+            update();
         }
     }
 
@@ -243,6 +251,10 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         return active;
     }
 
+    public int getFailedAttempts() {
+        return attempts;
+    }
+
     @Override
     public Set<Direction> getLaserInputs() {
         return ObjectSet.of(Direction.UP, Direction.DOWN);
@@ -274,6 +286,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         getItemStackHandler().ensureSize(5);
         this.progress = in.getIntOr("progress", 0);
         this.active = in.getBooleanOr("active", false);
+        this.attempts = in.getIntOr("attempts", 0);
     }
 
     @Override
@@ -281,5 +294,6 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         super.saveData(out);
         out.putInt("progress", this.progress);
         out.putBoolean("active", this.active);
+        out.putInt("attempts", this.attempts);
     }
 }

@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:sugar_cane"
   },
-  "chance": 10.0,
+  "chance": 30.0,
   "input_bacteria": "nautec:cyanobacteria",
   "result_bacteria": "nautec:phototrophs"
 }

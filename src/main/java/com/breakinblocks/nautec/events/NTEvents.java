@@ -9,12 +9,14 @@ import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.items.IPowerItem;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.GatewayBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.GatewayBlock;
 import com.breakinblocks.nautec.content.blocks.GatewayRingPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
+import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.data.NTDataComponentsUtils;
@@ -31,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -170,6 +173,23 @@ public final class NTEvents {
                 return;
             }
             ItemUtils.giveItemToPlayer(player, PrismarineCrystalBlock.pickUp(level, crystal));
+        }
+
+        @SubscribeEvent
+        public static void onReleaseConfinedSpawner(PlayerInteractEvent.RightClickBlock event) {
+            Player player = event.getEntity();
+            if (event.getHand() != InteractionHand.MAIN_HAND || !player.isSecondaryUseActive() || !player.getMainHandItem().isEmpty()) {
+                return;
+            }
+            Level level = event.getLevel();
+            if (!(level.getBlockEntity(event.getPos()) instanceof ConfinedSpawnerBlockEntity confined)) {
+                return;
+            }
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            if (!level.isClientSide()) {
+                SpawnerConfinementMatrixItem.release(level, event.getPos(), confined, player);
+            }
         }
 
         @SubscribeEvent

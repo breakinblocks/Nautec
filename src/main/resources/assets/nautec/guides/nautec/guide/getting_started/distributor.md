@@ -45,7 +45,17 @@ On a NauTec machine, open its screen, hold Sneak and click an empty input slot w
 
 For any linked block, NauTec or not, select it in the Distributor's screen and set requests on the right: up to nine items and three fluids, each with an amount to keep in the block. Click a request slot with an item or a filled bucket, or drag one in from JEI. Scroll over a request to change its amount (hold Shift to change items by 16 and fluids by 10,000 mB) and right-click it to clear it. This is also how you supply NauTec machines that have no screen, such as Etching Acid for the Abyssal Pressure Forge.
 
-Inputs come first from other linked machines' outputs, then from the chests and tanks next to the Distributor. So one machine's product can feed the next machine directly, and only what is left over is exported. Anything a link requests is never collected back out of it.
+Inputs come first from other linked machines' outputs, then from the chests and tanks next to the Distributor, then from a storage network next to it (see below). So one machine's product can feed the next machine directly, and only what is left over is exported. Anything a link requests is never collected back out of it.
+
+***
+
+## <Color id="gold">Storage Networks</Color>
+
+Place an Applied Energistics 2 ME Interface or a Refined Storage Interface against the Distributor, and it pulls the ghost inputs and requests its links ask for straight out of that whole network, items and fluids alike. An ME Interface part on a cable works too, as long as it faces the Distributor. The interface needs a channel and power, as it would for anything else.
+
+It only takes what the machine has room for, and only after checking the machine will accept it, so nothing is lost or copied if the machine fills up. A machine that is still waiting on an item checks less often, up to every 5 seconds, so a network that does not hold it costs almost nothing.
+
+Outputs the Distributor collects still go into the interface like into any other neighbour, which puts them into the network. `distributorStorageNetworks` in `config/nautec-common.toml` turns the network pull off.
 
 ***
 

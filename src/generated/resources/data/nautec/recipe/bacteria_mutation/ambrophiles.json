@@ -19,7 +19,7 @@
   ],
   "type": "nautec:bacteria_mutation",
   "catalyst": "#c:gems/amber",
-  "chance": 10.0,
+  "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:ambrophiles"
 }

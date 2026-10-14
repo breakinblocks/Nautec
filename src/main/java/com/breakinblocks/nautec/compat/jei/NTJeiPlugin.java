@@ -27,9 +27,11 @@ import com.breakinblocks.nautec.compat.jei.categories.LaserCraftingRecipeCategor
 import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.StrainLineageCategory;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
+import com.breakinblocks.nautec.content.bacteria.BacteriaLineage;
 import com.breakinblocks.nautec.content.bacteria.ProductNutrients;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaMutationRecipe;
@@ -72,6 +74,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -110,6 +113,7 @@ import java.util.function.Function;
 @JeiPlugin
 public class NTJeiPlugin implements IModPlugin {
 
+    private List<BacteriaLineage.Path> lineages = List.of();
     private final List<RecipeBinding<?>> recipeBindings = List.of(
             new RecipeBinding<>(manager -> manager.getAllRecipesFor(PressureForgingRecipe.Type.INSTANCE), PressureForgingRecipeCategory.RECIPE_TYPE),
             new RecipeBinding<>(manager -> manager.getAllRecipesFor(ResonanceCraftingRecipe.Type.INSTANCE), ResonanceCraftingRecipeCategory.RECIPE_TYPE),
@@ -200,6 +204,9 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new BacteriaMutationsCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
+        registration.addRecipeCategories(new StrainLineageCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
         registration.addRecipeCategories(new BacteriaIncubationCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -266,6 +273,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipes(EasInfusionCategory.RECIPE_TYPE, EasInfusionCategory.recipes());
         registration.addRecipes(CombustionDynamoCategory.RECIPE_TYPE, CombustionDynamoCategory.recipes());
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
+        lineages = lineages(ClientRecipes.get());
+        registration.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
             registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
@@ -280,6 +289,19 @@ public class NTJeiPlugin implements IModPlugin {
                 Component.translatable("nautec.jei.info.prismarine_crystal_shard"));
 
         registration.addIngredientInfo(List.of(NTItems.BROKEN_WHISK.toStack(), NTItems.BURNT_COIL.toStack(), NTItems.ANCIENT_VALVE.toStack(), NTItems.RUSTY_GEAR.toStack()), VanillaTypes.ITEM_STACK, Component.translatable("nautec.jei.info.machine_parts"));
+    }
+
+    private static List<BacteriaLineage.Path> lineages(@Nullable RecipeManager manager) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (manager == null || connection == null) {
+            return List.of();
+        }
+        List<BacteriaMutationRecipe> mutations = new ArrayList<>();
+        for (RecipeHolder<BacteriaMutationRecipe> holder : manager.getAllRecipesFor(BacteriaMutationRecipe.TYPE)) {
+            mutations.add(holder.value());
+        }
+        mutations.addAll(ProductNutrients.derive(manager, connection.registryAccess()).mutation());
+        return List.copyOf(BacteriaLineage.fastest(mutations, BacteriaLineage.graftable()).values());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -350,9 +372,10 @@ public class NTJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalysts(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
+        registration.addRecipeCatalysts(RecipeTypes.SMELTING, NTBlocks.LASER_PURIFICATION_SMELTER.toStack());
         registration.addRecipeCatalysts(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
         registration.addRecipeCatalysts(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,
-                new ItemStack(NTBlocks.AQUATIC_CATALYST.get()));
+                new ItemStack(NTBlocks.AQUATIC_CATALYST.get()), new ItemStack(NTBlocks.ADVANCED_AQUATIC_CATALYST.get()));
         registration.addRecipeCatalysts(ItemEtchingRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTFluids.ETCHING_ACID.getBucket()));
         registration.addRecipeCatalysts(MixingRecipeCategory.RECIPE_TYPE,
@@ -364,6 +387,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCatalysts(AugmentationRecipeCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.AUGMENTATION_STATION.get()));
         registration.addRecipeCatalysts(BacteriaMutationsCategory.RECIPE_TYPE,
+                new ItemStack(NTBlocks.MUTATOR.get()));
+        registration.addRecipeCatalysts(StrainLineageCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.MUTATOR.get()));
         registration.addRecipeCatalysts(BacteriaIncubationCategory.RECIPE_TYPE,
                 new ItemStack(NTBlocks.INCUBATOR.get()));

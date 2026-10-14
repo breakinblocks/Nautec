@@ -1,6 +1,9 @@
 package com.breakinblocks.nautec.api.blockentities;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.capabilities.NTCapabilities;
+import com.breakinblocks.nautec.capabilities.beam.IBeamReceiver;
+import com.breakinblocks.nautec.tags.NTTags;
 import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.ItemTransformationRecipeInput;
@@ -9,6 +12,8 @@ import it.unimi.dsi.fastutil.floats.FloatCollection;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -18,21 +23,20 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +66,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
 
     private LongOpenHashSet beamTrail = new LongOpenHashSet();
     private LongOpenHashSet incomingTrail = new LongOpenHashSet();
+    private int beamReceivers;
 
     public LaserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -87,9 +92,44 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         return getLaserOutputs().contains(direction)
                 && !pos.equals(worldPosition)
                 && !beamTrail.contains(pos.asLong())
-                && level.getBlockEntity(pos) instanceof LaserBlockEntity be
-                && be.getLaserInputs().contains(direction.getOpposite())
+                && (level.getBlockEntity(pos) instanceof LaserBlockEntity be ? be.getLaserInputs().contains(direction.getOpposite()) : feedsBeamReceiver(direction))
                 && (power > 0 || powerToTransfer > 0);
+    }
+
+    public boolean feedsBeamReceiver(Direction direction) {
+        return (beamReceivers & (1 << direction.ordinal())) != 0;
+    }
+
+    protected void setBeamReceiver(Direction direction, boolean receiver) {
+        if (receiver) {
+            beamReceivers |= 1 << direction.ordinal();
+        } else {
+            beamReceivers &= ~(1 << direction.ordinal());
+        }
+    }
+
+    protected boolean isBeamReceiver(BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction) {
+        return blockEntity != null && !(blockEntity instanceof LaserBlockEntity)
+                && level.getCapability(NTCapabilities.BeamReceiver.BLOCK, pos.immutable(), state, blockEntity, direction.getOpposite()) != null;
+    }
+
+    public static boolean stopsBeam(BlockGetter level, BlockPos pos, BlockState state, Vec3 from, Vec3 to) {
+        if (state.isAir() || state.is(NTTags.Blocks.LASER_PASSABLE)) {
+            return false;
+        }
+        VoxelShape shape = state.getCollisionShape(level, pos, CollisionContext.empty());
+        return !shape.isEmpty() && shape.clip(from, to, pos) != null;
+    }
+
+    public static float beamDamage(int power) {
+        if (power <= 0 || NTConfig.laserDamage <= 0) {
+            return 0F;
+        }
+        double damage = NTConfig.laserDamage * Math.pow(power / (double) Math.max(1, NTConfig.laserDamageReferencePower), NTConfig.laserDamageScaling);
+        if (NTConfig.laserDamageMax > 0) {
+            damage = Math.min(damage, NTConfig.laserDamageMax);
+        }
+        return (float) damage;
     }
 
     public Object2IntMap<Direction> getLaserDistances() {
@@ -195,6 +235,14 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         beamTrail.addAll(upstream.beamTrail);
     }
 
+    public void acceptBeam(int amount, float beamPurity, Direction direction, BlockPos originPos, LongSet trail) {
+        receivePower(amount, direction, originPos);
+        receiveNewPurity(beamPurity, direction, originPos);
+        if (amount > 0 && !getLaserOutputs().isEmpty()) {
+            incomingTrail.addAll(trail);
+        }
+    }
+
     public void receivePower(int amount, Direction direction, BlockPos originPos) {
         int prevAmount = this.powerPerSide.getInt(direction);
         setPowerPerSide(direction, amount);
@@ -255,12 +303,15 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                     processBeam(createLaserBeamAABB(direction, distance), direction);
                 }
 
-                if (level.isLoaded(targetPos) && level.getBlockEntity(targetPos) instanceof LaserBlockEntity laserBE) {
-                    int amount = outgoingPower(direction);
-                    laserBE.receivePower(amount, direction, worldPosition);
-                    laserBE.receiveNewPurity(outgoingPurity(direction), direction, worldPosition);
-                    if (amount > 0 && !laserBE.getLaserOutputs().isEmpty()) {
-                        laserBE.incomingTrail.addAll(beamTrail);
+                if (level.isLoaded(targetPos)) {
+                    BlockEntity target = level.getBlockEntity(targetPos);
+                    if (target instanceof LaserBlockEntity laserBE) {
+                        laserBE.acceptBeam(outgoingPower(direction), outgoingPurity(direction), direction, worldPosition, beamTrail);
+                    } else if (!level.isClientSide() && feedsBeamReceiver(direction)) {
+                        IBeamReceiver receiver = level.getCapability(NTCapabilities.BeamReceiver.BLOCK, targetPos, direction.getOpposite());
+                        if (receiver != null) {
+                            receiver.receiveBeam(outgoingPower(direction), outgoingPurity(direction), direction, worldPosition, LongSets.unmodifiable(beamTrail));
+                        }
                     }
                 }
             }
@@ -346,9 +397,12 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         Map<ItemEntity, Transformation> tracked = activeTransformations.get(direction);
         float beamPurity = outgoingPurity(direction);
         int beamPower = outgoingPower(direction);
+        float damage = beamDamage(beamPower);
         for (Entity entity : level.getEntities((Entity) null, box, candidate -> candidate instanceof LivingEntity || candidate instanceof ItemEntity)) {
             if (entity instanceof LivingEntity livingEntity) {
-                livingEntity.hurt(level.damageSources().inFire(), 3);
+                if (damage > 0) {
+                    livingEntity.hurt(level.damageSources().inFire(), damage);
+                }
             } else if (entity instanceof ItemEntity itemEntity) {
                 if (tracked == null) {
                     tracked = new IdentityHashMap<>();
@@ -451,12 +505,13 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
         Vec3 from = worldPosition.relative(direction).getCenter();
         Vec3 to = worldPosition.relative(direction, maxLaserDistance).getCenter();
-        BlockHitResult blockHitResult = level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
-        Vec3i diffVec3 = blockHitResult.getBlockPos().subtract(worldPosition);
-        int hitDistance = Math.min(maxLaserDistance, Math.abs(diffVec3.getX() + diffVec3.getY() + diffVec3.getZ()));
+        BlockPos.MutableBlockPos pos = worldPosition.mutable();
         int wrongSideDistance = 0;
-        for (int i = 1; i <= hitDistance; i++) {
-            if (level.getBlockEntity(worldPosition.relative(direction, i)) instanceof LaserBlockEntity laserBlockEntity) {
+        for (int i = 1; i <= maxLaserDistance; i++) {
+            pos.move(direction);
+            BlockState state = level.getBlockState(pos);
+            BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
+            if (blockEntity instanceof LaserBlockEntity laserBlockEntity) {
                 if (laserBlockEntity.getLaserInputs().contains(direction.getOpposite())) {
                     return new BeamScan(direction, BeamScan.Status.CONNECTED, i);
                 }
@@ -464,12 +519,18 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                     wrongSideDistance = i;
                 }
             }
+            if (stopsBeam(level, pos, state, from, to)) {
+                if (wrongSideDistance > 0) {
+                    return new BeamScan(direction, BeamScan.Status.WRONG_SIDE, wrongSideDistance);
+                }
+                if (isBeamReceiver(pos, state, blockEntity, direction)) {
+                    return new BeamScan(direction, BeamScan.Status.CONNECTED, i);
+                }
+                return new BeamScan(direction, BeamScan.Status.BLOCKED, i);
+            }
         }
         if (wrongSideDistance > 0) {
             return new BeamScan(direction, BeamScan.Status.WRONG_SIDE, wrongSideDistance);
-        }
-        if (blockHitResult.getType() == HitResult.Type.BLOCK) {
-            return new BeamScan(direction, BeamScan.Status.BLOCKED, hitDistance);
         }
         return new BeamScan(direction, BeamScan.Status.NO_TARGET, 0);
     }
@@ -486,6 +547,7 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     protected void checkConnections() {
         for (Direction direction : getLaserOutputs()) {
             int newDistance = scanBeam(direction).connectedDistance();
+            setBeamReceiver(direction, newDistance > 0 && !(level.getBlockEntity(worldPosition.relative(direction, newDistance)) instanceof LaserBlockEntity));
             int prevDistance = this.laserDistances.getInt(direction);
             if (prevDistance != newDistance) {
                 this.laserDistances.put(direction, newDistance);

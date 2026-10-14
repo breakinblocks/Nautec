@@ -2,7 +2,7 @@
 navigation:
   title: Colony Feeding
   icon: minecraft:bone_block
-  position: 7
+  position: 9
   parent: aquatic_biology/aquatic_biology-index.md
 ---
 

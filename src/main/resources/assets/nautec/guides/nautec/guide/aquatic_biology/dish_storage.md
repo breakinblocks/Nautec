@@ -2,7 +2,7 @@
 navigation:
   title: Dish Storage
   icon: nautec:aquarine_dish_storage
-  position: 14
+  position: 16
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:aquarine_dish_storage

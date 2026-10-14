@@ -11,7 +11,6 @@ import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
-import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -97,16 +96,5 @@ public class ConfinedSpawnerBlock extends LaserBlock {
             return ItemInteractionResult.SUCCESS;
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (player.isSecondaryUseActive() && level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined) {
-            if (!level.isClientSide()) {
-                SpawnerConfinementMatrixItem.release(level, pos, confined, player);
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.useWithoutItem(state, level, pos, player, hitResult);
     }
 }

@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:crimson_fungus"
   },
-  "chance": 3.0,
+  "chance": 9.0,
   "input_bacteria": "nautec:red_mycotrophic_bacteria",
   "result_bacteria": "nautec:crimson_microbes"
 }

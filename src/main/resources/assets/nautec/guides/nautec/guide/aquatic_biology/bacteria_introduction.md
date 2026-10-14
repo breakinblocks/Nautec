@@ -27,7 +27,7 @@ Every colony belongs to a strain, has a size, and carries four stats that decide
 * [Incubate](incubator.md) it to grow it and to restore its Vitality.
 * Put it to work in the [Bio Reactor](bio_reactor.md) for items, with its nutrient in the reactor so it does not age, or burn it in the [Bacterial Fuel Cell](bacterial_fuel_cell.md) for a beam.
 
-[Bacteria Stats](bacteria_stats.md) explains what each number does.
+[Bacteria Stats](bacteria_stats.md) explains what each number does. [Bacteria Progression](bacteria_progression.md) is the step by step route from a first colony to a full reactor, with the power each stage needs, and [Strain Tree](strain_tree.md) shows which mutations lead where.
 
 ***
 
@@ -57,6 +57,6 @@ The Bacterial Analyzer takes the dish itself in an item slot, and the Bacterial 
 
 ## <Color id="gold">JEI</Color>
 
-JEI has a category for each step: Bacteria Grafting (where to graft each strain), Bacteria Mutations (catalyst and chance), Bacteria Incubation (nutrient, growth range and consume chance), Colony Feeding (the nutrient that keeps each strain from aging in a reactor) and Bio Reactor (what each strain makes, its Strain Yield and its starting Production Rate range). Look there for per-strain details.
+JEI has a category for each step: Bacteria Grafting (where to graft each strain), Bacteria Mutations (catalyst and chance), Strain Lineage (the fastest route to a strain from one you can graft), Bacteria Incubation (nutrient, growth range and consume chance), Colony Feeding (the nutrient that keeps each strain from aging in a reactor) and Bio Reactor (what each strain makes, its Strain Yield, its starting Production Rate range and how many items a minute a new colony makes). Look there for per-strain details.
 
 Strains for other mods' metals and gems only appear when a mod in the pack adds that material.

@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:redstone"
   },
-  "chance": 5.0,
+  "chance": 15.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:acidophiles"
 }

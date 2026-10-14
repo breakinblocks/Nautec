@@ -17,6 +17,7 @@ public final class NTRenderTypes {
     private static final RenderStateShard.ShaderStateShard GATEWAY_HORIZON_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::gatewayHorizon);
     private static final RenderStateShard.ShaderStateShard FUSION_PLASMA_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::fusionPlasma);
     private static final RenderStateShard.ShaderStateShard FUSION_FIELD_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::fusionField);
+    private static final RenderStateShard.ShaderStateShard SINGULARITY_DISK_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::singularityDisk);
     private static final RenderStateShard.ShaderStateShard LASER_BEAM_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::laserBeam);
     private static final RenderStateShard.ShaderStateShard LASER_FLARE_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::laserFlare);
     private static final RenderStateShard.ShaderStateShard SONAR_RESULT_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::sonarResult);
@@ -93,6 +94,8 @@ public final class NTRenderTypes {
                     .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
                     .createCompositeState(true)));
 
+    private static final RenderType SINGULARITY_DISK = glow("nautec_singularity_disk", SINGULARITY_DISK_SHADER, RenderStateShard.LIGHTNING_TRANSPARENCY, false);
+
     private static final Function<ResourceLocation, RenderType> EYES_OVERLAY = Util.memoize(texture -> RenderType.create("nautec_eyes_overlay",
             DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, false, true,
             RenderType.CompositeState.builder()
@@ -142,6 +145,10 @@ public final class NTRenderTypes {
 
     public static RenderType fusionField() {
         return FUSION_FIELD;
+    }
+
+    public static RenderType singularityDisk() {
+        return SINGULARITY_DISK;
     }
 
     public static RenderType gatewayGlow(ResourceLocation texture) {

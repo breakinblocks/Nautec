@@ -1,0 +1,196 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "nautec:block/extradimensional/abyssal_loose_side",
+    "rim": "nautec:block/extradimensional/abyssal_rim",
+    "rim_glow": "nautec:block/extradimensional/abyssal_rim_emissive",
+    "floor": "nautec:block/extradimensional/floor_outer"
+  },
+  "elements": [
+    {
+      "name": "floor",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#floor",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#floor"
+        },
+        "north": {
+          "uv": [
+            0,
+            2,
+            16,
+            4
+          ],
+          "texture": "#floor",
+          "cullface": "north"
+        }
+      }
+    },
+    {
+      "name": "rim",
+      "from": [
+        0,
+        2,
+        2
+      ],
+      "to": [
+        16,
+        7,
+        7
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            5
+          ],
+          "texture": "#rim"
+        },
+        "north": {
+          "uv": [
+            0,
+            5,
+            16,
+            10
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            0,
+            10,
+            16,
+            15
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "trim",
+      "from": [
+        0,
+        2,
+        7
+      ],
+      "to": [
+        16,
+        5,
+        8
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            12,
+            16,
+            13
+          ],
+          "texture": "#rim"
+        },
+        "south": {
+          "uv": [
+            0,
+            13,
+            16,
+            16
+          ],
+          "texture": "#rim"
+        }
+      }
+    },
+    {
+      "name": "rim_glow",
+      "from": [
+        0,
+        2,
+        2
+      ],
+      "to": [
+        16,
+        7,
+        7
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            5
+          ],
+          "texture": "#rim_glow"
+        },
+        "north": {
+          "uv": [
+            0,
+            5,
+            16,
+            10
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    },
+    {
+      "name": "trim_glow",
+      "from": [
+        0,
+        2,
+        7
+      ],
+      "to": [
+        16,
+        5,
+        8
+      ],
+      "shade": false,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            12,
+            16,
+            13
+          ],
+          "texture": "#rim_glow"
+        }
+      },
+      "neoforge_data": {
+        "block_light": 15
+      }
+    }
+  ]
+}

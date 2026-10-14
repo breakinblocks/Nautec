@@ -3,7 +3,7 @@
   "catalyst": {
     "item": "minecraft:cactus"
   },
-  "chance": 10.0,
+  "chance": 30.0,
   "input_bacteria": "nautec:phototrophs",
   "result_bacteria": "nautec:cactophyles"
 }

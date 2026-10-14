@@ -88,7 +88,7 @@ public class DrainBlockEntity extends LaserBlockEntity implements MultiblockEnti
         if (NTConfig.drainPower <= 0) {
             return NTConfig.drainSaltWaterAmount;
         }
-        double scaled = NTConfig.drainSaltWaterAmount * Math.sqrt(power / (double) NTConfig.drainPower);
+        double scaled = NTConfig.drainSaltWaterAmount * Math.pow(power / (double) NTConfig.drainPower, NTConfig.drainPowerScaling);
         return (int) Math.min(Integer.MAX_VALUE, Math.round(scaled));
     }
 

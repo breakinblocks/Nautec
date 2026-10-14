@@ -2,7 +2,7 @@
 navigation:
   title: Incubator
   icon: nautec:incubator
-  position: 5
+  position: 7
   parent: aquatic_biology/aquatic_biology-index.md
 item_ids:
   - nautec:incubator
@@ -15,7 +15,7 @@ item_ids:
   The Incubator grows a colony and restores its Vitality.
 </Column>
 
-Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
+Put the colony in the bacteria slot and its nutrient in the item slot. Each strain has its own nutrient, listed in JEI's Bacteria Incubation category along with its growth range and consume chance. Hover the empty nutrient slot with a colony loaded to see what it grows on, and hover the progress arrow to see what the Incubator is waiting for. The Incubator only starts when the nutrient matches the strain. The item slot holds one nutrient at a time.
 
 Every strain that has a nutrient also takes the item it makes and that item's storage block. Ferrophiles, for example, take iron ore, Iron Ingots or Iron Blocks. The item it makes has one and a half times the consume chance of the strain's own nutrient, and a storage block a ninth of that, so one block lasts as long as nine of the item. See [Colony Feeding](colony_feeding.md) for how the block is found.
 
@@ -39,7 +39,7 @@ Growth stops exactly at the size cap of 40,000 (configurable). A colony at the c
 
 ## <Color id="gold">Power</Color>
 
-It needs a beam of at least 20 AP entering its top or bottom face, and beams into both faces add together. One <ItemLink id="aquatic_catalyst"/> gives 12 AP at most, so run one above and one below, or combine beams in a <ItemLink id="laser_junction"/> first. The cycle time (100 ticks) and the power are configurable.
+It needs a beam of at least 20 AP entering its top or bottom face, and beams into both faces add together. One <ItemLink id="aquatic_catalyst"/> burning <ItemLink id="prismarine_crystal_shard"/>s gives exactly 20 AP. On Prismarine Shards it gives 12, so run one above and one below, or combine beams in a <ItemLink id="laser_junction"/> first. The cycle time (100 ticks) and the power are configurable.
 
 ***
 

@@ -67,6 +67,7 @@ public class RecipesProvider extends RecipeProvider {
         resonanceRecipes(pRecipeOutput);
         gatewayRecipes(pRecipeOutput);
         pressureForgeRecipes(pRecipeOutput);
+        smelterRecipes(pRecipeOutput);
         dockRecipes(pRecipeOutput);
         waveJetRecipes(pRecipeOutput);
         atlanteanRifleRecipes(pRecipeOutput);
@@ -332,9 +333,9 @@ public class RecipesProvider extends RecipeProvider {
                 .save(pRecipeOutput, key("prismarine_shards_to_ap"));
 
         AquaticCatalystChannelingRecipeBuilder.newRecipe(Ingredient.of(NTItems.PRISMARINE_CRYSTAL_SHARD))
-                .powerAmount(9000)
+                .powerAmount(30000)
                 .purity(1.2f)
-                .duration(750)
+                .duration(1500)
                 .save(pRecipeOutput, key("prismarine_crystal_shards_to_ap"));
     }
 
@@ -451,6 +452,19 @@ public class RecipesProvider extends RecipeProvider {
                 .define('L', NTItems.LASER_CHANNELING_COIL)
                 .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
                 .save(pRecipeOutput, key("submarine_dock"));
+    }
+
+    private void smelterRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.LASER_PURIFICATION_SMELTER.asItem())
+                .pattern("ALA")
+                .pattern("CBC")
+                .pattern("ALA")
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('C', NTItems.AQUATIC_CHIP)
+                .define('B', Items.BLAST_FURNACE)
+                .unlockedBy("has_item", has(NTItems.LASER_CHANNELING_COIL))
+                .save(pRecipeOutput, key("laser_purification_smelter"));
     }
 
     private void pressureForgeRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -654,6 +668,17 @@ public class RecipesProvider extends RecipeProvider {
                 .define('P', NTBlocks.POLISHED_PRISMARINE)
                 .unlockedBy("has_item", has(NTBlocks.POLISHED_PRISMARINE))
                 .save(pRecipeOutput, key("aquatic_catalyst"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ADVANCED_AQUATIC_CATALYST.asItem(), 1)
+                .pattern("UFU")
+                .pattern("XAX")
+                .pattern("UFU")
+                .define('U', NTItems.AQUARINE_COPPER_INGOT)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('X', NTItems.AQUATIC_CHIP)
+                .define('A', NTBlocks.AQUATIC_CATALYST)
+                .unlockedBy("has_item", has(NTBlocks.AQUATIC_CATALYST))
+                .save(pRecipeOutput, key("advanced_aquatic_catalyst"));
     }
 
     private void machineRecipes(@NotNull RecipeOutput pRecipeOutput) {
@@ -1479,6 +1504,58 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.PRISM_SATELLITE))
                 .save(pRecipeOutput, key("resonance_node"));
 
+        shaped(RecipeCategory.MISC, NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem())
+                .pattern(" F ")
+                .pattern("PBP")
+                .pattern("RNR")
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('B', NTItems.PRISMATIC_BATTERY)
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('N', NTBlocks.RESONANCE_NODE.asItem())
+                .unlockedBy("has_item", has(NTBlocks.RESONANCE_NODE.asItem()))
+                .save(pRecipeOutput, key("extradimensional_energy_storage"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.RIFT_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("SPS")
+                .pattern("PEP")
+                .pattern("SPS")
+                .define('S', NTItems.AQUARINE_STEEL_INGOT)
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('E', Tags.Items.ENDER_PEARLS)
+                .unlockedBy("has_item", has(NTBlocks.EXTRADIMENSIONAL_STORAGE.asItem()))
+                .save(pRecipeOutput, key("rift_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.VOID_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("ROR")
+                .pattern("OFO")
+                .pattern("ROR")
+                .define('R', NTBlocks.RIFT_CONTAINMENT_FRAME.asItem())
+                .define('O', Items.CRYING_OBSIDIAN)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTBlocks.RIFT_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("void_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("VAV")
+                .pattern("AHA")
+                .pattern("VAV")
+                .define('V', NTBlocks.VOID_CONTAINMENT_FRAME.asItem())
+                .define('A', NTItems.ABYSSAL_ORGAN)
+                .define('H', NTItems.ELDRITCH_HEART)
+                .unlockedBy("has_item", has(NTBlocks.VOID_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("abyssal_containment_frame"));
+
+        shaped(RecipeCategory.MISC, NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.asItem(), 4)
+                .pattern("ACA")
+                .pattern("CNC")
+                .pattern("ACA")
+                .define('A', NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem())
+                .define('C', NTBlocks.CONTAINMENT_COIL.asItem())
+                .define('N', Tags.Items.NETHER_STARS)
+                .unlockedBy("has_item", has(NTBlocks.ABYSSAL_CONTAINMENT_FRAME.asItem()))
+                .save(pRecipeOutput, key("event_horizon_containment_frame"));
+
         shaped(RecipeCategory.MISC, NTBlocks.CONDUIT_BEACON.asItem())
                 .pattern("SAS")
                 .pattern("ACA")
@@ -2037,23 +2114,23 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void mutationRecipes(RecipeOutput output) {
-        new MutationRecipeBuilder(NTBacterias.THERMOPHILES, NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), 5f)
+        new MutationRecipeBuilder(NTBacterias.THERMOPHILES, NTBacterias.LITHOPHILES, Ingredient.of(Items.STONE), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.CARBOPHAGES, Ingredient.of(Items.COAL), 5f)
+        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.CARBOPHAGES, Ingredient.of(Items.COAL), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.SILICOPHILES, Ingredient.of(Items.SAND), 5f)
+        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.SILICOPHILES, Ingredient.of(Items.SAND), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_MEAL), 5f)
+        new MutationRecipeBuilder(NTBacterias.LITHOPHILES, NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_MEAL), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.CARBOPHAGES, NTBacterias.METALLOPHILES, Ingredient.of(Items.COPPER_INGOT), 5f)
+        new MutationRecipeBuilder(NTBacterias.CARBOPHAGES, NTBacterias.METALLOPHILES, Ingredient.of(Items.COPPER_INGOT), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.ACIDOPHILES, Ingredient.of(Items.REDSTONE), 5f)
+        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.ACIDOPHILES, Ingredient.of(Items.REDSTONE), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.ACIDOPHILES, NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), 5f)
+        new MutationRecipeBuilder(NTBacterias.ACIDOPHILES, NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.AZURITOPHILES, Ingredient.of(Items.LAPIS_LAZULI), 5f)
+        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.AZURITOPHILES, Ingredient.of(Items.LAPIS_LAZULI), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.FERROPHILES, Ingredient.of(Items.IRON_INGOT), 5f)
+        new MutationRecipeBuilder(NTBacterias.METALLOPHILES, NTBacterias.FERROPHILES, Ingredient.of(Items.IRON_INGOT), 15f)
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.FERROPHILES, NTBacterias.AURROPHILES, Ingredient.of(Items.GOLD_INGOT), 5f)
                 .save(output);
@@ -2062,72 +2139,72 @@ public class RecipesProvider extends RecipeProvider {
         new MutationRecipeBuilder(NTBacterias.ADAMANTOPHILES, NTBacterias.SMARAGDOPHILES, Ingredient.of(Items.EMERALD), 5f)
                 .save(output);
 
-        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), 5f)
+        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), 20f)
+        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.RED_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.RED_MUSHROOM_BLOCK), 60f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.BROWN_MUSHROOM_BLOCK), 20f)
+        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, Ingredient.of(Items.BROWN_MUSHROOM_BLOCK), 60f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_FUNGUS), 3f)
+        new MutationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_FUNGUS), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_FUNGUS), 3f)
+        new MutationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, NTBacterias.WARPED_MICROBES, Ingredient.of(Items.WARPED_FUNGUS), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_FUNGUS), 3f)
+        new MutationRecipeBuilder(NTBacterias.BROWN_MYCOTROPHIC_BACTERIA, NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_FUNGUS), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_FUNGUS), 3f)
+        new MutationRecipeBuilder(NTBacterias.RED_MYCOTROPHIC_BACTERIA, NTBacterias.CRIMSON_MICROBES, Ingredient.of(Items.CRIMSON_FUNGUS), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.CRIMSON_LIGNOCYTES, Ingredient.of(Items.CRIMSON_STEM), 3f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.CRIMSON_LIGNOCYTES, Ingredient.of(Items.CRIMSON_STEM), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.WARPED_LIGNOCYTES, Ingredient.of(Items.WARPED_STEM), 3f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.WARPED_LIGNOCYTES, Ingredient.of(Items.WARPED_STEM), 9f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.LIGNOCYTES, Ingredient.of(Items.OAK_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.LIGNOCYTES, Ingredient.of(Items.OAK_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.DARK_LIGNOCYTES, Ingredient.of(Items.DARK_OAK_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.DARK_LIGNOCYTES, Ingredient.of(Items.DARK_OAK_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.ACACIOPHYLES, Ingredient.of(Items.ACACIA_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.ACACIOPHYLES, Ingredient.of(Items.ACACIA_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.JUNGLOPHILES, Ingredient.of(Items.JUNGLE_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.JUNGLOPHILES, Ingredient.of(Items.JUNGLE_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.BOREOPHILES, Ingredient.of(Items.SPRUCE_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.BOREOPHILES, Ingredient.of(Items.SPRUCE_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.BETULOPHILES, Ingredient.of(Items.BIRCH_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.BETULOPHILES, Ingredient.of(Items.BIRCH_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.RHIZOPHORA_LIGNOCYTES, Ingredient.of(Items.MANGROVE_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.RHIZOPHORA_LIGNOCYTES, Ingredient.of(Items.MANGROVE_LOG), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), 5f)
+        new MutationRecipeBuilder(NTBacterias.LIGNOCYTES, NTBacterias.PRUNUS_LIGNOCYTES, Ingredient.of(Items.CHERRY_LOG), 15f)
                 .save(output);
 
-        new MutationRecipeBuilder(NTBacterias.CYANOBACTERIA, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 10f)
+        new MutationRecipeBuilder(NTBacterias.CYANOBACTERIA, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.CACTOPHYLES, Ingredient.of(Items.CACTUS), 10f)
+        new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.CACTOPHYLES, Ingredient.of(Items.CACTUS), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.HALOBACTERIA, NTBacterias.HALOTROPHS, Ingredient.of(Items.KELP), 25f)
+        new MutationRecipeBuilder(NTBacterias.HALOBACTERIA, NTBacterias.HALOTROPHS, Ingredient.of(Items.KELP), 75f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.HALOBACTERIA, NTBacterias.ALGAEFORMERS, Ingredient.of(Items.SEAGRASS), 25f)
+        new MutationRecipeBuilder(NTBacterias.HALOBACTERIA, NTBacterias.ALGAEFORMERS, Ingredient.of(Items.SEAGRASS), 75f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.ALGAEFORMERS, NTBacterias.CRYOBIONTS, Ingredient.of(Items.BLUE_ICE), 5f)
+        new MutationRecipeBuilder(NTBacterias.ALGAEFORMERS, NTBacterias.CRYOBIONTS, Ingredient.of(Items.BLUE_ICE), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 5f)
+        new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.PHOTOTROPHS, Ingredient.of(Items.SUGAR_CANE), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.LIPOPHILES, Ingredient.of(NTItems.KELP_SLURRY.get()), 10f)
+        new MutationRecipeBuilder(NTBacterias.HALOTROPHS, NTBacterias.LIPOPHILES, Ingredient.of(NTItems.KELP_SLURRY.get()), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), 5f)
+        new MutationRecipeBuilder(NTBacterias.PHOTOTROPHS, NTBacterias.RHIZOBACTERIA, Ingredient.of(Items.WHEAT), 15f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BETA_PHYLOBACTERIA, Ingredient.of(Items.BEETROOT), 10f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BETA_PHYLOBACTERIA, Ingredient.of(Items.BEETROOT), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.CAROTOPHYLES, Ingredient.of(Items.CARROT), 10f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.CAROTOPHYLES, Ingredient.of(Items.CARROT), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.SOLANOPHILES, Ingredient.of(Items.POTATO), 10f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.SOLANOPHILES, Ingredient.of(Items.POTATO), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.CUCURBITOPHILES, Ingredient.of(Items.PUMPKIN), 10f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.CUCURBITOPHILES, Ingredient.of(Items.PUMPKIN), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.CUCURBITOPHILES, NTBacterias.MELOPHAGES, Ingredient.of(Items.MELON_SLICE), 10f)
+        new MutationRecipeBuilder(NTBacterias.CUCURBITOPHILES, NTBacterias.MELOPHAGES, Ingredient.of(Items.MELON_SLICE), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BAMBOOPHAGES, Ingredient.of(Items.BAMBOO), 10f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BAMBOOPHAGES, Ingredient.of(Items.BAMBOO), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.JUNGLOPHILES, NTBacterias.COCOAPHILES, Ingredient.of(Items.COCOA_BEANS), 10f)
+        new MutationRecipeBuilder(NTBacterias.JUNGLOPHILES, NTBacterias.COCOAPHILES, Ingredient.of(Items.COCOA_BEANS), 30f)
                 .save(output);
-        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BRYOPHYTOPHILES, Ingredient.of(Items.MOSS_BLOCK), 5f)
+        new MutationRecipeBuilder(NTBacterias.RHIZOBACTERIA, NTBacterias.BRYOPHYTOPHILES, Ingredient.of(Items.MOSS_BLOCK), 15f)
                 .save(output);
     }
 

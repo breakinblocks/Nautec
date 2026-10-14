@@ -69,6 +69,9 @@ public final class NTDataComponents {
     public static final Supplier<DataComponentType<Long>> CRADLE_GROWTH = registerDataComponentType("cradle_growth",
             () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 
+    public static final Supplier<DataComponentType<Long>> STORED_FE = registerDataComponentType("stored_fe",
+            () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
     public static final Supplier<DataComponentType<Boolean>> CRADLE_SEEDED = registerDataComponentType("cradle_seeded",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 

@@ -27,7 +27,7 @@ public final class MultiblockTests {
     private MultiblockTests() {
     }
 
-    private static final BlockPos DRAIN_C = new BlockPos(4, 1, 4);
+    private static final BlockPos DRAIN_C = new BlockPos(4, 2, 4);
     private static final BlockPos REACTOR_C = new BlockPos(4, 2, 4);
     private static final BlockPos AS_C = new BlockPos(4, 1, 4);
     private static final int[][] AS_EXTENSIONS = {{2, 0}, {0, 2}, {4, 2}, {2, 4}};

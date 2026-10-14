@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.resonance;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
 import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 import com.breakinblocks.nautec.utils.valueio.ValueOutput;
@@ -66,6 +67,12 @@ public final class ResonanceActions {
             case ResonanceActionPayload.MODE -> {
                 if (pylon instanceof ResonanceNodeBlockEntity node) {
                     node.setOutput(!node.isOutput());
+                }
+                yield null;
+            }
+            case ResonanceActionPayload.PORT -> {
+                if (pylon instanceof ExtradimensionalStorageBlockEntity storage) {
+                    storage.cyclePort(parse(payload.text(), -1));
                 }
                 yield null;
             }

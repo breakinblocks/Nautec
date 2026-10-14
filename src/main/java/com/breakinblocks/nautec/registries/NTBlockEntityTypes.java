@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantVaultBlockEntity;
@@ -14,6 +15,7 @@ import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.AnchorBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.AdvancedAquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AdvancedBacterialAnalyzerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.BacterialAnalyzerBlockEntity;
@@ -38,6 +40,7 @@ import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.LaserPurificationSmelterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.PrismarineLaserRelayBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.SubmarineDockBlockEntity;
@@ -73,6 +76,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<AquaticCatalystBlockEntity>> AQUATIC_CATALYST = BLOCK_ENTITIES.register("aquatic_catalyst",
             () -> BlockEntityType.Builder.of(AquaticCatalystBlockEntity::new,
                     NTBlocks.AQUATIC_CATALYST.get()).build(null));
+    public static final Supplier<BlockEntityType<AdvancedAquaticCatalystBlockEntity>> ADVANCED_AQUATIC_CATALYST = BLOCK_ENTITIES.register("advanced_aquatic_catalyst",
+            () -> BlockEntityType.Builder.of(AdvancedAquaticCatalystBlockEntity::new,
+                    NTBlocks.ADVANCED_AQUATIC_CATALYST.get()).build(null));
     public static final Supplier<BlockEntityType<PrismarineLaserRelayBlockEntity>> PRISMARINE_LASER_RELAY = BLOCK_ENTITIES.register("prismarine_laser_relay",
             () -> BlockEntityType.Builder.of(PrismarineLaserRelayBlockEntity::new,
                     NTBlocks.PRISMARINE_RELAY.get()).build(null));
@@ -107,6 +113,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<PressureForgeBlockEntity>> PRESSURE_FORGE = BLOCK_ENTITIES.register("pressure_forge",
             () -> BlockEntityType.Builder.of(PressureForgeBlockEntity::new,
                     NTBlocks.PRESSURE_FORGE.get()).build(null));
+    public static final Supplier<BlockEntityType<LaserPurificationSmelterBlockEntity>> LASER_PURIFICATION_SMELTER = BLOCK_ENTITIES.register("laser_purification_smelter",
+            () -> BlockEntityType.Builder.of(LaserPurificationSmelterBlockEntity::new,
+                    NTBlocks.LASER_PURIFICATION_SMELTER.get()).build(null));
     public static final Supplier<BlockEntityType<GatewayBlockEntity>> GATEWAY = BLOCK_ENTITIES.register("gateway",
             () -> BlockEntityType.Builder.of(GatewayBlockEntity::new,
                     NTBlocks.GATEWAY.get()).build(null));
@@ -199,6 +208,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<ResonanceNodeBlockEntity>> RESONANCE_NODE = BLOCK_ENTITIES.register("resonance_node",
             () -> BlockEntityType.Builder.of(ResonanceNodeBlockEntity::new,
                     NTBlocks.RESONANCE_NODE.get()).build(null));
+    public static final Supplier<BlockEntityType<ExtradimensionalStorageBlockEntity>> EXTRADIMENSIONAL_STORAGE = BLOCK_ENTITIES.register("extradimensional_energy_storage",
+            () -> BlockEntityType.Builder.of(ExtradimensionalStorageBlockEntity::new,
+                    NTBlocks.EXTRADIMENSIONAL_STORAGE.get()).build(null));
     public static final Supplier<BlockEntityType<SatelliteArrayBlockEntity>> SATELLITE_ARRAY = BLOCK_ENTITIES.register("satellite_array",
             () -> BlockEntityType.Builder.of(SatelliteArrayBlockEntity::new,
                     NTBlocks.UPLINK_ARRAY.get()).build(null));

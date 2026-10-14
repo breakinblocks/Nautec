@@ -5,6 +5,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.registries.BuiltInRegistries;
 import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
+import com.breakinblocks.nautec.content.blockentities.AdvancedAquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.AquaticCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.FishingStationBlockEntity;
@@ -13,6 +14,10 @@ import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
 import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
+import com.breakinblocks.nautec.content.menus.PressureForgeMenu;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.GameType;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
 import com.breakinblocks.nautec.utils.templates.ItemStackTemplate;
@@ -55,6 +60,54 @@ public final class MachineTests {
     }
 
     public static void register(NTTestRegistrar r) {
+
+        r.add("machine/pressure_forge_menu_reports_requirements", 20, helper -> {
+            BlockPos pos = new BlockPos(4, 1, 4);
+            helper.setBlock(pos, NTBlocks.PRESSURE_FORGE.get().defaultBlockState());
+            PressureForgeBlockEntity forge = helper.getBlockEntity(pos, PressureForgeBlockEntity.class);
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            PressureForgeMenu menu = new PressureForgeMenu(0, player.getInventory(), forge);
+            helper.assertValueEqual(PressureForgeBlockEntity.STATUS_EMPTY, menu.getStatus(), "an empty forge is idle");
+            helper.assertFalse(menu.hasRecipe(), "no recipe without an input");
+            forge.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.RESONANT_SHARD.get()));
+            helper.runAfterDelay(1, () -> {
+                helper.assertTrue(menu.hasRecipe(), "a resonant shard has a forging recipe");
+                helper.assertValueEqual(2.0F, menu.getRecipePurity(), "the recipe purity reaches the screen");
+                helper.assertValueEqual(Math.min(NTConfig.pressureForgeDepth, -20), menu.getDepthLimit(), "depth limit takes the deeper of config and recipe");
+                helper.assertValueEqual(helper.absolutePos(pos).getY(), menu.getY(), "the forge's own height");
+                helper.assertValueEqual(0, menu.getWater(), "no water above in open air");
+                helper.assertValueEqual(PressureForgeBlockEntity.STATUS_WAITING, menu.getStatus(), "a valid input without power waits");
+                for (int i = 1; i <= NTConfig.pressureForgeWaterColumn; i++) {
+                    helper.setBlock(pos.above(i), Blocks.WATER.defaultBlockState());
+                }
+                helper.runAfterDelay(1, () -> {
+                    helper.assertValueEqual(NTConfig.pressureForgeWaterColumn, menu.getWater(), "the full water column is counted");
+                    helper.succeed();
+                });
+            });
+        });
+
+        r.add("machine/pressure_forge_menu_synthesizer_slot", 5, helper -> {
+            BlockPos pos = new BlockPos(4, 1, 4);
+            helper.setBlock(pos, NTBlocks.PRESSURE_FORGE.get().defaultBlockState());
+            PressureForgeBlockEntity forge = helper.getBlockEntity(pos, PressureForgeBlockEntity.class);
+            Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+            PressureForgeMenu menu = new PressureForgeMenu(0, player.getInventory(), forge);
+            Slot synthesizer = menu.getSlot(36);
+            Slot input = menu.getSlot(37);
+            Slot output = menu.getSlot(38);
+            helper.assertFalse(synthesizer.mayPlace(new ItemStack(Items.STONE)), "only synthesizers fit the synthesizer slot");
+            helper.assertFalse(output.mayPlace(new ItemStack(NTItems.RESONANT_SHARD.get())), "nothing can be placed in the output");
+            helper.assertTrue(input.mayPlace(new ItemStack(NTItems.RESONANT_SHARD.get())), "inputs go in the input slot");
+            synthesizer.set(new ItemStack(NTItems.PRESSURE_SYNTHESIZER.get()));
+            helper.assertValueEqual(PressureForgeBlockEntity.Synthesizer.BASIC, forge.getSynthesizer(), "placing a synthesizer fits it");
+            ItemStack taken = synthesizer.remove(1);
+            helper.assertTrue(taken.is(NTItems.PRESSURE_SYNTHESIZER.get()), "taking it out returns the synthesizer");
+            helper.assertValueEqual(PressureForgeBlockEntity.Synthesizer.NONE, forge.getSynthesizer(), "and leaves the forge without one");
+            helper.assertTrue(PressureForgeBlockEntity.isInput(helper.getLevel(), new ItemStack(NTItems.RESONANT_SHARD.get())), "a recipe input");
+            helper.assertFalse(PressureForgeBlockEntity.isInput(helper.getLevel(), new ItemStack(Items.STONE)), "stone is not a forge input");
+            helper.succeed();
+        });
 
         r.add("machine/pressure_forge_needs_depth_and_water", 40, helper -> helper.runAfterDelay(1, () -> {
             BlockPos dry = new BlockPos(4, 1, 4);
@@ -171,8 +224,52 @@ public final class MachineTests {
                     helper.fail("Expected MixerBlockEntity");
                     return;
                 }
-                helper.assertValueEqual(12, receiver.getPower(), "power channeled per tick (9000 / 750)");
+                helper.assertValueEqual(20, receiver.getPower(), "power channeled per tick (30000 / 1500)");
                 helper.assertValueEqual(1.2f, receiver.getPurity(), "recipe purity carried by the beam");
+                helper.succeed();
+            });
+        });
+
+        r.add("machine/advanced_catalyst_burns_eight_at_eight_times_power", 120, helper -> {
+            BlockPos catalystPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(catalystPos, NTBlocks.ADVANCED_AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.assertTrue(catalyst instanceof AdvancedAquaticCatalystBlockEntity, "advanced block makes the advanced block entity");
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 20)));
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(catalyst.isActive(), "advanced catalyst should be channeling");
+                helper.assertValueEqual(12, catalyst.getItemStackHandler().getStackInSlot(0).getCount(), "shards left after one burn of eight");
+                helper.assertValueEqual(8, catalyst.getFuelBurned(), "shards in the current burn");
+                helper.assertValueEqual(1500, catalyst.getCurrentRecipe().value().duration(), "burn time stays the recipe's");
+                MixerBlockEntity receiver = helper.getBlockEntity(mixerPos, MixerBlockEntity.class);
+                helper.assertValueEqual(160, receiver.getPower(), "eight times the 20 AP/t of one shard");
+                helper.assertTrue(Math.abs(receiver.getPurity() - 1.32f) < 0.001f, "purity 1.2 raised by 10%, got " + receiver.getPurity());
+                helper.succeed();
+            });
+        });
+
+        r.add("machine/advanced_catalyst_burns_a_short_stack_at_its_size", 120, helper -> {
+            BlockPos catalystPos = new BlockPos(2, 1, 4);
+            BlockPos mixerPos = new BlockPos(5, 1, 4);
+            helper.setBlock(catalystPos, NTBlocks.ADVANCED_AQUATIC_CATALYST.get().defaultBlockState()
+                    .setValue(BlockStateProperties.FACING, Direction.WEST));
+            helper.setBlock(mixerPos, NTBlocks.MIXER.get().defaultBlockState());
+
+            AquaticCatalystBlockEntity catalyst = helper.getBlockEntity(catalystPos, AquaticCatalystBlockEntity.class);
+            helper.runAfterDelay(1, () ->
+                    catalyst.getItemStackHandler().setStackInSlot(0, new ItemStack(NTItems.PRISMARINE_CRYSTAL_SHARD.get(), 3)));
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertTrue(catalyst.getItemStackHandler().getStackInSlot(0).isEmpty(), "all three shards burn together");
+                helper.assertValueEqual(3, catalyst.getFuelBurned(), "shards in the current burn");
+                MixerBlockEntity receiver = helper.getBlockEntity(mixerPos, MixerBlockEntity.class);
+                helper.assertValueEqual(60, receiver.getPower(), "three shards give three times one shard's power");
                 helper.succeed();
             });
         });

@@ -59,5 +59,19 @@ versionRange = "[3.3,)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.${ mod_id }]]
+modId = "ae2"
+type = "optional"
+versionRange = "[19.2,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${ mod_id }]]
+modId = "refinedstorage"
+type = "optional"
+versionRange = "[2.0,)"
+ordering = "NONE"
+side = "BOTH"
+
 [[mixins]]
 config = "${mod_id}.mixins.json"

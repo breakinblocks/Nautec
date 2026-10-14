@@ -5,6 +5,9 @@ import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.registries.NTFeatures;
 import com.mojang.logging.LogUtils;
+import com.breakinblocks.nautec.compat.ae2.AE2Compat;
+import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
+import com.breakinblocks.nautec.compat.refinedstorage.RefinedStorageCompat;
 import com.breakinblocks.nautec.compat.starcatcher.StarcatcherCompat;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.augments.AugmentType;
@@ -147,6 +150,8 @@ public final class Nautec {
 
         preserveWorldgenConfig();
         StarcatcherCompat.init();
+        AE2Compat.init(modEventBus);
+        RefinedStorageCompat.init();
         modContainer.registerConfig(ModConfig.Type.COMMON, NTConfig.WORLDGEN_SPEC, "nautec-worldgen.toml");
         modContainer.registerConfig(ModConfig.Type.SERVER, NTConfig.SPEC, "nautec-common.toml");
     }
@@ -237,6 +242,11 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.getPort());
         event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.RESONANCE_NODE.get(),
                 (blockEntity, dir) -> blockEntity.getPort());
+        event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.EXTRADIMENSIONAL_STORAGE.get(),
+                (blockEntity, dir) -> blockEntity.corePort(dir));
+        event.registerBlock(TransferCapabilities.Energy.BLOCK, (level, pos, state, blockEntity, dir) -> ExtradimensionalStorageBlockEntity.framePort(level, pos, state, dir),
+                NTBlocks.RIFT_CONTAINMENT_FRAME.get(), NTBlocks.VOID_CONTAINMENT_FRAME.get(),
+                NTBlocks.ABYSSAL_CONTAINMENT_FRAME.get(), NTBlocks.EVENT_HORIZON_CONTAINMENT_FRAME.get());
         event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.TIDAL_ROTOR.get(),
                 (blockEntity, dir) -> blockEntity.getEnergyOutput());
         event.registerBlockEntity(TransferCapabilities.Energy.BLOCK, NTBlockEntityTypes.THERMAL_VENT_TAP.get(),

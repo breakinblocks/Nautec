@@ -6,6 +6,7 @@ navigation:
   parent: getting_started/getting_started-index.md
 item_ids:
   - nautec:aquatic_catalyst
+  - nautec:advanced_aquatic_catalyst
   - nautec:prismarine_crystal
 ---
 
@@ -18,7 +19,7 @@ item_ids:
 
 NauTec machines run on laser power, measured in AP per tick (AP/t). A beam carries two values: its power, and its purity. Machines use the power to run, and recipes check the purity before they start.
 
-A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, a junction, a lens), no more than 16 blocks away (`laserDistance` in `config/nautec-common.toml`), or 64 from a relay, with no solid block in between. Beams pass through water.
+A beam only forms between two laser blocks. The sending block needs something on that side that accepts a beam (a machine, a relay, a junction, a lens), no more than 16 blocks away (`laserDistance` in `config/nautec-common.toml`), or 64 from a relay, with no solid block in between. Beams pass through water and through glass, so you can wall a beam in glass.
 
 ***
 
@@ -37,7 +38,7 @@ Load fuel by right-clicking the catalyst with a stack, or feed it from a hopper.
 |---|---|---|---|
 | Prismarine Shard | 0.4 | 12 AP/t | 30 s |
 | Prismarine Crystals | 0.8 | 6 AP/t | 30 s |
-| <ItemLink id="prismarine_crystal_shard"/> | 1.2 | 12 AP/t | 37.5 s |
+| <ItemLink id="prismarine_crystal_shard"/> | 1.2 | 20 AP/t | 75 s |
 
 The face you are looking at when you place it is the pale intake, with eight sockets that fill as you load fuel. The beam leaves from the opposite face, the dark one with the cyan lens. Look down while placing it to fire downward, look up to fire upward. An <ItemLink id="aquarine_steel_wrench"/> rotates a placed catalyst.
 
@@ -49,7 +50,26 @@ A redstone signal pauses it. A paused catalyst sends no beam and keeps its fuel 
 
 The two small lamps near the lens end of each side show whether it has found a receiver. Green means a laser block within range takes the beam. Red means it has not: nothing is in line with the lens, a solid block is in the way, or the block in front does not take a beam from that side (a relay facing the wrong way is the usual cause). Shift-right-click the catalyst with an empty hand for a chat readout of its fuel, which way it fires, what the beam hits and how to fix it.
 
-<Color id="gold">Tip</Color>: the beam burns anything standing in it, you included. Walk around running beams.
+<Color id="gold">Tip</Color>: the beam burns anything standing in it, you included, and a stronger beam burns harder (see [Moving Laser Power](nautec:laser_chemistry/laser_manipulation.md)). Walk around running beams, or run them through glass.
+
+***
+
+<Row>
+  <ItemImage id="advanced_aquatic_catalyst"/>
+  ### <Color id="aqua">Advanced Aquatic Catalyst</Color>
+</Row>
+
+An Aquatic Catalyst with a gold-trimmed frame that burns eight fuel items at once. Each burn lasts as long as one item does in the Aquatic Catalyst, and the beam carries eight times the power, so a stack of shards gives 160 AP per tick instead of 20 and runs out eight times as fast. The energy from each item is the same; you get it all sooner.
+
+<Recipe id="nautec:advanced_aquatic_catalyst"/>
+
+| Fuel | Purity | Power | Burn time |
+|---|---|---|---|
+| Prismarine Shard | 0.44 | 96 AP/t | 30 s |
+| Prismarine Crystals | 0.88 | 48 AP/t | 30 s |
+| <ItemLink id="prismarine_crystal_shard"/> | 1.32 | 160 AP/t | 75 s |
+
+Its beam is 10% purer than the same fuel in an Aquatic Catalyst, before any Budding Prismarine boost. With fewer than eight items loaded it burns what is there, at that many times the power. Everything else works like the Aquatic Catalyst: placement, lamps, redstone pausing, Budding Prismarine and the shift-right-click readout. `advancedCatalystFuelMultiplier` and `advancedCatalystPurityMultiplier` set the eight and the 10%.
 
 ***
 
