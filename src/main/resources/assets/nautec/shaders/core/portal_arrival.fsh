@@ -43,7 +43,7 @@ float fbm(vec2 p) {
     return value;
 }
 
-float noise3(vec3 p) {
+float fbm3(vec3 p) {
     return (fbm(p.xy) + fbm(p.yz + 31.0) + fbm(p.zx + 57.0)) / 3.0;
 }
 
@@ -80,7 +80,7 @@ void main() {
         if (t > 0.0 && t < sceneDist) {
             vec3 normal = (dir * t - center) / front;
             float rim = pow(1.0 - abs(dot(normal, dir)), 2.5);
-            float veins = smoothstep(0.5, 0.62, noise3(normal * 3.5 + vec3(time * 0.9, -time * 0.6, seed)));
+            float veins = smoothstep(0.5, 0.62, fbm3(normal * 3.5 + vec3(time * 0.9, -time * 0.6, seed)));
             float shell = rim * 0.85 + veins * (0.45 + 0.4 * rim) + 0.05;
             color += mix(violet, cyan, rim * 0.6) * shell + cyan * veins * 0.25;
         }
@@ -96,11 +96,11 @@ void main() {
         vec3 rel = surface - center;
         float dist = length(rel);
         if (dist < maxRadius) {
-            float warp = (noise3(rel * 0.45 + vec3(time * 0.8, seed, -time * 0.5)) - 0.5) * 1.2;
+            float warp = (fbm3(rel * 0.45 + vec3(time * 0.8, seed, -time * 0.5)) - 0.5) * 1.2;
             float behind = front - (dist + warp);
             float crest = exp(-behind * behind * 3.0);
             float trail = behind > 0.0 ? exp(-behind * 0.5) * 0.35 : 0.0;
-            float glyph = smoothstep(0.6, 0.8, noise3(rel * 1.3 - vec3(0.0, time * 1.5, 0.0))) * crest;
+            float glyph = smoothstep(0.6, 0.8, fbm3(rel * 1.3 - vec3(0.0, time * 1.5, 0.0))) * crest;
             float edge = 1.0 - smoothstep(maxRadius * 0.75, maxRadius, dist);
             color += (violet * (crest * 0.9 + trail) + cyan * glyph * 0.8 + white * pow(crest, 6.0) * 0.6) * edge;
         }
