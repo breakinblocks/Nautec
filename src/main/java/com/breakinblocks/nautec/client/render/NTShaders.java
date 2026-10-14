@@ -3,13 +3,13 @@ package com.breakinblocks.nautec.client.render;
 import com.breakinblocks.nautec.Nautec;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.function.Consumer;
 
 public final class NTShaders {
@@ -59,9 +59,14 @@ public final class NTShaders {
     private static void register(RegisterShadersEvent event, ResourceProvider provider, String name, VertexFormat format, Consumer<ShaderInstance> onLoaded) {
         try {
             event.registerShader(new ShaderInstance(provider, Nautec.rl(name), format), onLoaded);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Failed to load NauTec shader " + name, e);
+        } catch (IOException | RuntimeException e) {
+            Nautec.LOGGER.error("NauTec shader {} failed to load, its effect is turned off", name, e);
+            onLoaded.accept(null);
         }
+    }
+
+    public static @Nullable ShaderInstance orFallback(@Nullable ShaderInstance shader) {
+        return shader != null ? shader : GameRenderer.getPositionTexColorShader();
     }
 
     public static @Nullable ShaderInstance crystalShell() {

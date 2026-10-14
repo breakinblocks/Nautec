@@ -10,17 +10,17 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Function;
 
 public final class NTRenderTypes {
-    private static final RenderStateShard.ShaderStateShard CRYSTAL_SHELL_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::crystalShell);
-    private static final RenderStateShard.ShaderStateShard CRYSTAL_CORE_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::crystalCore);
-    private static final RenderStateShard.ShaderStateShard CRYSTAL_HALO_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::crystalHalo);
-    private static final RenderStateShard.ShaderStateShard GATEWAY_GLOW_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::gatewayGlow);
-    private static final RenderStateShard.ShaderStateShard GATEWAY_HORIZON_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::gatewayHorizon);
-    private static final RenderStateShard.ShaderStateShard FUSION_PLASMA_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::fusionPlasma);
-    private static final RenderStateShard.ShaderStateShard FUSION_FIELD_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::fusionField);
-    private static final RenderStateShard.ShaderStateShard SINGULARITY_DISK_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::singularityDisk);
-    private static final RenderStateShard.ShaderStateShard LASER_BEAM_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::laserBeam);
-    private static final RenderStateShard.ShaderStateShard LASER_FLARE_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::laserFlare);
-    private static final RenderStateShard.ShaderStateShard SONAR_RESULT_SHADER = new RenderStateShard.ShaderStateShard(NTShaders::sonarResult);
+    private static final RenderStateShard.ShaderStateShard CRYSTAL_SHELL_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.crystalShell()));
+    private static final RenderStateShard.ShaderStateShard CRYSTAL_CORE_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.crystalCore()));
+    private static final RenderStateShard.ShaderStateShard CRYSTAL_HALO_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.crystalHalo()));
+    private static final RenderStateShard.ShaderStateShard GATEWAY_GLOW_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.gatewayGlow()));
+    private static final RenderStateShard.ShaderStateShard GATEWAY_HORIZON_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.gatewayHorizon()));
+    private static final RenderStateShard.ShaderStateShard FUSION_PLASMA_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.fusionPlasma()));
+    private static final RenderStateShard.ShaderStateShard FUSION_FIELD_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.fusionField()));
+    private static final RenderStateShard.ShaderStateShard SINGULARITY_DISK_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.singularityDisk()));
+    private static final RenderStateShard.ShaderStateShard LASER_BEAM_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.laserBeam()));
+    private static final RenderStateShard.ShaderStateShard LASER_FLARE_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.laserFlare()));
+    private static final RenderStateShard.ShaderStateShard SONAR_RESULT_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.sonarResult()));
 
     private static final RenderType SONAR_HIGHLIGHT = RenderType.create("nautec_sonar_highlight",
             DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 1536, false, false,
