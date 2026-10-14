@@ -50,6 +50,8 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     protected static final int READOUT_Y = 72;
     protected static final int READOUT_HEIGHT = 40;
     private static final int MANAGE_Y = 118;
+    private static final int MANAGE_HEIGHT = 88;
+    private static final int MEMBER_HEIGHT = 16;
     private static final int TRUSTED_ROWS = 4;
     private static final int ROW = 11;
 
@@ -59,6 +61,7 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     private String nameDraft = "";
     private String trustDraft = "";
     private boolean confirmDelete;
+    private int panelHeight = IMAGE_HEIGHT;
 
     protected ResonanceNetworkScreen(M menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -73,6 +76,33 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     protected abstract void extractReadout(GuiGraphicsExtractor graphics, int x, int y, ResonanceSyncPayload.@Nullable NetworkView view);
 
     protected abstract boolean readoutTooltip(List<Component> lines, int mouseX, int mouseY, int x, int y);
+
+    protected int networkY() {
+        return 22;
+    }
+
+    protected int readoutX() {
+        return 8;
+    }
+
+    protected int readoutY() {
+        return READOUT_Y;
+    }
+
+    protected int readoutWidth() {
+        return IMAGE_WIDTH - 16;
+    }
+
+    protected int readoutHeight() {
+        return READOUT_HEIGHT;
+    }
+
+    protected int manageY() {
+        return MANAGE_Y;
+    }
+
+    protected void extractPanelBackground(GuiGraphicsExtractor graphics, int x, int y) {
+    }
 
     private @Nullable ResonanceSyncPayload sync() {
         ResonanceSyncPayload latest = ResonanceClientState.latest();
@@ -101,24 +131,28 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     protected void init() {
         super.init();
         this.shown = sync();
+        ResonanceSyncPayload.NetworkView shownView = current();
+        this.panelHeight = shownView == null ? manageY() - 2 : shownView.manage() ? manageY() + MANAGE_HEIGHT : manageY() + MEMBER_HEIGHT;
+        this.topPos = (this.height - this.panelHeight) / 2;
         int x = this.leftPos;
         int y = this.topPos;
+        int ny = y + networkY();
 
         addHeaderWidgets(x, y);
 
-        addRenderableWidget(new PanelButton(x + 8, y + 32, 14, 14, () -> Component.literal("<"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
+        addRenderableWidget(new PanelButton(x + 8, ny + 10, 14, 14, () -> Component.literal("<"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
                 () -> Component.translatable("nautec.resonance.cycle.desc"), () -> cycle(-1)));
-        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 22, y + 32, 14, 14, () -> Component.literal(">"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
+        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 22, ny + 10, 14, 14, () -> Component.literal(">"), () -> NEUTRAL, () -> NEUTRAL_HOVER,
                 () -> Component.translatable("nautec.resonance.cycle.desc"), () -> cycle(1)));
 
-        this.nameBox = new EditBox(this.font, x + 8, y + 52, IMAGE_WIDTH - 104, 14, Component.translatable("nautec.resonance.new_name"));
+        this.nameBox = new EditBox(this.font, x + 8, ny + 30, IMAGE_WIDTH - 112, 14, Component.translatable("nautec.resonance.new_name"));
         this.nameBox.setMaxLength(24);
         this.nameBox.setHint(Component.translatable("nautec.resonance.new_name").withStyle(ChatFormatting.DARK_GRAY));
         this.nameBox.setValue(nameDraft);
         this.nameBox.setResponder(value -> nameDraft = value);
         this.nameBox.setTooltip(Tooltip.create(Component.translatable("nautec.resonance.new_name.desc")));
         addRenderableWidget(this.nameBox);
-        PanelButton chunk = addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 36, y + 52, 28, 14, () -> Component.translatable("nautec.resonance.chunk"),
+        PanelButton chunk = addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 44, ny + 30, 36, 14, () -> Component.translatable("nautec.resonance.chunk"),
                 () -> chunkState() == ResonanceChunkLoading.ON ? SEND_COLOR : NEUTRAL,
                 () -> chunkState() == ResonanceChunkLoading.ON ? SEND_HOVER : NEUTRAL_HOVER,
                 () -> Component.translatable(switch (chunkState()) {
@@ -128,7 +162,7 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
                 }).append("\n").append(Component.translatable("nautec.resonance.chunk.desc").withStyle(ChatFormatting.GRAY)),
                 () -> send(ResonanceActionPayload.CHUNK, null, "")));
         chunk.active = chunkState() != ResonanceChunkLoading.DISABLED;
-        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 92, y + 52, 52, 14, () -> Component.translatable("nautec.resonance.create"),
+        addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 100, ny + 30, 52, 14, () -> Component.translatable("nautec.resonance.create"),
                 () -> NEUTRAL, () -> NEUTRAL_HOVER, () -> Component.translatable("nautec.resonance.create.desc"), () -> {
             if (!nameDraft.isBlank()) {
                 send(ResonanceActionPayload.CREATE, null, nameDraft);
@@ -140,12 +174,13 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         }));
 
         this.trustBox = null;
-        ResonanceSyncPayload.NetworkView view = current();
+        ResonanceSyncPayload.NetworkView view = shownView;
         if (view == null || !view.manage()) {
             return;
         }
+        int my = y + manageY();
         boolean teams = this.shown != null && this.shown.teamsAvailable();
-        PanelButton team = addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 92, y + MANAGE_Y, 84, 14,
+        PanelButton team = addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 92, my, 84, 14,
                 () -> Component.translatable(teamOn() ? "nautec.resonance.team.on" : "nautec.resonance.team.off"),
                 () -> teamOn() ? SEND_COLOR : NEUTRAL, () -> teamOn() ? SEND_HOVER : NEUTRAL_HOVER,
                 () -> Component.translatable(teams ? "nautec.resonance.team.desc" : "nautec.resonance.team.missing"),
@@ -155,12 +190,12 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         List<ResonanceSyncPayload.Member> trusted = view.trusted();
         for (int i = 0; i < Math.min(TRUSTED_ROWS, trusted.size()); i++) {
             ResonanceSyncPayload.Member member = trusted.get(i);
-            addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 22, y + MANAGE_Y + 18 + i * ROW, 12, 10, () -> Component.literal("x"),
+            addRenderableWidget(new PanelButton(x + IMAGE_WIDTH - 22, my + 18 + i * ROW, 12, 10, () -> Component.literal("x"),
                     () -> DANGER, () -> DANGER_HOVER, () -> Component.translatable("nautec.resonance.untrust.desc", member.name()),
                     () -> send(ResonanceActionPayload.UNTRUST, null, member.id().toString())));
         }
 
-        int rowY = y + IMAGE_HEIGHT - 22;
+        int rowY = my + MANAGE_HEIGHT - 22;
         this.trustBox = new EditBox(this.font, x + 8, rowY, IMAGE_WIDTH - 124, 14, Component.translatable("nautec.resonance.trust_name"));
         this.trustBox.setMaxLength(16);
         this.trustBox.setHint(Component.translatable("nautec.resonance.trust_name").withStyle(ChatFormatting.DARK_GRAY));
@@ -262,24 +297,27 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
         int x = this.leftPos;
         int y = this.topPos;
-        graphics.fill(x, y, x + this.imageWidth, y + this.imageHeight, OUTLINE);
-        graphics.fill(x + 1, y + 1, x + this.imageWidth - 1, y + this.imageHeight - 1, PANEL_LIGHT);
-        graphics.fill(x + 3, y + 3, x + this.imageWidth - 1, y + this.imageHeight - 1, PANEL);
+        graphics.fill(x, y, x + this.imageWidth, y + this.panelHeight, OUTLINE);
+        graphics.fill(x + 1, y + 1, x + this.imageWidth - 1, y + this.panelHeight - 1, PANEL_LIGHT);
+        graphics.fill(x + 3, y + 3, x + this.imageWidth - 1, y + this.panelHeight - 1, PANEL);
 
-        graphics.fill(x + 23, y + 31, x + IMAGE_WIDTH - 23, y + 47, OUTLINE);
-        graphics.fill(x + 24, y + 32, x + IMAGE_WIDTH - 24, y + 46, SCREEN_FILL);
+        int ny = y + networkY();
+        graphics.fill(x + 23, ny + 9, x + IMAGE_WIDTH - 23, ny + 25, OUTLINE);
+        graphics.fill(x + 24, ny + 10, x + IMAGE_WIDTH - 24, ny + 24, SCREEN_FILL);
 
-        int rx = x + 8;
-        int ry = y + READOUT_Y;
-        int rw = IMAGE_WIDTH - 16;
-        graphics.fill(rx - 1, ry - 1, rx + rw + 1, ry + READOUT_HEIGHT + 1, OUTLINE);
-        graphics.fill(rx, ry, rx + rw, ry + READOUT_HEIGHT, SCREEN_EDGE);
-        graphics.fill(rx + 1, ry + 1, rx + rw - 1, ry + READOUT_HEIGHT - 1, SCREEN_FILL);
+        int rx = x + readoutX();
+        int ry = y + readoutY();
+        int rw = readoutWidth();
+        int rh = readoutHeight();
+        graphics.fill(rx - 1, ry - 1, rx + rw + 1, ry + rh + 1, OUTLINE);
+        graphics.fill(rx, ry, rx + rw, ry + rh, SCREEN_EDGE);
+        graphics.fill(rx + 1, ry + 1, rx + rw - 1, ry + rh - 1, SCREEN_FILL);
         extractReadoutBackground(graphics, rx, ry, rw);
+        extractPanelBackground(graphics, x, y);
 
         ResonanceSyncPayload.NetworkView view = current();
         if (view != null && view.manage()) {
-            int ly = y + MANAGE_Y + 17;
+            int ly = y + manageY() + 17;
             graphics.fill(x + 7, ly - 1, x + IMAGE_WIDTH - 7, ly + TRUSTED_ROWS * ROW + 1, OUTLINE);
             graphics.fill(x + 8, ly, x + IMAGE_WIDTH - 8, ly + TRUSTED_ROWS * ROW, SCREEN_FILL);
         }
@@ -288,34 +326,36 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.text(this.font, this.title, 8, 8, LABEL, false);
-        graphics.text(this.font, Component.translatable("nautec.resonance.network"), 8, 22, LABEL, false);
+        int ny = networkY();
+        graphics.text(this.font, Component.translatable("nautec.resonance.network"), 8, ny, LABEL, false);
 
         ResonanceSyncPayload.NetworkView view = current();
         Component name = view == null ? Component.translatable("nautec.resonance.none") : Component.literal(view.name());
         int nameWidth = this.font.width(name);
-        graphics.text(this.font, name, (IMAGE_WIDTH - nameWidth) / 2, 35, view == null ? READOUT_DIM : READOUT, false);
+        graphics.text(this.font, name, (IMAGE_WIDTH - nameWidth) / 2, ny + 13, view == null ? READOUT_DIM : READOUT, false);
         if (view != null) {
             Component owner = Component.translatable("nautec.resonance.owner", view.ownerName());
-            graphics.text(this.font, owner, IMAGE_WIDTH - 24 - this.font.width(owner), 22, LABEL, false);
+            graphics.text(this.font, owner, IMAGE_WIDTH - 24 - this.font.width(owner), ny, LABEL, false);
         }
 
-        extractReadout(graphics, 13, READOUT_Y + 14, view);
+        extractReadout(graphics, readoutX() + 5, readoutY() + 14, view);
 
+        int my = manageY();
         if (view != null && view.manage()) {
-            graphics.text(this.font, Component.translatable("nautec.resonance.trusted"), 8, MANAGE_Y + 3, LABEL, false);
+            graphics.text(this.font, Component.translatable("nautec.resonance.trusted"), 8, my + 3, LABEL, false);
             List<ResonanceSyncPayload.Member> trusted = view.trusted();
             if (trusted.isEmpty()) {
-                graphics.text(this.font, Component.translatable("nautec.resonance.trusted.none"), 12, MANAGE_Y + 19, READOUT_DIM, false);
+                graphics.text(this.font, Component.translatable("nautec.resonance.trusted.none"), 12, my + 19, READOUT_DIM, false);
             }
             for (int i = 0; i < Math.min(TRUSTED_ROWS, trusted.size()); i++) {
-                graphics.text(this.font, trusted.get(i).name(), 12, MANAGE_Y + 19 + i * ROW, READOUT, false);
+                graphics.text(this.font, trusted.get(i).name(), 12, my + 19 + i * ROW, READOUT, false);
             }
             if (trusted.size() > TRUSTED_ROWS) {
                 Component more = Component.translatable("nautec.resonance.trusted.more", trusted.size() - TRUSTED_ROWS);
-                graphics.text(this.font, more, IMAGE_WIDTH - 30 - this.font.width(more), MANAGE_Y + 19 + (TRUSTED_ROWS - 1) * ROW, READOUT_DIM, false);
+                graphics.text(this.font, more, IMAGE_WIDTH - 30 - this.font.width(more), my + 19 + (TRUSTED_ROWS - 1) * ROW, READOUT_DIM, false);
             }
         } else if (view != null) {
-            graphics.text(this.font, Component.translatable("nautec.resonance.member"), 8, MANAGE_Y + 3, READOUT_DIM, false);
+            graphics.text(this.font, Component.translatable("nautec.resonance.member"), 8, my + 3, READOUT_DIM, false);
         }
     }
 
@@ -323,9 +363,9 @@ public abstract class ResonanceNetworkScreen<M extends NTAbstractContainerMenu<?
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         List<Component> lines = new ArrayList<>();
-        int rx = this.leftPos + 8;
-        int ry = this.topPos + READOUT_Y;
-        if (!readoutTooltip(lines, mouseX, mouseY, rx, ry) && inside(mouseX, mouseY, this.leftPos + 23, this.topPos + 31, IMAGE_WIDTH - 46, 16)) {
+        int rx = this.leftPos + readoutX();
+        int ry = this.topPos + readoutY();
+        if (!readoutTooltip(lines, mouseX, mouseY, rx, ry) && inside(mouseX, mouseY, this.leftPos + 23, this.topPos + networkY() + 9, IMAGE_WIDTH - 46, 16)) {
             ResonanceSyncPayload.NetworkView view = current();
             lines.add(view == null ? Component.translatable("nautec.resonance.none") : Component.literal(view.name()));
             lines.add(Component.translatable(view == null ? "nautec.resonance.none.desc" : "nautec.resonance.network.desc").withStyle(ChatFormatting.GRAY));

@@ -21,8 +21,17 @@ public class ExtradimensionalStorageScreen extends ResonanceNetworkScreen<Extrad
     private static final int BAR_BACK = 0xFF1A1030;
     private static final int BAR_FILL = 0xFF8A5CF0;
     private static final int BAR_SHINE = 0xFFB89BFF;
+    private static final int PAD_FILL = 0xFF2A1F4A;
+    private static final int HOLE = 0xFF000000;
     private static final Direction[] SIDES = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
-    private static final int PORT_WIDTH = 31;
+    private static final int[] PAD_SIZE = {8, 12, 16, 20, 22};
+    private static final int TOP = 20;
+    private static final int BLOCK_HEIGHT = 70;
+    private static final int PORTS_X = 8;
+    private static final int PORTS_WIDTH = 74;
+    private static final int READOUT_LEFT = 88;
+    private static final int PORT_WIDTH = 22;
+    private static final int PORT_HEIGHT = 12;
 
     public ExtradimensionalStorageScreen(ExtradimensionalStorageMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -31,6 +40,36 @@ public class ExtradimensionalStorageScreen extends ResonanceNetworkScreen<Extrad
     @Override
     protected int chunkState() {
         return this.menu.getChunkState();
+    }
+
+    @Override
+    protected int networkY() {
+        return TOP + BLOCK_HEIGHT + 6;
+    }
+
+    @Override
+    protected int readoutX() {
+        return READOUT_LEFT;
+    }
+
+    @Override
+    protected int readoutY() {
+        return TOP;
+    }
+
+    @Override
+    protected int readoutWidth() {
+        return IMAGE_WIDTH - READOUT_LEFT - 8;
+    }
+
+    @Override
+    protected int readoutHeight() {
+        return BLOCK_HEIGHT;
+    }
+
+    @Override
+    protected int manageY() {
+        return networkY() + 50;
     }
 
     private static String side(Direction side) {
@@ -49,14 +88,29 @@ public class ExtradimensionalStorageScreen extends ResonanceNetworkScreen<Extrad
         };
     }
 
+    private static int portX(Direction side) {
+        int center = PORTS_X + PORTS_WIDTH / 2;
+        return switch (side) {
+            case WEST -> PORTS_X + 2;
+            case EAST -> PORTS_X + PORTS_WIDTH - 2 - PORT_WIDTH;
+            default -> center - PORT_WIDTH / 2;
+        };
+    }
+
+    private static int portY(Direction side) {
+        int center = TOP + BLOCK_HEIGHT / 2;
+        return switch (side) {
+            case NORTH -> TOP + 3;
+            case SOUTH -> TOP + BLOCK_HEIGHT - 3 - PORT_HEIGHT;
+            default -> center - PORT_HEIGHT / 2;
+        };
+    }
+
     @Override
     protected void addHeaderWidgets(int x, int y) {
-        int left = x + IMAGE_WIDTH - 8 - PORT_WIDTH * SIDES.length - (SIDES.length - 1);
-        for (int i = 0; i < SIDES.length; i++) {
-            Direction side = SIDES[i];
-            addRenderableWidget(new PanelButton(left + i * (PORT_WIDTH + 1), y + 4, PORT_WIDTH, 14,
-                    () -> Component.translatable("nautec.extradimensional_storage.port.short." + side(side),
-                            Component.translatable("nautec.extradimensional_storage.port.short." + this.menu.getMode(side).name().toLowerCase(Locale.ROOT))),
+        for (Direction side : SIDES) {
+            addRenderableWidget(new PanelButton(x + portX(side), y + portY(side), PORT_WIDTH, PORT_HEIGHT,
+                    () -> Component.translatable("nautec.extradimensional_storage.port.short." + this.menu.getMode(side).name().toLowerCase(Locale.ROOT)),
                     () -> color(this.menu.getMode(side), false),
                     () -> color(this.menu.getMode(side), true),
                     () -> Component.translatable("nautec.extradimensional_storage.port.tooltip",
@@ -69,35 +123,72 @@ public class ExtradimensionalStorageScreen extends ResonanceNetworkScreen<Extrad
     }
 
     @Override
+    protected void extractPanelBackground(GuiGraphicsExtractor graphics, int x, int y) {
+        int bx = x + PORTS_X;
+        int by = y + TOP;
+        graphics.fill(bx - 1, by - 1, bx + PORTS_WIDTH + 1, by + BLOCK_HEIGHT + 1, OUTLINE);
+        graphics.fill(bx, by, bx + PORTS_WIDTH, by + BLOCK_HEIGHT, SCREEN_EDGE);
+        graphics.fill(bx + 1, by + 1, bx + PORTS_WIDTH - 1, by + BLOCK_HEIGHT - 1, SCREEN_FILL);
+
+        int size = PAD_SIZE[Math.clamp(this.menu.getTier(), 1, PAD_SIZE.length) - 1];
+        int cx = bx + PORTS_WIDTH / 2;
+        int cy = by + BLOCK_HEIGHT / 2;
+        int half = size / 2;
+        graphics.fill(cx - half - 1, cy - half - 1, cx + half + 1, cy + half + 1, BAR_FILL);
+        graphics.fill(cx - half, cy - half, cx + half, cy + half, PAD_FILL);
+        graphics.fill(cx - 3, cy - 3, cx + 3, cy + 3, BAR_SHINE);
+        graphics.fill(cx - 2, cy - 2, cx + 2, cy + 2, HOLE);
+    }
+
+    @Override
     protected void extractReadoutBackground(GuiGraphicsExtractor graphics, int rx, int ry, int rw) {
         int color = this.menu.getStatus() == ExtradimensionalStorageBlockEntity.STATUS_ONLINE ? ONLINE : OFFLINE;
         graphics.fill(rx + 5, ry + 5, rx + 9, ry + 9, color);
         int barLeft = rx + 4;
         int barRight = rx + rw - 4;
-        int barTop = ry + READOUT_HEIGHT - 7;
-        graphics.fill(barLeft, barTop, barRight, barTop + 3, BAR_BACK);
-        long capacity = Math.max(1, this.menu.getCapacity());
-        int filled = (int) Math.round((barRight - barLeft) * Math.min(1.0, this.menu.getStored() / (double) capacity));
+        int barTop = ry + 37;
+        graphics.fill(barLeft - 1, barTop - 1, barRight + 1, barTop + 7, OUTLINE);
+        graphics.fill(barLeft, barTop, barRight, barTop + 6, BAR_BACK);
+        int filled = (int) Math.round((barRight - barLeft) * fraction());
         if (filled > 0) {
-            graphics.fill(barLeft, barTop, barLeft + filled, barTop + 3, BAR_FILL);
+            graphics.fill(barLeft, barTop, barLeft + filled, barTop + 6, BAR_FILL);
             graphics.fill(barLeft, barTop, barLeft + filled, barTop + 1, BAR_SHINE);
         }
     }
 
+    private double fraction() {
+        long capacity = Math.max(1, this.menu.getCapacity());
+        return Math.min(1.0, this.menu.getStored() / (double) capacity);
+    }
+
+    @Override
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractLabels(graphics, mouseX, mouseY);
+        graphics.text(this.font, "N", PORTS_X + 4, TOP + 4, READOUT_DIM, false);
+    }
+
     @Override
     protected void extractReadout(GuiGraphicsExtractor graphics, int tx, int ty, ResonanceSyncPayload.@Nullable NetworkView view) {
+        int rx = readoutX();
+        int ry = readoutY();
+        int right = rx + readoutWidth() - 4;
         boolean online = this.menu.getStatus() == ExtradimensionalStorageBlockEntity.STATUS_ONLINE;
-        graphics.text(this.font, Component.translatable(ResonanceNodeBlockEntity.statusKey(this.menu.getStatus())), tx + 9, ty - 10,
+        graphics.text(this.font, Component.translatable(ResonanceNodeBlockEntity.statusKey(this.menu.getStatus())), rx + 13, ry + 4,
                 online ? READOUT : READOUT_DIM, false);
-        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.stored", this.menu.getTier(),
-                compact(this.menu.getStored()), compact(this.menu.getCapacity())), tx, ty + 2, READOUT, false);
-        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.flow", compact(this.menu.getFlowIn()),
-                compact(this.menu.getFlowOut())), tx, ty + 12, READOUT_DIM, false);
+        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.tier", this.menu.getTier()), rx + 4, ry + 15, READOUT, false);
+        String percent = String.format(Locale.ROOT, "%.1f%%", fraction() * 100);
+        graphics.text(this.font, percent, right - this.font.width(percent), ry + 15, READOUT_DIM, false);
+        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.amount", compact(this.menu.getStored()),
+                compact(this.menu.getCapacity())), rx + 4, ry + 26, READOUT, false);
+        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.flow.in", compact(this.menu.getFlowIn())),
+                rx + 4, ry + 48, READOUT_DIM, false);
+        graphics.text(this.font, Component.translatable("nautec.extradimensional_storage.flow.out", compact(this.menu.getFlowOut())),
+                rx + 4, ry + 59, READOUT_DIM, false);
     }
 
     @Override
     protected boolean readoutTooltip(List<Component> lines, int mouseX, int mouseY, int rx, int ry) {
-        if (!inside(mouseX, mouseY, rx, ry, IMAGE_WIDTH - 16, READOUT_HEIGHT)) {
+        if (!inside(mouseX, mouseY, rx, ry, readoutWidth(), readoutHeight())) {
             return false;
         }
         int tier = this.menu.getTier();

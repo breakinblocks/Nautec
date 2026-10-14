@@ -38,7 +38,7 @@ public class LaserJunctionBlock extends LaserBlock {
 
     public LaserJunctionBlock(Properties properties, int width) {
         super(properties);
-        registerDefaultState(getStateDefinition().any()
+        registerDefaultState(defaultBlockState()
                 .setValue(CONNECTION[0], ConnectionType.NONE)
                 .setValue(CONNECTION[1], ConnectionType.NONE)
                 .setValue(CONNECTION[2], ConnectionType.NONE)

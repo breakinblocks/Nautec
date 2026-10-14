@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class BeamFacesTests {
@@ -66,6 +67,14 @@ public final class BeamFacesTests {
                         new BlockHitResult(abs.getCenter(), Direction.UP, abs, false));
                 helper.assertTrue(result.consumesAction(), "an empty hand is taken by " + helper.getBlockState(pos).getBlock().getName().getString());
             }
+            helper.succeed();
+        });
+
+        r.add("beam_faces/junction_is_dry_by_default", 5, helper -> {
+            helper.assertTrue(!NTBlocks.LASER_JUNCTION.get().defaultBlockState().getValue(BlockStateProperties.WATERLOGGED),
+                    "a junction placed without water around it is not waterlogged");
+            helper.setBlock(POS, NTBlocks.LASER_JUNCTION.get());
+            helper.assertTrue(helper.getBlockState(POS).getFluidState().isEmpty(), "a placed junction holds no water");
             helper.succeed();
         });
     }
