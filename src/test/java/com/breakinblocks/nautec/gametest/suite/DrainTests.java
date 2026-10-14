@@ -34,7 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 public final class DrainTests {
-    private static final BlockPos DRAIN_C = new BlockPos(4, 1, 4);
+    private static final BlockPos DRAIN_C = new BlockPos(4, 2, 4);
     private static final BlockPos PORT_PART = DRAIN_C.offset(0, 0, 1);
     private static final BlockPos SOURCE = DRAIN_C.offset(0, 0, 3);
     private static final int OPEN_TICKS = 160;
