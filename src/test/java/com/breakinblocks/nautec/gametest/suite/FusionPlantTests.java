@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -243,6 +244,32 @@ public final class FusionPlantTests {
             }
             EnergyHandler energy = level.getCapability(Capabilities.Energy.BLOCK, portPos, Direction.EAST);
             helper.assertTrue(energy != null, "the port exposes an energy handler");
+            helper.succeed();
+        });
+
+        r.add("fusion/reloaded_controller_wakes_port_listeners", 20, helper -> {
+            build(helper, true);
+            ServerLevel level = helper.getLevel();
+            BlockPos portPos = helper.absolutePos(CORE).offset(RADIUS, -1, 1);
+            level.setBlock(portPos, NTBlocks.FUSION_PORT.get().defaultBlockState(), Block.UPDATE_ALL);
+            BlockPos controllerAt = controllerPos(helper);
+            ((FusionControllerBlockEntity) level.getBlockEntity(controllerAt)).rescan(level);
+
+            BlockState controllerState = level.getBlockState(controllerAt);
+            level.setBlock(controllerAt, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(controllerAt, controllerState, Block.UPDATE_ALL);
+            FusionControllerBlockEntity reloaded = (FusionControllerBlockEntity) level.getBlockEntity(controllerAt);
+            FusionPortBlockEntity port = (FusionPortBlockEntity) level.getBlockEntity(portPos);
+            helper.assertTrue(port.getController() == null, "an unscanned controller does not claim the port yet");
+
+            int[] invalidations = {0};
+            BlockCapabilityCache<EnergyHandler, Direction> cache = BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, portPos,
+                    Direction.EAST, () -> true, () -> invalidations[0]++);
+            helper.assertTrue(cache.getCapability() == null, "the port has no energy handler before the rescan");
+
+            reloaded.rescan(level);
+            helper.assertTrue(invalidations[0] > 0, "forming again notifies listeners on the port");
+            helper.assertTrue(cache.getCapability() != null, "the port exposes an energy handler after the rescan");
             helper.succeed();
         });
 

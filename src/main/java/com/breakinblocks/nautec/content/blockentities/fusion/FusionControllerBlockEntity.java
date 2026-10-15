@@ -276,6 +276,14 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
             }
             if (previous.formed() != scanned.formed()) {
                 serverLevel.invalidateCapabilities(worldPosition);
+                for (BlockPos port : scanned.ports()) {
+                    serverLevel.invalidateCapabilities(port);
+                }
+                for (BlockPos port : previous.ports()) {
+                    if (!scanned.ports().contains(port)) {
+                        serverLevel.invalidateCapabilities(port);
+                    }
+                }
             }
         }
     }
