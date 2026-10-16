@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "#c:storage_blocks/copper",
+    "C": "nautec:aquarine_copper_ingot",
     "I": "nautec:cast_iron_ingot",
     "R": "nautec:cast_iron_rod",
     "X": "#c:dusts/redstone"

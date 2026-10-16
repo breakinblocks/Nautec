@@ -1694,7 +1694,7 @@ public class RecipesProvider extends RecipeProvider {
                 .pattern("RXR")
                 .define('R', NTItems.CAST_IRON_ROD)
                 .define('I', NTItems.CAST_IRON_INGOT)
-                .define('C', Tags.Items.STORAGE_BLOCKS_COPPER)
+                .define('C', NTItems.AQUARINE_COPPER_INGOT)
                 .define('X', Tags.Items.DUSTS_REDSTONE)
                 .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
                 .save(pRecipeOutput, key("tidal_rotor"));
