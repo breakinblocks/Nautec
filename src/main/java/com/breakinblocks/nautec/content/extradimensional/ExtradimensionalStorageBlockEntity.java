@@ -16,6 +16,7 @@ import com.breakinblocks.nautec.content.resonance.ResonanceTunable;
 import com.breakinblocks.nautec.content.resonance.SatelliteGrid;
 import com.breakinblocks.nautec.data.NTDataComponents;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.utils.PushBackoff;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
@@ -93,6 +94,7 @@ public class ExtradimensionalStorageBlockEntity extends ContainerBlockEntity imp
     private final Journal journal = new Journal();
     @SuppressWarnings("unchecked")
     private final BlockCapabilityCache<EnergyHandler, @Nullable Direction>[] targets = new BlockCapabilityCache[SIDES];
+    private final PushBackoff[] pushBackoffs = PushBackoff.array(SIDES);
     private final int[] targetTiers = new int[SIDES];
 
     private long stored;
@@ -519,10 +521,10 @@ public class ExtradimensionalStorageBlockEntity extends ContainerBlockEntity imp
         }
         for (Direction side : Direction.Plane.HORIZONTAL) {
             int index = side.get2DDataValue();
-            if (modes[index] == PortMode.OUTPUT && stored > 0) {
+            if (modes[index] == PortMode.OUTPUT && stored > 0 && pushBackoffs[index].ready(tick)) {
                 EnergyHandler target = target(serverLevel, side);
                 if (target != null) {
-                    EnergyHandlerUtil.move(ports[index], target, Integer.MAX_VALUE, null);
+                    pushBackoffs[index].record(EnergyHandlerUtil.move(ports[index], target, Integer.MAX_VALUE, null) > 0, tick);
                 }
             }
         }

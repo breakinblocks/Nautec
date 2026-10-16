@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.utils.PushBackoff;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.Pair;
@@ -82,6 +83,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
     };
     private final List<Link> links = new ArrayList<>();
     private final Map<Link, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches = new HashMap<>();
+    private final Map<Link, PushBackoff> backoffs = new HashMap<>();
 
     private @Nullable UUID owner;
     private String ownerName = "";
@@ -151,6 +153,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
             if (link.pos().equals(pos)) {
                 links.remove(link);
                 caches.remove(link);
+                backoffs.remove(link);
                 changed();
                 return LinkResult.UNLINKED;
             }
@@ -199,6 +202,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
                 return false;
             }
             caches.remove(link);
+            backoffs.remove(link);
             return true;
         });
         if (removed) {
@@ -210,6 +214,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
     public void clearLinks() {
         links.clear();
         caches.clear();
+        backoffs.clear();
         changed();
     }
 
@@ -233,9 +238,14 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
             int budget = Math.min(NTConfig.emitterThroughput, energy.getAmountAsInt());
             int count = links.size();
             int sent = 0;
+            long time = serverLevel.getGameTime();
             for (int i = 0; i < count && budget - sent > 0; i++) {
                 Link link = links.get((cursor + i) % count);
                 if (!serverLevel.isLoaded(link.pos())) {
+                    continue;
+                }
+                PushBackoff backoff = backoffs.computeIfAbsent(link, key -> new PushBackoff());
+                if (!backoff.ready(time)) {
                     continue;
                 }
                 EnergyHandler target = caches.computeIfAbsent(link,
@@ -244,7 +254,9 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
                     continue;
                 }
                 int share = Math.max(1, (budget - sent) / (count - i));
-                sent += EnergyHandlerUtil.move(energy, target, share, null);
+                int moved = EnergyHandlerUtil.move(energy, target, share, null);
+                backoff.record(moved > 0, time);
+                sent += moved;
             }
             cursor = count == 0 ? 0 : (cursor + 1) % count;
             if (sent > 0) {
@@ -289,6 +301,7 @@ public class PrismaticEmitterBlockEntity extends ContainerBlockEntity {
         energy.deserialize(in.childOrEmpty("energy"));
         links.clear();
         caches.clear();
+        backoffs.clear();
         links.addAll(in.read("links", Link.CODEC.listOf()).orElse(List.of()));
         this.owner = in.read("owner", UUIDUtil.CODEC).orElse(null);
         this.ownerName = in.getStringOr("owner_name", "");

@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.registries.NTSounds;
 import com.breakinblocks.nautec.utils.MachineSounds;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
+import com.breakinblocks.nautec.utils.PushBackoff;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -89,6 +90,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
 
     private FusionStructure structure = FusionStructure.UNSCANNED;
     private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> outputs = new ArrayList<>();
+    private final List<PushBackoff> backoffs = new ArrayList<>();
     private boolean outputsDirty = true;
 
     private long heat;
@@ -381,6 +383,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         if (outputsDirty) {
             outputsDirty = false;
             outputs.clear();
+            backoffs.clear();
             if (structure.formed()) {
                 List<BlockPos> sources = new ArrayList<>(structure.ports());
                 sources.add(worldPosition);
@@ -397,10 +400,18 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
         if (energy.getAmountAsInt() <= 0) {
             return;
         }
-        for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache : outputs) {
-            EnergyHandler target = cache.getCapability();
+        while (backoffs.size() < outputs.size()) {
+            backoffs.add(new PushBackoff());
+        }
+        long time = serverLevel.getGameTime();
+        for (int i = 0; i < outputs.size(); i++) {
+            PushBackoff backoff = backoffs.get(i);
+            if (!backoff.ready(time)) {
+                continue;
+            }
+            EnergyHandler target = outputs.get(i).getCapability();
             if (target != null) {
-                EnergyHandlerUtil.move(energy, target, energy.getAmountAsInt(), null);
+                backoff.record(EnergyHandlerUtil.move(energy, target, energy.getAmountAsInt(), null) > 0, time);
                 if (energy.getAmountAsInt() <= 0) {
                     return;
                 }
