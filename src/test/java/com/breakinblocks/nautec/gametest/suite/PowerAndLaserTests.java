@@ -650,6 +650,46 @@ public final class PowerAndLaserTests {
                 helper.succeed();
             });
         });
+
+        r.add("crystal/both_ends_feeding_split_power", 100, helper -> {
+            BlockPos corePos = new BlockPos(4, 5, 4);
+            placeCrystal(helper, corePos);
+            helper.setBlock(corePos.above(3), NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.UP));
+            helper.setBlock(corePos.below(4), NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.DOWN));
+            placeShieldedSource(helper, new BlockPos(2, 5, 4), Direction.EAST);
+
+            helper.runAfterDelay(60, () -> {
+                helper.assertValueEqual(100, helper.getBlockEntity(corePos, PrismarineCrystalBlockEntity.class).getPower(), "core received power");
+                PrismarineCrystalPartBlockEntity top = helper.getBlockEntity(corePos.above(2), PrismarineCrystalPartBlockEntity.class);
+                PrismarineCrystalPartBlockEntity bottom = helper.getBlockEntity(corePos.below(3), PrismarineCrystalPartBlockEntity.class);
+                helper.assertTrue(top.feedsTarget() && bottom.feedsTarget(), "both ends feed a relay");
+                helper.assertValueEqual(50, top.getPowerToTransfer(), "top part output");
+                helper.assertValueEqual(50, bottom.getPowerToTransfer(), "bottom part output");
+                helper.assertValueEqual(50, helper.getBlockEntity(corePos.above(3), PrismarineLaserRelayBlockEntity.class).getPower(), "top relay power");
+                helper.assertValueEqual(50, helper.getBlockEntity(corePos.below(4), PrismarineLaserRelayBlockEntity.class).getPower(), "bottom relay power");
+                helper.succeed();
+            });
+        });
+
+        r.add("crystal/one_end_feeding_keeps_full_power", 100, helper -> {
+            BlockPos corePos = new BlockPos(4, 5, 4);
+            placeCrystal(helper, corePos);
+            helper.setBlock(corePos.above(3), NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.UP));
+            placeShieldedSource(helper, new BlockPos(2, 5, 4), Direction.EAST);
+
+            helper.runAfterDelay(60, () -> {
+                PrismarineCrystalPartBlockEntity top = helper.getBlockEntity(corePos.above(2), PrismarineCrystalPartBlockEntity.class);
+                PrismarineCrystalPartBlockEntity bottom = helper.getBlockEntity(corePos.below(3), PrismarineCrystalPartBlockEntity.class);
+                helper.assertTrue(top.feedsTarget(), "top end feeds a relay");
+                helper.assertFalse(bottom.feedsTarget(), "bottom end fires into the floor");
+                helper.assertValueEqual(100, top.getPowerToTransfer(), "top part output");
+                helper.assertValueEqual(100, helper.getBlockEntity(corePos.above(3), PrismarineLaserRelayBlockEntity.class).getPower(), "top relay power");
+                helper.succeed();
+            });
+        });
     }
 
     private static void placeCrystal(NTGameTestHelper helper, BlockPos corePos) {

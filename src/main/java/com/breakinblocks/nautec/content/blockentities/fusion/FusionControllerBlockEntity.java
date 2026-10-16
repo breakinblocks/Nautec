@@ -316,7 +316,9 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
                 }
             }
         }
-        int plasma = Math.min(collectorPower(structure.topCollector()), collectorPower(structure.bottomCollector()));
+        int topPlasma = collectorPower(structure.topCollector());
+        int bottomPlasma = collectorPower(structure.bottomCollector());
+        int plasma = topPlasma > 0 && bottomPlasma > 0 ? topPlasma + bottomPlasma : 0;
         this.injected = Math.min(strongPower, plasma);
         this.purity = strongPower > 0 ? (float) (weightedPurity / strongPower) : 0;
 

@@ -68,6 +68,19 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
         }
     }
 
+    public int outputPower(PrismarineCrystalPartBlockEntity part) {
+        PrismarineCrystalPartBlockEntity top = endPart(2);
+        PrismarineCrystalPartBlockEntity bottom = endPart(-3);
+        if (top == null || bottom == null || !top.feedsTarget() || !bottom.feedsTarget()) {
+            return power;
+        }
+        return part == top ? power - power / 2 : power / 2;
+    }
+
+    private @Nullable PrismarineCrystalPartBlockEntity endPart(int offset) {
+        return level.getBlockEntity(worldPosition.above(offset)) instanceof PrismarineCrystalPartBlockEntity part ? part : null;
+    }
+
     public boolean isCultivated() {
         return cultivated;
     }

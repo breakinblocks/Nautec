@@ -62,7 +62,7 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
 
         if (crystalBE != null) {
             if (canTransmitPower()) {
-                transmitPower(crystalBE.getPower());
+                transmitPower(crystalBE.outputPower(this));
                 extendTrail(crystalBE);
             }
             setPurity(3);
@@ -100,6 +100,23 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
             }
         }
 
+    }
+
+    public boolean feedsTarget() {
+        for (Direction direction : getLaserOutputs()) {
+            int distance = laserDistances.getInt(direction);
+            if (distance <= 0 || loopsBack(direction)) {
+                continue;
+            }
+            if (feedsBeamReceiver(direction)) {
+                return true;
+            }
+            if (level.getBlockEntity(worldPosition.relative(direction, distance)) instanceof LaserBlockEntity target
+                    && target.getLaserInputs().contains(direction.getOpposite())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public PrismarineCrystalBlockEntity getCrystalBE() {

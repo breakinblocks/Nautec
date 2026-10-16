@@ -88,7 +88,7 @@ Look at the cradle with Jade to see its progress, the power and purity arriving,
 
 ## <Color id="gold">6. The Cultivated Crystal</Color>
 
-At ten million AP the seed becomes a full Cultivated Prismarine Crystal standing on the cradle. It works exactly like a wild one: fire a beam into its side, and the top and bottom fire beams at full power and purity 3.0. The cradle is empty again and ready for another seed.
+At ten million AP the seed becomes a full Cultivated Prismarine Crystal standing on the cradle. It works exactly like a wild one: fire a beam into its side, and the top and bottom fire purity 3.0 beams that share the incoming power (see [Laser Power](nautec:getting_started/laser_power.md)). The cradle is empty again and ready for another seed.
 
 **To move it**, sneak and right-click any part of it with a wrench. Any mod's wrench works, as long as it is in the `c:tools/wrench` tag, including the <ItemLink id="aquarine_steel_wrench"/>. You get the crystal back as an item, and placing it needs six free blocks of height again.
 
