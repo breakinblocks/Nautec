@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import java.util.BitSet;
+
 public final class ConduitNetwork {
     private static int nextVersion = 1;
 
@@ -22,6 +24,20 @@ public final class ConduitNetwork {
         public final int[] priorities;
         public final int[] groupStart;
         public final int[] groupEnd;
+        private final BitSet full = new BitSet();
+        private long fullTick = Long.MIN_VALUE;
+
+        public boolean isFull(int index, long tick) {
+            return fullTick == tick && full.get(index);
+        }
+
+        public void markFull(int index, long tick) {
+            if (fullTick != tick) {
+                full.clear();
+                fullTick = tick;
+            }
+            full.set(index);
+        }
 
         Routes(int size, ConduitTapBlockEntity[] taps, Direction[] faces, int[] priorities) {
             this.version = nextVersion++;

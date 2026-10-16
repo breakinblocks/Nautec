@@ -639,17 +639,27 @@ public class ConduitTapBlockEntity extends ContainerBlockEntity implements MenuP
         }
         int[] order = order(routes, kind, source);
         int rotation = rotation(source, budget);
+        boolean skipFull = kind == ConduitChannel.ENERGY;
+        long time = level.getGameTime();
         routing++;
         try {
             int moved = 0;
             for (int position = 0; position < routes.size && moved < amount; position++) {
                 int index = pick(routes, order, position, rotation);
+                if (skipFull && routes.isFull(index, time)) {
+                    continue;
+                }
                 ConduitTapBlockEntity tap = routes.taps[index];
                 Direction face = routes.faces[index];
                 if (tap.isRemoved() || sameTarget(tap, face, source) || !channel.accepts(tap, face, TapSide.OUTPUT, resource)) {
                     continue;
                 }
-                moved += channel.insert(tap, face, resource, amount - moved, transaction);
+                int inserted = channel.insert(tap, face, resource, amount - moved, transaction);
+                if (inserted > 0) {
+                    moved += inserted;
+                } else if (skipFull) {
+                    routes.markFull(index, time);
+                }
             }
             if (moved > 0) {
                 budget.consume(moved, transaction);

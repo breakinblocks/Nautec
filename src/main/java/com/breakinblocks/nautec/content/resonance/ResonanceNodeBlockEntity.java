@@ -16,6 +16,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import com.breakinblocks.nautec.registries.NTCriteriaTriggers;
+import com.breakinblocks.nautec.utils.PushBackoff;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -75,6 +76,7 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
 
     private final ResonanceChunkLoading.Ticket ticket = new ResonanceChunkLoading.Ticket();
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
+    private final PushBackoff[] pushBackoffs = PushBackoff.array(Direction.values().length);
 
     private @Nullable UUID networkId;
     private String networkName = "";
@@ -483,9 +485,14 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
 
     private void push(ServerLevel serverLevel) {
         int budget = Math.min(energy.getAmountAsInt(), effectiveLimit());
+        long time = serverLevel.getGameTime();
         for (Direction direction : Direction.values()) {
             if (budget <= 0) {
                 return;
+            }
+            PushBackoff backoff = pushBackoffs[direction.ordinal()];
+            if (!backoff.ready(time)) {
+                continue;
             }
             BlockPos target = worldPosition.relative(direction);
             if (serverLevel.getBlockEntity(target) instanceof ResonanceNodeBlockEntity) {
@@ -494,7 +501,9 @@ public class ResonanceNodeBlockEntity extends LaserBlockEntity implements MenuPr
             EnergyHandler handler = neighbours.computeIfAbsent(direction, side ->
                     BlockCapabilityCache.create(Capabilities.Energy.BLOCK, serverLevel, target, side.getOpposite())).getCapability();
             if (handler != null) {
-                budget -= EnergyHandlerUtil.move(energy, handler, budget, null);
+                int moved = EnergyHandlerUtil.move(energy, handler, budget, null);
+                backoff.record(moved > 0, time);
+                budget -= moved;
             }
         }
     }

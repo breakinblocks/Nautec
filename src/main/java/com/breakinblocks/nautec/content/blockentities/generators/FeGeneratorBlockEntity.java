@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.content.blockentities.generators;
 
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.utils.PushBackoff;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +26,7 @@ import java.util.Map;
 public abstract class FeGeneratorBlockEntity extends ContainerBlockEntity {
     private final SimpleEnergyHandler energy;
     private final List<BlockCapabilityCache<EnergyHandler, @Nullable Direction>> outputs = new ArrayList<>();
+    private final List<PushBackoff> backoffs = new ArrayList<>();
     private int output;
 
     protected FeGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int capacity) {
@@ -82,10 +84,18 @@ public abstract class FeGeneratorBlockEntity extends ContainerBlockEntity {
         if (energy.getAmountAsInt() <= 0) {
             return;
         }
-        for (BlockCapabilityCache<EnergyHandler, @Nullable Direction> cache : outputs) {
-            EnergyHandler target = cache.getCapability();
+        while (backoffs.size() < outputs.size()) {
+            backoffs.add(new PushBackoff());
+        }
+        long time = serverLevel.getGameTime();
+        for (int i = 0; i < outputs.size(); i++) {
+            PushBackoff backoff = backoffs.get(i);
+            if (!backoff.ready(time)) {
+                continue;
+            }
+            EnergyHandler target = outputs.get(i).getCapability();
             if (target != null) {
-                EnergyHandlerUtil.move(energy, target, energy.getAmountAsInt(), null);
+                backoff.record(EnergyHandlerUtil.move(energy, target, energy.getAmountAsInt(), null) > 0, time);
                 if (energy.getAmountAsInt() <= 0) {
                     return;
                 }
