@@ -13,12 +13,10 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-
-import java.util.function.BiConsumer;
 
 public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
     private static final ResourceLocation EMISSIVE = Nautec.rl("textures/entity/wave_jet_e.png");
@@ -82,9 +80,9 @@ public class WaveJetItemRenderer extends GeoItemRenderer<WaveJetItem> {
         }
 
         @Override
-        public void addAdditionalStateData(WaveJetItem animatable, long instanceId, BiConsumer<DataTicket<WaveJetItem>, WaveJetItem> dataConsumer) {
-            super.addAdditionalStateData(animatable, instanceId, dataConsumer);
-            GeoStateData.put(dataConsumer, WaveJetItem.THRUSTING, this.renderer != null && this.renderer.isThrusting());
+        public void handleAnimations(WaveJetItem animatable, long instanceId, AnimationState<WaveJetItem> animationState, float partialTick) {
+            animationState.setData(WaveJetItem.THRUSTING, this.renderer != null && this.renderer.isThrusting());
+            super.handleAnimations(animatable, instanceId, animationState, partialTick);
         }
     }
 }

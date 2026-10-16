@@ -30,14 +30,12 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleItem> {
     private static final ResourceLocation CORE_MASK = Nautec.rl("textures/item/atlantean_rifle_core.png");
@@ -190,9 +188,9 @@ public class AtlanteanRifleItemRenderer extends GeoItemRenderer<AtlanteanRifleIt
         }
 
         @Override
-        public void addAdditionalStateData(AtlanteanRifleItem animatable, long instanceId, BiConsumer<DataTicket<AtlanteanRifleItem>, AtlanteanRifleItem> dataConsumer) {
-            super.addAdditionalStateData(animatable, instanceId, dataConsumer);
-            GeoStateData.put(dataConsumer, AtlanteanRifleItem.USE_TICKS, this.renderer == null ? -1F : this.renderer.useTicks);
+        public void handleAnimations(AtlanteanRifleItem animatable, long instanceId, AnimationState<AtlanteanRifleItem> animationState, float partialTick) {
+            animationState.setData(AtlanteanRifleItem.USE_TICKS, this.renderer == null ? -1F : this.renderer.useTicks);
+            super.handleAnimations(animatable, instanceId, animationState, partialTick);
         }
 
         @Override
