@@ -239,6 +239,22 @@ public final class SatelliteTests {
             });
         });
 
+        r.add("resonance_node/output_beam_powers_a_grafting_station", 200, helper -> {
+            ServerPlayer owner = player(helper, "NodeGraft");
+            ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
+            ResonanceNetwork network = networks.create(owner, "Node graft").network();
+            SatelliteArrayBlockEntity uplink = uplink(helper, new BlockPos(1, 1, 1), network);
+            uplink.launch();
+            feed(helper, uplink);
+            helper.setBlock(new BlockPos(6, 1, 6), NTBlocks.GRAFTING_STATION.get().defaultBlockState());
+            ResonanceNodeBlockEntity output = node(helper, new BlockPos(6, 4, 6), network, true, Direction.DOWN);
+            LaserBlockEntity station = (LaserBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(new BlockPos(6, 1, 6)));
+            helper.succeedWhen(() -> {
+                helper.assertTrue(station.getPower() > 0, "the station receives AP from the output node");
+                networks.delete(owner, network.id());
+            });
+        });
+
         r.add("resonance_node/needs_a_core", 60, helper -> {
             ServerPlayer owner = player(helper, "NodeCore");
             ResonanceNetworks networks = ResonanceNetworks.get(helper.getLevel().getServer());
