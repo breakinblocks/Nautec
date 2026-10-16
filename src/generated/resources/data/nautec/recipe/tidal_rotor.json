@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": {
-      "tag": "c:storage_blocks/copper"
+      "item": "nautec:aquarine_copper_ingot"
     },
     "I": {
       "item": "nautec:cast_iron_ingot"
