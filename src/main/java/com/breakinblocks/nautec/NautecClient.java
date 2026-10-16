@@ -136,6 +136,7 @@ import org.joml.Vector4i;
 import net.neoforged.fml.config.ModConfig;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import com.breakinblocks.nautec.client.render.ShaderPackOverlay;
+import com.breakinblocks.nautec.compat.emi.EmiRecipeAreas;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -182,6 +183,9 @@ public final class NautecClient {
             ShaderPackOverlay.init();
             registerItemProperties();
         }));
+        if (ModList.get().isLoaded("emi")) {
+            EmiRecipeAreas.register();
+        }
     }
 
     private void addPackFinders(AddPackFindersEvent event) {

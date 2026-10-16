@@ -17,7 +17,7 @@ public interface RecipeAreaHost {
     }
 
     static List<Component> withRecipeHint(List<Component> lines) {
-        if (!ModList.get().isLoaded("jei")) {
+        if (!ModList.get().isLoaded("jei") && !ModList.get().isLoaded("emi")) {
             return lines;
         }
         List<Component> hinted = new ArrayList<>(lines);
