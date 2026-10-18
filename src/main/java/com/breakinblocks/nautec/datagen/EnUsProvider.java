@@ -433,6 +433,7 @@ public class EnUsProvider extends LanguageProvider {
         addBlock("rusty_crate", "Rusty Crate");
         addBlock("polished_prismarine", "Polished Prismarine");
         addBlock("mixer", "Mixer");
+        addBlock("osmosis_filter", "Osmosis Filter");
         addBlock("laser_crafting_matrix", "Laser Crafting Matrix");
         addBlock("laser_junction", "Laser Junction");
         addBlock("prismarine_crystal", "Prismarine Crystal");
@@ -715,6 +716,16 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.mixer.progress", "Mixing: %s%%");
         add("nautec.mixer.idle", "Not mixing");
         add("nautec.mixer.parallel", "Parallel: x%s");
+        add("nautec.osmosis_filter.rate", "%s mB/s");
+        add("nautec.osmosis_filter.rate.desc", "Water made each second");
+        add("nautec.osmosis_filter.limit", "Fills up to %s mB");
+        add("nautec.osmosis_filter.power", "%s AP");
+        add("nautec.osmosis_filter.power.desc", "Laser power arriving. Every %s AP doubles the water it makes");
+        add("nautec.osmosis_filter.filtering", "Filtering");
+        add("nautec.osmosis_filter.full", "Tank full");
+        add("nautec.jade.osmosis_filter.water", "Water: %s / %s mB");
+        add("nautec.jade.osmosis_filter.rate", "Making %s mB/s");
+        add("nautec.jade.osmosis_filter.full", "Full, empty it to make more");
         add("nautec.conduit.filter.dish_strain", "Matches dishes holding this strain");
         add("nautec.conduit.filter.dish_empty", "Matches empty dishes only");
         add("nautec.conduit.filter.exact.toggle", "Shift-click to switch component matching");
@@ -1628,6 +1639,7 @@ public class EnUsProvider extends LanguageProvider {
         add("block.nautec.brown_polymer_block", "Brown Polymer Block");
 
         add("config.jade.plugin_nautec.mixer", "Mixer");
+        add("config.jade.plugin_nautec.osmosis_filter", "Osmosis Filter");
         add("config.jade.plugin_nautec.laser_crafting_matrix", "Laser Crafting Matrix");
         add("config.jade.plugin_nautec.aquatic_catalyst", "Aquatic Catalyst");
         add("config.jade.plugin_nautec.laser_junction", "Laser Junction");

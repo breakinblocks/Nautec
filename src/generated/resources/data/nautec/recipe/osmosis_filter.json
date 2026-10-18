@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:bucket",
+    "C": "nautec:cast_iron_ingot",
+    "G": "#c:glass_blocks",
+    "P": "minecraft:piston",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "CGC",
+    "GBG",
+    "RPR"
+  ],
+  "result": {
+    "id": "nautec:osmosis_filter"
+  }
+}

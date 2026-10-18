@@ -101,6 +101,19 @@ public final class NTConfig {
             .comment("Whether the Deep Sea Drain only pumps in an ocean-like biome: one with a biome tag named ocean or sea, or an is_ tag with ocean or sea in its name, such as minecraft:is_ocean, c:is_deep_ocean or a mod's own ocean tag. The biome is checked at the drain and at the top of the water above it")
             .define("drainRequiresOcean", true);
 
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_BASE_RATE = BUILDER
+            .comment("The mB of water an Osmosis Filter makes each second with no laser beam at all")
+            .defineInRange("osmosisFilterBaseRate", 1_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_AP_STEP = BUILDER
+            .comment("How many AP of laser beam double an Osmosis Filter's output: rate = osmosisFilterBaseRate x 2 ^ (beam / osmosisFilterApStep), up to osmosisFilterMaxRate")
+            .defineInRange("osmosisFilterApStep", 40, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_MAX_RATE = BUILDER
+            .comment("The most mB of water an Osmosis Filter makes each second, however strong its beam")
+            .defineInRange("osmosisFilterMaxRate", 1_024_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_CAPACITY = BUILDER
+            .comment("The mB of water an Osmosis Filter fills up to before it stops. On a beam strong enough to make more than this each second, it fills up to one second of output instead")
+            .defineInRange("osmosisFilterCapacity", 16_000, 1, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
             .define("spawnBookInInventory", true);
@@ -1105,6 +1118,11 @@ public final class NTConfig {
     public static int drainCapacity;
     public static boolean drainRequiresOcean;
 
+    public static int osmosisFilterBaseRate = 1_000;
+    public static int osmosisFilterApStep = 40;
+    public static int osmosisFilterMaxRate = 1_024_000;
+    public static int osmosisFilterCapacity = 16_000;
+
     public static int guardianAugmentDamage;
     public static boolean allowAugmentRendering;
 
@@ -1476,6 +1494,11 @@ public final class NTConfig {
         drainPowerScaling = value(DRAIN_POWER_SCALING);
         drainCapacity = value(DRAIN_CAPACITY);
         drainRequiresOcean = value(DRAIN_REQUIRES_OCEAN);
+
+        osmosisFilterBaseRate = value(OSMOSIS_FILTER_BASE_RATE);
+        osmosisFilterApStep = value(OSMOSIS_FILTER_AP_STEP);
+        osmosisFilterMaxRate = value(OSMOSIS_FILTER_MAX_RATE);
+        osmosisFilterCapacity = value(OSMOSIS_FILTER_CAPACITY);
 
         guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
         allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);

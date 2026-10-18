@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
 import com.breakinblocks.nautec.content.conduits.TapArm;
 import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
+import com.breakinblocks.nautec.content.blocks.OsmosisFilterBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.blocks.LaserPurificationSmelterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
@@ -158,6 +159,7 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.AQUARINE_COPPER_BLOCK.get());
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
+        osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -219,6 +221,14 @@ public class BlockModelProvider extends ModelProvider {
                 .with(BlockModelGenerators.createBooleanModelDispatch(CombustionDynamoBlock.LIT,
                         BlockModelGenerators.plainVariant(existingModelFile("combustion_dynamo_lit")),
                         BlockModelGenerators.plainVariant(existingModelFile(dynamo))))
+                .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+    }
+
+    private void osmosisFilter(Block filter) {
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(filter)
+                .with(BlockModelGenerators.createBooleanModelDispatch(OsmosisFilterBlock.ACTIVE,
+                        BlockModelGenerators.plainVariant(existingModelFile("osmosis_filter_active")),
+                        BlockModelGenerators.plainVariant(existingModelFile(filter))))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
     }
 

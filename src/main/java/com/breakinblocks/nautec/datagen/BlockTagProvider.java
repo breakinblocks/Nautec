@@ -52,6 +52,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 FOCUSING_LENS,
                 PRISMARINE_RELAY,
                 MIXER,
+                OSMOSIS_FILTER,
                 LASER_CRAFTING_MATRIX,
                 CHARGER,
                 CONFINED_SPAWNER,
