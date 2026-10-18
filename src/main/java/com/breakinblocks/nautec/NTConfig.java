@@ -21,6 +21,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue MIXER_POWER_REQUIREMENT = BUILDER
             .comment("The amount of power required by the mixer each tick.")
             .defineInRange("mixerPowerRequirement", 10, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue MIXER_MAX_PARALLEL = BUILDER
+            .comment("The most crafts the Mixer runs at once. Each mixerPowerRequirement of AP in its beam adds one craft per cycle, up to this many, and only AP beyond that speeds it up")
+            .defineInRange("mixerMaxParallel", 64, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue AUGMENTATION_STATION_POWER_REQUIREMENT = BUILDER
             .comment("The amount of power required by the Augmentation Station each tick.")
             .defineInRange("augmentationPowerRequirement", 25, 0, Integer.MAX_VALUE);
@@ -77,10 +80,10 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue MIXER_INPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Input Tank")
-            .defineInRange("mixerInputCapacity", 32_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerInputCapacity", 64_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue MIXER_OUTPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Output Tank")
-            .defineInRange("mixerOutputCapacity", 32_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerOutputCapacity", 64_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue LASER_CRAFTING_MATRIX_TANK_CAPACITY = BUILDER
             .comment("The capacity in mB of each of the Laser Crafting Matrix's four tanks: two inputs and two outputs")
             .defineInRange("laserCraftingMatrixTankCapacity", 16_000, 1, Integer.MAX_VALUE);
@@ -1074,6 +1077,7 @@ public final class NTConfig {
     public static boolean collectAirWithBottle;
 
     public static int mixerPower;
+    public static int mixerMaxParallel = 64;
     public static int drainPower;
     public static boolean beamOverclock = true;
     public static double beamOverclockMaxSpeed = 0.0;
@@ -1444,6 +1448,7 @@ public final class NTConfig {
         collectAirWithBottle = value(COLLECT_AIR_WITH_BOTTLE);
 
         mixerPower = value(MIXER_POWER_REQUIREMENT);
+        mixerMaxParallel = value(MIXER_MAX_PARALLEL);
         drainPower = value(DRAIN_POWER_REQUIREMENT);
         beamOverclock = value(BEAM_OVERCLOCK);
         beamOverclockMaxSpeed = value(BEAM_OVERCLOCK_MAX_SPEED);

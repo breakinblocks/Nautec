@@ -714,6 +714,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.transfer.full", "The machine has no room for another set");
         add("nautec.mixer.progress", "Mixing: %s%%");
         add("nautec.mixer.idle", "Not mixing");
+        add("nautec.mixer.parallel", "Parallel: x%s");
         add("nautec.conduit.filter.dish_strain", "Matches dishes holding this strain");
         add("nautec.conduit.filter.dish_empty", "Matches empty dishes only");
         add("nautec.conduit.filter.exact.toggle", "Shift-click to switch component matching");

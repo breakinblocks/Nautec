@@ -33,6 +33,11 @@ public enum MixerComponentProvider implements IBlockComponentProvider {
                 iTooltip.add(Component.translatable("nautec.jade.mixing_progress", duration, maxDuration));
             }
 
+            int parallel = blockEntity.getParallel();
+            if (parallel > 0) {
+                iTooltip.add(Component.translatable("nautec.mixer.parallel", parallel));
+            }
+
             iTooltip.add(Component.translatable("nautec.jade.energy", blockEntity.getPower()));
         }
     }

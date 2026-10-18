@@ -1251,6 +1251,7 @@
   "nautec.laser_purification_smelter.upgrade_slot.desc": "Fit an Eddy, Surge, Riptide or Maelstrom Upgrade to unlock more slots and smelt faster. Each costs more AP per busy slot.",
   "nautec.machine.beam_speed": "Beam speed x%s",
   "nautec.mixer.idle": "Not mixing",
+  "nautec.mixer.parallel": "Parallel: x%s",
   "nautec.mixer.progress": "Mixing: %s%%",
   "nautec.monocle.acid": "Acid: %s mb",
   "nautec.monocle.address": "Address: ",

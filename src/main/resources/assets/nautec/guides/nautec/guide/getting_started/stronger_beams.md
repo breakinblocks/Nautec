@@ -39,7 +39,7 @@ Purity does not speed anything up. A machine that needs a minimum purity (the Ad
 
 | Machine | Needs (default) | What a stronger beam speeds up |
 |---|---|---|
-| [Mixer](nautec:laser_chemistry/mixer.md) | 10 AP | every recipe |
+| [Mixer](nautec:laser_chemistry/mixer.md) | 10 AP | more crafts per cycle, one per 10 AP up to 64; past 640 AP each cycle runs faster |
 | [Mutator](nautec:aquatic_biology/mutator.md) | 10 AP | mutation attempts, so more tries per minute |
 | [Incubator](nautec:aquatic_biology/incubator.md) | 20 AP | growth cycles, and the nutrient each cycle eats |
 | [Bacterial Analyzer](nautec:aquatic_biology/bacterial_analyzer.md) | 5 AP | analysis |

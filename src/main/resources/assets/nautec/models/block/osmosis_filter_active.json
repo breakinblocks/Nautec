@@ -1,0 +1,1006 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "nautec:block/osmosis_filter_side",
+    "front": "nautec:block/osmosis_filter_front",
+    "side": "nautec:block/osmosis_filter_side",
+    "top": "nautec:block/osmosis_filter_top",
+    "bottom": "nautec:block/osmosis_filter_bottom",
+    "frame": "nautec:block/osmosis_filter_frame",
+    "membrane": "nautec:block/osmosis_filter_membrane",
+    "manifold": "nautec:block/osmosis_filter_manifold",
+    "front_emissive": "nautec:block/osmosis_filter_front_emissive"
+  },
+  "elements": [
+    {
+      "name": "skirt",
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        1,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#front",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "east": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#side",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#top"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#bottom",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "name": "cabinet",
+      "from": [
+        1,
+        1,
+        1
+      ],
+      "to": [
+        15,
+        7,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            9,
+            15,
+            15
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            1,
+            9,
+            15,
+            15
+          ],
+          "texture": "#side"
+        },
+        "east": {
+          "uv": [
+            1,
+            9,
+            15,
+            15
+          ],
+          "texture": "#side"
+        },
+        "west": {
+          "uv": [
+            1,
+            9,
+            15,
+            15
+          ],
+          "texture": "#side"
+        },
+        "up": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        }
+      }
+    },
+    {
+      "name": "post_nw",
+      "from": [
+        1,
+        7,
+        2
+      ],
+      "to": [
+        2,
+        15,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "post_ne",
+      "from": [
+        14,
+        7,
+        2
+      ],
+      "to": [
+        15,
+        15,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "post_sw",
+      "from": [
+        1,
+        7,
+        13
+      ],
+      "to": [
+        2,
+        15,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "post_se",
+      "from": [
+        14,
+        7,
+        13
+      ],
+      "to": [
+        15,
+        15,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "east": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            2,
+            1,
+            10
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "bar_west",
+      "from": [
+        1,
+        15,
+        2
+      ],
+      "to": [
+        2,
+        16,
+        14
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            1,
+            12,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            1,
+            12,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "north": {
+          "uv": [
+            14,
+            1,
+            15,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            14,
+            1,
+            15,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            14,
+            0,
+            15,
+            12
+          ],
+          "texture": "#frame",
+          "cullface": "up"
+        },
+        "down": {
+          "uv": [
+            14,
+            0,
+            15,
+            12
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "bar_east",
+      "from": [
+        14,
+        15,
+        2
+      ],
+      "to": [
+        15,
+        16,
+        14
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            1,
+            12,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "west": {
+          "uv": [
+            0,
+            1,
+            12,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "north": {
+          "uv": [
+            14,
+            1,
+            15,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "south": {
+          "uv": [
+            14,
+            1,
+            15,
+            2
+          ],
+          "texture": "#frame"
+        },
+        "up": {
+          "uv": [
+            14,
+            0,
+            15,
+            12
+          ],
+          "texture": "#frame",
+          "cullface": "up"
+        },
+        "down": {
+          "uv": [
+            14,
+            0,
+            15,
+            12
+          ],
+          "texture": "#frame"
+        }
+      }
+    },
+    {
+      "name": "membrane_front_lower",
+      "from": [
+        3,
+        7,
+        3
+      ],
+      "to": [
+        13,
+        10,
+        6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "up": {
+          "uv": [
+            0,
+            3,
+            10,
+            6
+          ],
+          "texture": "#membrane"
+        }
+      }
+    },
+    {
+      "name": "membrane_front_upper",
+      "from": [
+        3,
+        11,
+        3
+      ],
+      "to": [
+        13,
+        14,
+        6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "up": {
+          "uv": [
+            0,
+            3,
+            10,
+            6
+          ],
+          "texture": "#membrane"
+        },
+        "down": {
+          "uv": [
+            0,
+            6,
+            10,
+            9
+          ],
+          "texture": "#membrane"
+        }
+      }
+    },
+    {
+      "name": "membrane_back_lower",
+      "from": [
+        3,
+        7,
+        10
+      ],
+      "to": [
+        13,
+        10,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "up": {
+          "uv": [
+            0,
+            3,
+            10,
+            6
+          ],
+          "texture": "#membrane"
+        }
+      }
+    },
+    {
+      "name": "membrane_back_upper",
+      "from": [
+        3,
+        11,
+        10
+      ],
+      "to": [
+        13,
+        14,
+        13
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            10,
+            3
+          ],
+          "texture": "#membrane"
+        },
+        "up": {
+          "uv": [
+            0,
+            3,
+            10,
+            6
+          ],
+          "texture": "#membrane"
+        },
+        "down": {
+          "uv": [
+            0,
+            6,
+            10,
+            9
+          ],
+          "texture": "#membrane"
+        }
+      }
+    },
+    {
+      "name": "manifold_west_front",
+      "from": [
+        2,
+        7,
+        2
+      ],
+      "to": [
+        3,
+        15,
+        7
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "north": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            6,
+            5
+          ],
+          "texture": "#manifold"
+        }
+      }
+    },
+    {
+      "name": "manifold_west_back",
+      "from": [
+        2,
+        7,
+        9
+      ],
+      "to": [
+        3,
+        15,
+        14
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "north": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            6,
+            5
+          ],
+          "texture": "#manifold"
+        }
+      }
+    },
+    {
+      "name": "manifold_east_front",
+      "from": [
+        13,
+        7,
+        2
+      ],
+      "to": [
+        14,
+        15,
+        7
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "north": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            6,
+            5
+          ],
+          "texture": "#manifold"
+        }
+      }
+    },
+    {
+      "name": "manifold_east_back",
+      "from": [
+        13,
+        7,
+        9
+      ],
+      "to": [
+        14,
+        15,
+        14
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            5,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "north": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            6,
+            8
+          ],
+          "texture": "#manifold"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            6,
+            5
+          ],
+          "texture": "#manifold"
+        }
+      }
+    },
+    {
+      "name": "crossover",
+      "from": [
+        7,
+        14,
+        4
+      ],
+      "to": [
+        9,
+        15,
+        12
+      ],
+      "faces": {
+        "east": {
+          "uv": [
+            0,
+            9,
+            8,
+            10
+          ],
+          "texture": "#manifold"
+        },
+        "west": {
+          "uv": [
+            0,
+            9,
+            8,
+            10
+          ],
+          "texture": "#manifold"
+        },
+        "north": {
+          "uv": [
+            8,
+            0,
+            10,
+            1
+          ],
+          "texture": "#manifold"
+        },
+        "south": {
+          "uv": [
+            8,
+            0,
+            10,
+            1
+          ],
+          "texture": "#manifold"
+        },
+        "up": {
+          "uv": [
+            8,
+            0,
+            10,
+            8
+          ],
+          "texture": "#manifold"
+        }
+      }
+    },
+    {
+      "name": "cabinet_glow",
+      "from": [
+        1,
+        1,
+        1
+      ],
+      "to": [
+        15,
+        7,
+        15
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            9,
+            15,
+            15
+          ],
+          "texture": "#front_emissive"
+        }
+      }
+    }
+  ]
+}
