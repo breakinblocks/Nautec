@@ -21,6 +21,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue MIXER_POWER_REQUIREMENT = BUILDER
             .comment("The amount of power required by the mixer each tick.")
             .defineInRange("mixerPowerRequirement", 10, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue MIXER_MAX_PARALLEL = BUILDER
+            .comment("The most crafts the Mixer runs at once. Each mixerPowerRequirement of AP in its beam adds one craft per cycle, up to this many, and only AP beyond that speeds it up")
+            .defineInRange("mixerMaxParallel", 64, 1, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue AUGMENTATION_STATION_POWER_REQUIREMENT = BUILDER
             .comment("The amount of power required by the Augmentation Station each tick.")
             .defineInRange("augmentationPowerRequirement", 25, 0, Integer.MAX_VALUE);
@@ -77,10 +80,10 @@ public final class NTConfig {
 
     private static final ModConfigSpec.IntValue MIXER_INPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Input Tank")
-            .defineInRange("mixerInputCapacity", 32_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerInputCapacity", 64_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue MIXER_OUTPUT_CAPACITY = BUILDER
             .comment("The capacity of the Mixers Output Tank")
-            .defineInRange("mixerOutputCapacity", 32_000, 0, Integer.MAX_VALUE);
+            .defineInRange("mixerOutputCapacity", 64_000, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue LASER_CRAFTING_MATRIX_TANK_CAPACITY = BUILDER
             .comment("The capacity in mB of each of the Laser Crafting Matrix's four tanks: two inputs and two outputs")
             .defineInRange("laserCraftingMatrixTankCapacity", 16_000, 1, Integer.MAX_VALUE);
@@ -97,6 +100,19 @@ public final class NTConfig {
     private static final ModConfigSpec.BooleanValue DRAIN_REQUIRES_OCEAN = BUILDER
             .comment("Whether the Deep Sea Drain only pumps in an ocean-like biome: one with a biome tag named ocean or sea, or an is_ tag with ocean or sea in its name, such as minecraft:is_ocean, c:is_deep_ocean or a mod's own ocean tag. The biome is checked at the drain and at the top of the water above it")
             .define("drainRequiresOcean", true);
+
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_BASE_RATE = BUILDER
+            .comment("The mB of water an Osmosis Filter makes each second with no laser beam at all")
+            .defineInRange("osmosisFilterBaseRate", 1_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_AP_STEP = BUILDER
+            .comment("How many AP of laser beam double an Osmosis Filter's output: rate = osmosisFilterBaseRate x 2 ^ (beam / osmosisFilterApStep), up to osmosisFilterMaxRate")
+            .defineInRange("osmosisFilterApStep", 40, 1, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_MAX_RATE = BUILDER
+            .comment("The most mB of water an Osmosis Filter makes each second, however strong its beam")
+            .defineInRange("osmosisFilterMaxRate", 1_024_000, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue OSMOSIS_FILTER_CAPACITY = BUILDER
+            .comment("The mB of water an Osmosis Filter fills up to before it stops. On a beam strong enough to make more than this each second, it fills up to one second of output instead")
+            .defineInRange("osmosisFilterCapacity", 16_000, 1, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
@@ -1074,6 +1090,7 @@ public final class NTConfig {
     public static boolean collectAirWithBottle;
 
     public static int mixerPower;
+    public static int mixerMaxParallel = 64;
     public static int drainPower;
     public static boolean beamOverclock = true;
     public static double beamOverclockMaxSpeed = 0.0;
@@ -1100,6 +1117,11 @@ public final class NTConfig {
     public static double drainPowerScaling = 1.0;
     public static int drainCapacity;
     public static boolean drainRequiresOcean;
+
+    public static int osmosisFilterBaseRate = 1_000;
+    public static int osmosisFilterApStep = 40;
+    public static int osmosisFilterMaxRate = 1_024_000;
+    public static int osmosisFilterCapacity = 16_000;
 
     public static int guardianAugmentDamage;
     public static boolean allowAugmentRendering;
@@ -1444,6 +1466,7 @@ public final class NTConfig {
         collectAirWithBottle = value(COLLECT_AIR_WITH_BOTTLE);
 
         mixerPower = value(MIXER_POWER_REQUIREMENT);
+        mixerMaxParallel = value(MIXER_MAX_PARALLEL);
         drainPower = value(DRAIN_POWER_REQUIREMENT);
         beamOverclock = value(BEAM_OVERCLOCK);
         beamOverclockMaxSpeed = value(BEAM_OVERCLOCK_MAX_SPEED);
@@ -1471,6 +1494,11 @@ public final class NTConfig {
         drainPowerScaling = value(DRAIN_POWER_SCALING);
         drainCapacity = value(DRAIN_CAPACITY);
         drainRequiresOcean = value(DRAIN_REQUIRES_OCEAN);
+
+        osmosisFilterBaseRate = value(OSMOSIS_FILTER_BASE_RATE);
+        osmosisFilterApStep = value(OSMOSIS_FILTER_AP_STEP);
+        osmosisFilterMaxRate = value(OSMOSIS_FILTER_MAX_RATE);
+        osmosisFilterCapacity = value(OSMOSIS_FILTER_CAPACITY);
 
         guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
         allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);

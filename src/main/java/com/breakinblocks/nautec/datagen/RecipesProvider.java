@@ -694,6 +694,18 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("mixer"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.OSMOSIS_FILTER.asItem())
+                .pattern("CGC")
+                .pattern("GBG")
+                .pattern("RPR")
+                .define('C', NTItems.CAST_IRON_INGOT)
+                .define('G', Tags.Items.GLASS_BLOCKS)
+                .define('B', Items.BUCKET)
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('P', Items.PISTON)
+                .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
+                .save(pRecipeOutput, key("osmosis_filter"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.LASER_CRAFTING_MATRIX.asItem())
                 .pattern("ALA")
                 .pattern("DCD")

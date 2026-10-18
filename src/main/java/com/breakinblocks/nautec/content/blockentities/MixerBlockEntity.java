@@ -11,6 +11,7 @@ import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.MixingRecipeInput;
+import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import it.unimi.dsi.fastutil.Pair;
@@ -134,8 +135,7 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
             if (duration >= recipe.duration()) {
                 duration = 0;
                 this.running = false;
-                MixingRecipe currentRecipe = this.recipe;
-                if (removeInputs(currentRecipe)) setOutputs(currentRecipe);
+                craft(this.recipe, getParallel());
                 this.recipe = getRecipe().orElse(null);
             } else {
                 duration = Math.min(recipe.duration(), duration + overclock.advance(beamSpeed()));
@@ -148,23 +148,75 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         }
     }
 
-    private boolean removeInputs(MixingRecipe mixingRecipe) {
-        if (mixingRecipe == null) return false;
+    public int getParallel() {
+        int required = NTConfig.mixerPower;
+        int power = getPower();
+        if (power <= 0 || power < required) return 0;
+        if (required <= 0) return 1;
+        return (int) Math.max(1L, Math.min(NTConfig.mixerMaxParallel, power / (long) required));
+    }
+
+    @Override
+    public float beamSpeed() {
+        int required = getRequiredPower();
+        int parallel = getParallel();
+        if (required <= 0 || parallel <= 0) return super.beamSpeed();
+        return BeamOverclock.speed(getPower(), (long) parallel * required);
+    }
+
+    private int craft(MixingRecipe mixingRecipe, int parallel) {
+        if (mixingRecipe == null || parallel <= 0) return 0;
         ItemStackHandler handler = getItemStackHandler();
         List<ItemStack> inputs = new ArrayList<>();
         for (int slot = 0; slot < OUTPUT_SLOT; slot++) inputs.add(handler.getStackInSlot(slot));
-        int[] plan = RecipeUtils.consumptionPlan(inputs, mixingRecipe.ingredients());
-        if (plan == null || !canInsertItem(mixingRecipe.result()) || !canInsertFluid(mixingRecipe.fluidResult())) return false;
+        List<IngredientWithCount> ingredients = mixingRecipe.ingredients();
+        int[] plan = RecipeUtils.consumptionPlan(inputs, ingredients);
+        if (plan == null) return 0;
+        int batch = batchSize(mixingRecipe, plan, parallel);
+        if (batch <= 0) return 0;
         try (Transaction transaction = Transaction.openRoot()) {
             for (int i = 0; i < plan.length; i++) {
-                int amount = mixingRecipe.ingredients().get(i).count();
-                if (handler.extract(plan[i], handler.getResource(plan[i]), amount, transaction) != amount) return false;
+                int amount = ingredients.get(i).count() * batch;
+                if (handler.extract(plan[i], handler.getResource(plan[i]), amount, transaction) != amount) return 0;
             }
             FluidStack fluid = mixingRecipe.fluidIngredient();
-            if (!fluid.isEmpty() && getFluidTank().extract(0, FluidResource.of(fluid), fluid.getAmount(), transaction) != fluid.getAmount()) return false;
+            if (!fluid.isEmpty()) {
+                int amount = fluid.getAmount() * batch;
+                if (getFluidTank().extract(0, FluidResource.of(fluid), amount, transaction) != amount) return 0;
+            }
             transaction.commit();
         }
-        return true;
+        setOutputs(mixingRecipe, batch);
+        return batch;
+    }
+
+    private int batchSize(MixingRecipe mixingRecipe, int[] plan, int parallel) {
+        ItemStackHandler handler = getItemStackHandler();
+        List<IngredientWithCount> ingredients = mixingRecipe.ingredients();
+        int batch = parallel;
+        for (int i = 0; i < plan.length; i++) {
+            int count = Math.max(1, ingredients.get(i).count());
+            batch = Math.min(batch, handler.getStackInSlot(plan[i]).getCount() / count);
+        }
+        FluidStack fluid = mixingRecipe.fluidIngredient();
+        if (!fluid.isEmpty()) {
+            batch = Math.min(batch, getFluidTank().getFluidAmount() / fluid.getAmount());
+        }
+        ItemStack itemResult = mixingRecipe.result();
+        if (!itemResult.isEmpty()) {
+            ItemStack stack = handler.getStackInSlot(OUTPUT_SLOT);
+            if (!stack.isEmpty() && !ItemStack.isSameItemSameComponents(itemResult, stack)) return 0;
+            int stackLimit = stack.isEmpty() ? itemResult.getMaxStackSize() : stack.getMaxStackSize();
+            int room = Math.min(stackLimit, handler.getSlotLimit(OUTPUT_SLOT)) - stack.getCount();
+            batch = Math.min(batch, room / itemResult.getCount());
+        }
+        FluidStack fluidResult = mixingRecipe.fluidResult();
+        if (!fluidResult.isEmpty()) {
+            FluidTank tank = getSecondaryFluidTank();
+            if (!tank.isEmpty() && !FluidResource.of(fluidResult).equals(FluidResource.of(tank.getFluid()))) return 0;
+            batch = Math.min(batch, (tank.getCapacity() - tank.getFluidAmount()) / fluidResult.getAmount());
+        }
+        return Math.max(0, batch);
     }
 
     @Override
@@ -173,21 +225,17 @@ public class MixerBlockEntity extends LaserBlockEntity implements MenuProvider {
         this.recipe = getRecipe().orElse(null);
     }
 
-    private void setOutputs(MixingRecipe mixingRecipe) {
-        if (mixingRecipe == null) {
-            return;
-        }
-
+    private void setOutputs(MixingRecipe mixingRecipe, int batch) {
         ItemStack itemResult = mixingRecipe.result();
         if (!itemResult.isEmpty()) {
             ItemStackHandler handler = getItemStackHandler();
-            int newCount = itemResult.getCount() + handler.getStackInSlot(OUTPUT_SLOT).getCount();
+            int newCount = itemResult.getCount() * batch + handler.getStackInSlot(OUTPUT_SLOT).getCount();
             handler.setStackInSlot(OUTPUT_SLOT, itemResult.copyWithCount(newCount));
         }
         FluidStack fluidResult = mixingRecipe.fluidResult();
         if (!fluidResult.isEmpty()) {
             FluidTank tank = getSecondaryFluidTank();
-            tank.setFluid(fluidResult.copyWithAmount(fluidResult.getAmount() + tank.getFluidAmount()));
+            tank.setFluid(fluidResult.copyWithAmount(fluidResult.getAmount() * batch + tank.getFluidAmount()));
         }
     }
 

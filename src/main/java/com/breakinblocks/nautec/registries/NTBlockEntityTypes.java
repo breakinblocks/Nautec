@@ -37,6 +37,7 @@ import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LuckyFishingZoneBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.OsmosisFilterBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.OilBarrelBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
@@ -88,6 +89,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<MixerBlockEntity>> MIXER = BLOCK_ENTITIES.register("mixer",
             () -> BlockEntityType.Builder.of(MixerBlockEntity::new,
                     NTBlocks.MIXER.get()).build(null));
+    public static final Supplier<BlockEntityType<OsmosisFilterBlockEntity>> OSMOSIS_FILTER = BLOCK_ENTITIES.register("osmosis_filter",
+            () -> BlockEntityType.Builder.of(OsmosisFilterBlockEntity::new,
+                    NTBlocks.OSMOSIS_FILTER.get()).build(null));
     public static final Supplier<BlockEntityType<LaserCraftingMatrixBlockEntity>> LASER_CRAFTING_MATRIX = BLOCK_ENTITIES.register("laser_crafting_matrix",
             () -> BlockEntityType.Builder.of(LaserCraftingMatrixBlockEntity::new,
                     NTBlocks.LASER_CRAFTING_MATRIX.get()).build(null));

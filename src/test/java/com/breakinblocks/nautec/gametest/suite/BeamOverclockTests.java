@@ -91,14 +91,17 @@ public final class BeamOverclockTests {
         r.add("beam_overclock/mixer_finishes_twice_as_fast_on_four_times_the_beam", 20, helper -> {
             boolean enabled = NTConfig.beamOverclock;
             double cap = NTConfig.beamOverclockMaxSpeed;
+            int maxParallel = NTConfig.mixerMaxParallel;
             try {
                 NTConfig.beamOverclock = true;
                 NTConfig.beamOverclockMaxSpeed = 0;
+                NTConfig.mixerMaxParallel = 1;
                 helper.assertValueEqual(runMixer(helper, NTConfig.mixerPower, 60), 0, "at its normal beam the 100 tick recipe is not done after 60 ticks");
                 helper.assertValueEqual(runMixer(helper, NTConfig.mixerPower * 4, 60), 1000, "on four times the beam it finishes inside 60 ticks");
             } finally {
                 NTConfig.beamOverclock = enabled;
                 NTConfig.beamOverclockMaxSpeed = cap;
+                NTConfig.mixerMaxParallel = maxParallel;
             }
             helper.succeed();
         });

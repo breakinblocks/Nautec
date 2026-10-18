@@ -13,6 +13,7 @@ import com.breakinblocks.nautec.content.dishstorage.DishStorageBlock;
 import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.resonance.ResonanceNodeBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
+import com.breakinblocks.nautec.content.blocks.OsmosisFilterBlock;
 import com.breakinblocks.nautec.content.blocks.PressureHatchBlock;
 import com.breakinblocks.nautec.content.blocks.HydrothermalVentBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
@@ -135,6 +136,9 @@ public final class NTBlocks {
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS));
     public static final DeferredBlock<MixerBlock> MIXER = registerBlockAndItem("mixer", MixerBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS).noOcclusion());
+    public static final DeferredBlock<OsmosisFilterBlock> OSMOSIS_FILTER = registerBlockAndItem("osmosis_filter", OsmosisFilterBlock::new,
+            BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5f, 6.0f).sound(SoundType.METAL).requiresCorrectToolForDrops()
+                    .noOcclusion());
     public static final DeferredBlock<LaserCraftingMatrixBlock> LASER_CRAFTING_MATRIX = registerBlockAndItem("laser_crafting_matrix", LaserCraftingMatrixBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion(), LaserCraftingMatrixItem::new);
     public static final DeferredBlock<LaserJunctionBlock> LASER_JUNCTION = registerBlockAndItem("laser_junction", props -> new LaserJunctionBlock(props, 8),

@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.content.conduits.CurrentConduitBlock;
 import com.breakinblocks.nautec.content.conduits.TapArm;
 import com.breakinblocks.nautec.content.conduit.ConduitBeaconBlock;
 import com.breakinblocks.nautec.content.blocks.OxygenDiffuserBlock;
+import com.breakinblocks.nautec.content.blocks.OsmosisFilterBlock;
 import com.breakinblocks.nautec.content.blocks.ColonyReplicatorBlock;
 import com.breakinblocks.nautec.content.blocks.LaserPurificationSmelterBlock;
 import com.breakinblocks.nautec.content.bubble.BubbleAnchorBlock;
@@ -124,6 +125,7 @@ public class BlockModelProvider extends BlockStateProvider {
         simpleBlock(NTBlocks.AQUARINE_COPPER_BLOCK.get());
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
+        osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -178,6 +180,10 @@ public class BlockModelProvider extends BlockStateProvider {
 
         Block dynamo = NTBlocks.COMBUSTION_DYNAMO.get();
         booleanHorizontalDispatch(dynamo, CombustionDynamoBlock.LIT, existingModelFile("combustion_dynamo_lit"), existingModelFile(dynamo));
+    }
+
+    private void osmosisFilter(Block filter) {
+        booleanHorizontalDispatch(filter, OsmosisFilterBlock.ACTIVE, existingModelFile("osmosis_filter_active"), existingModelFile(filter));
     }
 
     private void fusionPlant() {

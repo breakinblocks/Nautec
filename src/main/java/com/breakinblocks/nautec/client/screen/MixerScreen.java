@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import com.breakinblocks.nautec.api.client.screen.RecipeAreaHost;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MixerScreen extends NTMachineScreen<MixerBlockEntity> {
@@ -38,10 +39,15 @@ public class MixerScreen extends NTMachineScreen<MixerBlockEntity> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         if (isHovering(BAR_X - 1, BAR_Y - 1, BAR_WIDTH + 2, BAR_HEIGHT + 2, mouseX, mouseY)) {
-            Component line = menu.blockEntity.getMaxDuration() > 0
+            List<Component> lines = new ArrayList<>();
+            lines.add(menu.blockEntity.getMaxDuration() > 0
                     ? Component.translatable("nautec.mixer.progress", Math.round(progress() * 100))
-                    : Component.translatable("nautec.mixer.idle");
-            guiGraphics.renderComponentTooltip(font, RecipeAreaHost.withRecipeHint(List.of(line)), mouseX, mouseY);
+                    : Component.translatable("nautec.mixer.idle"));
+            int parallel = menu.blockEntity.getParallel();
+            if (parallel > 0) {
+                lines.add(Component.translatable("nautec.mixer.parallel", parallel));
+            }
+            guiGraphics.renderComponentTooltip(font, RecipeAreaHost.withRecipeHint(lines), mouseX, mouseY);
         }
     }
 

@@ -18,6 +18,8 @@ import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
 import com.breakinblocks.nautec.content.blocks.MixerBlock;
+import com.breakinblocks.nautec.content.blocks.OsmosisFilterBlock;
+import com.breakinblocks.nautec.content.blockentities.OsmosisFilterBlockEntity;
 import com.breakinblocks.nautec.content.blocks.LaserCraftingMatrixBlock;
 import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEntity;
 import snownee.jade.api.IWailaClientRegistration;
@@ -43,6 +45,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(DrainComponentProvider.INSTANCE, DrainBlockEntity.class);
         registration.registerBlockDataProvider(CrystalCradleComponentProvider.INSTANCE, CrystalCradleBlockEntity.class);
         registration.registerBlockDataProvider(DrainComponentProvider.INSTANCE, DrainPartBlockEntity.class);
+        registration.registerBlockDataProvider(OsmosisFilterComponentProvider.INSTANCE, OsmosisFilterBlockEntity.class);
         registration.registerBlockDataProvider(FusionControllerComponentProvider.INSTANCE, FusionControllerBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, TidalRotorBlockEntity.class);
         registration.registerBlockDataProvider(GeneratorComponentProvider.INSTANCE, ThermalVentTapBlockEntity.class);
@@ -59,6 +62,7 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(AquaticCatalystComponentProvider.Client.INSTANCE, AquaticCatalystBlock.class);
         registration.registerBlockComponent(LaserJunctionComponentProvider.INSTANCE, LaserJunctionBlock.class);
         registration.registerBlockComponent(MixerComponentProvider.INSTANCE, MixerBlock.class);
+        registration.registerBlockComponent(OsmosisFilterComponentProvider.Client.INSTANCE, OsmosisFilterBlock.class);
         registration.registerBlockComponent(ConfinedSpawnerComponentProvider.Client.INSTANCE, ConfinedSpawnerBlock.class);
         registration.registerBlockComponent(DrainComponentProvider.Client.INSTANCE, DrainBlock.class);
         registration.registerBlockComponent(CrystalCradleComponentProvider.Client.INSTANCE, CrystalCradleBlock.class);

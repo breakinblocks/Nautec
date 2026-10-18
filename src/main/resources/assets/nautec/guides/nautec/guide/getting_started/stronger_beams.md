@@ -39,7 +39,7 @@ Purity does not speed anything up. A machine that needs a minimum purity (the Ad
 
 | Machine | Needs (default) | What a stronger beam speeds up |
 |---|---|---|
-| [Mixer](nautec:laser_chemistry/mixer.md) | 10 AP | every recipe |
+| [Mixer](nautec:laser_chemistry/mixer.md) | 10 AP | more crafts per cycle, one per 10 AP up to 64; past 640 AP each cycle runs faster |
 | [Mutator](nautec:aquatic_biology/mutator.md) | 10 AP | mutation attempts, so more tries per minute |
 | [Incubator](nautec:aquatic_biology/incubator.md) | 20 AP | growth cycles, and the nutrient each cycle eats |
 | [Bacterial Analyzer](nautec:aquatic_biology/bacterial_analyzer.md) | 5 AP | analysis |
@@ -52,6 +52,7 @@ Purity does not speed anything up. A machine that needs a minimum purity (the Ad
 | [Augmentation Station](nautec:laser_augmentation/augmentation_station.md) | 25 AP into each extension in use | installing an augment, at the pace of the weakest extension |
 | [Submarine Dock](nautec:submarine/submarine_dock.md) | 20 AP | how fast it charges a docked submarine |
 | [Deep Sea Drain](nautec:laser_chemistry/drain.md) | more than 20 AP | Salt Water pumped each second, in direct proportion to the beam |
+| [Osmosis Filter](nautec:laser_chemistry/osmosis_filter.md) | none | water output doubles every 40 AP |
 
 **Stacking.** The Bio Reactors work out what they need from their colonies and upgrades first, and a stronger beam then speeds up on top of their Speed Upgrades. A reactor whose upgrades make it run ×1.5 and that gets four times the power it needs runs ×3. A stronger beam does not make a colony eat its nutrient any faster, so it is pure extra output. The Advanced Grafting Anchor works the same way: it raises the station's need to 500 AP and grafts faster, and a beam above 500 AP speeds it up again.
 

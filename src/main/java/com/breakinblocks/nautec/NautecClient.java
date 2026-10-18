@@ -90,6 +90,7 @@ import com.breakinblocks.nautec.client.screen.FishingStationScreen;
 import com.breakinblocks.nautec.client.screen.IncubatorScreen;
 import com.breakinblocks.nautec.client.screen.LaserCraftingMatrixScreen;
 import com.breakinblocks.nautec.client.screen.MixerScreen;
+import com.breakinblocks.nautec.client.screen.OsmosisFilterScreen;
 import com.breakinblocks.nautec.client.screen.MutatorScreen;
 import com.breakinblocks.nautec.client.screen.SubmarineModuleScreen;
 import com.breakinblocks.nautec.client.renderer.augments.helper.AugmentLayerRenderer;
@@ -428,6 +429,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.BIO_REACTOR.get(), BioReactorScreen::new);
         event.register(NTMenuTypes.INDUSTRIAL_BIO_REACTOR.get(), IndustrialBioReactorScreen::new);
         event.register(NTMenuTypes.MIXER.get(), MixerScreen::new);
+        event.register(NTMenuTypes.OSMOSIS_FILTER.get(), OsmosisFilterScreen::new);
         event.register(NTMenuTypes.LASER_CRAFTING_MATRIX.get(), LaserCraftingMatrixScreen::new);
         event.register(NTMenuTypes.BACTERIAL_ANALYZER.get(), BacterialAnalyzerScreen::new);
         event.register(NTMenuTypes.GRAFTING_STATION.get(), GraftingStationScreen::new);
