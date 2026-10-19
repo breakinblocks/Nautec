@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.api.client.screen.RecipeAreaHost;
 import com.breakinblocks.nautec.api.menu.NTMachineMenu;
 import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
 import com.breakinblocks.nautec.content.enchanter.EnchantingRules;
+import com.breakinblocks.nautec.content.menus.AbyssalEnchanterMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
@@ -22,17 +23,22 @@ public class AbyssalEnchanterScreen extends NTMachineScreen<AbyssalEnchanterBloc
     private static final int READOUT_WIDTH = 88;
     private static final int READOUT_HEIGHT = 52;
     private static final int BUTTON_SIZE = 11;
-    private static final int LEVEL_Y = READOUT_Y + 15;
+    private static final int LEVEL_Y = READOUT_Y + 19;
     private static final int BAR_X = READOUT_X + 5;
-    private static final int BAR_Y = READOUT_Y + 30;
+    private static final int BAR_Y = READOUT_Y + 40;
     private static final int BAR_WIDTH = READOUT_WIDTH - 10;
     private static final int BAR_HEIGHT = 4;
+    private static final int DETAILS_Y = READOUT_Y + 30;
+    private static final int STATUS_X = 8;
+    private static final int STATUS_Y = READOUT_Y + READOUT_HEIGHT + 5;
+    private static final int STATUS_WIDTH = 160;
     private static final int BAR_FILL = 0xFF2AA3BE;
     private static final int BAR_SHINE = 0xFF86E7F3;
     private static final int OVERENCHANT_COLOR = 0xFFE8B84A;
+    private static final int LEVEL_LABEL_WIDTH = READOUT_WIDTH - 8 - 2 * BUTTON_SIZE;
 
     public AbyssalEnchanterScreen(NTMachineMenu<AbyssalEnchanterBlockEntity> menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+        super(menu, playerInventory, title, 176, AbyssalEnchanterMenu.INVENTORY_Y + 82);
     }
 
     private AbyssalEnchanterBlockEntity enchanter() {
@@ -77,16 +83,13 @@ public class AbyssalEnchanterScreen extends NTMachineScreen<AbyssalEnchanterBloc
         Holder<Enchantment> enchantment = enchanter.displayedEnchantment();
         int textWidth = READOUT_WIDTH - 8 - BUTTON_SIZE;
         if (enchantment != null) {
-            String name = font.plainSubstrByWidth(enchantment.value().description().getString(), textWidth);
-            guiGraphics.text(font, name, x + 4, y + 4, PanelStyle.READOUT, false);
-            Component level = Component.translatable("nautec.abyssal_enchanter.screen.level",
-                    Component.translatable("enchantment.level." + enchanter.getEnchantLevel()),
-                    Component.translatable("enchantment.level." + enchanter.getLevelCap()));
+            PanelStyle.scrollingText(guiGraphics, font, enchantment.value().description(), x + 4, y + 4, textWidth, PanelStyle.READOUT);
+            Component level = levelLabel(enchanter, true);
+            if (font.width(level) > LEVEL_LABEL_WIDTH) {
+                level = levelLabel(enchanter, false);
+            }
             int levelColor = enchanter.getEnchantLevel() > enchanter.getMaxLevel() ? OVERENCHANT_COLOR : PanelStyle.READOUT;
             guiGraphics.text(font, level, x + READOUT_WIDTH / 2 - font.width(level) / 2, topPos + LEVEL_Y, levelColor, false);
-        } else {
-            guiGraphics.text(font, font.plainSubstrByWidth(Component.translatable("nautec.abyssal_enchanter.screen.idle").getString(), textWidth),
-                    x + 4, y + 4, PanelStyle.READOUT_DIM, false);
         }
 
         guiGraphics.fill(leftPos + BAR_X - 1, topPos + BAR_Y - 1, leftPos + BAR_X + BAR_WIDTH + 1, topPos + BAR_Y + BAR_HEIGHT + 1, PanelStyle.SLOT_EDGE);
@@ -97,9 +100,16 @@ public class AbyssalEnchanterScreen extends NTMachineScreen<AbyssalEnchanterBloc
             guiGraphics.fill(leftPos + BAR_X, topPos + BAR_Y, leftPos + BAR_X + filled, topPos + BAR_Y + 1, BAR_SHINE);
         }
 
-        Component status = statusLine(enchanter);
-        guiGraphics.text(font, font.plainSubstrByWidth(status.getString(), READOUT_WIDTH - 8), x + 4, y + READOUT_HEIGHT - 12,
-                enchanter.status() == AbyssalEnchanterBlockEntity.Status.WORKING ? PanelStyle.READOUT : 0xFFE0A060, false);
+        PanelStyle.scrollingText(guiGraphics, font, statusLine(enchanter), leftPos + STATUS_X, topPos + STATUS_Y, STATUS_WIDTH, PanelStyle.LABEL);
+    }
+
+    private static Component levelLabel(AbyssalEnchanterBlockEntity enchanter, boolean numerals) {
+        return Component.translatable("nautec.abyssal_enchanter.screen.level", numeral(enchanter.getEnchantLevel(), numerals),
+                numeral(enchanter.getLevelCap(), numerals));
+    }
+
+    private static Component numeral(int level, boolean numerals) {
+        return numerals ? Component.translatable("enchantment.level." + level) : Component.literal(Integer.toString(level));
     }
 
     private static Component statusLine(AbyssalEnchanterBlockEntity enchanter) {
@@ -116,7 +126,8 @@ public class AbyssalEnchanterScreen extends NTMachineScreen<AbyssalEnchanterBloc
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
-        if (PanelStyle.inside(mouseX, mouseY, leftPos + READOUT_X, topPos + READOUT_Y + 26, READOUT_WIDTH, READOUT_HEIGHT - 26)) {
+        if (PanelStyle.inside(mouseX, mouseY, leftPos + READOUT_X, topPos + DETAILS_Y, READOUT_WIDTH, READOUT_Y + READOUT_HEIGHT - DETAILS_Y)
+                || PanelStyle.inside(mouseX, mouseY, leftPos + STATUS_X, topPos + STATUS_Y - 1, STATUS_WIDTH, font.lineHeight + 1)) {
             guiGraphics.setComponentTooltipForNextFrame(font, RecipeAreaHost.withRecipeHint(details(enchanter())), mouseX, mouseY);
         }
     }
@@ -159,6 +170,6 @@ public class AbyssalEnchanterScreen extends NTMachineScreen<AbyssalEnchanterBloc
 
     @Override
     public List<RecipeArea> recipeAreas() {
-        return List.of(new RecipeArea(READOUT_X, READOUT_Y + 26, READOUT_WIDTH, READOUT_HEIGHT - 26, true));
+        return List.of(new RecipeArea(READOUT_X, DETAILS_Y, READOUT_WIDTH, READOUT_Y + READOUT_HEIGHT - DETAILS_Y, true));
     }
 }

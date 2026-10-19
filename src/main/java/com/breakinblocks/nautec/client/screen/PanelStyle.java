@@ -1,9 +1,13 @@
 package com.breakinblocks.nautec.client.screen;
 
 import com.breakinblocks.nautec.Nautec;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
 public final class PanelStyle {
     public static final int PANEL = 0xFFC8C7B3;
@@ -92,6 +96,21 @@ public final class PanelStyle {
             graphics.fill(x, y + height - filled, x + width, y + height, fill);
             graphics.fill(x, y + height - filled, x + 1, y + height, shine);
         }
+    }
+
+    public static void scrollingText(GuiGraphicsExtractor graphics, Font font, Component text, int x, int y, int width, int color) {
+        int textWidth = font.width(text);
+        if (textWidth <= width) {
+            graphics.text(font, text, x, y, color, false);
+            return;
+        }
+        int overflow = textWidth - width;
+        double period = Math.max(overflow * 0.5, 3.0);
+        double phase = Math.sin(Math.PI / 2 * Math.cos(Math.PI * 2 * (Util.getMillis() / 1000.0) / period)) / 2 + 0.5;
+        int offset = (int) Math.round(Mth.lerp(phase, 0.0, overflow));
+        graphics.enableScissor(x, y - 1, x + width, y + font.lineHeight);
+        graphics.text(font, text, x - offset, y, color, false);
+        graphics.disableScissor();
     }
 
     public static boolean inside(double mouseX, double mouseY, int x, int y, int width, int height) {

@@ -5,6 +5,7 @@ import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.content.enchanter.EnchantingRules;
 import com.breakinblocks.nautec.content.recipes.LaserEnchantingRecipe;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
+import com.breakinblocks.nautec.content.reservoir.ReservoirText;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.tags.NTTags;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -23,6 +24,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -57,23 +59,25 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
     public static final Identifier UID = Nautec.rl(LaserEnchantingRecipe.NAME);
     public static final IRecipeType<Page> RECIPE_TYPE = IRecipeType.create(UID, Page.class);
 
-    private static final int WIDTH = 160;
-    private static final int HEIGHT = 58;
+    private static final int WIDTH = 176;
+    private static final int HEIGHT = 52;
+    private static final int TOP = 10;
     private static final int TANK_X = 21;
-    private static final int TANK_Y = 1;
+    private static final int TANK_Y = TOP + 1;
     private static final int TANK_WIDTH = 12;
     private static final int TANK_HEIGHT = 36;
     private static final int ARROW_X = 38;
-    private static final int ARROW_Y = 11;
+    private static final int ARROW_Y = TOP + 11;
     private static final int OUTPUT_X = 66;
     private static final int TEXT_X = 88;
     private static final int SELECTOR_X = 38;
-    private static final int SELECTOR_Y = 32;
+    private static final int SELECTOR_Y = TOP + 31;
     private static final int SELECTOR_WIDTH = 46;
     private static final int BUTTON_SIZE = 11;
     private static final int ARROW_TICKS = 100;
     private static final int TEXT_COLOR = 0xFF404040;
     private static final int OVERENCHANT_COLOR = 0xFFB07A10;
+    private static final long COMPACT_FROM = 1_000_000L;
     private static final String TARGET_SLOT = "target";
     private static final String REAGENT_SLOT = "reagent";
     private static final String EXPERIENCE_SLOT = "experience";
@@ -190,14 +194,16 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Page page, IFocusGroup focuses) {
-        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, 1, 1).setSlotName(TARGET_SLOT).add(new ItemStack(Items.BOOK));
-        IRecipeSlotBuilder reagent = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, 1, 21).setSlotName(REAGENT_SLOT);
+        NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, 1, TOP + 1).setSlotName(TARGET_SLOT).add(new ItemStack(Items.BOOK));
+        IRecipeSlotBuilder reagent = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.INPUT, 1, TOP + 21).setSlotName(REAGENT_SLOT);
         NTJeiUtil.addIngredientWithCount(reagent, new IngredientWithCount(page.recipe().input().ingredient(), page.reagentCount()));
         IRecipeSlotBuilder tank = builder.addSlot(RecipeIngredientRole.INPUT, TANK_X, TANK_Y)
                 .setFluidRenderer(1, false, TANK_WIDTH, TANK_HEIGHT)
                 .setSlotName(EXPERIENCE_SLOT);
         addExperience(tank, page.experience());
-        IRecipeSlotBuilder output = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.OUTPUT, OUTPUT_X, ARROW_Y).setSlotName(OUTPUT_SLOT);
+        IRecipeSlotBuilder output = NTJeiUtil.addFramedSlot(builder, RecipeIngredientRole.OUTPUT, OUTPUT_X, ARROW_Y).setSlotName(OUTPUT_SLOT)
+                .addRichTooltipCallback((view, tooltip) -> tooltip.add(Component.translatable("nautec.jei.laser_enchanting.stable",
+                        String.format(Locale.ROOT, "%.1f", NTConfig.abyssalEnchanterStablePurity)).withStyle(ChatFormatting.GRAY)));
         for (int level = 1; level <= page.maxLevel(); level++) {
             output.add(page.book(level));
         }
@@ -207,10 +213,6 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
     public void createRecipeExtras(IRecipeExtrasBuilder builder, Page page, IFocusGroup focuses) {
         page.setLevel(focusedLevel(page, focuses));
         builder.addAnimatedRecipeArrow(ARROW_TICKS).setPosition(ARROW_X, ARROW_Y);
-        int lineHeight = Minecraft.getInstance().font.lineHeight;
-        builder.addText(Component.translatable("nautec.jei.laser_enchanting.stable",
-                        String.format(Locale.ROOT, "%.1f", NTConfig.abyssalEnchanterStablePurity)), WIDTH, lineHeight)
-                .setPosition(0, HEIGHT - lineHeight).setColor(0xFF808080).setShadow(false);
         LevelSelector selector = new LevelSelector(page, builder.getRecipeSlots());
         builder.addWidget(selector);
         builder.addInputHandler(selector);
@@ -221,6 +223,8 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
     public void draw(@NotNull Page page, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         guiGraphics.fill(TANK_X - 1, TANK_Y - 1, TANK_X + TANK_WIDTH + 1, TANK_Y + TANK_HEIGHT + 1, 0xFF1E2221);
         guiGraphics.fill(TANK_X, TANK_Y, TANK_X + TANK_WIDTH, TANK_Y + TANK_HEIGHT, 0xFF16201F);
+        Font font = Minecraft.getInstance().font;
+        guiGraphics.text(font, font.plainSubstrByWidth(page.enchantment().value().description().getString(), WIDTH), 0, 1, TEXT_COLOR, false);
     }
 
     private static int focusedLevel(Page page, IFocusGroup focuses) {
@@ -240,7 +244,11 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
     }
 
     private static String format(long value) {
-        return String.format(Locale.ROOT, "%,d", value);
+        return value < COMPACT_FROM ? String.format(Locale.ROOT, "%,d", value) : ReservoirText.compact(value);
+    }
+
+    private static String factor(double value) {
+        return format(value >= Long.MAX_VALUE ? Long.MAX_VALUE : Math.round(value));
     }
 
     private static final class LevelSelector implements IRecipeWidget, IJeiInputHandler {
@@ -315,14 +323,14 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
                     over ? OVERENCHANT_COLOR : TEXT_COLOR, false);
 
             int lineHeight = font.lineHeight;
-            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.sustained", format(page.sustained())), 2, TEXT_COLOR);
-            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.total", format(page.total())), 2 + lineHeight, TEXT_COLOR);
-            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.experience", format(page.experience())), 2 + 2 * lineHeight,
+            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.sustained", format(page.sustained())), TOP + 2, TEXT_COLOR);
+            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.total", format(page.total())), TOP + 2 + lineHeight, TEXT_COLOR);
+            line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.experience", format(page.experience())), TOP + 2 + 2 * lineHeight,
                     TEXT_COLOR);
             if (over) {
                 line(guiGraphics, font, Component.translatable("nautec.jei.laser_enchanting.overenchant",
-                                String.format(Locale.ROOT, "%,.0f", EnchantingRules.overFactor(page.enchantment(), page.level()))),
-                        2 + 3 * lineHeight, OVERENCHANT_COLOR);
+                                factor(EnchantingRules.overFactor(page.enchantment(), page.level()))),
+                        TOP + 2 + 3 * lineHeight, OVERENCHANT_COLOR);
             }
         }
 
@@ -358,7 +366,9 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
             if (key.getType() != InputConstants.Type.MOUSE || key.getValue() != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                 return false;
             }
-            int delta = inside(DOWN_X, mouseX, mouseY) ? -1 : inside(UP_X, mouseX, mouseY) ? 1 : 0;
+            double x = mouseX + SELECTOR_X;
+            double y = mouseY + SELECTOR_Y;
+            int delta = inside(DOWN_X, x, y) ? -1 : inside(UP_X, x, y) ? 1 : 0;
             if (delta == 0) {
                 return false;
             }
@@ -370,7 +380,7 @@ public class LaserEnchantingCategory extends AbstractRecipeCategory<LaserEnchant
 
         @Override
         public boolean handleMouseScrolled(double mouseX, double mouseY, double scrollDeltaX, double scrollDeltaY) {
-            if (scrollDeltaY == 0 || !onSelector(mouseX, mouseY)) {
+            if (scrollDeltaY == 0 || !onSelector(mouseX + SELECTOR_X, mouseY + SELECTOR_Y)) {
                 return false;
             }
             step(scrollDeltaY > 0 ? 1 : -1);

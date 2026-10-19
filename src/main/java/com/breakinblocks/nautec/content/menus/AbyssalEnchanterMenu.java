@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
 import com.breakinblocks.nautec.registries.NTMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
@@ -22,18 +23,20 @@ public class AbyssalEnchanterMenu extends NTMachineMenu<AbyssalEnchanterBlockEnt
     public static final int REAGENT_Y = 47;
     public static final int OUTPUT_X = 148;
     public static final int OUTPUT_Y = 34;
+    public static final int INVENTORY_Y = 102;
 
     public AbyssalEnchanterMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, (AbyssalEnchanterBlockEntity) inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     public AbyssalEnchanterMenu(int containerId, @NotNull Inventory inv, @NotNull AbyssalEnchanterBlockEntity blockEntity) {
-        super(NTMenuTypes.ABYSSAL_ENCHANTER.get(), containerId, inv, blockEntity);
+        super(NTMenuTypes.ABYSSAL_ENCHANTER.get(), containerId, inv, blockEntity, INVENTORY_Y);
         ItemStackHandler handler = blockEntity.getItemStackHandler();
         addSlot(new ResourceHandlerSlot(handler, handler::set, AbyssalEnchanterBlockEntity.TARGET_SLOT, TARGET_X, TARGET_Y));
         addSlot(new ResourceHandlerSlot(handler, handler::set, AbyssalEnchanterBlockEntity.REAGENT_SLOT, REAGENT_X, REAGENT_Y));
         addSlot(new ResourceHandlerSlot(handler, handler::set, AbyssalEnchanterBlockEntity.OUTPUT_SLOT, OUTPUT_X, OUTPUT_Y));
-        addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, TANK_X, TANK_Y, TANK_WIDTH, TANK_HEIGHT));
+        addFluidHandlerSlot(new SlotFluidHandler(blockEntity.getFluidTank(), 0, TANK_X, TANK_Y, TANK_WIDTH, TANK_HEIGHT)
+                .emptyName(Component.translatable("nautec.abyssal_enchanter.screen.experience_tank")));
     }
 
     @Override

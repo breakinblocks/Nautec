@@ -748,8 +748,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.abyssal_enchanter.no_room", "An Abyssal Enchanter needs a clear space 3 wide, 3 deep and 2 tall");
         add("nautec.abyssal_enchanter.tooltip", "Enchants books and items with a reagent, liquid experience and a laser beam");
         add("nautec.abyssal_enchanter.size_hint", "Fills a 3x3 space two blocks tall, centered where you place it");
-        add("nautec.abyssal_enchanter.screen.idle", "Insert a reagent");
-        add("nautec.abyssal_enchanter.screen.level", "Level %s / %s");
+        add("nautec.abyssal_enchanter.screen.level", "%s / %s");
         add("nautec.abyssal_enchanter.screen.level_down", "Lower the level to enchant at");
         add("nautec.abyssal_enchanter.screen.level_up", "Raise the level to enchant at");
         add("nautec.abyssal_enchanter.screen.next_recipe", "%s enchantments use this reagent. Click to switch");
@@ -757,6 +756,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.abyssal_enchanter.screen.total", "Energy taken in: %s / %s AP");
         add("nautec.abyssal_enchanter.screen.experience", "Liquid experience: %s mB");
         add("nautec.abyssal_enchanter.screen.reagent", "Reagent used: %s");
+        add("nautec.abyssal_enchanter.screen.experience_tank", "Liquid Experience");
         add("nautec.abyssal_enchanter.screen.overenchant", "Past the normal max of %s: x%s AP and experience");
         add("nautec.abyssal_enchanter.screen.book_capped", "Books stop at the normal max. Put in an item to overenchant it");
         add("nautec.abyssal_enchanter.screen.stability", "Purity %s: %s%% stable");
@@ -777,8 +777,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jei.laser_enchanting.sustained", "%s AP beam");
         add("nautec.jei.laser_enchanting.total", "%s AP total");
         add("nautec.jei.laser_enchanting.experience", "%s mB XP");
-        add("nautec.jei.laser_enchanting.stable", "Exact result at purity %s or higher");
-        add("nautec.jei.laser_enchanting.overenchant", "x%s past max");
+        add("nautec.jei.laser_enchanting.stable", "Exact result at purity %s+");
+        add("nautec.jei.laser_enchanting.overenchant", "x%s AP and XP");
         add("nautec.jei.laser_enchanting.level", "Level %s of %s. Click or scroll to change");
         for (int level = 11; level <= 255; level++) {
             add("enchantment.level." + level, roman(level));
@@ -1703,6 +1703,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.network.action_failed", "Action failed: %s");
 
         add("nautec.tooltip.liquid.amount", "%s mB");
+        add("nautec.tooltip.liquid.empty", "Empty");
         add("nautec.tooltip.liquid.amount_with_capacity", "%s / %s mB");
         add("nautec.edible","Edible");
         add("nautec.armor.ability.desc", "Ability: Increases protection when powered");
