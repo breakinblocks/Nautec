@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -55,6 +56,11 @@ public class AbyssalMaw extends Monster {
     @Override
     public boolean isPushedByFluid() {
         return false;
+    }
+
+    @Override
+    public boolean checkSpawnObstruction(@NotNull LevelReader level) {
+        return level.isUnobstructed(this);
     }
 
     @Override
