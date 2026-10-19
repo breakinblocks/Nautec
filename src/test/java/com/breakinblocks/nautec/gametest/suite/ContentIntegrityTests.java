@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.gametest.suite;
 
+import com.breakinblocks.nautec.content.blocks.BuddingPrismarineBlock;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.structures.NTJigsawStructure;
 import com.google.gson.JsonElement;
@@ -353,6 +354,13 @@ public final class ContentIntegrityTests {
                 }
                 entity.discard();
             }
+            helper.succeed();
+        });
+
+        r.add("content/budding_prismarine_glows_faintly", 5, helper -> {
+            BlockState state = NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState();
+            helper.assertValueEqual(BuddingPrismarineBlock.LIGHT, state.getLightEmission(), "budding prismarine light");
+            helper.assertTrue(state.getLightEmission() > 0 && state.getLightEmission() < 8, "the glow stays faint");
             helper.succeed();
         });
 

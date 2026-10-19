@@ -953,6 +953,9 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_SEARCH_RADIUS = BUILDER
             .comment("How many chunks around the player the Eye of the Sea searches for its target structure. The Eye of Ender uses 100")
             .defineInRange("eyeOfTheSeaSearchRadius", 100, 1, 256);
+    private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_BIOME_SEARCH_RADIUS = BUILDER
+            .comment("How many blocks around the player the Eye of the Sea searches when it seeks a NauTec biome. /locate biome uses 6400")
+            .defineInRange("eyeOfTheSeaBiomeSearchRadius", 3200, 64, 12800);
     private static final ModConfigSpec.IntValue EYE_OF_THE_SEA_COOLDOWN = BUILDER
             .comment("Ticks before the Eye of the Sea can be thrown again")
             .defineInRange("eyeOfTheSeaCooldownTicks", 40, 0, 72000);
@@ -1308,6 +1311,7 @@ public final class NTConfig {
     public static int luckyZoneBiteSpeed;
     public static boolean starcatcherFishOnNautecRod = true;
     public static int eyeOfTheSeaSearchRadius = 100;
+    public static int eyeOfTheSeaBiomeSearchRadius = 3200;
     public static int eyeOfTheSeaCooldownTicks = 40;
     public static int eyeOfTheSeaLuckyBoostSeconds = 300;
     public static int eyeOfTheSeaLuckyZoneMultiplier = 2;
@@ -1688,6 +1692,7 @@ public final class NTConfig {
         luckyZoneBiteSpeed = value(LUCKY_ZONE_BITE_SPEED);
         starcatcherFishOnNautecRod = value(STARCATCHER_FISH_ON_NAUTEC_ROD);
         eyeOfTheSeaSearchRadius = value(EYE_OF_THE_SEA_SEARCH_RADIUS);
+        eyeOfTheSeaBiomeSearchRadius = value(EYE_OF_THE_SEA_BIOME_SEARCH_RADIUS);
         eyeOfTheSeaCooldownTicks = value(EYE_OF_THE_SEA_COOLDOWN);
         eyeOfTheSeaLuckyBoostSeconds = value(EYE_OF_THE_SEA_LUCKY_BOOST);
         eyeOfTheSeaLuckyZoneMultiplier = value(EYE_OF_THE_SEA_LUCKY_MULTIPLIER);

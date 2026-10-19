@@ -344,6 +344,11 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.eye_of_the_sea.target.gateways", "Gateways");
         add("nautec.eye_of_the_sea.target.ocean_ruins", "Ocean Ruins");
         add("nautec.eye_of_the_sea.target.ocean_monuments", "Ocean Monuments");
+        add("nautec.eye_of_the_sea.target.prismarine_reef", "Prismarine Reefs");
+        add("nautec.eye_of_the_sea.target.abyssal_trench", "Abyssal Trenches");
+        add("nautec.eye_of_the_sea.target.bioluminescent_grove", "Bioluminescent Groves");
+        add("nautec.eye_of_the_sea.target.hydrothermal_vents", "Hydrothermal Vents");
+        add("nautec.budding_prismarine.silk_touch", "Mine with Silk Touch to pick it up");
         add("entity.nautec.eye_of_the_sea", "Eye of the Sea");
         addItem(AQUARINE_STEEL_INGOT, "Aquarine Steel Ingot");
         addItem(ATLANTIC_GOLD_INGOT, "Atlantic Gold Ingot");

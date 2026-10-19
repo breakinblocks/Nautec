@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.items;
 
 import com.breakinblocks.nautec.Nautec;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -8,12 +9,14 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -44,6 +47,8 @@ public final class SeaEyeSearch {
         return thread;
     });
     private static final Set<UUID> PENDING = ConcurrentHashMap.newKeySet();
+    private static final int BIOME_STEP_HORIZONTAL = 32;
+    private static final int BIOME_STEP_VERTICAL = 64;
 
     private SeaEyeSearch() {
     }
@@ -52,12 +57,12 @@ public final class SeaEyeSearch {
         return PENDING.contains(player);
     }
 
-    public static boolean start(ServerLevel level, UUID player, BlockPos origin, TagKey<Structure> structures, int radius,
+    public static boolean start(ServerLevel level, UUID player, BlockPos origin, SeaEyeTarget target, int radius, int biomeRadius,
                                 Consumer<Optional<BlockPos>> onMainThread) {
         if (!PENDING.add(player)) {
             return false;
         }
-        Request request = Request.capture(level, origin, structures, radius);
+        Request request = Request.capture(level, origin, target, radius, biomeRadius);
         MinecraftServer server = level.getServer();
         CompletableFuture.supplyAsync(request::run, EXECUTOR).whenComplete((found, error) -> server.execute(() -> {
             PENDING.remove(player);
@@ -69,21 +74,29 @@ public final class SeaEyeSearch {
         return true;
     }
 
-    public static @Nullable BlockPos searchNow(ServerLevel level, BlockPos origin, TagKey<Structure> structures, int radius) {
-        return Request.capture(level, origin, structures, radius).run();
+    public static @Nullable BlockPos searchNow(ServerLevel level, BlockPos origin, SeaEyeTarget target, int radius, int biomeRadius) {
+        return Request.capture(level, origin, target, radius, biomeRadius).run();
+    }
+
+    public static @Nullable BlockPos findBiome(BiomeSource source, Climate.Sampler sampler, LevelReader height, BlockPos origin,
+                                               ResourceKey<Biome> biome, int radius) {
+        Pair<BlockPos, Holder<Biome>> found = source.findClosestBiome3d(origin, radius, BIOME_STEP_HORIZONTAL, BIOME_STEP_VERTICAL,
+                holder -> holder.is(biome), sampler, height);
+        return found == null ? null : found.getFirst();
     }
 
     private record Request(MinecraftServer server, BlockPos origin, int radius, long seed,
                            Map<RandomSpreadStructurePlacement, List<Holder<Structure>>> placements,
+                           @Nullable ResourceKey<Biome> biome, int biomeRadius,
                            ChunkGeneratorStructureState generatorState, RegistryAccess registryAccess, ChunkGenerator generator,
                            BiomeSource biomeSource, RandomState randomState, StructureTemplateManager templates,
-                           LevelHeightAccessor height) {
-        static Request capture(ServerLevel level, BlockPos origin, TagKey<Structure> structures, int radius) {
+                           LevelReader height) {
+        static Request capture(ServerLevel level, BlockPos origin, SeaEyeTarget target, int radius, int biomeRadius) {
             ChunkGeneratorStructureState generatorState = level.getChunkSource().getGeneratorState();
             Map<RandomSpreadStructurePlacement, List<Holder<Structure>>> placements = new LinkedHashMap<>();
             boolean generate = level.getServer().getWorldData().worldGenOptions().generateStructures();
-            Optional<HolderSet.Named<Structure>> tag = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(structures);
-            if (generate && tag.isPresent()) {
+            Optional<HolderSet.Named<Structure>> tag = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(target.structures());
+            if (target.biome() == null && generate && tag.isPresent()) {
                 for (Holder<Structure> structure : tag.get()) {
                     for (StructurePlacement placement : generatorState.getPlacementsForStructure(structure)) {
                         if (placement instanceof RandomSpreadStructurePlacement spread) {
@@ -93,12 +106,16 @@ public final class SeaEyeSearch {
                 }
             }
             ChunkGenerator generator = level.getChunkSource().getGenerator();
-            return new Request(level.getServer(), origin.immutable(), radius, generatorState.getLevelSeed(), placements, generatorState,
+            return new Request(level.getServer(), origin.immutable(), radius, generatorState.getLevelSeed(), placements,
+                    target.biome(), biomeRadius, generatorState,
                     level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(),
                     level.getStructureManager(), level);
         }
 
         @Nullable BlockPos run() {
+            if (biome != null) {
+                return searchBiome();
+            }
             if (placements.isEmpty()) {
                 return null;
             }
@@ -107,6 +124,14 @@ public final class SeaEyeSearch {
             BlockPos found = search(stats);
             Nautec.LOGGER.debug("Eye of the Sea search from {} found {} after {} rings, {} candidates, {} full checks in {} ms",
                     origin, found, stats.rings, stats.candidates, stats.fullChecks, (System.nanoTime() - started) / 1_000_000L);
+            return found;
+        }
+
+        private @Nullable BlockPos searchBiome() {
+            long started = System.nanoTime();
+            BlockPos found = findBiome(biomeSource, randomState.sampler(), height, origin, biome, biomeRadius);
+            Nautec.LOGGER.debug("Eye of the Sea biome search from {} for {} found {} in {} ms", origin, biome.location(),
+                    found, (System.nanoTime() - started) / 1_000_000L);
             return found;
         }
 

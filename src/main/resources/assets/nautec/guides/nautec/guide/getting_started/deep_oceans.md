@@ -36,7 +36,7 @@ The deepest and darkest of the four, with near-black water and drifting motes.
 
 * Drowned spawn far more often than in other oceans, and the Abyssal Maw hunts in the dark below y 40.
 * Abyssal Coral grows on the floor. Silt Skippers, cod, squid and glow squid swim here.
-* <ItemLink id="budding_prismarine"/> forms in the rock 2 to 10 blocks under the floor.
+* <ItemLink id="budding_prismarine"/> forms in the top of the sea floor. Look for its faint glow.
 * The best place for the [Abyssal Pressure Forge](nautec:deep_engineering/pressure_forge.md), which needs depth and a column of water above it.
 
 ***
@@ -47,7 +47,7 @@ Clear teal water with glowing spores drifting through it.
 
 * Deep Kelp, Luminescent Algae, seagrass and sea pickles on the floor, and Glow Polyp spreading over stone on floors, walls and ceilings.
 * Lantern Jellies, Silt Skippers and extra glow squid.
-* Budding Prismarine forms in the rock under the floor, as in the Trench.
+* Budding Prismarine forms in the top of the sea floor, as in the Trench.
 
 ### Glow Grottos
 

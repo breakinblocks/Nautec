@@ -21,7 +21,9 @@ item_ids:
 
 ## <Color id="gold">Finding It</Color>
 
-The easiest place to find it is the Prismarine Reef, where it sits in the top of the sea floor and in the prismarine patches. It also forms in the rock 2 to 10 blocks under the sea floor of the Abyssal Trench and the Bioluminescent Grove, and in the floor of every Glow Grotto. Vanilla Warm Oceans and Deep Lukewarm Oceans have the odd one in the top of the sea floor too. Fishing in a lucky zone in the Abyssal Trench can also bring one up as treasure. Mine it with Silk Touch and place it wherever you want to farm it.
+The easiest place to find it is the Prismarine Reef, where about every other chunk has some in the top of the sea floor and in the prismarine patches. It also forms in the top of the sea floor of the Abyssal Trench and the Bioluminescent Grove, and in the floor of every Glow Grotto. Vanilla Warm Oceans and Deep Lukewarm Oceans have the odd one in the top of the sea floor too. Fishing in a lucky zone in the Abyssal Trench can also bring one up as treasure. Mine it with Silk Touch and place it wherever you want to farm it.
+
+The block gives off a faint glow and the odd sparkle, so look for a dim light on the sea floor, which is easiest at night. To reach the right biome, set an <ItemLink id="eye_of_the_sea"/> to Prismarine Reefs and throw it.
 
 A <ItemLink id="grafting_tool"/> scrapes Lithophiles off it in any of those biomes.
 
