@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:power",
+  "input": {
+    "count": 12,
+    "ingredient": "minecraft:flint"
+  }
+}

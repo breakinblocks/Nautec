@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "apothic_enchanting"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "apothic_enchanting:stable_footing",
+  "input": {
+    "count": 8,
+    "ingredient": "minecraft:scaffolding"
+  }
+}

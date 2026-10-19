@@ -28,6 +28,9 @@ import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.StrainLineageCategory;
+import com.breakinblocks.nautec.compat.jei.categories.LaserEnchantingCategory;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
+import com.breakinblocks.nautec.content.menus.AbyssalEnchanterMenu;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
@@ -134,6 +137,7 @@ public class NTJeiPlugin implements IModPlugin {
             new RecipeBinding<>(ColonyFeedingRecipe.TYPE, ColonyFeedingCategory.RECIPE_TYPE, ProductNutrients.Derived::feeding));
     private IJeiRuntime runtime;
     private List<BacteriaLineage.Path> lineages = List.of();
+    private List<LaserEnchantingCategory.Page> enchantingPages = List.of();
 
     public NTJeiPlugin() {
         // Only instantiated by JEI, so clients without JEI never load its API classes.
@@ -160,6 +164,13 @@ public class NTJeiPlugin implements IModPlugin {
             lineages = lineages(event.getRecipeMap());
             manager.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
             manager.unhideRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
+            ClientPacketListener connection = Minecraft.getInstance().getConnection();
+            if (connection != null) {
+                manager.hideRecipes(LaserEnchantingCategory.RECIPE_TYPE, enchantingPages);
+                enchantingPages = LaserEnchantingCategory.pages(event.getRecipeMap(), connection.registryAccess());
+                manager.addRecipes(LaserEnchantingCategory.RECIPE_TYPE, enchantingPages);
+                manager.unhideRecipes(LaserEnchantingCategory.RECIPE_TYPE, enchantingPages);
+            }
         }
     }
 
@@ -250,6 +261,9 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new LaserCraftingRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
+        registration.addRecipeCategories(new LaserEnchantingCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
         registration.addRecipeCategories(new EasInfusionCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -322,6 +336,8 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
         lineages = lineages(ClientRecipes.get());
         registration.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
+        enchantingPages = LaserEnchantingCategory.pages(ClientRecipes.get(), registryAccess);
+        registration.addRecipes(LaserEnchantingCategory.RECIPE_TYPE, enchantingPages);
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
             registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
@@ -368,6 +384,12 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, LaserCraftingMatrixMenu.class, NTMenuTypes.LASER_CRAFTING_MATRIX,
                 LaserCraftingRecipeCategory.RECIPE_TYPE, (menu, recipe) -> counted(recipe.ingredients(), LaserCraftingMatrixBlockEntity.INPUT_SLOTS)),
                 LaserCraftingRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, AbyssalEnchanterMenu.class, NTMenuTypes.ABYSSAL_ENCHANTER,
+                LaserEnchantingCategory.RECIPE_TYPE, (menu, page) -> List.of(
+                        new RecipeTransfer.Entry(AbyssalEnchanterBlockEntity.TARGET_SLOT, page.target(), 1),
+                        new RecipeTransfer.Entry(AbyssalEnchanterBlockEntity.REAGENT_SLOT, page.recipe().input().ingredient(),
+                                page.reagentCount()))),
+                LaserEnchantingCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, IncubatorMenu.class, NTMenuTypes.INCUBATOR, BacteriaIncubationCategory.RECIPE_TYPE,
                 (menu, recipe) -> List.of(new RecipeTransfer.Entry(IncubatorBlockEntity.NUTRIENT_SLOT, recipe.nutrient(), 1))), BacteriaIncubationCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, MutatorMenu.class, NTMenuTypes.MUTATOR, BacteriaMutationsCategory.RECIPE_TYPE,
@@ -410,6 +432,7 @@ public class NTJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addCraftingStation(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
+        registration.addCraftingStation(LaserEnchantingCategory.RECIPE_TYPE, NTBlocks.ABYSSAL_ENCHANTER.toStack());
         registration.addCraftingStation(RecipeTypes.SMELTING, NTBlocks.LASER_PURIFICATION_SMELTER.toStack());
         registration.addCraftingStation(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
         registration.addCraftingStation(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,

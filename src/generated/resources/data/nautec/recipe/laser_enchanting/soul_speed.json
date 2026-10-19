@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:soul_speed",
+  "input": {
+    "count": 16,
+    "ingredient": "minecraft:soul_soil"
+  }
+}

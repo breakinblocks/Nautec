@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.content.reservoir.ReservoirFluid;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlock;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
@@ -163,6 +164,7 @@ public class BlockModelProvider extends ModelProvider {
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
         deepSeaReservoir();
+        abyssalEnchanter();
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -233,6 +235,21 @@ public class BlockModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(existingModelFile("osmosis_filter_active")),
                         BlockModelGenerators.plainVariant(existingModelFile(filter))))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+    }
+
+    private void abyssalEnchanter() {
+        PropertyDispatch.C2<MultiVariant, Boolean, Direction> dispatch = PropertyDispatch.initial(AbyssalEnchanterBlock.ACTIVE, AbyssalEnchanterBlock.FACING);
+        for (boolean active : new boolean[]{false, true}) {
+            MultiVariant variant = BlockModelGenerators.plainVariant(existingModelFile(active ? "abyssal_enchanter_active" : "abyssal_enchanter"));
+            dispatch = dispatch
+                    .select(active, Direction.NORTH, variant)
+                    .select(active, Direction.EAST, rotated(variant, 0, 90))
+                    .select(active, Direction.SOUTH, rotated(variant, 0, 180))
+                    .select(active, Direction.WEST, rotated(variant, 0, 270));
+        }
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(NTBlocks.ABYSSAL_ENCHANTER.get()).with(dispatch));
+        simpleBlock(NTBlocks.ABYSSAL_ENCHANTER_PART.get(), ModelTemplates.PARTICLE_ONLY.create(NTBlocks.ABYSSAL_ENCHANTER_PART.get(),
+                TextureMapping.particle(new Material(Nautec.rl("block/abyssal_enchanter"))), blockModels.modelOutput));
     }
 
     private void deepSeaReservoir() {

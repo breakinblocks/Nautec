@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:projectile_protection",
+  "input": {
+    "count": 16,
+    "ingredient": "#c:leathers"
+  }
+}

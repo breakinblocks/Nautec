@@ -6,6 +6,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -14,9 +15,14 @@ public final class NTTags {
         public static final TagKey<DamageType> ATLANTEAN_RIFLE = TagKey.create(Registries.DAMAGE_TYPE, Nautec.rl("atlantean_rifle"));
     }
 
+    public static final class Enchantments {
+        public static final TagKey<Enchantment> ABYSSAL_ENCHANTER_BLACKLIST = TagKey.create(Registries.ENCHANTMENT, Nautec.rl("abyssal_enchanter_blacklist"));
+    }
+
     public static final class Fluids {
         public static final TagKey<Fluid> OXYGEN = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oxygen"));
         public static final TagKey<Fluid> OIL = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "oil"));
+        public static final TagKey<Fluid> EXPERIENCE = TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
     }
 
     public static final class Blocks {

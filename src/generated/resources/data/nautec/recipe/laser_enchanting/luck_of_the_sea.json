@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:luck_of_the_sea",
+  "input": {
+    "count": 1,
+    "ingredient": "#c:gems/lapis"
+  }
+}

@@ -271,6 +271,12 @@ public final class Nautec {
             DeepSeaReservoirBlockEntity core = DeepSeaReservoirPartBlock.core(level, state, pos);
             return core == null ? null : core.tank();
         }, NTBlocks.DEEP_SEA_RESERVOIR_PART.get());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, NTBlockEntityTypes.ABYSSAL_ENCHANTER_PART.get(),
+                (blockEntity, dir) -> blockEntity.itemHandler(dir));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.ABYSSAL_ENCHANTER_PART.get(),
+                (blockEntity, dir) -> blockEntity.fluidHandler(dir));
+        event.registerBlockEntity(NTCapabilities.BeamReceiver.BLOCK, NTBlockEntityTypes.ABYSSAL_ENCHANTER_PART.get(),
+                (blockEntity, dir) -> blockEntity.beamReceiver(dir));
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.fluidSink(dir));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),

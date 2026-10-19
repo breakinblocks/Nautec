@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "evilcraft"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "evilcraft:vengeance",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:wither_rose"
+  }
+}

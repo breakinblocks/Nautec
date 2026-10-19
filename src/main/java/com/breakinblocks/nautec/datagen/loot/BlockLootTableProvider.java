@@ -128,6 +128,8 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
                                 .include(NTDataComponents.RESERVOIR_FLUID.get())
                                 .include(NTDataComponents.RESERVOIR_TIER.get())))));
         add(NTBlocks.DEEP_SEA_RESERVOIR_PART.get(), noDrop());
+        dropSelf(NTBlocks.ABYSSAL_ENCHANTER.get());
+        add(NTBlocks.ABYSSAL_ENCHANTER_PART.get(), noDrop());
         dropSelf(NTBlocks.LASER_CRAFTING_MATRIX.get());
         dropSelf(NTBlocks.CHARGER.get());
         dropSelf(NTBlocks.CONFINED_SPAWNER.get());

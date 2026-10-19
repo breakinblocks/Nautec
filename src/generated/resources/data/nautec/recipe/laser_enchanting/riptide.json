@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:riptide",
+  "input": {
+    "count": 8,
+    "ingredient": "minecraft:firework_rocket"
+  }
+}

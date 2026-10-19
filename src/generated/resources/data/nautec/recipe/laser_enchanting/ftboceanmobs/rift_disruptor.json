@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ftboceanmobs"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "ftboceanmobs:rift_disruptor",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:popped_chorus_fruit"
+  }
+}

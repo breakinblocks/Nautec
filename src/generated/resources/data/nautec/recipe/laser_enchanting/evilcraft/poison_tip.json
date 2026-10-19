@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "evilcraft"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "evilcraft:poison_tip",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:poisonous_potato"
+  }
+}

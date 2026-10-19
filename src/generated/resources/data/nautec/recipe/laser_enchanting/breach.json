@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:breach",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:pointed_dripstone"
+  }
+}

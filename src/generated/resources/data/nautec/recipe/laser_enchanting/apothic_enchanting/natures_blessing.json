@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "apothic_enchanting"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "apothic_enchanting:natures_blessing",
+  "input": {
+    "count": 8,
+    "ingredient": "minecraft:moss_block"
+  }
+}

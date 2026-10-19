@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "reliquary"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "reliquary:severing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:wither_skeleton_skull"
+  }
+}

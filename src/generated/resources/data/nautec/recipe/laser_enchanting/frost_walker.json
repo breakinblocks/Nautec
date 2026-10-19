@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:frost_walker",
+  "input": {
+    "count": 16,
+    "ingredient": "minecraft:ice"
+  }
+}

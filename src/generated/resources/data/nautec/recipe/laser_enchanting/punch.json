@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:punch",
+  "input": {
+    "count": 1,
+    "ingredient": "#c:strings"
+  }
+}

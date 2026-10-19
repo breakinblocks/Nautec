@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:respiration",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:glass_bottle"
+  }
+}

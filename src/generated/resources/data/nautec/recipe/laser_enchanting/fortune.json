@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:fortune",
+  "input": {
+    "count": 1,
+    "ingredient": "#c:gems/emerald"
+  }
+}

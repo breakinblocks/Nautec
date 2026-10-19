@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "apothic_enchanting"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "apothic_enchanting:knowledge_of_the_ages",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:bookshelf"
+  }
+}

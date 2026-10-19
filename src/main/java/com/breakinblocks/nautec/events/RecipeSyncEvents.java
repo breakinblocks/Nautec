@@ -3,6 +3,7 @@ package com.breakinblocks.nautec.events;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.LaserCraftingRecipe;
+import com.breakinblocks.nautec.content.recipes.LaserEnchantingRecipe;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
@@ -32,6 +33,7 @@ public final class RecipeSyncEvents {
                 PressureForgingRecipe.Type.INSTANCE,
                 ColonyFeedingRecipe.TYPE,
                 CombustionAdditiveRecipe.Type.INSTANCE,
-                LaserCraftingRecipe.Type.INSTANCE);
+                LaserCraftingRecipe.Type.INSTANCE,
+                LaserEnchantingRecipe.Type.INSTANCE);
     }
 }

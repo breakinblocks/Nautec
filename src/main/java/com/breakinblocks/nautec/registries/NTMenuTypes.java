@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.menus.DeepSeaReservoirMenu;
+import com.breakinblocks.nautec.content.menus.AbyssalEnchanterMenu;
 import com.breakinblocks.nautec.content.menus.ExtradimensionalStorageMenu;
 import com.breakinblocks.nautec.content.menus.ConduitTapMenu;
 import com.breakinblocks.nautec.content.menus.PressureForgeMenu;
@@ -50,6 +51,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<MixerMenu>> MIXER = registerMenuType(MixerMenu::new, "mixer");
     public static final Supplier<MenuType<OsmosisFilterMenu>> OSMOSIS_FILTER = registerMenuType(OsmosisFilterMenu::new, "osmosis_filter");
     public static final Supplier<MenuType<DeepSeaReservoirMenu>> DEEP_SEA_RESERVOIR = registerMenuType(DeepSeaReservoirMenu::new, "deep_sea_reservoir");
+    public static final Supplier<MenuType<AbyssalEnchanterMenu>> ABYSSAL_ENCHANTER = registerMenuType(AbyssalEnchanterMenu::new, "abyssal_enchanter");
     public static final Supplier<MenuType<LaserCraftingMatrixMenu>> LASER_CRAFTING_MATRIX = registerMenuType(LaserCraftingMatrixMenu::new, "laser_crafting_matrix");
     public static final Supplier<MenuType<AugmentMenu>> AUGMENTS = registerMenuType(AugmentMenu::new, "augments");
     public static final Supplier<MenuType<AugmentationStationExtensionMenu>> AUGMENT_STATION_EXTENSION = registerMenuType(AugmentationStationExtensionMenu::new, "augment_station_extension");

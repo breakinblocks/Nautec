@@ -52,6 +52,7 @@ public class DataGatherer {
         generator.addProvider(true, new AdvancementProvider(output, datapackRegistries.getRegistryProvider(), List.of(new NTAdvancements())));
         generator.addProvider(true, new NTDataMapProvider(output, lookupProvider));
         generator.addProvider(true, new BacteriaMaterialProvider(output, lookupProvider));
+        generator.addProvider(true, new LaserEnchantingProvider(output));
         generator.addProvider(true, new LithostitchedInjectorProvider(output));
         generator.addProvider(true, new EnUsProvider(output));
     }

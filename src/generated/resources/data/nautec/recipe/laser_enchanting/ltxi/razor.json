@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ltxi"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "ltxi:razor",
+  "input": {
+    "count": 16,
+    "ingredient": "minecraft:iron_nugget"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:loyalty",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:lead"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:thorns",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:rose_bush"
+  }
+}

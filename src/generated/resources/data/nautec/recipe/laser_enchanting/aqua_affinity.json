@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:aqua_affinity",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:lily_pad"
+  }
+}

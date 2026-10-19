@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "arsmagicalegacy"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "arsmagicalegacy:dismembering",
+  "input": {
+    "count": 2,
+    "ingredient": "minecraft:bone_block"
+  }
+}

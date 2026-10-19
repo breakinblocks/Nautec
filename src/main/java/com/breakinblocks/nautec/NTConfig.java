@@ -118,6 +118,56 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue RESERVOIR_SYNC_TICKS = BUILDER
             .comment("The fewest ticks between two updates of a Deep Sea Reservoir's fill level sent to nearby players while fluid moves in or out")
             .defineInRange("deepSeaReservoirSyncTicks", 10, 1, 200);
+    private static final ModConfigSpec.IntValue ENCHANTER_XP_CAPACITY = BUILDER
+            .comment("The mB of liquid experience an Abyssal Enchanter holds. Any fluid in the c:experience tag is accepted, and it can be piped back out")
+            .defineInRange("abyssalEnchanterXpCapacity", Integer.MAX_VALUE, 1_000, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue ENCHANTER_MB_PER_POINT = BUILDER
+            .comment("The mB of liquid experience the Abyssal Enchanter counts as one experience point")
+            .defineInRange("abyssalEnchanterMbPerPoint", 20, 1, 1_000);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_XP_SCALE = BUILDER
+            .comment("Multiplies an enchantment's own minimum enchanting cost to get the experience levels the Abyssal Enchanter charges, counted from level 0")
+            .defineInRange("abyssalEnchanterXpScale", 0.6, 0.0, 100.0);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_BASE_POWER = BUILDER
+            .comment("The sustained AP an Abyssal Enchanter needs for a level I enchantment of rarity 1: sustained = base x rarity ^ rarityExponent x level ^ levelExponent. Rarity is the enchantment's anvil cost, doubled for treasure enchantments")
+            .defineInRange("abyssalEnchanterBasePower", 10.0, 0.0, 1_000_000.0);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_LEVEL_EXPONENT = BUILDER
+            .comment("How steeply the Abyssal Enchanter's sustained AP rises with the enchantment level")
+            .defineInRange("abyssalEnchanterLevelExponent", 2.0, 0.0, 10.0);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_RARITY_EXPONENT = BUILDER
+            .comment("How steeply the Abyssal Enchanter's sustained AP rises with the enchantment rarity")
+            .defineInRange("abyssalEnchanterRarityExponent", 1.0, 0.0, 10.0);
+    private static final ModConfigSpec.IntValue ENCHANTER_TICKS_PER_LEVEL = BUILDER
+            .comment("The total AP an Abyssal Enchanter takes in is its sustained AP times this many ticks per enchantment level, so a beam at exactly the sustained AP needs this many ticks per level")
+            .defineInRange("abyssalEnchanterTicksPerLevel", 200, 1, 100_000);
+    private static final ModConfigSpec.IntValue ENCHANTER_MIN_TICKS = BUILDER
+            .comment("The fewest ticks an Abyssal Enchanter takes for any enchantment, however strong its beam")
+            .defineInRange("abyssalEnchanterMinTicks", 40, 1, 100_000);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_STABLE_PURITY = BUILDER
+            .comment("The beam purity at and above which the Abyssal Enchanter always gives the enchantment asked for. Below it, the chance of a different result is 1 - purity / this")
+            .defineInRange("abyssalEnchanterStablePurity", 3.0, 0.01, 10.0);
+    private static final ModConfigSpec.BooleanValue ENCHANTER_OVERENCHANT = BUILDER
+            .comment("Whether the Abyssal Enchanter can go past an enchantment's normal max level, up to abyssalEnchanterOverenchantLevels more")
+            .define("abyssalEnchanterOverenchant", true);
+    private static final ModConfigSpec.IntValue ENCHANTER_OVERENCHANT_LEVELS = BUILDER
+            .comment("How many levels past an enchantment's normal max level the Abyssal Enchanter can reach. Levels never go above 255")
+            .defineInRange("abyssalEnchanterOverenchantLevels", 5, 1, 254);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_OVERENCHANT_FACTOR = BUILDER
+            .comment("Each level past the normal max multiplies the Abyssal Enchanter's total AP and liquid experience by this, so two levels past cost this squared")
+            .defineInRange("abyssalEnchanterOverenchantFactor", 4.0, 1.0, 100.0);
+    private static final ModConfigSpec.BooleanValue ENCHANTER_CURSES = BUILDER
+            .comment("Whether the Abyssal Enchanter can add a curse when its beam purity is below abyssalEnchanterCursePurity")
+            .define("abyssalEnchanterCurses", true);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_CURSE_PURITY = BUILDER
+            .comment("Below this beam purity the Abyssal Enchanter can add a curse, with a chance of (this - purity) x abyssalEnchanterCurseChance")
+            .defineInRange("abyssalEnchanterCursePurity", 0.5, 0.0, 10.0);
+    private static final ModConfigSpec.DoubleValue ENCHANTER_CURSE_CHANCE = BUILDER
+            .comment("Scales the Abyssal Enchanter's curse chance; the default gives 15% at purity 0")
+            .defineInRange("abyssalEnchanterCurseChance", 0.3, 0.0, 10.0);
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> ENCHANTER_BLACKLIST = BUILDER
+            .comment("Enchantments the Abyssal Enchanter never gives, as ids such as \"minecraft:mending\", or \"modid:*\" for every enchantment of a mod.",
+                    "Blocked enchantments can't be made, are never rolled as a low purity result or curse, and are hidden from JEI.",
+                    "Datapacks can also add enchantments to the nautec:abyssal_enchanter_blacklist enchantment tag")
+            .defineListAllowEmpty("abyssalEnchanterBlacklist", List.of(), () -> "minecraft:mending", entry -> entry instanceof String);
 
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
@@ -1132,6 +1182,22 @@ public final class NTConfig {
     public static int osmosisFilterCapacity = 16_000;
     public static long[] deepSeaReservoirCapacity = RESERVOIR_CAPACITY_DEFAULTS.clone();
     public static int deepSeaReservoirSyncTicks = 10;
+    public static int abyssalEnchanterXpCapacity = Integer.MAX_VALUE;
+    public static int abyssalEnchanterMbPerPoint = 20;
+    public static double abyssalEnchanterXpScale = 0.6;
+    public static double abyssalEnchanterBasePower = 10.0;
+    public static double abyssalEnchanterLevelExponent = 2.0;
+    public static double abyssalEnchanterRarityExponent = 1.0;
+    public static int abyssalEnchanterTicksPerLevel = 200;
+    public static int abyssalEnchanterMinTicks = 40;
+    public static double abyssalEnchanterStablePurity = 3.0;
+    public static boolean abyssalEnchanterOverenchant = true;
+    public static int abyssalEnchanterOverenchantLevels = 5;
+    public static double abyssalEnchanterOverenchantFactor = 4.0;
+    public static boolean abyssalEnchanterCurses = true;
+    public static double abyssalEnchanterCursePurity = 0.5;
+    public static double abyssalEnchanterCurseChance = 0.3;
+    public static List<String> abyssalEnchanterBlacklist = List.of();
 
     public static int guardianAugmentDamage;
     public static boolean allowAugmentRendering;
@@ -1523,6 +1589,22 @@ public final class NTConfig {
             deepSeaReservoirCapacity[i] = value(RESERVOIR_CAPACITY[i]);
         }
         deepSeaReservoirSyncTicks = value(RESERVOIR_SYNC_TICKS);
+        abyssalEnchanterXpCapacity = value(ENCHANTER_XP_CAPACITY);
+        abyssalEnchanterMbPerPoint = value(ENCHANTER_MB_PER_POINT);
+        abyssalEnchanterXpScale = value(ENCHANTER_XP_SCALE);
+        abyssalEnchanterBasePower = value(ENCHANTER_BASE_POWER);
+        abyssalEnchanterLevelExponent = value(ENCHANTER_LEVEL_EXPONENT);
+        abyssalEnchanterRarityExponent = value(ENCHANTER_RARITY_EXPONENT);
+        abyssalEnchanterTicksPerLevel = value(ENCHANTER_TICKS_PER_LEVEL);
+        abyssalEnchanterMinTicks = value(ENCHANTER_MIN_TICKS);
+        abyssalEnchanterStablePurity = value(ENCHANTER_STABLE_PURITY);
+        abyssalEnchanterOverenchant = value(ENCHANTER_OVERENCHANT);
+        abyssalEnchanterOverenchantLevels = value(ENCHANTER_OVERENCHANT_LEVELS);
+        abyssalEnchanterOverenchantFactor = value(ENCHANTER_OVERENCHANT_FACTOR);
+        abyssalEnchanterCurses = value(ENCHANTER_CURSES);
+        abyssalEnchanterCursePurity = value(ENCHANTER_CURSE_PURITY);
+        abyssalEnchanterCurseChance = value(ENCHANTER_CURSE_CHANCE);
+        abyssalEnchanterBlacklist = List.copyOf(value(ENCHANTER_BLACKLIST));
 
         guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
         allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);

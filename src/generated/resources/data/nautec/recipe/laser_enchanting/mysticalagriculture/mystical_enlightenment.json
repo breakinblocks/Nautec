@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mysticalagriculture"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "mysticalagriculture:mystical_enlightenment",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:experience_bottle"
+  }
+}

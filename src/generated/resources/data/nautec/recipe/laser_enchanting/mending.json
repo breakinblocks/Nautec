@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:mending",
+  "input": {
+    "count": 1,
+    "ingredient": "nautec:resonant_shard"
+  }
+}

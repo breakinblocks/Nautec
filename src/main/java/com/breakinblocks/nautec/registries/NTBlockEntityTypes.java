@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlockEntity;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterPartBlockEntity;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
@@ -96,6 +98,12 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<DeepSeaReservoirBlockEntity>> DEEP_SEA_RESERVOIR = BLOCK_ENTITIES.register("deep_sea_reservoir",
             () -> new BlockEntityType<>(DeepSeaReservoirBlockEntity::new,
                     NTBlocks.DEEP_SEA_RESERVOIR.get()));
+    public static final Supplier<BlockEntityType<AbyssalEnchanterBlockEntity>> ABYSSAL_ENCHANTER = BLOCK_ENTITIES.register("abyssal_enchanter",
+            () -> new BlockEntityType<>(AbyssalEnchanterBlockEntity::new,
+                    NTBlocks.ABYSSAL_ENCHANTER.get()));
+    public static final Supplier<BlockEntityType<AbyssalEnchanterPartBlockEntity>> ABYSSAL_ENCHANTER_PART = BLOCK_ENTITIES.register("abyssal_enchanter_part",
+            () -> new BlockEntityType<>(AbyssalEnchanterPartBlockEntity::new,
+                    NTBlocks.ABYSSAL_ENCHANTER_PART.get()));
     public static final Supplier<BlockEntityType<LaserCraftingMatrixBlockEntity>> LASER_CRAFTING_MATRIX = BLOCK_ENTITIES.register("laser_crafting_matrix",
             () -> new BlockEntityType<>(LaserCraftingMatrixBlockEntity::new,
                     NTBlocks.LASER_CRAFTING_MATRIX.get()));

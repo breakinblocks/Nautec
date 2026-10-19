@@ -441,6 +441,8 @@ public class EnUsProvider extends LanguageProvider {
         addBlock("osmosis_filter", "Osmosis Filter");
         addBlock("deep_sea_reservoir", "Deep Sea Reservoir");
         addBlock("deep_sea_reservoir_part", "Deep Sea Reservoir");
+        addBlock("abyssal_enchanter", "Abyssal Enchanter");
+        addBlock("abyssal_enchanter_part", "Abyssal Enchanter");
         addBlock("laser_crafting_matrix", "Laser Crafting Matrix");
         addBlock("laser_junction", "Laser Junction");
         addBlock("prismarine_crystal", "Prismarine Crystal");
@@ -743,6 +745,44 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.mixer.idle", "Not mixing");
         add("nautec.mixer.parallel", "Parallel: x%s");
         add("nautec.osmosis_filter.rate", "%s mB/s");
+        add("nautec.abyssal_enchanter.no_room", "An Abyssal Enchanter needs a clear space 3 wide, 3 deep and 2 tall");
+        add("nautec.abyssal_enchanter.tooltip", "Enchants books and items with a reagent, liquid experience and a laser beam");
+        add("nautec.abyssal_enchanter.size_hint", "Fills a 3x3 space two blocks tall, centered where you place it");
+        add("nautec.abyssal_enchanter.screen.idle", "Insert a reagent");
+        add("nautec.abyssal_enchanter.screen.level", "Level %s / %s");
+        add("nautec.abyssal_enchanter.screen.level_down", "Lower the level to enchant at");
+        add("nautec.abyssal_enchanter.screen.level_up", "Raise the level to enchant at");
+        add("nautec.abyssal_enchanter.screen.next_recipe", "%s enchantments use this reagent. Click to switch");
+        add("nautec.abyssal_enchanter.screen.sustained", "Beam: %s / %s AP");
+        add("nautec.abyssal_enchanter.screen.total", "Energy taken in: %s / %s AP");
+        add("nautec.abyssal_enchanter.screen.experience", "Liquid experience: %s mB");
+        add("nautec.abyssal_enchanter.screen.reagent", "Reagent used: %s");
+        add("nautec.abyssal_enchanter.screen.overenchant", "Past the normal max of %s: x%s AP and experience");
+        add("nautec.abyssal_enchanter.screen.book_capped", "Books stop at the normal max. Put in an item to overenchant it");
+        add("nautec.abyssal_enchanter.screen.stability", "Purity %s: %s%% stable");
+        add("nautec.abyssal_enchanter.screen.curse", "Curse chance: %s%%");
+        add("nautec.abyssal_enchanter.status.no_reagent", "Insert a reagent");
+        add("nautec.abyssal_enchanter.status.no_recipe", "No enchantment uses this reagent");
+        add("nautec.abyssal_enchanter.status.blocked", "That enchantment is disabled here");
+        add("nautec.abyssal_enchanter.status.no_target", "Insert a book or an item");
+        add("nautec.abyssal_enchanter.status.cannot_apply", "Can't go on this item");
+        add("nautec.abyssal_enchanter.status.already_has", "Already has this level");
+        add("nautec.abyssal_enchanter.status.need_reagent", "Needs %s reagent");
+        add("nautec.abyssal_enchanter.status.need_xp", "Needs %s mB experience");
+        add("nautec.abyssal_enchanter.status.output_full", "Take out the last result");
+        add("nautec.abyssal_enchanter.status.no_power", "No laser beam");
+        add("nautec.abyssal_enchanter.status.low_power", "Needs %s AP beam");
+        add("nautec.abyssal_enchanter.status.working", "Enchanting %s%%");
+        add("nautec.jei.category.laser_enchanting", "Laser Enchanting");
+        add("nautec.jei.laser_enchanting.sustained", "%s AP beam");
+        add("nautec.jei.laser_enchanting.total", "%s AP total");
+        add("nautec.jei.laser_enchanting.experience", "%s mB XP");
+        add("nautec.jei.laser_enchanting.stable", "Exact result at purity %s or higher");
+        add("nautec.jei.laser_enchanting.overenchant", "x%s past max");
+        add("nautec.jei.laser_enchanting.level", "Level %s of %s. Click or scroll to change");
+        for (int level = 11; level <= 255; level++) {
+            add("enchantment.level." + level, roman(level));
+        }
         add("nautec.deep_sea_reservoir.wrong_upgrade", "This upgrade fits a Tier %s reservoir, this one is Tier %s");
         add("nautec.deep_sea_reservoir.upgraded", "Upgraded to Tier %s, now holds %s buckets");
         add("nautec.deep_sea_reservoir.no_room", "A Deep Sea Reservoir needs a clear 3x3x3 space");
@@ -1758,5 +1798,18 @@ public class EnUsProvider extends LanguageProvider {
 
     private void addBlock(String key, String val) {
         add("block.nautec." + key, val);
+    }
+
+    private static String roman(int value) {
+        int[] values = {100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] numerals = {"C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < values.length; i++) {
+            while (value >= values[i]) {
+                result.append(numerals[i]);
+                value -= values[i];
+            }
+        }
+        return result.toString();
     }
 }

@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:fire_protection",
+  "input": {
+    "count": 16,
+    "ingredient": "minecraft:magma_cream"
+  }
+}

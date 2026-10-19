@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "occultism"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "occultism:fracture_soul",
+  "input": {
+    "count": 2,
+    "ingredient": "minecraft:crying_obsidian"
+  }
+}

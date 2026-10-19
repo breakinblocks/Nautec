@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:wind_burst",
+  "input": {
+    "count": 4,
+    "ingredient": "minecraft:breeze_rod"
+  }
+}

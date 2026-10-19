@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:piercing",
+  "input": {
+    "count": 8,
+    "ingredient": "#c:gems/prismarine"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "#c:gems/diamond",
+    "E": "minecraft:ender_pearl",
+    "F": "nautec:flawless_prismarine_crystal",
+    "G": "nautec:atlantic_gold_ingot",
+    "O": "#c:obsidians",
+    "P": "nautec:deep_steel_plating"
+  },
+  "pattern": [
+    "PEP",
+    "DFD",
+    "OGO"
+  ],
+  "result": {
+    "id": "nautec:abyssal_enchanter"
+  }
+}

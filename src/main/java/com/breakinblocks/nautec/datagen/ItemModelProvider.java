@@ -101,6 +101,7 @@ public class ItemModelProvider extends ModelProvider {
                 ItemModelUtils.when(2, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t2"))),
                 ItemModelUtils.when(3, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t3"))),
                 ItemModelUtils.when(4, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t4")))));
+        itemModels.itemModelOutput.accept(NTBlocks.ABYSSAL_ENCHANTER.asItem(), ItemModelUtils.plainModel(Nautec.rl("block/abyssal_enchanter")));
         basicItem(NTItems.INTRICATE_FILTER.get());
         handAuthoredItem(NTBlocks.CURRENT_CONDUIT.asItem());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
@@ -278,7 +279,8 @@ public class ItemModelProvider extends ModelProvider {
                     || item == NTBlocks.RESONANT_VAULT.asItem()
                     || item == NTBlocks.PRISMARINE_CRYSTAL.asItem()
                     || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()
-                    || item == NTBlocks.DEEP_SEA_RESERVOIR.asItem()) {
+                    || item == NTBlocks.DEEP_SEA_RESERVOIR.asItem()
+                    || item == NTBlocks.ABYSSAL_ENCHANTER.asItem()) {
                 continue;
             }
             parentItemBlock(item);

@@ -1,0 +1,8 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:depth_strider",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:prismarine_shard"
+  }
+}
