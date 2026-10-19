@@ -217,6 +217,54 @@ public final class DeepSeaReservoirTests {
             helper.succeed();
         });
 
+        r.add("reservoir/floods_when_water_reaches_its_side", 40, helper -> {
+            DeepSeaReservoirBlockEntity reservoir = placed(helper, new ItemStack(NTBlocks.DEEP_SEA_RESERVOIR.get()));
+            ServerLevel level = helper.getLevel();
+            BlockPos core = helper.absolutePos(CORE);
+            for (int cell = 0; cell < ReservoirStructure.CELLS; cell++) {
+                helper.assertFalse(level.getBlockState(ReservoirStructure.cellPos(core, cell)).getValue(BlockStateProperties.WATERLOGGED),
+                        "cell " + cell + " starts dry");
+            }
+            helper.setBlock(BASE.offset(-2, 2, 0), Blocks.WATER);
+            helper.succeedWhen(() -> {
+                for (int cell = 0; cell < ReservoirStructure.CELLS; cell++) {
+                    var state = level.getBlockState(ReservoirStructure.cellPos(core, cell));
+                    helper.assertTrue(state.getValue(BlockStateProperties.WATERLOGGED), "cell " + cell + " floods from the top layer down");
+                }
+                helper.assertValueEqual(1, reservoir.tier(), "flooding keeps the reservoir");
+            });
+        });
+
+        r.add("reservoir/water_below_does_not_flood_it", 40, helper -> {
+            placed(helper, new ItemStack(NTBlocks.DEEP_SEA_RESERVOIR.get()));
+            ServerLevel level = helper.getLevel();
+            BlockPos core = helper.absolutePos(CORE);
+            helper.setBlock(BASE.below(), Blocks.WATER);
+            helper.runAfterDelay(10, () -> {
+                for (int cell = 0; cell < ReservoirStructure.CELLS; cell++) {
+                    helper.assertFalse(level.getBlockState(ReservoirStructure.cellPos(core, cell)).getValue(BlockStateProperties.WATERLOGGED),
+                            "cell " + cell + " stays dry, water does not rise into it");
+                }
+                helper.succeed();
+            });
+        });
+
+        r.add("reservoir/every_block_outlines_the_whole_structure", 20, helper -> {
+            placed(helper, new ItemStack(NTBlocks.DEEP_SEA_RESERVOIR.get()));
+            ServerLevel level = helper.getLevel();
+            BlockPos core = helper.absolutePos(CORE);
+            AABB whole = new AABB(core.offset(-1, -1, -1).getCenter(), core.offset(1, 1, 1).getCenter()).inflate(0.5);
+            for (int cell = 0; cell < ReservoirStructure.CELLS; cell++) {
+                BlockPos pos = ReservoirStructure.cellPos(core, cell);
+                var state = level.getBlockState(pos);
+                AABB outline = state.getShape(level, pos).bounds().move(pos);
+                helper.assertTrue(outline.equals(whole), "cell " + cell + " outlines " + outline + ", want " + whole);
+                AABB collision = state.getCollisionShape(level, pos).bounds();
+                helper.assertTrue(collision.equals(new AABB(0, 0, 0, 1, 1, 1)), "cell " + cell + " collides as one block, got " + collision);
+            }
+            helper.succeed();
+        });
+
         r.add("reservoir/breaks_into_one_item_that_keeps_everything", 40, helper -> {
             DeepSeaReservoirBlockEntity reservoir = placed(helper, new ItemStack(NTBlocks.DEEP_SEA_RESERVOIR.get()));
             reservoir.upgradeTo(3);

@@ -22,6 +22,8 @@ item_ids:
 
 The Reservoir is one item that fills a 3x3x3 space. Place it on a block and it builds itself in the 3x3x3 above that block, centered on it, with its gauge facing you. Every block in that space has to be empty first (air, water, or plants you could build over), so it works on the sea floor too.
 
+If water reaches a Reservoir that was built dry, it floods through the frame the way water flows: across from the sides and down from above, never up from below.
+
 Breaking any part of it takes the whole Reservoir down as a single item. That item keeps its tier and every drop of fluid inside, so you can move a full Reservoir anywhere.
 
 ***
