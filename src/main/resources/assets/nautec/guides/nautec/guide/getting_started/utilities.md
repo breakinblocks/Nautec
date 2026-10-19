@@ -23,10 +23,11 @@ item_ids:
   ### <Color id="aqua">Aquarine Steel Wrench</Color>
 </Row>
 
-The wrench has three modes. Sneak and right-click the air to switch between them; the tooltip and the message above the hotbar show the current one.
+The wrench has four modes. Sneak and right-click the air to switch between them; the tooltip and the message above the hotbar show the current one.
 
 * Rotate: right-click any block with a facing, such as the <ItemLink id="aquatic_catalyst"/>, a relay or a machine, to turn it to its next direction. Keep clicking to go all the way round.
 * Item Sides and Fluid Sides: right-click a face of a machine to change what hoppers and pipes can do through it, and sneak right-click to step back. In Item Sides mode, any block of a formed Bio Reactor or Industrial Bio Reactor sets that side of the whole reactor. See Side Configuration below.
+* Link: aims two laser blocks at each other in two clicks. Right-click the block that sends the beam, such as a <ItemLink id="prismarine_laser_relay"/>, a <ItemLink id="laser_junction"/> or an <ItemLink id="aquatic_catalyst"/>, to save it as the start. Then right-click the block the beam should reach, such as another relay or a machine. The wrench turns the start so it sends toward the second block and turns the second block so it takes the beam from the start; on a junction it opens the matching output or input face instead. The two blocks must be in a straight line and within the beam's reach, and the message above the hotbar says if something stands in the way. After a link the saved start clears, ready for the next one. Right-clicking the air, or a block that does not send or take laser beams, clears the saved start, and the tooltip shows where it is while one is saved. In this mode the wrench works on machines without opening their screens. A relay takes its beam from behind and sends it out of its front, so linking one onward around a corner turns it away from the beam it was taking; the message warns you, and a <ItemLink id="laser_junction"/> turns beams around corners.
 
 These work in every mode:
 

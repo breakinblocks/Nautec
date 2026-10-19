@@ -8,7 +8,8 @@ import java.util.Locale;
 public enum WrenchMode {
     ROTATE(null),
     ITEM_SIDES(SideKind.ITEMS),
-    FLUID_SIDES(SideKind.FLUIDS);
+    FLUID_SIDES(SideKind.FLUIDS),
+    LINK(null);
 
     private final @Nullable SideKind kind;
 
