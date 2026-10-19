@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.items.tools;
 
+import net.minecraft.core.GlobalPos;
 import com.breakinblocks.nautec.content.conduits.ConduitWrenching;
 import com.breakinblocks.nautec.content.blocks.multiblock.part.DrainPartBlock;
 import com.breakinblocks.nautec.NTRegistries;
@@ -61,12 +62,20 @@ public class AquarineWrenchItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (!player.isSecondaryUseActive()) {
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
-        }
         ItemStack stack = player.getItemInHand(hand);
+        if (!player.isSecondaryUseActive()) {
+            if (mode(stack) != WrenchMode.LINK) {
+                return InteractionResultHolder.pass(stack);
+            }
+            if (!level.isClientSide() && WrenchLinking.start(stack) != null) {
+                WrenchLinking.clear(stack);
+                player.displayClientMessage(Component.translatable("nautec.wrench.link.cleared").withStyle(ChatFormatting.GRAY), true);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        }
         WrenchMode next = mode(stack).next();
         stack.set(NTDataComponents.WRENCH_MODE.get(), next.ordinal());
+        WrenchLinking.clear(stack);
         if (!level.isClientSide()) {
             player.displayClientMessage(Component.translatable("nautec.wrench.mode", Component.translatable(next.translationKey())).withStyle(ChatFormatting.AQUA), true);
         }
@@ -77,6 +86,12 @@ public class AquarineWrenchItem extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("nautec.wrench.mode", Component.translatable(mode(stack).translationKey())).withStyle(ChatFormatting.AQUA));
         tooltip.add(Component.translatable(mode(stack).translationKey() + ".desc").withStyle(ChatFormatting.GRAY));
+        if (mode(stack) == WrenchMode.LINK) {
+            GlobalPos start = WrenchLinking.start(stack);
+            tooltip.add((start == null
+                    ? Component.translatable("nautec.wrench.link.tooltip.none")
+                    : Component.translatable("nautec.wrench.link.tooltip.start", WrenchLinking.describe(start.pos()))).withStyle(ChatFormatting.AQUA));
+        }
         tooltip.add(Component.translatable("nautec.wrench.mode.switch").withStyle(ChatFormatting.DARK_GRAY));
     }
 
@@ -87,6 +102,10 @@ public class AquarineWrenchItem extends Item {
         BlockState blockState = level.getBlockState(pos);
         BlockState controllerState = blockState;
         Player player = useOnContext.getPlayer();
+
+        if (mode(useOnContext.getItemInHand()) == WrenchMode.LINK) {
+            return WrenchLinking.useOn(useOnContext);
+        }
 
         if (DrainPartBlock.wrenchLaserPort(level, pos, blockState, player)) {
             return InteractionResult.SUCCESS;

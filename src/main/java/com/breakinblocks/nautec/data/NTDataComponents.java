@@ -53,6 +53,9 @@ public final class NTDataComponents {
     public static final Supplier<DataComponentType<Integer>> WRENCH_MODE = registerDataComponentType("wrench_mode",
             () -> builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    public static final Supplier<DataComponentType<GlobalPos>> WRENCH_LINK = registerDataComponentType("wrench_link",
+            () -> builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC));
+
     public static final Supplier<DataComponentType<MachineSettings>> MACHINE_SETTINGS = registerDataComponentType("machine_settings",
             () -> builder -> builder.persistent(MachineSettings.CODEC).networkSynchronized(MachineSettings.STREAM_CODEC));
 
