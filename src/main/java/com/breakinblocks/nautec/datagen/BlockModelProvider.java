@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
@@ -126,6 +127,7 @@ public class BlockModelProvider extends BlockStateProvider {
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
+        deepSeaReservoir();
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -184,6 +186,21 @@ public class BlockModelProvider extends BlockStateProvider {
 
     private void osmosisFilter(Block filter) {
         booleanHorizontalDispatch(filter, OsmosisFilterBlock.ACTIVE, existingModelFile("osmosis_filter_active"), existingModelFile(filter));
+    }
+
+    private void deepSeaReservoir() {
+        getVariantBuilder(NTBlocks.DEEP_SEA_RESERVOIR.get()).forAllStatesExcept(state -> {
+            ModelFile model = existingModelFile("deep_sea_reservoir_t" + state.getValue(DeepSeaReservoirBlock.TIER));
+            int yRot = switch (state.getValue(DeepSeaReservoirBlock.FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return new ConfiguredModel[]{rotated(model, 0, yRot)};
+        }, BlockStateProperties.WATERLOGGED);
+        simpleBlock(NTBlocks.DEEP_SEA_RESERVOIR_PART.get(), models().getBuilder(blockModelId(NTBlocks.DEEP_SEA_RESERVOIR_PART.get()).toString())
+                .texture("particle", Nautec.rl("block/deep_sea_reservoir")));
     }
 
     private void fusionPlant() {

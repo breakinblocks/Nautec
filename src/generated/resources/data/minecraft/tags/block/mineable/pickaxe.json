@@ -23,6 +23,8 @@
     "nautec:prismarine_laser_relay",
     "nautec:mixer",
     "nautec:osmosis_filter",
+    "nautec:deep_sea_reservoir",
+    "nautec:deep_sea_reservoir_part",
     "nautec:laser_crafting_matrix",
     "nautec:charger",
     "nautec:confined_spawner",

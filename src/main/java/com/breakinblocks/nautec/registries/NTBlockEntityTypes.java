@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlockEntity;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
@@ -92,6 +93,9 @@ public final class NTBlockEntityTypes {
     public static final Supplier<BlockEntityType<OsmosisFilterBlockEntity>> OSMOSIS_FILTER = BLOCK_ENTITIES.register("osmosis_filter",
             () -> BlockEntityType.Builder.of(OsmosisFilterBlockEntity::new,
                     NTBlocks.OSMOSIS_FILTER.get()).build(null));
+    public static final Supplier<BlockEntityType<DeepSeaReservoirBlockEntity>> DEEP_SEA_RESERVOIR = BLOCK_ENTITIES.register("deep_sea_reservoir",
+            () -> BlockEntityType.Builder.of(DeepSeaReservoirBlockEntity::new,
+                    NTBlocks.DEEP_SEA_RESERVOIR.get()).build(null));
     public static final Supplier<BlockEntityType<LaserCraftingMatrixBlockEntity>> LASER_CRAFTING_MATRIX = BLOCK_ENTITIES.register("laser_crafting_matrix",
             () -> BlockEntityType.Builder.of(LaserCraftingMatrixBlockEntity::new,
                     NTBlocks.LASER_CRAFTING_MATRIX.get()).build(null));

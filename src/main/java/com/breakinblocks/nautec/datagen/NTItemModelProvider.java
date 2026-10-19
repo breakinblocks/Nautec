@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.reservoir.ReservoirFluid;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.fluids.NTFluid;
 import com.breakinblocks.nautec.registries.NTBlocks;
@@ -39,6 +40,7 @@ import java.util.function.Supplier;
 
 public class NTItemModelProvider extends ItemModelProvider {
     public static final ResourceLocation ABILITY_ENABLED = Nautec.rl("ability_enabled");
+    public static final ResourceLocation RESERVOIR_TIER = Nautec.rl("reservoir_tier");
     public static final ResourceLocation HAS_BACTERIA = Nautec.rl("has_bacteria");
     public static final ResourceLocation CAST = ResourceLocation.withDefaultNamespace("cast");
 
@@ -86,6 +88,10 @@ public class NTItemModelProvider extends ItemModelProvider {
         basicItem(NTItems.MAELSTROM_UPGRADE.get());
         basicItem(NTItems.FILTER.get());
         basicItem(NTItems.RESONANT_EXPANSION.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_2.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_3.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_4.get());
+        deepSeaReservoir();
         basicItem(NTItems.INTRICATE_FILTER.get());
         handAuthoredItem(NTBlocks.CURRENT_CONDUIT.asItem());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
@@ -426,6 +432,18 @@ public class NTItemModelProvider extends ItemModelProvider {
                 .predicate(HAS_BACTERIA, 1.0F)
                 .model(bacteria)
                 .end();
+    }
+
+    private void deepSeaReservoir() {
+        Item item = NTBlocks.DEEP_SEA_RESERVOIR.asItem();
+        handled.add(item);
+        ItemModelBuilder builder = withExistingParent(key(item).toString(), Nautec.rl("block/deep_sea_reservoir_t1"));
+        for (int tier = 2; tier <= ReservoirFluid.MAX_TIER; tier++) {
+            builder.override()
+                    .predicate(RESERVOIR_TIER, tier)
+                    .model(new ModelFile.UncheckedModelFile(Nautec.rl("block/deep_sea_reservoir_t" + tier)))
+                    .end();
+        }
     }
 
     public void aquarineSteelTool(Item item) {

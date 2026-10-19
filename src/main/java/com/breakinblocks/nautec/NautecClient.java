@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirItem;
+import com.breakinblocks.nautec.client.screen.DeepSeaReservoirScreen;
+import com.breakinblocks.nautec.client.renderer.blockentities.DeepSeaReservoirRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonantCisternRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonantVaultRenderer;
 import com.breakinblocks.nautec.client.screen.ResonantCisternScreen;
@@ -314,6 +317,8 @@ public final class NautecClient {
         ItemProperties.register(NTItems.AQUARINE_SHOVEL.get(), abilityEnabled, ability);
         ItemProperties.register(NTItems.AQUARINE_SWORD.get(), abilityEnabled, ability);
         ItemProperties.register(NTItems.PETRI_DISH.get(), Nautec.rl("has_bacteria"), new HasBacteriaProperty());
+        ItemProperties.register(NTBlocks.DEEP_SEA_RESERVOIR.asItem(), Nautec.rl("reservoir_tier"),
+                (stack, level, entity, seed) -> DeepSeaReservoirItem.tierOf(stack));
         ItemProperties.register(NTItems.NAUTEC_FISHING_ROD.get(), ResourceLocation.withDefaultNamespace("cast"), (stack, level, entity, seed) -> {
             if (entity == null) {
                 return 0.0F;
@@ -361,6 +366,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_CRAFTING_MATRIX.get(), LaserCraftingMatrixRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_VAULT.get(), ResonantVaultRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_CISTERN.get(), ResonantCisternRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.DEEP_SEA_RESERVOIR.get(), DeepSeaReservoirRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.BIOME_TANK.get(), BiomeTankBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
@@ -438,6 +444,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.CONDUIT_TAP.get(), ConduitTapScreen::new);
         event.register(NTMenuTypes.RESONANT_VAULT.get(), ResonantVaultScreen::new);
         event.register(NTMenuTypes.RESONANT_CISTERN.get(), ResonantCisternScreen::new);
+        event.register(NTMenuTypes.DEEP_SEA_RESERVOIR.get(), DeepSeaReservoirScreen::new);
         event.register(NTMenuTypes.BUBBLE_ANCHOR.get(), BubbleAnchorScreen::new);
         event.register(NTMenuTypes.ENERGY_CONVERTER.get(), EnergyConverterScreen::new);
         event.register(NTMenuTypes.PRESSURE_FORGE.get(), PressureForgeScreen::new);

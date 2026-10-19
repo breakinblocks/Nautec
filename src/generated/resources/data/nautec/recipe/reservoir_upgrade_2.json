@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nautec:aquarine_steel_block"
+    },
+    "C": {
+      "item": "nautec:containment_coil"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    }
+  },
+  "pattern": [
+    "BCB",
+    "CFC",
+    "BCB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:reservoir_upgrade_2"
+  }
+}

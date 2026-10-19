@@ -1,0 +1,23 @@
+{
+  "parent": "nautec:block/deep_sea_reservoir_t1",
+  "overrides": [
+    {
+      "model": "nautec:block/deep_sea_reservoir_t2",
+      "predicate": {
+        "nautec:reservoir_tier": 2.0
+      }
+    },
+    {
+      "model": "nautec:block/deep_sea_reservoir_t3",
+      "predicate": {
+        "nautec:reservoir_tier": 3.0
+      }
+    },
+    {
+      "model": "nautec:block/deep_sea_reservoir_t4",
+      "predicate": {
+        "nautec:reservoir_tier": 4.0
+      }
+    }
+  ]
+}

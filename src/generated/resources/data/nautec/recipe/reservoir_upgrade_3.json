@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "nautec:containment_coil"
+    },
+    "N": {
+      "tag": "c:nether_stars"
+    },
+    "O": {
+      "item": "nautec:abyssal_organ"
+    }
+  },
+  "pattern": [
+    "OCO",
+    "CNC",
+    "OCO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:reservoir_upgrade_3"
+  }
+}

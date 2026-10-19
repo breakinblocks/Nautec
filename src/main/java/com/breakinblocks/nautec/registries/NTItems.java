@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.reservoir.ReservoirUpgradeItem;
 import com.breakinblocks.nautec.content.conduits.ConduitUpgradeItem;
 import com.breakinblocks.nautec.content.conduits.FilterItem;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantExpansionItem;
@@ -272,6 +273,12 @@ public final class NTItems {
             props -> new FilterItem(props, false), () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<FilterItem> INTRICATE_FILTER = registerItem("intricate_filter",
             props -> new FilterItem(props, true), () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<ReservoirUpgradeItem> RESERVOIR_UPGRADE_2 = registerItem("reservoir_upgrade_2",
+            props -> new ReservoirUpgradeItem(props, 2), () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<ReservoirUpgradeItem> RESERVOIR_UPGRADE_3 = registerItem("reservoir_upgrade_3",
+            props -> new ReservoirUpgradeItem(props, 3), () -> new Item.Properties().stacksTo(16).rarity(Rarity.RARE));
+    public static final DeferredItem<ReservoirUpgradeItem> RESERVOIR_UPGRADE_4 = registerItem("reservoir_upgrade_4",
+            props -> new ReservoirUpgradeItem(props, 4), () -> new Item.Properties().stacksTo(16).rarity(Rarity.EPIC));
     public static final DeferredItem<ResonantExpansionItem> RESONANT_EXPANSION = registerItem("resonant_expansion",
             ResonantExpansionItem::new, () -> new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
     public static final DeferredItem<EnergyConversionUpgradeItem> ENERGY_CONVERSION_UPGRADE = registerItem("energy_conversion_upgrade",

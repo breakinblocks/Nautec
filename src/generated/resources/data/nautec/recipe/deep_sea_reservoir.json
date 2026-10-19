@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "nautec:aquarine_steel_block"
+    },
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "F": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "G": {
+      "item": "nautec:aquamarine_structural_glass"
+    },
+    "U": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "pattern": [
+    "DGD",
+    "BUB",
+    "DFD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:deep_sea_reservoir"
+  }
+}
