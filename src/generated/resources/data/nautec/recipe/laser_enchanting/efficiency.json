@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:efficiency",
+  "input": {
+    "count": 12,
+    "ingredient": {
+      "tag": "c:dusts/redstone"
+    }
+  }
+}

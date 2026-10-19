@@ -718,6 +718,19 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
                 .save(pRecipeOutput, key("deep_sea_reservoir"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.ABYSSAL_ENCHANTER.asItem())
+                .pattern("PEP")
+                .pattern("DFD")
+                .pattern("OGO")
+                .define('P', NTItems.DEEP_STEEL_PLATING)
+                .define('E', Items.ENDER_PEARL)
+                .define('D', Tags.Items.GEMS_DIAMOND)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('O', Tags.Items.OBSIDIANS)
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("abyssal_enchanter"));
+
         shaped(RecipeCategory.MISC, NTItems.RESERVOIR_UPGRADE_2.get())
                 .pattern("BCB")
                 .pattern("CFC")

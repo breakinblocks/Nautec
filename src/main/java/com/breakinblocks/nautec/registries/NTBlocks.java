@@ -4,6 +4,9 @@ import net.minecraft.world.item.Rarity;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirPartBlock;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirItem;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlock;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlock;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterItem;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterPartBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.conduits.ConduitTapBlock;
@@ -147,6 +150,10 @@ public final class NTBlocks {
             reservoirProperties(), (block, props) -> new DeepSeaReservoirItem(block, props.stacksTo(1).rarity(Rarity.EPIC)));
     public static final DeferredBlock<DeepSeaReservoirPartBlock> DEEP_SEA_RESERVOIR_PART = BLOCKS.registerBlock("deep_sea_reservoir_part",
             DeepSeaReservoirPartBlock::new, reservoirProperties());
+    public static final DeferredBlock<AbyssalEnchanterBlock> ABYSSAL_ENCHANTER = registerBlockAndItem("abyssal_enchanter", AbyssalEnchanterBlock::new,
+            enchanterProperties(), (block, props) -> new AbyssalEnchanterItem(block, props.stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredBlock<AbyssalEnchanterPartBlock> ABYSSAL_ENCHANTER_PART = BLOCKS.registerBlock("abyssal_enchanter_part",
+            AbyssalEnchanterPartBlock::new, enchanterProperties());
     public static final DeferredBlock<LaserCraftingMatrixBlock> LASER_CRAFTING_MATRIX = registerBlockAndItem("laser_crafting_matrix", LaserCraftingMatrixBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion(), LaserCraftingMatrixItem::new);
     public static final DeferredBlock<LaserJunctionBlock> LASER_JUNCTION = registerBlockAndItem("laser_junction", props -> new LaserJunctionBlock(props, 8),
@@ -372,6 +379,12 @@ public final class NTBlocks {
     private static BlockBehaviour.Properties reservoirProperties() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(5.0f, 1200.0f).sound(SoundType.METAL)
                 .requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK);
+    }
+
+    private static BlockBehaviour.Properties enchanterProperties() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(5.0f, 1200.0f).sound(SoundType.DEEPSLATE_BRICKS)
+                .requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK)
+                .lightLevel(state -> state.hasProperty(AbyssalEnchanterBlock.ACTIVE) && state.getValue(AbyssalEnchanterBlock.ACTIVE) ? 12 : 4);
     }
 
     private static BlockBehaviour.Properties fusionProperties() {

@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:protection",
+  "input": {
+    "count": 16,
+    "ingredient": {
+      "item": "nautec:aquarine_steel_ingot"
+    }
+  }
+}

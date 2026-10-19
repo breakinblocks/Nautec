@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:sharpness",
+  "input": {
+    "count": 12,
+    "ingredient": {
+      "tag": "c:gems/quartz"
+    }
+  }
+}

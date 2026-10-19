@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:fire_aspect",
+  "input": {
+    "count": 8,
+    "ingredient": {
+      "item": "minecraft:blaze_rod"
+    }
+  }
+}

@@ -10,6 +10,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.TankWidget;
+import dev.emi.emi.api.widget.Widget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -45,6 +46,10 @@ public final class EmiCanvas {
 
     public SlotWidget slot(EmiIngredient ingredient, int x, int y) {
         return widgets.addSlot(ingredient, x - 1 + PAD, y - 1 + PAD);
+    }
+
+    public <T extends Widget> T add(T widget) {
+        return widgets.add(widget);
     }
 
     public SlotWidget output(EmiStack stack, int x, int y) {

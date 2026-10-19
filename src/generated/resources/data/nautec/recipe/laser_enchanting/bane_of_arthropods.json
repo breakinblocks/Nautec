@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:bane_of_arthropods",
+  "input": {
+    "count": 12,
+    "ingredient": {
+      "item": "minecraft:spider_eye"
+    }
+  }
+}

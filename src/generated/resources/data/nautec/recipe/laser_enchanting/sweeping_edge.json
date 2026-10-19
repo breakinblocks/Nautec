@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:sweeping_edge",
+  "input": {
+    "count": 8,
+    "ingredient": {
+      "tag": "c:ingots/iron"
+    }
+  }
+}

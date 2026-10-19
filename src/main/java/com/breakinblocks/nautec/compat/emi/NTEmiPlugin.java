@@ -21,6 +21,7 @@ import com.breakinblocks.nautec.compat.emi.recipes.EasInfusionEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.ItemEtchingEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.ItemTransformationEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.LaserCraftingEmiRecipe;
+import com.breakinblocks.nautec.compat.emi.recipes.LaserEnchantingEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.MixingEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.PressureForgingEmiRecipe;
 import com.breakinblocks.nautec.compat.emi.recipes.ResonanceCraftingEmiRecipe;
@@ -33,6 +34,7 @@ import com.breakinblocks.nautec.content.blockentities.LaserCraftingMatrixBlockEn
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MutatorBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.generators.CombustionDynamoBlockEntity;
+import com.breakinblocks.nautec.content.enchanter.EnchantingRules;
 import com.breakinblocks.nautec.content.blockentities.multiblock.controller.AbstractBioReactorBlockEntity;
 import com.breakinblocks.nautec.content.menus.RecipeTransfer;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
@@ -44,6 +46,7 @@ import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemEtchingRecipe;
 import com.breakinblocks.nautec.content.recipes.ItemTransformationRecipe;
 import com.breakinblocks.nautec.content.recipes.LaserCraftingRecipe;
+import com.breakinblocks.nautec.content.recipes.LaserEnchantingRecipe;
 import com.breakinblocks.nautec.content.recipes.MixingRecipe;
 import com.breakinblocks.nautec.content.recipes.PressureForgingRecipe;
 import com.breakinblocks.nautec.content.recipes.ResonanceCraftingRecipe;
@@ -70,6 +73,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -78,6 +82,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -103,6 +108,7 @@ public class NTEmiPlugin implements EmiPlugin {
     public static final NTEmiCategory ITEM_ETCHING = new NTEmiCategory("item_etching", "item_etching", NTFluids.ETCHING_ACID.getBucket());
     public static final NTEmiCategory MIXING = new NTEmiCategory(MixingRecipe.NAME, "mixing", NTBlocks.MIXER);
     public static final NTEmiCategory LASER_CRAFTING = new NTEmiCategory(LaserCraftingRecipe.NAME, "laser_crafting", NTBlocks.LASER_CRAFTING_MATRIX);
+    public static final NTEmiCategory LASER_ENCHANTING = new NTEmiCategory(LaserEnchantingRecipe.NAME, "laser_enchanting", NTBlocks.ABYSSAL_ENCHANTER);
     public static final NTEmiCategory EAS_INFUSION = new NTEmiCategory("eas_infusion", "eas_infusion", NTFluids.EAS.getBucket());
     public static final NTEmiCategory AUGMENTATION = new NTEmiCategory("augmentation", "augmentation_effects", NTItems.CLAW_ROBOT_ARM);
     public static final NTEmiCategory BACTERIA_MUTATIONS = new NTEmiCategory(BacteriaMutationRecipe.NAME, "bacteria_mutations", NTBlocks.MUTATOR);
@@ -115,7 +121,7 @@ public class NTEmiPlugin implements EmiPlugin {
     public static final NTEmiCategory COMBUSTION_ADDITIVE = new NTEmiCategory(CombustionAdditiveRecipe.NAME, "combustion_additive", NTBlocks.COMBUSTION_DYNAMO);
 
     private static final List<NTEmiCategory> CATEGORIES = List.of(PRESSURE_FORGING, RESONANCE_CRAFTING, ITEM_TRANSFORMATION,
-            AQUATIC_CATALYST_CHANNELING, ITEM_ETCHING, MIXING, LASER_CRAFTING, EAS_INFUSION, AUGMENTATION, BACTERIA_MUTATIONS, STRAIN_LINEAGE,
+            AQUATIC_CATALYST_CHANNELING, ITEM_ETCHING, MIXING, LASER_CRAFTING, LASER_ENCHANTING, EAS_INFUSION, AUGMENTATION, BACTERIA_MUTATIONS, STRAIN_LINEAGE,
             BACTERIA_INCUBATION, BIO_REACTOR, COLONY_FEEDING, BACTERIA_GRAFTING, COMBUSTION_DYNAMO, COMBUSTION_ADDITIVE);
 
     @Override
@@ -140,6 +146,7 @@ public class NTEmiPlugin implements EmiPlugin {
         workstations(registry, ITEM_ETCHING, NTFluids.ETCHING_ACID.getBucket());
         workstations(registry, MIXING, NTBlocks.MIXER);
         workstations(registry, LASER_CRAFTING, NTBlocks.LASER_CRAFTING_MATRIX);
+        workstations(registry, LASER_ENCHANTING, NTBlocks.ABYSSAL_ENCHANTER);
         workstations(registry, EAS_INFUSION, NTFluids.EAS.getBucket());
         workstations(registry, AUGMENTATION, NTBlocks.AUGMENTATION_STATION);
         workstations(registry, BACTERIA_MUTATIONS, NTBlocks.MUTATOR);
@@ -197,6 +204,12 @@ public class NTEmiPlugin implements EmiPlugin {
         }
         for (RecipeHolder<LaserCraftingRecipe> holder : manager.getAllRecipesFor(LaserCraftingRecipe.Type.INSTANCE)) {
             registry.addRecipe(new LaserCraftingEmiRecipe(holder.id(), holder.value()));
+        }
+        for (RecipeHolder<LaserEnchantingRecipe> holder : manager.getAllRecipesFor(LaserEnchantingRecipe.Type.INSTANCE)) {
+            Holder<Enchantment> enchantment = holder.value().enchantment(access).orElse(null);
+            if (enchantment != null && EnchantingRules.allowed(enchantment)) {
+                registry.addRecipe(new LaserEnchantingEmiRecipe(holder.id(), holder.value(), enchantment));
+            }
         }
         for (RecipeHolder<AugmentationRecipe> holder : manager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
             registry.addRecipe(new AugmentationEmiRecipe(holder.id(), holder.value()));
@@ -286,6 +299,8 @@ public class NTEmiPlugin implements EmiPlugin {
                 (menu, recipe) -> counted(((MixingRecipe) recipe).ingredients(), MixerBlockEntity.INPUT_SLOTS)));
         registry.addRecipeHandler(NTMenuTypes.LASER_CRAFTING_MATRIX.get(), new MachineRecipeHandler<>(LASER_CRAFTING,
                 (menu, recipe) -> counted(((LaserCraftingRecipe) recipe).ingredients(), LaserCraftingMatrixBlockEntity.INPUT_SLOTS)));
+        registry.addRecipeHandler(NTMenuTypes.ABYSSAL_ENCHANTER.get(), new MachineRecipeHandler<>(LASER_ENCHANTING,
+                (menu, recipe) -> ((LaserEnchantingEmiRecipe.Selection) recipe).transfer()));
         registry.addRecipeHandler(NTMenuTypes.INCUBATOR.get(), new MachineRecipeHandler<>(BACTERIA_INCUBATION,
                 (menu, recipe) -> List.of(new RecipeTransfer.Entry(IncubatorBlockEntity.NUTRIENT_SLOT, ((BacteriaIncubationRecipe) recipe).nutrient(), 1))));
         registry.addRecipeHandler(NTMenuTypes.MUTATOR.get(), new MachineRecipeHandler<>(BACTERIA_MUTATIONS,

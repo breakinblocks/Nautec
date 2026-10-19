@@ -56,6 +56,8 @@ public class BlockTagProvider extends BlockTagsProvider {
                 OSMOSIS_FILTER,
                 DEEP_SEA_RESERVOIR,
                 DEEP_SEA_RESERVOIR_PART,
+                ABYSSAL_ENCHANTER,
+                ABYSSAL_ENCHANTER_PART,
                 LASER_CRAFTING_MATRIX,
                 CHARGER,
                 CONFINED_SPAWNER,

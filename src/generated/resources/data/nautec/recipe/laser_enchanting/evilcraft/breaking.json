@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "evilcraft"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "evilcraft:breaking",
+  "input": {
+    "count": 8,
+    "ingredient": {
+      "item": "minecraft:gravel"
+    }
+  }
+}

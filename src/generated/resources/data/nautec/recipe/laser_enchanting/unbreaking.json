@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:unbreaking",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "tag": "c:obsidians"
+    }
+  }
+}

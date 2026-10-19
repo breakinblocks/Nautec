@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:swift_sneak",
+  "input": {
+    "count": 2,
+    "ingredient": {
+      "item": "minecraft:echo_shard"
+    }
+  }
+}

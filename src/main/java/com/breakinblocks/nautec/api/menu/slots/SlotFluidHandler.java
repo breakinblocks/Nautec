@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.api.menu.slots;
 
 import com.breakinblocks.nautec.api.client.screen.FluidTankRenderer;
 import com.breakinblocks.nautec.capabilities.fluid.FluidTank;
+import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class SlotFluidHandler extends AbstractSlot {
@@ -9,6 +10,7 @@ public class SlotFluidHandler extends AbstractSlot {
     private final int width;
     private final int height;
     private final FluidTankRenderer renderer;
+    private Component emptyName = Component.translatable("nautec.tooltip.liquid.empty");
 
     public SlotFluidHandler(FluidTank fluidHandler, int index, int x, int y, int width, int height) {
         super(index, x, y);
@@ -20,6 +22,16 @@ public class SlotFluidHandler extends AbstractSlot {
 
     public FluidTankRenderer getRenderer() {
         return renderer;
+    }
+
+    public SlotFluidHandler emptyName(Component emptyName) {
+        this.emptyName = emptyName;
+        return this;
+    }
+
+    public Component getDisplayName() {
+        FluidStack fluid = getFluidStack();
+        return fluid.isEmpty() ? emptyName : fluid.getHoverName();
     }
 
     public FluidStack getFluidStack() {

@@ -3,6 +3,8 @@ package com.breakinblocks.nautec;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirItem;
 import com.breakinblocks.nautec.client.screen.DeepSeaReservoirScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.DeepSeaReservoirRenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.AbyssalEnchanterRenderer;
+import com.breakinblocks.nautec.client.screen.AbyssalEnchanterScreen;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonantCisternRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.ResonantVaultRenderer;
 import com.breakinblocks.nautec.client.screen.ResonantCisternScreen;
@@ -367,6 +369,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_VAULT.get(), ResonantVaultRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_CISTERN.get(), ResonantCisternRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DEEP_SEA_RESERVOIR.get(), DeepSeaReservoirRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.ABYSSAL_ENCHANTER.get(), AbyssalEnchanterRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CHARGER.get(), ChargerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.BIOME_TANK.get(), BiomeTankBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.CONFINED_SPAWNER.get(), ConfinedSpawnerBERenderer::new);
@@ -445,6 +448,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.RESONANT_VAULT.get(), ResonantVaultScreen::new);
         event.register(NTMenuTypes.RESONANT_CISTERN.get(), ResonantCisternScreen::new);
         event.register(NTMenuTypes.DEEP_SEA_RESERVOIR.get(), DeepSeaReservoirScreen::new);
+        event.register(NTMenuTypes.ABYSSAL_ENCHANTER.get(), AbyssalEnchanterScreen::new);
         event.register(NTMenuTypes.BUBBLE_ANCHOR.get(), BubbleAnchorScreen::new);
         event.register(NTMenuTypes.ENERGY_CONVERTER.get(), EnergyConverterScreen::new);
         event.register(NTMenuTypes.PRESSURE_FORGE.get(), PressureForgeScreen::new);

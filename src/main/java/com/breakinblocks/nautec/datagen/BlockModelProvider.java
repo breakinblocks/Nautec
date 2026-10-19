@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.datagen;
 
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlock;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
@@ -128,6 +129,7 @@ public class BlockModelProvider extends BlockStateProvider {
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
         deepSeaReservoir();
+        abyssalEnchanter();
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -186,6 +188,13 @@ public class BlockModelProvider extends BlockStateProvider {
 
     private void osmosisFilter(Block filter) {
         booleanHorizontalDispatch(filter, OsmosisFilterBlock.ACTIVE, existingModelFile("osmosis_filter_active"), existingModelFile(filter));
+    }
+
+    private void abyssalEnchanter() {
+        booleanHorizontalDispatch(NTBlocks.ABYSSAL_ENCHANTER.get(), AbyssalEnchanterBlock.ACTIVE, existingModelFile("abyssal_enchanter_active"),
+                existingModelFile("abyssal_enchanter"));
+        simpleBlock(NTBlocks.ABYSSAL_ENCHANTER_PART.get(), models().getBuilder(blockModelId(NTBlocks.ABYSSAL_ENCHANTER_PART.get()).toString())
+                .texture("particle", Nautec.rl("block/abyssal_enchanter")));
     }
 
     private void deepSeaReservoir() {

@@ -28,6 +28,9 @@ import com.breakinblocks.nautec.compat.jei.categories.MixingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.PressureForgingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.ResonanceCraftingRecipeCategory;
 import com.breakinblocks.nautec.compat.jei.categories.StrainLineageCategory;
+import com.breakinblocks.nautec.compat.jei.categories.LaserEnchantingCategory;
+import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
+import com.breakinblocks.nautec.content.menus.AbyssalEnchanterMenu;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.CombustionAdditiveRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
@@ -195,6 +198,9 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new LaserCraftingRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
+        registration.addRecipeCategories(new LaserEnchantingCategory(
+                registration.getJeiHelpers().getGuiHelper()));
+
         registration.addRecipeCategories(new EasInfusionCategory(
                 registration.getJeiHelpers().getGuiHelper()));
 
@@ -275,6 +281,7 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipes(BacteriaGraftingCategory.RECIPE_TYPE, graftingRecipes);
         lineages = lineages(ClientRecipes.get());
         registration.addRecipes(StrainLineageCategory.RECIPE_TYPE, lineages);
+        registration.addRecipes(LaserEnchantingCategory.RECIPE_TYPE, LaserEnchantingCategory.pages(recipeManager, registryAccess));
 
         for (AugmentationRecipe recipe : augmentationRecipes) {
             registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
@@ -330,6 +337,12 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, LaserCraftingMatrixMenu.class, NTMenuTypes.LASER_CRAFTING_MATRIX,
                 LaserCraftingRecipeCategory.RECIPE_TYPE, (menu, recipe) -> counted(recipe.ingredients(), LaserCraftingMatrixBlockEntity.INPUT_SLOTS)),
                 LaserCraftingRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, AbyssalEnchanterMenu.class, NTMenuTypes.ABYSSAL_ENCHANTER,
+                LaserEnchantingCategory.RECIPE_TYPE, (menu, page) -> List.of(
+                        new RecipeTransfer.Entry(AbyssalEnchanterBlockEntity.TARGET_SLOT, page.target(), 1),
+                        new RecipeTransfer.Entry(AbyssalEnchanterBlockEntity.REAGENT_SLOT, page.recipe().input().ingredient(),
+                                page.reagentCount()))),
+                LaserEnchantingCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, IncubatorMenu.class, NTMenuTypes.INCUBATOR, BacteriaIncubationCategory.RECIPE_TYPE,
                 (menu, recipe) -> List.of(new RecipeTransfer.Entry(IncubatorBlockEntity.NUTRIENT_SLOT, recipe.nutrient(), 1))), BacteriaIncubationCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new MachineTransferHandler<>(helper, MutatorMenu.class, NTMenuTypes.MUTATOR, BacteriaMutationsCategory.RECIPE_TYPE,
@@ -372,6 +385,7 @@ public class NTJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalysts(PressureForgingRecipeCategory.RECIPE_TYPE, NTBlocks.PRESSURE_FORGE.toStack());
+        registration.addRecipeCatalysts(LaserEnchantingCategory.RECIPE_TYPE, NTBlocks.ABYSSAL_ENCHANTER.toStack());
         registration.addRecipeCatalysts(RecipeTypes.SMELTING, NTBlocks.LASER_PURIFICATION_SMELTER.toStack());
         registration.addRecipeCatalysts(ResonanceCraftingRecipeCategory.RECIPE_TYPE, NTBlocks.RESONANCE_CHAMBER.toStack());
         registration.addRecipeCatalysts(AquaticCatalystChannelingRecipeCategory.RECIPE_TYPE,

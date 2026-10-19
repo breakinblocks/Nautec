@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:smite",
+  "input": {
+    "count": 12,
+    "ingredient": {
+      "item": "minecraft:rotten_flesh"
+    }
+  }
+}

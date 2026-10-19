@@ -25,6 +25,8 @@
     "nautec:osmosis_filter",
     "nautec:deep_sea_reservoir",
     "nautec:deep_sea_reservoir_part",
+    "nautec:abyssal_enchanter",
+    "nautec:abyssal_enchanter_part",
     "nautec:laser_crafting_matrix",
     "nautec:charger",
     "nautec:confined_spawner",

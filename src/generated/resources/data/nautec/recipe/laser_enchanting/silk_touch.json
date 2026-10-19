@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:silk_touch",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "tag": "c:slime_balls"
+    }
+  }
+}

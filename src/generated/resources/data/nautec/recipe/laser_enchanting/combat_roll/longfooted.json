@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "combat_roll"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "combat_roll:longfooted",
+  "input": {
+    "count": 4,
+    "ingredient": {
+      "item": "minecraft:rabbit_hide"
+    }
+  }
+}

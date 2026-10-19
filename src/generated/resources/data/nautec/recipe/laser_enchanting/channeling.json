@@ -1,0 +1,10 @@
+{
+  "type": "nautec:laser_enchanting",
+  "enchantment": "minecraft:channeling",
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:lightning_rod"
+    }
+  }
+}

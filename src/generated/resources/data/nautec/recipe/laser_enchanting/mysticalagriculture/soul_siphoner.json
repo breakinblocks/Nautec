@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mysticalagriculture"
+    }
+  ],
+  "type": "nautec:laser_enchanting",
+  "enchantment": "mysticalagriculture:soul_siphoner",
+  "input": {
+    "count": 8,
+    "ingredient": {
+      "item": "minecraft:soul_sand"
+    }
+  }
+}
