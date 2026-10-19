@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.content.reservoir;
 
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -59,6 +62,17 @@ public class DeepSeaReservoirPartBlock extends Block implements SimpleWaterlogge
         return RenderShape.INVISIBLE;
     }
 
+
+    @Override
+    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return ReservoirStructure.outline(state.getValue(CELL));
+    }
+
+    @Override
+    protected @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.block();
+    }
+
     @Override
     protected @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
@@ -68,10 +82,11 @@ public class DeepSeaReservoirPartBlock extends Block implements SimpleWaterlogge
     protected @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess tickAccess,
                                               @NotNull BlockPos pos, @NotNull Direction direction, @NotNull BlockPos neighborPos,
                                               @NotNull BlockState neighborState, @NotNull RandomSource random) {
-        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+        BlockState flooded = ReservoirStructure.flood(state, direction, neighborState);
+        if (flooded.getValue(BlockStateProperties.WATERLOGGED)) {
             tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, level, tickAccess, pos, direction, neighborPos, neighborState, random);
+        return super.updateShape(flooded, level, tickAccess, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override

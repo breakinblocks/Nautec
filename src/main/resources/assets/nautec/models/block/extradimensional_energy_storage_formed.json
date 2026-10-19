@@ -99,7 +99,7 @@
       }
     },
     {
-      "name": "plinth_z",
+      "name": "plinth_z_north",
       "from": [
         6,
         2,
@@ -108,7 +108,7 @@
       "to": [
         10,
         5,
-        13
+        6
       ],
       "faces": {
         "up": {
@@ -116,7 +116,7 @@
             6,
             3,
             10,
-            13
+            6
           ],
           "texture": "#plinth"
         },
@@ -128,6 +128,30 @@
             8
           ],
           "texture": "#side"
+        }
+      }
+    },
+    {
+      "name": "plinth_z_south",
+      "from": [
+        6,
+        2,
+        10
+      ],
+      "to": [
+        10,
+        5,
+        13
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            6,
+            10,
+            10,
+            13
+          ],
+          "texture": "#plinth"
         },
         "south": {
           "uv": [

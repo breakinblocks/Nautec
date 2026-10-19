@@ -1,5 +1,8 @@
 package com.breakinblocks.nautec.content.reservoir;
 
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -10,6 +13,13 @@ import net.minecraft.world.level.material.Fluids;
 public final class ReservoirStructure {
     public static final int CELLS = 27;
     public static final int CORE_CELL = 13;
+    private static final VoxelShape[] OUTLINES = new VoxelShape[CELLS];
+
+    static {
+        for (int cell = 0; cell < CELLS; cell++) {
+            OUTLINES[cell] = Shapes.box(-1 - dx(cell), -1 - dy(cell), -1 - dz(cell), 2 - dx(cell), 2 - dy(cell), 2 - dz(cell));
+        }
+    }
 
     private ReservoirStructure() {
     }
@@ -42,6 +52,18 @@ public final class ReservoirStructure {
             }
         }
         return true;
+    }
+
+    public static VoxelShape outline(int cell) {
+        return OUTLINES[cell];
+    }
+
+    public static BlockState flood(BlockState state, Direction direction, BlockState neighborState) {
+        if (!state.getValue(BlockStateProperties.WATERLOGGED) && direction != Direction.DOWN
+                && neighborState.getFluidState().isSourceOfType(Fluids.WATER)) {
+            return state.setValue(BlockStateProperties.WATERLOGGED, true);
+        }
+        return state;
     }
 
     public static boolean water(Level level, BlockPos pos) {
