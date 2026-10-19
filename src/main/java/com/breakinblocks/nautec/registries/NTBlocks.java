@@ -325,7 +325,8 @@ public final class NTBlocks {
             fusionProperties());
 
     public static final DeferredBlock<BuddingPrismarineBlock> BUDDING_PRISMARINE = registerBlockAndItem("budding_prismarine", BuddingPrismarineBlock::new,
-            BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).randomTicks().strength(1.5f).requiresCorrectToolForDrops());
+            BlockBehaviour.Properties.ofFullCopy(Blocks.PRISMARINE).randomTicks().strength(1.5f).requiresCorrectToolForDrops()
+                    .lightLevel(state -> BuddingPrismarineBlock.LIGHT));
     public static final DeferredBlock<AmethystClusterBlock> SMALL_PRISMARINE_BUD = registerBlockAndItem("small_prismarine_bud",
             props -> new AmethystClusterBlock(3.0f, 4.0f, props), prismarineBudProperties(3));
     public static final DeferredBlock<AmethystClusterBlock> MEDIUM_PRISMARINE_BUD = registerBlockAndItem("medium_prismarine_bud",

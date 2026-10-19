@@ -18,6 +18,15 @@
           "Name": "nautec:budding_prismarine"
         },
         "target": {
+          "block": "minecraft:sand",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
+          "Name": "nautec:budding_prismarine"
+        },
+        "target": {
           "block": "minecraft:gravel",
           "predicate_type": "minecraft:block_match"
         }

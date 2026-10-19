@@ -151,6 +151,7 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
                 List<OreConfiguration.TargetBlockState> budding_prismarine_config = List.of(
                         OreConfiguration.target(OCEAN_FLOOR_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState()),
+                        OreConfiguration.target(SAND_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState()),
                         OreConfiguration.target(GRAVEL_REPLACEABLES, NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState())
                 );
                 context.register(BUDDING_PRISMARINE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(budding_prismarine_config, 3)));
@@ -203,16 +204,16 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
                 context.register(BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(BUDDING_PRISMARINE_KEY),
                         List.of(
-                                RarityFilter.onAverageOnceEvery(10),
+                                RarityFilter.onAverageOnceEvery(5),
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
-                                RandomOffsetPlacement.vertical(UniformInt.of(-10, -2)),
+                                RandomOffsetPlacement.vertical(UniformInt.of(-2, -1)),
                                 BiomeFilter.biome()
                         )
                 ));
                 context.register(REEF_BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(REEF_BUDDING_PRISMARINE_KEY),
                         List.of(
-                                RarityFilter.onAverageOnceEvery(4),
+                                RarityFilter.onAverageOnceEvery(2),
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
                                 RandomOffsetPlacement.vertical(UniformInt.of(-2, -1)),
@@ -221,7 +222,7 @@ public class DatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
                 ));
                 context.register(WARM_OCEAN_BUDDING_PRISMARINE_PLACE_KEY, new PlacedFeature(configuredFeatures.getOrThrow(REEF_BUDDING_PRISMARINE_KEY),
                         List.of(
-                                RarityFilter.onAverageOnceEvery(24),
+                                RarityFilter.onAverageOnceEvery(12),
                                 InSquarePlacement.spread(),
                                 PlacementUtils.HEIGHTMAP_OCEAN_FLOOR,
                                 RandomOffsetPlacement.vertical(UniformInt.of(-2, -1)),

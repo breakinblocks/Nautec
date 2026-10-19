@@ -10,9 +10,13 @@ import com.breakinblocks.nautec.content.items.SeaEyeTarget;
 import com.breakinblocks.nautec.events.LuckyFishingZoneEvents;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.worldgen.injection.NTOceanRegion;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -23,13 +27,22 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +57,8 @@ public final class EyeOfTheSeaTests {
                 return;
             }
             List<SeaEyeTarget> expected = List.of(SeaEyeTarget.NAUTEC_RUINS, SeaEyeTarget.RESEARCH_OUTPOSTS, SeaEyeTarget.GATEWAYS,
-                    SeaEyeTarget.OCEAN_RUINS, SeaEyeTarget.OCEAN_MONUMENTS, SeaEyeTarget.CRYSTAL_GEODES);
+                    SeaEyeTarget.OCEAN_RUINS, SeaEyeTarget.OCEAN_MONUMENTS, SeaEyeTarget.PRISMARINE_REEF, SeaEyeTarget.ABYSSAL_TRENCH,
+                    SeaEyeTarget.BIOLUMINESCENT_GROVE, SeaEyeTarget.HYDROTHERMAL_VENTS, SeaEyeTarget.CRYSTAL_GEODES);
             for (SeaEyeTarget want : expected) {
                 SeaEyeTarget got = EyeOfTheSeaItem.cycle(stack);
                 if (got != want || EyeOfTheSeaItem.targetOf(stack) != want) {
@@ -68,6 +82,47 @@ public final class EyeOfTheSeaTests {
                     || !contains(structures, SeaEyeTarget.OCEAN_MONUMENTS, Identifier.withDefaultNamespace("monument"))) {
                 helper.fail("An Eye of the Sea structure tag is missing one of its structures");
                 return;
+            }
+            helper.succeed();
+        });
+
+        r.add("eye_of_the_sea/every_nautec_biome_is_a_target", 20, helper -> {
+            Set<ResourceKey<Biome>> targeted = new HashSet<>();
+            for (SeaEyeTarget target : SeaEyeTarget.values()) {
+                if (target.biome() != null) {
+                    targeted.add(target.biome());
+                }
+            }
+            for (ResourceKey<Biome> biome : NTOceanRegion.biomes()) {
+                helper.assertTrue(targeted.contains(biome), "the Eye of the Sea can seek " + biome.identifier());
+            }
+            helper.assertValueEqual(NTOceanRegion.biomes().size(), targeted.size(), "biome targets");
+            helper.assertTrue(SeaEyeTarget.CRYSTAL_GEODES.biome() == null, "structure targets have no biome");
+            helper.succeed();
+        });
+
+        r.add("eye_of_the_sea/overworld_biome_search_finds_every_nautec_biome", 200, helper -> {
+            ServerLevel level = helper.getLevel();
+            RegistryAccess access = level.registryAccess();
+            BiomeSource source = MultiNoiseBiomeSource.createFromPreset(Holder.direct(new MultiNoiseBiomeSourceParameterList(
+                    MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD, access.lookupOrThrow(Registries.BIOME))));
+            Climate.Sampler sampler = RandomState.create(access, NoiseGeneratorSettings.OVERWORLD, 20261018L).sampler();
+            BlockPos origin = new BlockPos(0, 40, 0);
+            for (SeaEyeTarget target : SeaEyeTarget.values()) {
+                ResourceKey<Biome> biome = target.biome();
+                if (biome == null) {
+                    continue;
+                }
+                BlockPos found = SeaEyeSearch.findBiome(source, sampler, level, origin, biome, NTConfig.eyeOfTheSeaBiomeSearchRadius);
+                if (found == null) {
+                    helper.fail("No " + biome.identifier() + " within " + NTConfig.eyeOfTheSeaBiomeSearchRadius + " blocks of the origin");
+                    return;
+                }
+                Holder<Biome> at = source.getNoiseBiome(QuartPos.fromBlock(found.getX()), QuartPos.fromBlock(found.getY()),
+                        QuartPos.fromBlock(found.getZ()), sampler);
+                helper.assertTrue(at.is(biome), target + " pointed at " + found + " which is " + at.getRegisteredName());
+                Nautec.LOGGER.info("Eye of the Sea found {} at {}, {} blocks away", biome.identifier(), found,
+                        (int) Math.sqrt(found.distSqr(origin)));
             }
             helper.succeed();
         });

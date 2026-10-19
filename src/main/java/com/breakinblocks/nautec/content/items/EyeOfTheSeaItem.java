@@ -43,7 +43,7 @@ public class EyeOfTheSeaItem extends Item {
     }
 
     public static @Nullable BlockPos locate(ServerLevel level, BlockPos from, SeaEyeTarget target) {
-        return SeaEyeSearch.searchNow(level, from, target.structures(), NTConfig.eyeOfTheSeaSearchRadius);
+        return SeaEyeSearch.searchNow(level, from, target, NTConfig.eyeOfTheSeaSearchRadius, NTConfig.eyeOfTheSeaBiomeSearchRadius);
     }
 
     @Override
@@ -71,7 +71,8 @@ public class EyeOfTheSeaItem extends Item {
         }
         ItemStack thrown = stack.copyWithCount(1);
         player.getCooldowns().addCooldown(stack, NTConfig.eyeOfTheSeaCooldownTicks);
-        SeaEyeSearch.start(serverLevel, player.getUUID(), player.blockPosition(), target.structures(), NTConfig.eyeOfTheSeaSearchRadius,
+        SeaEyeSearch.start(serverLevel, player.getUUID(), player.blockPosition(), target, NTConfig.eyeOfTheSeaSearchRadius,
+                NTConfig.eyeOfTheSeaBiomeSearchRadius,
                 found -> finishThrow(serverLevel, player, thrown, target, found.orElse(null)));
         player.sendOverlayMessage(Component.translatable("nautec.eye_of_the_sea.searching", target.displayName())
                 .withStyle(ChatFormatting.AQUA));

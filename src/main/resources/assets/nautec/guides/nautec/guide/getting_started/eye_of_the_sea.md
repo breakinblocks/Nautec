@@ -21,7 +21,7 @@ item_ids:
 
 Right-click to throw the eye. It hums for a moment while it searches (a message above your hotbar says so, and you cannot throw it again until the search ends), then it rises and flies toward the nearest matching structure, the same way an Eye of Ender does, then bursts into bubbles after about four seconds. It never drops and is never used up, so you can throw it as often as you like, with a two second wait between throws.
 
-If nothing matching is within about 1,600 blocks, the eye stays in your hand and a message says so.
+If nothing matching is within about 1,600 blocks (3,200 blocks for a biome), the eye stays in your hand and a message says so.
 
 Crystal Geodes are buried under the ocean floor, so when the eye starts circling or dropping, the middle of the geode is under you. Dig straight down from there.
 
@@ -39,8 +39,12 @@ Sneak and right-click to switch what the eye seeks. The tooltip and a message ab
 | Gateways | the Underwater Gateway platforms, see [Gateway](nautec:deep_engineering/gateway.md) |
 | Ocean Ruins | vanilla cold and warm ocean ruins |
 | Ocean Monuments | vanilla ocean monuments |
+| Prismarine Reefs | the nearest Prismarine Reef biome, the best place for <ItemLink id="budding_prismarine"/> |
+| Abyssal Trenches | the nearest Abyssal Trench biome |
+| Bioluminescent Groves | the nearest Bioluminescent Grove biome |
+| Hydrothermal Vents | the nearest Hydrothermal Vents biome |
 
-A new eye starts on Crystal Geodes, and each eye remembers its own target. Gateways you build yourself are not targets. See [Structures](structures.md) for what each one holds.
+A new eye starts on Crystal Geodes, and each eye remembers its own target. Gateways you build yourself are not targets. A biome target flies to the edge of the nearest patch of that biome. See [Structures](structures.md) for what each one holds.
 
 ***
 

@@ -89,8 +89,8 @@ public final class NTGameTestRegistration {
         ExtradimensionalStorageTests.register(r);
         MixerParallelTests.register(r);
         OsmosisFilterTests.register(r);
-        if (r.registeredCount() != 743) {
-            throw new IllegalStateException("Expected 743 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 746) {
+            throw new IllegalStateException("Expected 746 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

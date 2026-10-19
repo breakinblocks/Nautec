@@ -42,6 +42,9 @@ public final class ItemTooltipEvents {
         if (stack.is(NTBlocks.RUSTY_CRATE.asItem())) {
             event.getToolTip().add(Component.translatable("nautec.crate.rusted_tooltip").withStyle(ChatFormatting.GOLD));
         }
+        if (stack.is(NTBlocks.BUDDING_PRISMARINE.asItem())) {
+            event.getToolTip().add(Component.translatable("nautec.budding_prismarine.silk_touch").withStyle(ChatFormatting.GRAY));
+        }
         if (stack.getItem() instanceof BlockItem blockItem) {
             if (blockItem.getBlock() instanceof DishStorageBlock storage) {
                 event.getToolTip().add(Component.translatable("nautec.dish_storage.capacity", storage.getCapacity()).withStyle(ChatFormatting.GRAY));
