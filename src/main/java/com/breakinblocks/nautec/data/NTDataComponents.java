@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.data;
 
+import com.breakinblocks.nautec.content.reservoir.ReservoirFluid;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantLink;
 import net.minecraft.world.item.component.ItemContainerContents;
 import com.breakinblocks.nautec.content.items.MachineSettings;
@@ -71,6 +72,12 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<Long>> STORED_FE = registerDataComponentType("stored_fe",
             () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final Supplier<DataComponentType<Integer>> RESERVOIR_TIER = registerDataComponentType("reservoir_tier",
+            () -> builder -> builder.persistent(Codec.intRange(1, ReservoirFluid.MAX_TIER)).networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    public static final Supplier<DataComponentType<ReservoirFluid>> RESERVOIR_FLUID = registerDataComponentType("reservoir_fluid",
+            () -> builder -> builder.persistent(ReservoirFluid.CODEC).networkSynchronized(ReservoirFluid.STREAM_CODEC));
 
     public static final Supplier<DataComponentType<Boolean>> CRADLE_SEEDED = registerDataComponentType("cradle_seeded",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));

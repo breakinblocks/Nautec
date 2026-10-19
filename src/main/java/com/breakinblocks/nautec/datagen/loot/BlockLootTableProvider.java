@@ -122,6 +122,12 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.POLISHED_PRISMARINE.get());
         dropSelf(NTBlocks.MIXER.get());
         dropSelf(NTBlocks.OSMOSIS_FILTER.get());
+        add(NTBlocks.DEEP_SEA_RESERVOIR.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(NTBlocks.DEEP_SEA_RESERVOIR.get())
+                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                                .include(NTDataComponents.RESERVOIR_FLUID.get())
+                                .include(NTDataComponents.RESERVOIR_TIER.get())))));
+        add(NTBlocks.DEEP_SEA_RESERVOIR_PART.get(), noDrop());
         dropSelf(NTBlocks.LASER_CRAFTING_MATRIX.get());
         dropSelf(NTBlocks.CHARGER.get());
         dropSelf(NTBlocks.CONFINED_SPAWNER.get());

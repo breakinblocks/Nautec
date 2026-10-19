@@ -113,6 +113,11 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue OSMOSIS_FILTER_CAPACITY = BUILDER
             .comment("The mB of water an Osmosis Filter fills up to before it stops. On a beam strong enough to make more than this each second, it fills up to one second of output instead")
             .defineInRange("osmosisFilterCapacity", 16_000, 1, Integer.MAX_VALUE);
+    private static final long[] RESERVOIR_CAPACITY_DEFAULTS = {500_000_000L, 2_000_000_000L, 10_000_000_000L, 50_000_000_000L};
+    private static final ModConfigSpec.LongValue[] RESERVOIR_CAPACITY = reservoirCapacities();
+    private static final ModConfigSpec.IntValue RESERVOIR_SYNC_TICKS = BUILDER
+            .comment("The fewest ticks between two updates of a Deep Sea Reservoir's fill level sent to nearby players while fluid moves in or out")
+            .defineInRange("deepSeaReservoirSyncTicks", 10, 1, 200);
 
     private static final ModConfigSpec.BooleanValue SPAWN_BOOK_IN_INVENTORY = BUILDER
             .comment("Determines whether to give the player a book when joining a new world")
@@ -1125,6 +1130,8 @@ public final class NTConfig {
     public static int osmosisFilterApStep = 40;
     public static int osmosisFilterMaxRate = 1_024_000;
     public static int osmosisFilterCapacity = 16_000;
+    public static long[] deepSeaReservoirCapacity = RESERVOIR_CAPACITY_DEFAULTS.clone();
+    public static int deepSeaReservoirSyncTicks = 10;
 
     public static int guardianAugmentDamage;
     public static boolean allowAugmentRendering;
@@ -1398,6 +1405,15 @@ public final class NTConfig {
         return values;
     }
 
+    private static ModConfigSpec.LongValue[] reservoirCapacities() {
+        ModConfigSpec.LongValue[] values = new ModConfigSpec.LongValue[RESERVOIR_CAPACITY_DEFAULTS.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = BUILDER.comment("The buckets a Deep Sea Reservoir holds at tier " + (i + 1))
+                    .defineInRange("deepSeaReservoirCapacityTier" + (i + 1), RESERVOIR_CAPACITY_DEFAULTS[i], 1L, Long.MAX_VALUE / 1000L);
+        }
+        return values;
+    }
+
     private static ModConfigSpec.LongValue[] extradimensionalCapacities() {
         ModConfigSpec.LongValue[] values = new ModConfigSpec.LongValue[EXTRADIMENSIONAL_CAPACITY_DEFAULTS.length];
         for (int i = 0; i < values.length; i++) {
@@ -1503,6 +1519,10 @@ public final class NTConfig {
         osmosisFilterApStep = value(OSMOSIS_FILTER_AP_STEP);
         osmosisFilterMaxRate = value(OSMOSIS_FILTER_MAX_RATE);
         osmosisFilterCapacity = value(OSMOSIS_FILTER_CAPACITY);
+        for (int i = 0; i < RESERVOIR_CAPACITY.length; i++) {
+            deepSeaReservoirCapacity[i] = value(RESERVOIR_CAPACITY[i]);
+        }
+        deepSeaReservoirSyncTicks = value(RESERVOIR_SYNC_TICKS);
 
         guardianAugmentDamage = value(GUARDIAN_AUGMENT_DAMAGE);
         allowAugmentRendering = value(ALLOW_AUGMENT_RENDERING);

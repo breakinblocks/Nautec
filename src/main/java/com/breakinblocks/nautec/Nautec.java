@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec;
 
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirPartBlock;
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlockEntity;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import com.breakinblocks.nautec.content.resonance.ResonanceChunkLoading;
 import com.breakinblocks.nautec.registries.NTFeatures;
@@ -263,6 +265,12 @@ public final class Nautec {
                 (blockEntity, dir) -> blockEntity.itemHandler(dir));
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.RESONANT_CISTERN.get(),
                 (blockEntity, dir) -> blockEntity.fluidHandler(dir));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.DEEP_SEA_RESERVOIR.get(),
+                (blockEntity, dir) -> blockEntity.tank());
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, blockEntity, dir) -> {
+            DeepSeaReservoirBlockEntity core = DeepSeaReservoirPartBlock.core(level, state, pos);
+            return core == null ? null : core.tank();
+        }, NTBlocks.DEEP_SEA_RESERVOIR_PART.get());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),
                 (blockEntity, dir) -> blockEntity.fluidSink(dir));
         event.registerBlockEntity(Capabilities.Energy.BLOCK, NTBlockEntityTypes.CONDUIT_TAP.get(),

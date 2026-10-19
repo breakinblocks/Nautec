@@ -704,6 +704,48 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.CAST_IRON_INGOT))
                 .save(pRecipeOutput, key("osmosis_filter"));
 
+        shaped(RecipeCategory.DECORATIONS, NTBlocks.DEEP_SEA_RESERVOIR.asItem())
+                .pattern("DGD")
+                .pattern("BUB")
+                .pattern("DFD")
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('G', NTBlocks.AQUAMARINE_STRUCTURAL_GLASS.asItem())
+                .define('B', NTBlocks.AQUARINE_STEEL_BLOCK.asItem())
+                .define('U', Items.BUCKET)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTItems.DEEP_STEEL_PLATING))
+                .save(pRecipeOutput, key("deep_sea_reservoir"));
+
+        shaped(RecipeCategory.MISC, NTItems.RESERVOIR_UPGRADE_2.get())
+                .pattern("BCB")
+                .pattern("CFC")
+                .pattern("BCB")
+                .define('B', NTBlocks.AQUARINE_STEEL_BLOCK.asItem())
+                .define('C', NTBlocks.CONTAINMENT_COIL.asItem())
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTBlocks.DEEP_SEA_RESERVOIR.asItem()))
+                .save(pRecipeOutput, key("reservoir_upgrade_2"));
+
+        shaped(RecipeCategory.MISC, NTItems.RESERVOIR_UPGRADE_3.get())
+                .pattern("OCO")
+                .pattern("CNC")
+                .pattern("OCO")
+                .define('O', NTItems.ABYSSAL_ORGAN)
+                .define('C', NTBlocks.CONTAINMENT_COIL.asItem())
+                .define('N', Tags.Items.NETHER_STARS)
+                .unlockedBy("has_item", has(NTItems.RESERVOIR_UPGRADE_2))
+                .save(pRecipeOutput, key("reservoir_upgrade_3"));
+
+        shaped(RecipeCategory.MISC, NTItems.RESERVOIR_UPGRADE_4.get())
+                .pattern("NHN")
+                .pattern("HOH")
+                .pattern("NHN")
+                .define('N', Tags.Items.NETHER_STARS)
+                .define('H', NTItems.ELDRITCH_HEART)
+                .define('O', NTItems.ABYSSAL_ORGAN)
+                .unlockedBy("has_item", has(NTItems.RESERVOIR_UPGRADE_3))
+                .save(pRecipeOutput, key("reservoir_upgrade_4"));
+
         shaped(RecipeCategory.DECORATIONS, NTBlocks.LASER_CRAFTING_MATRIX.asItem())
                 .pattern("ALA")
                 .pattern("DCD")

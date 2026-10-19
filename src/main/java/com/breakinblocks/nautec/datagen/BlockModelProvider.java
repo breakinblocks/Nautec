@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.content.reservoir.ReservoirFluid;
+import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalFrameBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlock;
 import com.breakinblocks.nautec.content.extradimensional.ExtradimensionalStorageBlockEntity;
@@ -160,6 +162,7 @@ public class BlockModelProvider extends ModelProvider {
 
         simpleBlock(NTBlocks.MIXER.get(), existingModelFile(NTBlocks.MIXER.get()));
         osmosisFilter(NTBlocks.OSMOSIS_FILTER.get());
+        deepSeaReservoir();
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
@@ -230,6 +233,21 @@ public class BlockModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(existingModelFile("osmosis_filter_active")),
                         BlockModelGenerators.plainVariant(existingModelFile(filter))))
                 .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+    }
+
+    private void deepSeaReservoir() {
+        PropertyDispatch.C2<MultiVariant, Integer, Direction> dispatch = PropertyDispatch.initial(DeepSeaReservoirBlock.TIER, DeepSeaReservoirBlock.FACING);
+        for (int tier = 1; tier <= ReservoirFluid.MAX_TIER; tier++) {
+            MultiVariant variant = BlockModelGenerators.plainVariant(existingModelFile("deep_sea_reservoir_t" + tier));
+            dispatch = dispatch
+                    .select(tier, Direction.NORTH, variant)
+                    .select(tier, Direction.EAST, rotated(variant, 0, 90))
+                    .select(tier, Direction.SOUTH, rotated(variant, 0, 180))
+                    .select(tier, Direction.WEST, rotated(variant, 0, 270));
+        }
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(NTBlocks.DEEP_SEA_RESERVOIR.get()).with(dispatch));
+        simpleBlock(NTBlocks.DEEP_SEA_RESERVOIR_PART.get(), ModelTemplates.PARTICLE_ONLY.create(NTBlocks.DEEP_SEA_RESERVOIR_PART.get(),
+                TextureMapping.particle(new Material(Nautec.rl("block/deep_sea_reservoir"))), blockModels.modelOutput));
     }
 
     private void fusionPlant() {

@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.api.client.screen;
 
+import com.breakinblocks.nautec.client.render.FluidTints;
 import com.google.common.base.Preconditions;
 import com.breakinblocks.nautec.Nautec;
 import net.minecraft.ChatFormatting;
@@ -51,6 +52,10 @@ public class FluidTankRenderer {
     }
 
     public void render(GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack) {
+        render(guiGraphics, x, y, fluidStack, fluidStack.getAmount());
+    }
+
+    public void render(GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack, long amount) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -58,10 +63,9 @@ public class FluidTankRenderer {
 
         FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
         TextureAtlasSprite sprite = model.stillMaterial().sprite();
-        int fluidColor = model.fluidTintSource().colorAsStack(fluidStack);
+        int fluidColor = FluidTints.colour(model, fluidStack);
 
-        long amount = fluidStack.getAmount();
-        long scaledAmount = (amount * height) / capacity;
+        long scaledAmount = (long) Math.floor((double) amount * height / capacity);
 
         if (amount > 0 && scaledAmount < MIN_FLUID_HEIGHT) {
             scaledAmount = MIN_FLUID_HEIGHT;
@@ -93,6 +97,10 @@ public class FluidTankRenderer {
     }
 
     public List<Component> getTooltip(FluidStack fluidStack) {
+        return getTooltip(fluidStack, fluidStack.getAmount());
+    }
+
+    public List<Component> getTooltip(FluidStack fluidStack, long amount) {
         List<Component> tooltip = new ArrayList<>();
 
         Fluid fluidType = fluidStack.getFluid();
@@ -103,8 +111,7 @@ public class FluidTankRenderer {
             Component displayName = fluidStack.getHoverName();
             tooltip.add(displayName);
 
-            long amount = fluidStack.getAmount();
-            long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
+            long milliBuckets = amount * (1000 / FluidType.BUCKET_VOLUME);
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
                 MutableComponent amountString = Component.translatable("nautec.tooltip.liquid.amount_with_capacity", nf.format(milliBuckets), nf.format(capacity));

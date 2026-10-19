@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.client.render.FluidTints;
 import com.breakinblocks.nautec.api.gateways.GatewayAddress;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantCisternBlockEntity;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantStorageBlock;
@@ -51,7 +52,7 @@ public class ResonantCisternRenderer implements BlockEntityRenderer<ResonantCist
             return;
         }
         FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.getFluid().defaultFluidState());
-        int colour = model.fluidTintSource().colorAsStack(fluid);
+        int colour = FluidTints.colour(model, fluid);
         state.sprite = model.stillMaterial().sprite();
         state.red = (colour >> 16 & 255) / 255f;
         state.green = (colour >> 8 & 255) / 255f;

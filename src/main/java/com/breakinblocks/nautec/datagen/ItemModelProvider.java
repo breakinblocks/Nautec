@@ -1,5 +1,7 @@
 package com.breakinblocks.nautec.datagen;
 
+import com.breakinblocks.nautec.data.NTDataComponents;
+import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.client.renderer.items.AnchorItemRenderer;
 import com.breakinblocks.nautec.api.client.renderer.items.PrismarineCrystalItemRenderer;
@@ -90,6 +92,15 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.MAELSTROM_UPGRADE.get());
         basicItem(NTItems.FILTER.get());
         basicItem(NTItems.RESONANT_EXPANSION.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_2.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_3.get());
+        basicItem(NTItems.RESERVOIR_UPGRADE_4.get());
+        itemModels.itemModelOutput.accept(NTBlocks.DEEP_SEA_RESERVOIR.asItem(), ItemModelUtils.select(
+                new ComponentContents<>(NTDataComponents.RESERVOIR_TIER.get()),
+                ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t1")),
+                ItemModelUtils.when(2, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t2"))),
+                ItemModelUtils.when(3, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t3"))),
+                ItemModelUtils.when(4, ItemModelUtils.plainModel(Nautec.rl("block/deep_sea_reservoir_t4")))));
         basicItem(NTItems.INTRICATE_FILTER.get());
         handAuthoredItem(NTBlocks.CURRENT_CONDUIT.asItem());
         basicItem(NTItems.ADVANCED_ENERGY_CONVERSION_UPGRADE.get());
@@ -266,7 +277,8 @@ public class ItemModelProvider extends ModelProvider {
                     || item == NTBlocks.LASER_CRAFTING_MATRIX.asItem()
                     || item == NTBlocks.RESONANT_VAULT.asItem()
                     || item == NTBlocks.PRISMARINE_CRYSTAL.asItem()
-                    || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()) {
+                    || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()
+                    || item == NTBlocks.DEEP_SEA_RESERVOIR.asItem()) {
                 continue;
             }
             parentItemBlock(item);

@@ -53,6 +53,8 @@ public class BlockTagProvider extends BlockTagsProvider {
                 PRISMARINE_RELAY,
                 MIXER,
                 OSMOSIS_FILTER,
+                DEEP_SEA_RESERVOIR,
+                DEEP_SEA_RESERVOIR_PART,
                 LASER_CRAFTING_MATRIX,
                 CHARGER,
                 CONFINED_SPAWNER,

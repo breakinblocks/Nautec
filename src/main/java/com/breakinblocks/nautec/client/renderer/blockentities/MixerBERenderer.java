@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.renderer.blockentities;
 
+import com.breakinblocks.nautec.client.render.FluidTints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -91,7 +92,7 @@ public class MixerBERenderer implements BlockEntityRenderer<MixerBlockEntity, Mi
     private static void extractFluid(MixerRenderState state, FluidStack fluidStack, float alpha, float heightPercentage, float minY, float maxY) {
         FluidModel fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluidStack.getFluid().defaultFluidState());
         TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
-        int color = fluidModel.fluidTintSource().colorAsStack(fluidStack);
+        int color = FluidTints.colour(fluidModel, fluidStack);
         alpha *= (color >> 24 & 255) / 255f;
         float red = (color >> 16 & 255) / 255f;
         float green = (color >> 8 & 255) / 255f;

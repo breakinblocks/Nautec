@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "nautec:eldritch_heart",
+    "N": "#c:nether_stars",
+    "O": "nautec:abyssal_organ"
+  },
+  "pattern": [
+    "NHN",
+    "HOH",
+    "NHN"
+  ],
+  "result": {
+    "id": "nautec:reservoir_upgrade_4"
+  }
+}
