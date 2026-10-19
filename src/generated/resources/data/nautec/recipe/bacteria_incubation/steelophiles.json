@@ -72,5 +72,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/steel"
+  "nutrient": {
+    "tag": "c:ingots/steel"
+  }
 }

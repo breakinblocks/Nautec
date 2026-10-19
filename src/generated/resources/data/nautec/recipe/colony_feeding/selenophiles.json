@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:selenophiles",
   "ingredient": {
-    "ingredient": "#c:gems/moonstone"
+    "ingredient": {
+      "tag": "c:gems/moonstone"
+    }
   },
   "vitality_ticks": 1200
 }

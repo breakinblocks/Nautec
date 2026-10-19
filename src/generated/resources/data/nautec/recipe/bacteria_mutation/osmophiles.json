@@ -26,7 +26,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/osmium",
+  "catalyst": {
+    "tag": "c:ingots/osmium"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:osmophiles"

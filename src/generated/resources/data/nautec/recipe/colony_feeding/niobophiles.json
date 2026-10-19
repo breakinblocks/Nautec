@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:niobophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/niobium"
+    "ingredient": {
+      "tag": "c:ingots/niobium"
+    }
   },
   "vitality_ticks": 1200
 }

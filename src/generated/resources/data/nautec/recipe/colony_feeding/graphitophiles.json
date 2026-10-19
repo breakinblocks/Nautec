@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:graphitophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/graphite"
+    "ingredient": {
+      "tag": "c:ingots/graphite"
+    }
   },
   "vitality_ticks": 1200
 }

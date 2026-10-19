@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:calorophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/calorite"
+    "ingredient": {
+      "tag": "c:ingots/calorite"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:manganophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/manganese"
+    "ingredient": {
+      "tag": "c:ingots/manganese"
+    }
   },
   "vitality_ticks": 1200
 }

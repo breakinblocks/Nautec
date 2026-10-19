@@ -40,7 +40,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:iridophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/iridium"
+    "ingredient": {
+      "tag": "c:ingots/iridium"
+    }
   },
   "vitality_ticks": 1200
 }

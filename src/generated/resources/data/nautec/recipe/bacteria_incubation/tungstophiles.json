@@ -36,5 +36,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/tungsten"
+  "nutrient": {
+    "tag": "c:ingots/tungsten"
+  }
 }

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:molybdophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/molybdenum"
+    "ingredient": {
+      "tag": "c:ingots/molybdenum"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:beryllophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/beryllium"
+    "ingredient": {
+      "tag": "c:ingots/beryllium"
+    }
   },
   "vitality_ticks": 1200
 }

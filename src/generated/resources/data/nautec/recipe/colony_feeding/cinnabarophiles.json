@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:cinnabarophiles",
   "ingredient": {
-    "ingredient": "#c:gems/cinnabar"
+    "ingredient": {
+      "tag": "c:gems/cinnabar"
+    }
   },
   "vitality_ticks": 1200
 }

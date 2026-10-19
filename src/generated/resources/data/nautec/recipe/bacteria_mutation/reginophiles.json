@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/queens_slime",
+  "catalyst": {
+    "tag": "c:ingots/queens_slime"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:aurrophiles",
   "result_bacteria": "nautec:reginophiles"

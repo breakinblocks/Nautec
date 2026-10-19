@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:fluorophiles",
   "ingredient": {
-    "ingredient": "#c:gems/fluorite"
+    "ingredient": {
+      "tag": "c:gems/fluorite"
+    }
   },
   "vitality_ticks": 1200
 }

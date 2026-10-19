@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:gems/peridot",
+  "catalyst": {
+    "tag": "c:gems/peridot"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:peridotophiles"

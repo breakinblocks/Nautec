@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/bismuth",
+  "catalyst": {
+    "tag": "c:ingots/bismuth"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:bismuthophiles"

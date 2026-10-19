@@ -38,7 +38,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/electrum",
+  "catalyst": {
+    "tag": "c:ingots/electrum"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:electrophiles"

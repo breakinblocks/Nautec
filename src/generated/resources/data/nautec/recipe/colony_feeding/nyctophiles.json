@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:nyctophiles",
   "ingredient": {
-    "ingredient": "#c:gems/dark_gem"
+    "ingredient": {
+      "tag": "c:gems/dark_gem"
+    }
   },
   "vitality_ticks": 1200
 }

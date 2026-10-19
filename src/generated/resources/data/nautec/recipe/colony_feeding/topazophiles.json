@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:topazophiles",
   "ingredient": {
-    "ingredient": "#c:gems/topaz"
+    "ingredient": {
+      "tag": "c:gems/topaz"
+    }
   },
   "vitality_ticks": 1200
 }

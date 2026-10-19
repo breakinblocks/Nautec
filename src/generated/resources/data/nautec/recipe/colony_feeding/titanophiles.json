@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:titanophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/titanium"
+    "ingredient": {
+      "tag": "c:ingots/titanium"
+    }
   },
   "vitality_ticks": 1200
 }

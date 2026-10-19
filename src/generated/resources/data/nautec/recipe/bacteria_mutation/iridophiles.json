@@ -38,7 +38,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/iridium",
+  "catalyst": {
+    "tag": "c:ingots/iridium"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:aurrophiles",
   "result_bacteria": "nautec:iridophiles"

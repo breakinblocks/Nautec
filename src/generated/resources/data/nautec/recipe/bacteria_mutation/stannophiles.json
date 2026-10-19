@@ -54,7 +54,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/tin",
+  "catalyst": {
+    "tag": "c:ingots/tin"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:lithophiles",
   "result_bacteria": "nautec:stannophiles"

@@ -52,5 +52,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/aluminum"
+  "nutrient": {
+    "tag": "c:ingots/aluminum"
+  }
 }

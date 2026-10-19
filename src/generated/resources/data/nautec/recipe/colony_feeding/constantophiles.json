@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:constantophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/constantan"
+    "ingredient": {
+      "tag": "c:ingots/constantan"
+    }
   },
   "vitality_ticks": 1200
 }

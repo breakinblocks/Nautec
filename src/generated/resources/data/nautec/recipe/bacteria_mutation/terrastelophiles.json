@@ -18,7 +18,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/terrasteel",
+  "catalyst": {
+    "tag": "c:ingots/terrasteel"
+  },
   "chance": 3.0,
   "input_bacteria": "nautec:adamantophiles",
   "result_bacteria": "nautec:terrastelophiles"

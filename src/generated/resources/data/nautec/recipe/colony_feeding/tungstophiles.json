@@ -32,7 +32,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:tungstophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/tungsten"
+    "ingredient": {
+      "tag": "c:ingots/tungsten"
+    }
   },
   "vitality_ticks": 1200
 }

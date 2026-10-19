@@ -28,7 +28,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:plutonophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/plutonium"
+    "ingredient": {
+      "tag": "c:ingots/plutonium"
+    }
   },
   "vitality_ticks": 1200
 }

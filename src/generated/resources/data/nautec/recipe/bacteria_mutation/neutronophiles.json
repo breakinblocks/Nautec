@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/neutronium",
+  "catalyst": {
+    "tag": "c:ingots/neutronium"
+  },
   "chance": 3.0,
   "input_bacteria": "nautec:adamantophiles",
   "result_bacteria": "nautec:neutronophiles"

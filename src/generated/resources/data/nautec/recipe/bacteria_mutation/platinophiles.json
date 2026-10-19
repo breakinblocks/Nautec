@@ -34,7 +34,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/platinum",
+  "catalyst": {
+    "tag": "c:ingots/platinum"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:aurrophiles",
   "result_bacteria": "nautec:platinophiles"

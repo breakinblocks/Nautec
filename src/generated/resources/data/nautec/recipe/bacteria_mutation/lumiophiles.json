@@ -18,7 +18,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/lumium",
+  "catalyst": {
+    "tag": "c:ingots/lumium"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:lumiophiles"

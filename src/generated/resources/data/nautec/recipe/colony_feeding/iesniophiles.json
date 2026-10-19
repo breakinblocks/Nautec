@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:iesniophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/iesnium"
+    "ingredient": {
+      "tag": "c:ingots/iesnium"
+    }
   },
   "vitality_ticks": 1200
 }

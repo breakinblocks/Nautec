@@ -24,5 +24,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/manasteel"
+  "nutrient": {
+    "tag": "c:ingots/manasteel"
+  }
 }

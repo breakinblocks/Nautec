@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:bauxitophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/bauxite"
+    "ingredient": {
+      "tag": "c:ingots/bauxite"
+    }
   },
   "vitality_ticks": 1200
 }

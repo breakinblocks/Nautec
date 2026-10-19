@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/knightslime",
+  "catalyst": {
+    "tag": "c:ingots/knightslime"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:equitophiles"

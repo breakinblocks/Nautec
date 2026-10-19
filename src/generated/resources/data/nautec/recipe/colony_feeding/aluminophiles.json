@@ -48,7 +48,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:aluminophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/aluminum"
+    "ingredient": {
+      "tag": "c:ingots/aluminum"
+    }
   },
   "vitality_ticks": 1200
 }

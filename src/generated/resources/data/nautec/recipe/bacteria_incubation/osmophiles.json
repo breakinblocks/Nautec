@@ -32,5 +32,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/osmium"
+  "nutrient": {
+    "tag": "c:ingots/osmium"
+  }
 }

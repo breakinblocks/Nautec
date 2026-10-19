@@ -24,5 +24,7 @@
     "max": 15,
     "min": 5
   },
-  "nutrient": "#c:ingots/unobtainium"
+  "nutrient": {
+    "tag": "c:ingots/unobtainium"
+  }
 }

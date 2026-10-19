@@ -48,5 +48,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/silver"
+  "nutrient": {
+    "tag": "c:ingots/silver"
+  }
 }

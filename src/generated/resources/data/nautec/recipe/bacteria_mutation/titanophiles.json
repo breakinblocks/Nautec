@@ -34,7 +34,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/titanium",
+  "catalyst": {
+    "tag": "c:ingots/titanium"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:titanophiles"

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:thoriophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/thorium"
+    "ingredient": {
+      "tag": "c:ingots/thorium"
+    }
   },
   "vitality_ticks": 1200
 }

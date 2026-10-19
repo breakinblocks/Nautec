@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:platinophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/platinum"
+    "ingredient": {
+      "tag": "c:ingots/platinum"
+    }
   },
   "vitality_ticks": 1200
 }

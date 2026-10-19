@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:equitophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/knightslime"
+    "ingredient": {
+      "tag": "c:ingots/knightslime"
+    }
   },
   "vitality_ticks": 1200
 }

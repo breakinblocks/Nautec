@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:borophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/boron"
+    "ingredient": {
+      "tag": "c:ingots/boron"
+    }
   },
   "vitality_ticks": 1200
 }

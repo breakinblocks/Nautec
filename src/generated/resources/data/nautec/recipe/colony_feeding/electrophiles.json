@@ -40,7 +40,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:electrophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/electrum"
+    "ingredient": {
+      "tag": "c:ingots/electrum"
+    }
   },
   "vitality_ticks": 1200
 }

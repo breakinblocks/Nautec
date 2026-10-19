@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:desmophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/desh"
+    "ingredient": {
+      "tag": "c:ingots/desh"
+    }
   },
   "vitality_ticks": 1200
 }

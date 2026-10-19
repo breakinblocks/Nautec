@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:amethystobronzophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/amethyst_bronze"
+    "ingredient": {
+      "tag": "c:ingots/amethyst_bronze"
+    }
   },
   "vitality_ticks": 1200
 }

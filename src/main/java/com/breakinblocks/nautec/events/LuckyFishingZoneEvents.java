@@ -64,7 +64,7 @@ public final class LuckyFishingZoneEvents {
         ServerLevel level = player.serverLevel();
         expireZones(level);
 
-        if (!trySpawn(level, player)) {
+        if (!NTConfig.luckyZonesAllowedIn(level.dimension()) || !trySpawn(level, player)) {
             COOLDOWNS.put(player.getUUID(), 40);
             return;
         }

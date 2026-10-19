@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/manyullyn",
+  "catalyst": {
+    "tag": "c:ingots/manyullyn"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:aurrophiles",
   "result_bacteria": "nautec:manyullophiles"

@@ -40,5 +40,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/brass"
+  "nutrient": {
+    "tag": "c:ingots/brass"
+  }
 }

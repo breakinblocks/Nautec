@@ -18,7 +18,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/refined_obsidian",
+  "catalyst": {
+    "tag": "c:ingots/refined_obsidian"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:obsidianophiles"

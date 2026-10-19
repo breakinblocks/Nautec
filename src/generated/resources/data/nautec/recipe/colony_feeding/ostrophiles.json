@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:ostrophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/ostrum"
+    "ingredient": {
+      "tag": "c:ingots/ostrum"
+    }
   },
   "vitality_ticks": 1200
 }

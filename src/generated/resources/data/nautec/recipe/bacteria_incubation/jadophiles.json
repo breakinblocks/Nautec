@@ -24,5 +24,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:gems/jade"
+  "nutrient": {
+    "tag": "c:gems/jade"
+  }
 }

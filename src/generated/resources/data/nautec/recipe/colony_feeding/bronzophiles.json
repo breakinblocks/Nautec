@@ -40,7 +40,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:bronzophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/bronze"
+    "ingredient": {
+      "tag": "c:ingots/bronze"
+    }
   },
   "vitality_ticks": 1200
 }

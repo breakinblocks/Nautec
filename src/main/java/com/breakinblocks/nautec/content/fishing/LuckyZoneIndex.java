@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import net.minecraft.core.BlockPos;
@@ -98,6 +99,9 @@ public class LuckyZoneIndex extends SavedData {
     }
 
     public Zone zoneAt(ServerLevel level, BlockPos pos) {
+        if (!NTConfig.luckyZonesAllowedIn(level.dimension())) {
+            return null;
+        }
         for (Zone zone : zones.values()) {
             if (zone.covers(pos)) {
                 if (level.getBlockState(zone.pos()).is(NTBlocks.LUCKY_FISHING_ZONE.get())) {

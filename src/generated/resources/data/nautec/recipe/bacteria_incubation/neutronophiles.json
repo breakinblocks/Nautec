@@ -28,5 +28,7 @@
     "max": 15,
     "min": 5
   },
-  "nutrient": "#c:ingots/neutronium"
+  "nutrient": {
+    "tag": "c:ingots/neutronium"
+  }
 }

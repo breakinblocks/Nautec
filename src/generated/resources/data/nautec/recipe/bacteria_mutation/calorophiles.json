@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/calorite",
+  "catalyst": {
+    "tag": "c:ingots/calorite"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:aurrophiles",
   "result_bacteria": "nautec:calorophiles"

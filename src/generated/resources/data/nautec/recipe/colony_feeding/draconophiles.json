@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:draconophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/draconium"
+    "ingredient": {
+      "tag": "c:ingots/draconium"
+    }
   },
   "vitality_ticks": 1200
 }

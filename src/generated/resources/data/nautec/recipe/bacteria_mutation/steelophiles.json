@@ -66,7 +66,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/steel",
+  "catalyst": {
+    "tag": "c:ingots/steel"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:lithophiles",
   "result_bacteria": "nautec:steelophiles"

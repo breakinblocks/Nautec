@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:peridotophiles",
   "ingredient": {
-    "ingredient": "#c:gems/peridot"
+    "ingredient": {
+      "tag": "c:gems/peridot"
+    }
   },
   "vitality_ticks": 1200
 }

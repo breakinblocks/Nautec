@@ -17,7 +17,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.nio.file.Path;
@@ -40,8 +40,6 @@ public class BacteriaMaterialProvider implements DataProvider {
 
     private record Entry(String name, String material, Kind kind, Rarity rarity, List<String> mods) {
     }
-
-    private static final Ingredient PLACEHOLDER = Ingredient.of(Items.STONE);
 
     private static final List<Entry> ENTRIES = List.of(
             new Entry("stannophiles", "tin", Kind.METAL, Rarity.COMMON, List.of("ae2", "enderio", "energizedpower", "ftbic", "ftbmaterials", "gtceu", "immersiveengineering", "mekanism", "techreborn", "thermal")),
@@ -146,27 +144,24 @@ public class BacteriaMaterialProvider implements DataProvider {
                 ResourceLocation id = Nautec.rl(entry.name());
                 ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, id);
 
-                Bacteria.Resource resource = new Bacteria.Resource.ItemTagResource(
-                        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", entry.kind().family + "/" + entry.material())));
+                TagKey<Item> materialTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", entry.kind().family + "/" + entry.material()));
+                Bacteria.Resource resource = new Bacteria.Resource.ItemTagResource(materialTag);
+                Ingredient material = Ingredient.of(materialTag);
 
                 JsonElement bacteriaJson = BacteriaJsonWriter.encodeBacteria(
                         BacteriaBalance.buildBacteria(resource, entry.rarity(), id), provider);
                 JsonElement incubation = BacteriaJsonWriter.encodeRecipe(
-                        BacteriaBalance.incubationRecipe(key, PLACEHOLDER, entry.rarity()), provider);
+                        BacteriaBalance.incubationRecipe(key, material, entry.rarity()), provider);
                 JsonElement mutation = BacteriaJsonWriter.encodeRecipe(
-                        BacteriaBalance.mutationRecipe(key, PLACEHOLDER, entry.rarity()), provider);
+                        BacteriaBalance.mutationRecipe(key, material, entry.rarity()), provider);
                 JsonElement feeding = BacteriaJsonWriter.encodeRecipe(
-                        BacteriaBalance.feedingRecipe(key, PLACEHOLDER), provider);
+                        BacteriaBalance.feedingRecipe(key, material), provider);
 
-                incubation.getAsJsonObject().addProperty("nutrient", resource.asString());
-                mutation.getAsJsonObject().addProperty("catalyst", resource.asString());
-                feeding.getAsJsonObject().getAsJsonObject("ingredient").addProperty("ingredient", resource.asString());
-
-                String materialTag = resource.asString().substring(1);
-                futures.add(save(cache, bacteria.json(id), bacteriaJson, entry, materialTag));
-                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_incubation/" + entry.name())), incubation, entry, materialTag));
-                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_mutation/" + entry.name())), mutation, entry, materialTag));
-                futures.add(save(cache, recipes.json(Nautec.rl("colony_feeding/" + entry.name())), feeding, entry, materialTag));
+                String tagId = materialTag.location().toString();
+                futures.add(save(cache, bacteria.json(id), bacteriaJson, entry, tagId));
+                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_incubation/" + entry.name())), incubation, entry, tagId));
+                futures.add(save(cache, recipes.json(Nautec.rl("bacteria_mutation/" + entry.name())), mutation, entry, tagId));
+                futures.add(save(cache, recipes.json(Nautec.rl("colony_feeding/" + entry.name())), feeding, entry, tagId));
             }
 
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

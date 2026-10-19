@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:lumiophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/lumium"
+    "ingredient": {
+      "tag": "c:ingots/lumium"
+    }
   },
   "vitality_ticks": 1200
 }

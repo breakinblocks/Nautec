@@ -56,7 +56,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:stannophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/tin"
+    "ingredient": {
+      "tag": "c:ingots/tin"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -48,7 +48,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:plumbophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/lead"
+    "ingredient": {
+      "tag": "c:ingots/lead"
+    }
   },
   "vitality_ticks": 1200
 }

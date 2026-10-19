@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:neutronophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/neutronium"
+    "ingredient": {
+      "tag": "c:ingots/neutronium"
+    }
   },
   "vitality_ticks": 1200
 }

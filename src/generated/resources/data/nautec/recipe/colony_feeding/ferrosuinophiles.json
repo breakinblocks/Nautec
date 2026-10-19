@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:ferrosuinophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/pig_iron"
+    "ingredient": {
+      "tag": "c:ingots/pig_iron"
+    }
   },
   "vitality_ticks": 1200
 }

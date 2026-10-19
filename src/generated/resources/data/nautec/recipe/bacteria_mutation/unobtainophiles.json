@@ -18,7 +18,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/unobtainium",
+  "catalyst": {
+    "tag": "c:ingots/unobtainium"
+  },
   "chance": 3.0,
   "input_bacteria": "nautec:adamantophiles",
   "result_bacteria": "nautec:unobtainophiles"

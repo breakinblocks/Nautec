@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:zincophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/zinc"
+    "ingredient": {
+      "tag": "c:ingots/zinc"
+    }
   },
   "vitality_ticks": 1200
 }

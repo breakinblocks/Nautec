@@ -42,7 +42,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/nickel",
+  "catalyst": {
+    "tag": "c:ingots/nickel"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:niccolophiles"

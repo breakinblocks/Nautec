@@ -32,7 +32,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:sapphirophiles",
   "ingredient": {
-    "ingredient": "#c:gems/sapphire"
+    "ingredient": {
+      "tag": "c:gems/sapphire"
+    }
   },
   "vitality_ticks": 1200
 }

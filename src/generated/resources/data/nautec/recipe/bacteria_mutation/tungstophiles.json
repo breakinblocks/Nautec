@@ -30,7 +30,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/tungsten",
+  "catalyst": {
+    "tag": "c:ingots/tungsten"
+  },
   "chance": 5.0,
   "input_bacteria": "nautec:ferrophiles",
   "result_bacteria": "nautec:tungstophiles"

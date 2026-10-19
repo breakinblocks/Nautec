@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:bismuthophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/bismuth"
+    "ingredient": {
+      "tag": "c:ingots/bismuth"
+    }
   },
   "vitality_ticks": 1200
 }

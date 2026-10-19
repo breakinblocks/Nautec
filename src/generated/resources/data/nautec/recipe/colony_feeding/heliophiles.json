@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:heliophiles",
   "ingredient": {
-    "ingredient": "#c:gems/sunstone"
+    "ingredient": {
+      "tag": "c:gems/sunstone"
+    }
   },
   "vitality_ticks": 1200
 }

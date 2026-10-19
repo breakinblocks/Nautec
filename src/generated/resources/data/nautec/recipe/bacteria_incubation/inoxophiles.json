@@ -28,5 +28,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/stainless_steel"
+  "nutrient": {
+    "tag": "c:ingots/stainless_steel"
+  }
 }

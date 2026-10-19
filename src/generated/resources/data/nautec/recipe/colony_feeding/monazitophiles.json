@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:monazitophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/monazite"
+    "ingredient": {
+      "tag": "c:ingots/monazite"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:hepatizophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/hepatizon"
+    "ingredient": {
+      "tag": "c:ingots/hepatizon"
+    }
   },
   "vitality_ticks": 1200
 }

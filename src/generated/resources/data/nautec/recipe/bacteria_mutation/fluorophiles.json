@@ -22,7 +22,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:gems/fluorite",
+  "catalyst": {
+    "tag": "c:gems/fluorite"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:fluorophiles"

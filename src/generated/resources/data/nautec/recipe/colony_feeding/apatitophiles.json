@@ -28,7 +28,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:apatitophiles",
   "ingredient": {
-    "ingredient": "#c:gems/apatite"
+    "ingredient": {
+      "tag": "c:gems/apatite"
+    }
   },
   "vitality_ticks": 1200
 }

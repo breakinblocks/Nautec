@@ -26,7 +26,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/plutonium",
+  "catalyst": {
+    "tag": "c:ingots/plutonium"
+  },
   "chance": 3.0,
   "input_bacteria": "nautec:adamantophiles",
   "result_bacteria": "nautec:plutonophiles"

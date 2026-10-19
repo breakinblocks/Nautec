@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:reginophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/queens_slime"
+    "ingredient": {
+      "tag": "c:ingots/queens_slime"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:cyanophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/cyanite"
+    "ingredient": {
+      "tag": "c:ingots/cyanite"
+    }
   },
   "vitality_ticks": 1200
 }

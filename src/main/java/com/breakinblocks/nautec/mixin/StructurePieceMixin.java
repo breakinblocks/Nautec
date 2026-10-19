@@ -1,6 +1,6 @@
 package com.breakinblocks.nautec.mixin;
 
-
+import com.breakinblocks.nautec.worldgen.MonumentLowering;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -18,8 +18,8 @@ public class StructurePieceMixin {
             argsOnly = true
     ) // Yes this code was taking from Deeper Oceans. Thanks to them.
     private static BoundingBox deeperoceans$lowerOceanMonuments(BoundingBox boundingBox, StructurePieceType type) {
-        if (type == StructurePieceType.OCEAN_MONUMENT_BUILDING){
-            return boundingBox.moved(0, -30, 0);
+        if (type == StructurePieceType.OCEAN_MONUMENT_BUILDING && MonumentLowering.active()) {
+            return boundingBox.moved(0, -MonumentLowering.DEPTH, 0);
         }
         return boundingBox;
     }

@@ -1,6 +1,8 @@
 package com.breakinblocks.nautec;
 
 import com.breakinblocks.nautec.content.conduits.TapRates;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
@@ -951,6 +953,13 @@ public final class NTConfig {
     private static final ModConfigSpec.IntValue LUCKY_ZONE_BITE_SPEED = BUILDER
             .comment("How many times faster fish bite while the bobber floats in a lucky fishing zone")
             .defineInRange("luckyZoneBiteSpeed", 2, 1, 10);
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> LUCKY_ZONE_DIMENSIONS = BUILDER
+            .comment("Dimension ids that luckyZoneDimensionMode applies to, such as minecraft:the_nether",
+                    "Lucky fishing zones never form in a dimension this rules out, and a zone already there stops speeding up bites and giving zone loot")
+            .defineListAllowEmpty("luckyZoneDimensions", List.of(), () -> "minecraft:overworld", entry -> entry instanceof String);
+    private static final ModConfigSpec.EnumValue<DimensionListMode> LUCKY_ZONE_DIMENSION_MODE = BUILDER
+            .comment("BLACKLIST keeps lucky fishing zones out of the dimensions in luckyZoneDimensions. ALLOWLIST lets them form only in those dimensions")
+            .defineEnum("luckyZoneDimensionMode", DimensionListMode.BLACKLIST);
     private static final ModConfigSpec.BooleanValue STARCATCHER_FISH_ON_NAUTEC_ROD = BUILDER
             .comment("With Starcatcher installed, the NauTec Fishing Rod catches Starcatcher fish instead of vanilla fishing loot")
             .define("starcatcherFishOnNautecRod", true);
@@ -996,6 +1005,17 @@ public final class NTConfig {
             .comment("The multi-noise presets Nautec's ocean biomes are added to. Packs using a custom overworld preset should list it here",
                     "Ignored when Lithostitched is installed, since the biome injectors target the overworld dimension directly and work with Terralith and Tectonic")
             .defineList("injectableWorldPresets", List.of("minecraft:overworld"), () -> "minecraft:overworld", entry -> entry instanceof String);
+
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> DEEPER_OCEAN_DIMENSION_BLACKLIST = WORLDGEN_BUILDER
+            .comment("Dimension ids where NauTec's deeper oceans are not used, such as minecraft:overworld. Every other dimension whose terrain reads the vanilla overworld, amplified or large biomes depth and sloped_cheese density functions gets NauTec's deeper versions of them, unless a mod or datapack has already replaced those functions",
+                    "Belongs with monumentLoweringDimensionBlacklist: monuments are lowered to sit on the deeper sea floor, so a dimension listed here should usually be listed there too",
+                    "Read when a dimension is loaded, so a change needs the world to be reloaded")
+            .defineListAllowEmpty("deeperOceanDimensionBlacklist", List.of(), () -> "minecraft:overworld", entry -> entry instanceof String);
+
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> MONUMENT_LOWERING_DIMENSION_BLACKLIST = WORLDGEN_BUILDER
+            .comment("Dimension ids where ocean monuments are not moved 30 blocks down, such as minecraft:overworld. Monuments are lowered to match the deeper oceans, so list every dimension from deeperOceanDimensionBlacklist here as well",
+                    "Only newly generated monuments are affected. A monument that already exists keeps the height it was generated at")
+            .defineListAllowEmpty("monumentLoweringDimensionBlacklist", List.of(), () -> "minecraft:overworld", entry -> entry instanceof String);
 
     private static final ModConfigSpec.BooleanValue SKYBLOCK_LUCKY_ZONES_ANY_BIOME = WORLDGEN_BUILDER
             .comment("Options for skyblock and void-world packs, where NauTec's oceans, structures and ocean mobs do not exist. Every option is off by default and each one can be turned on alone",
@@ -1075,6 +1095,8 @@ public final class NTConfig {
     public static int biomeTankTicks = 600;
 
     public static boolean skyblockLuckyZonesAnyBiome;
+    public static Set<String> deeperOceanDimensionBlacklist;
+    public static Set<String> monumentLoweringDimensionBlacklist;
     public static boolean skyblockFishingLoot;
     public static boolean skyblockGraftingAnyBiome;
     public static boolean skyblockPrismarineSandMixing;
@@ -1307,6 +1329,8 @@ public final class NTConfig {
     public static double advancedGraftingAnchorPowerMultiplier = 5.0;
 
     public static boolean luckyZonesEnabled;
+    public static Set<String> luckyZoneDimensions;
+    public static DimensionListMode luckyZoneDimensionMode;
     public static int luckyZoneIntervalSeconds;
     public static int luckyZoneSpawnDistance;
     public static int luckyZoneMinSeparation;
@@ -1382,6 +1406,16 @@ public final class NTConfig {
 
     public static boolean biomeInjectionEnabled() {
         return !WORLDGEN_SPEC.isLoaded() || ENABLE_BIOME_INJECTION.getAsBoolean();
+    }
+
+    public enum DimensionListMode {
+        BLACKLIST,
+        ALLOWLIST
+    }
+
+    public static boolean luckyZonesAllowedIn(ResourceKey<Level> dimension) {
+        boolean listed = luckyZoneDimensions.contains(dimension.location().toString());
+        return luckyZoneDimensionMode == DimensionListMode.ALLOWLIST ? listed : !listed;
     }
 
     public static Set<String> injectableWorldPresets() {
@@ -1471,6 +1505,8 @@ public final class NTConfig {
 
     private static void loadWorldgenValues() {
         skyblockLuckyZonesAnyBiome = worldgenValue(SKYBLOCK_LUCKY_ZONES_ANY_BIOME);
+        deeperOceanDimensionBlacklist = Set.copyOf(worldgenValue(DEEPER_OCEAN_DIMENSION_BLACKLIST));
+        monumentLoweringDimensionBlacklist = Set.copyOf(worldgenValue(MONUMENT_LOWERING_DIMENSION_BLACKLIST));
         skyblockFishingLoot = worldgenValue(SKYBLOCK_FISHING_LOOT);
         skyblockGraftingAnyBiome = worldgenValue(SKYBLOCK_GRAFTING_ANY_BIOME);
         skyblockPrismarineSandMixing = worldgenValue(SKYBLOCK_PRISMARINE_SAND_MIXING);
@@ -1701,6 +1737,8 @@ public final class NTConfig {
         advancedGraftingAnchorPowerMultiplier = value(ADVANCED_GRAFTING_ANCHOR_POWER);
 
         luckyZonesEnabled = value(LUCKY_ZONES_ENABLED);
+        luckyZoneDimensions = Set.copyOf(value(LUCKY_ZONE_DIMENSIONS));
+        luckyZoneDimensionMode = value(LUCKY_ZONE_DIMENSION_MODE);
         luckyZoneIntervalSeconds = value(LUCKY_ZONE_INTERVAL);
         luckyZoneSpawnDistance = value(LUCKY_ZONE_SPAWN_DISTANCE);
         luckyZoneMinSeparation = value(LUCKY_ZONE_MIN_SEPARATION);

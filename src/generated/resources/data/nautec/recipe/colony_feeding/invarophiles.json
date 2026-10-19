@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:invarophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/invar"
+    "ingredient": {
+      "tag": "c:ingots/invar"
+    }
   },
   "vitality_ticks": 1200
 }

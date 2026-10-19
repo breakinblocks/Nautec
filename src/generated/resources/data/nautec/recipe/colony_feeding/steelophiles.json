@@ -68,7 +68,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:steelophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/steel"
+    "ingredient": {
+      "tag": "c:ingots/steel"
+    }
   },
   "vitality_ticks": 1200
 }

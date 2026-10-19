@@ -24,5 +24,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/refined_glowstone"
+  "nutrient": {
+    "tag": "c:ingots/refined_glowstone"
+  }
 }

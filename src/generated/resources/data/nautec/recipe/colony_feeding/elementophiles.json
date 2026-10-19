@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:elementophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/elementium"
+    "ingredient": {
+      "tag": "c:ingots/elementium"
+    }
   },
   "vitality_ticks": 1200
 }

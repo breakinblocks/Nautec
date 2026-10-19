@@ -28,7 +28,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:melanoquartzophiles",
   "ingredient": {
-    "ingredient": "#c:gems/black_quartz"
+    "ingredient": {
+      "tag": "c:gems/black_quartz"
+    }
   },
   "vitality_ticks": 1200
 }

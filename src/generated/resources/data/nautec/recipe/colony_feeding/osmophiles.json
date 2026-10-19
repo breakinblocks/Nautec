@@ -28,7 +28,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:osmophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/osmium"
+    "ingredient": {
+      "tag": "c:ingots/osmium"
+    }
   },
   "vitality_ticks": 1200
 }

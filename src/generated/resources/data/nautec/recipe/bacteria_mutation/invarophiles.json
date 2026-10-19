@@ -34,7 +34,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:ingots/invar",
+  "catalyst": {
+    "tag": "c:ingots/invar"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:invarophiles"

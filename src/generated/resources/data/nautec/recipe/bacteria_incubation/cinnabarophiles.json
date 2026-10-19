@@ -28,5 +28,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:gems/cinnabar"
+  "nutrient": {
+    "tag": "c:gems/cinnabar"
+  }
 }

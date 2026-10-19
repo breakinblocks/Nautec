@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:neodymophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/neodymium"
+    "ingredient": {
+      "tag": "c:ingots/neodymium"
+    }
   },
   "vitality_ticks": 1200
 }

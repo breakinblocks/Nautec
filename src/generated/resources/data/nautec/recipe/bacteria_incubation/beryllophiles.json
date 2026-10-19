@@ -28,5 +28,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/beryllium"
+  "nutrient": {
+    "tag": "c:ingots/beryllium"
+  }
 }

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:chromophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/chromium"
+    "ingredient": {
+      "tag": "c:ingots/chromium"
+    }
   },
   "vitality_ticks": 1200
 }

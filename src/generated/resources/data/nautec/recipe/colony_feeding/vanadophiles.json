@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:vanadophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/vanadium"
+    "ingredient": {
+      "tag": "c:ingots/vanadium"
+    }
   },
   "vitality_ticks": 1200
 }

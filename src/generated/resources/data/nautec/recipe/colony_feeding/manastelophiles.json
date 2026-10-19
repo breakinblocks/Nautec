@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:manastelophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/manasteel"
+    "ingredient": {
+      "tag": "c:ingots/manasteel"
+    }
   },
   "vitality_ticks": 1200
 }

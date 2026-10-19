@@ -28,5 +28,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:gems/fluorite"
+  "nutrient": {
+    "tag": "c:gems/fluorite"
+  }
 }

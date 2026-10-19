@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:vibranophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/vibranium"
+    "ingredient": {
+      "tag": "c:ingots/vibranium"
+    }
   },
   "vitality_ticks": 1200
 }

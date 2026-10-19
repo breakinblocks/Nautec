@@ -48,5 +48,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/nickel"
+  "nutrient": {
+    "tag": "c:ingots/nickel"
+  }
 }

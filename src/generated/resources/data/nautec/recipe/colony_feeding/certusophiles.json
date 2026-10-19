@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:certusophiles",
   "ingredient": {
-    "ingredient": "#c:gems/certus_quartz"
+    "ingredient": {
+      "tag": "c:gems/certus_quartz"
+    }
   },
   "vitality_ticks": 1200
 }

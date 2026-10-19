@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:antimonophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/antimony"
+    "ingredient": {
+      "tag": "c:ingots/antimony"
+    }
   },
   "vitality_ticks": 1200
 }

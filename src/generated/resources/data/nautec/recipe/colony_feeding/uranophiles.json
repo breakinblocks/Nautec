@@ -48,7 +48,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:uranophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/uranium"
+    "ingredient": {
+      "tag": "c:ingots/uranium"
+    }
   },
   "vitality_ticks": 1200
 }

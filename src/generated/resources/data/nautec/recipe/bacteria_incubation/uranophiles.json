@@ -52,5 +52,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:ingots/uranium"
+  "nutrient": {
+    "tag": "c:ingots/uranium"
+  }
 }

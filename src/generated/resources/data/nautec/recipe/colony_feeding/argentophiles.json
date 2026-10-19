@@ -44,7 +44,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:argentophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/silver"
+    "ingredient": {
+      "tag": "c:ingots/silver"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -32,5 +32,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:gems/black_quartz"
+  "nutrient": {
+    "tag": "c:gems/black_quartz"
+  }
 }

@@ -6,9 +6,13 @@
     "BlockBehaviourMixin",
     "BottleItemMixin",
     "BucketItemMixin",
+    "ChunkMapMixin",
+    "DensityFunctionHolderMixin",
     "FishingHookAccessor",
     "FishingHookMixin",
     "MultiNoiseBiomeSourceParameterListMixin",
+    "OceanMonumentStructureMixin",
+    "RandomStateMixin",
     "StructurePieceMixin"
   ],
   "client": [

@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:manyullophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/manyullyn"
+    "ingredient": {
+      "tag": "c:ingots/manyullyn"
+    }
   },
   "vitality_ticks": 1200
 }

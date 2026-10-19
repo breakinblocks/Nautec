@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:limosiderophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/slimesteel"
+    "ingredient": {
+      "tag": "c:ingots/slimesteel"
+    }
   },
   "vitality_ticks": 1200
 }

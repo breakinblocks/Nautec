@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:rubellophiles",
   "ingredient": {
-    "ingredient": "#c:gems/ruby"
+    "ingredient": {
+      "tag": "c:gems/ruby"
+    }
   },
   "vitality_ticks": 1200
 }

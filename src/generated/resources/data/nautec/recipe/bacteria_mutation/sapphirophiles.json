@@ -30,7 +30,9 @@
     }
   ],
   "type": "nautec:bacteria_mutation",
-  "catalyst": "#c:gems/sapphire",
+  "catalyst": {
+    "tag": "c:gems/sapphire"
+  },
   "chance": 30.0,
   "input_bacteria": "nautec:metallophiles",
   "result_bacteria": "nautec:sapphirophiles"

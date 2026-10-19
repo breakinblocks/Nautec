@@ -28,7 +28,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:nigrophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/netherite"
+    "ingredient": {
+      "tag": "c:ingots/netherite"
+    }
   },
   "vitality_ticks": 1200
 }

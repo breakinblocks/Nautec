@@ -24,7 +24,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:chrysorosophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/rose_gold"
+    "ingredient": {
+      "tag": "c:ingots/rose_gold"
+    }
   },
   "vitality_ticks": 1200
 }

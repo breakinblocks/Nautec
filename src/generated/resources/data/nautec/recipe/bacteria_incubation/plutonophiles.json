@@ -32,5 +32,7 @@
     "max": 15,
     "min": 5
   },
-  "nutrient": "#c:ingots/plutonium"
+  "nutrient": {
+    "tag": "c:ingots/plutonium"
+  }
 }

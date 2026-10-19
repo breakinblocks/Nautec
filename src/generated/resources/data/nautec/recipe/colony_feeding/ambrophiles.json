@@ -20,7 +20,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:ambrophiles",
   "ingredient": {
-    "ingredient": "#c:gems/amber"
+    "ingredient": {
+      "tag": "c:gems/amber"
+    }
   },
   "vitality_ticks": 1200
 }

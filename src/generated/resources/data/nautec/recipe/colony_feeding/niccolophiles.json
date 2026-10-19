@@ -44,7 +44,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:niccolophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/nickel"
+    "ingredient": {
+      "tag": "c:ingots/nickel"
+    }
   },
   "vitality_ticks": 1200
 }

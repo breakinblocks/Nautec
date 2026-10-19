@@ -60,5 +60,7 @@
     "max": 30,
     "min": 10
   },
-  "nutrient": "#c:ingots/tin"
+  "nutrient": {
+    "tag": "c:ingots/tin"
+  }
 }

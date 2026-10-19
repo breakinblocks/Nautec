@@ -36,7 +36,9 @@
   "type": "nautec:colony_feeding",
   "bacteria": "nautec:brassophiles",
   "ingredient": {
-    "ingredient": "#c:ingots/brass"
+    "ingredient": {
+      "tag": "c:ingots/brass"
+    }
   },
   "vitality_ticks": 1200
 }

@@ -28,5 +28,7 @@
     "max": 25,
     "min": 8
   },
-  "nutrient": "#c:gems/dark_gem"
+  "nutrient": {
+    "tag": "c:gems/dark_gem"
+  }
 }
