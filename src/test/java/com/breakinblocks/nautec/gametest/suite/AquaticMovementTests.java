@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 
 public final class AquaticMovementTests {
     public static void register(NTTestRegistrar registrar) {
@@ -37,12 +38,16 @@ public final class AquaticMovementTests {
         level.setBlockAndUpdate(deepLit.above(), Blocks.GLOWSTONE.defaultBlockState());
         BlockPos deepDry = pocket(level, arena.offset(0, 0, 2), Blocks.AIR);
         BlockPos shallowDark = pocket(level, new BlockPos(arena.getX(), 45, arena.getZ()), Blocks.WATER);
+        AbyssalMaw candidate = NTEntities.ABYSSAL_MAW.get().create(level, EntitySpawnReason.NATURAL);
+        candidate.setPos(Vec3.atBottomCenterOf(deepDark));
         helper.succeedWhen(() -> {
             helper.assertTrue(deepDark.getY() < 40, "The deep pocket must sit below y=40, it is at " + deepDark.getY());
             helper.assertTrue(level.getMaxLocalRawBrightness(deepDark) <= 7, "The deep dark pocket is lit, " + light(level, deepDark));
             helper.assertTrue(level.getMaxLocalRawBrightness(shallowDark) <= 7, "The shallow dark pocket is lit, " + light(level, shallowDark));
             helper.assertTrue(level.getMaxLocalRawBrightness(deepLit) > 7, "The lit pocket is dark, " + light(level, deepLit));
             helper.assertTrue(mawMaySpawn(level, deepDark, EntitySpawnReason.NATURAL), "A Maw may not spawn in deep, dark water");
+            helper.assertTrue(EventHooks.checkSpawnPosition(candidate, level, EntitySpawnReason.NATURAL),
+                    "The natural spawner rejects a Maw in deep, dark water after its spawn rule passes");
             helper.assertFalse(mawMaySpawn(level, deepLit, EntitySpawnReason.NATURAL), "A Maw spawned in lit water");
             helper.assertFalse(mawMaySpawn(level, deepDry, EntitySpawnReason.NATURAL), "A Maw spawned out of water");
             helper.assertFalse(mawMaySpawn(level, shallowDark, EntitySpawnReason.NATURAL), "A Maw spawned at y=45, above the y=40 limit");

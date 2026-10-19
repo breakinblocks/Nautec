@@ -35,9 +35,10 @@ public final class NTBiomes {
 
     private static Biome abyssalTrench(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
-        BiomeDefaultFeatures.oceanSpawns(mobs, 3, 4, 4);
+        BiomeDefaultFeatures.oceanSpawns(mobs, 3, 4, 15);
+        mobs.addSpawn(MobCategory.WATER_AMBIENT, 15, new MobSpawnSettings.SpawnerData(EntityType.SALMON, 1, 5));
         mobs.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(EntityType.DROWNED, 1, 3));
-        mobs.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 1, 2));
+        mobs.addSpawn(MobCategory.MONSTER, 75, new MobSpawnSettings.SpawnerData(NTEntities.ABYSSAL_MAW.get(), 1, 2));
         mobs.addSpawn(MobCategory.WATER_AMBIENT, 8, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 3, 6));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);

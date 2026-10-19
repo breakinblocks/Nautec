@@ -170,7 +170,7 @@
         "type": "nautec:abyssal_maw",
         "maxCount": 2,
         "minCount": 1,
-        "weight": 25
+        "weight": 75
       }
     ],
     "underground_water_creature": [
@@ -186,7 +186,13 @@
         "type": "minecraft:cod",
         "maxCount": 6,
         "minCount": 3,
-        "weight": 4
+        "weight": 15
+      },
+      {
+        "type": "minecraft:salmon",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 15
       },
       {
         "type": "nautec:silt_skipper",
