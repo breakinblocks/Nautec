@@ -21,11 +21,19 @@ import net.minecraft.world.item.Items;
 import java.util.Comparator;
 
 public interface Bacteria {
-    Codec<ResourceKey<Bacteria>> BACTERIA_TYPE_CODEC = ResourceKey.codec(NTRegistries.BACTERIA_KEY);
+    Codec<ResourceKey<Bacteria>> BACTERIA_TYPE_CODEC = ResourceKey.codec(NTRegistries.BACTERIA_KEY).xmap(Bacteria::renamed, key -> key);
     StreamCodec<ByteBuf, ResourceKey<Bacteria>> BACTERIA_TYPE_STREAM_CODEC = ResourceKey.streamCodec(NTRegistries.BACTERIA_KEY);
 
     Codec<Bacteria> CODEC = NTRegistries.BACTERIA_SERIALIZER.byNameCodec().dispatch(Bacteria::getSerializer, BacteriaSerializer::mapCodec);
     StreamCodec<RegistryFriendlyByteBuf, Bacteria> STREAM_CODEC = ByteBufCodecs.registry(NTRegistries.BACTERIA_SERIALIZER_KEY).dispatch(Bacteria::getSerializer, BacteriaSerializer::streamCodec);
+
+    static ResourceKey<Bacteria> renamed(ResourceKey<Bacteria> key) {
+        Identifier id = key.identifier();
+        if (id.getNamespace().equals("nautec") && id.getPath().equals("nigrophiles")) {
+            return ResourceKey.create(NTRegistries.BACTERIA_KEY, Identifier.fromNamespaceAndPath("nautec", "netheritophiles"));
+        }
+        return key;
+    }
 
     LongRange initialSize();
 

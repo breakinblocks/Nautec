@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:ingots/netherite"
+      }
+    }
+  ],
+  "type": "nautec:bacteria_incubation",
+  "bacteria": "nautec:netheritophiles",
+  "consume_chance": 0.12,
+  "growth": {
+    "max": 15,
+    "min": 5
+  },
+  "nutrient": "#c:ingots/netherite"
+}

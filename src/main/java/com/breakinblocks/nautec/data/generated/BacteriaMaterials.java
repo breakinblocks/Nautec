@@ -67,7 +67,7 @@ public final class BacteriaMaterials {
             "terrastelophiles",
             "obsidianophiles",
             "lucernophiles",
-            "nigrophiles",
+            "netheritophiles",
             "apatitophiles",
             "rubellophiles",
             "sapphirophiles",
