@@ -1202,6 +1202,7 @@
   "nautec.dish_port.unload": "An empty dish takes a finished colony back out.",
   "nautec.dish_storage.capacity": "Holds %s Petri Dishes",
   "nautec.dish_storage.count": "%s / %s",
+  "nautec.distributor.count": "Linked: %s",
   "nautec.distributor.empty": "No links yet.",
   "nautec.distributor.empty.hint": "Sneak-right-click this Distributor, then sneak-right-click a machine to link it.",
   "nautec.distributor.face.down": "bottom",

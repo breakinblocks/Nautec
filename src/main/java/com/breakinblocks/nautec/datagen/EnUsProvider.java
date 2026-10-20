@@ -963,6 +963,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.distributor.missing", "Missing block");
         add("nautec.distributor.unlink", "Unlink");
         add("nautec.distributor.fluids", "Fluids");
+        add("nautec.distributor.count", "Linked: %s");
         add("nautec.distributor.empty", "No links yet.");
         add("nautec.distributor.empty.hint", "Sneak-right-click this Distributor, then sneak-right-click a machine to link it.");
         add("nautec.distributor.face.down", "bottom");

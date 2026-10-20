@@ -11,21 +11,37 @@ import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.PressureForgeBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorBlockEntity;
 import com.breakinblocks.nautec.content.distributor.DistributorLink;
+import com.breakinblocks.nautec.content.distributor.DistributorLinking;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTMultiblocks;
+import com.breakinblocks.nautec.utils.MultiblockHelper;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.UUID;
 
 public final class DistributorTests {
     private static final BlockPos DISTRIBUTOR = new BlockPos(4, 1, 4);
@@ -176,6 +192,57 @@ public final class DistributorTests {
             helper.assertTrue(mixer.setGhost(0, ItemStack.EMPTY), "clearing works");
             helper.assertTrue(mixer.getItemStackHandler().isItemValid(0, new ItemStack(Items.DIRT)), "a cleared slot takes anything again");
             helper.succeed();
+        });
+
+        r.add("distributor/sneak_click_links_a_formed_bio_reactor", 40, helper -> {
+            BlockPos reactor = new BlockPos(4, 2, 4);
+            for (int y = 0; y < 2; y++) {
+                for (int z = 0; z < 3; z++) {
+                    for (int x = 0; x < 3; x++) {
+                        Block block;
+                        if (x == 1 && z == 1) {
+                            block = y == 0 ? NTBlocks.POLISHED_PRISMARINE.get() : NTBlocks.BIO_REACTOR.get();
+                        } else if (x != 1 && z != 1) {
+                            block = NTBlocks.DARK_PRISMARINE_PILLAR.get();
+                        } else {
+                            block = NTBlocks.BACTERIAL_CONTAINMENT_SHIELD.get();
+                        }
+                        helper.setBlock(reactor.offset(x - 1, y - 1, z - 1), block);
+                    }
+                }
+            }
+            BlockPos distributorPos = new BlockPos(1, 1, 1);
+            helper.setBlock(distributorPos, NTBlocks.DISTRIBUTOR.get());
+            helper.runAfterDelay(1, () -> {
+                ServerLevel level = helper.getLevel();
+                helper.assertTrue(MultiblockHelper.form(NTMultiblocks.BIO_REACTOR.get(), helper.absolutePos(reactor), level), "the bio reactor forms");
+                ServerPlayer player = new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), "ReactorLinker"),
+                        ClientInformation.createDefault());
+                player.getAbilities().instabuild = false;
+                player.setShiftKeyDown(true);
+                try {
+                    DistributorLinking.toggle(player, helper.absolutePos(distributorPos));
+                } catch (NullPointerException expected) {
+                }
+                List<BlockPos> targets = List.of(helper.absolutePos(reactor.east()), helper.absolutePos(reactor), helper.absolutePos(reactor.below().north()));
+                for (BlockPos target : targets) {
+                    BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(target), Direction.UP, target, false);
+                    try {
+                        player.gameMode.useItemOn(player, level, ItemStack.EMPTY, InteractionHand.MAIN_HAND, hit);
+                    } catch (NullPointerException expected) {
+                    }
+                }
+                DistributorBlockEntity distributor = helper.getBlockEntity(distributorPos, DistributorBlockEntity.class);
+                helper.assertValueEqual(distributor.getLinks().size(), targets.size(), "every sneak-clicked bio reactor block is linked");
+                for (int i = 0; i < targets.size(); i++) {
+                    helper.assertValueEqual(distributor.getLinks().get(i).pos(), targets.get(i), "link " + i + " position");
+                }
+                DistributorBlockEntity client = new DistributorBlockEntity(distributor.getBlockPos(), distributor.getBlockState());
+                client.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(),
+                        distributor.getUpdateTag(level.registryAccess())));
+                helper.assertValueEqual(client.getLinks().size(), targets.size(), "the client copy receives every link");
+                helper.succeed();
+            });
         });
     }
 }
