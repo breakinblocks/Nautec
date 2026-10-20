@@ -33,6 +33,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
     private static final int VITALITY_FILL = 0xFF4FE0C8;
     private static final int STARVING_FILL = 0xFFB8483E;
     private static final int PROGRESS_FILL = 0xFF7FD9A0;
+    private static final float FAST_PROGRESS_PER_TICK = 10f;
 
     private final BioReactorLayout layout;
 
@@ -83,7 +84,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         int activeCount = 0;
 
         for (int i = 0; i < colonies; i++) {
-            float progress = Math.max(0, Math.min(100, reactor.getProgress(i))) / 100f;
+            float progress = reactor.progressPerTick(i) >= FAST_PROGRESS_PER_TICK ? 1f : Math.max(0, Math.min(100, reactor.getProgress(i))) / 100f;
             BacteriaInstance colony = reactor.getBacteriaStorage().getBacteria(i);
             if (!colony.isEmpty()) {
                 activeProgress += progress;
@@ -103,6 +104,9 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
                 int top = this.topPos + bar[1];
                 guiGraphics.fill(left, top, left + bar[2], top + bar[3], PanelStyle.SLOT_EDGE);
                 guiGraphics.fill(left, top, left + Math.round(progress * bar[2]), top + bar[3], PROGRESS_FILL);
+                if (isHovering(bar[0], bar[1] - 1, bar[2], bar[3] + 2, mouseX, mouseY) && !colony.isEmpty()) {
+                    guiGraphics.setComponentTooltipForNextFrame(this.font, List.of(rateLine(reactor, i)), mouseX, mouseY);
+                }
             }
 
             if (i < this.layout.vitalityBars().length) {
@@ -132,13 +136,24 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, PROGRESS_ARROW, BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT,
                     0, 0, this.leftPos + arrow[0], this.topPos + arrow[1], width, BioReactorLayout.ARROW_HEIGHT);
             if (isHovering(arrow[0], arrow[1], BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT, mouseX, mouseY)) {
-                guiGraphics.setComponentTooltipForNextFrame(this.font, RecipeAreaHost.withRecipeHint(statusTooltip(reactor)), mouseX, mouseY);
+                List<Component> lines = statusTooltip(reactor);
+                float total = 0;
+                for (int i = 0; i < colonies; i++) {
+                    total += reactor.itemsPerMinute(i);
+                }
+                lines.add(Component.translatable("nautec.bio_reactor.rate.total", formatRate(total)).withStyle(ChatFormatting.GREEN));
+                guiGraphics.setComponentTooltipForNextFrame(this.font, RecipeAreaHost.withRecipeHint(lines), mouseX, mouseY);
             }
         }
         if (this.layout.progressArrows() != null) {
-            for (int[] arrow : this.layout.progressArrows()) {
+            for (int i = 0; i < this.layout.progressArrows().length; i++) {
+                int[] arrow = this.layout.progressArrows()[i];
                 if (isHovering(arrow[0], arrow[1], BioReactorLayout.ARROW_WIDTH, BioReactorLayout.ARROW_HEIGHT, mouseX, mouseY)) {
-                    guiGraphics.setComponentTooltipForNextFrame(this.font, RecipeAreaHost.withRecipeHint(statusTooltip(reactor)), mouseX, mouseY);
+                    List<Component> lines = statusTooltip(reactor);
+                    if (i < colonies && !reactor.getBacteriaStorage().getBacteria(i).isEmpty()) {
+                        lines.add(rateLine(reactor, i));
+                    }
+                    guiGraphics.setComponentTooltipForNextFrame(this.font, RecipeAreaHost.withRecipeHint(lines), mouseX, mouseY);
                 }
             }
         }
@@ -274,6 +289,14 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
             lines.add(Component.translatable("nautec.bio_reactor.starving").withStyle(ChatFormatting.RED));
         }
         return lines;
+    }
+
+    private static Component rateLine(AbstractBioReactorBlockEntity reactor, int colony) {
+        return Component.translatable("nautec.bio_reactor.rate", colony + 1, formatRate(reactor.itemsPerMinute(colony))).withStyle(ChatFormatting.GREEN);
+    }
+
+    private static String formatRate(float perMinute) {
+        return String.format(Locale.ROOT, "%.1f", perMinute);
     }
 
     private static List<Component> statusTooltip(AbstractBioReactorBlockEntity reactor) {

@@ -286,6 +286,33 @@ public final class BioReactorOverhaulTests {
             });
         });
 
+        r.add("bio_overhaul/larger_colony_reports_and_makes_more", 260, helper -> {
+            BioReactorBlockEntity reactor = loneReactor(helper, REACTOR, SOURCE);
+            reactor.getBacteriaStorage().setBacteria(0, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, NTConfig.bacteriaColonySizeCap,
+                    stats(0.5f, NTConfig.bacteriaLifespanCap), 0));
+            reactor.getBacteriaStorage().setBacteria(1, BacteriaMachineTests.colony(NTBacterias.LITHOPHILES, 500,
+                    stats(0.5f, NTConfig.bacteriaLifespanCap), 0));
+            int[] before = new int[2];
+            helper.runAfterDelay(40, () -> {
+                helper.assertTrue(reactor.progressPerTick(1) > 0, "the small colony should be running");
+                helper.assertTrue(reactor.progressPerTick(0) > reactor.progressPerTick(1) * 1.9f,
+                        "a full colony should run about twice as fast, got " + reactor.progressPerTick(0) + " vs " + reactor.progressPerTick(1));
+                float expected = reactor.progressPerTick(0) / 100f * reactor.getItemsPerCycle() * 1200f;
+                helper.assertTrue(Math.abs(reactor.itemsPerMinute(0) - expected) < 0.01f, "items per minute should follow progress per tick");
+                helper.assertValueEqual(0f, reactor.itemsPerMinute(2), "an empty slot makes nothing");
+                for (int i = 0; i < 2; i++) {
+                    before[i] = reactor.getItemStackHandler().getStackInSlot(reactor.outputSlot(i)).getCount();
+                }
+            });
+            helper.runAfterDelay(240, () -> {
+                int large = reactor.getItemStackHandler().getStackInSlot(reactor.outputSlot(0)).getCount() - before[0];
+                int small = reactor.getItemStackHandler().getStackInSlot(reactor.outputSlot(1)).getCount() - before[1];
+                helper.assertTrue(small > 0, "the small colony should produce");
+                helper.assertTrue(large > small, "the full colony should out-produce the small one, made " + large + " vs " + small);
+                helper.succeed();
+            });
+        });
+
         r.add("bio_overhaul/speed_upgrade_power_and_rate", 420, helper -> {
             int window = window();
             BioReactorBlockEntity fast = loneReactor(helper, new BlockPos(2, 1, 4), new BlockPos(2, 1, 6));

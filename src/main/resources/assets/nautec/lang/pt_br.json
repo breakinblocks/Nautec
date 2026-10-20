@@ -614,6 +614,8 @@
   "nautec.bio_reactor.nutrient.no_colony": "Carregue uma colônia para ver o que ela consome.",
   "nautec.bio_reactor.nutrient.nothing": "nenhum nutriente encontrado",
   "nautec.bio_reactor.power": "Energia: %s / %s AP",
+  "nautec.bio_reactor.rate": "Colônia %s: %s itens por minuto",
+  "nautec.bio_reactor.rate.total": "Todas as colônias: %s itens por minuto",
   "nautec.bio_reactor.starving": "Sem nutrientes: a colônia está envelhecendo",
   "nautec.bio_reactor.upgrades": "Velocidade x%s, %s itens por ciclo, %s%% de uso de nutrientes",
   "nautec.bio_reactor.vitality": "Nutrientes: faltam %s segundos",

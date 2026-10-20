@@ -1081,6 +1081,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bio_reactor.vitality", "Nutrients: %s seconds left");
         add("nautec.bio_reactor.starving", "No nutrients: the colony is aging");
         add("nautec.bio_reactor.power", "Power: %s / %s AP");
+        add("nautec.bio_reactor.rate", "Colony %s: %s items per minute");
+        add("nautec.bio_reactor.rate.total", "All colonies: %s items per minute");
         add("nautec.bio_reactor.nutrient", "Nutrients");
         add("nautec.bio_reactor.nutrient.desc", "Keeps colonies working without aging. Each strain eats its own nutrient:");
         add("nautec.bio_reactor.nutrient.colony", "Colony %s (%s): %s");
