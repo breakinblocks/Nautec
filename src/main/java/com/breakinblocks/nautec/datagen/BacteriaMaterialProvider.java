@@ -105,7 +105,7 @@ public class BacteriaMaterialProvider implements DataProvider {
             new Entry("terrastelophiles", "terrasteel", Kind.ALLOY, Rarity.LEGENDARY, List.of("botania")),
             new Entry("obsidianophiles", "refined_obsidian", Kind.ALLOY, Rarity.RARE, List.of("ftbmaterials")),
             new Entry("lucernophiles", "refined_glowstone", Kind.ALLOY, Rarity.RARE, List.of("ftbmaterials")),
-            new Entry("nigrophiles", "netherite", Kind.ALLOY, Rarity.LEGENDARY, List.of("ftbic", "ftbmaterials", "occultism")),
+            new Entry("netheritophiles", "netherite", Kind.ALLOY, Rarity.LEGENDARY, List.of()),
             new Entry("apatitophiles", "apatite", Kind.GEM, Rarity.COMMON, List.of("forestry", "ftbmaterials", "thermal")),
             new Entry("rubellophiles", "ruby", Kind.GEM, Rarity.UNCOMMON, List.of("ftbmaterials", "gtceu", "irons_jewelry", "techreborn", "thermal")),
             new Entry("sapphirophiles", "sapphire", Kind.GEM, Rarity.UNCOMMON, List.of("ftbmaterials", "gtceu", "irons_jewelry", "techreborn")),
@@ -137,10 +137,6 @@ public class BacteriaMaterialProvider implements DataProvider {
         return registries.thenCompose(provider -> {
             List<CompletableFuture<?>> futures = new ArrayList<>();
             for (Entry entry : ENTRIES) {
-                if (entry.mods().isEmpty()) {
-                    continue;
-                }
-
                 ResourceLocation id = Nautec.rl(entry.name());
                 ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, id);
 
@@ -171,25 +167,30 @@ public class BacteriaMaterialProvider implements DataProvider {
     private static CompletableFuture<?> save(CachedOutput cache, Path path, JsonElement json, Entry entry, String materialTag) {
         JsonObject object = json.getAsJsonObject();
         boolean recipe = object.has("nutrient") || object.has("catalyst") || object.has("vitality_ticks");
-        object.add("neoforge:conditions", conditions(entry, recipe ? materialTag : null));
+        JsonArray conditions = conditions(entry, recipe ? materialTag : null);
+        if (!conditions.isEmpty()) {
+            object.add("neoforge:conditions", conditions);
+        }
         return DataProvider.saveStable(cache, object, path);
     }
 
     private static JsonArray conditions(Entry entry, String materialTag) {
-        JsonArray any = new JsonArray();
-        for (String mod : entry.mods()) {
-            JsonObject loaded = new JsonObject();
-            loaded.addProperty("type", "neoforge:mod_loaded");
-            loaded.addProperty("modid", mod);
-            any.add(loaded);
-        }
-
-        JsonObject or = new JsonObject();
-        or.addProperty("type", "neoforge:or");
-        or.add("values", any);
-
         JsonArray conditions = new JsonArray();
-        conditions.add(or);
+
+        if (!entry.mods().isEmpty()) {
+            JsonArray any = new JsonArray();
+            for (String mod : entry.mods()) {
+                JsonObject loaded = new JsonObject();
+                loaded.addProperty("type", "neoforge:mod_loaded");
+                loaded.addProperty("modid", mod);
+                any.add(loaded);
+            }
+
+            JsonObject or = new JsonObject();
+            or.addProperty("type", "neoforge:or");
+            or.add("values", any);
+            conditions.add(or);
+        }
 
         if (materialTag != null) {
             JsonObject empty = new JsonObject();

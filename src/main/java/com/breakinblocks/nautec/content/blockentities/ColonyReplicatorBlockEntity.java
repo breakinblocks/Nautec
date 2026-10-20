@@ -2,7 +2,6 @@ package com.breakinblocks.nautec.content.blockentities;
 
 import com.breakinblocks.nautec.utils.BeamOverclock;
 import com.breakinblocks.nautec.NTConfig;
-import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
@@ -403,7 +402,6 @@ public class ColonyReplicatorBlockEntity extends LaserBlockEntity implements Men
         this.progress = in.getIntOr("progress", 0);
         this.status = in.getIntOr("status", STATUS_NO_TEMPLATE);
         this.biomass = in.getLongOr("biomass", 0L);
-        this.biomassStrain = in.read("biomass_strain", ResourceLocation.CODEC)
-                .map(id -> ResourceKey.create(NTRegistries.BACTERIA_KEY, id)).orElse(null);
+        this.biomassStrain = in.read("biomass_strain", Bacteria.BACTERIA_TYPE_CODEC).orElse(null);
     }
 }

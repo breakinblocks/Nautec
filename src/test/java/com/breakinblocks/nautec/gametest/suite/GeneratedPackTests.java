@@ -15,6 +15,7 @@ import com.breakinblocks.nautec.registries.NTBacterias;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.Registries;
@@ -186,6 +187,9 @@ public final class GeneratedPackTests {
                     helper.getLevel().registryAccess().lookupOrThrow(NTRegistries.BACTERIA_KEY);
 
             for (String name : BacteriaMaterials.SHIPPED_NAMES) {
+                if (name.equals("netheritophiles")) {
+                    continue;
+                }
                 ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, Nautec.rl(name));
                 helper.assertTrue(registry.get(key).isEmpty(),
                         "Material bacteria '" + name + "' should be gated off when none of its mods are installed, "
@@ -194,6 +198,27 @@ public final class GeneratedPackTests {
             helper.succeed();
         }));
 
+        r.add("generated_pack/netherite_strain_needs_no_mods", 40, helper -> helper.runAfterDelay(1, () -> {
+            HolderLookup.RegistryLookup<Bacteria> registry =
+                    helper.getLevel().registryAccess().lookupOrThrow(NTRegistries.BACTERIA_KEY);
+            ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, Nautec.rl("netheritophiles"));
+            helper.assertTrue(registry.get(key).isPresent(), "Netheritophiles should load in a pack with only vanilla netherite");
+
+            for (String recipe : List.of("bacteria_incubation/netheritophiles", "bacteria_mutation/netheritophiles", "colony_feeding/netheritophiles")) {
+                helper.assertTrue(helper.getLevel().getRecipeManager().byKey(Nautec.rl(recipe)).isPresent(),
+                        "Recipe " + recipe + " should load without any material mod installed");
+            }
+            helper.succeed();
+        }));
+
+
+        r.add("generated_pack/nigrophiles_load_as_netheritophiles", 40, helper -> helper.runAfterDelay(1, () -> {
+            ResourceKey<Bacteria> key = Bacteria.BACTERIA_TYPE_CODEC
+                    .parse(JsonOps.INSTANCE, new JsonPrimitive("nautec:nigrophiles"))
+                    .getOrThrow();
+            helper.assertValueEqual(Nautec.rl("netheritophiles"), key.location(), "strain saved under the old name");
+            helper.succeed();
+        }));
 
         r.add("generated_pack/quarantine_invalid_json", 40, helper -> helper.runAfterDelay(1, () -> {
             Path broken = GeneratedPackPaths.bacteriaFile(BROKEN);
