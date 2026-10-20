@@ -452,6 +452,25 @@ public abstract class AbstractBioReactorBlockEntity extends LaserBlockEntity imp
         return product.isEmpty() || forceInsertItem(outputSlot(colony), product, true).isEmpty();
     }
 
+    public float progressPerTick(int colony) {
+        if (!canRun() || getPower() < getRequiredPower()) {
+            return 0;
+        }
+        BacteriaInstance bacteria = getBacteriaStorage().getBacteria(colony);
+        if (bacteria.isEmpty()) {
+            return 0;
+        }
+        return productionPerTick(bacteria, cacheFor(colony, bacteria).multiplier(), baseSpeed()) * getSpeedMultiplier() * beamSpeed();
+    }
+
+    public float itemsPerMinute(int colony) {
+        BacteriaInstance bacteria = getBacteriaStorage().getBacteria(colony);
+        if (bacteria.isEmpty() || cacheFor(colony, bacteria).product().isEmpty()) {
+            return 0;
+        }
+        return progressPerTick(colony) / 100f * getItemsPerCycle() * 1200f;
+    }
+
     public static float productionPerTick(BacteriaInstance bacteria, float strainMultiplier, double baseSpeed) {
         long cap = Math.max(1, NTConfig.bacteriaColonySizeCap);
         float sizeFactor = 0.5f + 0.5f * ((float) Math.min(bacteria.getSize(), cap) / cap);

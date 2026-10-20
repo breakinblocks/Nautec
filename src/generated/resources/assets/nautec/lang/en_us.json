@@ -931,6 +931,8 @@
   "nautec.bio_reactor.nutrient.no_colony": "Load a colony to see what it eats.",
   "nautec.bio_reactor.nutrient.nothing": "no nutrient found",
   "nautec.bio_reactor.power": "Power: %s / %s AP",
+  "nautec.bio_reactor.rate": "Colony %s: %s items per minute",
+  "nautec.bio_reactor.rate.total": "All colonies: %s items per minute",
   "nautec.bio_reactor.starving": "No nutrients: the colony is aging",
   "nautec.bio_reactor.upgrades": "Speed x%s, %s items per cycle, %s%% nutrient use",
   "nautec.bio_reactor.vitality": "Nutrients: %s seconds left",
