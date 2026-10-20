@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -46,6 +47,8 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     private static final int LIST_WIDTH = 98;
     private static final int ROW_HEIGHT = 18;
     private static final int ROWS = 5;
+    private static final int LIST_HEIGHT = ROWS * ROW_HEIGHT;
+    private static final int BAR_WIDTH = 4;
     private static final int GRID_X = 112;
     private static final int GRID_Y = 19;
     private static final int FLUID_Y = 82;
@@ -53,6 +56,7 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     private final FluidTankRenderer fluidRenderer = new FluidTankRenderer(1, false, 16, 16);
     private int selected;
     private int scroll;
+    private boolean dragging;
 
     public DistributorScreen(DistributorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -74,6 +78,25 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         }
         selected = Math.max(0, Math.min(selected, links.size() - 1));
         return links.get(selected);
+    }
+
+    private static int rowWidth(List<DistributorLink> links) {
+        return links.size() > ROWS ? LIST_WIDTH - BAR_WIDTH - 1 : LIST_WIDTH;
+    }
+
+    private int maxScroll() {
+        return Math.max(0, links().size() - ROWS);
+    }
+
+    private boolean overBar(double mouseX, double mouseY) {
+        int bx = leftPos + LIST_X + LIST_WIDTH - BAR_WIDTH;
+        int ly = topPos + LIST_Y;
+        return mouseX >= bx && mouseX < bx + BAR_WIDTH && mouseY >= ly && mouseY < ly + LIST_HEIGHT;
+    }
+
+    private void dragTo(double mouseY) {
+        double fraction = Mth.clamp((mouseY - (topPos + LIST_Y)) / LIST_HEIGHT, 0, 1);
+        scroll = (int) Math.round(fraction * maxScroll());
     }
 
     public Rect2i itemSlotArea(int slot) {
@@ -122,8 +145,8 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         frame(graphics, leftPos, topPos, imageWidth, imageHeight);
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
-        graphics.fill(lx - 1, ly - 1, lx + LIST_WIDTH + 1, ly + ROWS * ROW_HEIGHT + 1, OUTLINE);
-        graphics.fill(lx, ly, lx + LIST_WIDTH, ly + ROWS * ROW_HEIGHT, SCREEN_FILL);
+        graphics.fill(lx - 1, ly - 1, lx + LIST_WIDTH + 1, ly + LIST_HEIGHT + 1, OUTLINE);
+        graphics.fill(lx, ly, lx + LIST_WIDTH, ly + LIST_HEIGHT, SCREEN_FILL);
         for (int i = 0; i < DistributorLink.ITEM_REQUESTS; i++) {
             Rect2i area = itemSlotArea(i);
             slotFrame(graphics, area.getX(), area.getY());
@@ -145,25 +168,26 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         scroll = Math.max(0, Math.min(scroll, Math.max(0, links.size() - ROWS)));
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
+        int width = rowWidth(links);
         List<Component> tooltip = new ArrayList<>();
         for (int row = 0; row < ROWS && row + scroll < links.size(); row++) {
             int index = row + scroll;
             DistributorLink link = links.get(index);
             int y = ly + row * ROW_HEIGHT;
-            boolean hover = mouseX >= lx && mouseX < lx + LIST_WIDTH && mouseY >= y && mouseY < y + ROW_HEIGHT;
+            boolean hover = mouseX >= lx && mouseX < lx + width && mouseY >= y && mouseY < y + ROW_HEIGHT;
             if (index == selected) {
-                graphics.fill(lx, y, lx + LIST_WIDTH, y + ROW_HEIGHT, ROW_SELECTED);
+                graphics.fill(lx, y, lx + width, y + ROW_HEIGHT, ROW_SELECTED);
             } else if (hover) {
-                graphics.fill(lx, y, lx + LIST_WIDTH, y + ROW_HEIGHT, ROW_HOVER);
+                graphics.fill(lx, y, lx + width, y + ROW_HEIGHT, ROW_HOVER);
             }
             BlockState state = this.minecraft.level.getBlockState(link.pos());
             ItemStack icon = new ItemStack(state.getBlock().asItem());
             graphics.renderItem(icon, lx + 1, y + 1);
             Component name = state.isAir() ? Component.translatable("nautec.distributor.missing") : state.getBlock().getName();
-            String text = this.font.plainSubstrByWidth(name.getString(), LIST_WIDTH - 32);
+            String text = this.font.plainSubstrByWidth(name.getString(), width - 32);
             graphics.drawString(this.font, text, lx + 19, y + 5, state.isAir() ? WARNING : READOUT, false);
-            boolean overUnlink = mouseX >= lx + LIST_WIDTH - 11 && mouseX < lx + LIST_WIDTH - 2 && mouseY >= y + 4 && mouseY < y + 14;
-            graphics.drawString(this.font, "x", lx + LIST_WIDTH - 9, y + 5, overUnlink ? WARNING : READOUT_DIM, false);
+            boolean overUnlink = mouseX >= lx + width - 11 && mouseX < lx + width - 2 && mouseY >= y + 4 && mouseY < y + 14;
+            graphics.drawString(this.font, "x", lx + width - 9, y + 5, overUnlink ? WARNING : READOUT_DIM, false);
             if (overUnlink) {
                 tooltip.add(Component.translatable("nautec.distributor.unlink"));
             } else if (hover) {
@@ -174,6 +198,15 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
                 tooltip.add(Component.translatable("nautec.distributor.link.distance",
                         String.format(Locale.ROOT, "%.1f", Math.sqrt(pos.distSqr(this.menu.blockEntity.getBlockPos())))).withStyle(ChatFormatting.GRAY));
             }
+        }
+        int maxScroll = Math.max(0, links.size() - ROWS);
+        if (maxScroll > 0) {
+            int bx = lx + LIST_WIDTH - BAR_WIDTH;
+            graphics.fill(bx, ly, bx + BAR_WIDTH, ly + LIST_HEIGHT, PanelStyle.SCREEN_EDGE);
+            int thumbHeight = Math.max(8, LIST_HEIGHT * ROWS / links.size());
+            int thumbY = ly + (LIST_HEIGHT - thumbHeight) * scroll / maxScroll;
+            boolean active = dragging || overBar(mouseX, mouseY);
+            graphics.fill(bx, thumbY, bx + BAR_WIDTH, thumbY + thumbHeight, active ? READOUT : READOUT_DIM);
         }
         if (links.isEmpty()) {
             graphics.drawString(this.font, Component.translatable("nautec.distributor.empty"), lx + 4, ly + 4, READOUT, false);
@@ -253,6 +286,10 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, LABEL, false);
+        int count = links().size();
+        if (count > 0) {
+            graphics.drawString(this.font, Component.translatable("nautec.distributor.count", count), LIST_X, LIST_Y + LIST_HEIGHT + 4, LABEL, false);
+        }
         graphics.drawString(this.font, Component.translatable("nautec.distributor.fluids"), GRID_X, FLUID_Y - 10, LABEL, false);
         graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, LABEL, false);
     }
@@ -262,11 +299,17 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         List<DistributorLink> links = links();
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
-        if (mouseX >= lx && mouseX < lx + LIST_WIDTH && mouseY >= ly && mouseY < ly + ROWS * ROW_HEIGHT) {
+        if (maxScroll() > 0 && overBar(mouseX, mouseY)) {
+            dragging = true;
+            dragTo(mouseY);
+            return true;
+        }
+        if (mouseX >= lx && mouseX < lx + LIST_WIDTH && mouseY >= ly && mouseY < ly + LIST_HEIGHT) {
             int index = (int) ((mouseY - ly) / ROW_HEIGHT) + scroll;
+            int width = rowWidth(links);
             if (index < links.size()) {
                 int rowY = ly + (index - scroll) * ROW_HEIGHT;
-                if (mouseX >= lx + LIST_WIDTH - 11 && mouseX < lx + LIST_WIDTH - 2 && mouseY >= rowY + 4 && mouseY < rowY + 14) {
+                if (mouseX >= lx + width - 11 && mouseX < lx + width - 2 && mouseY >= rowY + 4 && mouseY < rowY + 14) {
                     PacketDistributor.sendToServer(DistributorEditPayload.unlink(this.menu.containerId, index));
                 } else {
                     selected = index;
@@ -304,6 +347,21 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (dragging) {
+            dragTo(mouseY);
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        dragging = false;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
     public static FluidStack contained(ItemStack stack) {
         if (stack.isEmpty()) {
             return FluidStack.EMPTY;
@@ -325,8 +383,8 @@ public class DistributorScreen extends AbstractContainerScreen<DistributorMenu> 
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         int lx = leftPos + LIST_X;
         int ly = topPos + LIST_Y;
-        if (mouseX >= lx && mouseX < lx + LIST_WIDTH && mouseY >= ly && mouseY < ly + ROWS * ROW_HEIGHT) {
-            scroll -= (int) Math.signum(scrollY);
+        if (mouseX >= lx && mouseX < lx + LIST_WIDTH && mouseY >= ly && mouseY < ly + LIST_HEIGHT) {
+            scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0, maxScroll());
             return true;
         }
         DistributorLink link = current();
