@@ -28,6 +28,8 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
+import java.util.List;
+
 public final class DishPortTests {
     private static final BlockPos MACHINE = new BlockPos(4, 1, 4);
 
@@ -238,16 +240,53 @@ public final class DishPortTests {
                     helper.assertValueEqual(1, side.extract(reactor.dishEmptyOutSlot(), ItemResource.of(empty), 1, tx), "empty dish pulled out");
                     tx.commit();
                 }
-                try (Transaction tx = Transaction.openRoot()) {
-                    side.insert(reactor.dishInSlot(), ItemResource.of(new ItemStack(NTItems.PETRI_DISH.get())), 1, tx);
-                    tx.commit();
-                }
+                helper.assertValueEqual(0, insert(side, reactor.dishInSlot(), new ItemStack(NTItems.PETRI_DISH.get())),
+                        "an empty dish waits outside while no colony is Senescent");
+                BacteriaInstance aged = reactor.getBacteriaStorage().getBacteria(0).copy();
+                aged.setAge(aged.getStats().lifespan() + 100L);
+                reactor.getBacteriaStorage().setBacteria(0, aged);
+                helper.assertValueEqual(1, insert(side, reactor.dishInSlot(), new ItemStack(NTItems.PETRI_DISH.get())),
+                        "an empty dish goes in once a colony is Senescent");
             });
             helper.runAfterDelay(24, () -> {
-                helper.assertFalse(reactor.getBacteriaStorage().getBacteria(0).isEmpty(), "The well fed colony should stay");
-                helper.assertTrue(reactor.getBacteriaStorage().getBacteria(1).isEmpty(), "The unfed colony should be the one taken out");
+                helper.assertTrue(reactor.getBacteriaStorage().getBacteria(0).isEmpty(), "The Senescent colony is taken out even though it is fed");
+                helper.assertValueEqual(NTBacterias.CALCIOPHILES, reactor.getBacteriaStorage().getBacteria(1).getBacteria(),
+                        "The freshly loaded colony stays");
                 BacteriaInstance out = contents(reactor.getItemStackHandler().getStackInSlot(reactor.dishOutSlot()));
-                helper.assertValueEqual(NTBacterias.CALCIOPHILES, out.getBacteria(), "unloaded strain");
+                helper.assertValueEqual(NTBacterias.LITHOPHILES, out.getBacteria(), "unloaded strain");
+                helper.succeed();
+            });
+        });
+
+        r.add("dish_port/reactor_fills_from_a_mixed_pool", 80, helper -> {
+            helper.setBlock(MACHINE, NTBlocks.BIO_REACTOR.get());
+            BioReactorBlockEntity reactor = helper.getBlockEntity(MACHINE, BioReactorBlockEntity.class);
+            ResourceHandler<ItemResource> side = items(helper);
+            helper.assertValueEqual(0, insert(side, reactor.dishInSlot(), new ItemStack(NTItems.PETRI_DISH.get())),
+                    "an empty reactor refuses an empty dish");
+            BacteriaInstance spent = colony(helper, NTBacterias.LITHOPHILES, 60);
+            spent.setAge(spent.getStats().lifespan() + 100L);
+            helper.assertValueEqual(0, insert(side, reactor.dishInSlot(), dish(spent)), "a Senescent colony is refused");
+
+            List<ResourceKey<Bacteria>> strains = List.of(NTBacterias.CALCIOPHILES, NTBacterias.HALOTROPHS, NTBacterias.LITHOPHILES);
+            int slots = reactor.getColonySlots();
+            for (int round = 0; round < slots; round++) {
+                int index = round;
+                helper.runAfterDelay(1 + round * 8L, () -> helper.assertValueEqual(1,
+                        insert(side, reactor.dishInSlot(), dish(colony(helper, strains.get(index), 60))), "colony dish " + index + " goes in"));
+                helper.runAfterDelay(7 + round * 8L, () -> {
+                    ItemStack empty = reactor.getItemStackHandler().getStackInSlot(reactor.dishEmptyOutSlot()).copy();
+                    helper.assertTrue(empty.is(NTItems.PETRI_DISH.get()) && contents(empty).isEmpty(), "dish " + index + " comes back out empty");
+                    try (Transaction tx = Transaction.openRoot()) {
+                        helper.assertValueEqual(1, side.extract(reactor.dishEmptyOutSlot(), ItemResource.of(empty), 1, tx), "empty dish " + index + " pulled out");
+                        tx.commit();
+                    }
+                    helper.assertValueEqual(0, insert(side, reactor.dishInSlot(), empty),
+                            "empty dish " + index + " cannot pull the healthy colony it came from back out");
+                });
+            }
+            helper.runAfterDelay(1 + slots * 8L, () -> {
+                helper.assertValueEqual(slots, reactor.getActiveColonies(), "every colony slot fills");
                 helper.succeed();
             });
         });
