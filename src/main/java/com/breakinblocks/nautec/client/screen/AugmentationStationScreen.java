@@ -194,6 +194,7 @@ public class AugmentationStationScreen extends Screen {
             case AugmentationStationBlockEntity.STATUS_MISSING_EXTENSION -> "missing_extension";
             case AugmentationStationBlockEntity.STATUS_NO_ARM -> "no_arm";
             case AugmentationStationBlockEntity.STATUS_NO_RECIPE -> "no_recipe";
+            case AugmentationStationBlockEntity.STATUS_WRONG_PART -> "wrong_part";
             case AugmentationStationBlockEntity.STATUS_LOW_POWER -> "low_power";
             case AugmentationStationBlockEntity.STATUS_RUNNING -> "running";
             case AugmentationStationBlockEntity.STATUS_INSTALLED -> "installed";
@@ -201,11 +202,14 @@ public class AugmentationStationScreen extends Screen {
         };
     }
 
-    private static Component statusDescription(int code) {
+    private Component statusDescription(int code) {
         String key = statusKey(code) + ".desc";
-        return code == AugmentationStationBlockEntity.STATUS_LOW_POWER
-                ? Component.translatable(key, NTConfig.augmentationStationPower)
-                : Component.translatable(key);
+        return switch (code) {
+            case AugmentationStationBlockEntity.STATUS_LOW_POWER -> Component.translatable(key, NTConfig.augmentationStationPower);
+            case AugmentationStationBlockEntity.STATUS_WRONG_PART -> Component.translatable(key,
+                    this.builtFor == null ? Component.literal("?") : typeName(this.builtFor), this.status.preview().getHoverName());
+            default -> Component.translatable(key);
+        };
     }
 
     private int statusColor() {

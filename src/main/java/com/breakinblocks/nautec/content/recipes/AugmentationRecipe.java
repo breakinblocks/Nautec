@@ -37,6 +37,22 @@ public record AugmentationRecipe(Item augmentItem, String desc, List<IngredientW
         return RecipeUtils.compareItems(recipeInput.ingredients(), ingredients);
     }
 
+    public boolean usesItemTypesOf(AugmentationRecipeInput recipeInput) {
+        return RecipeUtils.compareItemTypes(recipeInput.ingredients(), ingredients);
+    }
+
+    public List<ItemStack> displayParts() {
+        if (ingredients.isEmpty()) {
+            return List.of(augmentItem.getDefaultInstance());
+        }
+        ItemStack[] stacks = ingredients.getFirst().ingredient().getItems();
+        return stacks.length == 0 ? List.of(augmentItem.getDefaultInstance()) : List.of(stacks);
+    }
+
+    public ItemStack displayPart() {
+        return displayParts().getFirst().copy();
+    }
+
     @Override
     public @NotNull ItemStack assemble(@NotNull AugmentationRecipeInput input, HolderLookup.@NotNull Provider registries) {
         return ItemStack.EMPTY;

@@ -6,6 +6,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public final class RecipeUtils {
     public static List<IngredientWithCount> ingredientsToIWC(List<Ingredient> ingredients) {
@@ -34,19 +35,34 @@ public final class RecipeUtils {
         return inputs.size() == ingredients.size() && consumptionPlan(inputs, ingredients) != null;
     }
 
+    public static boolean compareItemTypes(List<ItemStack> inputs, List<IngredientWithCount> ingredients) {
+        int[] slots = new int[ingredients.size()];
+        return inputs.size() == ingredients.size()
+                && assign(inputs, ingredients, slots, new boolean[inputs.size()], 0, RecipeUtils::sameItemType);
+    }
+
+    private static boolean sameItemType(IngredientWithCount ingredient, ItemStack stack) {
+        for (ItemStack candidate : ingredient.ingredient().getItems()) {
+            if (stack.is(candidate.getItem())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static int[] consumptionPlan(List<ItemStack> inputs, List<IngredientWithCount> ingredients) {
         int[] slots = new int[ingredients.size()];
-        return assign(inputs, ingredients, slots, new boolean[inputs.size()], 0) ? slots : null;
+        return assign(inputs, ingredients, slots, new boolean[inputs.size()], 0, IngredientWithCount::test) ? slots : null;
     }
 
     private static boolean assign(List<ItemStack> inputs, List<IngredientWithCount> ingredients,
-                                  int[] slots, boolean[] used, int ingredient) {
+                                  int[] slots, boolean[] used, int ingredient, BiPredicate<IngredientWithCount, ItemStack> test) {
         if (ingredient == ingredients.size()) return true;
         for (int slot = 0; slot < inputs.size(); slot++) {
-            if (!used[slot] && ingredients.get(ingredient).test(inputs.get(slot))) {
+            if (!used[slot] && test.test(ingredients.get(ingredient), inputs.get(slot))) {
                 used[slot] = true;
                 slots[ingredient] = slot;
-                if (assign(inputs, ingredients, slots, used, ingredient + 1)) return true;
+                if (assign(inputs, ingredients, slots, used, ingredient + 1, test)) return true;
                 used[slot] = false;
             }
         }

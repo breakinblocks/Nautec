@@ -81,6 +81,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -170,6 +171,24 @@ public class NTEmiPlugin implements EmiPlugin {
         for (ItemLike item : NTItems.bacteriaItems()) {
             if (item.asItem() instanceof IBacteriaItem) {
                 registry.setDefaultComparison(EmiStack.of(item), byStrain);
+            }
+        }
+        RecipeManager manager = registry.getRecipeManager();
+        if (manager == null) {
+            return;
+        }
+        Set<Item> compared = new HashSet<>();
+        for (RecipeHolder<AugmentationRecipe> holder : manager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
+            for (IngredientWithCount ingredient : holder.value().ingredients()) {
+                for (ItemStack stack : ingredient.ingredient().getItems()) {
+                    if (stack.isEmpty() || stack.getComponentsPatch().isEmpty() || stack.getItem() instanceof IBacteriaItem) {
+                        continue;
+                    }
+                    if (compared.add(stack.getItem())) {
+                        registry.setDefaultComparison(EmiStack.of(stack.getItem()), Comparison.compareComponents());
+                    }
+                    registry.addEmiStackAfter(EmiStack.of(stack.copyWithCount(1)), EmiStack.of(stack.getItem()));
+                }
             }
         }
     }
@@ -272,7 +291,11 @@ public class NTEmiPlugin implements EmiPlugin {
 
         for (RecipeHolder<AugmentationRecipe> holder : manager.getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
             AugmentationRecipe recipe = holder.value();
-            registry.addRecipe(new EmiInfoRecipe(List.of(EmiStack.of(recipe.augmentItem())), List.of(Component.translatable(recipe.desc())),
+            List<EmiIngredient> parts = new ArrayList<>();
+            for (ItemStack part : recipe.displayParts()) {
+                parts.add(EmiStack.of(part));
+            }
+            registry.addRecipe(new EmiInfoRecipe(parts, List.of(Component.translatable(recipe.desc())),
                     ids.info("augment/" + holder.id().getNamespace() + "/" + holder.id().getPath())));
         }
     }

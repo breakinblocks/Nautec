@@ -64,6 +64,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     public static final int STATUS_LOW_POWER = 5;
     public static final int STATUS_RUNNING = 6;
     public static final int STATUS_INSTALLED = 7;
+    public static final int STATUS_WRONG_PART = 8;
     public static final int OPERATION_TICKS = 80;
     private static final int SYNC_INTERVAL = 10;
     private static final int INSTALLED_TICKS = 60;
@@ -158,6 +159,19 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         return serverLevel.getRecipeManager()
                 .getRecipeFor(AugmentationRecipe.Type.INSTANCE, new AugmentationRecipeInput(ingredients, 100), level)
                 .map(RecipeHolder::value);
+    }
+
+    private Optional<AugmentationRecipe> getNearMiss() {
+        if (!(level instanceof ServerLevel serverLevel) || !isFormed() || !extensionsPresent()) {
+            return Optional.empty();
+        }
+        AugmentationRecipeInput input = new AugmentationRecipeInput(collectInputItems(), 100);
+        for (RecipeHolder<AugmentationRecipe> holder : serverLevel.getRecipeManager().getAllRecipesFor(AugmentationRecipe.Type.INSTANCE)) {
+            if (holder.value().usesItemTypesOf(input)) {
+                return Optional.of(holder.value());
+            }
+        }
+        return Optional.empty();
     }
 
     public boolean isOperatingOn(Player player) {
@@ -288,10 +302,10 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     }
 
     public int getStatus() {
-        return getStatus(this::getRecipe);
+        return getStatus(this::getRecipe, this::getNearMiss);
     }
 
-    private int getStatus(Supplier<Optional<AugmentationRecipe>> recipeLookup) {
+    private int getStatus(Supplier<Optional<AugmentationRecipe>> recipeLookup, Supplier<Optional<AugmentationRecipe>> nearMissLookup) {
         if (isRunning) {
             return STATUS_RUNNING;
         }
@@ -316,7 +330,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
             return STATUS_EMPTY;
         }
         if (recipeLookup.get().isEmpty()) {
-            return STATUS_NO_RECIPE;
+            return nearMissLookup.get().isPresent() ? STATUS_WRONG_PART : STATUS_NO_RECIPE;
         }
         for (BlockPos pos : augmentItems.keySet()) {
             if (!(level.getBlockEntity(pos) instanceof AugmentationStationExtensionBlockEntity extension)
@@ -333,8 +347,13 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
 
     private void sendStatus(ServerPlayer player, boolean open) {
         Supplier<Optional<AugmentationRecipe>> recipeLookup = Suppliers.memoize(this::getRecipe);
-        int status = getStatus(recipeLookup);
-        Optional<AugmentationRecipe> available = status == STATUS_RUNNING ? Optional.ofNullable(recipe) : recipeLookup.get();
+        Supplier<Optional<AugmentationRecipe>> nearMissLookup = Suppliers.memoize(this::getNearMiss);
+        int status = getStatus(recipeLookup, nearMissLookup);
+        Optional<AugmentationRecipe> available = switch (status) {
+            case STATUS_RUNNING -> Optional.ofNullable(recipe);
+            case STATUS_WRONG_PART -> nearMissLookup.get();
+            default -> recipeLookup.get();
+        };
         List<AugmentationStationSyncPayload.Extension> extensions = new ArrayList<>();
         for (Direction direction : List.of(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)) {
             BlockPos pos = worldPosition.relative(direction, 2);
@@ -350,7 +369,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         PacketDistributor.sendToPlayer(player, new AugmentationStationSyncPayload(worldPosition, open, status,
                 status == STATUS_RUNNING ? OPERATION_TICKS - duration : 0,
                 available.map(AugmentationRecipe::resultAugment),
-                available.map(value -> value.augmentItem().getDefaultInstance()).orElse(ItemStack.EMPTY),
+                available.map(value -> value.displayPart()).orElse(ItemStack.EMPTY),
                 available.map(AugmentationRecipe::desc).orElse(""),
                 extensions));
     }
