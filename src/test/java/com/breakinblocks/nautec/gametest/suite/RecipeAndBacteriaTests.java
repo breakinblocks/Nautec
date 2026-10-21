@@ -19,7 +19,13 @@ import com.breakinblocks.nautec.data.components.ComponentBacteriaStorage;
 import com.breakinblocks.nautec.registries.NTBacterias;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.content.recipes.inputs.AugmentationRecipeInput;
+import com.breakinblocks.nautec.registries.NTAugments;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -42,6 +48,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Collection;
+import java.util.List;
 
 public final class RecipeAndBacteriaTests {
     private RecipeAndBacteriaTests() {
@@ -327,6 +334,25 @@ public final class RecipeAndBacteriaTests {
             helper.assertValueEqual(NTBacterias.HALOBACTERIA, read.bacteriaInstance().getBacteria(), "component bacteria key");
             helper.assertValueEqual(instance.getSize(), read.bacteriaInstance().getSize(), "component bacteria size");
             helper.assertTrue(read.bacteriaInstance().isAnalyzed(), "component analyzed flag lost");
+            helper.succeed();
+        }));
+        r.add("recipe/augmentation_component_part_near_miss", 40, helper -> helper.runAfterDelay(1, () -> {
+            CompoundTag flag = new CompoundTag();
+            flag.putBoolean("ftb_flight_core", true);
+            Ingredient charged = DataComponentIngredient.of(false, DataComponents.CUSTOM_DATA, CustomData.of(flag), NTItems.BUOYANCY_TANK.get());
+            AugmentationRecipe recipe = new AugmentationRecipe(NTItems.BUOYANCY_TANK.get(), "",
+                    List.of(new IngredientWithCount(charged, 1)), NTAugments.CREATIVE_FLIGHT_AUGMENT.get());
+            ItemStack plain = new ItemStack(NTItems.BUOYANCY_TANK.get());
+            ItemStack flagged = plain.copy();
+            flagged.set(DataComponents.CUSTOM_DATA, CustomData.of(flag));
+            helper.assertFalse(recipe.matches(new AugmentationRecipeInput(List.of(plain), 100), helper.getLevel()), "plain tank matches the charged recipe");
+            helper.assertTrue(recipe.matches(new AugmentationRecipeInput(List.of(flagged), 100), helper.getLevel()), "charged tank does not match");
+            helper.assertTrue(recipe.usesItemTypesOf(new AugmentationRecipeInput(List.of(plain), 100)), "plain tank is not a near miss");
+            helper.assertFalse(recipe.usesItemTypesOf(new AugmentationRecipeInput(List.of(new ItemStack(NTItems.DROWNED_LUNGS.get())), 100)),
+                    "unrelated part counted as a near miss");
+            helper.assertFalse(recipe.usesItemTypesOf(new AugmentationRecipeInput(List.of(plain, plain.copy()), 100)), "extra parts counted as a near miss");
+            ItemStack shown = recipe.displayPart(SlotDisplayContext.fromLevel(helper.getLevel()));
+            helper.assertTrue(ItemStack.isSameItemSameComponents(shown, flagged), "display part is not the charged tank: " + shown);
             helper.succeed();
         }));
     }

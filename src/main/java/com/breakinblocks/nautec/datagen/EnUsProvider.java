@@ -1655,6 +1655,9 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.augmentation_station.status.no_recipe", "Unknown combination");
         add("nautec.augmentation_station.status.no_recipe.short", "The loaded parts do not make an augment");
         add("nautec.augmentation_station.status.no_recipe.desc", "Most augments use one part in one extension, so take out any extra parts. The Vent Carapace takes a Chitin Plate in all four.");
+        add("nautec.augmentation_station.status.wrong_part", "Wrong version of the part");
+        add("nautec.augmentation_station.status.wrong_part.short", "This augment needs another version of that part");
+        add("nautec.augmentation_station.status.wrong_part.desc", "%s takes %s. The loaded part is the same item, but not that version of it. Look the augment up in JEI to see which one it needs.");
         add("nautec.augmentation_station.status.low_power", "Beam too weak");
         add("nautec.augmentation_station.status.low_power.short", "A loaded extension needs a stronger beam");
         add("nautec.augmentation_station.status.low_power.desc", "Every extension holding a part needs a laser beam of at least %s AP coming up into it from the block below. The red numbers below show which ones are short.");

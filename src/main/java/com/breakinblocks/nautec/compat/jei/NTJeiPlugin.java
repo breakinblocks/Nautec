@@ -15,6 +15,7 @@ import com.breakinblocks.nautec.compat.jei.categories.AquaticCatalystChannelingR
 import com.breakinblocks.nautec.compat.jei.categories.CombustionAdditiveCategory;
 import com.breakinblocks.nautec.compat.jei.categories.CombustionDynamoCategory;
 import com.breakinblocks.nautec.compat.jei.categories.AugmentationRecipeCategory;
+import com.breakinblocks.nautec.compat.jei.categories.NTJeiUtil;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaGraftingCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaIncubationCategory;
 import com.breakinblocks.nautec.compat.jei.categories.BacteriaMutationsCategory;
@@ -72,6 +73,12 @@ import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.registration.IExtraIngredientRegistration;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.util.context.ContextMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -240,6 +247,48 @@ public class NTJeiPlugin implements IModPlugin {
                 registration.registerSubtypeInterpreter(item.asItem(), BacteriaSubtypeInterpreter.INSTANCE);
             }
         }
+        Map<Item, Set<DataComponentType<?>>> variantComponents = new LinkedHashMap<>();
+        for (ItemStack variant : augmentPartVariants()) {
+            if (variant.getItem() instanceof IBacteriaItem) {
+                continue;
+            }
+            Set<DataComponentType<?>> types = variantComponents.computeIfAbsent(variant.getItem(), item -> new LinkedHashSet<>());
+            for (var entry : variant.getComponentsPatch().entrySet()) {
+                types.add(entry.getKey());
+            }
+        }
+        for (Map.Entry<Item, Set<DataComponentType<?>>> entry : variantComponents.entrySet()) {
+            registration.registerFromDataComponentTypes(entry.getKey(), entry.getValue().toArray(DataComponentType<?>[]::new));
+        }
+    }
+
+    @Override
+    public void registerExtraIngredients(IExtraIngredientRegistration registration) {
+        registration.addExtraItemStacks(augmentPartVariants());
+    }
+
+    private static List<ItemStack> augmentPartVariants() {
+        ContextMap context = NTJeiUtil.displayContext();
+        List<ItemStack> variants = new ArrayList<>();
+        for (AugmentationRecipe recipe : recipesFor(AugmentationRecipe.Type.INSTANCE)) {
+            for (IngredientWithCount ingredient : recipe.ingredients()) {
+                for (ItemStack stack : ingredient.ingredient().display().resolveForStacks(context)) {
+                    if (!stack.isEmpty() && !stack.getComponentsPatch().isEmpty() && !containsSame(variants, stack)) {
+                        variants.add(stack.copyWithCount(1));
+                    }
+                }
+            }
+        }
+        return variants;
+    }
+
+    private static boolean containsSame(List<ItemStack> stacks, ItemStack stack) {
+        for (ItemStack existing : stacks) {
+            if (ItemStack.isSameItemSameComponents(existing, stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -339,8 +388,9 @@ public class NTJeiPlugin implements IModPlugin {
         enchantingPages = LaserEnchantingCategory.pages(ClientRecipes.get(), registryAccess);
         registration.addRecipes(LaserEnchantingCategory.RECIPE_TYPE, enchantingPages);
 
+        ContextMap displayContext = NTJeiUtil.displayContext();
         for (AugmentationRecipe recipe : augmentationRecipes) {
-            registration.addIngredientInfo(recipe.augmentItem().getDefaultInstance(), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
+            registration.addIngredientInfo(recipe.displayParts(displayContext), VanillaTypes.ITEM_STACK, Component.translatable(recipe.desc()));
         }
 
         registration.addIngredientInfo(new FluidStack(NTFluids.EAS.getStillFluid(), 1000), NeoForgeTypes.FLUID_STACK,

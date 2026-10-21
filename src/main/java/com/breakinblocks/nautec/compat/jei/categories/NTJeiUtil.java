@@ -9,11 +9,14 @@ import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 public final class NTJeiUtil {
     public static final Identifier SINGLE_SLOT_SPRITE = Nautec.rl("container/furnace/empty_slot");
@@ -24,6 +27,11 @@ public final class NTJeiUtil {
 
     public static IRecipeSlotBuilder addFramedSlot(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y) {
         return builder.addSlot(role, x, y).setBackground(sprite(SINGLE_SLOT_SPRITE, SLOT_SIZE, SLOT_SIZE), -1, -1);
+    }
+
+    public static ContextMap displayContext() {
+        ClientLevel level = Minecraft.getInstance().level;
+        return level == null ? new ContextMap.Builder().create(SlotDisplayContext.CONTEXT) : SlotDisplayContext.fromLevel(level);
     }
 
     public static ItemStack maxStatDish(ResourceKey<Bacteria> bacteria) {

@@ -92,8 +92,8 @@ public final class NTGameTestRegistration {
         DeepSeaReservoirTests.register(r);
         WrenchLinkTests.register(r);
         AbyssalEnchanterTests.register(r);
-        if (r.registeredCount() != 789) {
-            throw new IllegalStateException("Expected 789 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 790) {
+            throw new IllegalStateException("Expected 790 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

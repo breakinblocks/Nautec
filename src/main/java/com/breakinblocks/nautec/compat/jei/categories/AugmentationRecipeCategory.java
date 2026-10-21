@@ -40,7 +40,7 @@ public class AugmentationRecipeCategory extends AbstractRecipeCategory<Augmentat
         int width = getWidth() / 2 - (ingredients.size() * 10);
 
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, getWidth() / 2 - 8 - 1, 12)
-                .add(recipe.augmentItem().getDefaultInstance());
+                .addItemStacks(recipe.displayParts(NTJeiUtil.displayContext()));
 
         for (int i = 0; i < ingredients.size(); i++) {
             IngredientWithCount ingredient = ingredients.get(i);

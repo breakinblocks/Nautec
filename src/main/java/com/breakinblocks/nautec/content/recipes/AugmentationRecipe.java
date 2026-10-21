@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -36,6 +37,22 @@ public record AugmentationRecipe(Item augmentItem, String desc, List<IngredientW
     @Override
     public boolean matches(@NotNull AugmentationRecipeInput recipeInput, @NotNull Level level) {
         return RecipeUtils.compareItems(recipeInput.ingredients(), ingredients);
+    }
+
+    public boolean usesItemTypesOf(AugmentationRecipeInput recipeInput) {
+        return RecipeUtils.compareItemTypes(recipeInput.ingredients(), ingredients);
+    }
+
+    public List<ItemStack> displayParts(ContextMap context) {
+        if (ingredients.isEmpty()) {
+            return List.of(augmentItem.getDefaultInstance());
+        }
+        List<ItemStack> stacks = ingredients.getFirst().ingredient().display().resolveForStacks(context);
+        return stacks.isEmpty() ? List.of(augmentItem.getDefaultInstance()) : stacks;
+    }
+
+    public ItemStack displayPart(ContextMap context) {
+        return displayParts(context).getFirst();
     }
 
     @Override
