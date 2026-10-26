@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.inputs.PressureForgingRecipeInput;
 import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public record PressureForgingRecipe(Ingredient ingredient, ItemStackTemplate resultTemplate, int minDepth,
-                                    float purity, int duration) implements Recipe<PressureForgingRecipeInput> {
+                                    float purity, int duration) implements MachineRecipe<PressureForgingRecipeInput> {
     public static final String NAME = "pressure_forging";
 
     public @NotNull ItemStack result() {

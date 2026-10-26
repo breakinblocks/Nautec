@@ -1567,6 +1567,18 @@ public class RecipesProvider extends RecipeProvider {
 
     private void fusionPlantRecipes(@NotNull RecipeOutput pRecipeOutput) {
 
+        shaped(RecipeCategory.MISC, NTBlocks.CRYSTAL_CULTIVATOR.asItem())
+                .pattern("CSC")
+                .pattern("ALA")
+                .pattern("CIC")
+                .define('C', NTItems.AQUARINE_COPPER_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('I', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("crystal_cultivator"));
+
         shaped(RecipeCategory.MISC, NTBlocks.RESONANCE_NODE.asItem(), 2)
                 .pattern(" S ")
                 .pattern("ARA")

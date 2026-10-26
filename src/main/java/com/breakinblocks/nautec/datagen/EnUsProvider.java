@@ -23,6 +23,16 @@ public class EnUsProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+        add("nautec.guide.recipe.fluid_amount", "%s mB");
+        add("nautec.guide.recipe.duration", "Processing time: %s s");
+        add("nautec.guide.recipe.power", "Required power: %s AP/t");
+        add("nautec.guide.recipe.power_total", "Total energy: %s AP");
+        add("nautec.guide.recipe.depth", "Y ≤ %s, under source water");
+        add("nautec.guide.recipe.additive", "Power output ×%s; fuel consumption ×%s");
+        add("nautec.guide.recipe.augment", "Installs: %s");
+        add("nautec.guide.recipe.mutation_chance", "Base mutation chance: %s%%");
+        add("nautec.guide.recipe.growth", "Growth: %s; nutrient consumption chance: %s%%");
+        add("nautec.guide.recipe.enchant_target", "Book shows the applied enchantment; place eligible equipment or a book in the target slot.");
         curiosIdent("prism_monocle", "Monocle");
         curiosIdent("battery", "Battery");
 
@@ -602,6 +612,10 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.GATEWAY_RING, "Gateway Ring Segment");
         addBlock(NTBlocks.GATEWAY_RING_PART, "Gateway Ring");
         addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
+        addBlock(NTBlocks.CRYSTAL_CULTIVATOR, "Crystal Cultivator");
+        add("nautec.cultivator.speed", "Growth: %sx");
+        add("nautec.cultivator.fortune", "Harvest Fortune: %s");
+        add("nautec.cultivator.buffer", "Stored items: %s");
         addItem(RESONANT_SHARD, "Resonant Shard");
         addItem(PRESSURE_SYNTHESIZER, "Pressure Synthesizer");
         addItem(ATLANTEAN_PRESSURE_SYNTHESIZER, "Atlantean Pressure Synthesizer");
@@ -1090,6 +1104,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bacteria.multiplier_value", "x%s");
         add("nautec.bio_reactor.vitality", "Nutrients: %s seconds left");
         add("nautec.bio_reactor.starving", "No nutrients: the colony is aging");
+        add("nautec.bio_reactor.warning.low_power", "Insufficient power: %s AP received, %s AP required. Feeding and production are paused.");
         add("nautec.bio_reactor.power", "Power: %s / %s AP");
         add("nautec.bio_reactor.rate", "Colony %s: %s items per minute");
         add("nautec.bio_reactor.rate.total", "All colonies: %s items per minute");

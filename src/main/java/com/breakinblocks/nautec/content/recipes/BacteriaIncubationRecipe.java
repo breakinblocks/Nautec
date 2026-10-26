@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public record BacteriaIncubationRecipe(ResourceKey<Bacteria> bacteria, Ingredient nutrient, IntRange growth, float consumeChance) implements Recipe<BacteriaRecipeInput> {
+public record BacteriaIncubationRecipe(ResourceKey<Bacteria> bacteria, Ingredient nutrient, IntRange growth, float consumeChance) implements MachineRecipe<BacteriaRecipeInput> {
     public static final String NAME = "bacteria_incubation";
     public static final RecipeType<BacteriaIncubationRecipe> TYPE = RecipeType.simple(Nautec.rl(NAME));
 

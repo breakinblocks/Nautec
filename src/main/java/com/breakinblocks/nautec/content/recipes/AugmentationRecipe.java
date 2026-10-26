@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record AugmentationRecipe(Item augmentItem, String desc, List<IngredientWithCount> ingredients, AugmentType<?> resultAugment) implements Recipe<AugmentationRecipeInput> {
+public record AugmentationRecipe(Item augmentItem, String desc, List<IngredientWithCount> ingredients, AugmentType<?> resultAugment) implements MachineRecipe<AugmentationRecipeInput> {
     public static final String NAME = "augmentation";
 
     @Override

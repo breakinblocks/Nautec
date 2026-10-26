@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.api.bacteria.BacteriaInstance;
 import com.breakinblocks.nautec.api.bacteria.BacteriaSelector;
@@ -26,7 +27,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public record ColonyFeedingRecipe(Optional<BacteriaSelector> bacteria, IngredientWithCount ingredient,
-                                  int vitalityTicks) implements Recipe<BacteriaRecipeInput> {
+                                  int vitalityTicks) implements MachineRecipe<BacteriaRecipeInput> {
     public static final String NAME = "colony_feeding";
     public static final RecipeType<ColonyFeedingRecipe> TYPE = RecipeType.simple(Nautec.rl(NAME));
 

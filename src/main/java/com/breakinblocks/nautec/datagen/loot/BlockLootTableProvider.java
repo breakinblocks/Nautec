@@ -114,6 +114,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(NTBlocks.GATEWAY.get());
         dropSelf(NTBlocks.GATEWAY_RING.get());
         add(NTBlocks.GATEWAY_RING_PART.get(), noDrop());
+        dropSelf(NTBlocks.CRYSTAL_CULTIVATOR.get());
         dropSelf(NTBlocks.RESONANCE_CHAMBER.get());
         dropSelf(NTBlocks.FOCUSING_LENS.get());
         dropSelf(NTBlocks.AQUARINE_STEEL_BLOCK.get());

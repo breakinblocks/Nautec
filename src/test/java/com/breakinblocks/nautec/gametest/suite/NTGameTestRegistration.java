@@ -53,6 +53,7 @@ public final class NTGameTestRegistration {
         EyeOfTheSeaTests.register(r);
         ConfinedSpawnerTests.register(r);
         MobSamplingTests.register(r);
+        GuideRecipeTests.register(r);
         DrainTests.register(r);
         CrystalCultivationTests.register(r);
         GuaranteedPartTests.register(r);
@@ -94,8 +95,9 @@ public final class NTGameTestRegistration {
         WrenchLinkTests.register(r);
         AbyssalEnchanterTests.register(r);
         CreativeFlightTests.register(r);
-        if (r.registeredCount() != 802) {
-            throw new IllegalStateException("Expected 802 Nautec suite tests, registered " + r.registeredCount());
+        CrystalCultivatorTests.register(r);
+        if (r.registeredCount() != 818) {
+            throw new IllegalStateException("Expected 818 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

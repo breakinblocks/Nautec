@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public record ItemEtchingRecipe(IngredientWithCount ingredient, ItemStackTemplate resultTemplate, int duration) implements Recipe<SingleRecipeInput> {
+public record ItemEtchingRecipe(IngredientWithCount ingredient, ItemStackTemplate resultTemplate, int duration) implements MachineRecipe<SingleRecipeInput> {
     public static final String NAME = "item_etching";
 
     public @NotNull ItemStack result() {

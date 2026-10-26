@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.enchanter.EnchantingRules;
 import com.breakinblocks.nautec.content.recipes.inputs.LaserEnchantingRecipeInput;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public record LaserEnchantingRecipe(ResourceKey<Enchantment> enchantment, IngredientWithCount input, float costMultiplier)
-        implements Recipe<LaserEnchantingRecipeInput> {
+        implements MachineRecipe<LaserEnchantingRecipeInput> {
     public static final String NAME = "laser_enchanting";
 
     public Optional<Holder.Reference<Enchantment>> enchantment(HolderLookup.Provider registries) {

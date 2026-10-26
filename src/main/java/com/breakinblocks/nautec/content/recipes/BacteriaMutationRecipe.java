@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public record BacteriaMutationRecipe(ResourceKey<Bacteria> inputBacteria, ResourceKey<Bacteria> resultBacteria,
-                                     Ingredient catalyst, float chance) implements Recipe<BacteriaRecipeInput> {
+                                     Ingredient catalyst, float chance) implements MachineRecipe<BacteriaRecipeInput> {
     public static final String NAME = "bacteria_mutation";
     public static final RecipeType<BacteriaMutationRecipe> TYPE = RecipeType.simple(Nautec.rl("bacteria_mutation"));
 

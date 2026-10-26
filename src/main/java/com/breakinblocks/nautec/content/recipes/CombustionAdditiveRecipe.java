@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public record CombustionAdditiveRecipe(Ingredient ingredient, float outputMultiplier, float fuelMultiplier, int duration)
-        implements Recipe<SingleRecipeInput> {
+        implements MachineRecipe<SingleRecipeInput> {
     public static final String NAME = "combustion_additive";
 
     @Override

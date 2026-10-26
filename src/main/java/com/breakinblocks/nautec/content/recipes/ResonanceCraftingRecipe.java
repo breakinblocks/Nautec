@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.inputs.ResonanceRecipeInput;
 import com.breakinblocks.nautec.content.recipes.utils.RecipeUtils;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public record ResonanceCraftingRecipe(Ingredient ingredient, ItemStackTemplate resultTemplate,
-                                      float purity) implements Recipe<ResonanceRecipeInput> {
+                                      float purity) implements MachineRecipe<ResonanceRecipeInput> {
     public static final String NAME = "resonance_crafting";
 
     public @NotNull ItemStack result() {

@@ -48,6 +48,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 LASER_PURIFICATION_SMELTER,
                 GATEWAY,
                 GATEWAY_RING,
+                CRYSTAL_CULTIVATOR,
                 RESONANCE_CHAMBER,
                 FOCUSING_LENS,
                 PRISMARINE_RELAY,

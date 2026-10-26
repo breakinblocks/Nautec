@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.recipes.inputs.LaserCraftingRecipeInput;
 import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
@@ -37,7 +38,7 @@ import java.util.Optional;
 
 public record LaserCraftingRecipe(List<IngredientWithCount> ingredients, List<SizedFluidIngredient> fluidIngredients,
                                   List<ItemStackTemplate> resultTemplates, List<FluidStackTemplate> fluidResultTemplates,
-                                  int power, float purity, int duration) implements Recipe<LaserCraftingRecipeInput> {
+                                  int power, float purity, int duration) implements MachineRecipe<LaserCraftingRecipeInput> {
     public static final String NAME = "laser_crafting";
     public static final int MAX_ITEM_INPUTS = 3;
     public static final int MAX_FLUID_INPUTS = 2;

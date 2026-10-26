@@ -214,6 +214,9 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         if (bacteria.isEmpty()) {
             return ColonyWarning.NONE;
         }
+        if (reactor.getPower() < reactor.getRequiredPower()) {
+            return ColonyWarning.LOW_POWER;
+        }
         boolean stocked = false;
         for (int i = 0; i < reactor.getNutrientSlotCount() && !stocked; i++) {
             stocked = BacteriaLookup.feeds(bacteria, reactor.getItemStackHandler().getStackInSlot(reactor.nutrientSlot(i)));
@@ -232,9 +235,10 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
         List<Component> lines = new ArrayList<>(super.bacteriaTooltip(slot, bacteria));
         ColonyWarning warning = warning(this.menu.blockEntity, slot.getSlot());
         if (warning != ColonyWarning.NONE) {
-            lines.add(Component.translatable("nautec.bio_reactor.warning." + warning.name().toLowerCase(Locale.ROOT)).withStyle(warning.format));
+            lines.add(Component.translatable("nautec.bio_reactor.warning." + warning.name().toLowerCase(Locale.ROOT),
+                    this.menu.blockEntity.getPower(), this.menu.blockEntity.getRequiredPower()).withStyle(warning.format));
             List<ItemStack> eats = BacteriaLookup.feedingItems(bacteria);
-            if (warning != ColonyWarning.SENESCENT && !eats.isEmpty()) {
+            if (warning != ColonyWarning.SENESCENT && warning != ColonyWarning.LOW_POWER && !eats.isEmpty()) {
                 lines.add(Component.translatable("nautec.bio_reactor.warning.eats", BacteriaLookup.itemList(eats)).withStyle(ChatFormatting.GRAY));
             }
         }
@@ -253,6 +257,7 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
 
     private enum ColonyWarning {
         NONE(0, ChatFormatting.WHITE),
+        LOW_POWER(0xFFFF5A4A, ChatFormatting.RED),
         LOW(0xFFFFD24A, ChatFormatting.YELLOW),
         STARVING(0xFFFF5A4A, ChatFormatting.RED),
         SENESCENT(0xFFFFD24A, ChatFormatting.YELLOW),
@@ -280,6 +285,10 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
 
     private static List<Component> vitalityTooltip(AbstractBioReactorBlockEntity reactor, int colony) {
         List<Component> lines = new ArrayList<>();
+        if (reactor.getPower() < reactor.getRequiredPower()) {
+            lines.add(lowPowerTooltip(reactor));
+            return lines;
+        }
         float vitality = reactor.getVitality(colony);
         if (vitality > 0) {
             float seconds = vitality / Math.max(0.0001f, reactor.getVitalityCost()) / 20f;
@@ -301,6 +310,9 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
 
     private static List<Component> statusTooltip(AbstractBioReactorBlockEntity reactor) {
         List<Component> lines = new ArrayList<>();
+        if (reactor.getPower() < reactor.getRequiredPower()) {
+            lines.add(lowPowerTooltip(reactor));
+        }
         ChatFormatting powerColor = reactor.getPower() >= reactor.getRequiredPower() ? ChatFormatting.GREEN : ChatFormatting.RED;
         lines.add(Component.translatable("nautec.bio_reactor.power", reactor.getPower(), reactor.getRequiredPower()).withStyle(powerColor));
         if (reactor.beamSpeed() > 0F) {
@@ -315,5 +327,10 @@ public abstract class AbstractBioReactorScreen<T extends AbstractBioReactorBlock
                     Math.round(reactor.getVitalityCost() * 100)).withStyle(ChatFormatting.GRAY));
         }
         return lines;
+    }
+
+    private static Component lowPowerTooltip(AbstractBioReactorBlockEntity reactor) {
+        return Component.translatable("nautec.bio_reactor.warning.low_power", reactor.getPower(), reactor.getRequiredPower())
+                .withStyle(ChatFormatting.RED);
     }
 }

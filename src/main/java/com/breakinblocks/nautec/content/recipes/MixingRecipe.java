@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.recipes;
 
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -33,7 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public record MixingRecipe(List<IngredientWithCount> ingredients, Optional<FluidStackTemplate> fluidIngredientTemplate, Optional<ItemStackTemplate> resultTemplate,
-                           Optional<FluidStackTemplate> fluidResultTemplate, int duration) implements Recipe<MixingRecipeInput> {
+                           Optional<FluidStackTemplate> fluidResultTemplate, int duration) implements MachineRecipe<MixingRecipeInput> {
     public static final String NAME = "mixing";
 
     public MixingRecipe {
