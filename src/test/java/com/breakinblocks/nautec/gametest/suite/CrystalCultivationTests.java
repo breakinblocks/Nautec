@@ -1,8 +1,10 @@
 package com.breakinblocks.nautec.gametest.suite;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.content.blockentities.CrystalCradleBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.content.items.blocks.PrismarineCrystalItem;
 import com.breakinblocks.nautec.data.NTDataComponents;
@@ -19,6 +21,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
+import com.breakinblocks.nautec.utils.valueio.TagValueInput;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
@@ -77,6 +81,10 @@ public final class CrystalCultivationTests {
                 }
                 PrismarineCrystalBlockEntity crystal = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
                 helper.assertTrue(crystal.isCultivated(), "the grown crystal is cultivated");
+                float purity = crystal.getCrystalPurity();
+                helper.assertTrue(purity >= 3f && purity <= 6f, "grown purity is between 3 and 6");
+                crystal.commonTick();
+                helper.assertTrue(crystal.getPurity() == purity, "ticking preserves grown purity");
                 helper.assertTrue(!cradle.hasSeed(), "the seed is used up");
                 helper.assertValueEqual(0L, cradle.getGrowth(), "growth resets");
             });
@@ -139,6 +147,10 @@ public final class CrystalCultivationTests {
 
         r.add("crystal/natural_crystals_stay_rooted", 20, helper -> {
             PrismarineCrystalBlock.build(helper.getLevel(), helper.absolutePos(CORE), false);
+            PrismarineCrystalBlockEntity wild = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
+            wild.setCrystalPurity(6f);
+            wild.commonTick();
+            helper.assertTrue(wild.getPurity() == 3f, "wild crystals retain purity 3");
             Player player = wrenchPlayer(helper);
             BlockPos clicked = helper.absolutePos(CORE);
             NeoForge.EVENT_BUS.post(new PlayerInteractEvent.RightClickBlock(player, InteractionHand.MAIN_HAND, clicked,
@@ -151,6 +163,7 @@ public final class CrystalCultivationTests {
         r.add("crystal/placing_a_cultivated_crystal_keeps_it_movable", 20, helper -> {
             Player player = helper.makeMockPlayer(GameType.SURVIVAL);
             ItemStack stack = PrismarineCrystalBlock.cultivatedItem();
+            stack.set(NTDataComponents.CRYSTAL_PURITY, 4.75f);
             player.setItemInHand(InteractionHand.MAIN_HAND, stack);
             BlockPos floor = helper.absolutePos(CRADLE);
             helper.setBlock(CRADLE, Blocks.STONE);
@@ -158,6 +171,23 @@ public final class CrystalCultivationTests {
                     new BlockHitResult(Vec3.atCenterOf(floor).add(0, 0.5, 0), Direction.UP, floor, false)));
             PrismarineCrystalBlockEntity crystal = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
             helper.assertTrue(crystal.isCultivated(), "a placed cultivated crystal is still cultivated");
+            helper.assertTrue(crystal.getCrystalPurity() == 4.75f, "placement preserves item purity");
+            var saved = crystal.saveWithoutMetadata(helper.getLevel().registryAccess());
+            crystal.setCrystalPurity(3f);
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Nautec.LOGGER)) {
+                crystal.loadWithComponents(saved, helper.getLevel().registryAccess());
+            }
+            crystal.commonTick();
+            helper.assertTrue(crystal.getPurity() == 4.75f, "saved purity survives reload and ticks");
+            for (int offset : new int[]{-3, 2}) {
+                PrismarineCrystalPartBlockEntity part = helper.getBlockEntity(CORE.above(offset), PrismarineCrystalPartBlockEntity.class);
+                // Laser state is latched on the following tick.
+                part.commonTick();
+                part.commonTick();
+                helper.assertTrue(part.getPurity() == 4.75f, "both output tips use crystal purity");
+            }
+            ItemStack recovered = PrismarineCrystalBlock.pickUp(helper.getLevel(), crystal);
+            helper.assertTrue(recovered.getOrDefault(NTDataComponents.CRYSTAL_PURITY, 0f) == 4.75f, "wrench pickup retains rolled purity");
             helper.succeed();
         });
     }

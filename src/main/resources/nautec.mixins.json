@@ -16,7 +16,8 @@
     "StructurePieceMixin"
   ],
   "client": [
-    "ItemStorageProviderMixin"
+    "ItemStorageProviderMixin",
+    "GuideRecipeResultMixin"
   ],
   "injectors": {
     "defaultRequire": 1

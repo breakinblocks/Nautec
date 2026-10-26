@@ -1,0 +1,29 @@
+{
+  "type": "nautec:mixing",
+  "duration": 200,
+  "fluid_ingredient": {
+    "amount": 250,
+    "id": "nautec:eas"
+  },
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "nautec:glass_vial"
+      }
+    },
+    {
+      "count": 2,
+      "ingredient": {
+        "tag": "c:ingots/aquarine_copper"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "c:gems/diamond"
+      }
+    }
+  ],
+  "result": {
+    "id": "nautec:mob_sampler"
+  }
+}

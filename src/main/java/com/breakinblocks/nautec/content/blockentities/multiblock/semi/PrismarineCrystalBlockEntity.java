@@ -21,6 +21,7 @@ import java.util.Set;
 public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     private boolean breaking;
     private boolean cultivated;
+    private float crystalPurity = 3f;
     private long startTick;
     private int duration;
 
@@ -54,7 +55,7 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
             }
         }
 
-        setPurity(3f);
+        setPurity(getCrystalPurity());
 
         if (level instanceof ServerLevel serverLevel && serverLevel.getGameTime() % 40 == 0) {
             NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.CRYSTAL_FOUND.get(), serverLevel, worldPosition, 10.0);
@@ -85,6 +86,16 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
         return cultivated;
     }
 
+    public float getCrystalPurity() {
+        return cultivated ? crystalPurity : 3f;
+    }
+
+    public void setCrystalPurity(float purity) {
+        crystalPurity = Float.isFinite(purity) ? Math.clamp(purity, 3f, 6f) : 3f;
+        setPurity(getCrystalPurity());
+        setChanged();
+    }
+
     public void setCultivated(boolean cultivated) {
         this.cultivated = cultivated;
         setChanged();
@@ -94,12 +105,14 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.putBoolean("cultivated", cultivated);
+        out.putFloat("crystal_purity", crystalPurity);
     }
 
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.cultivated = in.getBooleanOr("cultivated", false);
+        setCrystalPurity(in.getFloatOr("crystal_purity", 3f));
     }
 
     public boolean isBreaking() {

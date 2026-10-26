@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=up,powered=false": {
+      "model": "nautec:block/crystal_cultivator"
+    },
+    "facing=up,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active"
+    },
+    "facing=down,powered=false": {
+      "model": "nautec:block/crystal_cultivator",
+      "x": 180
+    },
+    "facing=down,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active",
+      "x": 180
+    },
+    "facing=north,powered=false": {
+      "model": "nautec:block/crystal_cultivator",
+      "x": 90
+    },
+    "facing=north,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active",
+      "x": 90
+    },
+    "facing=south,powered=false": {
+      "model": "nautec:block/crystal_cultivator",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east,powered=false": {
+      "model": "nautec:block/crystal_cultivator",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west,powered=false": {
+      "model": "nautec:block/crystal_cultivator",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,powered=true": {
+      "model": "nautec:block/crystal_cultivator_active",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

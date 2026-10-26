@@ -32,6 +32,10 @@ import java.util.function.UnaryOperator;
 public final class NTDataComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Nautec.MODID);
 
+    public static final Supplier<DataComponentType<EntityType<?>>> MOB_SAMPLE = registerDataComponentType("mob_sample",
+            () -> builder -> builder.persistent(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
+                    .networkSynchronized(ByteBufCodecs.registry(Registries.ENTITY_TYPE)));
+
     public static final Supplier<DataComponentType<ComponentPowerStorage>> POWER = registerDataComponentType("power",
             () -> builder -> builder.persistent(ComponentPowerStorage.CODEC).networkSynchronized(ComponentPowerStorage.STREAM_CODEC));
     public static final Supplier<DataComponentType<SimpleFluidContent>> FLUID = registerDataComponentType("fluid",
@@ -69,6 +73,9 @@ public final class NTDataComponents {
 
     public static final Supplier<DataComponentType<Boolean>> CULTIVATED = registerDataComponentType("cultivated",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final Supplier<DataComponentType<Float>> CRYSTAL_PURITY = registerDataComponentType("crystal_purity",
+            () -> builder -> builder.persistent(Codec.floatRange(3f, 6f)).networkSynchronized(ByteBufCodecs.FLOAT));
 
     public static final Supplier<DataComponentType<Long>> CRADLE_GROWTH = registerDataComponentType("cradle_growth",
             () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));

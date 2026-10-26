@@ -26,6 +26,8 @@ public final class NTTags {
     }
 
     public static final class Blocks {
+        public static final TagKey<Block> CULTIVATOR_SOURCES = ntTag("cultivator_sources");
+        public static final TagKey<Block> CULTIVATOR_CLUSTERS = ntTag("cultivator_clusters");
         public static final TagKey<Block> GATEWAY_RING_CLEARABLE = ntTag("gateway_ring_clearable");
         public static final TagKey<Block> VENT_HEAT_SOURCES = ntTag("vent_heat_sources");
         public static final TagKey<Block> LASER_PASSABLE = ntTag("laser_passable");

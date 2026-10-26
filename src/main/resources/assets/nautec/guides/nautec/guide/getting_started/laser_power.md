@@ -77,7 +77,7 @@ Its beam is 10% purer than the same fuel in an Aquatic Catalyst, before any Budd
 
 Purity is set where a beam starts. A catalyst beam carries its fuel's purity, 0.4 to 1.2, plus any Budding Prismarine boost. When two or more beams feed the same block, their power adds up and their purity stays close to the purest beam. The result is the highest purity minus a quarter of the gap between it and the average of all of them (`beamMergePurityDrop`), so a 3.0 beam merged with a 0 beam comes out at about 2.6.
 
-Higher purity comes from a <ItemLink id="prismarine_crystal"/> (3.0), a <ItemLink id="bacterial_fuel_cell"/> (up to 2.5), or a <ItemLink id="focusing_lens"/> added to an existing beam. [Beam Optics](nautec:deep_engineering/beam_optics.md) covers turning, splitting and focusing beams.
+Higher purity comes from a <ItemLink id="prismarine_crystal"/> (3.0 in the wild, 3.00-6.00 when newly cultivated), a <ItemLink id="bacterial_fuel_cell"/> (up to 2.5), or a <ItemLink id="focusing_lens"/> added to an existing beam. [Beam Optics](nautec:deep_engineering/beam_optics.md) covers turning, splitting and focusing beams.
 
 ***
 
@@ -86,9 +86,9 @@ Higher purity comes from a <ItemLink id="prismarine_crystal"/> (3.0), a <ItemLin
   ### <Color id="aqua">Prismarine Crystal</Color>
 </Row>
 
-A six block tall crystal found standing inside Crystal Geodes under the ocean floor (see [Structures](structures.md)). It turns any beam into a purity 3.0 beam. Wild crystals are rooted in place, but you can grow one you can move: see [Crystal Cultivation](nautec:deep_engineering/crystal_cultivation.md).
+A six block tall crystal found standing inside Crystal Geodes under the ocean floor (see [Structures](structures.md)). It turns any beam into a purity 3.0 beam. Wild crystals are rooted in place, but you can grow a movable crystal that rolls 3.00-6.00 purity on maturity: see [Crystal Cultivation](nautec:deep_engineering/crystal_cultivation.md).
 
-Fire a beam into the crystal from the side. Any of its six blocks takes a beam on any of its four sides, and beams from several sources add together. The top block then fires straight up and the bottom block fires straight down, both with a purity of 3.0. If only one of them reaches a receiver, that beam carries the full incoming power. If both do, the power is split evenly between them, so a crystal never puts out more AP than goes in. These two beams run until they reach a receiver or a solid block, so they work into an empty floor or ceiling as well.
+Fire a beam into the crystal from the side. Any of its six blocks takes a beam on any of its four sides, and beams from several sources add together. The top block then fires straight up and the bottom block fires straight down, both at the crystal's purity: 3.0 for natural crystals, or the fixed value rolled when a cultivated crystal matures. If only one of them reaches a receiver, that beam carries the full incoming power. If both do, the power is split evenly between them, so a crystal never puts out more AP than goes in. These two beams run until they reach a receiver or a solid block, so they work into an empty floor or ceiling as well.
 
 The crystal stays where it generated, so build around it. An Aquarine Steel Pickaxe with its ability on chips [Prismarine Crystal Shards](nautec:laser_chemistry/crystal_shards.md) off it, but every hit has a chance to shatter the whole crystal.
 

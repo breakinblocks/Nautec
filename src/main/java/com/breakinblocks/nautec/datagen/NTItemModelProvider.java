@@ -64,6 +64,8 @@ public class NTItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         handled.clear();
+        basicItem(NTItems.MOB_SAMPLER.get());
+        basicItem(NTItems.MOB_SAMPLE.get());
 
         basicItem(NTItems.AQUARINE_STEEL_INGOT.get());
         basicItem(NTItems.ATLANTIC_GOLD_INGOT.get());

@@ -23,6 +23,16 @@ public class EnUsProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+        add("nautec.guide.recipe.fluid_amount", "%s mB");
+        add("nautec.guide.recipe.duration", "Processing time: %s s");
+        add("nautec.guide.recipe.power", "Required power: %s AP/t");
+        add("nautec.guide.recipe.power_total", "Total energy: %s AP");
+        add("nautec.guide.recipe.depth", "Y ≤ %s, under source water");
+        add("nautec.guide.recipe.additive", "Power output ×%s; fuel consumption ×%s");
+        add("nautec.guide.recipe.augment", "Installs: %s");
+        add("nautec.guide.recipe.mutation_chance", "Base mutation chance: %s%%");
+        add("nautec.guide.recipe.growth", "Growth: %s; nutrient consumption chance: %s%%");
+        add("nautec.guide.recipe.enchant_target", "Book shows the applied enchantment; place eligible equipment or a book in the target slot.");
         curiosIdent("prism_monocle", "Monocle");
         curiosIdent("battery", "Battery");
 
@@ -357,6 +367,16 @@ public class EnUsProvider extends LanguageProvider {
         addItem(NTFluids.EAS.getDeferredBucket(), "Electrolyte Algae Serum (EAS) Bucket");
         addItem(NTFluids.OIL.getDeferredBucket(), "Oil Bucket");
         addItem(GLASS_VIAL, "Glass Vial");
+        addItem(MOB_SAMPLER, "Mob Sampler");
+        addItem(MOB_SAMPLE, "Mob Sample");
+        add("nautec.mob_sampler.tooltip", "Use on a living mob to collect a single-use sample");
+        add("nautec.mob_sampler.unsupported", "This creature cannot be sampled");
+        add("nautec.mob_sample.mob", "Sample: %s");
+        add("nautec.mob_sample.empty", "No mob sample stored");
+        add("nautec.mob_sample.tooltip", "Use on a Confined Spawner to change its mob; consumes the sample");
+        add("nautec.mob_sample.confined_only", "Mob samples can only be applied to Confined Spawners");
+        add("nautec.mob_sample.unsupported", "This sample cannot be applied");
+        add("nautec.mob_sample.applied", "Confined Spawner attuned to %s");
         addItem(ELECTROLYTE_ALGAE_SERUM_VIAL, "Electrolyte Algae Serum (EAS) Vial");
         addItem(RUSTY_GEAR, "Rusty Gear");
         addItem(GEAR, "Gear");
@@ -592,6 +612,10 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.GATEWAY_RING, "Gateway Ring Segment");
         addBlock(NTBlocks.GATEWAY_RING_PART, "Gateway Ring");
         addBlock(NTBlocks.RESONANCE_CHAMBER, "Resonance Chamber");
+        addBlock(NTBlocks.CRYSTAL_CULTIVATOR, "Crystal Cultivator");
+        add("nautec.cultivator.speed", "Growth: %sx");
+        add("nautec.cultivator.fortune", "Harvest Fortune: %s");
+        add("nautec.cultivator.buffer", "Stored items: %s");
         addItem(RESONANT_SHARD, "Resonant Shard");
         addItem(PRESSURE_SYNTHESIZER, "Pressure Synthesizer");
         addItem(ATLANTEAN_PRESSURE_SYNTHESIZER, "Atlantean Pressure Synthesizer");
@@ -1080,6 +1104,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.bacteria.multiplier_value", "x%s");
         add("nautec.bio_reactor.vitality", "Nutrients: %s seconds left");
         add("nautec.bio_reactor.starving", "No nutrients: the colony is aging");
+        add("nautec.bio_reactor.warning.low_power", "Insufficient power: %s AP received, %s AP required. Feeding and production are paused.");
         add("nautec.bio_reactor.power", "Power: %s / %s AP");
         add("nautec.bio_reactor.rate", "Colony %s: %s items per minute");
         add("nautec.bio_reactor.rate.total", "All colonies: %s items per minute");
@@ -1404,7 +1429,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jade.crystal.cultivated", "Cultivated: sneak and right-click with a wrench to move it");
         add("nautec.jade.crystal.natural", "Natural: rooted in place");
         add("nautec.jei.crystal_seed", "Craft a Dormant Crystal Seed, then awaken it in a Resonance Chamber at purity 3.0. Set the awakened seed in a Crystal Cradle.");
-        add("nautec.jei.crystal_cradle", "Feed the cradle laser beams of purity 2.0 or higher. After %s AP the seed becomes a Cultivated Prismarine Crystal standing on the cradle, which works like a natural one and can be moved with a wrench.");
+        add("nautec.jei.crystal_cradle", "Feed the cradle laser beams of purity 2.0 or higher. After %s AP the seed becomes a Cultivated Prismarine Crystal with a random purity from 3.00 to 6.00. It can be moved with a wrench without changing its purity.");
+        add("nautec.jei.cultivated_crystal", "Grow a Cultivated Prismarine Crystal from an awakened seed in a Crystal Cradle. When growth finishes, its purity is randomly set between 3.00 and 6.00, compared with 3.0 for natural crystals. Both output beams use this purity. The value stays the same when the crystal is moved with a wrench; its item tooltip shows the purity.");
         add("nautec.jade.confined_spawner.mob", "Mob: %s");
         add("nautec.jade.generator.output", "Output: %s FE/t");
         add("nautec.jade.tidal_rotor.water", "Open water: %s%%, depth %s / %s");

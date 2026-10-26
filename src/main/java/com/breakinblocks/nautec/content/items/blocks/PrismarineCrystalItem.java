@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Consumer;
+import java.util.Locale;
 
 public class PrismarineCrystalItem extends BlockItem {
     public PrismarineCrystalItem(Block block, Properties properties) {
@@ -36,6 +37,8 @@ public class PrismarineCrystalItem extends BlockItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         if (isCultivated(stack)) {
+            tooltipComponents.add(Component.translatable("nautec.monocle.purity",
+                    String.format(Locale.ROOT, "%.2f", stack.getOrDefault(NTDataComponents.CRYSTAL_PURITY, 3f))).withStyle(ChatFormatting.AQUA));
             tooltipComponents.add(Component.translatable("nautec.cultivated_crystal.tooltip.place").withStyle(ChatFormatting.GRAY));
             tooltipComponents.add(Component.translatable("nautec.cultivated_crystal.tooltip.move").withStyle(ChatFormatting.AQUA));
         }

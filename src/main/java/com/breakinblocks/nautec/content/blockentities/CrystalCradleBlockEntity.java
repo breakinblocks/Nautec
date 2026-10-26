@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTItems;
@@ -178,6 +179,10 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
         permille = 0;
         getItemStackHandler().setStackInSlot(SEED_SLOT, ItemStack.EMPTY);
         PrismarineCrystalBlock.build(serverLevel, core, true);
+        if (serverLevel.getBlockEntity(core) instanceof PrismarineCrystalBlockEntity crystal) {
+            crystal.setCrystalPurity(3f + serverLevel.getRandom().nextInt(301) / 100f);
+            crystal.update();
+        }
         serverLevel.playSound(null, core, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 2.0F, 0.6F);
         serverLevel.playSound(null, core, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.3F);
         serverLevel.sendParticles(ParticleTypes.END_ROD, core.getX() + 0.5, core.getY() + 0.5, core.getZ() + 0.5, 60, 0.6, 2.5, 0.6, 0.05);

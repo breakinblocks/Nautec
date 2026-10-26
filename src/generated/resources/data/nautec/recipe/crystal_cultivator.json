@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "nautec:aquarine_steel_ingot"
+    },
+    "C": {
+      "item": "nautec:aquarine_copper_ingot"
+    },
+    "I": {
+      "item": "nautec:aquatic_chip"
+    },
+    "L": {
+      "item": "nautec:laser_channeling_coil"
+    },
+    "S": {
+      "item": "nautec:prismarine_crystal_shard"
+    }
+  },
+  "pattern": [
+    "CSC",
+    "ALA",
+    "CIC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:crystal_cultivator"
+  }
+}

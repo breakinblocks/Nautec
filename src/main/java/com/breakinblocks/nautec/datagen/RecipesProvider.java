@@ -1492,6 +1492,15 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void chemistryRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.MOB_SAMPLER.get(), 1))
+                .ingredients(iwcFromItemLike(NTItems.GLASS_VIAL.get(), 1),
+                        iwcFromTag(NTTags.Items.INGOTS_AQUARINE_COPPER, 2),
+                        iwcFromTag(Tags.Items.GEMS_DIAMOND, 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.EAS.getStillFluid(), 250))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("mob_sampler_mixing"));
+
         MixingRecipeBuilder.newRecipe()
                 .ingredients(iwcFromItemLike(Items.DRIED_KELP, 4),
                         iwcFromTag(Tags.Items.SLIME_BALLS, 2),
@@ -1559,6 +1568,18 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void fusionPlantRecipes(@NotNull RecipeOutput pRecipeOutput) {
+
+        shaped(RecipeCategory.MISC, NTBlocks.CRYSTAL_CULTIVATOR.asItem())
+                .pattern("CSC")
+                .pattern("ALA")
+                .pattern("CIC")
+                .define('C', NTItems.AQUARINE_COPPER_INGOT)
+                .define('S', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .define('A', NTItems.AQUARINE_STEEL_INGOT)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .define('I', NTItems.AQUATIC_CHIP)
+                .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
+                .save(pRecipeOutput, key("crystal_cultivator"));
 
         shaped(RecipeCategory.MISC, NTBlocks.RESONANCE_NODE.asItem(), 2)
                 .pattern(" S ")

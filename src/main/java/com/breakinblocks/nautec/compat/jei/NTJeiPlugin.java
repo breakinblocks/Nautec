@@ -7,6 +7,7 @@ import com.breakinblocks.nautec.api.client.screen.NTMachineScreen;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.api.bacteria.Bacteria;
 import com.breakinblocks.nautec.api.items.IBacteriaItem;
 import com.breakinblocks.nautec.client.ClientRecipes;
@@ -284,6 +285,8 @@ public class NTJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        registration.addIngredientInfo(PrismarineCrystalBlock.cultivatedItem(), VanillaTypes.ITEM_STACK,
+                Component.translatable("nautec.jei.cultivated_crystal"));
         Component seedInfo = Component.translatable("nautec.jei.crystal_seed");
         registration.addIngredientInfo(NTItems.DORMANT_CRYSTAL_SEED.get(), seedInfo);
         registration.addIngredientInfo(NTItems.PRISMARINE_CRYSTAL_SEED.get(), seedInfo);

@@ -60,6 +60,9 @@ public class PrismarineCrystalBlock extends LaserBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
         build(level, pos, Boolean.TRUE.equals(stack.get(NTDataComponents.CULTIVATED)));
+        if (level.getBlockEntity(pos) instanceof PrismarineCrystalBlockEntity crystal) {
+            crystal.setCrystalPurity(stack.getOrDefault(NTDataComponents.CRYSTAL_PURITY, 3f));
+        }
     }
 
     public static void build(Level level, BlockPos core, boolean cultivated) {
@@ -118,7 +121,9 @@ public class PrismarineCrystalBlock extends LaserBlock {
             level.removeBlock(topPos.below(i), false);
         }
         level.playSound(null, crystal.getBlockPos(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.BLOCKS, 1.5F, 0.7F);
-        return cultivatedItem();
+        ItemStack stack = cultivatedItem();
+        stack.set(NTDataComponents.CRYSTAL_PURITY, crystal.getCrystalPurity());
+        return stack;
     }
 
     @Override

@@ -7,6 +7,8 @@ navigation:
 item_ids:
   - nautec:spawner_confinement_matrix
   - nautec:confined_spawner
+  - nautec:mob_sampler
+  - nautec:mob_sample
 ---
 
 # <Color id="light_purple">Confined Spawner</Color>
@@ -20,9 +22,27 @@ item_ids:
 
 Use a Spawner Confinement Matrix on a spawner. The cage gains a band of glowing runes and a metal frame, and becomes a Confined Spawner. It keeps everything about the original spawner: the mob, how many it spawns at once, how often, and any upgrades. Spawners improved with Apothic Spawners keep their spawn count and delay and run faster for them.
 
-Sneak and use the Confined Spawner with an empty hand, or with a Matrix, to release it. The spawner goes back exactly as it was and the Matrix returns to your inventory. It only releases once the storage and the experience tank are both empty; until then a message says to empty them first.
+Sneak and use the Confined Spawner with an empty hand, or with a Matrix, to release it. The cage returns to an ordinary spawner with its current mob and upgrades, and the Matrix returns to your inventory. It only releases once the storage and the experience tank are both empty; until then a message says to empty them first.
 
 Breaking a Confined Spawner with a pickaxe drops the Confined Spawner itself, with or without Silk Touch. It keeps the mob, the spawner's settings and upgrades, and the filter, so you can move it and place it back exactly as it was. The stored drops and experience go with it too, so nothing spills on the ground. To get a plain spawner back instead, empty it and release it.
+
+## <Color id="gold">Changing the Mob</Color>
+
+Make a <ItemLink id="mob_sampler"/> in the Mixer with one Glass Vial, two Aquarine Copper Ingots, a diamond and 250 mB of Electrolyte Algae Serum. Each recipe makes one sampler.
+
+Use the sampler on a living mob to collect a <ItemLink id="mob_sample"/>. The creature stays alive and in place. The sampler is consumed, and the sample's tooltip names the mob it came from. Creatures added by other mods work too.
+
+Use the sample on a Confined Spawner to change its mob. The sample is consumed. Spawn count, delay, upgrades, filters, stored drops and experience are kept; progress toward the next cycle starts over. Breaking and replacing the spawner keeps the new mob, as does releasing it back into an ordinary spawner. Samples cannot be applied directly to ordinary spawners.
+
+Players, dead creatures and entities marked with the `c:capturing_not_supported` entity type tag cannot be sampled. The tag is checked again when applying a sample, so packs can also block samples that were collected before their rules changed.
+
+<RecipeFor id="mob_sampler"/>
+
+### <Color id="aqua">Guardian Materials</Color>
+
+Guardians are a useful first target for sampling. A Guardian Confined Spawner supplies renewable Prismarine Shards and Prismarine Crystals for [Aquatic Catalyst fuel](nautec:getting_started/laser_power.md) and NauTec crafting, including Aquarine Copper Compound.
+
+It also has a chance to produce <ItemLink id="ancient_valve"/>, <ItemLink id="burnt_coil"/> and <ItemLink id="guardian_eye"/>. This gives you an automated supply of salvage parts and Guardian Eyes for augments and Impulse Laser Modules. See [Salvage](nautec:getting_started/salvage.md) for the extra mob drops and [Crates and Etching](nautec:getting_started/etching.md) for cleaning salvage parts.
 
 ## <Color id="gold">Power</Color>
 

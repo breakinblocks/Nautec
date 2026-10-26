@@ -30,6 +30,8 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -191,9 +193,19 @@ public final class GeneratedPackTests {
                     continue;
                 }
                 ResourceKey<Bacteria> key = ResourceKey.create(NTRegistries.BACTERIA_KEY, Nautec.rl(name));
-                helper.assertTrue(registry.get(key).isEmpty(),
-                        "Material bacteria '" + name + "' should be gated off when none of its mods are installed, "
-                                + "otherwise every pack sees content it cannot use");
+                try (var stream = GeneratedPackTests.class.getResourceAsStream(
+                        "/data/nautec/nautec/bacteria/" + name + ".json")) {
+                    helper.assertTrue(stream != null, "Missing shipped definition for " + name);
+                    var definition = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
+                    var conditions = ICondition.LIST_CODEC.parse(JsonOps.INSTANCE,
+                            definition.get("neoforge:conditions")).getOrThrow();
+                    helper.assertFalse(conditions.isEmpty(), "Material bacteria must declare mod gates: " + name);
+                    boolean enabled = conditions.stream().allMatch(condition -> condition.test(ICondition.IContext.TAGS_INVALID));
+                    helper.assertValueEqual(registry.get(key).isPresent(), enabled,
+                            "Material bacteria must respect installed-mod conditions: " + name);
+                } catch (IOException exception) {
+                    throw new IllegalStateException("Cannot read shipped bacteria " + name, exception);
+                }
             }
             helper.succeed();
         }));

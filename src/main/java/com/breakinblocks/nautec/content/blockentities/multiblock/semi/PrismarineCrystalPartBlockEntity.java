@@ -61,11 +61,11 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
         PrismarineCrystalBlockEntity crystalBE = getCrystalBE();
 
         if (crystalBE != null) {
+            setPurity(crystalBE.getCrystalPurity());
             if (canTransmitPower()) {
                 transmitPower(crystalBE.outputPower(this));
                 extendTrail(crystalBE);
             }
-            setPurity(3);
         }
     }
 
