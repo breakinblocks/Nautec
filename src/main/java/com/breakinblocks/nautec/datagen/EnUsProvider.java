@@ -1429,7 +1429,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.jade.crystal.cultivated", "Cultivated: sneak and right-click with a wrench to move it");
         add("nautec.jade.crystal.natural", "Natural: rooted in place");
         add("nautec.jei.crystal_seed", "Craft a Dormant Crystal Seed, then awaken it in a Resonance Chamber at purity 3.0. Set the awakened seed in a Crystal Cradle.");
-        add("nautec.jei.crystal_cradle", "Feed the cradle laser beams of purity 2.0 or higher. After %s AP the seed becomes a Cultivated Prismarine Crystal standing on the cradle, which works like a natural one and can be moved with a wrench.");
+        add("nautec.jei.crystal_cradle", "Feed the cradle laser beams of purity 2.0 or higher. After %s AP the seed becomes a Cultivated Prismarine Crystal with a random purity from 3.00 to 6.00. It can be moved with a wrench without changing its purity.");
+        add("nautec.jei.cultivated_crystal", "Grow a Cultivated Prismarine Crystal from an awakened seed in a Crystal Cradle. When growth finishes, its purity is randomly set between 3.00 and 6.00, compared with 3.0 for natural crystals. Both output beams use this purity. The value stays the same when the crystal is moved with a wrench; its item tooltip shows the purity.");
         add("nautec.jade.confined_spawner.mob", "Mob: %s");
         add("nautec.jade.generator.output", "Output: %s FE/t");
         add("nautec.jade.tidal_rotor.water", "Open water: %s%%, depth %s / %s");

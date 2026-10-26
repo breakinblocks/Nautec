@@ -74,6 +74,9 @@ public final class NTDataComponents {
     public static final Supplier<DataComponentType<Boolean>> CULTIVATED = registerDataComponentType("cultivated",
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
+    public static final Supplier<DataComponentType<Float>> CRYSTAL_PURITY = registerDataComponentType("crystal_purity",
+            () -> builder -> builder.persistent(Codec.floatRange(3f, 6f)).networkSynchronized(ByteBufCodecs.FLOAT));
+
     public static final Supplier<DataComponentType<Long>> CRADLE_GROWTH = registerDataComponentType("cradle_growth",
             () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
 
