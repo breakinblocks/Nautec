@@ -32,6 +32,10 @@ import java.util.function.UnaryOperator;
 public final class NTDataComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENT_TYPES = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Nautec.MODID);
 
+    public static final Supplier<DataComponentType<EntityType<?>>> MOB_SAMPLE = registerDataComponentType("mob_sample",
+            () -> builder -> builder.persistent(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
+                    .networkSynchronized(ByteBufCodecs.registry(Registries.ENTITY_TYPE)));
+
     public static final Supplier<DataComponentType<ComponentPowerStorage>> POWER = registerDataComponentType("power",
             () -> builder -> builder.persistent(ComponentPowerStorage.CODEC).networkSynchronized(ComponentPowerStorage.STREAM_CODEC));
     public static final Supplier<DataComponentType<SimpleFluidContent>> FLUID = registerDataComponentType("fluid",

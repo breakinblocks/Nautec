@@ -1490,6 +1490,15 @@ public class RecipesProvider extends RecipeProvider {
     }
 
     private void chemistryRecipes(@NotNull RecipeOutput pRecipeOutput) {
+        MixingRecipeBuilder.newRecipe(new ItemStackTemplate(NTItems.MOB_SAMPLER.get(), 1))
+                .ingredients(iwcFromItemLike(NTItems.GLASS_VIAL.get(), 1),
+                        iwcFromTag(NTTags.Items.INGOTS_AQUARINE_COPPER, 2),
+                        iwcFromTag(Tags.Items.GEMS_DIAMOND, 1))
+                .duration(200)
+                .fluidIngredient(new FluidStackTemplate(NTFluids.EAS.getStillFluid(), 250))
+                .fluidResult(null)
+                .save(pRecipeOutput, key("mob_sampler_mixing"));
+
         MixingRecipeBuilder.newRecipe()
                 .ingredients(iwcFromItemLike(Items.DRIED_KELP, 4),
                         iwcFromTag(Tags.Items.SLIME_BALLS, 2),

@@ -27,6 +27,8 @@ import com.breakinblocks.nautec.content.items.CrystalSeedItem;
 import com.breakinblocks.nautec.content.items.ReactorUpgradeItem;
 import com.breakinblocks.nautec.content.items.EnergyConversionUpgradeItem;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
+import com.breakinblocks.nautec.content.items.MobSamplerItem;
+import com.breakinblocks.nautec.content.items.MobSampleItem;
 import com.breakinblocks.nautec.content.items.RobotArmItem;
 import com.breakinblocks.nautec.content.items.SeaEyeTarget;
 import com.breakinblocks.nautec.content.items.SubmarineItem;
@@ -217,6 +219,8 @@ public final class NTItems {
             Item::new, new Item.Properties());
 
     public static final DeferredItem<Item> GLASS_VIAL = registerItem("glass_vial", Item::new, new Item.Properties());
+    public static final DeferredItem<MobSamplerItem> MOB_SAMPLER = registerItem("mob_sampler", MobSamplerItem::new, new Item.Properties().stacksTo(16));
+    public static final DeferredItem<MobSampleItem> MOB_SAMPLE = registerItem("mob_sample", MobSampleItem::new, new Item.Properties().stacksTo(16), false);
     public static final DeferredItem<Item> ELECTROLYTE_ALGAE_SERUM_VIAL = registerItem("eas_vial", Item::new, new Item.Properties());
 
     public static final DeferredItem<GraftingAnchorItem> GRAFTING_ANCHOR = bacteriaItem(registerItem("grafting_anchor", GraftingAnchorItem::new,

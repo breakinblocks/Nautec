@@ -357,6 +357,16 @@ public class EnUsProvider extends LanguageProvider {
         addItem(NTFluids.EAS.getDeferredBucket(), "Electrolyte Algae Serum (EAS) Bucket");
         addItem(NTFluids.OIL.getDeferredBucket(), "Oil Bucket");
         addItem(GLASS_VIAL, "Glass Vial");
+        addItem(MOB_SAMPLER, "Mob Sampler");
+        addItem(MOB_SAMPLE, "Mob Sample");
+        add("nautec.mob_sampler.tooltip", "Use on a living mob to collect a single-use sample");
+        add("nautec.mob_sampler.unsupported", "This creature cannot be sampled");
+        add("nautec.mob_sample.mob", "Sample: %s");
+        add("nautec.mob_sample.empty", "No mob sample stored");
+        add("nautec.mob_sample.tooltip", "Use on a Confined Spawner to change its mob; consumes the sample");
+        add("nautec.mob_sample.confined_only", "Mob samples can only be applied to Confined Spawners");
+        add("nautec.mob_sample.unsupported", "This sample cannot be applied");
+        add("nautec.mob_sample.applied", "Confined Spawner attuned to %s");
         addItem(ELECTROLYTE_ALGAE_SERUM_VIAL, "Electrolyte Algae Serum (EAS) Vial");
         addItem(RUSTY_GEAR, "Rusty Gear");
         addItem(GEAR, "Gear");

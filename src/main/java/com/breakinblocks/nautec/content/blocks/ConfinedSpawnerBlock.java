@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.ints.IntSets;
 import com.breakinblocks.nautec.capabilities.fluid.TankList;
 import com.breakinblocks.nautec.capabilities.RoleResourceHandler;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.items.MobSampleItem;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
@@ -22,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -91,6 +93,9 @@ public class ConfinedSpawnerBlock extends LaserBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
                                           InteractionHand hand, BlockHitResult hitResult) {
+        if (stack.getItem() instanceof MobSampleItem sample) {
+            return sample.useOn(new UseOnContext(player, hand, hitResult));
+        }
         if (!(level.getBlockEntity(pos) instanceof ConfinedSpawnerBlockEntity confined) || confined.getFluidTank().getFluidAmount() <= 0) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }

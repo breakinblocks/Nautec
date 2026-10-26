@@ -119,6 +119,8 @@ public final class Nautec {
         NTCriteriaTriggers.TRIGGERS.register(modEventBus);
         NTRecipes.SERIALIZERS.register(modEventBus);
         NTRecipes.TYPES.register(modEventBus);
+        NTRecipes.DISPLAYS.register(modEventBus);
+        NTRecipes.SLOT_DISPLAYS.register(modEventBus);
         NTDataAttachments.ATTACHMENTS.register(modEventBus);
         NTArgumentTypes.ARGUMENT_TYPES.register(modEventBus);
         NTBlockEntityTypes.BLOCK_ENTITIES.register(modEventBus);

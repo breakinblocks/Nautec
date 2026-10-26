@@ -170,6 +170,8 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.DAMAGED_AQUATIC_CHIP.get());
 
         basicItem(NTItems.GLASS_VIAL.get());
+        basicItem(NTItems.MOB_SAMPLER.get());
+        basicItem(NTItems.MOB_SAMPLE.get());
         basicItem(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL.get());
 
         petriDishItem(NTItems.PETRI_DISH.get());

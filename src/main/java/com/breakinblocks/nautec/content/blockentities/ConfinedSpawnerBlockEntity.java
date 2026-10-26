@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.items.MobSampleItem;
+import net.minecraft.util.random.WeightedList;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
@@ -39,6 +41,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -218,6 +221,23 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
             }
         }
         return false;
+    }
+
+    public boolean applySample(EntityType<?> type) {
+        if (level == null || level.isClientSide() || spawnerTag == null || !MobSampleItem.supports(type)) {
+            return false;
+        }
+        if (!(type.create(level, EntitySpawnReason.SPAWNER) instanceof Mob)) {
+            return false;
+        }
+        CompoundTag entity = new CompoundTag();
+        entity.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(type).toString());
+        SpawnData spawn = new SpawnData(entity, Optional.empty(), Optional.empty());
+        CompoundTag updated = spawnerTag.copy();
+        updated.store("SpawnData", SpawnData.CODEC, spawn);
+        updated.store("SpawnPotentials", SpawnData.LIST_CODEC, WeightedList.of(spawn));
+        confine(spawnerState, updated);
+        return true;
     }
 
     @Override

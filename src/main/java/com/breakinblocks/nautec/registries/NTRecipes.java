@@ -1,6 +1,11 @@
 package com.breakinblocks.nautec.registries;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.recipes.display.CountedIngredientDisplay;
+import com.breakinblocks.nautec.content.recipes.display.MachineRecipeDisplay;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import com.breakinblocks.nautec.content.recipes.AquaticCatalystChannelingRecipe;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.BacteriaIncubationRecipe;
@@ -20,6 +25,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class NTRecipes {
+    public static final DeferredRegister<RecipeDisplay.Type<?>> DISPLAYS = DeferredRegister.create(Registries.RECIPE_DISPLAY, Nautec.MODID);
+    public static final DeferredRegister<SlotDisplay.Type<?>> SLOT_DISPLAYS = DeferredRegister.create(Registries.SLOT_DISPLAY, Nautec.MODID);
+
+    static {
+        DISPLAYS.register("machine", () -> MachineRecipeDisplay.TYPE);
+        SLOT_DISPLAYS.register("counted_ingredient", () -> CountedIngredientDisplay.TYPE);
+    }
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
             DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, Nautec.MODID);
 
