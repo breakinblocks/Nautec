@@ -12,8 +12,10 @@ item_ids:
 
 <Column alignItems="center" fullWidth={true}>
   <ItemImage id="mutator" scale="2"/>
-  The Mutator turns a colony of one strain into another.
+  Change a colony's strain or refine its stats.
 </Column>
+
+**Trying to raise Production Rate?** Keep your best colony, refine copies, and keep only the improvements. A successful attempt can still lower stats. Start with [Stat Breeding](mutator.md#stat-breeding) below.
 
 Put the colony in the left bacteria slot and the catalyst in the item slot. Every 12 seconds the Mutator makes one attempt, and keeps making attempts until one succeeds. The right bacteria slot must be empty before it starts, so take each new colony out as soon as it appears.
 
@@ -56,15 +58,38 @@ Since the new colony's size does not depend on the parent, mutate colonies while
 
 ## <Color id="gold">Stat Breeding</Color>
 
-Mutation is the only thing that changes a colony's stats, and a colony keeps its stats through each step. Analyze each result in the [Bacterial Analyzer](bacterial_analyzer.md) before you commit to it.
+A successful mutation or refinement is a new stat roll, not a guaranteed improvement. Growth Rate, Production Rate and Lifespan can go down as well as up. Repeatedly refining your only colony can undo the gains you already made.
 
-You do not have to change strain to breed stats. Use the storage block of the item a colony makes as the catalyst (Iron Blocks for Ferrophiles, Hay Bales for Rhizobacteria), or the item itself if it has no storage block, and the Mutator refines the colony instead. A refine has a 25% base chance, lowered by size and Mutation Resistance like any other attempt. A success keeps the strain and the colony's size and shifts the stats the same way a mutation does, and a failure costs the same as a failed mutation. JEI lists each refine in the Bacteria Mutations category as a strain turning into itself.
+### Keep the best, refine the copies
+
+1. Analyze your colony in the [Bacterial Analyzer](bacterial_analyzer.md) and keep your best one as a template.
+2. Make spare colonies in the [Colony Replicator](colony_replicator.md). Copies can lose stats too, so compare each result against the original template.
+3. Refine a spare in the Mutator, then analyze the result. Keep a better result as your new template; keep the old template when the result is worse.
+4. Repeat until the stats you care about reach their caps. Grow the finished colony in the [Incubator](incubator.md) for production.
+
+You do not have to change strain to breed stats. Use the storage block of the item a colony makes as the catalyst (Iron Blocks for Ferrophiles, Hay Bales for Rhizobacteria), or the item itself if it has no storage block. JEI lists each refinement as a strain turning into itself.
+
+A refinement has a 25% base success chance, reduced by colony size and Mutation Resistance. A success keeps the strain and colony size while rolling the stats. A failed attempt follows the normal colony-loss rules.
+
+### What the numbers mean
+
+Every strain shares the same Production Rate cap: **2.0 by default**. A strain's starting stat range only decides its initial roll; it does not limit how far you can breed it.
+
+**Strain Yield is separate.** The reactor multiplies Production Rate by Strain Yield, colony size and the machine's speed factors. A strain with 0.12 Strain Yield can still reach 2.0 Production Rate, but produces 12% as fast as a yield-1 strain with the same colony stats and reactor setup. See [Production Rates](production_rates.md) for the full calculation.
+
+Without serum protection, Production Rate rolls equally toward an increase or a decrease, by up to roughly 10% divided by (1 + Mutation Resistance) each time. Higher resistance makes those changes smaller. It also makes replication more faithful, reaching perfect copies at the resistance cap, but lowers the Mutator's success chance.
+
+The Colony Replicator's splicing mode can combine good stats from two parents. It cannot raise a stat above the better parent's value, so use mutation or refinement to reach new highs.
 
 ***
 
 ## <Color id="gold">Booster</Color>
 
 The slot to the right of the catalyst takes Electrolyte Algae Serum Vials. While it holds one, every attempt is three times as likely to succeed, whether it mutates or refines, and a failed attempt does not shrink the colony. A vial is only used up when an attempt succeeds, so each new colony costs one vial however many tries it took. Hoppers and pipes can fill it.
+
+On a successful boosted mutation or refinement, serum also gives **each stat that would decrease a separate 50% chance to keep its parent's value**. Improvements are kept as rolled. Protection does not guarantee an improvement or protect every stat together, so keep a backup template.
+
+Set `mutatorBoostedStatProtectionChance` in `config/nautec-common.toml` to a percentage from 0 to 100. At 0, serum does not protect stats; at 100, a successful boosted result cannot lose stats. This protection does not apply to Colony Replicator copy errors.
 
 ***
 

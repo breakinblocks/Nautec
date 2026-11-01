@@ -261,6 +261,10 @@ public final class NTConfig {
             .comment("The share of the normal failure loss a colony still takes when a boosted Mutator attempt fails. 0 means a boosted failure costs nothing, 1 means it costs the same as an unboosted one")
             .defineInRange("mutatorBoostedFailureShrink", 0.0, 0, 1);
 
+    private static final ModConfigSpec.DoubleValue MUTATOR_BOOSTED_STAT_PROTECTION_CHANCE = BUILDER
+            .comment("Percent chance per declining stat to keep the parent's value on a successful serum-boosted mutation or refinement. 0 disables protection; 100 prevents all stat losses. Improvements are unchanged")
+            .defineInRange("mutatorBoostedStatProtectionChance", 50.0, 0.0, 100.0);
+
     private static final ModConfigSpec.IntValue INCUBATOR_CRAFTING_SPEED = BUILDER
             .comment("The amount of ticks it takes for the Incubator to complete one growth cycle")
             .defineInRange("incubatorCraftingSpeed", 100, 0, Integer.MAX_VALUE);
@@ -1245,6 +1249,7 @@ public final class NTConfig {
     public static double mutatorRefineChance = 25.0;
     public static double mutatorBoosterMultiplier = 3.0;
     public static double mutatorBoostedFailureShrink = 0.0;
+    public static double mutatorBoostedStatProtectionChance = 50.0;
 
     public static int incubatorCraftingSpeed = 100;
     public static double incubatorSizeGrowth = 0.03;
@@ -1666,6 +1671,7 @@ public final class NTConfig {
         mutatorRefineChance = value(MUTATOR_REFINE_CHANCE);
         mutatorBoosterMultiplier = value(MUTATOR_BOOSTER_MULTIPLIER);
         mutatorBoostedFailureShrink = value(MUTATOR_BOOSTED_FAILURE_SHRINK);
+        mutatorBoostedStatProtectionChance = value(MUTATOR_BOOSTED_STAT_PROTECTION_CHANCE);
 
         incubatorCraftingSpeed = value(INCUBATOR_CRAFTING_SPEED);
         incubatorSizeGrowth = value(INCUBATOR_SIZE_GROWTH);

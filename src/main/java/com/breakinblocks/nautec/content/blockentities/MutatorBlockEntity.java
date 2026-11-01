@@ -208,7 +208,7 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
             if (boosted) {
                 getItemStackHandler().extractItem(BOOSTER, 1, false);
             }
-            BacteriaInstance result = buildResult(recipe.resultBacteria(), inputBacteria, recipe.refines());
+            BacteriaInstance result = buildResult(recipe.resultBacteria(), inputBacteria, recipe.refines(), boosted);
             getBacteriaStorage().extractBacteria(0, inputBacteria.getSize(), false);
             getBacteriaStorage().insertBacteria(1, result, false);
             if (level instanceof ServerLevel serverLevel) {
@@ -221,11 +221,14 @@ public class MutatorBlockEntity extends LaserBlockEntity implements MenuProvider
         }
     }
 
-    private BacteriaInstance buildResult(ResourceKey<Bacteria> resultBacteria, BacteriaInstance input, boolean refine) {
+    private BacteriaInstance buildResult(ResourceKey<Bacteria> resultBacteria, BacteriaInstance input, boolean refine, boolean boosted) {
         Bacteria result = BacteriaHelper.getBacteria(level.registryAccess(), resultBacteria);
 
         if (input.getStats() instanceof SimpleCollapsedStats simpleStats && result.stats() instanceof SimpleBacteriaStats resultBase) {
             SimpleCollapsedStats drift = simpleStats.rollStats();
+            if (boosted) {
+                drift = drift.protectStatLosses(simpleStats, NTConfig.mutatorBoostedStatProtectionChance, level.getRandom()::nextDouble);
+            }
             return new BacteriaInstance(
                     resultBacteria,
                     refine ? input.getSize() : result.rollSize(),

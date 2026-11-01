@@ -242,6 +242,23 @@ public final class BacteriaMachineTests {
             });
         });
 
+        r.add("bacteria/serum_stat_protection", 20, helper -> {
+            SimpleCollapsedStats parent = stats(1f, 0.5f, 1f, 2000);
+            SimpleCollapsedStats worse = stats(0.8f, 0.4f, 0.8f, 1900);
+            helper.assertValueEqual(worse, worse.protectStatLosses(parent, 0, () -> 0.0), "zero percent preserves the unprotected result");
+            helper.assertValueEqual(parent, worse.protectStatLosses(parent, 100, () -> 0.999), "100 percent prevents every loss");
+            double[] rolls = {0.49, 0.50, 0.0, 0.99};
+            int[] index = {0};
+            SimpleCollapsedStats mixed = worse.protectStatLosses(parent, 50, () -> rolls[index[0]++]);
+            helper.assertValueEqual(stats(1f, 0.4f, 1f, 1900), mixed, "each declining stat gets its own percentage roll");
+            helper.assertValueEqual(4, index[0], "four declining stats roll independently");
+            SimpleCollapsedStats better = stats(1.1f, 0.6f, 1.1f, 2100);
+            helper.assertValueEqual(better, better.protectStatLosses(parent, 100, () -> {
+                throw new AssertionError("Improved stats must not roll for protection");
+            }), "all improvements survive protection");
+            helper.succeed();
+        });
+
         r.add("bacteria/mutator_chance_formula", 40, helper -> helper.runAfterDelay(1, () -> {
             BacteriaMutationRecipe recipe = new BacteriaMutationRecipe(
                     NTBacterias.LITHOPHILES, NTBacterias.CALCIOPHILES, Ingredient.of(Items.BONE_MEAL), 20f);
