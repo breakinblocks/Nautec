@@ -37,6 +37,8 @@ items per minute = progress per tick x 12 x items per cycle
 
 ## <Color id="gold">Strain Yield</Color>
 
+Every strain can be bred to the same Production Rate cap, 2.0 by default. Strain Yield multiplies that stat afterward; it does not lower the cap. Follow the [Mutator's stat-breeding steps](mutator.md#stat-breeding) to improve a colony without risking your best template.
+
 | Strain Yield | NauTec strains | Other mods' materials |
 |---|---|---|
 | 1 | Lithophiles (stone), Silicophiles (sand), Calciophiles (bone meal), Cryobionts (ice), Carnivorous Bacteria (rotten flesh), and every wood, plant, crop, fungus and mushroom strain | aluminum, bauxite, brass, bronze, graphite, lead, pig iron, steel, tin and zinc ingots; apatite |

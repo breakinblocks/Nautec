@@ -16,6 +16,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import static com.breakinblocks.nautec.NTConfig.*;
 import static com.breakinblocks.nautec.NTConfig.bacteriaLifespanCap;
@@ -119,6 +120,16 @@ public record SimpleCollapsedStats(SimpleBacteriaStats baseStats,
 
     public SimpleCollapsedStats rollStats() {
         return rollGrowthRate().rollMutationResistance().rollProductionRate().rollLifespan();
+    }
+
+    public SimpleCollapsedStats protectStatLosses(SimpleCollapsedStats parent, double chancePercent, DoubleSupplier random) {
+        double chance = Math.clamp(chancePercent / 100.0, 0.0, 1.0);
+        return new SimpleCollapsedStats(baseStats,
+                growthRate < parent.growthRate && random.getAsDouble() < chance ? parent.growthRate : growthRate,
+                mutationResistance < parent.mutationResistance && random.getAsDouble() < chance ? parent.mutationResistance : mutationResistance,
+                productionRate < parent.productionRate && random.getAsDouble() < chance ? parent.productionRate : productionRate,
+                lifespan < parent.lifespan && random.getAsDouble() < chance ? parent.lifespan : lifespan,
+                color);
     }
 
     public SimpleCollapsedStats copy() {
