@@ -402,7 +402,7 @@ public final class NTBlocks {
     private static DeferredBlock<ExtradimensionalFrameBlock> containmentFrame(String name, int tier) {
         return registerBlockAndItem(name, props -> new ExtradimensionalFrameBlock(props, tier),
                 BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(4.0f + tier, 1200.0f).sound(SoundType.NETHERITE_BLOCK)
-                        .noOcclusion().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 3 + tier), true, false);
+                        .noOcclusion().forceSolidOn().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(state -> 3 + tier), true, false);
     }
 
     public static <T extends Block> DeferredBlock<T> bacteriaBlock(DeferredBlock<T> block) {

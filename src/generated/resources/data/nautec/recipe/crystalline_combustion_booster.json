@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "nautec:flawless_prismarine_crystal"
+    },
+    "F": {
+      "item": "nautec:fiery_crystal"
+    },
+    "R": {
+      "item": "nautec:resonant_shard"
+    }
+  },
+  "pattern": [
+    " R ",
+    "FCF",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:crystalline_combustion_booster"
+  }
+}

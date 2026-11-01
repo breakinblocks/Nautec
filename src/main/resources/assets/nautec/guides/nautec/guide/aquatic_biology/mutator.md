@@ -48,7 +48,7 @@ On a success the whole input colony is used up and the new strain appears in the
 
 ## <Color id="gold">Failure</Color>
 
-A failed attempt kills a quarter of the colony, reduced by its Mutation Resistance: a colony at the resistance cap loses nothing. A failure never takes the last of a colony, so the Mutator always keeps trying. A filled [booster](#booster) slot stops failures from costing anything.
+A failed attempt kills a quarter of the colony, reduced by its Mutation Resistance: a colony at the resistance cap loses nothing. A failure never takes the last of a colony, so the Mutator always keeps trying. A filled [booster](mutator.md#booster) slot stops failures from costing anything.
 
 Since the new colony's size does not depend on the parent, mutate colonies while they are small. Growing a colony first only lowers the chance and gives failures more to eat.
 

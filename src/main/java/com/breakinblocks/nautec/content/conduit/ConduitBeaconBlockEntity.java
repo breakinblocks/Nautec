@@ -97,6 +97,9 @@ public class ConduitBeaconBlockEntity extends LaserBlockEntity {
         } else {
             ConduitBeaconTracker.remove(serverLevel, worldPosition);
         }
+        if (time % REDSTONE_INTERVAL == 0) {
+            update();
+        }
         if (getBlockState().getValue(ConduitBeaconBlock.ACTIVE) != running) {
             serverLevel.setBlock(worldPosition, getBlockState().setValue(ConduitBeaconBlock.ACTIVE, running), Block.UPDATE_CLIENTS);
         }
@@ -236,11 +239,19 @@ public class ConduitBeaconBlockEntity extends LaserBlockEntity {
     protected void saveData(ValueOutput out) {
         super.saveData(out);
         out.putInt("buffer", buffer);
+        out.putInt("frame_size", frameSize);
+        out.putBoolean("water", water);
+        out.putBoolean("running", running);
+        out.putBoolean("powered", powered);
     }
 
     @Override
     protected void loadData(ValueInput in) {
         super.loadData(in);
         this.buffer = in.getIntOr("buffer", 0);
+        this.frameSize = in.getIntOr("frame_size", 0);
+        this.water = in.getBooleanOr("water", false);
+        this.running = in.getBooleanOr("running", false);
+        this.powered = in.getBooleanOr("powered", false);
     }
 }

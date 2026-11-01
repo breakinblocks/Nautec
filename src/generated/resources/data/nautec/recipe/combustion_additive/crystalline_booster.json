@@ -1,0 +1,9 @@
+{
+  "type": "nautec:combustion_additive",
+  "duration": 12000,
+  "fuel_multiplier": 3.0,
+  "ingredient": {
+    "item": "nautec:crystalline_combustion_booster"
+  },
+  "output_multiplier": 5.0
+}

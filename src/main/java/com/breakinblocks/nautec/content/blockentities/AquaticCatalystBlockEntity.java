@@ -410,6 +410,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         this.currentRecipeId = in.getString("current_recipe").map(ResourceLocation::parse).orElse(null);
         this.nextRecipeId = in.getString("next_recipe").map(ResourceLocation::parse).orElse(null);
         this.syncedTransfer = in.getIntOr("transfer", 0);
+        setPurity(in.getFloatOr("source_purity", 0));
         this.fuelBurned = Math.max(1, in.getIntOr("fuel_burned", 1));
     }
 
@@ -438,6 +439,7 @@ public class AquaticCatalystBlockEntity extends LaserBlockEntity {
         super.saveData(out);
 
         out.putInt("duration", duration);
+        out.putFloat("source_purity", boostedPurity());
         out.putInt("fuel_burned", fuelBurned);
         if (currentRecipe != null) {
             out.putString("current_recipe", currentRecipe.id().toString());

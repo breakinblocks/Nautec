@@ -4,11 +4,13 @@ import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blocks.blockentities.LaserBlock;
 import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntity;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
+import com.breakinblocks.nautec.utils.ItemUtils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
-import com.breakinblocks.nautec.utils.ItemUtils;
 
 public class ResonanceChamberBlock extends LaserBlock {
     public ResonanceChamberBlock(Properties properties) {
@@ -47,24 +48,66 @@ public class ResonanceChamberBlock extends LaserBlock {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
 
-        var handler = be.getItemStackHandler();
-        if (!stack.isEmpty()) {
-            if (handler.isItemValid(0, stack)) {
-                player.setItemInHand(hand, handler.insertItem(0, stack, false));
-                return ItemInteractionResult.SUCCESS;
-            }
+        if (stack.isEmpty()) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
+        // Recipe validation is server-only; acknowledge the click without changing client inventory.
+        if (level.isClientSide()) {
+            return ItemInteractionResult.SUCCESS;
+        }
+        var handler = be.getItemStackHandler();
+        if (handler.isItemValid(ResonanceChamberBlockEntity.INPUT_SLOT, stack)) {
+            ItemStack remainder = handler.insertItem(ResonanceChamberBlockEntity.INPUT_SLOT, stack, false);
+            if (remainder.getCount() < stack.getCount()) {
+                player.setItemInHand(hand, remainder);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
 
-        ItemStack result = handler.extractItem(1, handler.getSlotLimit(1), false);
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!player.getMainHandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
+        if (!(level.getBlockEntity(pos) instanceof ResonanceChamberBlockEntity be)) {
+            return super.useWithoutItem(state, level, pos, player, hitResult);
+        }
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+        var handler = be.getItemStackHandler();
+        ItemStack result = handler.extractItem(ResonanceChamberBlockEntity.OUTPUT_SLOT, 64, false);
         if (result.isEmpty()) {
-            result = handler.extractItem(0, handler.getSlotLimit(0), false);
+            result = handler.extractItem(ResonanceChamberBlockEntity.INPUT_SLOT, 64, false);
         }
         if (result.isEmpty()) {
-            return ItemInteractionResult.CONSUME;
+            return InteractionResult.PASS;
         }
         ItemUtils.giveItemToPlayer(player, result, player.getInventory().selected);
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (!(level.getBlockEntity(pos) instanceof ResonanceChamberBlockEntity be)) {
+            return 0;
+        }
+        var handler = be.getItemStackHandler();
+        float fullness = 0;
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            ItemStack item = handler.getStackInSlot(slot);
+            if (!item.isEmpty()) {
+                fullness += (float) item.getCount() / Math.min(handler.getSlotLimit(slot), item.getMaxStackSize());
+            }
+        }
+        return fullness == 0 ? 0 : 1 + (int) (14 * fullness / handler.getSlots());
     }
 
     @Override

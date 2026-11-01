@@ -249,7 +249,7 @@ A 7 x 7 or 9 x 9 chamber has room for more crystals. Set a Cultivated Prismarine
   </BoxAnnotation>
 </GameScene>
 
-A 7 x 7 plant with all four satellites: 88 Fusion Casing on the edges, 244 Aquamarine Structural Glass, 14 Containment Coils, 4 Laser Injectors, 2 Fusion Collectors, a Fusion Port and the controller, 354 blocks in all, plus the five crystals. The crystals are drawn by their own renderer, so the scene marks their places instead of showing them. Drag the scene to turn it.
+A 7 x 7 plant with all four satellites: 88 Fusion Casing on the edges, 244 Aquarine Structural Glass, 14 Containment Coils, 4 Laser Injectors, 2 Fusion Collectors, a Fusion Port and the controller, 354 blocks in all, plus the five crystals. The crystals are drawn by their own renderer, so the scene marks their places instead of showing them. Drag the scene to turn it.
 
 | Satellites | Most output | FE per AP | AP/t of purity 3.0 to reach it |
 |---|---|---|---|

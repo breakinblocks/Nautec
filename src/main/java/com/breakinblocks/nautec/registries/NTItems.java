@@ -105,6 +105,10 @@ public final class NTItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> PRISMARINE_CRYSTAL_SHARD = registerItem("prismarine_crystal_shard",
             Item::new, new Item.Properties());
+    public static final DeferredItem<Item> FIERY_CRYSTAL = registerItem("fiery_crystal", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> CRYSTALLINE_COMBUSTION_BOOSTER = registerItem("crystalline_combustion_booster", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> STELLAR_COMBUSTION_BOOSTER = registerItem("stellar_combustion_booster", Item::new, new Item.Properties());
+
     public static final DeferredItem<Item> RESONANT_SHARD = registerItem("resonant_shard",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> FLAWLESS_PRISMARINE_CRYSTAL = registerItem("flawless_prismarine_crystal",

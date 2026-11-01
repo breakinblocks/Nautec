@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "nautec:crystalline_combustion_booster"
+    },
+    "D": {
+      "item": "nautec:deep_steel_plating"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "DCD",
+    "CNC",
+    "DCD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "nautec:stellar_combustion_booster"
+  }
+}

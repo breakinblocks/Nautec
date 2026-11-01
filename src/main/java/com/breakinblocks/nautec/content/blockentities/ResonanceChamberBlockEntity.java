@@ -56,6 +56,14 @@ public class ResonanceChamberBlockEntity extends LaserBlockEntity {
         return false;
     }
 
+    @Override
+    protected void onItemsChanged(int slot) {
+        super.onItemsChanged(slot);
+        if (level != null && !level.isClientSide()) {
+            level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        }
+    }
+
     public float getCharge() {
         return charge;
     }

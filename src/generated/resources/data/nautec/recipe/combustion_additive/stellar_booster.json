@@ -1,0 +1,9 @@
+{
+  "type": "nautec:combustion_additive",
+  "duration": 72000,
+  "fuel_multiplier": 5.0,
+  "ingredient": {
+    "item": "nautec:stellar_combustion_booster"
+  },
+  "output_multiplier": 10.0
+}

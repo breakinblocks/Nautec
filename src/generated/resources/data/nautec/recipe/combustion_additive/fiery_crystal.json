@@ -1,0 +1,9 @@
+{
+  "type": "nautec:combustion_additive",
+  "duration": 6000,
+  "fuel_multiplier": 2.0,
+  "ingredient": {
+    "item": "nautec:fiery_crystal"
+  },
+  "output_multiplier": 3.0
+}
