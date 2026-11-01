@@ -187,6 +187,23 @@ public final class BacteriaLookup {
         return list;
     }
 
+    public static List<Component> catalystHints(ResourceKey<Bacteria> strain) {
+        List<BacteriaMutationRecipe> options = mutationsFrom(strain);
+        options.sort(Comparator.comparing(BacteriaMutationRecipe::refines).reversed());
+        List<Component> lines = new ArrayList<>();
+        for (BacteriaMutationRecipe recipe : options) {
+            if (lines.size() == ROW_LIMIT) {
+                lines.add(Component.translatable("nautec.bacteria.lookup.more_rows", options.size() - ROW_LIMIT)
+                        .withStyle(ChatFormatting.DARK_GRAY));
+                break;
+            }
+            lines.add(Component.translatable(recipe.refines()
+                            ? "nautec.mutator.status.refine_catalyst" : "nautec.mutator.status.mutation_catalyst",
+                    catalystName(recipe), strainName(recipe.resultBacteria())).withStyle(ChatFormatting.AQUA));
+        }
+        return lines;
+    }
+
     public static List<Component> mutationRows(BacteriaInstance colony, boolean boosted) {
         return mutationRows(colony, boosted, ROW_LIMIT);
     }
