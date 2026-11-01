@@ -906,6 +906,8 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.mutator.status.no_colony", "Waiting for a colony in the left slot");
         add("nautec.mutator.status.no_catalyst", "Waiting for a catalyst. Hover the catalyst slot to see the options.");
         add("nautec.mutator.status.wrong_catalyst", "%s does nothing to %s");
+        add("nautec.mutator.status.refine_catalyst", "Use %s to refine %s");
+        add("nautec.mutator.status.mutation_catalyst", "Use %s to mutate into %s");
         add("nautec.mutator.status.output_full", "Take the new colony out of the right slot");
         add("nautec.mutator.status.no_power", "Not enough power");
         add("nautec.mutator.status.running", "Mutating");

@@ -116,6 +116,10 @@ public class MutatorScreen extends NTMachineScreen<MutatorBlockEntity> {
             lines.add(Component.translatable("nautec.mutator.status.running").withStyle(ChatFormatting.GREEN));
         }
 
+        if (!colony.isEmpty() && recipe.isEmpty()) {
+            lines.addAll(BacteriaLookup.catalystHints(colony.getBacteria()));
+        }
+
         lines.add(Component.translatable("nautec.mutator.status.power", mutator.getPower(), mutator.getRequiredPower())
                 .withStyle(powered ? ChatFormatting.GREEN : ChatFormatting.RED));
 
