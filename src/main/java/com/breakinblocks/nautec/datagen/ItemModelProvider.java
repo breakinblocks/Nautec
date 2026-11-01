@@ -74,6 +74,10 @@ public class ItemModelProvider extends ModelProvider {
         basicItem(NTItems.ATLANTIC_GOLD_NUGGET.get());
         basicItem(NTItems.PRISMARINE_CRYSTAL_SHARD.get());
         basicItem(NTItems.RESONANT_SHARD.get());
+        basicItem(NTItems.FIERY_CRYSTAL.get());
+        basicItem(NTItems.CRYSTALLINE_COMBUSTION_BOOSTER.get());
+        basicItem(NTItems.STELLAR_COMBUSTION_BOOSTER.get());
+
         basicItem(NTItems.PRESSURE_SYNTHESIZER.get());
         basicItem(NTItems.ATLANTEAN_PRESSURE_SYNTHESIZER.get());
         basicItem(NTItems.FLAWLESS_PRISMARINE_CRYSTAL.get());

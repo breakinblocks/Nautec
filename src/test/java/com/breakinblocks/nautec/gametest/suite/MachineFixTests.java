@@ -153,6 +153,26 @@ public final class MachineFixTests {
                 helper.useBlock(CENTRE, player);
                 helper.assertValueEqual(2, handler.getStackInSlot(0).getCount(), "shards in the input after a hand insert");
                 helper.assertTrue(player.getMainHandItem().isEmpty(), "The shard should have left the player's hand");
+                player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(NTItems.PRISM_MONOCLE.get()));
+                helper.useBlock(CENTRE, player);
+                helper.assertValueEqual(2, handler.getStackInSlot(0).getCount(), "An invalid held item must not extract input");
+                player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                BlockPos chamberPos = helper.absolutePos(CENTRE);
+                BlockState state = helper.getLevel().getBlockState(chamberPos);
+                helper.assertTrue(state.hasAnalogOutputSignal(), "The chamber exposes comparator output");
+                helper.assertValueEqual(1, state.getAnalogOutputSignal(helper.getLevel(), chamberPos, Direction.NORTH),
+                        "A nonempty input powers the comparator");
+                handler.setStackInSlot(1, new ItemStack(NTItems.RESONANT_SHARD.get(), 64));
+                helper.assertValueEqual(8, state.getAnalogOutputSignal(helper.getLevel(), chamberPos, Direction.NORTH),
+                        "Comparator includes the output slot");
+                helper.useBlock(CENTRE, player);
+                helper.assertTrue(handler.getStackInSlot(1).isEmpty(), "Empty hand extracts the output first");
+                helper.assertValueEqual(2, handler.getStackInSlot(0).getCount(), "Output extraction leaves input alone");
+                player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                helper.useBlock(CENTRE, player);
+                helper.assertTrue(handler.getStackInSlot(0).isEmpty(), "Empty hand extracts input when output is empty");
+                helper.assertValueEqual(0, state.getAnalogOutputSignal(helper.getLevel(), chamberPos, Direction.NORTH),
+                        "Empty chamber stops powering the comparator");
                 helper.succeed();
             });
         });

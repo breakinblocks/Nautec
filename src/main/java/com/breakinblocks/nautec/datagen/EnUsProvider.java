@@ -596,7 +596,7 @@ public class EnUsProvider extends LanguageProvider {
         addItem(KELP_SLURRY, "Kelp Slurry");
         addItem(ALGAL_LIPID, "Algal Lipid");
         addBlock(NTBlocks.FUSION_CASING, "Fusion Casing");
-        addBlock(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS, "Aquamarine Structural Glass");
+        addBlock(NTBlocks.AQUAMARINE_STRUCTURAL_GLASS, "Aquarine Structural Glass");
         addBlock(NTBlocks.CONTAINMENT_COIL, "Containment Coil");
         addBlock(NTBlocks.FUSION_CONTROLLER, "Fusion Controller");
         addBlock(NTBlocks.LASER_INJECTOR, "Laser Injector");
@@ -606,6 +606,9 @@ public class EnUsProvider extends LanguageProvider {
         addBlock(NTBlocks.SUBMARINE_DOCK, "Sea Scout Dock");
         addBlock(NTBlocks.PRESSURE_FORGE, "Abyssal Pressure Forge");
         addBlock(NTBlocks.LASER_PURIFICATION_SMELTER, "Laser Purification Smelter");
+        addItem(FIERY_CRYSTAL, "Fiery Crystal");
+        addItem(CRYSTALLINE_COMBUSTION_BOOSTER, "Crystalline Combustion Booster");
+        addItem(STELLAR_COMBUSTION_BOOSTER, "Stellar Combustion Booster");
         addItem(FLAWLESS_PRISMARINE_CRYSTAL, "Flawless Prismarine Crystal");
         addItem(DEEP_STEEL_PLATING, "Deep Steel Plating");
         addBlock(NTBlocks.GATEWAY, "Gateway");
@@ -1297,7 +1300,7 @@ public class EnUsProvider extends LanguageProvider {
         add("nautec.combustion_dynamo.fe", "%s / %s FE");
         add("nautec.combustion_dynamo.boosted", "Boosted");
         add("nautec.combustion_dynamo.additive", "Additive");
-        add("nautec.combustion_dynamo.additive.desc", "Redstone raises output by half and burns 10% more oil and water");
+        add("nautec.combustion_dynamo.additive.desc", "Additives boost output and oil/water use. See JEI for values.");
         add("nautec.combustion_dynamo.additive.left", "%s s of boost left");
         add("nautec.jei.category.combustion_dynamo", "Combustion Dynamo");
         add("nautec.jei.category.combustion_additive", "Combustion Additive");

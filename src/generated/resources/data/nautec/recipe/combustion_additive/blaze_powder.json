@@ -1,0 +1,7 @@
+{
+  "type": "nautec:combustion_additive",
+  "duration": 2400,
+  "fuel_multiplier": 1.5,
+  "ingredient": "minecraft:blaze_powder",
+  "output_multiplier": 2.0
+}

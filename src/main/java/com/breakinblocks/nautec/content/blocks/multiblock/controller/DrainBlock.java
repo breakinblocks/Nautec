@@ -120,7 +120,13 @@ public class DrainBlock extends ContainerBlock {
 
     private static void extractFluid(Player player, Level level, InteractionHand interactionHand, FluidTank fluidHandler,
                                      ResourceHandler<FluidResource> fluidHandlerItem) {
+        if (level.isClientSide()) {
+            return;
+        }
         FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
+        if (fluidInTank.isEmpty()) {
+            return;
+        }
         if (player.getItemInHand(interactionHand).is(Items.BUCKET)) {
             if (fluidInTank.isEmpty() || fluidInTank.getAmount() < FluidType.BUCKET_VOLUME) {
                 return;

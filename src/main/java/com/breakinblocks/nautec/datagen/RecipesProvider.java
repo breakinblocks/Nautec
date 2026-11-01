@@ -343,6 +343,48 @@ public class RecipesProvider extends RecipeProvider {
                 .fuelMultiplier(1.1f)
                 .duration(1200)
                 .save(pRecipeOutput, key("combustion_additive/redstone"));
+        CombustionAdditiveRecipeBuilder.newRecipe(Ingredient.of(Items.BLAZE_POWDER))
+                .outputMultiplier(2.0f)
+                .fuelMultiplier(1.5f)
+                .duration(2400)
+                .save(pRecipeOutput, key("combustion_additive/blaze_powder"));
+        CombustionAdditiveRecipeBuilder.newRecipe(Ingredient.of(NTItems.FIERY_CRYSTAL.get()))
+                .outputMultiplier(3.0f)
+                .fuelMultiplier(2f)
+                .duration(6000)
+                .save(pRecipeOutput, key("combustion_additive/fiery_crystal"));
+        CombustionAdditiveRecipeBuilder.newRecipe(Ingredient.of(NTItems.CRYSTALLINE_COMBUSTION_BOOSTER.get()))
+                .outputMultiplier(5.0f)
+                .fuelMultiplier(3f)
+                .duration(12000)
+                .save(pRecipeOutput, key("combustion_additive/crystalline_booster"));
+        CombustionAdditiveRecipeBuilder.newRecipe(Ingredient.of(NTItems.STELLAR_COMBUSTION_BOOSTER.get()))
+                .outputMultiplier(10.0f)
+                .fuelMultiplier(5f)
+                .duration(72000)
+                .save(pRecipeOutput, key("combustion_additive/stellar_booster"));
+
+        shaped(RecipeCategory.MISC, NTItems.FIERY_CRYSTAL.get())
+                .pattern(" B ").pattern("BCB").pattern(" B ")
+                .define('B', Items.BLAZE_POWDER)
+                .define('C', NTItems.PRISMARINE_CRYSTAL_SHARD)
+                .unlockedBy("has_item", has(Items.BLAZE_POWDER))
+                .save(pRecipeOutput, key("fiery_crystal"));
+        shaped(RecipeCategory.MISC, NTItems.CRYSTALLINE_COMBUSTION_BOOSTER.get())
+                .pattern(" R ").pattern("FCF").pattern(" R ")
+                .define('R', NTItems.RESONANT_SHARD)
+                .define('F', NTItems.FIERY_CRYSTAL)
+                .define('C', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("crystalline_combustion_booster"));
+        shaped(RecipeCategory.MISC, NTItems.STELLAR_COMBUSTION_BOOSTER.get())
+                .pattern("DCD").pattern("CNC").pattern("DCD")
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('C', NTItems.CRYSTALLINE_COMBUSTION_BOOSTER)
+                .define('N', Items.NETHER_STAR)
+                .unlockedBy("has_item", has(Items.NETHER_STAR))
+                .save(pRecipeOutput, key("stellar_combustion_booster"));
+
     }
 
     private void resonanceRecipes(@NotNull RecipeOutput pRecipeOutput) {

@@ -52,6 +52,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.component.Weapon;
@@ -105,6 +106,10 @@ public final class NTItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> PRISMARINE_CRYSTAL_SHARD = registerItem("prismarine_crystal_shard",
             Item::new, new Item.Properties());
+    public static final DeferredItem<Item> FIERY_CRYSTAL = registerItem("fiery_crystal", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> CRYSTALLINE_COMBUSTION_BOOSTER = registerItem("crystalline_combustion_booster", Item::new, new Item.Properties());
+    public static final DeferredItem<Item> STELLAR_COMBUSTION_BOOSTER = registerItem("stellar_combustion_booster", Item::new, new Item.Properties());
+
     public static final DeferredItem<Item> RESONANT_SHARD = registerItem("resonant_shard",
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> FLAWLESS_PRISMARINE_CRYSTAL = registerItem("flawless_prismarine_crystal",
@@ -185,13 +190,13 @@ public final class NTItems {
             NautecFishingRodItem::new, new Item.Properties().durability(128));
 
     public static final DeferredItem<Item> SILT_SKIPPER_SPAWN_EGG = registerItem("silt_skipper_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.SILT_SKIPPER.get()));
+            SpawnEggItem::new, () -> new Item.Properties().spawnEgg(NTEntities.SILT_SKIPPER.get()));
     public static final DeferredItem<Item> LANTERN_JELLY_SPAWN_EGG = registerItem("lantern_jelly_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.LANTERN_JELLY.get()));
+            SpawnEggItem::new, () -> new Item.Properties().spawnEgg(NTEntities.LANTERN_JELLY.get()));
     public static final DeferredItem<Item> VENT_CRAWLER_SPAWN_EGG = registerItem("vent_crawler_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.VENT_CRAWLER.get()));
+            SpawnEggItem::new, () -> new Item.Properties().spawnEgg(NTEntities.VENT_CRAWLER.get()));
     public static final DeferredItem<Item> ABYSSAL_MAW_SPAWN_EGG = registerItem("abyssal_maw_spawn_egg",
-            Item::new, () -> new Item.Properties().spawnEgg(NTEntities.ABYSSAL_MAW.get()));
+            SpawnEggItem::new, () -> new Item.Properties().spawnEgg(NTEntities.ABYSSAL_MAW.get()));
 
     public static final DeferredItem<Item> HYDRAULIC_LEG = registerItem("hydraulic_leg",
             Item::new, new Item.Properties());
