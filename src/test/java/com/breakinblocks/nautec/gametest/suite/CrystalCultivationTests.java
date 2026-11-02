@@ -19,6 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import com.breakinblocks.nautec.utils.valueio.ProblemReporter;
@@ -157,6 +158,40 @@ public final class CrystalCultivationTests {
                     new BlockHitResult(Vec3.atCenterOf(clicked), Direction.NORTH, clicked, false)));
             helper.assertTrue(helper.getBlockState(CORE).is(NTBlocks.PRISMARINE_CRYSTAL.get()), "a natural crystal stays put");
             helper.assertTrue(!holdsCultivatedCrystal(player), "no crystal item for a natural crystal");
+            helper.succeed();
+        });
+
+        r.add("crystal/cultivated_crystal_survives_a_block_swap", 20, helper -> {
+            PrismarineCrystalBlock.build(helper.getLevel(), helper.absolutePos(CORE), true);
+            helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class).setCrystalPurity(5.25f);
+            BlockState coreState = helper.getBlockState(CORE);
+            helper.setBlock(CORE, Blocks.WATER);
+            helper.setBlock(CORE, coreState);
+            PrismarineCrystalBlockEntity restored = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
+            helper.assertTrue(!restored.isCultivated(), "the swapped-in core starts with no data");
+            restored.commonTick();
+            helper.assertTrue(restored.isCultivated(), "the crystal is cultivated again");
+            helper.assertTrue(restored.getCrystalPurity() == 5.25f, "the crystal keeps its purity");
+            helper.succeed();
+        });
+
+        r.add("crystal/dismantled_crystals_are_not_restored", 20, helper -> {
+            BlockPos core = helper.absolutePos(CORE);
+            PrismarineCrystalBlock.build(helper.getLevel(), core, true);
+            BlockState coreState = helper.getBlockState(CORE);
+            PrismarineCrystalBlock.pickUp(helper.getLevel(), helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class));
+            helper.setBlock(CORE, coreState);
+            PrismarineCrystalBlockEntity afterPickUp = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
+            afterPickUp.commonTick();
+            helper.assertTrue(!afterPickUp.isCultivated(), "a crystal taken with the wrench is not restored");
+
+            helper.setBlock(CORE, Blocks.AIR);
+            PrismarineCrystalBlock.build(helper.getLevel(), core, true);
+            PrismarineCrystalBlock.removeCrystal(helper.getLevel(), helper.makeMockPlayer(GameType.SURVIVAL), core);
+            helper.setBlock(CORE, coreState);
+            PrismarineCrystalBlockEntity afterBreak = helper.getBlockEntity(CORE, PrismarineCrystalBlockEntity.class);
+            afterBreak.commonTick();
+            helper.assertTrue(!afterBreak.isCultivated(), "a crystal broken by a player is not restored");
             helper.succeed();
         });
 
