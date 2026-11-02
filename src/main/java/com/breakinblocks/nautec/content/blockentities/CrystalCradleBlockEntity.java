@@ -198,12 +198,14 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
 
     @Override
     protected void saveData(ValueOutput out) {
+        super.saveData(out);
         out.putLong("growth", growth);
         out.putInt("permille", permille);
     }
 
     @Override
     protected void loadData(ValueInput in) {
+        super.loadData(in);
         growth = in.getLongOr("growth", 0);
         permille = in.getIntOr("permille", 0);
     }

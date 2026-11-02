@@ -127,6 +127,8 @@ final class AE2TestNetworks {
                     helper.assertValueEqual(2, helper.getBlockEntity(source, CreativePowerSourceBlockEntity.class).getLaserDistances().getInt(Direction.EAST),
                             "the beam connects to the input tunnel");
                     helper.assertValueEqual(100, helper.getBlockEntity(mixerPos, MixerBlockEntity.class).getPower(), "the output tunnel powers the mixer");
+                    helper.assertValueEqual(100, helper.getBlockEntity(mixerPos, MixerBlockEntity.class).getRelayedPower(Direction.EAST),
+                            "the mixer records the tunnel's beam so clients see it");
                 })
                 .thenSucceed();
     }

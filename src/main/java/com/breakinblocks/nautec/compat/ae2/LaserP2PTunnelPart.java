@@ -80,7 +80,7 @@ public class LaserP2PTunnelPart extends P2PTunnelPart<LaserP2PTunnelPart> implem
         int extra = power % count;
         for (int i = 0; i < count; i++) {
             LaserP2PTunnelPart sender = senders[i];
-            targets[i].acceptBeam(share + (i < extra ? 1 : 0), purity, sender.getSide(), sender.getBlockEntity().getBlockPos(), trail);
+            targets[i].acceptRelayedBeam(share + (i < extra ? 1 : 0), purity, sender.getSide(), sender.getBlockEntity().getBlockPos(), trail);
         }
     }
 

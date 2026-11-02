@@ -544,6 +544,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
 
     @Override
     protected void saveData(ValueOutput out) {
+        super.saveData(out);
         if (spawnerTag != null) {
             out.store("spawner", CompoundTag.CODEC, spawnerTag);
             out.store("spawner_state", BlockState.CODEC, spawnerState);
@@ -556,6 +557,7 @@ public class ConfinedSpawnerBlockEntity extends LaserBlockEntity implements Menu
 
     @Override
     protected void loadData(ValueInput in) {
+        super.loadData(in);
         in.read("spawner", CompoundTag.CODEC).ifPresent(tag -> {
             spawnerTag = tag;
             settings = SpawnerSettings.read(tag, in.lookup());

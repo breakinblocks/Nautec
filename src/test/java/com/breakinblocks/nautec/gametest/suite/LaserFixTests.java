@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.capabilities.NTCapabilities;
 import com.breakinblocks.nautec.capabilities.power.IPowerStorage;
 import com.breakinblocks.nautec.content.blockentities.ChargerBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CreativePowerSourceBlockEntity;
+import com.breakinblocks.nautec.content.blockentities.FocusingLensBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.LaserJunctionBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.MixerBlockEntity;
 import com.breakinblocks.nautec.content.blocks.DecorativePrismarineCrystalPartBlock;
@@ -13,8 +14,10 @@ import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTItems;
+import it.unimi.dsi.fastutil.longs.LongSets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -34,6 +37,7 @@ import com.breakinblocks.nautec.transfer.energy.EnergyHandler;
 import com.breakinblocks.nautec.transfer.transaction.Transaction;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class LaserFixTests {
     private static final BlockPos SOURCE_POS = new BlockPos(2, 1, 4);
@@ -212,6 +216,39 @@ public final class LaserFixTests {
                 MixerBlockEntity mixer = mixer(helper, mixerPos);
                 helper.assertValueEqual(100, mixer.getPower(), "power through two lenses");
                 assertNear(helper, 2.0f, mixer.getPurity(), "purity after two lenses from 1.9");
+                helper.succeed();
+            });
+        });
+
+        r.add("laserfix/relayed_beam_is_synced_to_clients", 100, helper -> {
+            BlockPos lensPos = new BlockPos(4, 1, 4);
+            BlockPos copyPos = new BlockPos(4, 1, 6);
+            BlockState facingEast = NTBlocks.FOCUSING_LENS.get().defaultBlockState().setValue(OpticsBlock.FACING, Direction.EAST);
+            helper.setBlock(lensPos, facingEast);
+            helper.setBlock(copyPos, facingEast);
+            FocusingLensBlockEntity lens = helper.getBlockEntity(lensPos, FocusingLensBlockEntity.class);
+            FocusingLensBlockEntity copy = helper.getBlockEntity(copyPos, FocusingLensBlockEntity.class);
+            HolderLookup.Provider registries = helper.getLevel().registryAccess();
+            helper.assertFalse(lens.getUpdateTag(registries).contains("relayed_beams"), "a lens with no relayed beam syncs no relay record");
+            BlockPos origin = helper.absolutePos(lensPos.west());
+            AtomicBoolean feeding = new AtomicBoolean(true);
+            helper.onEachTick(() -> {
+                if (feeding.get()) {
+                    lens.acceptRelayedBeam(80, 1.32f, Direction.EAST, origin, LongSets.EMPTY_SET);
+                }
+            });
+
+            helper.runAfterDelay(20, () -> {
+                helper.assertValueEqual(80, lens.getPower(), "the relayed beam powers the lens on the server");
+                copy.loadWithComponents(lens.getUpdateTag(registries), registries);
+                helper.assertValueEqual(80, copy.getRelayedPower(Direction.EAST), "the update tag carries the relayed power");
+                assertNear(helper, 1.32f, copy.getRelayedPurity(Direction.EAST), "the update tag carries the relayed purity");
+                helper.assertValueEqual(0, copy.getRelayedPower(Direction.WEST), "only the relayed side is recorded");
+                feeding.set(false);
+            });
+            helper.runAfterDelay(30, () -> {
+                helper.assertValueEqual(0, lens.getRelayedPower(Direction.EAST), "the relay record clears once the beam stops");
+                helper.assertFalse(lens.getUpdateTag(registries).contains("relayed_beams"), "a stopped relay is synced as gone");
                 helper.succeed();
             });
         });
