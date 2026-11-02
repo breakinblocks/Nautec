@@ -33,6 +33,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -67,6 +69,15 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
     private LongOpenHashSet beamTrail = new LongOpenHashSet();
     private LongOpenHashSet incomingTrail = new LongOpenHashSet();
     private int beamReceivers;
+
+    private static final Direction[] DIRECTIONS = Direction.values();
+    private static final String RELAYED_BEAMS = "relayed_beams";
+    private final int[] relayPower = new int[DIRECTIONS.length];
+    private final float[] relayPurity = new float[DIRECTIONS.length];
+    private int relaySides;
+    private final int[] shownRelayPower = new int[DIRECTIONS.length];
+    private final float[] shownRelayPurity = new float[DIRECTIONS.length];
+    private int shownRelaySides;
 
     public LaserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -243,6 +254,80 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         }
     }
 
+    public void acceptRelayedBeam(int amount, float beamPurity, Direction direction, BlockPos originPos, LongSet trail) {
+        acceptBeam(amount, beamPurity, direction, originPos, trail);
+        int side = direction.ordinal();
+        relaySides |= 1 << side;
+        relayPower[side] = amount;
+        relayPurity[side] = beamPurity;
+    }
+
+    public int getRelayedPower(Direction direction) {
+        return shownRelayPower[direction.ordinal()];
+    }
+
+    public float getRelayedPurity(Direction direction) {
+        return shownRelayPurity[direction.ordinal()];
+    }
+
+    private void publishRelayedBeams() {
+        boolean changed = relaySides != shownRelaySides;
+        for (int side = 0; side < DIRECTIONS.length; side++) {
+            if (relayPower[side] != shownRelayPower[side] || Float.compare(relayPurity[side], shownRelayPurity[side]) != 0) {
+                changed = true;
+            }
+            shownRelayPower[side] = relayPower[side];
+            shownRelayPurity[side] = relayPurity[side];
+            relayPower[side] = 0;
+            relayPurity[side] = 0;
+        }
+        shownRelaySides = relaySides;
+        relaySides = 0;
+        if (changed) {
+            requestSync();
+        }
+    }
+
+    private void replayRelayedBeams() {
+        if (shownRelaySides == 0) {
+            return;
+        }
+        for (Direction direction : DIRECTIONS) {
+            int side = direction.ordinal();
+            if ((shownRelaySides & (1 << side)) != 0) {
+                receivePower(shownRelayPower[side], direction, worldPosition);
+                receiveNewPurity(shownRelayPurity[side], direction, worldPosition);
+            }
+        }
+    }
+
+    @Override
+    protected void saveData(ValueOutput out) {
+        super.saveData(out);
+        if (shownRelaySides == 0) {
+            return;
+        }
+        int[] relayed = new int[1 + DIRECTIONS.length * 2];
+        relayed[0] = shownRelaySides;
+        for (int side = 0; side < DIRECTIONS.length; side++) {
+            relayed[1 + side * 2] = shownRelayPower[side];
+            relayed[2 + side * 2] = Float.floatToIntBits(shownRelayPurity[side]);
+        }
+        out.putIntArray(RELAYED_BEAMS, relayed);
+    }
+
+    @Override
+    protected void loadData(ValueInput in) {
+        super.loadData(in);
+        int[] relayed = in.getIntArray(RELAYED_BEAMS).orElse(null);
+        boolean valid = relayed != null && relayed.length == 1 + DIRECTIONS.length * 2;
+        shownRelaySides = valid ? relayed[0] : 0;
+        for (int side = 0; side < DIRECTIONS.length; side++) {
+            shownRelayPower[side] = valid ? relayed[1 + side * 2] : 0;
+            shownRelayPurity[side] = valid ? Float.intBitsToFloat(relayed[2 + side * 2]) : 0;
+        }
+    }
+
     public void receivePower(int amount, Direction direction, BlockPos originPos) {
         int prevAmount = this.powerPerSide.getInt(direction);
         setPowerPerSide(direction, amount);
@@ -315,6 +400,12 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                     }
                 }
             }
+        }
+
+        if (level.isClientSide()) {
+            replayRelayedBeams();
+        } else {
+            publishRelayedBeams();
         }
 
         int power = 0;

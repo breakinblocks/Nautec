@@ -116,6 +116,7 @@ public class PrismarineCrystalBlock extends LaserBlock {
         if (!crystal.isCultivated()) {
             return ItemStack.EMPTY;
         }
+        crystal.markDismantled();
         BlockPos topPos = crystal.getBlockPos().above(2);
         for (int i = 0; i < 6; i++) {
             level.removeBlock(topPos.below(i), false);
@@ -148,6 +149,9 @@ public class PrismarineCrystalBlock extends LaserBlock {
 
     public static void removeCrystal(Level level, Player player, BlockPos thisPos) {
         if (thisPos != null) {
+            if (level.getBlockEntity(thisPos) instanceof PrismarineCrystalBlockEntity crystal) {
+                crystal.markDismantled();
+            }
             BlockPos topPos = thisPos.above(2);
             for (int i = 0; i < 6; i++) {
                 BlockPos curPos = topPos.below(i);

@@ -24,6 +24,8 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     private float crystalPurity = 3f;
     private long startTick;
     private int duration;
+    private boolean dismantled;
+    private boolean recordChecked;
 
     public PrismarineCrystalBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(NTBlockEntityTypes.PRISMARINE_CRYSTAL.get(), blockPos, blockState);
@@ -49,6 +51,10 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     @Override
     public void commonTick() {
         super.commonTick();
+        if (!recordChecked && level instanceof ServerLevel serverLevel) {
+            recordChecked = true;
+            restoreFromRecord(serverLevel);
+        }
         for (int offset = -3; offset <= 2; offset++) {
             if (offset != 0 && level.getBlockEntity(worldPosition.above(offset)) instanceof PrismarineCrystalPartBlockEntity part) {
                 power += part.getPower();
@@ -99,6 +105,28 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     public void setCultivated(boolean cultivated) {
         this.cultivated = cultivated;
         setChanged();
+    }
+
+    public void markDismantled() {
+        dismantled = true;
+    }
+
+    private void restoreFromRecord(ServerLevel serverLevel) {
+        float purity = CultivatedCrystalRecords.get(serverLevel).take(worldPosition);
+        if (cultivated || Float.isNaN(purity)) {
+            return;
+        }
+        cultivated = true;
+        setCrystalPurity(purity);
+        update();
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (cultivated && !dismantled && level instanceof ServerLevel serverLevel) {
+            CultivatedCrystalRecords.get(serverLevel).remember(pos, crystalPurity);
+        }
     }
 
     @Override
