@@ -112,11 +112,16 @@ public class PrismarineCrystalPartBlockEntity extends LaserBlockEntity {
                 return true;
             }
             if (level.getBlockEntity(worldPosition.relative(direction, distance)) instanceof LaserBlockEntity target
-                    && target.getLaserInputs().contains(direction.getOpposite())) {
+                    && deliversTo(target, direction)) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    protected boolean deliversTo(LaserBlockEntity target, Direction direction) {
+        return target.getLaserInputs().contains(direction.getOpposite());
     }
 
     public PrismarineCrystalBlockEntity getCrystalBE() {

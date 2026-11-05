@@ -17,6 +17,7 @@ import com.breakinblocks.nautec.content.blockentities.ResonanceChamberBlockEntit
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalPartBlockEntity;
 import com.breakinblocks.nautec.content.blocks.AquaticCatalystBlock;
+import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.content.blocks.OpticsBlock;
 import com.breakinblocks.nautec.content.blocks.PrismarineLaserRelayBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalPartBlock;
@@ -687,6 +688,38 @@ public final class PowerAndLaserTests {
                 helper.assertFalse(bottom.feedsTarget(), "bottom end fires into the floor");
                 helper.assertValueEqual(100, top.getPowerToTransfer(), "top part output");
                 helper.assertValueEqual(100, helper.getBlockEntity(corePos.above(3), PrismarineLaserRelayBlockEntity.class).getPower(), "top relay power");
+                helper.succeed();
+            });
+        });
+
+        r.add("crystal/junction_without_that_input_takes_nothing_from_the_beam", 200, helper -> {
+            BlockPos corePos = new BlockPos(4, 5, 4);
+            BlockPos junctionPos = corePos.above(3);
+            BlockPos downstreamPos = junctionPos.east(2);
+            BlockPos bottomRelayPos = corePos.below(4);
+            placeCrystal(helper, corePos);
+            placeJunction(helper, junctionPos, Direction.EAST);
+            helper.setBlock(downstreamPos, NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.EAST));
+            helper.setBlock(bottomRelayPos, NTBlocks.PRISMARINE_RELAY.get().defaultBlockState()
+                    .setValue(PrismarineLaserRelayBlock.FACING, Direction.DOWN));
+            placeShieldedSource(helper, new BlockPos(2, 5, 4), Direction.EAST);
+
+            helper.runAfterDelay(60, () -> {
+                PrismarineCrystalPartBlockEntity top = helper.getBlockEntity(corePos.above(2), PrismarineCrystalPartBlockEntity.class);
+                helper.assertValueEqual(100, helper.getBlockEntity(corePos, PrismarineCrystalBlockEntity.class).getPower(), "core received power");
+                helper.assertFalse(top.feedsTarget(), "the top end has no input to feed");
+                helper.assertTrue(top.getLaserDistances().getInt(Direction.UP) > 0, "the beam still reaches the junction");
+                helper.assertValueEqual(0, junction(helper, junctionPos).getPower(), "junction without a bottom input");
+                helper.assertValueEqual(0, helper.getBlockEntity(downstreamPos, PrismarineLaserRelayBlockEntity.class).getPower(), "relay behind the junction");
+                helper.assertValueEqual(100, helper.getBlockEntity(bottomRelayPos, PrismarineLaserRelayBlockEntity.class).getPower(), "bottom relay keeps the whole output");
+                junction(helper, junctionPos).setConnection(Direction.DOWN, LaserJunctionBlock.ConnectionType.INPUT);
+            });
+
+            helper.runAfterDelay(100, () -> {
+                helper.assertValueEqual(50, junction(helper, junctionPos).getPower(), "junction once it accepts the beam");
+                helper.assertValueEqual(50, helper.getBlockEntity(downstreamPos, PrismarineLaserRelayBlockEntity.class).getPower(), "relay behind the junction once it accepts");
+                helper.assertValueEqual(50, helper.getBlockEntity(bottomRelayPos, PrismarineLaserRelayBlockEntity.class).getPower(), "bottom relay once the output splits");
                 helper.succeed();
             });
         });

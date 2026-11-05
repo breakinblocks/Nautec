@@ -97,8 +97,8 @@ public final class NTGameTestRegistration {
         CreativeFlightTests.register(r);
         CrystalCultivatorTests.register(r);
         IssueTrackerTests.register(r);
-        if (r.registeredCount() != 829) {
-            throw new IllegalStateException("Expected 829 Nautec suite tests, registered " + r.registeredCount());
+        if (r.registeredCount() != 831) {
+            throw new IllegalStateException("Expected 831 Nautec suite tests, registered " + r.registeredCount());
         }
     }
 }

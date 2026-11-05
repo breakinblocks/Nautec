@@ -1,19 +1,40 @@
 package com.breakinblocks.nautec.capabilities.item;
 
+import com.breakinblocks.nautec.Nautec;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import java.util.List;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemStackHandler extends ItemStacksResourceHandler {
+    private static final Codec<List<Dynamic<?>>> RAW_STACKS = Codec.PASSTHROUGH.listOf();
+
     public ItemStackHandler(int slots) {
         super(slots);
     }
 
     public int getSlots() {
         return size();
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        input.read(VALUE_IO_KEY, RAW_STACKS).ifPresent(entries -> {
+            NonNullList<ItemStack> loaded = NonNullList.withSize(Math.max(size(), entries.size()), ItemStack.EMPTY);
+            for (int slot = 0; slot < entries.size(); slot++) {
+                int index = slot;
+                loaded.set(slot, ItemStack.OPTIONAL_CODEC.parse(entries.get(slot))
+                        .resultOrPartial(error -> Nautec.LOGGER.warn("Removed an item in slot {} that could not be loaded: {}", index, error))
+                        .orElse(ItemStack.EMPTY));
+            }
+            setStacks(loaded);
+        });
     }
 
     public void ensureSize(int slots) {
