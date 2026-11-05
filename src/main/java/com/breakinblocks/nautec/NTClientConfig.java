@@ -11,6 +11,9 @@ public final class NTClientConfig {
     private static final ModConfigSpec.DoubleValue SUBMARINE_HUD_Y = BUILDER
             .comment("Vertical position of the submarine power HUD, as a fraction of the screen height")
             .defineInRange("submarineHudY", 0.75, 0.0, 1.0);
+    private static final ModConfigSpec.DoubleValue SUBMARINE_FREE_LOOK_HULL_OPACITY = BUILDER
+            .comment("How solid the Sea Scout's hull looks to its pilot during first person free look, from 0 (invisible) to 1 (fully solid)")
+            .defineInRange("submarineFreeLookHullOpacity", 0.2, 0.0, 1.0);
     private static final ModConfigSpec.BooleanValue SHOW_DIVING_SUIT_AIR_IN_SPACE = BUILDER
             .comment("Determines whether the Diving Suit air bar also shows on Stellaris planets with no air, not only underwater")
             .define("showDivingSuitAirInSpace", true);
@@ -27,6 +30,10 @@ public final class NTClientConfig {
 
     public static double hudY() {
         return SPEC.isLoaded() ? SUBMARINE_HUD_Y.getAsDouble() : 0.75;
+    }
+
+    public static float freeLookHullOpacity() {
+        return SPEC.isLoaded() ? (float) SUBMARINE_FREE_LOOK_HULL_OPACITY.getAsDouble() : 0.2F;
     }
 
     public static void setHudPosition(double x, double y) {

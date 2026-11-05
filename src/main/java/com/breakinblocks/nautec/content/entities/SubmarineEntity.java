@@ -92,10 +92,14 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     public static final double EXIT_PORTAL_DISTANCE = 5.5D;
     public static final int EXIT_TICKS = 16;
     public static final float MODEL_SCALE = 4.5F;
+    public static final float PITCH_PIVOT = 4.5F / 16F;
+    public static final double HULL_PIVOT_HEIGHT = (PITCH_PIVOT + MODEL_Y_OFFSET) * MODEL_SCALE;
+    public static final double VIEW_LIFT = 0.75D;
 
     private static final double DRIVER_SEAT_Z = -0.5D / 16D * MODEL_SCALE;
     private static final double PASSENGER_SEAT_Z = -4.5D / 16D * MODEL_SCALE;
     private static final double RIDE_HEIGHT = (1D / 16D + MODEL_Y_OFFSET) * MODEL_SCALE;
+    private static final double PILOT_EYE_HEIGHT = RIDE_HEIGHT - Player.DEFAULT_VEHICLE_ATTACHMENT.y + Player.DEFAULT_EYE_HEIGHT;
 
     public static final DataTicket<Boolean> DEPLOYED = new DataTicket<>("nautec:submarine_deployed", Boolean.class);
 
@@ -126,6 +130,8 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     private static final EntityDataAccessor<Float> DATA_LASER_LEFT =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_LASER_RIGHT =
+            SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_LASER_AIM =
             SynchedEntityData.defineId(SubmarineEntity.class, EntityDataSerializers.FLOAT);
 
     private static final List<EntityDataAccessor<ItemStack>> DATA_MODULES = defineModuleSlots();
@@ -211,6 +217,7 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
         entityData.define(DATA_LASER_TICKS, -1);
         entityData.define(DATA_LASER_LEFT, 0F);
         entityData.define(DATA_LASER_RIGHT, 0F);
+        entityData.define(DATA_LASER_AIM, 0F);
         for (EntityDataAccessor<ItemStack> accessor : DATA_MODULES) {
             entityData.define(accessor, ItemStack.EMPTY);
         }
@@ -312,6 +319,31 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
     public void setLaserLengths(float left, float right) {
         this.entityData.set(DATA_LASER_LEFT, left);
         this.entityData.set(DATA_LASER_RIGHT, right);
+    }
+
+    public float getLaserAim() {
+        return this.entityData.get(DATA_LASER_AIM);
+    }
+
+    public void setLaserAim(float aim) {
+        this.entityData.set(DATA_LASER_AIM, aim);
+    }
+
+    public static Vec3 hullUp(Vec3 forward) {
+        return forward.cross(new Vec3(0D, 1D, 0D).cross(forward)).normalize();
+    }
+
+    public static Vec3 sightOrigin(Vec3 position, Vec3 forward) {
+        Vec3 level = new Vec3(forward.x, 0D, forward.z).normalize();
+        return position.add(0D, PILOT_EYE_HEIGHT, 0D)
+                .add(level.scale(DRIVER_SEAT_Z))
+                .add(hullUp(forward).scale(VIEW_LIFT));
+    }
+
+    public Vec3 viewLift(float partialTick) {
+        Vec3 forward = Vec3.directionFromRotation(
+                Mth.rotLerp(partialTick, this.xRotO, getXRot()), Mth.rotLerp(partialTick, this.yRotO, getYRot()));
+        return hullUp(forward).scale(VIEW_LIFT);
     }
 
     @Override
@@ -457,6 +489,10 @@ public class SubmarineEntity extends LivingEntity implements GeoEntity {
 
     public void setInput(SubmarineInput input) {
         this.input = input;
+    }
+
+    public boolean isFreeLook() {
+        return this.freeLook;
     }
 
     public void setFreeLook(boolean freeLook) {

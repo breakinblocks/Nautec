@@ -246,6 +246,10 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
         beamTrail.addAll(upstream.beamTrail);
     }
 
+    protected boolean deliversTo(LaserBlockEntity target, Direction direction) {
+        return true;
+    }
+
     public void acceptBeam(int amount, float beamPurity, Direction direction, BlockPos originPos, LongSet trail) {
         receivePower(amount, direction, originPos);
         receiveNewPurity(beamPurity, direction, originPos);
@@ -391,7 +395,9 @@ public abstract class LaserBlockEntity extends ContainerBlockEntity {
                 if (level.isLoaded(targetPos)) {
                     BlockEntity target = level.getBlockEntity(targetPos);
                     if (target instanceof LaserBlockEntity laserBE) {
-                        laserBE.acceptBeam(outgoingPower(direction), outgoingPurity(direction), direction, worldPosition, beamTrail);
+                        if (deliversTo(laserBE, direction)) {
+                            laserBE.acceptBeam(outgoingPower(direction), outgoingPurity(direction), direction, worldPosition, beamTrail);
+                        }
                     } else if (!level.isClientSide() && feedsBeamReceiver(direction)) {
                         IBeamReceiver receiver = level.getCapability(NTCapabilities.BeamReceiver.BLOCK, targetPos, direction.getOpposite());
                         if (receiver != null) {

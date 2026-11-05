@@ -7,6 +7,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import com.breakinblocks.nautec.registries.NTFluids;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.capabilities.item.ItemStackHandler;
 import com.breakinblocks.nautec.content.blockentities.ConfinedSpawnerBlockEntity;
 import com.breakinblocks.nautec.content.items.SpawnerConfinementMatrixItem;
 import com.breakinblocks.nautec.content.menus.ConfinedSpawnerMenu;
@@ -18,6 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -383,6 +386,32 @@ public final class ConfinedSpawnerTests {
             helper.assertValueEqual(6, copy.getSettings().spawnCount(), "spawner settings persist");
             helper.assertTrue(copy.getSpawnerTag() != null, "original spawner data persists");
             helper.succeed();
+        });
+
+        r.add("confined_spawner/short_or_unreadable_inventory_loads_at_full_size", 200, helper -> {
+            ConfinedSpawnerBlockEntity confined = confinedChickens(helper, 4, 20);
+            ItemStackHandler handler = confined.getItemStackHandler();
+            handler.setStackInSlot(0, new ItemStack(Items.FEATHER, 5));
+            handler.setStackInSlot(1, new ItemStack(Items.BONE, 3));
+            handler.setStackInSlot(2, new ItemStack(Items.STRING, 7));
+            CompoundTag saved = confined.saveWithFullMetadata(helper.getLevel().registryAccess());
+            ListTag stacks = saved.getCompound("itemhandler").getList("stacks", Tag.TAG_COMPOUND);
+            helper.assertValueEqual(ConfinedSpawnerBlockEntity.SLOTS, stacks.size(), "every slot is saved");
+            CompoundTag unknown = new CompoundTag();
+            unknown.putString("id", "nautec_missing:removed_item");
+            unknown.putInt("count", 1);
+            stacks.set(1, unknown);
+            stacks.remove(stacks.size() - 1);
+            BlockEntity fresh = BlockEntity.loadStatic(helper.absolutePos(SPAWNER), confined.getBlockState(), saved, helper.getLevel().registryAccess());
+            helper.assertTrue(fresh instanceof ConfinedSpawnerBlockEntity, "reloads as a confined spawner");
+            ItemStackHandler reloaded = ((ConfinedSpawnerBlockEntity) fresh).getItemStackHandler();
+            helper.assertValueEqual(ConfinedSpawnerBlockEntity.SLOTS, reloaded.getSlots(), "a short save still loads every slot");
+            helper.assertTrue(reloaded.getStackInSlot(0).is(Items.FEATHER) && reloaded.getStackInSlot(0).getCount() == 5, "slot 0 keeps its feathers");
+            helper.assertTrue(reloaded.getStackInSlot(1).isEmpty(), "the unreadable item leaves its own slot empty");
+            helper.assertTrue(reloaded.getStackInSlot(2).is(Items.STRING) && reloaded.getStackInSlot(2).getCount() == 7, "later stacks keep their slots");
+            confined.loadWithComponents(saved, helper.getLevel().registryAccess());
+            power(helper);
+            helper.succeedWhen(() -> helper.assertValueEqual(ConfinedSpawnerBlockEntity.Status.RUNNING, confined.getStatus(), "the reloaded spawner runs"));
         });
     }
 }

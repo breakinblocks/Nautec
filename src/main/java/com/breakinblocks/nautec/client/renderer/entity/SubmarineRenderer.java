@@ -1,10 +1,13 @@
 package com.breakinblocks.nautec.client.renderer.entity;
 
+import com.breakinblocks.nautec.NTClientConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.model.entity.SubmarineModel;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
+import com.breakinblocks.nautec.utils.ARGB;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -12,11 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.util.Color;
 
 public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity> {
     private static final ResourceLocation EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
-
-    private static final float PITCH_PIVOT = 4.5F / 16F;
 
     public SubmarineRenderer(EntityRendererProvider.Context context) {
         super(context, new SubmarineModel());
@@ -31,6 +33,19 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity> {
     }
 
     @Override
+    public Color getRenderColor(SubmarineEntity submarine, float partialTick, int packedLight) {
+        Color color = super.getRenderColor(submarine, partialTick, packedLight);
+        Minecraft minecraft = Minecraft.getInstance();
+        if (submarine.isFreeLook()
+                && minecraft.options.getCameraType().isFirstPerson()
+                && minecraft.player != null
+                && minecraft.player.getControlledVehicle() == submarine) {
+            return new Color(ARGB.multiplyAlpha(color.argbInt(), NTClientConfig.freeLookHullOpacity()));
+        }
+        return color;
+    }
+
+    @Override
     public @Nullable RenderType getRenderType(SubmarineEntity submarine, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         if (submarine.isInvisible()) {
             return super.getRenderType(submarine, texture, bufferSource, partialTick);
@@ -42,9 +57,9 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity> {
     protected void applyRotations(SubmarineEntity submarine, PoseStack poseStack, float ageInTicks, float rotationYaw, float partialTick, float nativeScale) {
         float yaw = Mth.rotLerp(partialTick, submarine.yRotO, submarine.getYRot());
         float pitch = Mth.rotLerp(partialTick, submarine.xRotO, submarine.getXRot());
-        poseStack.translate(0F, PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
+        poseStack.translate(0F, SubmarineEntity.PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(180F - yaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(-pitch));
-        poseStack.translate(0F, -PITCH_PIVOT, -SubmarineEntity.MODEL_Z_OFFSET);
+        poseStack.translate(0F, -SubmarineEntity.PITCH_PIVOT, -SubmarineEntity.MODEL_Z_OFFSET);
     }
 }

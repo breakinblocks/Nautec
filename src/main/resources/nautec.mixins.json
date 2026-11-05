@@ -16,6 +16,7 @@
     "StructurePieceMixin"
   ],
   "client": [
+    "CameraMixin",
     "ItemStorageProviderMixin",
     "GuideRecipeResultMixin"
   ],

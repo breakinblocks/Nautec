@@ -164,7 +164,7 @@ public final class SubmarineSoundHandler {
                 }
 
                 Vec3 muzzle = SubmarineModules.laserMuzzle(this.submarine.position(), forward, beam == 0);
-                Vec3 impact = muzzle.add(forward.scale(length));
+                Vec3 impact = muzzle.add(SubmarineModules.laserDirection(this.submarine.position(), forward, beam == 0, this.submarine.getLaserAim()).scale(length));
                 int sparks = random.nextFloat() < 0.5F + 0.5F * ramp ? 1 + Math.round(ramp * IMPACT_SPARKS_HOT) : 0;
                 for (int i = 0; i < sparks; i++) {
                     level.addParticle(NTParticles.LASER_SPARK.get(), impact.x, impact.y, impact.z,

@@ -15,7 +15,7 @@ item_ids:
   Twin forward beams.
 </Column>
 
-The Impulse Laser Module fires two beams straight ahead of the hull's nose, like a pair of Atlantean Rifles, for as long as you hold the fire key.
+The Impulse Laser Module fires two beams from the hull's nose that meet under your crosshair, like a pair of Atlantean Rifles, for as long as you hold the fire key.
 
 ***
 
@@ -31,7 +31,7 @@ The Impulse Laser Module fires two beams straight ahead of the hull's nose, like
 
 Select the module on the ability bar and hold attack or the ability key. The laser charges for half a second, then both beams fire. The longer you keep firing, the wider and brighter the beams grow and the harder they hit, up to full strength after five seconds. Let go and they stop at once; firing again starts from the charge.
 
-Aim by pointing the hull: the beams follow the nose, not your view, even in free look. Each beam stops at the first creature or solid block in its path, and a target caught by both takes both hits. The damage ignores armour, and the beams pass the hull's own crew by.
+Aim by pointing the hull: while you steer, both beams meet on whatever creature or solid block is under the crosshair, or at full range if nothing is there. They follow the nose, not your view, so in free look they keep firing where the hull points. Each beam stops at the first creature or solid block in its path, and a target caught by both takes both hits. The damage ignores armor, and the beams pass the hull's own crew by.
 
 ***
 
