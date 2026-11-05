@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.client.renderer.entity;
 
+import com.breakinblocks.nautec.NTClientConfig;
 import com.breakinblocks.nautec.Nautec;
 import com.breakinblocks.nautec.client.model.entity.SubmarineModel;
 import com.breakinblocks.nautec.content.entities.SubmarineEntity;
@@ -10,11 +11,13 @@ import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.builtin.AutoGlowingGeoLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, EntityRenderState> {
@@ -22,8 +25,6 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
     private static final DataTicket<Float> PITCH = DataTicket.create("nautec:submarine_pitch", Float.class);
 
     private static final Identifier EMISSIVE = Nautec.rl("textures/entity/submarine_e.png");
-
-    private static final float PITCH_PIVOT = 4.5F / 16F;
 
     public SubmarineRenderer(EntityRendererProvider.Context context) {
         super(context, new SubmarineModel());
@@ -46,16 +47,29 @@ public class SubmarineRenderer extends GeoEntityRenderer<SubmarineEntity, Entity
     }
 
     @Override
+    public int getRenderColor(SubmarineEntity submarine, Void relatedObject, float partialTick) {
+        int color = super.getRenderColor(submarine, relatedObject, partialTick);
+        Minecraft minecraft = Minecraft.getInstance();
+        if (submarine.isFreeLook()
+                && minecraft.options.getCameraType().isFirstPerson()
+                && minecraft.player != null
+                && minecraft.player.getControlledVehicle() == submarine) {
+            return ARGB.multiplyAlpha(color, NTClientConfig.freeLookHullOpacity());
+        }
+        return color;
+    }
+
+    @Override
     public RenderType getRenderType(EntityRenderState state, Identifier texture) {
         return RenderTypes.entityTranslucent(texture);
     }
 
     @Override
     protected void applyRotations(RenderPassInfo<EntityRenderState> pass, PoseStack poseStack, float scale) {
-        poseStack.translate(0F, PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
+        poseStack.translate(0F, SubmarineEntity.PITCH_PIVOT + SubmarineEntity.MODEL_Y_OFFSET, 0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(180F - pass.getOrDefaultGeckolibData(YAW, 0F)));
         poseStack.mulPose(Axis.XP.rotationDegrees(-pass.getOrDefaultGeckolibData(PITCH, 0F)));
-        poseStack.translate(0F, -PITCH_PIVOT, -SubmarineEntity.MODEL_Z_OFFSET);
+        poseStack.translate(0F, -SubmarineEntity.PITCH_PIVOT, -SubmarineEntity.MODEL_Z_OFFSET);
     }
 
     private static class SubmarineGlowLayer extends AutoGlowingGeoLayer<SubmarineEntity, Void, EntityRenderState> {

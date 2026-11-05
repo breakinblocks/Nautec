@@ -27,12 +27,15 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Silverfish;
 import net.minecraft.world.entity.monster.zombie.Drowned;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionResult;
@@ -584,6 +587,131 @@ public final class SubmarineTests {
                 helper.succeed();
             });
         }));
+
+        r.add("submarine/laser_hits_small_target_under_the_crosshair", 120, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 1));
+            submarine.setPowerStored(NTConfig.submarinePowerCapacity);
+            submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+
+            helper.runAfterDelay(20, () -> {
+                Vec3 crosshair = SubmarineEntity.sightOrigin(submarine.position(), submarine.getForward()).add(submarine.getForward().scale(6D));
+                Silverfish target = helper.spawnWithNoFreeWill(EntityType.SILVERFISH, new BlockPos(4, 5, 7));
+                target.setNoGravity(true);
+                target.snapTo(crosshair.x, crosshair.y - target.getBbHeight() / 2F, crosshair.z);
+                submarine.setLaserHeld(true);
+
+                helper.runAfterDelay(NTConfig.submarineLaserChargeTicks + 25, () -> {
+                    helper.assertTrue(submarine.isLaserActive(), "the laser should be firing");
+                    helper.assertTrue(target.getHealth() < target.getMaxHealth(), "the target under the crosshair was not hit");
+                    helper.succeed();
+                });
+            });
+        }));
+
+        r.add("submarine/sight_line_starts_at_the_pilots_raised_view", 20, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = spawnSubmarine(helper);
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+            submarine.positionRider(pilot);
+
+            Vec3 sight = SubmarineEntity.sightOrigin(submarine.position(), submarine.getForward());
+            Vec3 raisedEye = pilot.getEyePosition().add(0D, SubmarineEntity.VIEW_LIFT, 0D);
+            helper.assertTrue(sight.distanceTo(raisedEye) < 0.01D, "the sight line should start at the raised view, was " + sight + " against " + raisedEye);
+
+            Vec3 pitched = Vec3.directionFromRotation(40F, submarine.getYRot());
+            Vec3 lift = SubmarineEntity.hullUp(pitched);
+            helper.assertTrue(Math.abs(lift.dot(pitched)) < 1.0E-6D, "the view lift should stay square to the nose");
+            helper.assertTrue(lift.y > 0D && Math.abs(lift.length() - 1D) < 1.0E-6D, "the view lift should point out of the canopy");
+            helper.succeed();
+        }));
+
+        r.add("submarine/laser_beams_meet_on_the_wall_under_the_crosshair", 120, helper -> helper.runAfterDelay(1, () -> {
+            for (int x = 0; x <= 8; x++) {
+                for (int y = 1; y <= 8; y++) {
+                    helper.setBlock(new BlockPos(x, y, 8), Blocks.STONE.defaultBlockState());
+                }
+            }
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 1));
+            submarine.setPowerStored(NTConfig.submarinePowerCapacity);
+            submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+            submarine.setLaserHeld(true);
+
+            helper.runAfterDelay(NTConfig.submarineLaserChargeTicks + 10, () -> {
+                Vec3 position = submarine.position();
+                Vec3 forward = submarine.getForward();
+                Vec3 sight = SubmarineEntity.sightOrigin(position, forward);
+                double wall = helper.absolutePos(new BlockPos(4, 2, 8)).getZ() - sight.z;
+                helper.assertTrue(Math.abs(submarine.getLaserAim() - wall) < 0.1D,
+                        "the aim should reach the wall at " + wall + ", was " + submarine.getLaserAim());
+                Vec3 crosshair = sight.add(forward.scale(submarine.getLaserAim()));
+                for (boolean left : new boolean[]{true, false}) {
+                    Vec3 end = SubmarineModules.laserMuzzle(position, forward, left)
+                            .add(SubmarineModules.laserDirection(position, forward, left, submarine.getLaserAim()).scale(submarine.getLaserLength(left)));
+                    helper.assertTrue(end.distanceTo(crosshair) < 0.1D, "the beam should end on the crosshair, was " + end + " against " + crosshair);
+                }
+                helper.succeed();
+            });
+        }));
+
+        r.add("submarine/laser_hits_a_mob_pressed_against_the_nose", 120, helper -> helper.runAfterDelay(1, () -> {
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 1));
+            submarine.setPowerStored(NTConfig.submarinePowerCapacity);
+            submarine.setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+            Player pilot = helper.makeMockPlayer(GameType.SURVIVAL);
+            pilot.startRiding(submarine);
+            submarine.setLaserHeld(true);
+
+            helper.runAfterDelay(NTConfig.submarineLaserChargeTicks - 1, () -> {
+                Vec3 muzzle = SubmarineModules.laserMuzzle(submarine.position(), submarine.getForward(), true);
+                Silverfish target = helper.spawnWithNoFreeWill(EntityType.SILVERFISH, new BlockPos(4, 3, 3));
+                target.setNoGravity(true);
+                target.snapTo(muzzle.x, muzzle.y - target.getBbHeight() / 2F, muzzle.z);
+                helper.runAfterDelay(3, () -> {
+                    helper.assertTrue(target.getHealth() < target.getMaxHealth(), "a mob on the muzzle should still be hit");
+                    helper.assertTrue(submarine.getLaserLength(true) > 0F, "the beam stays visible while it hits the mob");
+                    helper.succeed();
+                });
+            });
+        }));
+
+        r.add("submarine/laser_lands_both_beams_four_times_a_second", 200, helper -> {
+            int settle = 20;
+            SubmarineEntity[] hull = new SubmarineEntity[1];
+            IronGolem[] golem = new IronGolem[1];
+            helper.onEachTick(() -> {
+                if (golem[0] == null || hull[0].getLaserTicks() - NTConfig.submarineLaserChargeTicks < 16) {
+                    return;
+                }
+                float expected = 0F;
+                for (int firing = 0; firing <= 15; firing += 5) {
+                    float ramp = SubmarineEntity.laserRamp(firing);
+                    expected += 2F * (float) (Mth.lerp(ramp, NTConfig.submarineLaserMinDamage, NTConfig.submarineLaserMaxDamage)
+                            + golem[0].getMaxHealth() * NTConfig.submarineLaserMaxHealthPercent * Mth.lerp(ramp, 1F / 3F, 1F));
+                }
+                float dealt = golem[0].getMaxHealth() - golem[0].getHealth();
+                helper.assertTrue(Math.abs(dealt - expected) < 0.05F, "both beams should land every hit: dealt " + dealt + ", expected " + expected);
+                helper.assertValueEqual(0, golem[0].invulnerableTime, "the laser should leave no hit cooldown behind for other attackers");
+                helper.succeed();
+            });
+            helper.runAfterDelay(1, () -> {
+                hull[0] = helper.spawn(NTEntities.SUBMARINE.get(), new BlockPos(4, 2, 1));
+                hull[0].setPowerStored(NTConfig.submarinePowerCapacity);
+                hull[0].setModule(0, new ItemStack(NTItems.IMPULSE_LASER_MODULE.get()));
+                helper.makeMockPlayer(GameType.SURVIVAL).startRiding(hull[0]);
+            });
+            helper.runAfterDelay(1 + settle, () -> {
+                Vec3 crosshair = SubmarineEntity.sightOrigin(hull[0].position(), hull[0].getForward()).add(hull[0].getForward().scale(6D));
+                IronGolem target = helper.spawnWithNoFreeWill(EntityType.IRON_GOLEM, new BlockPos(4, 5, 7));
+                target.setNoGravity(true);
+                target.snapTo(crosshair.x, crosshair.y - target.getBbHeight() / 2F, crosshair.z);
+                golem[0] = target;
+                hull[0].setLaserHeld(true);
+            });
+        });
 
         r.add("submarine/laser_stops_without_module", 40, helper -> helper.runAfterDelay(1, () -> {
             SubmarineEntity submarine = spawnSubmarine(helper);

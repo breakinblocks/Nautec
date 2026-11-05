@@ -54,7 +54,8 @@ public final class SubmarineLaserRenderer {
             }
             float ramp = SubmarineEntity.laserRamp(firing);
             int color = ARGB.color(Math.round(Mth.lerp(ramp, INTENSITY_COLD, INTENSITY_HOT) * 255F), LaserBeamRenderer.CYAN);
-            Vector3f end = muzzleWorld.add(forward.scale(length)).subtract(cameraPos).toVector3f();
+            Vec3 direction = SubmarineModules.laserDirection(position, forward, left, submarine.getLaserAim());
+            Vector3f end = muzzleWorld.add(direction.scale(length)).subtract(cameraPos).toVector3f();
             LaserBeamRenderer.submitBeam(poseStack, collector, muzzle, end, Mth.lerp(ramp, HALF_WIDTH_COLD, HALF_WIDTH_HOT), color, true);
             LaserBeamRenderer.submitFlare(poseStack, collector, muzzle, Mth.lerp(ramp, MUZZLE_FLARE_COLD, MUZZLE_FLARE_HOT), color, true);
             if (length < NTConfig.submarineLaserRange - 0.01D) {

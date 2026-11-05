@@ -12,6 +12,7 @@
     "StructurePieceMixin"
   ],
   "client": [
+    "CameraMixin",
     "ItemStorageProviderMixin"
   ],
   "injectors": {

@@ -27,7 +27,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -54,9 +53,12 @@ public class SubmarineModules {
 
     private static final int SOLAR_INTERVAL = 100;
     private static final int LASER_DAMAGE_INTERVAL = 5;
-    private static final double MUZZLE_SIDE = 1.0D;
-    private static final double MUZZLE_FORWARD = 2.0D;
-    private static final double MUZZLE_UP = 0.3D;
+    private static final double MUZZLE_SIDE = 0.77D;
+    private static final double MUZZLE_FORWARD = 2.4D;
+    private static final double MUZZLE_UP = -0.75D;
+    private static final double LASER_MIN_AIM = 5D;
+    private static final double LASER_TARGET_MARGIN = 0.5D;
+    private static final float LASER_MIN_LENGTH = 0.25F;
     private static final double SHIELD_KNOCKBACK = 1.5D;
     private static final int SONAR_GLOW_TICKS = 300;
     private static final int SONAR_NIGHT_VISION_TICKS = 900;
@@ -395,10 +397,13 @@ public class SubmarineModules {
             NTCriteriaTriggers.SUBMARINE_LASER.get().trigger(serverPilot);
         }
 
+        Vec3 position = this.submarine.position();
         Vec3 forward = this.submarine.getForward();
         boolean damageTick = firing % LASER_DAMAGE_INTERVAL == 0;
-        float leftLength = fireBeam(forward, true, damageTick, ramp);
-        float rightLength = fireBeam(forward, false, damageTick, ramp);
+        float aim = laserAim(position, forward);
+        float leftLength = fireBeam(position, forward, aim, true, damageTick, ramp);
+        float rightLength = fireBeam(position, forward, aim, false, damageTick, ramp);
+        this.submarine.setLaserAim(aim);
         this.submarine.setLaserLengths(leftLength, rightLength);
     }
 
@@ -416,35 +421,60 @@ public class SubmarineModules {
 
     public static Vec3 laserMuzzle(Vec3 position, Vec3 forward, boolean left) {
         Vec3 right = new Vec3(0D, 1D, 0D).cross(forward).normalize();
-        return position.add(forward.scale(MUZZLE_FORWARD))
+        return position.add(0D, SubmarineEntity.HULL_PIVOT_HEIGHT, 0D)
+                .add(forward.scale(MUZZLE_FORWARD))
                 .add(right.scale(left ? -MUZZLE_SIDE : MUZZLE_SIDE))
-                .add(0D, MUZZLE_UP, 0D);
+                .add(SubmarineEntity.hullUp(forward).scale(MUZZLE_UP));
     }
 
-    private float fireBeam(Vec3 forward, boolean left, boolean damageTick, float ramp) {
-        Vec3 origin = laserMuzzle(this.submarine.position(), forward, left);
-        double range = NTConfig.submarineLaserRange;
-        Vec3 end = origin.add(forward.scale(range));
+    public static Vec3 laserDirection(Vec3 position, Vec3 forward, boolean left, float aim) {
+        Vec3 target = SubmarineEntity.sightOrigin(position, forward).add(forward.scale(aim));
+        return target.subtract(laserMuzzle(position, forward, left)).normalize();
+    }
 
-        BlockHitResult blockHit = this.submarine.level().clip(new ClipContext(origin, end,
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
-        if (blockHit.getType() != HitResult.Type.MISS) {
-            end = blockHit.getLocation();
-        }
+    private float laserAim(Vec3 position, Vec3 forward) {
+        Vec3 sight = SubmarineEntity.sightOrigin(position, forward);
+        HitResult hit = traceBeam(sight, sight.add(forward.scale(NTConfig.submarineLaserRange)));
+        return (float) Math.max(LASER_MIN_AIM, sight.distanceTo(hit.getLocation()));
+    }
 
-        AABB sweep = new AABB(origin, end).inflate(0.5D);
-        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(this.submarine,
-                origin, end, sweep, entity -> entity.isPickable() && !this.submarine.hasPassenger(entity), range * range);
+    private float fireBeam(Vec3 position, Vec3 forward, float aim, boolean left, boolean damageTick, float ramp) {
+        Vec3 origin = laserMuzzle(position, forward, left);
+        Vec3 direction = laserDirection(position, forward, left, aim);
+        HitResult hit = traceBeam(origin, origin.add(direction.scale(NTConfig.submarineLaserRange)));
 
-        Vec3 hit = entityHit != null ? entityHit.getLocation() : end;
-        if (damageTick && entityHit != null && entityHit.getEntity() instanceof LivingEntity target) {
+        if (damageTick && hit instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity target) {
             float damage = (float) (Mth.lerp(ramp, NTConfig.submarineLaserMinDamage, NTConfig.submarineLaserMaxDamage)
                     + target.getMaxHealth() * NTConfig.submarineLaserMaxHealthPercent * Mth.lerp(ramp, 1F / 3F, 1F));
             Player pilot = this.submarine.getControllingPassenger() instanceof Player player ? player : null;
+            target.invulnerableTime = 0;
             target.hurt(this.submarine.damageSources().indirectMagic(this.submarine, pilot), damage);
+            target.invulnerableTime = 0;
         }
 
-        return (float) origin.distanceTo(hit);
+        return Math.max(LASER_MIN_LENGTH, (float) origin.distanceTo(hit.getLocation()));
+    }
+
+    private HitResult traceBeam(Vec3 from, Vec3 to) {
+        Level level = this.submarine.level();
+        BlockHitResult blockHit = level.clip(new ClipContext(from, to,
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        Vec3 end = blockHit.getLocation();
+
+        Entity nearest = null;
+        Vec3 nearestAt = end;
+        double nearestDistance = Double.MAX_VALUE;
+        for (Entity entity : level.getEntities(this.submarine, new AABB(from, end).inflate(LASER_TARGET_MARGIN),
+                candidate -> candidate.isPickable() && !this.submarine.hasPassenger(candidate))) {
+            AABB box = entity.getBoundingBox().inflate(LASER_TARGET_MARGIN);
+            Vec3 entry = box.contains(from) ? from : box.clip(from, end).orElse(null);
+            if (entry != null && from.distanceToSqr(entry) < nearestDistance) {
+                nearest = entity;
+                nearestAt = entry;
+                nearestDistance = from.distanceToSqr(entry);
+            }
+        }
+        return nearest != null ? new EntityHitResult(nearest, nearestAt) : blockHit;
     }
 
     private boolean beginTeleport(int slot, Player pilot) {

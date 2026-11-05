@@ -27,7 +27,7 @@ The pilot drives the Sea Scout with the normal movement keys and steers it by lo
 | Mouse | Steer: the nose follows your view |
 | Space | Rise |
 | C | Dive |
-| Hold right mouse (use) | Free look: look around without steering |
+| Hold right mouse (use) | Free look: look around without steering, and see through the hull in first person |
 | 1 to 9, or mouse wheel | Select a module slot |
 | Left mouse, or F | Fire the selected module |
 | Ctrl + H | Move the readout |
@@ -40,6 +40,8 @@ C, F and Ctrl + H are NauTec key bindings, listed in the Controls screen as Sea 
 ## <Color id="gold">Steering</Color>
 
 There is no turn key. The hull turns to follow where you look, and under water it pitches up or down as far as 75 degrees. Let go of the right mouse button after free look and your view snaps back to the nose.
+
+In first person the hull fades while you hold free look, so you can look straight down through the floor. Set how solid it stays with the client config option `submarineFreeLookHullOpacity`.
 
 The hull only turns if it has room to. Look into rock and it holds its heading rather than clipping through, so back off or rise before turning in a tight cave. Its collision follows the real shape of the hull as it turns. It only collides with blocks: fish and other creatures in the way get shoved aside.
 
