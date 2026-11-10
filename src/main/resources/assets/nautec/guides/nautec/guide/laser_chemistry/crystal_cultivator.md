@@ -18,7 +18,7 @@ Use it with Budding Prismarine to automate Prismarine Crystal Shards, or with va
 
 ## Power and purity
 
-The Cultivator needs **20 AP** to harvest. At 20 AP, crystals grow at their ordinary speed; **100 AP gives 10x growth**. Power between those points scales linearly. Higher power continues to help, with diminishing returns: 180 AP gives about 16.24x and 260 AP about 19.89x growth.
+The Cultivator needs **20 AP** to harvest. At 20 AP, crystals grow **2.5x** as fast as they would on their own; **100 AP gives 25x growth**. Power between those points scales linearly. Higher power continues to help, with diminishing returns: 180 AP gives about 40.6x and 260 AP about 49.7x growth.
 
 Purity determines the Fortune enchantment used to harvest. Each whole purity level gives one Fortune level through purity 6: 2.0 purity gives Fortune II and 6.0 gives Fortune VI. Above 6, gains diminish; purity 9 gives Fortune VIII and purity 12 gives Fortune IX. The cluster's normal loot table determines its drops and how Fortune affects them.
 

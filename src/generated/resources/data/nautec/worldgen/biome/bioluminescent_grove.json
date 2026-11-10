@@ -168,6 +168,15 @@
         "weight": 5
       }
     ],
+    "nautec:grove_fauna": [
+      {
+        "type": "nautec:lantern_jelly",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 12
+      }
+    ],
+    "nautec:vent_fauna": [],
     "underground_water_creature": [
       {
         "type": "minecraft:glow_squid",
@@ -202,12 +211,6 @@
         "maxCount": 4,
         "minCount": 1,
         "weight": 6
-      },
-      {
-        "type": "nautec:lantern_jelly",
-        "maxCount": 3,
-        "minCount": 1,
-        "weight": 12
       }
     ]
   },

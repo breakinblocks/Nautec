@@ -51,11 +51,11 @@ public final class CrystalCultivatorTests {
     public static void register(NTTestRegistrar r) {
         r.add("cultivator/power_and_fortune_curves", 20, h -> {
             h.assertValueEqual(CrystalCultivatorBlockEntity.growthSpeed(19), 0.0, "below threshold");
-            h.assertValueEqual(CrystalCultivatorBlockEntity.growthSpeed(20), 1.0, "base speed");
-            h.assertValueEqual(CrystalCultivatorBlockEntity.growthSpeed(100), 10.0, "100 AP speed");
-            double first = CrystalCultivatorBlockEntity.growthSpeed(180) - 10;
+            h.assertValueEqual(CrystalCultivatorBlockEntity.growthSpeed(20), 2.5, "base speed");
+            h.assertValueEqual(CrystalCultivatorBlockEntity.growthSpeed(100), 25.0, "100 AP speed");
+            double first = CrystalCultivatorBlockEntity.growthSpeed(180) - 25;
             double second = CrystalCultivatorBlockEntity.growthSpeed(260) - CrystalCultivatorBlockEntity.growthSpeed(180);
-            h.assertTrue(first > second && second > 0 && first < 9, "growth has diminishing returns");
+            h.assertTrue(first > second && second > 0 && first < 22.5, "growth has diminishing returns");
             h.assertValueEqual(CrystalCultivatorBlockEntity.fortune(2.9F), 2, "whole levels");
             h.assertValueEqual(CrystalCultivatorBlockEntity.fortune(6), 6, "six purity");
             h.assertValueEqual(CrystalCultivatorBlockEntity.fortune(9), 8, "diminishing fortune");
@@ -136,7 +136,11 @@ public final class CrystalCultivatorTests {
             try {
                 h.getLevel().getGameRules().getRule(GameRules.RULE_RANDOMTICKING).set(3, h.getLevel().getServer());
                 for (int i = 0; i < 40000; i++) feed(be, 20, 0);
-                for (Direction face : Direction.values()) if (face != Direction.UP) h.assertTrue(h.getBlockState(SOURCE.relative(face)).isAir(), "20 AP adds no growth");
+                boolean grew = be.storedItems() > 0;
+                for (Direction face : Direction.values()) {
+                    if (face != Direction.UP && !h.getBlockState(SOURCE.relative(face)).isAir()) grew = true;
+                }
+                h.assertTrue(grew, "20 AP already speeds up growth");
                 for (int i = 0; i < 40000; i++) feed(be, 100, 0);
                 h.assertTrue(be.storedItems() > 0, "100 AP grows and harvests through normal amethyst stages");
             } finally {

@@ -17,6 +17,24 @@
         "class": "com/breakinblocks/nautec/client/render/WaveJetClientExtensions",
         "field": "ARM_POSE"
       }
+    },
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "NAUTEC_VENT_FAUNA",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "com/breakinblocks/nautec/registries/NTMobCategories",
+        "field": "VENT_FAUNA"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/MobCategory",
+      "name": "NAUTEC_GROVE_FAUNA",
+      "constructor": "(Ljava/lang/String;IZZI)V",
+      "parameters": {
+        "class": "com/breakinblocks/nautec/registries/NTMobCategories",
+        "field": "GROVE_FAUNA"
+      }
     }
   ]
 }

@@ -165,6 +165,15 @@
         "weight": 5
       }
     ],
+    "nautec:grove_fauna": [],
+    "nautec:vent_fauna": [
+      {
+        "type": "nautec:vent_crawler",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 20
+      }
+    ],
     "underground_water_creature": [
       {
         "type": "minecraft:glow_squid",
@@ -187,12 +196,6 @@
         "maxCount": 3,
         "minCount": 1,
         "weight": 4
-      },
-      {
-        "type": "nautec:vent_crawler",
-        "maxCount": 3,
-        "minCount": 1,
-        "weight": 20
       }
     ]
   },

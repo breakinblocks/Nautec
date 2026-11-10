@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +28,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class SubmarineDockBlockEntity extends LaserBlockEntity {
+    private static final double PULL_STRENGTH = 0.2;
+    private static final double MAX_PULL_SPEED = 0.15;
+    private static final double CLAMP_DISTANCE = 0.1;
+
     private boolean holding;
 
     public SubmarineDockBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -75,11 +80,28 @@ public class SubmarineDockBlockEntity extends LaserBlockEntity {
         }
     }
 
-    private static void hold(SubmarineEntity submarine) {
+    public Vec3 restPoint() {
+        VoxelShape shape = getBlockState().getCollisionShape(level, worldPosition);
+        double top = shape.isEmpty() ? 1.0 : shape.max(Direction.Axis.Y);
+        return Vec3.atBottomCenterOf(worldPosition).add(0.0, top, 0.0);
+    }
+
+    private void hold(SubmarineEntity submarine) {
         if (submarine.getControllingPassenger() != null) {
             return;
         }
-        submarine.setDeltaMovement(Vec3.ZERO);
+        Vec3 rest = restPoint();
+        Vec3 offset = rest.subtract(submarine.position());
+        if (offset.lengthSqr() < CLAMP_DISTANCE * CLAMP_DISTANCE) {
+            submarine.setPos(rest);
+            submarine.setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+        Vec3 pull = offset.scale(PULL_STRENGTH);
+        if (pull.lengthSqr() > MAX_PULL_SPEED * MAX_PULL_SPEED) {
+            pull = pull.normalize().scale(MAX_PULL_SPEED);
+        }
+        submarine.setDeltaMovement(pull);
     }
 
     @Override

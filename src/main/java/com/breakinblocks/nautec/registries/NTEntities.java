@@ -53,9 +53,9 @@ public final class NTEntities {
     public static final Supplier<EntityType<SiltSkipper>> SILT_SKIPPER = mob("silt_skipper", SiltSkipper::new,
             MobCategory.WATER_AMBIENT, builder -> builder.sized(0.5f, 0.35f).eyeHeight(0.2f));
     public static final Supplier<EntityType<LanternJelly>> LANTERN_JELLY = mob("lantern_jelly", LanternJelly::new,
-            MobCategory.WATER_CREATURE, builder -> builder.sized(0.7f, 0.9f).eyeHeight(0.6f));
+            NTMobCategories.groveFauna(), builder -> builder.sized(0.7f, 0.9f).eyeHeight(0.6f));
     public static final Supplier<EntityType<VentCrawler>> VENT_CRAWLER = mob("vent_crawler", VentCrawler::new,
-            MobCategory.WATER_CREATURE, builder -> builder.sized(0.9f, 0.5f).eyeHeight(0.35f));
+            NTMobCategories.ventFauna(), builder -> builder.sized(0.9f, 0.5f).eyeHeight(0.35f));
     public static final Supplier<EntityType<AbyssalMaw>> ABYSSAL_MAW = mob("abyssal_maw", AbyssalMaw::new,
             MobCategory.MONSTER, builder -> builder.sized(1.4f, 0.9f).eyeHeight(0.65f));
 
