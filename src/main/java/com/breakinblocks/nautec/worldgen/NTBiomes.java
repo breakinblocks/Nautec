@@ -2,6 +2,7 @@ package com.breakinblocks.nautec.worldgen;
 
 import com.breakinblocks.nautec.datagen.DatapackRegistryProvider;
 import com.breakinblocks.nautec.registries.NTEntities;
+import com.breakinblocks.nautec.registries.NTMobCategories;
 import com.breakinblocks.nautec.registries.NTParticles;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -59,7 +60,7 @@ public final class NTBiomes {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 6, 4, 12);
         mobs.addSpawn(MobCategory.UNDERGROUND_WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.GLOW_SQUID, 2, 4));
-        mobs.addSpawn(MobCategory.WATER_CREATURE, 12, new MobSpawnSettings.SpawnerData(NTEntities.LANTERN_JELLY.get(), 1, 3));
+        mobs.addSpawn(NTMobCategories.groveFauna(), 12, new MobSpawnSettings.SpawnerData(NTEntities.LANTERN_JELLY.get(), 1, 3));
         mobs.addSpawn(MobCategory.WATER_AMBIENT, 15, new MobSpawnSettings.SpawnerData(NTEntities.SILT_SKIPPER.get(), 4, 8));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
@@ -83,7 +84,7 @@ public final class NTBiomes {
     private static Biome hydrothermalVents(HolderGetter<PlacedFeature> placedFeatures, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         MobSpawnSettings.Builder mobs = new MobSpawnSettings.Builder();
         BiomeDefaultFeatures.oceanSpawns(mobs, 4, 3, 6);
-        mobs.addSpawn(MobCategory.WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(NTEntities.VENT_CRAWLER.get(), 1, 3));
+        mobs.addSpawn(NTMobCategories.ventFauna(), 20, new MobSpawnSettings.SpawnerData(NTEntities.VENT_CRAWLER.get(), 1, 3));
 
         BiomeGenerationSettings.Builder generation = baseOceanGeneration(placedFeatures, carvers);
         generation.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, DatapackRegistryProvider.VENT_BASALT_PLACE_KEY);

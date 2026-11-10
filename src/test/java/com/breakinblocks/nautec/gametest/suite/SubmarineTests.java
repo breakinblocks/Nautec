@@ -46,6 +46,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 import com.breakinblocks.nautec.Nautec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -54,6 +55,7 @@ import net.minecraft.world.phys.AABB;
 
 public final class SubmarineTests {
     private static final BlockPos SUB_POS = new BlockPos(4, 2, 4);
+    private static final Identifier WIDE_ARENA = Nautec.rl("empty_19x11x19");
 
     private SubmarineTests() {
     }
@@ -152,6 +154,44 @@ public final class SubmarineTests {
                         "An unmanned hull on a dock should be held still rather than drifting off, was moving "
                                 + submarine.getDeltaMovement());
                 helper.succeed();
+            });
+        });
+
+        r.add("submarine/dock_pulls_floating_hull_onto_pad_under_water", WIDE_ARENA, 200, 0, helper -> {
+            BlockPos dockPos = new BlockPos(9, 2, 9);
+            placeShieldedSource(helper, new BlockPos(9, 1, 9), Direction.UP);
+            helper.setBlock(dockPos, NTBlocks.SUBMARINE_DOCK.get().defaultBlockState());
+            for (int x = 1; x <= 17; x++) {
+                for (int z = 1; z <= 17; z++) {
+                    for (int y = 3; y <= 8; y++) {
+                        helper.setBlock(new BlockPos(x, y, z), Blocks.WATER.defaultBlockState());
+                    }
+                }
+            }
+
+            SubmarineDockBlockEntity dock = helper.getBlockEntity(dockPos, SubmarineDockBlockEntity.class);
+            if (dock == null) {
+                helper.fail("Expected SubmarineDockBlockEntity");
+                return;
+            }
+
+            SubmarineEntity submarine = helper.spawn(NTEntities.SUBMARINE.get(), new Vec3(9.9, 4.2, 9.3));
+            submarine.setDeltaMovement(Vec3.ZERO);
+
+            helper.runAfterDelay(120, () -> {
+                double settledY = submarine.getY();
+                Vec3 rest = dock.restPoint();
+                helper.assertTrue(dock.isDocking(), "The hull should still be over the dock");
+                helper.assertTrue(submarine.position().distanceTo(rest) < 0.01,
+                        "A hull left floating over a powered dock should be pulled onto the pad, was at "
+                                + submarine.position() + " with the pad's rest point at " + rest);
+                helper.runAfterDelay(60, () -> {
+                    helper.assertTrue(Math.abs(submarine.getY() - settledY) < 0.01,
+                            "A docked hull should not creep upward on its buoyancy, rose "
+                                    + (submarine.getY() - settledY));
+                    helper.assertTrue(dock.isDocking(), "The hull should still be docked");
+                    helper.succeed();
+                });
             });
         });
 

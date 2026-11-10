@@ -156,6 +156,8 @@
         "weight": 5
       }
     ],
+    "nautec:grove_fauna": [],
+    "nautec:vent_fauna": [],
     "underground_water_creature": [
       {
         "type": "minecraft:glow_squid",

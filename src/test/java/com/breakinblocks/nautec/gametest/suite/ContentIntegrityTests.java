@@ -9,8 +9,11 @@ import com.google.gson.JsonParser;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTEntities;
 import com.breakinblocks.nautec.registries.NTItems;
+import com.breakinblocks.nautec.registries.NTMobCategories;
+import com.breakinblocks.nautec.worldgen.NTBiomeKeys;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.HolderLookup;
@@ -24,6 +27,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -355,6 +360,18 @@ public final class ContentIntegrityTests {
             helper.succeed();
         });
 
+        r.add("content/vent_crawler_has_its_own_spawn_cap", 5, helper -> {
+            checkOwnSpawnCap(helper, NTEntities.VENT_CRAWLER.get(), NTMobCategories.ventFauna(),
+                    NTBiomeKeys.HYDROTHERMAL_VENTS);
+            helper.succeed();
+        });
+
+        r.add("content/lantern_jelly_has_its_own_spawn_cap", 5, helper -> {
+            checkOwnSpawnCap(helper, NTEntities.LANTERN_JELLY.get(), NTMobCategories.groveFauna(),
+                    NTBiomeKeys.BIOLUMINESCENT_GROVE);
+            helper.succeed();
+        });
+
         r.add("content/budding_prismarine_glows_faintly", 5, helper -> {
             BlockState state = NTBlocks.BUDDING_PRISMARINE.get().defaultBlockState();
             helper.assertValueEqual(BuddingPrismarineBlock.LIGHT, state.getLightEmission(), "budding prismarine light");
@@ -447,6 +464,25 @@ public final class ContentIntegrityTests {
             }
             helper.succeed();
         });
+    }
+
+    private static void checkOwnSpawnCap(GameTestHelper helper, EntityType<?> type, MobCategory category,
+                                         ResourceKey<Biome> biome) {
+        String name = BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
+        helper.assertValueEqual(category, type.getCategory(), name + " category");
+        helper.assertTrue(category.getMaxInstancesPerChunk() > 0, category.getSerializedName() + " has a spawn cap");
+        helper.assertFalse(category.isPersistent(), category.getSerializedName() + " spawns every tick");
+
+        MobSpawnSettings spawns = helper.getLevel().registryAccess().lookupOrThrow(Registries.BIOME)
+                .getOrThrow(biome).value().getMobSettings();
+        boolean listed = false;
+        for (var entry : spawns.getMobs(category).unwrap()) {
+            listed |= entry.value().type() == type;
+        }
+        helper.assertTrue(listed, biome.identifier() + " spawns " + name + " under " + category.getSerializedName());
+        for (var entry : spawns.getMobs(MobCategory.WATER_CREATURE).unwrap()) {
+            helper.assertFalse(entry.value().type() == type, name + " no longer competes for the water creature cap");
+        }
     }
 
     private ContentIntegrityTests() {
