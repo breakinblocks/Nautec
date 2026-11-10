@@ -36,6 +36,7 @@ import java.util.UUID;
 public class CrystalCultivatorBlockEntity extends LaserBlockEntity {
     private static final int SLOTS = 9;
     private static final int INTERVAL = 10;
+    private static final double GROWTH_MULTIPLIER = 2.5;
     private static final SlotRoles ROLES = SlotRoles.of(new int[0], SlotRoles.range(0, SLOTS));
     private static final GameProfile HARVESTER = new GameProfile(
             UUID.nameUUIDFromBytes("nautec:crystal_cultivator".getBytes(StandardCharsets.UTF_8)), "NauTecCultivator");
@@ -58,8 +59,8 @@ public class CrystalCultivatorBlockEntity extends LaserBlockEntity {
 
     public static double growthSpeed(int power) {
         if (power < 20) return 0;
-        if (power <= 100) return 1 + (power - 20) * 9.0 / 80;
-        return 10 + 9 * Math.log1p((power - 100) / 80.0);
+        if (power <= 100) return GROWTH_MULTIPLIER * (1 + (power - 20) * 9.0 / 80);
+        return GROWTH_MULTIPLIER * (10 + 9 * Math.log1p((power - 100) / 80.0));
     }
 
     public static int fortune(float purity) {
