@@ -70,6 +70,7 @@ public final class AugmentHelper {
         Augment augment = augmentType.create(augmentSlot);
         augment.setPlayer(player);
         augment.readParts(parts);
+        augment.setInstalledParts(parts);
         AugmentHelper.setAugment(player, augmentSlot, augment);
         reapplyEffects(player);
         syncAugment(player, augment);

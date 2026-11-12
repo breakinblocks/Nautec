@@ -6,6 +6,7 @@ import com.breakinblocks.nautec.content.blockentities.multiblock.controller.Augm
 import com.breakinblocks.nautec.utils.codec.AugmentCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 
-public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot) implements CustomPacketPayload {
+public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot, boolean remove) implements CustomPacketPayload {
     public static final Type<StartAugmentationPayload> TYPE = new Type<>(Nautec.rl("start_augmentation_payload"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StartAugmentationPayload> STREAM_CODEC = StreamCodec.composite(
@@ -22,8 +23,14 @@ public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot) implement
             StartAugmentationPayload::pos,
             AugmentCodecs.AUGMENT_SLOT_STREAM_CODEC,
             StartAugmentationPayload::slot,
+            ByteBufCodecs.BOOL,
+            StartAugmentationPayload::remove,
             StartAugmentationPayload::new
     );
+
+    public StartAugmentationPayload(BlockPos pos, AugmentSlot slot) {
+        this(pos, slot, false);
+    }
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
@@ -39,7 +46,11 @@ public record StartAugmentationPayload(BlockPos pos, AugmentSlot slot) implement
             }
             BlockEntity be = level.getBlockEntity(payload.pos());
             if (be instanceof AugmentationStationBlockEntity asbe) {
-                asbe.startAugmentation(context.player(), payload.slot());
+                if (payload.remove()) {
+                    asbe.startRemoval(context.player(), payload.slot());
+                } else {
+                    asbe.startAugmentation(context.player(), payload.slot());
+                }
             }
         });
     }

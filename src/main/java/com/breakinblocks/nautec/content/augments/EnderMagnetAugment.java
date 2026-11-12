@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.augments;
 
-import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.registries.NTAugments;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,7 +13,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
 
-public class EnderMagnetAugment extends Augment {
+public class EnderMagnetAugment extends ToggleableMagnetAugment {
     private static final double MAGNET_RADIUS = 5.0;
     private static final int PICKUP_PARTICLES = 4;
 
@@ -24,7 +23,7 @@ public class EnderMagnetAugment extends Augment {
 
     @Override
     public void serverTick(PlayerTickEvent.Post event) {
-        if (!player.isCrouching()) {
+        if (isPulling()) {
             List<ItemEntity> nearbyItems = player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(MAGNET_RADIUS));
             for (ItemEntity itemEntity : nearbyItems) {
                 if (itemEntity.isRemoved()) {

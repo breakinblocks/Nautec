@@ -4,6 +4,8 @@ import com.breakinblocks.nautec.NTRegistries;
 import com.breakinblocks.nautec.data.NTDataAttachments;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
@@ -11,6 +13,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Augment {
@@ -21,6 +24,7 @@ public abstract class Augment {
     private static final int COOLDOWN_SAVE_INTERVAL = 20;
 
     private int cooldown;
+    private List<ItemStack> installedParts = List.of();
 
     public Augment(AugmentType<?> augmentType, AugmentSlot augmentSlot) {
         this.augmentType = augmentType;
@@ -72,6 +76,24 @@ public abstract class Augment {
     public void readParts(List<ItemStack> parts) {
     }
 
+    public final void setInstalledParts(List<ItemStack> parts) {
+        List<ItemStack> copies = new ArrayList<>(parts.size());
+        for (ItemStack part : parts) {
+            if (!part.isEmpty()) {
+                copies.add(part.copyWithCount(1));
+            }
+        }
+        this.installedParts = List.copyOf(copies);
+    }
+
+    public final List<ItemStack> getInstalledParts() {
+        List<ItemStack> copies = new ArrayList<>(installedParts.size());
+        for (ItemStack part : installedParts) {
+            copies.add(part.copy());
+        }
+        return copies;
+    }
+
     public void commonTick(PlayerTickEvent.Post event) {
         if (player == null) return;
         if (isOnCooldown()) {
@@ -119,10 +141,23 @@ public abstract class Augment {
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("cooldown", cooldown);
+        if (!installedParts.isEmpty()) {
+            ListTag parts = new ListTag();
+            for (ItemStack part : installedParts) {
+                parts.add(part.save(provider));
+            }
+            tag.put("installed_parts", parts);
+        }
         return tag;
     }
 
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
         this.cooldown = nbt.getInt("cooldown");
+        List<ItemStack> parts = new ArrayList<>();
+        ListTag list = nbt.getList("installed_parts", Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            ItemStack.parse(provider, list.getCompound(i)).ifPresent(parts::add);
+        }
+        this.installedParts = List.copyOf(parts);
     }
 }

@@ -50,6 +50,7 @@ public class AugmentationStationScreen extends Screen {
     private @Nullable AugmentSlot selected;
     private @Nullable AugmentType<?> builtFor;
     private boolean pending;
+    private List<AugmentSlot> shownSlots = List.of();
     private @Nullable NTPanelButton apply;
     private int left;
     private int top;
@@ -73,8 +74,25 @@ public class AugmentationStationScreen extends Screen {
         }
     }
 
+    private boolean removalMode() {
+        return this.status.result().isEmpty();
+    }
+
     private List<AugmentSlot> slots() {
-        return this.status.result().map(AugmentType::getAugmentSlots).orElse(List.of());
+        if (!removalMode()) {
+            return this.status.result().get().getAugmentSlots();
+        }
+        List<AugmentSlot> installed = new ArrayList<>();
+        for (AugmentSlot slot : NTRegistries.AUGMENT_SLOT) {
+            if (installed(slot) != null) {
+                installed.add(slot);
+            }
+        }
+        return installed;
+    }
+
+    private static boolean running(int code) {
+        return code == AugmentationStationBlockEntity.STATUS_RUNNING || code == AugmentationStationBlockEntity.STATUS_REMOVING;
     }
 
     @Override
@@ -83,11 +101,12 @@ public class AugmentationStationScreen extends Screen {
         this.left = (this.width - WIDTH) / 2;
         this.top = (this.height - HEIGHT) / 2;
         List<AugmentSlot> slots = slots();
+        this.shownSlots = slots;
         this.builtFor = this.status.result().orElse(null);
         if (this.selected != null && !slots.contains(this.selected)) {
             this.selected = null;
         }
-        if (this.selected == null && slots.size() == 1) {
+        if (this.selected == null && slots.size() == 1 && !removalMode()) {
             this.selected = slots.getFirst();
         }
 
@@ -107,9 +126,9 @@ public class AugmentationStationScreen extends Screen {
         }
 
         this.apply = addRenderableWidget(new NTPanelButton(this.font, this.left + WIDTH - 8 - APPLY_WIDTH, this.top + FOOTER_Y, APPLY_WIDTH, 14,
-                () -> Component.translatable("nautec.augmentation_station.apply"),
-                () -> replaces(this.selected) ? PanelStyle.DANGER : PanelStyle.SEND_COLOR,
-                () -> replaces(this.selected) ? PanelStyle.DANGER_HOVER : PanelStyle.SEND_HOVER,
+                () -> Component.translatable(removalMode() ? "nautec.augmentation_station.remove" : "nautec.augmentation_station.apply"),
+                () -> removalMode() || replaces(this.selected) ? PanelStyle.DANGER : PanelStyle.SEND_COLOR,
+                () -> removalMode() || replaces(this.selected) ? PanelStyle.DANGER_HOVER : PanelStyle.SEND_HOVER,
                 this::applyTooltip, this::apply));
         updateApply();
     }
@@ -119,24 +138,31 @@ public class AugmentationStationScreen extends Screen {
             return;
         }
         this.pending = true;
-        PacketDistributor.sendToServer(new StartAugmentationPayload(this.status.pos(), this.selected));
+        PacketDistributor.sendToServer(new StartAugmentationPayload(this.status.pos(), this.selected, removalMode()));
         updateApply();
     }
 
     private boolean canApply() {
+        if (removalMode()) {
+            return this.status.status() == AugmentationStationBlockEntity.STATUS_EMPTY && this.selected != null
+                    && installed(this.selected) != null && !this.pending;
+        }
         return this.status.status() == AugmentationStationBlockEntity.STATUS_READY && this.selected != null && !this.pending;
     }
 
     private void updateApply() {
         if (this.apply != null) {
             this.apply.active = canApply();
-            this.apply.visible = this.status.status() != AugmentationStationBlockEntity.STATUS_RUNNING;
+            this.apply.visible = !running(this.status.status());
         }
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (removalMode() && !running(this.status.status()) && !slots().equals(this.shownSlots)) {
+            rebuildWidgets();
+        }
         updateApply();
     }
 
@@ -160,6 +186,12 @@ public class AugmentationStationScreen extends Screen {
 
     private Component slotTooltip(AugmentSlot slot) {
         Augment current = installed(slot);
+        if (removalMode()) {
+            Component line = current == null
+                    ? Component.translatable("nautec.augmentation_station.slot.empty").withStyle(ChatFormatting.GRAY)
+                    : Component.translatable("nautec.augmentation_station.slot.holds", typeName(current.getAugmentType())).withStyle(ChatFormatting.GRAY);
+            return slotName(slot).copy().append("\n").append(line);
+        }
         Component line = current == null
                 ? Component.translatable("nautec.augmentation_station.slot.empty").withStyle(ChatFormatting.GRAY)
                 : current.getAugmentType() == this.builtFor
@@ -170,6 +202,9 @@ public class AugmentationStationScreen extends Screen {
 
     private Component applyTooltip() {
         int code = this.status.status();
+        if (removalMode()) {
+            return removeTooltip(code);
+        }
         if (code != AugmentationStationBlockEntity.STATUS_READY) {
             return Component.translatable(statusKey(code)).append("\n")
                     .append(statusDescription(code).copy().withStyle(ChatFormatting.GRAY));
@@ -188,6 +223,23 @@ public class AugmentationStationScreen extends Screen {
         return text;
     }
 
+    private Component removeTooltip(int code) {
+        if (code == AugmentationStationBlockEntity.STATUS_MISSING_EXTENSION || running(code)
+                || code == AugmentationStationBlockEntity.STATUS_INSTALLED || code == AugmentationStationBlockEntity.STATUS_REMOVED) {
+            return Component.translatable(statusKey(code)).append("\n")
+                    .append(statusDescription(code).copy().withStyle(ChatFormatting.GRAY));
+        }
+        if (code != AugmentationStationBlockEntity.STATUS_EMPTY) {
+            return Component.translatable("nautec.augmentation_station.remove.unload");
+        }
+        Augment current = installed(this.selected);
+        if (current == null) {
+            return Component.translatable("nautec.augmentation_station.remove.pick");
+        }
+        return Component.translatable("nautec.augmentation_station.remove.desc", typeName(current.getAugmentType()), slotName(this.selected),
+                String.format(Locale.ROOT, "%.0f", AugmentationStationBlockEntity.OPERATION_TICKS / 20f));
+    }
+
     private static String statusKey(int code) {
         return "nautec.augmentation_station.status." + switch (code) {
             case AugmentationStationBlockEntity.STATUS_READY -> "ready";
@@ -198,6 +250,8 @@ public class AugmentationStationScreen extends Screen {
             case AugmentationStationBlockEntity.STATUS_LOW_POWER -> "low_power";
             case AugmentationStationBlockEntity.STATUS_RUNNING -> "running";
             case AugmentationStationBlockEntity.STATUS_INSTALLED -> "installed";
+            case AugmentationStationBlockEntity.STATUS_REMOVING -> "removing";
+            case AugmentationStationBlockEntity.STATUS_REMOVED -> "removed";
             default -> "empty";
         };
     }
@@ -214,8 +268,9 @@ public class AugmentationStationScreen extends Screen {
 
     private int statusColor() {
         return switch (this.status.status()) {
-            case AugmentationStationBlockEntity.STATUS_READY, AugmentationStationBlockEntity.STATUS_INSTALLED -> PanelStyle.ONLINE;
-            case AugmentationStationBlockEntity.STATUS_RUNNING -> PanelStyle.WARNING;
+            case AugmentationStationBlockEntity.STATUS_READY, AugmentationStationBlockEntity.STATUS_INSTALLED,
+                 AugmentationStationBlockEntity.STATUS_REMOVED -> PanelStyle.ONLINE;
+            case AugmentationStationBlockEntity.STATUS_RUNNING, AugmentationStationBlockEntity.STATUS_REMOVING -> PanelStyle.WARNING;
             default -> PanelStyle.OFFLINE;
         };
     }
@@ -237,7 +292,7 @@ public class AugmentationStationScreen extends Screen {
         PanelStyle.screen(graphics, x + RIGHT_X, y + BODY_Y, RIGHT_WIDTH, AUGMENT_HEIGHT);
         PanelStyle.screen(graphics, x + RIGHT_X, y + EXTENSIONS_Y, RIGHT_WIDTH, EXTENSIONS_HEIGHT);
 
-        if (this.status.status() == AugmentationStationBlockEntity.STATUS_RUNNING) {
+        if (running(this.status.status())) {
             int barX = x + 8;
             int barWidth = WIDTH - 16;
             int filled = barWidth * Math.min(this.status.progress(), AugmentationStationBlockEntity.OPERATION_TICKS)
@@ -265,8 +320,9 @@ public class AugmentationStationScreen extends Screen {
         extractAugment(graphics, x + RIGHT_X, y + BODY_Y);
         extractExtensions(graphics, x + RIGHT_X, y + EXTENSIONS_Y);
 
-        if (code == AugmentationStationBlockEntity.STATUS_RUNNING) {
-            Component progress = Component.translatable("nautec.augmentation_station.progress",
+        if (running(code)) {
+            Component progress = Component.translatable(code == AugmentationStationBlockEntity.STATUS_REMOVING
+                            ? "nautec.augmentation_station.progress.remove" : "nautec.augmentation_station.progress",
                     String.format(Locale.ROOT, "%.1f", Math.max(0, AugmentationStationBlockEntity.OPERATION_TICKS - this.status.progress()) / 20f));
             graphics.drawString(this.font, progress, x + (WIDTH - this.font.width(progress)) / 2, y + FOOTER_Y + 3, 0xFFFFFFFF, true);
         } else if (slots().isEmpty()) {

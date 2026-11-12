@@ -1,6 +1,5 @@
 package com.breakinblocks.nautec.content.augments;
 
-import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.registries.NTAugments;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -9,7 +8,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
 
-public class MagnetAugment extends Augment {
+public class MagnetAugment extends ToggleableMagnetAugment {
     private static final double MAGNET_RADIUS = 5.0;
     private static final double MAGNET_PULL_SPEED = 0.2;
 
@@ -19,7 +18,7 @@ public class MagnetAugment extends Augment {
 
     @Override
     public void serverTick(PlayerTickEvent.Post event) {
-        if (!player.isCrouching()) {
+        if (isPulling()) {
             List<ItemEntity> nearbyItems = player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(MAGNET_RADIUS));
             for (ItemEntity itemEntity : nearbyItems) {
                 Vec3 pullVec = player.position().subtract(itemEntity.position()).normalize().scale(MAGNET_PULL_SPEED);
