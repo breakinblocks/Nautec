@@ -32,7 +32,7 @@ Laser Injectors fire beams into the crystal heart. The crystal fires them on as 
 ## <Color id="gold">What It Needs</Color>
 
 * A Cultivated Prismarine Crystal, grown as described on [Crystal Cultivation](crystal_cultivation.md). The heart must be cultivated.
-* Laser beams with a purity of 2.0 or more. Purity 3.0 gives full output, so the strongest plants are fed through another crystal. A [Bacterial Fuel Cell](nautec:aquatic_biology/bacterial_fuel_cell.md) at its best (2.5) gives five sixths of full output.
+* Laser beams with a purity of 2.0 or more. Purity 3.0 gives the base 50 FE per AP, so the strongest plants are fed through another crystal. A [Bacterial Fuel Cell](nautec:aquatic_biology/bacterial_fuel_cell.md) at its best (2.5) gives five sixths of that. Beams purer than 3.0 give more, see Running It.
 * A steady supply of Salt Water from [Deep Sea Drains](nautec:laser_chemistry/drain.md).
 * The parts below. JEI shows their recipes: they take Deep Steel Plating, Atlantic Gold, Ender Pearls, Flawless Prismarine Crystals and, for the controller, a Nether Star.
 
@@ -184,7 +184,7 @@ Right-click the controller, or any Fusion Port, to open its screen. While the ch
 
 1. **Fuel.** Pipe Salt Water into the controller or a <ItemLink id="fusion_port"/>. They take nothing else.
 2. **Ignition.** Fire beams into the backs of the injectors from outside. A cold plant soaks up its first 5,000,000 AP as heat before it makes anything, which is about 40 seconds at 6,000 AP/t or several minutes for a small feed. The left bar on the screen shows the heat.
-3. **Power.** Once the heat bar is full, each AP injected makes up to 50 FE. Lower purity scales that down: purity 2.4 gives 40 FE per AP.
+3. **Power.** Once the heat bar is full, each AP injected makes 50 FE at purity 3.0. Lower purity scales that down: purity 2.4 gives 40 FE per AP. Purity above 3.0 adds to it on a curve that flattens out: about 1.35 times as much at purity 6, 1.55 times at 9 and 1.69 times at 12. Purer beams come from enriched crystals, see [Bacterial Enrichment Catalyst](bacterial_enrichment_catalyst.md).
 4. **Burn.** Each mB of Salt Water makes 2,000 FE, so a plant at 300,000 FE/t burns 150 mB every tick. That is what six Deep Sea Drains pump.
 5. **Output.** The controller and every Fusion Port push FE into any cable or machine touching them.
 
@@ -204,6 +204,14 @@ The chamber caps how much plasma it can hold. Beams past the ceiling are wasted,
 | 9 x 9 | 200,000 FE/t |
 
 Each <ItemLink id="containment_coil"/> in the shell adds 4,000 FE/t, up to 300,000 FE/t in total. A 9 x 9 chamber reaches that with 25 coils, fed by 6,000 AP/t of purity 3.0 beams.
+
+***
+
+## <Color id="gold">Heart Purity</Color>
+
+The heart crystal's own purity raises the plant's output ceiling and its maximum output by 10% for every point above 3.0: +30% at purity 6 and +90% at purity 12. A cultivated crystal that rolled a high purity does better, and an enriched one better still.
+
+A crystal cannot be enriched while it is inside a formed plant. Enrich it outside with a [Bacterial Enrichment Catalyst](bacterial_enrichment_catalyst.md), pick it up with a wrench and place it as the heart.
 
 ***
 
@@ -263,4 +271,4 @@ Every satellite has to be cultivated, see [Crystal Cultivation](crystal_cultivat
 
 The numbers are `fusionSatelliteContainment` and `fusionSatelliteFePerAp` in `config/nautec-common.toml`.
 
-<Color id="gold">Tip</Color>: an [Energy Converter](nautec:laser_chemistry/energy_converter.md) can feed the plant some of its own FE back as AP. Converter beams have a purity of 0, so send them through another Prismarine Crystal first to bring them up to 3.0.
+<Color id="gold">Tip</Color>: an [Energy Converter](nautec:laser_chemistry/energy_converter.md) can feed the plant some of its own FE back as AP. Converter beams have a purity of 0, so send them through another Prismarine Crystal first to bring them up to its purity.

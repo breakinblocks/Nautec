@@ -22,6 +22,8 @@ public final class NTShaders {
     private static @Nullable ShaderInstance fusionField;
     private static @Nullable ShaderInstance laserBeam;
     private static @Nullable ShaderInstance laserFlare;
+    private static @Nullable ShaderInstance enrichmentStream;
+    private static @Nullable ShaderInstance enrichmentPulse;
     private static @Nullable ShaderInstance sonarResult;
     private static @Nullable ShaderInstance sonarWave;
     private static @Nullable ShaderInstance tidalShockwave;
@@ -47,6 +49,8 @@ public final class NTShaders {
         register(event, provider, "fusion_field", glow, s -> fusionField = s);
         register(event, provider, "laser_beam", glow, s -> laserBeam = s);
         register(event, provider, "laser_flare", glow, s -> laserFlare = s);
+        register(event, provider, "enrichment_stream", glow, s -> enrichmentStream = s);
+        register(event, provider, "enrichment_pulse", glow, s -> enrichmentPulse = s);
         register(event, provider, "sonar_result", glow, s -> sonarResult = s);
         register(event, provider, "sonar_wave", screen, s -> sonarWave = s);
         register(event, provider, "tidal_shockwave", screen, s -> tidalShockwave = s);
@@ -103,6 +107,14 @@ public final class NTShaders {
 
     public static @Nullable ShaderInstance laserFlare() {
         return laserFlare;
+    }
+
+    public static @Nullable ShaderInstance enrichmentStream() {
+        return enrichmentStream;
+    }
+
+    public static @Nullable ShaderInstance enrichmentPulse() {
+        return enrichmentPulse;
     }
 
     public static @Nullable ShaderInstance sonarResult() {

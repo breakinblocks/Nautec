@@ -23,6 +23,16 @@ public final class LaserBeamRenderer {
 
     public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, Vector3fc from, Vector3fc to,
                                   float halfWidth, int color, boolean world) {
+        submitBeam(poseStack, buffers, NTRenderTypes.laserBeam(), from, to, halfWidth, color, world);
+    }
+
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, Vector3fc from, Vector3fc to,
+                                  float halfWidth, int color, boolean world) {
+        submitBeam(poseStack, buffers, renderType, from, to, halfWidth, color, color, 0F, world);
+    }
+
+    public static void submitBeam(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, Vector3fc from, Vector3fc to,
+                                  float halfWidth, int colorFrom, int colorTo, float lengthOffset, boolean world) {
         Matrix4f pose = poseStack.last().pose();
         float scale = Math.max(1.0E-4F, pose.getScale(new Vector3f()).x);
         Vector3f camera = cameraInPose(pose);
@@ -37,13 +47,14 @@ public final class LaserBeamRenderer {
         float width = halfWidth / scale;
         Vector3f sideFrom = side(axis, from, camera, width);
         Vector3f sideTo = side(axis, to, camera, width);
-        float worldLength = length * scale;
+        float worldStart = lengthOffset * scale;
+        float worldEnd = worldStart + length * scale;
 
-        submit(poseStack, buffers, NTRenderTypes.laserBeam(), world, (last, buffer) -> {
-            vertex(buffer, last, new Vector3f(from).sub(sideFrom), 0F, 0F, color);
-            vertex(buffer, last, new Vector3f(from).add(sideFrom), 1F, 0F, color);
-            vertex(buffer, last, new Vector3f(to).add(sideTo), 1F, worldLength, color);
-            vertex(buffer, last, new Vector3f(to).sub(sideTo), 0F, worldLength, color);
+        submit(poseStack, buffers, renderType, world, (last, buffer) -> {
+            vertex(buffer, last, new Vector3f(from).sub(sideFrom), 0F, worldStart, colorFrom);
+            vertex(buffer, last, new Vector3f(from).add(sideFrom), 1F, worldStart, colorFrom);
+            vertex(buffer, last, new Vector3f(to).add(sideTo), 1F, worldEnd, colorTo);
+            vertex(buffer, last, new Vector3f(to).sub(sideTo), 0F, worldEnd, colorTo);
         });
     }
 
@@ -53,6 +64,11 @@ public final class LaserBeamRenderer {
     }
 
     public static void submitFlare(PoseStack poseStack, MultiBufferSource buffers, Vector3fc centre,
+                                   float radius, int color, boolean world) {
+        submitFlare(poseStack, buffers, NTRenderTypes.laserFlare(), centre, radius, color, world);
+    }
+
+    public static void submitFlare(PoseStack poseStack, MultiBufferSource buffers, RenderType renderType, Vector3fc centre,
                                    float radius, int color, boolean world) {
         Matrix4f pose = poseStack.last().pose();
         float scale = Math.max(1.0E-4F, pose.getScale(new Vector3f()).x);
@@ -71,7 +87,7 @@ public final class LaserBeamRenderer {
         Vector3f right = reference.cross(normal).normalize(size);
         Vector3f up = new Vector3f(normal).cross(right).normalize(size);
 
-        submit(poseStack, buffers, NTRenderTypes.laserFlare(), world, (last, buffer) -> {
+        submit(poseStack, buffers, renderType, world, (last, buffer) -> {
             vertex(buffer, last, new Vector3f(middle).sub(right).sub(up), 0F, 0F, color);
             vertex(buffer, last, new Vector3f(middle).add(right).sub(up), 1F, 0F, color);
             vertex(buffer, last, new Vector3f(middle).add(right).add(up), 1F, 1F, color);

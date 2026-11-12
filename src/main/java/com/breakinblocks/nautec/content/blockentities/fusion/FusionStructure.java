@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.content.blockentities.fusion;
 
 import com.breakinblocks.nautec.NTConfig;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.CrystalPurity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.fusion.LaserInjectorBlock;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
@@ -18,7 +19,7 @@ import java.util.Locale;
 
 public record FusionStructure(Problem problem, @Nullable BlockPos problemPos, @Nullable BlockPos core, int radius,
                               List<BlockPos> injectors, List<BlockPos> ports, int coils, int satellites,
-                              @Nullable BlockPos topCollector, @Nullable BlockPos bottomCollector) {
+                              @Nullable BlockPos topCollector, @Nullable BlockPos bottomCollector, float heartPurity) {
     public static final int MIN_RADIUS = 2;
     public static final int MAX_RADIUS = 5;
     public static final int FLOOR_DROP = 4;
@@ -44,7 +45,15 @@ public record FusionStructure(Problem problem, @Nullable BlockPos problemPos, @N
     }
 
     public int maxOutput() {
-        return maxOutput(satelliteCount());
+        return maxOutput(satelliteCount(), heartPurity);
+    }
+
+    public static int maxOutput(int satellites, float heartPurity) {
+        return (int) Math.min(Integer.MAX_VALUE, Math.round(maxOutput(satellites) * heartFactor(heartPurity)));
+    }
+
+    public static double heartFactor(float heartPurity) {
+        return 1 + NTConfig.fusionHeartCeilingBonus * Math.max(0f, heartPurity - CrystalPurity.MIN);
     }
 
     public static int maxOutput(int satellites) {
@@ -65,7 +74,7 @@ public record FusionStructure(Problem problem, @Nullable BlockPos problemPos, @N
         }
         long total = (long) CHAMBER_CONTAINMENT[radius] + (long) coils * NTConfig.fusionCoilContainment
                 + (long) satelliteCount() * NTConfig.fusionSatelliteContainment;
-        return (int) Math.min(maxOutput(), total);
+        return (int) Math.min(maxOutput(), Math.round(total * heartFactor(heartPurity)));
     }
 
     public static int satelliteOffset(int radius) {
@@ -91,7 +100,7 @@ public record FusionStructure(Problem problem, @Nullable BlockPos problemPos, @N
     }
 
     private static FusionStructure failed(Problem problem, @Nullable BlockPos at, @Nullable BlockPos core, int radius) {
-        return new FusionStructure(problem, at, core, radius, List.of(), List.of(), 0, 0, null, null);
+        return new FusionStructure(problem, at, core, radius, List.of(), List.of(), 0, 0, null, null, CrystalPurity.MIN);
     }
 
     public static FusionStructure scan(Level level, BlockPos controller, Direction front) {
@@ -226,7 +235,8 @@ public record FusionStructure(Problem problem, @Nullable BlockPos problemPos, @N
         if (injectors.isEmpty()) {
             return failed(Problem.NO_INJECTOR, null, core, radius);
         }
-        return new FusionStructure(Problem.NONE, null, core, radius, List.copyOf(injectors), List.copyOf(ports), coils, satellites, top, bottom);
+        return new FusionStructure(Problem.NONE, null, core, radius, List.copyOf(injectors), List.copyOf(ports), coils, satellites, top, bottom,
+                crystal.getCrystalPurity());
     }
 
     private static boolean isCrystal(BlockState state) {

@@ -62,6 +62,7 @@ public class PrismarineCrystalBlock extends LaserBlock {
         build(level, pos, Boolean.TRUE.equals(stack.get(NTDataComponents.CULTIVATED)));
         if (level.getBlockEntity(pos) instanceof PrismarineCrystalBlockEntity crystal) {
             crystal.setCrystalPurity(stack.getOrDefault(NTDataComponents.CRYSTAL_PURITY, 3f));
+            crystal.update();
         }
     }
 

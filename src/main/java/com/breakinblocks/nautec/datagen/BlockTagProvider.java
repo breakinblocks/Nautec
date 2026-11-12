@@ -50,6 +50,7 @@ public class BlockTagProvider extends BlockTagsProvider {
                 GATEWAY,
                 GATEWAY_RING,
                 CRYSTAL_CULTIVATOR,
+                BACTERIAL_ENRICHMENT_CATALYST,
                 RESONANCE_CHAMBER,
                 FOCUSING_LENS,
                 PRISMARINE_RELAY,

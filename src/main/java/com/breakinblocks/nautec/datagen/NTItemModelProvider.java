@@ -187,6 +187,7 @@ public class NTItemModelProvider extends ItemModelProvider {
         entityItem(NTItems.SUBMARINE.get(), Nautec.rl("item/submarine_base"));
         entityItem(NTItems.WAVE_JET.get(), Nautec.rl("item/wave_jet_base"));
         entityItem(NTBlocks.LASER_CRAFTING_MATRIX.asItem(), Nautec.rl("block/laser_crafting_matrix"));
+        entityItem(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.asItem(), Nautec.rl("block/bacterial_enrichment_catalyst"));
         entityItem(NTBlocks.RESONANT_VAULT.asItem(), Nautec.rl("block/resonant_vault"));
         entityItem(NTItems.ATLANTEAN_RIFLE.get(), Nautec.rl("item/atlantean_rifle_base"));
 

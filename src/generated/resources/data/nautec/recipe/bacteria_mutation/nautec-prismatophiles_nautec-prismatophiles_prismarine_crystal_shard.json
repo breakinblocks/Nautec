@@ -1,0 +1,9 @@
+{
+  "type": "nautec:bacteria_mutation",
+  "catalyst": {
+    "item": "nautec:prismarine_crystal_shard"
+  },
+  "chance": 25.0,
+  "input_bacteria": "nautec:prismatophiles",
+  "result_bacteria": "nautec:prismatophiles"
+}

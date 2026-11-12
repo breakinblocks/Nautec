@@ -1,6 +1,7 @@
 package com.breakinblocks.nautec.client.render;
 
 import com.breakinblocks.nautec.Nautec;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.CrystalPurity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -25,6 +26,9 @@ public final class PrismarineCrystalRenderer {
     private static final int SHELL_COLOR = 0xFFFFFFFF;
     private static final int CORE_COLOR = 0xFF9AF4FF;
     private static final int HALO_COLOR = 0xB04CCBE0;
+    private static final int ENRICHED_SHELL_COLOR = 0xFFFFF0C8;
+    private static final int ENRICHED_CORE_COLOR = 0xFFFFDE8A;
+    private static final int ENRICHED_HALO_COLOR = 0xD0FFD27A;
 
     private static final float FLOOR_Y = -2.98F;
     private static final float HALO_RADIUS = 1.5F;
@@ -40,13 +44,22 @@ public final class PrismarineCrystalRenderer {
     }
 
     public static void submit(PoseStack poseStack, MultiBufferSource buffers, float ticks, long seed, float flash, boolean world) {
+        submit(poseStack, buffers, ticks, seed, flash, world, CrystalPurity.MIN);
+    }
+
+    public static float enrichment(float purity) {
+        return Mth.clamp((purity - CrystalPurity.CRADLE_MAX) / (CrystalPurity.MAX - CrystalPurity.CRADLE_MAX), 0F, 1F);
+    }
+
+    public static void submit(PoseStack poseStack, MultiBufferSource buffers, float ticks, long seed, float flash, boolean world, float purity) {
+        float enriched = enrichment(purity);
         float phase = (seed & 0xFFFF) / 65535F * Mth.TWO_PI;
         float bob = Mth.sin(ticks * 0.045F + phase) * 0.045F;
         float shellYaw = phase * Mth.RAD_TO_DEG + ticks * 0.22F;
-        int shellColor = tint(SHELL_COLOR, flash);
+        int shellColor = tint(blend(SHELL_COLOR, ENRICHED_SHELL_COLOR, enriched * 0.7F), flash);
 
         if (world) {
-            submitHalo(poseStack, buffers, ticks, phase);
+            submitHalo(poseStack, buffers, ticks, phase, enriched);
         }
 
         poseStack.pushPose();
@@ -60,11 +73,18 @@ public final class PrismarineCrystalRenderer {
         JsonMesh.Part core = JsonMesh.PRISMARINE_CRYSTAL.part("core");
         poseStack.pushPose();
         poseStack.translate(core.origin().x(), core.origin().y(), core.origin().z());
-        poseStack.mulPose(Axis.YP.rotationDegrees(-ticks * 1.1F - phase * Mth.RAD_TO_DEG));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-ticks * 1.1F * (1F + enriched) - phase * Mth.RAD_TO_DEG));
         float pulse = 1F + Mth.sin(ticks * 0.11F + phase) * 0.04F;
         poseStack.scale(pulse, 1F, pulse);
-        JsonMesh.submitTranslucent(poseStack, buffers, core, NTRenderTypes.crystalCore(TEXTURE), tint(CORE_COLOR, flash), world);
+        JsonMesh.submitTranslucent(poseStack, buffers, core, NTRenderTypes.crystalCore(TEXTURE),
+                tint(blend(CORE_COLOR, ENRICHED_CORE_COLOR, enriched), flash), world);
         poseStack.popPose();
+
+        if (world && enriched > 0F) {
+            float star = 0.35F + 0.75F * enriched + 0.08F * Mth.sin(ticks * 0.17F + phase);
+            int starColor = ((int) (255 * Math.min(1F, 0.35F + enriched)) << 24) | (ENRICHED_CORE_COLOR & 0xFFFFFF);
+            LaserBeamRenderer.submitFlare(poseStack, buffers, new Vector3f(core.origin().x(), core.origin().y(), core.origin().z()), star, starColor, true);
+        }
 
         if (world && farAway(poseStack.last().pose())) {
             poseStack.popPose();
@@ -116,14 +136,27 @@ public final class PrismarineCrystalRenderer {
         return (color & 0xFF000000) | r << 16 | g << 8 | b;
     }
 
-    private static void submitHalo(PoseStack poseStack, MultiBufferSource buffers, float ticks, float phase) {
-        float strength = 0.8F + 0.2F * Mth.sin(ticks * 0.11F + phase);
-        int color = ((int) (((HALO_COLOR >>> 24) & 0xFF) * strength) << 24) | (HALO_COLOR & 0xFFFFFF);
+    public static int blend(int from, int to, float amount) {
+        if (amount <= 0F) {
+            return from;
+        }
+        int a = (int) Mth.lerp(amount, (from >>> 24) & 0xFF, (to >>> 24) & 0xFF);
+        int r = (int) Mth.lerp(amount, (from >> 16) & 0xFF, (to >> 16) & 0xFF);
+        int g = (int) Mth.lerp(amount, (from >> 8) & 0xFF, (to >> 8) & 0xFF);
+        int b = (int) Mth.lerp(amount, from & 0xFF, to & 0xFF);
+        return a << 24 | r << 16 | g << 8 | b;
+    }
+
+    private static void submitHalo(PoseStack poseStack, MultiBufferSource buffers, float ticks, float phase, float enriched) {
+        float strength = Math.min(1F, 0.8F + 0.2F * Mth.sin(ticks * 0.11F + phase) + 0.25F * enriched);
+        int tinted = blend(HALO_COLOR, ENRICHED_HALO_COLOR, enriched);
+        int color = ((int) (((tinted >>> 24) & 0xFF) * strength) << 24) | (tinted & 0xFFFFFF);
+        float radius = HALO_RADIUS * (1F + 0.5F * enriched);
         ShaderPackOverlay.submit(poseStack, buffers, NTRenderTypes.crystalHalo(), (pose, buffer) -> {
-            glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, -HALO_RADIUS, 0F, 0F, color);
-            glowVertex(buffer, pose, -HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 0F, 1F, color);
-            glowVertex(buffer, pose, HALO_RADIUS, FLOOR_Y, HALO_RADIUS, 1F, 1F, color);
-            glowVertex(buffer, pose, HALO_RADIUS, FLOOR_Y, -HALO_RADIUS, 1F, 0F, color);
+            glowVertex(buffer, pose, -radius, FLOOR_Y, -radius, 0F, 0F, color);
+            glowVertex(buffer, pose, -radius, FLOOR_Y, radius, 0F, 1F, color);
+            glowVertex(buffer, pose, radius, FLOOR_Y, radius, 1F, 1F, color);
+            glowVertex(buffer, pose, radius, FLOOR_Y, -radius, 1F, 0F, color);
         });
     }
 

@@ -305,6 +305,11 @@ public class NTEmiPlugin implements EmiPlugin {
                 Component.translatable("nautec.jei.crystal_seed"));
         info(registry, "crystal_cradle", List.of(EmiStack.of(NTBlocks.CRYSTAL_CRADLE)), Component.translatable("nautec.jei.crystal_cradle",
                 NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.crystalGrowthPower)));
+        info(registry, "bacterial_enrichment_catalyst", List.of(EmiStack.of(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST)),
+                Component.translatable("nautec.jei.bacterial_enrichment_catalyst",
+                String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMinCrystalPurity), String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMaxPurity),
+                NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.enrichmentMinPower), String.format(Locale.ROOT, "%.2f", NTConfig.enrichmentStep),
+                String.format(Locale.ROOT, "%.2f", NTConfig.enrichmentRegression), String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMaxOverreach)));
         info(registry, "eas", List.of(EmiStack.of(NTFluids.EAS.getStillFluid(), 1000), EmiStack.of(NTFluids.EAS.getBucket()),
                 EmiStack.of(NTItems.ELECTROLYTE_ALGAE_SERUM_VIAL)), Component.translatable("nautec.jei.info.eas"));
         info(registry, "prismarine_crystal_shard", List.of(EmiStack.of(NTItems.PRISMARINE_CRYSTAL_SHARD)),

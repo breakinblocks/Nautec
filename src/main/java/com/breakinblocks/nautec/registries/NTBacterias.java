@@ -52,6 +52,7 @@ public final class NTBacterias {
     public static final ResourceKey<Bacteria> AURROPHILES = keyAndAddBacteria("aurrophiles");
     public static final ResourceKey<Bacteria> ADAMANTOPHILES = keyAndAddBacteria("adamantophiles");
     public static final ResourceKey<Bacteria> SMARAGDOPHILES = keyAndAddBacteria("smaragdophiles");
+    public static final ResourceKey<Bacteria> PRISMATOPHILES = keyAndAddBacteria("prismatophiles");
     public static final ResourceKey<Bacteria> AZURITOPHILES = keyAndAddBacteria("azuritophiles");
     public static final ResourceKey<Bacteria> CARBOPHAGES = keyAndAddBacteria("carbophages");
 
@@ -437,6 +438,14 @@ public final class NTBacterias {
                 .growthRate(FloatRange.of(0.5F, 1.1F))
                 .mutationResistance(FloatRange.of(0F, 0.12F))
                 .color(ARGB.color(0, 255, 0)));
+        register(context, PRISMATOPHILES, SimpleBacteria.of()
+                .initialSize(LongRange.of(125, 225))
+                .resource(Items.AIR)
+                .productionRate(FloatRange.of(0.1F, 0.4F))
+                .lifespan(IntRange.of(1100, 2300))
+                .growthRate(FloatRange.of(0.5F, 1.1F))
+                .mutationResistance(FloatRange.of(0F, 0.12F))
+                .color(ARGB.color(70, 232, 200)));
 
         register(context, CARNIVOROUS_BACTERIA, SimpleBacteria.of()
                 .initialSize(LongRange.of(300, 500))

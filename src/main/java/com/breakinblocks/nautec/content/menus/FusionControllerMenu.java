@@ -104,4 +104,8 @@ public class FusionControllerMenu extends NTAbstractContainerMenu<FusionControll
     public int getSatellites() {
         return data.get(FusionControllerBlockEntity.DATA_SATELLITES);
     }
+
+    public float getHeartPurity() {
+        return data.get(FusionControllerBlockEntity.DATA_HEART_PURITY) / 100F;
+    }
 }

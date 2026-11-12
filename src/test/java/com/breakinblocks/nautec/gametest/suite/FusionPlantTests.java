@@ -10,6 +10,7 @@ import com.breakinblocks.nautec.content.blockentities.fusion.FusionStructure;
 import com.breakinblocks.nautec.content.blockentities.fusion.LaserInjectorBlockEntity;
 import com.breakinblocks.nautec.content.blocks.fusion.FusionControllerBlock;
 import com.breakinblocks.nautec.content.blocks.fusion.LaserInjectorBlock;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.registries.NTBlocks;
 import com.breakinblocks.nautec.registries.NTFluids;
@@ -178,6 +179,50 @@ public final class FusionPlantTests {
             controller.rescan(level);
             helper.assertValueEqual(controller.getStructure().problem(), FusionStructure.Problem.INJECTOR, "an injector facing away");
             helper.succeed();
+        });
+
+        r.add("fusion/quality_curve", 20, helper -> {
+            helper.assertTrue(FusionControllerBlockEntity.quality(0f) == 0, "no purity, no output");
+            helper.assertTrue(Math.abs(FusionControllerBlockEntity.quality(1.5f) - 0.5) < 0.0001, "linear below 3");
+            helper.assertTrue(Math.abs(FusionControllerBlockEntity.quality(3f) - 1.0) < 0.0001, "base output at 3");
+            double six = FusionControllerBlockEntity.quality(6f);
+            double nine = FusionControllerBlockEntity.quality(9f);
+            double twelve = FusionControllerBlockEntity.quality(12f);
+            helper.assertTrue(Math.abs(six - (1 + NTConfig.fusionPurityBonus * Math.log(2))) < 0.0001, "bonus at 6");
+            helper.assertTrue(six > 1 && nine > six && twelve > nine, "purity above 3 keeps adding");
+            helper.assertTrue(six - 1 > nine - six && nine - six > twelve - nine, "with diminishing returns");
+            helper.succeed();
+        });
+
+        r.add("fusion/heart_purity_raises_ceiling", 20, helper -> {
+            FusionControllerBlockEntity controller = build(helper, true);
+            int base = controller.getStructure().ceiling();
+            int baseMax = controller.getStructure().maxOutput();
+            helper.assertTrue(controller.getStructure().heartPurity() == 3f, "a fresh heart sits at purity 3");
+            PrismarineCrystalBlockEntity heart = (PrismarineCrystalBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(CORE));
+            heart.setCrystalPurity(9f);
+            controller.rescan(helper.getLevel());
+            double factor = FusionStructure.heartFactor(9f);
+            helper.assertTrue(Math.abs(factor - (1 + NTConfig.fusionHeartCeilingBonus * 6)) < 0.0001, "heart factor at purity 9");
+            helper.assertValueEqual(controller.getStructure().maxOutput(), (int) Math.round(baseMax * factor), "maximum output scales with the heart");
+            helper.assertValueEqual(controller.getStructure().ceiling(), (int) Math.min(controller.getStructure().maxOutput(), Math.round(base * factor)),
+                    "ceiling scales with the heart");
+            helper.succeed();
+        });
+
+        r.add("fusion/purity_above_three_adds_fe", 300, helper -> {
+            lowerIgnition();
+            FusionControllerBlockEntity controller = build(helper, true);
+            controller.getFuelTank().fill(new FluidStack(NTFluids.SALT_WATER.getStillFluid(), 10_000));
+            feedInjector(helper, 200, 6.0F);
+            long potential = (long) (200 * (double) controller.getStructure().fePerAp() * FusionControllerBlockEntity.quality(6f));
+            int expected = (int) Math.min(potential, controller.getStructure().ceiling());
+            helper.assertTrue(expected > 200 * controller.getStructure().fePerAp(), "the fixture leaves room for the bonus");
+            helper.succeedWhen(() -> {
+                helper.assertTrue(controller.getStatus().running(), "the plant runs, status " + controller.getStatus());
+                helper.assertValueEqual(controller.getOutput(), expected, "output at purity 6.0");
+                restoreIgnition();
+            });
         });
 
         r.add("fusion/ignites_then_makes_fe_from_salt_water", 300, helper -> {

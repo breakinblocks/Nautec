@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.content.blockentities.fusion;
 
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.CrystalPurity;
 import com.breakinblocks.nautec.transfer.TransferCapabilities;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
@@ -66,7 +67,8 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
     public static final int DATA_INJECTORS = 15;
     public static final int DATA_COILS = 16;
     public static final int DATA_SATELLITES = 17;
-    public static final int DATA_COUNT = 18;
+    public static final int DATA_HEART_PURITY = 18;
+    public static final int DATA_COUNT = 19;
 
     private final FluidTank fuel = new FluidTank(FUEL_CAPACITY) {
         @Override
@@ -129,6 +131,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
                 case DATA_INJECTORS -> structure.injectors().size();
                 case DATA_COILS -> structure.coils();
                 case DATA_SATELLITES -> structure.satelliteCount();
+                case DATA_HEART_PURITY -> Math.round(structure.heartPurity() * 100);
                 default -> 0;
             };
         }
@@ -338,7 +341,7 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
             return;
         }
 
-        double quality = Math.min(1.0, purity / 3.0);
+        double quality = quality(purity);
         long potential = (long) (injected * (double) structure.fePerAp() * quality);
         int space = energy.getCapacityAsInt() - energy.getAmountAsInt();
         int target = (int) Math.min(Math.min(potential, structure.ceiling()), space);
@@ -366,6 +369,16 @@ public class FusionControllerBlockEntity extends ContainerBlockEntity implements
             NTCriteriaTriggers.triggerNear(NTCriteriaTriggers.FUSION_RUNNING.get(), serverLevel, worldPosition, 24.0);
         }
         this.status = potential > structure.ceiling() ? Status.CONTAINMENT_LIMITED : Status.RUNNING;
+    }
+
+    public static double quality(float purity) {
+        if (!(purity > 0)) {
+            return 0;
+        }
+        if (purity <= CrystalPurity.MIN) {
+            return purity / CrystalPurity.MIN;
+        }
+        return 1 + NTConfig.fusionPurityBonus * Math.log1p((purity - CrystalPurity.MIN) / CrystalPurity.MIN);
     }
 
     private int collectorPower(@Nullable BlockPos pos) {

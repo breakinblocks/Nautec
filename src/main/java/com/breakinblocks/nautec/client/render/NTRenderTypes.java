@@ -20,6 +20,8 @@ public final class NTRenderTypes {
     private static final RenderStateShard.ShaderStateShard SINGULARITY_DISK_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.singularityDisk()));
     private static final RenderStateShard.ShaderStateShard LASER_BEAM_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.laserBeam()));
     private static final RenderStateShard.ShaderStateShard LASER_FLARE_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.laserFlare()));
+    private static final RenderStateShard.ShaderStateShard ENRICHMENT_STREAM_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.enrichmentStream()));
+    private static final RenderStateShard.ShaderStateShard ENRICHMENT_PULSE_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.enrichmentPulse()));
     private static final RenderStateShard.ShaderStateShard SONAR_RESULT_SHADER = new RenderStateShard.ShaderStateShard(() -> NTShaders.orFallback(NTShaders.sonarResult()));
 
     private static final RenderType SONAR_HIGHLIGHT = RenderType.create("nautec_sonar_highlight",
@@ -55,6 +57,10 @@ public final class NTRenderTypes {
     private static final RenderType LASER_BEAM = glow("nautec_laser_beam", LASER_BEAM_SHADER, RenderStateShard.ADDITIVE_TRANSPARENCY, false);
 
     private static final RenderType LASER_FLARE = glow("nautec_laser_flare", LASER_FLARE_SHADER, RenderStateShard.ADDITIVE_TRANSPARENCY, false);
+
+    private static final RenderType ENRICHMENT_STREAM = glow("nautec_enrichment_stream", ENRICHMENT_STREAM_SHADER, RenderStateShard.ADDITIVE_TRANSPARENCY, false);
+
+    private static final RenderType ENRICHMENT_PULSE = glow("nautec_enrichment_pulse", ENRICHMENT_PULSE_SHADER, RenderStateShard.ADDITIVE_TRANSPARENCY, false);
 
     private static final RenderType FUSION_PLASMA = glow("nautec_fusion_plasma", FUSION_PLASMA_SHADER, RenderStateShard.LIGHTNING_TRANSPARENCY, false);
 
@@ -181,6 +187,14 @@ public final class NTRenderTypes {
 
     public static RenderType laserFlare() {
         return LASER_FLARE;
+    }
+
+    public static RenderType enrichmentStream() {
+        return ENRICHMENT_STREAM;
+    }
+
+    public static RenderType enrichmentPulse() {
+        return ENRICHMENT_PULSE;
     }
 
     public static RenderType sonarHighlight() {

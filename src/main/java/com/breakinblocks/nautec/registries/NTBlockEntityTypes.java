@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.blockentities.BacterialEnrichmentCatalystBlockEntity;
 import com.breakinblocks.nautec.content.blockentities.CrystalCultivatorBlockEntity;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirBlockEntity;
 import com.breakinblocks.nautec.content.enchanter.AbyssalEnchanterBlockEntity;
@@ -138,6 +139,9 @@ public final class NTBlockEntityTypes {
                     NTBlocks.GATEWAY.get()).build(null));
     public static final Supplier<BlockEntityType<CrystalCultivatorBlockEntity>> CRYSTAL_CULTIVATOR = BLOCK_ENTITIES.register("crystal_cultivator",
             () -> BlockEntityType.Builder.of(CrystalCultivatorBlockEntity::new, NTBlocks.CRYSTAL_CULTIVATOR.get()).build(null));
+
+    public static final Supplier<BlockEntityType<BacterialEnrichmentCatalystBlockEntity>> BACTERIAL_ENRICHMENT_CATALYST = BLOCK_ENTITIES.register("bacterial_enrichment_catalyst",
+            () -> BlockEntityType.Builder.of(BacterialEnrichmentCatalystBlockEntity::new, NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.get()).build(null));
 
     public static final Supplier<BlockEntityType<ResonanceChamberBlockEntity>> RESONANCE_CHAMBER = BLOCK_ENTITIES.register("resonance_chamber",
             () -> BlockEntityType.Builder.of(ResonanceChamberBlockEntity::new,

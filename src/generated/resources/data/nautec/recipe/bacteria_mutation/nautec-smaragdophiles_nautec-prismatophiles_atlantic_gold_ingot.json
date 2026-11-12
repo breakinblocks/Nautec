@@ -1,0 +1,9 @@
+{
+  "type": "nautec:bacteria_mutation",
+  "catalyst": {
+    "item": "nautec:atlantic_gold_ingot"
+  },
+  "chance": 5.0,
+  "input_bacteria": "nautec:smaragdophiles",
+  "result_bacteria": "nautec:prismatophiles"
+}

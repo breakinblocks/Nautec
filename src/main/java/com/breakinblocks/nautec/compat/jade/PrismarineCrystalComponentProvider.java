@@ -11,6 +11,8 @@ import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
+import java.util.Locale;
+
 public enum PrismarineCrystalComponentProvider implements IBlockComponentProvider {
     INSTANCE;
 
@@ -22,6 +24,7 @@ public enum PrismarineCrystalComponentProvider implements IBlockComponentProvide
         }
         if (crystal.isCultivated()) {
             tooltip.add(Component.translatable("nautec.jade.crystal.cultivated").withStyle(ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("nautec.jade.crystal.purity", String.format(Locale.ROOT, "%.2f", crystal.getCrystalPurity())));
         } else {
             tooltip.add(Component.translatable("nautec.jade.crystal.natural").withStyle(ChatFormatting.GRAY));
         }

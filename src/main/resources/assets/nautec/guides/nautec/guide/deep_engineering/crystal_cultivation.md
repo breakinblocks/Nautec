@@ -88,10 +88,12 @@ Look at the cradle with Jade to see its progress, the power and purity arriving,
 
 ## <Color id="gold">6. The Cultivated Crystal</Color>
 
-At ten million AP the seed becomes a full Cultivated Prismarine Crystal standing on the cradle. Its purity is randomly set between **3.00 and 6.00**, in steps of 0.01, when growth completes. Fire a beam into its side, and the top and bottom emit beams at that crystal's purity, sharing the incoming power (see [Laser Power](nautec:getting_started/laser_power.md)). The cradle is empty again and ready for another seed.
+At ten million AP the seed becomes a full Cultivated Prismarine Crystal standing on the cradle. Its purity is randomly set between **3.00 and 6.00**, in steps of 0.01, when growth completes (it can be raised later, see the end of this page). Fire a beam into its side, and the top and bottom emit beams at that crystal's purity, sharing the incoming power (see [Laser Power](nautec:getting_started/laser_power.md)). The cradle is empty again and ready for another seed.
 
 **To move it**, sneak and right-click any part of it with a wrench. Any mod's wrench works, as long as it is in the `c:tools/wrench` tag, including the <ItemLink id="aquarine_steel_wrench"/>. You get the crystal back as an item, and placing it needs six free blocks of height again. Its rolled purity is preserved when moved or reloaded; moving it does not reroll the value. Check the item tooltip to see its purity.
 
 Wild crystals stay rooted, and the Aquarine Steel Pickaxe's shattering ability only works on wild crystals, so a cultivated one never breaks by accident. Jade marks every crystal as Cultivated or Natural.
+
+The 6.00 is only where a crystal starts. A [Bacterial Enrichment Catalyst](bacterial_enrichment_catalyst.md) can raise a cultivated crystal's purity further, up to 12.
 
 A cultivated crystal is also the heart of a [Fusion Plant](fusion_plant.md), NauTec's largest generator.
