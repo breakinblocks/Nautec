@@ -205,6 +205,8 @@ public class ItemModelProvider extends ModelProvider {
 
         itemModels.itemModelOutput.accept(NTBlocks.LASER_CRAFTING_MATRIX.asItem(), ItemModelUtils.specialModel(
                 Nautec.rl("block/laser_crafting_matrix"), new GeckolibItemSpecialRenderer.Unbaked<>()));
+        itemModels.itemModelOutput.accept(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.asItem(), ItemModelUtils.specialModel(
+                Nautec.rl("block/bacterial_enrichment_catalyst"), new GeckolibItemSpecialRenderer.Unbaked<>()));
         itemModels.itemModelOutput.accept(NTBlocks.RESONANT_VAULT.asItem(), ItemModelUtils.specialModel(
                 Nautec.rl("block/resonant_vault"), new GeckolibItemSpecialRenderer.Unbaked<>()));
 
@@ -282,6 +284,7 @@ public class ItemModelProvider extends ModelProvider {
             if (item == NTBlocks.LASER_JUNCTION.asItem()
                     || item == NTBlocks.ANCHOR.asItem()
                     || item == NTBlocks.LASER_CRAFTING_MATRIX.asItem()
+                    || item == NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.asItem()
                     || item == NTBlocks.RESONANT_VAULT.asItem()
                     || item == NTBlocks.PRISMARINE_CRYSTAL.asItem()
                     || item == NTBlocks.DECORATIVE_PRISMARINE_CRYSTAL.asItem()

@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.neoforged.neoforge.network.PacketDistributor;
+import com.breakinblocks.nautec.api.augments.Augment;
 import com.breakinblocks.nautec.api.augments.AugmentSlot;
 import com.breakinblocks.nautec.api.blockentities.ContainerBlockEntity;
 import com.breakinblocks.nautec.api.blockentities.multiblock.MultiblockEntity;
@@ -22,6 +23,7 @@ import com.breakinblocks.nautec.capabilities.IOActions;
 import com.breakinblocks.nautec.content.blockentities.multiblock.part.AugmentationStationExtensionBlockEntity;
 import com.breakinblocks.nautec.content.recipes.AugmentationRecipe;
 import com.breakinblocks.nautec.content.recipes.inputs.AugmentationRecipeInput;
+import com.breakinblocks.nautec.content.recipes.utils.IngredientWithCount;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
 import com.breakinblocks.nautec.registries.NTMultiblocks;
 import com.breakinblocks.nautec.utils.AugmentHelper;
@@ -67,6 +69,8 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     public static final int STATUS_RUNNING = 6;
     public static final int STATUS_INSTALLED = 7;
     public static final int STATUS_WRONG_PART = 8;
+    public static final int STATUS_REMOVING = 9;
+    public static final int STATUS_REMOVED = 10;
     public static final int OPERATION_TICKS = 80;
     private static final int SYNC_INTERVAL = 10;
     private static final int INSTALLED_TICKS = 60;
@@ -83,6 +87,8 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
     private AugmentationRecipe recipe;
     private AugmentSlot slot;
     private int installedTicks;
+    private boolean removing;
+    private boolean lastRemoved;
 
     private static final Identifier SURGERY_LOCK = Nautec.rl("augmentation_lock");
     private final Map<BlockPos, ItemStack> operationInputs = new HashMap<>();
@@ -120,7 +126,32 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         this.recipe = candidate.get();
         this.slot = augmentSlot;
         this.duration = OPERATION_TICKS;
+        this.removing = false;
         this.isRunning = true;
+        lockPlayer(player);
+        for (BlockPos pos : operationInputs.keySet()) {
+            ((AugmentationStationExtensionBlockEntity) level.getBlockEntity(pos)).equipAugment();
+        }
+    }
+
+    public void startRemoval(Player player, AugmentSlot augmentSlot) {
+        if (!(level instanceof ServerLevel) || isRunning || !canOperateOn(player)
+                || player.getData(NTDataAttachments.AUGMENTATION_STATION).isPresent()
+                || AugmentHelper.getAugmentBySlot(player, augmentSlot) == null
+                || getStatus() != STATUS_EMPTY) {
+            return;
+        }
+        this.operationInputs.clear();
+        this.player = player;
+        this.recipe = null;
+        this.slot = augmentSlot;
+        this.removing = true;
+        this.duration = OPERATION_TICKS;
+        this.isRunning = true;
+        lockPlayer(player);
+    }
+
+    private void lockPlayer(Player player) {
         player.setData(NTDataAttachments.AUGMENTATION_STATION, Optional.of(GlobalPos.of(level.dimension(), worldPosition)));
         for (var attribute : List.of(Attributes.MOVEMENT_SPEED, Attributes.JUMP_STRENGTH)) {
             var instance = player.getAttribute(attribute);
@@ -129,9 +160,33 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                         AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
             }
         }
-        for (BlockPos pos : operationInputs.keySet()) {
-            ((AugmentationStationExtensionBlockEntity) level.getBlockEntity(pos)).equipAugment();
+    }
+
+    private List<ItemStack> partsToReturn(Augment augment) {
+        List<ItemStack> parts = augment.getInstalledParts();
+        if (!parts.isEmpty() || !(level instanceof ServerLevel serverLevel)) {
+            return parts;
         }
+        for (RecipeHolder<AugmentationRecipe> holder : serverLevel.recipeAccess().recipeMap().byType(AugmentationRecipe.Type.INSTANCE)) {
+            AugmentationRecipe candidate = holder.value();
+            if (candidate.resultAugment() != augment.getAugmentType()) {
+                continue;
+            }
+            List<ItemStack> fallback = new ArrayList<>();
+            for (IngredientWithCount ingredient : candidate.ingredients()) {
+                int count = Math.max(1, ingredient.count());
+                ingredient.ingredient().items().findFirst().ifPresent(item -> fallback.add(new ItemStack(item, count)));
+            }
+            if (fallback.isEmpty()) {
+                fallback.add(candidate.augmentItem().getDefaultInstance());
+            }
+            return fallback;
+        }
+        return parts;
+    }
+
+    public boolean isRemoving() {
+        return isRunning && removing;
     }
 
     private boolean canOperateOn(Player player) {
@@ -203,6 +258,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         this.player = null;
         this.recipe = null;
         this.slot = null;
+        this.removing = false;
         this.operationInputs.clear();
     }
 
@@ -249,7 +305,24 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                 speed = Math.min(speed, extension.beamSpeed());
             }
             duration -= overclock.advance(speed == Float.MAX_VALUE ? 1F : speed);
-            if (duration <= 0) {
+            if (duration <= 0 && removing) {
+                Player patient = player;
+                AugmentSlot removedSlot = slot;
+                cancelAugmentation();
+                Augment removed = AugmentHelper.getAugmentBySlot(patient, removedSlot);
+                List<ItemStack> returned = removed == null ? List.of() : partsToReturn(removed);
+                AugmentHelper.removeAugment(patient, removedSlot);
+                for (ItemStack part : returned) {
+                    if (!patient.getInventory().add(part) && !part.isEmpty()) {
+                        patient.drop(part, false);
+                    }
+                }
+                this.installedTicks = INSTALLED_TICKS;
+                this.lastRemoved = true;
+                if (patient instanceof ServerPlayer serverPlayer) {
+                    sendStatus(serverPlayer, false);
+                }
+            } else if (duration <= 0) {
                 Player recipient = player;
                 AugmentationRecipe completedRecipe = recipe;
                 AugmentSlot completedSlot = slot;
@@ -261,6 +334,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
                 cancelAugmentation();
                 AugmentHelper.createAugment(completedRecipe.resultAugment(), recipient, completedSlot, parts);
                 this.installedTicks = INSTALLED_TICKS;
+                this.lastRemoved = false;
                 if (recipient instanceof ServerPlayer serverPlayer) {
                     sendStatus(serverPlayer, false);
                 }
@@ -309,10 +383,10 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
 
     private int getStatus(Supplier<Optional<AugmentationRecipe>> recipeLookup, Supplier<Optional<AugmentationRecipe>> nearMissLookup) {
         if (isRunning) {
-            return STATUS_RUNNING;
+            return removing ? STATUS_REMOVING : STATUS_RUNNING;
         }
         if (installedTicks > 0) {
-            return STATUS_INSTALLED;
+            return lastRemoved ? STATUS_REMOVED : STATUS_INSTALLED;
         }
         if (!isFormed() || !extensionsPresent()) {
             return STATUS_MISSING_EXTENSION;
@@ -353,6 +427,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
         int status = getStatus(recipeLookup, nearMissLookup);
         Optional<AugmentationRecipe> available = switch (status) {
             case STATUS_RUNNING -> Optional.ofNullable(recipe);
+            case STATUS_REMOVING -> Optional.empty();
             case STATUS_WRONG_PART -> nearMissLookup.get();
             default -> recipeLookup.get();
         };
@@ -370,7 +445,7 @@ public class AugmentationStationBlockEntity extends ContainerBlockEntity impleme
             }
         }
         PacketDistributor.sendToPlayer(player, new AugmentationStationSyncPayload(worldPosition, open, status,
-                status == STATUS_RUNNING ? OPERATION_TICKS - duration : 0,
+                status == STATUS_RUNNING || status == STATUS_REMOVING ? OPERATION_TICKS - duration : 0,
                 available.map(AugmentationRecipe::resultAugment),
                 available.map(value -> value.displayPart(displayContext)).orElse(ItemStack.EMPTY),
                 available.map(AugmentationRecipe::desc).orElse(""),

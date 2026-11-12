@@ -23,6 +23,12 @@ public final class NTRenderTypes {
     private static final RenderType LASER_FLARE = RenderType.create("nautec_laser_flare",
             RenderSetup.builder(NTRenderPipelines.LASER_FLARE).createRenderSetup());
 
+    private static final RenderType ENRICHMENT_STREAM = RenderType.create("nautec_enrichment_stream",
+            RenderSetup.builder(NTRenderPipelines.ENRICHMENT_STREAM).createRenderSetup());
+
+    private static final RenderType ENRICHMENT_PULSE = RenderType.create("nautec_enrichment_pulse",
+            RenderSetup.builder(NTRenderPipelines.ENRICHMENT_PULSE).createRenderSetup());
+
     private static final RenderType REACTOR_GLOW = RenderType.create("nautec_reactor_glow",
             RenderSetup.builder(NTRenderPipelines.REACTOR_GLOW).createRenderSetup());
 
@@ -117,6 +123,14 @@ public final class NTRenderTypes {
 
     public static RenderType laserFlare() {
         return LASER_FLARE;
+    }
+
+    public static RenderType enrichmentStream() {
+        return ENRICHMENT_STREAM;
+    }
+
+    public static RenderType enrichmentPulse() {
+        return ENRICHMENT_PULSE;
     }
 
     public static RenderType sonarHighlight() {

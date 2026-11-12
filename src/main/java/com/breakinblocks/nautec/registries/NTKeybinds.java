@@ -35,6 +35,9 @@ public final class NTKeybinds {
     public static final Lazy<KeyMapping> ACTIVATE_LASER_KEYBIND = keyBind(
             "key.nautec.activate_laser", GLFW.GLFW_KEY_L);
 
+    public static final Lazy<KeyMapping> TOGGLE_MAGNET_KEYBIND = keyBind(
+            "key.nautec.toggle_magnet", GLFW.GLFW_KEY_UNKNOWN);
+
     public static final Lazy<KeyMapping> SUBMARINE_DESCEND_KEYBIND = keyBind(
             "key.nautec.submarine_descend", GLFW.GLFW_KEY_C);
 
@@ -65,6 +68,7 @@ public final class NTKeybinds {
         event.register(THROW_POTION_KEYBIND.get());
         event.register(THROW_SPREADING_KEYBIND.get());
         event.register(ACTIVATE_LASER_KEYBIND.get());
+        event.register(TOGGLE_MAGNET_KEYBIND.get());
         event.register(SUBMARINE_DESCEND_KEYBIND.get());
         event.register(SUBMARINE_ABILITY_KEYBIND.get());
         event.register(WAVE_JET_LIGHT_KEYBIND.get());

@@ -85,7 +85,9 @@ Pick a body slot along the bottom and press Apply. If that slot already holds an
 
 For the next four seconds you are held in place while the robot arms work, and a bar shows the progress. Stepping off, the beam dropping below 25 AP, or the part being taken out cancels the install and nothing is used. When it finishes, the part is used up, the Claw Robot Arm stays, and the augment is in your chosen slot.
 
-[Player Augmentation](augmentation.md) lists what each slot takes and how replacing an augment works.
+To remove an augment, take every part out of the extensions first. With nothing loaded, the buttons along the bottom list the slots that hold an augment and Apply becomes Remove. Pick a slot and press it: you are held in place for four seconds, then the augment comes out and its part goes back into your inventory. Removal doesn't require a beam.
+
+[Player Augmentation](augmentation.md) lists what each slot takes and how replacing and removing an augment works.
 
 ***
 

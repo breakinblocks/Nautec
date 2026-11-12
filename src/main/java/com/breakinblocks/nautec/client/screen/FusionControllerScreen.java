@@ -66,6 +66,14 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
         return String.format(Locale.ROOT, "%.1f", value);
     }
 
+    private static String hundredths(double value) {
+        return String.format(Locale.ROOT, "%.2f", value);
+    }
+
+    private static String percent(double share) {
+        return String.format(Locale.ROOT, "%.0f", share * 100);
+    }
+
     @Override
     public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
@@ -227,11 +235,14 @@ public class FusionControllerScreen extends AbstractContainerScreen<FusionContro
             case 0 -> {
                 lines.add(Component.translatable("nautec.fusion.injected", number(this.menu.getInjected()), decimal(this.menu.getPurity())));
                 lines.add(Component.translatable("nautec.fusion.injected.desc", decimal(NTConfig.fusionMinPurity)).withStyle(ChatFormatting.GRAY));
+                lines.add(Component.translatable("nautec.fusion.quality", percent(FusionControllerBlockEntity.quality(this.menu.getPurity()))).withStyle(ChatFormatting.GRAY));
             }
             case 1 -> {
                 lines.add(Component.translatable("nautec.fusion.ceiling", number(this.menu.getCeiling())));
                 lines.add(Component.translatable("nautec.fusion.ceiling.desc", number(NTConfig.fusionCoilContainment), number(NTConfig.fusionSatelliteContainment),
-                        number(FusionStructure.maxOutput(this.menu.getSatellites()))).withStyle(ChatFormatting.GRAY));
+                        number(FusionStructure.maxOutput(this.menu.getSatellites(), this.menu.getHeartPurity()))).withStyle(ChatFormatting.GRAY));
+                lines.add(Component.translatable("nautec.fusion.heart", hundredths(this.menu.getHeartPurity()),
+                        percent(FusionStructure.heartFactor(this.menu.getHeartPurity()) - 1)).withStyle(ChatFormatting.GRAY));
             }
             case 2 -> {
                 int width = Math.max(0, this.menu.getRadius() * 2 - 1);

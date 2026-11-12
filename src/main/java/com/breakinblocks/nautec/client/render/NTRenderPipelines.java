@@ -100,6 +100,10 @@ public final class NTRenderPipelines {
 
     public static final RenderPipeline LASER_FLARE = laser("laser_flare");
 
+    public static final RenderPipeline ENRICHMENT_STREAM = laser("enrichment_stream");
+
+    public static final RenderPipeline ENRICHMENT_PULSE = laser("enrichment_pulse");
+
     private static final DepthStencilState SURFACE_OVERLAY_DEPTH = new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false, -1.0F, -10.0F);
 
     public static final RenderPipeline CRYSTAL_SHELL = crystal("crystal_shell", BlendFunction.TRANSLUCENT);

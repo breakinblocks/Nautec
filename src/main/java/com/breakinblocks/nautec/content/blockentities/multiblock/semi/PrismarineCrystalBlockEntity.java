@@ -21,7 +21,7 @@ import java.util.Set;
 public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     private boolean breaking;
     private boolean cultivated;
-    private float crystalPurity = 3f;
+    private float crystalPurity = CrystalPurity.MIN;
     private long startTick;
     private int duration;
     private boolean dismantled;
@@ -93,11 +93,11 @@ public class PrismarineCrystalBlockEntity extends LaserBlockEntity {
     }
 
     public float getCrystalPurity() {
-        return cultivated ? crystalPurity : 3f;
+        return cultivated ? crystalPurity : CrystalPurity.MIN;
     }
 
     public void setCrystalPurity(float purity) {
-        crystalPurity = Float.isFinite(purity) ? Math.clamp(purity, 3f, 6f) : 3f;
+        crystalPurity = CrystalPurity.clamp(purity);
         setPurity(getCrystalPurity());
         setChanged();
     }

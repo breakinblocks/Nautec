@@ -166,6 +166,7 @@ public class BlockModelProvider extends ModelProvider {
         deepSeaReservoir();
         abyssalEnchanter();
         simpleBlock(NTBlocks.LASER_CRAFTING_MATRIX.get(), existingModelFile(NTBlocks.LASER_CRAFTING_MATRIX.get()));
+        simpleBlock(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.get(), existingModelFile(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.get()));
         simpleBlock(NTBlocks.RESONANT_VAULT.get(), existingModelFile(NTBlocks.RESONANT_VAULT.get()));
         simpleBlock(NTBlocks.RESONANT_CISTERN.get(), existingModelFile(NTBlocks.RESONANT_CISTERN.get()));
         simpleBlock(NTBlocks.CHARGER.get(), existingModelFile(NTBlocks.CHARGER.get()));

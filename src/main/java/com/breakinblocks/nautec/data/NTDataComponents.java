@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.data;
 
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.CrystalPurity;
 import com.breakinblocks.nautec.content.reservoir.ReservoirFluid;
 import com.breakinblocks.nautec.content.resonantstorage.ResonantLink;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -75,7 +76,7 @@ public final class NTDataComponents {
             () -> builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
     public static final Supplier<DataComponentType<Float>> CRYSTAL_PURITY = registerDataComponentType("crystal_purity",
-            () -> builder -> builder.persistent(Codec.floatRange(3f, 6f)).networkSynchronized(ByteBufCodecs.FLOAT));
+            () -> builder -> builder.persistent(Codec.floatRange(CrystalPurity.MIN, CrystalPurity.MAX)).networkSynchronized(ByteBufCodecs.FLOAT));
 
     public static final Supplier<DataComponentType<Long>> CRADLE_GROWTH = registerDataComponentType("cradle_growth",
             () -> builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));

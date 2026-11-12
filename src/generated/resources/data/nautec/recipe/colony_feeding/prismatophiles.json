@@ -1,0 +1,8 @@
+{
+  "type": "nautec:colony_feeding",
+  "bacteria": "nautec:prismatophiles",
+  "ingredient": {
+    "ingredient": "nautec:prismarine_crystal_shard"
+  },
+  "vitality_ticks": 1200
+}

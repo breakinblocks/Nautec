@@ -626,6 +626,78 @@ public final class NTConfig {
             .comment("The purity a Bacterial Fuel Cell emits at when its colony is at the mutation resistance cap")
             .defineInRange("fuelCellMaxPurity", 2.5, 0, 10);
 
+    private static final ModConfigSpec.IntValue ENRICHMENT_MIN_POWER = BUILDER
+            .comment("The beam power a Bacterial Enrichment Catalyst needs from its source crystal before it works")
+            .defineInRange("enrichmentMinPower", 500, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_MIN_CRYSTAL_PURITY = BUILDER
+            .comment("The lowest purity a cultivated crystal must have before a Bacterial Enrichment Catalyst will work on it. Regression never drops a crystal below this")
+            .defineInRange("enrichmentMinCrystalPurity", 4.0, 3, 12);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_MAX_PURITY = BUILDER
+            .comment("The highest purity a Bacterial Enrichment Catalyst can raise a crystal to")
+            .defineInRange("enrichmentMaxPurity", 12.0, 6, 12);
+
+    private static final ModConfigSpec.IntValue ENRICHMENT_BASE_AP = BUILDER
+            .comment("The AP one enrichment cycle costs for a crystal at purity 6")
+            .defineInRange("enrichmentBaseAp", 1_000_000, 1, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_AP_GROWTH = BUILDER
+            .comment("How much the AP cost of an enrichment cycle multiplies for each whole point of crystal purity")
+            .defineInRange("enrichmentApGrowth", 2.0, 1, 16);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_STEP = BUILDER
+            .comment("The purity a successful enrichment cycle adds")
+            .defineInRange("enrichmentStep", 0.1, 0.01, 1);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_REGRESSION = BUILDER
+            .comment("The purity a failed enrichment cycle removes")
+            .defineInRange("enrichmentRegression", 0.2, 0, 3);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_MAX_OVERREACH = BUILDER
+            .comment("How far above the source beam's purity a Bacterial Enrichment Catalyst can push a crystal")
+            .defineInRange("enrichmentMaxOverreach", 1.5, 0.1, 9);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_SAFE_MARGIN = BUILDER
+            .comment("How far below the source beam's purity a crystal must be for the regression chance to reach its minimum")
+            .defineInRange("enrichmentSafeMargin", 1.0, 0.01, 9);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_MIN_CHANCE = BUILDER
+            .comment("The regression chance of an enrichment cycle when the source beam is purer than the crystal by the safe margin or more")
+            .defineInRange("enrichmentMinChance", 0.02, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_PARITY_CHANCE = BUILDER
+            .comment("The regression chance of an enrichment cycle when the crystal and the source beam have the same purity")
+            .defineInRange("enrichmentParityChance", 0.1, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_MAX_CHANCE = BUILDER
+            .comment("The regression chance of an enrichment cycle when the crystal is at the overreach limit above the source beam")
+            .defineInRange("enrichmentMaxChance", 0.3, 0, 1);
+
+    private static final ModConfigSpec.IntValue ENRICHMENT_COLONY_BASE = BUILDER
+            .comment("The colony one enrichment cycle uses for a crystal at purity 6")
+            .defineInRange("enrichmentColonyBase", 100, 0, Integer.MAX_VALUE);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_COLONY_GROWTH = BUILDER
+            .comment("How much the colony cost of an enrichment cycle multiplies for each whole point of crystal purity")
+            .defineInRange("enrichmentColonyGrowth", 1.4142, 1, 16);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_OVERREACH_COLONY = BUILDER
+            .comment("The extra share of colony an enrichment cycle uses for each point the crystal is above the source beam's purity")
+            .defineInRange("enrichmentOverreachColony", 1.0, 0, 100);
+
+    private static final ModConfigSpec.DoubleValue ENRICHMENT_RESISTANCE_SAVING = BUILDER
+            .comment("The share of colony cost saved when the colony is at the mutation resistance cap")
+            .defineInRange("enrichmentResistanceSaving", 0.5, 0, 1);
+
+    private static final ModConfigSpec.DoubleValue FUSION_PURITY_BONUS = BUILDER
+            .comment("How strongly injector beam purity above 3.0 raises the FE a Fusion Plant makes for each AP. The bonus grows with the logarithm of the purity")
+            .defineInRange("fusionPurityBonus", 0.5, 0, 10);
+
+    private static final ModConfigSpec.DoubleValue FUSION_HEART_CEILING_BONUS = BUILDER
+            .comment("The share added to a Fusion Plant's output ceiling and maximum output for each point of its heart crystal's purity above 3.0")
+            .defineInRange("fusionHeartCeilingBonus", 0.1, 0, 10);
+
     private static final ModConfigSpec.DoubleValue LENS_PURITY_BONUS = BUILDER
             .comment("The purity a Focusing Lens adds to a beam passing straight through it")
             .defineInRange("lensPurityBonus", 0.5, 0, 10);
@@ -1323,6 +1395,24 @@ public final class NTConfig {
     public static int fuelCellPowerBase = 24;
     public static double fuelCellBurnRate = 0.5;
     public static double fuelCellMaxPurity = 2.5;
+    public static int enrichmentMinPower = 500;
+    public static double enrichmentMinCrystalPurity = 4.0;
+    public static double enrichmentMaxPurity = 12.0;
+    public static int enrichmentBaseAp = 1_000_000;
+    public static double enrichmentApGrowth = 2.0;
+    public static double enrichmentStep = 0.1;
+    public static double enrichmentRegression = 0.2;
+    public static double enrichmentMaxOverreach = 1.5;
+    public static double enrichmentSafeMargin = 1.0;
+    public static double enrichmentMinChance = 0.02;
+    public static double enrichmentParityChance = 0.1;
+    public static double enrichmentMaxChance = 0.3;
+    public static int enrichmentColonyBase = 100;
+    public static double enrichmentColonyGrowth = 1.4142;
+    public static double enrichmentOverreachColony = 1.0;
+    public static double enrichmentResistanceSaving = 0.5;
+    public static double fusionPurityBonus = 0.5;
+    public static double fusionHeartCeilingBonus = 0.1;
     public static double lensPurityBonus = 0.5;
     public static double resonanceBaseCeiling = 2000.0;
     public static int resonancePowerUsage = 20;
@@ -1732,6 +1822,24 @@ public final class NTConfig {
         fuelCellPowerBase = value(FUEL_CELL_POWER_BASE);
         fuelCellBurnRate = value(FUEL_CELL_BURN_RATE);
         fuelCellMaxPurity = value(FUEL_CELL_MAX_PURITY);
+        enrichmentMinPower = value(ENRICHMENT_MIN_POWER);
+        enrichmentMinCrystalPurity = value(ENRICHMENT_MIN_CRYSTAL_PURITY);
+        enrichmentMaxPurity = value(ENRICHMENT_MAX_PURITY);
+        enrichmentBaseAp = value(ENRICHMENT_BASE_AP);
+        enrichmentApGrowth = value(ENRICHMENT_AP_GROWTH);
+        enrichmentStep = value(ENRICHMENT_STEP);
+        enrichmentRegression = value(ENRICHMENT_REGRESSION);
+        enrichmentMaxOverreach = value(ENRICHMENT_MAX_OVERREACH);
+        enrichmentSafeMargin = value(ENRICHMENT_SAFE_MARGIN);
+        enrichmentMinChance = value(ENRICHMENT_MIN_CHANCE);
+        enrichmentParityChance = value(ENRICHMENT_PARITY_CHANCE);
+        enrichmentMaxChance = value(ENRICHMENT_MAX_CHANCE);
+        enrichmentColonyBase = value(ENRICHMENT_COLONY_BASE);
+        enrichmentColonyGrowth = value(ENRICHMENT_COLONY_GROWTH);
+        enrichmentOverreachColony = value(ENRICHMENT_OVERREACH_COLONY);
+        enrichmentResistanceSaving = value(ENRICHMENT_RESISTANCE_SAVING);
+        fusionPurityBonus = value(FUSION_PURITY_BONUS);
+        fusionHeartCeilingBonus = value(FUSION_HEART_CEILING_BONUS);
         lensPurityBonus = value(LENS_PURITY_BONUS);
         resonanceBaseCeiling = value(RESONANCE_BASE_CEILING);
         resonancePowerUsage = value(RESONANCE_POWER_USAGE);

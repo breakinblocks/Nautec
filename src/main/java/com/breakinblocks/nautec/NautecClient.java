@@ -75,6 +75,7 @@ import com.breakinblocks.nautec.client.renderer.blockentities.SatelliteArrayBERe
 import com.breakinblocks.nautec.client.renderer.blockentities.GatewayBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.DrainBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.FishingStationBERenderer;
+import com.breakinblocks.nautec.client.renderer.blockentities.BacterialEnrichmentCatalystRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.LaserCraftingMatrixRenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.MixerBERenderer;
 import com.breakinblocks.nautec.client.renderer.blockentities.PrismarineCrystalBERenderer;
@@ -82,6 +83,7 @@ import com.breakinblocks.nautec.client.renderer.robotArms.ClawRobotArmRenderer;
 import com.breakinblocks.nautec.client.screen.AugmentationStationExtensionScreen;
 import com.breakinblocks.nautec.client.screen.AdvancedBacterialAnalyzerScreen;
 import com.breakinblocks.nautec.client.screen.BacterialAnalyzerScreen;
+import com.breakinblocks.nautec.client.screen.BacterialEnrichmentCatalystScreen;
 import com.breakinblocks.nautec.client.screen.GraftingStationScreen;
 import com.breakinblocks.nautec.client.screen.BioReactorScreen;
 import com.breakinblocks.nautec.client.screen.IndustrialBioReactorScreen;
@@ -213,6 +215,8 @@ public final class NautecClient {
         event.registerPipeline(NTRenderPipelines.CRYSTAL_SHELL);
         event.registerPipeline(NTRenderPipelines.CRYSTAL_CORE);
         event.registerPipeline(NTRenderPipelines.CRYSTAL_HALO);
+        event.registerPipeline(NTRenderPipelines.ENRICHMENT_STREAM);
+        event.registerPipeline(NTRenderPipelines.ENRICHMENT_PULSE);
         event.registerPipeline(NTRenderPipelines.GATEWAY_GLOW);
         event.registerPipeline(NTRenderPipelines.GATEWAY_HORIZON);
         event.registerPipeline(NTRenderPipelines.FUSION_PLASMA);
@@ -352,6 +356,7 @@ public final class NautecClient {
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_INJECTOR.get(), LaserBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.MIXER.get(), MixerBERenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.LASER_CRAFTING_MATRIX.get(), LaserCraftingMatrixRenderer::new);
+        event.registerBlockEntityRenderer(NTBlockEntityTypes.BACTERIAL_ENRICHMENT_CATALYST.get(), BacterialEnrichmentCatalystRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_VAULT.get(), ResonantVaultRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.RESONANT_CISTERN.get(), ResonantCisternRenderer::new);
         event.registerBlockEntityRenderer(NTBlockEntityTypes.DEEP_SEA_RESERVOIR.get(), DeepSeaReservoirRenderer::new);
@@ -449,6 +454,7 @@ public final class NautecClient {
         event.register(NTMenuTypes.RESONANCE_NODE.get(), ResonanceNodeScreen::new);
         event.register(NTMenuTypes.EXTRADIMENSIONAL_STORAGE.get(), ExtradimensionalStorageScreen::new);
         event.register(NTMenuTypes.DISH_STORAGE.get(), DishStorageScreen::new);
+        event.register(NTMenuTypes.BACTERIAL_ENRICHMENT_CATALYST.get(), BacterialEnrichmentCatalystScreen::new);
     }
 
     private void registerColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {

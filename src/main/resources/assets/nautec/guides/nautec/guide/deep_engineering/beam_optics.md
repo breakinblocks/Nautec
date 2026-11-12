@@ -29,7 +29,9 @@ Purity is set by the source. Merging beams lowers it a little, and a Focusing Le
 | Aquatic Catalyst on Prismarine Crystals | 0.8 |
 | Aquatic Catalyst on Prismarine Crystal Shards | 1.2 |
 | <ItemLink id="bacterial_fuel_cell"/> | up to 2.5 |
-| <ItemLink id="prismarine_crystal"/>, hit from the side | 3.0 |
+| <ItemLink id="prismarine_crystal"/>, hit from the side | 3.0, or a cultivated crystal's own purity (up to 12) |
+
+A cultivated crystal can be raised past 6.0 with a [Bacterial Enrichment Catalyst](bacterial_enrichment_catalyst.md).
 
 Each Budding Prismarine block touching an Aquatic Catalyst adds 0.1 to its beam's purity, up to 2.0. See [Laser Power](nautec:getting_started/laser_power.md).
 

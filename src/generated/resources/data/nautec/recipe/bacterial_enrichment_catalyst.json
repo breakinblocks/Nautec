@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "nautec:deep_steel_plating",
+    "F": "nautec:flawless_prismarine_crystal",
+    "G": "nautec:atlantic_gold_ingot",
+    "L": "nautec:laser_channeling_coil",
+    "P": "nautec:petri_dish"
+  },
+  "pattern": [
+    "GFG",
+    "DPD",
+    "GLG"
+  ],
+  "result": {
+    "id": "nautec:bacterial_enrichment_catalyst"
+  }
+}

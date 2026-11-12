@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "nautec:block/bacterial_enrichment_catalyst",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
+  }
+}

@@ -66,6 +66,8 @@ The most valuable branch. Graft Lithophiles from Budding Prismarine to skip its 
 | Aurrophiles | Gold Ingot | Ferrophiles | Gold Ingot | 5% |
 | Adamantophiles | Diamond | Aurrophiles | Diamond | 5% |
 | Smaragdophiles | Emerald | Adamantophiles | Emerald | 5% |
+| Prismatophiles | Nothing | Smaragdophiles | Atlantic Gold Ingot | 5% |
+| Prismatophiles (refine) | Nothing | Prismatophiles | Prismarine Crystal Shard | 25% |
 
 Sulfurophiles can also be grafted from a Vent Tubeworm in the Hydrothermal Vents.
 
@@ -79,8 +81,11 @@ Shortest routes from a grafted Lithophiles colony:
 | Gold or Gunpowder | then Aurrophiles or Sulfurophiles | 4 |
 | Diamond | then Adamantophiles | 5 |
 | Emerald | then Smaragdophiles | 6 |
+| Prismatophiles | then Prismatophiles | 7 |
 
 Starting from Thermophiles adds one more. You need one of each catalyst along the way, and since a catalyst is never used up, one iron ingot unlocks Ferrophiles for good.
+
+Prismatophiles make nothing in a Bio Reactor. They feed the [Bacterial Enrichment Catalyst](nautec:deep_engineering/bacterial_enrichment_catalyst.md).
 
 ***
 

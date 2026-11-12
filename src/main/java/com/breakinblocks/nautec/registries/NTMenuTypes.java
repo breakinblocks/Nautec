@@ -32,6 +32,7 @@ import com.breakinblocks.nautec.content.menus.IndustrialBioReactorMenu;
 import com.breakinblocks.nautec.content.menus.LaserCraftingMatrixMenu;
 import com.breakinblocks.nautec.content.menus.MixerMenu;
 import com.breakinblocks.nautec.content.menus.OsmosisFilterMenu;
+import com.breakinblocks.nautec.content.menus.BacterialEnrichmentCatalystMenu;
 import com.breakinblocks.nautec.content.menus.MutatorMenu;
 import com.breakinblocks.nautec.content.menus.SubmarineModuleMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,6 +60,7 @@ public final class NTMenuTypes {
     public static final Supplier<MenuType<IndustrialBioReactorMenu>> INDUSTRIAL_BIO_REACTOR = registerMenuType(IndustrialBioReactorMenu::new, "industrial_bio_reactor");
     public static final Supplier<MenuType<IncubatorMenu>> INCUBATOR = registerMenuType(IncubatorMenu::new, "incubator");
     public static final Supplier<MenuType<MutatorMenu>> MUTATOR = registerMenuType(MutatorMenu::new, "mutator");
+    public static final Supplier<MenuType<BacterialEnrichmentCatalystMenu>> BACTERIAL_ENRICHMENT_CATALYST = registerMenuType(BacterialEnrichmentCatalystMenu::new, "bacterial_enrichment_catalyst");
     public static final Supplier<MenuType<BacterialAnalyzerMenu>> BACTERIAL_ANALYZER = registerMenuType(BacterialAnalyzerMenu::new, "bacterial_analyzer");
     public static final Supplier<MenuType<ColonyReplicatorMenu>> COLONY_REPLICATOR = registerMenuType(ColonyReplicatorMenu::new, "colony_replicator");
     public static final Supplier<MenuType<BubbleAnchorMenu>> BUBBLE_ANCHOR = registerMenuType(BubbleAnchorMenu::new, "bubble_anchor");

@@ -47,7 +47,9 @@ Load the part and a Claw Robot Arm into one extension of a formed [Augmentation 
 
 Installing into a slot that already holds an augment replaces it. The old augment is destroyed, not returned as an item.
 
-There is no way to take an augment out in survival other than replacing it. Operators can use `/nautec augments remove <slot>` (for example `nautec:left_arm`) or `/nautec augments clear`, which act on the player running the command.
+To empty a slot, take every part out of the station's extensions and stand on the middle block. The buttons along the bottom then list your installed augments. Pick one and press Remove. You are held in place for four seconds, as with an install, and stepping off cancels it. You get back the part that made the augment, with the same data it had when you installed it, so a Resonance Charm keeps its binding. If your inventory is full it drops at your feet. Removal doesn't require a beam or any parts.
+
+Operators can also use `/nautec augments remove <slot>` (for example `nautec:left_arm`) or `/nautec augments clear`, which act on the player running the command.
 
 Augments are kept when you die.
 
@@ -65,5 +67,6 @@ Most augments work on their own. These ones need a key, listed in the Controls s
 | Y | Throw Trident | Bouncing Trident (Trident Launcher Arm) |
 | U | Throw Spreading Trident | Spreading Trident (Volley Trident Arm) |
 | G | Throw Potion | Random Potion Throwing (Syringe Robot Arm) |
+| Not set | Toggle Magnet Augments | Turns Magnet and Ender Magnet on or off |
 
 None of the active augments use power or items. Leap and the three throwing arms have a short cooldown between uses; the Guardian Eye fires for as long as you hold the key.

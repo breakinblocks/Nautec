@@ -1,5 +1,6 @@
 package com.breakinblocks.nautec.registries;
 
+import com.breakinblocks.nautec.content.blocks.BacterialEnrichmentCatalystBlock;
 import com.breakinblocks.nautec.content.blocks.CrystalCultivatorBlock;
 import net.minecraft.world.item.Rarity;
 import com.breakinblocks.nautec.content.reservoir.DeepSeaReservoirPartBlock;
@@ -57,6 +58,7 @@ import com.breakinblocks.nautec.content.blocks.LaserJunctionBlock;
 import com.breakinblocks.nautec.content.blocks.LuckyFishingZoneBlock;
 import com.breakinblocks.nautec.content.blocks.LaserCraftingMatrixBlock;
 import com.breakinblocks.nautec.content.blocks.MixerBlock;
+import com.breakinblocks.nautec.content.items.blocks.BacterialEnrichmentCatalystItem;
 import com.breakinblocks.nautec.content.items.blocks.LaserCraftingMatrixItem;
 import com.breakinblocks.nautec.content.blocks.MutatorBlock;
 import com.breakinblocks.nautec.content.blocks.OilBarrelBlock;
@@ -197,6 +199,10 @@ public final class NTBlocks {
 
     public static final DeferredBlock<CrystalCultivatorBlock> CRYSTAL_CULTIVATOR = registerBlockAndItem("crystal_cultivator", CrystalCultivatorBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(3.0f).noOcclusion());
+
+    public static final DeferredBlock<BacterialEnrichmentCatalystBlock> BACTERIAL_ENRICHMENT_CATALYST = bacteriaBlock(registerBlockAndItem("bacterial_enrichment_catalyst",
+            BacterialEnrichmentCatalystBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(3.0f).noOcclusion()
+                    .lightLevel(state -> state.getValue(BacterialEnrichmentCatalystBlock.ACTIVE) ? 10 : 0), BacterialEnrichmentCatalystItem::new));
 
     public static final DeferredBlock<ResonanceChamberBlock> RESONANCE_CHAMBER = registerBlockAndItem("resonance_chamber", ResonanceChamberBlock::new,
             BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN).strength(3.0f).noOcclusion());

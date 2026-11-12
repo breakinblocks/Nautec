@@ -81,7 +81,7 @@ Six parts compete for the Left Arm and Right Arm slots. These three work on thei
   ### <Color id="aqua">Magnetic Coil Arm</Color>
 </Row>
 
-Augment: Magnet. Pulls dropped items within 5 blocks toward you. Crouch to switch it off, for example when you want to throw something away.
+Augment: Magnet. Pulls dropped items within 5 blocks toward you. Crouch to pause it, for example when you want to throw something away. To turn it off until you turn it back on, set a key for Toggle Magnet Augments in the Controls screen.
 
 <Recipe id="nautec:magnetic_coil_arm"/>
 
@@ -90,7 +90,7 @@ Augment: Magnet. Pulls dropped items within 5 blocks toward you. Crouch to switc
   ### <Color id="aqua">Ender Coil Arm</Color>
 </Row>
 
-Augment: Ender Magnet. Teleports dropped items within 5 blocks straight into your inventory. Items that do not fit stay where they are. Crouch to switch it off.
+Augment: Ender Magnet. Teleports dropped items within 5 blocks straight into your inventory. Items that do not fit stay where they are. Crouch to pause it, or use the Toggle Magnet Augments key to turn it off.
 
 <Recipe id="nautec:ender_coil_arm"/>
 

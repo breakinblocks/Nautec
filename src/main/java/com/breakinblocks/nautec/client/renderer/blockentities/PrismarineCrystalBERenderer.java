@@ -37,6 +37,7 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
         }
         state.ticks = (float) (state.gameTime % PrismarineCrystalRenderer.TICK_WRAP) + partialTick;
         state.seed = PrismarineCrystalRenderer.seed(blockEntity.getBlockPos());
+        state.purity = blockEntity.getCrystalPurity();
     }
 
     @Override
@@ -58,7 +59,7 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
                     flash = Mth.sin(f * Mth.PI) * 0.6F;
                 }
             }
-            PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks, state.seed, flash, true);
+            PrismarineCrystalRenderer.submit(poseStack, collector, state.ticks, state.seed, flash, true, state.purity);
         }
         poseStack.popPose();
     }
@@ -74,5 +75,6 @@ public class PrismarineCrystalBERenderer extends LaserBlockEntityRenderer<Prisma
         public float breakingProgress;
         public float ticks;
         public long seed;
+        public float purity;
     }
 }

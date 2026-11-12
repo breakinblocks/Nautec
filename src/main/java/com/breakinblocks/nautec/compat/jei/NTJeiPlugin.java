@@ -354,6 +354,10 @@ public class NTJeiPlugin implements IModPlugin {
         registration.addIngredientInfo(NTItems.PRISMARINE_CRYSTAL_SEED.get(), seedInfo);
         registration.addIngredientInfo(NTBlocks.CRYSTAL_CRADLE.get(), Component.translatable("nautec.jei.crystal_cradle",
                 NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.crystalGrowthPower)));
+        registration.addIngredientInfo(NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.get(), Component.translatable("nautec.jei.bacterial_enrichment_catalyst",
+                String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMinCrystalPurity), String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMaxPurity),
+                NumberFormat.getIntegerInstance(Locale.ROOT).format(NTConfig.enrichmentMinPower), String.format(Locale.ROOT, "%.2f", NTConfig.enrichmentStep),
+                String.format(Locale.ROOT, "%.2f", NTConfig.enrichmentRegression), String.format(Locale.ROOT, "%.1f", NTConfig.enrichmentMaxOverreach)));
         for (RecipeBinding<?, ?> binding : recipeBindings) {
             binding.register(registration, ClientRecipes.get());
         }

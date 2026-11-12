@@ -1621,6 +1621,18 @@ public class RecipesProvider extends RecipeProvider {
                 .unlockedBy("has_item", has(NTItems.PRISMARINE_CRYSTAL_SHARD))
                 .save(pRecipeOutput, key("crystal_cultivator"));
 
+        shaped(RecipeCategory.MISC, NTBlocks.BACTERIAL_ENRICHMENT_CATALYST.asItem())
+                .pattern("GFG")
+                .pattern("DPD")
+                .pattern("GLG")
+                .define('G', NTItems.ATLANTIC_GOLD_INGOT)
+                .define('F', NTItems.FLAWLESS_PRISMARINE_CRYSTAL)
+                .define('D', NTItems.DEEP_STEEL_PLATING)
+                .define('P', NTItems.PETRI_DISH)
+                .define('L', NTItems.LASER_CHANNELING_COIL)
+                .unlockedBy("has_item", has(NTItems.FLAWLESS_PRISMARINE_CRYSTAL))
+                .save(pRecipeOutput, key("bacterial_enrichment_catalyst"));
+
         shaped(RecipeCategory.MISC, NTBlocks.RESONANCE_NODE.asItem(), 2)
                 .pattern(" S ")
                 .pattern("ARA")
@@ -2266,6 +2278,10 @@ public class RecipesProvider extends RecipeProvider {
                 .save(output);
         new MutationRecipeBuilder(NTBacterias.ADAMANTOPHILES, NTBacterias.SMARAGDOPHILES, Ingredient.of(Items.EMERALD), 5f)
                 .save(output);
+        new MutationRecipeBuilder(NTBacterias.SMARAGDOPHILES, NTBacterias.PRISMATOPHILES, Ingredient.of(NTItems.ATLANTIC_GOLD_INGOT.get()), 5f)
+                .save(output);
+        new MutationRecipeBuilder(NTBacterias.PRISMATOPHILES, NTBacterias.PRISMATOPHILES, Ingredient.of(NTItems.PRISMARINE_CRYSTAL_SHARD.get()), 25f)
+                .save(output);
 
         new MutationRecipeBuilder(NTBacterias.METHANOGENS, NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), 15f)
                 .save(output);
@@ -2382,6 +2398,7 @@ public class RecipesProvider extends RecipeProvider {
         incubation(output, new IncubationRecipeBuilder(NTBacterias.SULFUROPHILES, Ingredient.of(Items.GUNPOWDER), IntRange.of(5, 15), 0.1f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.CRYOBIONTS, Ingredient.of(Items.PACKED_ICE), IntRange.of(5, 15), 0.1f));
         incubation(output, new IncubationRecipeBuilder(NTBacterias.CARNIVOROUS_BACTERIA, Ingredient.of(Items.ROTTEN_FLESH), IntRange.of(5, 15), 0.1f));
+        incubation(output, new IncubationRecipeBuilder(NTBacterias.PRISMATOPHILES, Ingredient.of(NTItems.PRISMARINE_CRYSTAL_SHARD.get()), IntRange.of(8, 25), 0.1f));
     }
 
     private void incubation(RecipeOutput output, IncubationRecipeBuilder incubation) {

@@ -4,6 +4,7 @@ import com.breakinblocks.nautec.api.sides.SlotRoles;
 import com.breakinblocks.nautec.NTConfig;
 import com.breakinblocks.nautec.api.blockentities.LaserBlockEntity;
 import com.breakinblocks.nautec.capabilities.IOActions;
+import com.breakinblocks.nautec.content.blockentities.multiblock.semi.CrystalPurity;
 import com.breakinblocks.nautec.content.blockentities.multiblock.semi.PrismarineCrystalBlockEntity;
 import com.breakinblocks.nautec.content.blocks.multiblock.semi.PrismarineCrystalBlock;
 import com.breakinblocks.nautec.registries.NTBlockEntityTypes;
@@ -35,6 +36,7 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
     private static final int SYNC_INTERVAL = 10;
     private static final int SAVE_INTERVAL = 100;
     private static final int PERMILLE = 1000;
+    private static final int CRADLE_ROLLS = Math.round((CrystalPurity.CRADLE_MAX - CrystalPurity.MIN) * 100f) + 1;
 
     private long growth;
     private int permille;
@@ -180,7 +182,7 @@ public class CrystalCradleBlockEntity extends LaserBlockEntity {
         getItemStackHandler().setStackInSlot(SEED_SLOT, ItemStack.EMPTY);
         PrismarineCrystalBlock.build(serverLevel, core, true);
         if (serverLevel.getBlockEntity(core) instanceof PrismarineCrystalBlockEntity crystal) {
-            crystal.setCrystalPurity(3f + serverLevel.getRandom().nextInt(301) / 100f);
+            crystal.setCrystalPurity(CrystalPurity.MIN + serverLevel.getRandom().nextInt(CRADLE_ROLLS) / 100f);
             crystal.update();
         }
         serverLevel.playSound(null, core, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 2.0F, 0.6F);
