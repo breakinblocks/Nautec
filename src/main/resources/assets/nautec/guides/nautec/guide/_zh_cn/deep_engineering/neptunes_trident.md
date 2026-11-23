@@ -4,6 +4,8 @@ navigation:
   icon: nautec:neptunes_trident
   position: 6
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:neptunes_trident
 ---
 
 # <Color id="light_purple">海王三叉戟</Color>

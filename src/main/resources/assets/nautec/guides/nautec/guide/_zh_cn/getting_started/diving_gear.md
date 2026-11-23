@@ -4,6 +4,13 @@ navigation:
   icon: nautec:diving_helmet
   position: 10
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:brown_polymer
+  - nautec:diving_chestplate
+  - nautec:diving_helmet
+  - nautec:diving_leggings
+  - nautec:diving_boots
+  - nautec:air_bottle
 ---
 
 # <Color id="light_purple">潜水套装与氧气</Color>

@@ -4,6 +4,12 @@ navigation:
   icon: nautec:chiseled_dark_prismarine
   position: 14
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:polished_prismarine
+  - nautec:chiseled_dark_prismarine
+  - nautec:dark_prismarine_pillar
+  - nautec:decorative_prismarine_crystal
+  - nautec:brown_polymer_block
 ---
 
 # <Color id="light_purple">建筑方块</Color>

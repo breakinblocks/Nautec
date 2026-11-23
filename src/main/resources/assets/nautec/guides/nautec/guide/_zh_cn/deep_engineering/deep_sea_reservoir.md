@@ -4,6 +4,11 @@ navigation:
   icon: nautec:deep_sea_reservoir
   position: 15
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:deep_sea_reservoir
+  - nautec:reservoir_upgrade_2
+  - nautec:reservoir_upgrade_3
+  - nautec:reservoir_upgrade_4
 ---
 
 # <Color id="light_purple">深海贮液仓</Color>

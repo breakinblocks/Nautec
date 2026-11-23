@@ -4,6 +4,8 @@ navigation:
   icon: nautec:bacterial_enrichment_catalyst
   position: 17
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:bacterial_enrichment_catalyst
 ---
 
 # <Color id="light_purple">细菌富集催化机</Color>

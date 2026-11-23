@@ -4,6 +4,8 @@ navigation:
   icon: nautec:shield_module
   position: 12
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:shield_module
 ---
 
 # <Color id="light_purple">盾御模块</Color>

@@ -4,6 +4,9 @@ navigation:
   icon: nautec:gateway
   position: 2
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:gateway
+  - nautec:gateway_ring
 ---
 
 # <Color id="light_purple">门径</Color>

@@ -4,6 +4,9 @@ navigation:
   icon: nautec:aquarine_steel_wrench
   position: 7
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:aquarine_steel_wrench
+  - nautec:configuration_card
 ---
 
 # <Color id="light_purple">工具与实用物品</Color>

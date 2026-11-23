@@ -4,6 +4,8 @@ navigation:
   icon: nautec:impulse_laser_module
   position: 13
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:impulse_laser_module
 ---
 
 # <Color id="light_purple">冲击激光</Color>

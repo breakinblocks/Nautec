@@ -4,6 +4,11 @@ navigation:
   icon: nautec:spawner_confinement_matrix
   position: 12
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:spawner_confinement_matrix
+  - nautec:confined_spawner
+  - nautec:mob_sampler
+  - nautec:mob_sample
 ---
 
 # <Color id="light_purple">约束刷怪笼</Color>

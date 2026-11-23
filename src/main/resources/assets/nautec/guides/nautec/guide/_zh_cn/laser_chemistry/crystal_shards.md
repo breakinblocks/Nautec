@@ -4,6 +4,8 @@ navigation:
   icon: nautec:prismarine_crystal_shard
   position: 9
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:prismarine_crystal_shard
 ---
 
 # <Color id="light_purple">海晶水晶碎片</Color>

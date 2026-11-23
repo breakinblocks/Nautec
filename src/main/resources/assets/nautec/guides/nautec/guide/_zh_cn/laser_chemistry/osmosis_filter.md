@@ -4,6 +4,8 @@ navigation:
   icon: nautec:osmosis_filter
   position: 5
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:osmosis_filter
 ---
 
 # <Color id="light_purple">渗透滤水机</Color>

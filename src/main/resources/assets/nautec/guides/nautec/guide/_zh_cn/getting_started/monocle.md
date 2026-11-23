@@ -4,6 +4,8 @@ navigation:
   icon: nautec:prism_monocle
   position: 9
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:prism_monocle
 ---
 
 # <Color id="light_purple">海棱单片镜</Color>

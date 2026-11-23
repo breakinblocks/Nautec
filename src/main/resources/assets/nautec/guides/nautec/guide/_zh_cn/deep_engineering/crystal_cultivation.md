@@ -4,6 +4,10 @@ navigation:
   icon: nautec:prismarine_crystal_seed
   position: 7
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:dormant_crystal_seed
+  - nautec:prismarine_crystal_seed
+  - nautec:crystal_cradle
 ---
 
 # <Color id="light_purple">水晶培育</Color>

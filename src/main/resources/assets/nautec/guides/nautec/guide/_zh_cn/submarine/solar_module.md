@@ -4,6 +4,8 @@ navigation:
   icon: nautec:solar_module
   position: 7
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:solar_module
 ---
 
 # <Color id="light_purple">太阳能模块</Color>

@@ -4,6 +4,8 @@ navigation:
   icon: nautec:industrial_bio_reactor
   position: 12
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:industrial_bio_reactor
 ---
 
 # <Color id="light_purple">工业生物反应机</Color>

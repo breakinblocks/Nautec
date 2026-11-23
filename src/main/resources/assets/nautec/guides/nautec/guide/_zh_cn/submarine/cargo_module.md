@@ -4,6 +4,8 @@ navigation:
   icon: nautec:cargo_module
   position: 16
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:cargo_module
 ---
 
 # <Color id="light_purple">载货模块</Color>

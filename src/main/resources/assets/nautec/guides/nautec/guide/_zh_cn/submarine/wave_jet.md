@@ -4,6 +4,8 @@ navigation:
   icon: nautec:wave_jet
   position: 5
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:wave_jet
 ---
 
 # <Color id="light_purple">驭浪推进器</Color>

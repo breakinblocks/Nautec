@@ -4,6 +4,8 @@ navigation:
   icon: nautec:nautechnical_distributor
   position: 8
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:nautechnical_distributor
 ---
 
 # <Color id="light_purple">海蓝科技分配器</Color>

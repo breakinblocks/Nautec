@@ -4,6 +4,9 @@ navigation:
   icon: nautec:bio_reactor
   position: 8
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:bio_reactor
+  - nautec:bacterial_containment_shield
 ---
 
 # <Color id="light_purple">生物反应机</Color>

@@ -4,6 +4,12 @@ navigation:
   icon: nautec:aquarine_steel_axe
   position: 8
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:aquarine_steel_sword
+  - nautec:aquarine_steel_pickaxe
+  - nautec:aquarine_steel_axe
+  - nautec:aquarine_steel_shovel
+  - nautec:aquarine_steel_hoe
 ---
 
 # <Color id="light_purple">海蓝钢工具</Color>

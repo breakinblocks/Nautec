@@ -4,6 +4,11 @@ navigation:
   icon: nautec:dolphin_fin
   position: 3
   parent: laser_augmentation/laser_augmentation-index.md
+item_ids:
+  - nautec:guardian_eye
+  - nautec:dolphin_fin
+  - nautec:drowned_lungs
+  - nautec:eldritch_heart
 ---
 
 # <Color id="light_purple">生物强化件</Color>

@@ -4,6 +4,19 @@ navigation:
   icon: nautec:aquarine_steel_ingot
   position: 2
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:aquarine_steel_compound
+  - nautec:aquarine_steel_ingot
+  - nautec:aquarine_steel_block
+  - nautec:cast_iron_compound
+  - nautec:cast_iron_ingot
+  - nautec:cast_iron_nugget
+  - nautec:cast_iron_rod
+  - nautec:cast_iron_block
+  - nautec:laser_channeling_coil
+  - nautec:whisk
+  - nautec:broken_whisk
+  - nautec:oil_barrel
 ---
 
 # <Color id="light_purple">海蓝钢与铸铁</Color>

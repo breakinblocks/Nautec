@@ -4,6 +4,9 @@ navigation:
   icon: nautec:bacterial_analyzer
   position: 4
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:bacterial_analyzer
+  - nautec:advanced_bacterial_analyzer
 ---
 
 # <Color id="light_purple">细菌分析机</Color>

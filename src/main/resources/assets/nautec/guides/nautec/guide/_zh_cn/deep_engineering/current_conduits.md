@@ -4,6 +4,17 @@ navigation:
   icon: nautec:current_conduit
   position: 12
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:current_conduit
+  - nautec:aquarine_copper_ingot
+  - nautec:aquarine_copper_compound
+  - nautec:clay_gasket
+  - nautec:eddy_upgrade
+  - nautec:surge_upgrade
+  - nautec:riptide_upgrade
+  - nautec:maelstrom_upgrade
+  - nautec:filter
+  - nautec:intricate_filter
 ---
 
 # <Color id="aqua">洋流导管</Color>

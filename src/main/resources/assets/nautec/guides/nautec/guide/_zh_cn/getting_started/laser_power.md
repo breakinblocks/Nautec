@@ -4,6 +4,10 @@ navigation:
   icon: nautec:aquatic_catalyst
   position: 1
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:aquatic_catalyst
+  - nautec:advanced_aquatic_catalyst
+  - nautec:prismarine_crystal
 ---
 
 # <Color id="light_purple">激光功率</Color>

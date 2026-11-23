@@ -4,6 +4,8 @@ navigation:
   icon: nautec:submarine_dock
   position: 4
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:submarine_dock
 ---
 
 # <Color id="light_purple">海洋斥候停靠坞</Color>
