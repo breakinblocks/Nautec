@@ -4,6 +4,8 @@ navigation:
   icon: nautec:nautec_fishing_rod
   position: 13
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:nautec_fishing_rod
 ---
 
 # <Color id="light_purple">垂钓</Color>

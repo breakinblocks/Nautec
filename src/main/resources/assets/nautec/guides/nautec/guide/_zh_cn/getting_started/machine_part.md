@@ -4,6 +4,14 @@ navigation:
   icon: nautec:ancient_valve
   position: 5
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:burnt_coil
+  - nautec:rusty_gear
+  - nautec:gear
+  - nautec:ancient_valve
+  - nautec:valve
+  - nautec:damaged_aquatic_chip
+  - nautec:aquatic_chip
 ---
 
 # <Color id="light_purple">远古机器部件</Color>

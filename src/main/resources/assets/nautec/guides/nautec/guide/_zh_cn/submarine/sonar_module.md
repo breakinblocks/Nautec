@@ -4,6 +4,8 @@ navigation:
   icon: nautec:sonar_module
   position: 11
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:sonar_module
 ---
 
 # <Color id="light_purple">声呐模块</Color>

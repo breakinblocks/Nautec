@@ -4,6 +4,10 @@ navigation:
   icon: nautec:flawless_prismarine_crystal
   position: 4
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:resonant_shard
+  - nautec:flawless_prismarine_crystal
+  - nautec:deep_steel_plating
 ---
 
 # <Color id="light_purple">深海材料</Color>

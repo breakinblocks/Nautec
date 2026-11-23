@@ -4,6 +4,14 @@ navigation:
   icon: nautec:fusion_controller
   position: 8
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:fusion_controller
+  - nautec:fusion_casing
+  - nautec:aquamarine_structural_glass
+  - nautec:laser_injector
+  - nautec:fusion_collector
+  - nautec:containment_coil
+  - nautec:fusion_port
 ---
 
 # <Color id="light_purple">聚变反应堆</Color>

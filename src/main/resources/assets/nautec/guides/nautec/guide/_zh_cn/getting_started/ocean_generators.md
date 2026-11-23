@@ -4,6 +4,9 @@ navigation:
   icon: nautec:tidal_rotor
   position: 16
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:tidal_rotor
+  - nautec:thermal_vent_tap
 ---
 
 # <Color id="light_purple">海洋发电器</Color>

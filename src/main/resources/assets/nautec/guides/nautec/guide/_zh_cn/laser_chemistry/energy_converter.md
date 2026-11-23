@@ -4,6 +4,13 @@ navigation:
   icon: nautec:energy_converter
   position: 1
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:energy_converter
+  - nautec:creative_power_source
+  - nautec:creative_energy_source
+  - nautec:energy_conversion_upgrade
+  - nautec:advanced_energy_conversion_upgrade
+  - nautec:ultimate_energy_conversion_upgrade
 ---
 
 # <Color id="light_purple">能量转换器</Color>

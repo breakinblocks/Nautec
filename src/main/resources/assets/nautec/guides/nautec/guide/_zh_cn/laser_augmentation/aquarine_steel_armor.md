@@ -4,6 +4,11 @@ navigation:
   icon: nautec:aquarine_steel_chestplate
   position: 6
   parent: laser_augmentation/laser_augmentation-index.md
+item_ids:
+  - nautec:aquarine_steel_helmet
+  - nautec:aquarine_steel_chestplate
+  - nautec:aquarine_steel_leggings
+  - nautec:aquarine_steel_boots
 ---
 
 # <Color id="light_purple">海蓝钢盔甲</Color>

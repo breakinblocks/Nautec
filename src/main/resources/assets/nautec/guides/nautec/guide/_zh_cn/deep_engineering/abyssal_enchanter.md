@@ -4,6 +4,8 @@ navigation:
   icon: nautec:abyssal_enchanter
   position: 16
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:abyssal_enchanter
 ---
 
 # <Color id="light_purple">深渊附魔仪</Color>

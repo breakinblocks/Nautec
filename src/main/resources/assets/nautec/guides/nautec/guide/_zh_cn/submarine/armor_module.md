@@ -4,6 +4,8 @@ navigation:
   icon: nautec:armor_module
   position: 8
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:armor_module
 ---
 
 # <Color id="light_purple">护甲模块</Color>

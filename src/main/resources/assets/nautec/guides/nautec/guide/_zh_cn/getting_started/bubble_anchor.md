@@ -4,6 +4,9 @@ navigation:
   icon: nautec:bubble_anchor
   position: 17
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:bubble_anchor
+  - nautec:bubble_capsule
 ---
 
 # <Color id="light_purple">气泡锚</Color>

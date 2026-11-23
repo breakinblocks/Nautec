@@ -4,6 +4,8 @@ navigation:
   icon: nautec:mutator
   position: 6
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:mutator
 ---
 
 # <Color id="light_purple">诱变机</Color>

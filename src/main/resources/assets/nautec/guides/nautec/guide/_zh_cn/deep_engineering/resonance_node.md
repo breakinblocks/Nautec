@@ -4,6 +4,8 @@ navigation:
   icon: nautec:resonance_node
   position: 11
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:resonance_node
 ---
 
 # <Color id="aqua">共鸣节点</Color>

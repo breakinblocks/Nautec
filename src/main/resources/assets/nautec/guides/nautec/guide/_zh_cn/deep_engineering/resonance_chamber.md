@@ -4,6 +4,8 @@ navigation:
   icon: nautec:resonance_chamber
   position: 1
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:resonance_chamber
 ---
 
 # <Color id="light_purple">共鸣室</Color>

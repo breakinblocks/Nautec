@@ -4,6 +4,12 @@ navigation:
   icon: nautec:budding_prismarine
   position: 10
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:budding_prismarine
+  - nautec:small_prismarine_bud
+  - nautec:medium_prismarine_bud
+  - nautec:large_prismarine_bud
+  - nautec:prismarine_cluster
 ---
 
 # <Color id="light_purple">海晶母岩</Color>

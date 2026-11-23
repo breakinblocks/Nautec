@@ -3,6 +3,8 @@ navigation:
   title: 海蓝科技2
   icon: nautec:nautec_guide
   position: 0
+item_ids:
+  - nautec:nautec_guide
 ---
 
 # <Color id="gold">海蓝科技2</Color>

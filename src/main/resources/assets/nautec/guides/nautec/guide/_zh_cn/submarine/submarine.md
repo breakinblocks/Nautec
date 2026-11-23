@@ -4,6 +4,8 @@ navigation:
   icon: nautec:submarine
   position: 0
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:submarine
 ---
 
 # <Color id="light_purple">海洋斥候</Color>

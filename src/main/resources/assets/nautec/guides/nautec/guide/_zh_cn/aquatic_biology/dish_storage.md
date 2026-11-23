@@ -4,6 +4,10 @@ navigation:
   icon: nautec:aquarine_dish_storage
   position: 16
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:aquarine_dish_storage
+  - nautec:deep_steel_dish_storage
+  - nautec:atlantic_gold_dish_storage
 ---
 
 # <Color id="light_purple">培养皿存放仓</Color>

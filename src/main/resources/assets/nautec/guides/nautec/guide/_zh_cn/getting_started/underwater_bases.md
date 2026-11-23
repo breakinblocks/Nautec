@@ -4,6 +4,9 @@ navigation:
   icon: nautec:pressure_hatch
   position: 18
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:pressure_hatch
+  - nautec:oxygen_diffuser
 ---
 
 # <Color id="light_purple">水下基地</Color>

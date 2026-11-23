@@ -4,6 +4,10 @@ navigation:
   icon: nautec:resonance_node
   position: 9
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:prismatic_emitter
+  - nautec:tuning_fork
+  - nautec:resonance_charm
 ---
 
 # <Color id="light_purple">共鸣网络</Color>

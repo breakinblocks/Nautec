@@ -4,6 +4,19 @@ navigation:
   icon: nautec:luminous_membrane
   position: 12
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:deep_kelp
+  - nautec:luminescent_algae
+  - nautec:glow_polyp
+  - nautec:prismarine_frond
+  - nautec:vent_tubeworm
+  - nautec:abyssal_coral
+  - nautec:silt_skipper
+  - nautec:silt_skipper_bucket
+  - nautec:silt_skipper_spawn_egg
+  - nautec:lantern_jelly_spawn_egg
+  - nautec:vent_crawler_spawn_egg
+  - nautec:abyssal_maw_spawn_egg
 ---
 
 # <Color id="light_purple">深海生命</Color>

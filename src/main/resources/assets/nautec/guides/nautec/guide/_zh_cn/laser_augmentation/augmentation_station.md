@@ -4,6 +4,10 @@ navigation:
   icon: nautec:augmentation_station
   position: 1
   parent: laser_augmentation/laser_augmentation-index.md
+item_ids:
+  - nautec:augmentation_station
+  - nautec:augmentation_station_extension
+  - nautec:claw_robot_arm
 ---
 
 # <Color id="light_purple">强化站</Color>

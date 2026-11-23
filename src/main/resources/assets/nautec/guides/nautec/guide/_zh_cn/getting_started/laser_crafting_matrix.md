@@ -4,6 +4,8 @@ navigation:
   icon: nautec:laser_crafting_matrix
   position: 2
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:laser_crafting_matrix
 ---
 
 # <Color id="light_purple">激光合成矩阵</Color>

@@ -4,6 +4,9 @@ navigation:
   icon: nautec:deep_sea_drain
   position: 5
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:deep_sea_drain
+  - nautec:deep_sea_drain_wall
 ---
 
 # <Color id="light_purple">深海排水口</Color>

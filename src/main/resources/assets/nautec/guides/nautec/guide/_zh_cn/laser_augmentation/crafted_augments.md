@@ -4,6 +4,19 @@ navigation:
   icon: nautec:magnetic_coil_arm
   position: 4
   parent: laser_augmentation/laser_augmentation-index.md
+item_ids:
+  - nautec:hydraulic_leg
+  - nautec:servo_knee
+  - nautec:shock_absorber
+  - nautec:tendon_weave
+  - nautec:magnetic_coil_arm
+  - nautec:ender_coil_arm
+  - nautec:hydro_drill_arm
+  - nautec:syringe_robot_arm
+  - nautec:trident_launcher_arm
+  - nautec:volley_trident_arm
+  - nautec:buoyancy_tank
+  - nautec:auxiliary_ventricle
 ---
 
 # <Color id="light_purple">可合成强化件</Color>

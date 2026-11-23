@@ -4,6 +4,8 @@ navigation:
   icon: nautec:prismatic_battery
   position: 7
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:prismatic_battery
 ---
 
 # <Color id="light_purple">海晶电池</Color>

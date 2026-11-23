@@ -4,6 +4,10 @@ navigation:
   icon: nautec:atlantic_gold_nugget
   position: 4
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:atlantic_gold_nugget
+  - nautec:atlantic_gold_ingot
+  - nautec:prismarine_lens
 ---
 
 # <Color id="light_purple">回收</Color>

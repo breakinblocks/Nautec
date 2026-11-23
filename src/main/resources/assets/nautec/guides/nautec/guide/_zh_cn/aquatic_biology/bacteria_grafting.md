@@ -4,6 +4,11 @@ navigation:
   icon: nautec:grafting_tool
   position: 3
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:grafting_tool
+  - nautec:grafting_station
+  - nautec:grafting_anchor
+  - nautec:advanced_grafting_anchor
 ---
 
 # <Color id="light_purple">细菌移植</Color>

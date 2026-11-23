@@ -4,6 +4,8 @@ navigation:
   icon: nautec:mixer
   position: 4
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:mixer
 ---
 
 # <Color id="light_purple">搅拌机</Color>

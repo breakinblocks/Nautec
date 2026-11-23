@@ -4,6 +4,10 @@ navigation:
   icon: nautec:abyssal_organ
   position: 5
   parent: laser_augmentation/laser_augmentation-index.md
+item_ids:
+  - nautec:abyssal_organ
+  - nautec:luminous_membrane
+  - nautec:chitin_plate
 ---
 
 # <Color id="light_purple">深海动物强化件</Color>

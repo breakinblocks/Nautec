@@ -4,6 +4,13 @@ navigation:
   icon: nautec:eas_bucket
   position: 3
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:eas_bucket
+  - nautec:saltwater_bucket
+  - nautec:oil_bucket
+  - nautec:glass_vial
+  - nautec:eas_vial
+  - nautec:salt
 ---
 
 # <Color id="light_purple">化工流体</Color>
@@ -56,6 +63,15 @@ navigation:
 </Row>
 
 出现于<ItemLink id="oil_barrel"/>中的黏稠流体。
+
+***
+
+<Row>
+  <ItemImage id="biodiesel_bucket"/>
+  ### <Color id="aqua">生物柴油</Color>
+</Row>
+
+在[搅拌机](mixer.md)中自原油和盐精炼而来。这种燃料在[燃烧发电机](nautec:getting_started/combustion_dynamo.md)中比原油燃烧得长，温度也较高。
 
 ***
 

@@ -4,6 +4,11 @@ navigation:
   icon: nautec:reactor_speed_upgrade
   position: 11
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:reactor_speed_upgrade
+  - nautec:reactor_yield_upgrade
+  - nautec:reactor_efficiency_upgrade
+  - nautec:reactor_fusion_upgrade
 ---
 
 # <Color id="light_purple">反应机升级</Color>

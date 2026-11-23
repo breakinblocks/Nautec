@@ -4,6 +4,8 @@ navigation:
   icon: nautec:laser_purification_smelter
   position: 13
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:laser_purification_smelter
 ---
 
 # <Color id="light_purple">激光纯化烧炼机</Color>

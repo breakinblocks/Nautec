@@ -4,6 +4,8 @@ navigation:
   icon: nautec:stealth_module
   position: 10
   parent: submarine/submarine-index.md
+item_ids:
+  - nautec:stealth_module
 ---
 
 # <Color id="light_purple">隐匿模块</Color>

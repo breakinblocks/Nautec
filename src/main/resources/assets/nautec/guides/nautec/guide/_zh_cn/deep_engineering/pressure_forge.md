@@ -4,6 +4,10 @@ navigation:
   icon: nautec:pressure_forge
   position: 3
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:pressure_forge
+  - nautec:pressure_synthesizer
+  - nautec:atlantean_pressure_synthesizer
 ---
 
 # <Color id="light_purple">深渊压力锻造机</Color>

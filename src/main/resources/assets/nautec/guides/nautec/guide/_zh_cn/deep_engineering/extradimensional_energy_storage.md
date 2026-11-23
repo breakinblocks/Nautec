@@ -4,6 +4,12 @@ navigation:
   icon: nautec:extradimensional_energy_storage
   position: 14
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:extradimensional_energy_storage
+  - nautec:rift_containment_frame
+  - nautec:void_containment_frame
+  - nautec:abyssal_containment_frame
+  - nautec:event_horizon_containment_frame
 ---
 
 # <Color id="light_purple">超维度能量仓库</Color>

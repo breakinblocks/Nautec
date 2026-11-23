@@ -4,6 +4,8 @@ navigation:
   icon: nautec:colony_replicator
   position: 15
   parent: aquatic_biology/aquatic_biology-index.md
+item_ids:
+  - nautec:colony_replicator
 ---
 
 # <Color id="light_purple">菌落复制机</Color>

@@ -4,6 +4,8 @@ navigation:
   icon: nautec:fishing_station
   position: 11
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:fishing_station
 ---
 
 # <Color id="light_purple">钓鱼站</Color>

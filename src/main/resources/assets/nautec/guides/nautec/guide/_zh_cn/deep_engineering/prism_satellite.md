@@ -4,6 +4,9 @@ navigation:
   icon: nautec:prism_satellite
   position: 10
   parent: deep_engineering/deep_engineering-index.md
+item_ids:
+  - nautec:prism_satellite
+  - nautec:uplink_array
 ---
 
 # <Color id="aqua">海棱人造卫星</Color>

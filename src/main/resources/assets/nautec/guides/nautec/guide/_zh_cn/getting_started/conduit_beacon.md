@@ -4,6 +4,8 @@ navigation:
   icon: nautec:conduit_beacon
   position: 19
   parent: getting_started/getting_started-index.md
+item_ids:
+  - nautec:conduit_beacon
 ---
 
 # <Color id="light_purple">潮涌核心信标</Color>

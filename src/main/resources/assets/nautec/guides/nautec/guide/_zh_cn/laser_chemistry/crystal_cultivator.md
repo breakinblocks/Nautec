@@ -4,6 +4,8 @@ navigation:
   icon: nautec:crystal_cultivator
   position: 13
   parent: laser_chemistry/laser_chemistry-index.md
+item_ids:
+  - nautec:crystal_cultivator
 ---
 
 # 晶体培植器
